@@ -101,7 +101,6 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
             
             <motion.div
                 drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
                 style={{ x }}
