@@ -9,7 +9,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { useApp } from '@/components/app-provider';
 
-export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t.any) => void; hideDate?: boolean; }) => {
+export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const [hapticTriggered, setHapticTriggered] = useState(false);
     const controls = useAnimation();
     const ACTION_WIDTH = 80;
