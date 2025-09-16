@@ -9,6 +9,7 @@ import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
 import { AnimatePresence } from 'framer-motion';
+import { redirect } from 'next/navigation';
 
 export default function AppPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -44,10 +45,6 @@ export default function AppPage() {
     );
   }
 
-  return (
-    <AppProvider user={user}>
-        {/* The rest of the app is handled by the router */}
-    </AppProvider>
-  );
+  // If user is logged in, redirect to the main app dashboard
+  return redirect('/');
 }
-
