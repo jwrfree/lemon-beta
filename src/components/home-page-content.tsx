@@ -88,12 +88,12 @@ export const HomePageContent = () => {
                     ) : (
                         <div className="grid grid-cols-2 gap-4">
                             {wallets.slice(0, 2).map(wallet => {
-                                const { Icon, color } = getWalletVisuals(wallet.icon);
+                                const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon);
                                 return (
                                     <Card key={wallet.id}>
                                         <CardContent className="p-4">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Icon className={cn("h-6 w-6", color.replace('bg-', 'text-'))} />
+                                                <Icon className={cn("h-6 w-6 text-muted-foreground")} />
                                                 <span className="text-sm font-medium">{wallet.name}</span>
                                             </div>
                                             <p className="text-xl font-bold">{formatCurrency(wallet.balance)}</p>
