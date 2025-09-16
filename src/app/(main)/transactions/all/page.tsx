@@ -54,14 +54,14 @@ export default function AllTransactionsPage() {
     const hasActiveFilters = filters.type !== null || filters.categories.length > 0;
 
     return (
-        <div className="flex flex-col h-full">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
+        <div className="flex flex-col h-full bg-muted">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Semua Transaksi</h1>
             </header>
-            <div className="p-4 border-b space-y-2">
+            <div className="p-4 border-b space-y-2 bg-background">
                 <div className="flex gap-2">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
