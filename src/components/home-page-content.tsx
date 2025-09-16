@@ -2,7 +2,6 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import PullToRefresh from 'react-pull-to-refresh';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Bell, Settings, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
@@ -27,15 +26,9 @@ export const HomePageContent = () => {
     const monthlyExpense = transactions
         .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
         .reduce((acc, t) => acc + t.amount, 0);
-    
-    const handleRefresh = async () => {
-        // In a real app, you'd re-fetch data here.
-        // For now, we just simulate a delay.
-        return new Promise(resolve => setTimeout(resolve, 1000));
-    };
 
     return (
-        <PullToRefresh onRefresh={handleRefresh} className="h-full overflow-y-auto pb-16">
+        <div className="h-full overflow-y-auto pb-16">
             <header className="p-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
@@ -119,6 +112,6 @@ export const HomePageContent = () => {
                    <TransactionList limit={5} />
                 </div>
             </main>
-        </PullToRefresh>
+        </div>
     );
 };
