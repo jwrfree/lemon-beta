@@ -20,7 +20,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
     return (
         <div className="flex items-center gap-3 p-3">
             <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
-                <CategoryIcon className={cn("h-5 w-5", color)} />
+                 <CategoryIcon className={cn("h-5 w-5", color)} />
             </div>
             <div className="flex-1 overflow-hidden">
                 <div className="font-medium truncate">{transaction.description}</div>
@@ -190,5 +190,3 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
         </div>
     );
 };
-
-
