@@ -101,12 +101,12 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
             >
                 <motion.div
-                    className="absolute right-6 h-10 w-10 bg-destructive/80 rounded-full"
+                    className="absolute right-6 h-10 w-10 bg-destructive/80 rounded-full z-0"
                     animate={rippleControls}
                     initial={{ scale: 0, opacity: 0 }}
                 />
-                <motion.div animate={iconControls}>
-                    <Trash2 className="h-6 w-6 text-white relative z-10" />
+                <motion.div animate={iconControls} className="relative z-10">
+                    <Trash2 className="h-6 w-6 text-white" />
                 </motion.div>
             </div>
             
@@ -115,7 +115,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
                 style={{ x }}
-                className="relative bg-card"
+                className="relative bg-card z-20"
                 dragConstraints={{ right: 0 }}
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
