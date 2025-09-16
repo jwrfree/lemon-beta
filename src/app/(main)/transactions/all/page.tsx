@@ -62,27 +62,29 @@ export default function AllTransactionsPage() {
                 <h1 className="text-xl font-bold text-center w-full">Semua Transaksi</h1>
             </header>
             <div className="p-4 border-b space-y-2">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                        placeholder="Cari transaksi..."
-                        className="pl-10"
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                    />
-                </div>
                 <div className="flex gap-2">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input
+                            placeholder="Cari transaksi..."
+                            className="pl-10"
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                        />
+                    </div>
                     <Button variant="outline" className="gap-2" onClick={() => setIsFilterSheetOpen(true)}>
                         <SlidersHorizontal className="h-4 w-4" />
                         Filter
                     </Button>
-                    {hasActiveFilters && (
-                         <Button variant="outline" className="gap-2 text-destructive" onClick={resetFilters}>
+                </div>
+                {hasActiveFilters && (
+                    <div className="flex gap-2">
+                        <Button variant="outline" className="gap-2 text-destructive" onClick={resetFilters}>
                             <X className="h-4 w-4" />
                             Reset
                         </Button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
             <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-16">
                 <TransactionList transactions={filteredTransactions} />
@@ -98,4 +100,3 @@ export default function AllTransactionsPage() {
         </div>
     );
 }
-
