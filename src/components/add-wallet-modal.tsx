@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem as ShadCNRadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
-import { getWalletVisuals } from '@/lib/wallet-visuals';
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
   const { addWallet } = useApp();
@@ -28,8 +27,15 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
       return;
     }
     setIsSubmitting(true);
-    await addWallet({ name: walletName, icon: walletType });
-    setIsSubmitting(false);
+    try {
+      await addWallet({ name: walletName, icon: walletType });
+      // The addWallet function in provider now closes the modal
+    } catch (error) {
+      toast.error("Gagal membuat dompet.");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handlers = useSwipeable({
