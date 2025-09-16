@@ -5,6 +5,7 @@ import { TransactionListItem } from './transaction-list-item';
 import { Skeleton } from './ui/skeleton';
 import { formatRelativeDate } from '@/lib/utils';
 import { parseISO } from 'date-fns';
+import React from 'react';
 
 export const TransactionList = ({ limit }: { limit?: number }) => {
     const { transactions, handleEdit, openDeleteModal, isLoading } = useApp();
@@ -45,10 +46,10 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
         return (
              <div className="bg-card rounded-lg shadow-md">
                 {transactionsToShow.map((t, index) => (
-                    <>
-                        <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                    <React.Fragment key={t.id}>
+                        <TransactionListItem transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
                         {index < transactionsToShow.length - 1 && <hr className="border-border" />}
-                    </>
+                    </React.Fragment>
                 ))}
             </div>
         );
@@ -63,10 +64,10 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
                     </h3>
                     <div className="bg-card rounded-lg shadow-md">
                         {transactionsForDay.map((t, index) => (
-                           <>
-                             <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                           <React.Fragment key={t.id}>
+                             <TransactionListItem transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
                              {index < transactionsForDay.length - 1 && <hr className="border-border" />}
-                           </>
+                           </React.Fragment>
                         ))}
                     </div>
                 </div>
