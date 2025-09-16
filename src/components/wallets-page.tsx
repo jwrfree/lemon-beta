@@ -8,9 +8,10 @@ import { ChevronLeft, Plus, Edit2, AlertCircle, PlusCircle } from 'lucide-react'
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
-  const { wallets } = useApp();
+  const { wallets, isLoading } = useApp();
   const router = useRouter();
 
   return (
@@ -25,7 +26,13 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
         </Button>
       </header>
       <main className="flex-1 overflow-y-auto p-4 space-y-4 pb-16">
-        {wallets.length === 0 ? (
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        ) : wallets.length === 0 ? (
           <div className="flex flex-col h-full items-center justify-center text-center">
             <div className="p-3 bg-destructive/10 rounded-full mb-3">
               <AlertCircle className="h-8 w-8 text-destructive" strokeWidth={1.5} />

@@ -2,13 +2,11 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
-import { TransactionListItem } from '@/components/transaction-list-item';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
+import { TransactionList } from '@/components/transaction-list';
 
 export default function AllTransactionsPage() {
-    const { transactions, handleEdit, openDeleteModal } = useApp();
     const router = useRouter();
 
     return (
@@ -20,15 +18,7 @@ export default function AllTransactionsPage() {
                 <h1 className="text-xl font-bold text-center w-full">Semua Transaksi</h1>
             </header>
             <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-16">
-                {transactions.length === 0 ? (
-                    <div className="text-muted-foreground text-sm text-center py-8">Tidak ada transaksi.</div>
-                ) : (
-                    <div className="space-y-2">
-                        {transactions.map(t => (
-                            <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
-                        ))}
-                    </div>
-                )}
+                <TransactionList />
             </main>
         </div>
     );

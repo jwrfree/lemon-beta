@@ -20,6 +20,8 @@ export const BottomNavigation = () => {
         { id: 'charts', href: '/charts', icon: BarChart3, name: 'Analisis' },
         { id: 'settings', href: '/settings', icon: Settings, name: 'Pengaturan' },
     ];
+    
+    const mainPages = navItems.map(item => item.href);
 
     const handleNavClick = (item: any) => {
         if (item.id === 'add') {
@@ -30,7 +32,7 @@ export const BottomNavigation = () => {
     };
     
     // Only show on main pages
-    if (!navItems.some(item => item.href === pathname)) {
+    if (!mainPages.includes(pathname)) {
         return null;
     }
 

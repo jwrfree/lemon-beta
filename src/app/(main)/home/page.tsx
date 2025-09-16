@@ -3,15 +3,16 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
-import { TransactionListItem } from '@/components/transaction-list-item';
 import { Button } from '@/components/ui/button';
 import { Bell, Settings } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
+import { TransactionList } from '@/components/transaction-list';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 export default function HomePage() {
-    const { wallets, transactions, openDeleteModal, handleEdit } = useApp();
+    const { wallets, isLoading } = useApp();
     const router = useRouter();
 
     return (
@@ -33,7 +34,12 @@ export default function HomePage() {
                         <h2 className="text-lg font-semibold">Dompet Anda</h2>
                         <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
                     </div>
-                    {wallets.length === 0 ? (
+                    {isLoading ? (
+                        <div className="grid grid-cols-2 gap-4">
+                            <Skeleton className="h-24 rounded-lg" />
+                            <Skeleton className="h-24 rounded-lg" />
+                        </div>
+                    ) : wallets.length === 0 ? (
                         <div className="text-muted-foreground text-sm">Anda belum memiliki dompet.</div>
                     ) : (
                         <div className="grid grid-cols-2 gap-4">
@@ -57,15 +63,7 @@ export default function HomePage() {
                         <h2 className="text-lg font-semibold">Riwayat Transaksi</h2>
                         <Button variant="link" size="sm" onClick={() => router.push('/transactions/all')}>Lihat Semua</Button>
                     </div>
-                    {transactions.length === 0 ? (
-                        <div className="text-muted-foreground text-sm text-center py-8">Tidak ada transaksi.</div>
-                    ) : (
-                        <div className="space-y-2">
-                            {transactions.slice(0, 5).map(t => (
-                                <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
-                            ))}
-                        </div>
-                    )}
+                   <TransactionList limit={5} />
                 </div>
             </main>
         </div>
