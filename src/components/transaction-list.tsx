@@ -7,10 +7,14 @@ import { formatRelativeDate } from '@/lib/utils';
 import { parseISO } from 'date-fns';
 import React from 'react';
 
-export const TransactionList = ({ limit }: { limit?: number }) => {
+export const TransactionList = ({ limit, walletId }: { limit?: number, walletId?: string }) => {
     const { transactions, handleEdit, openDeleteModal, isLoading } = useApp();
 
-    const transactionsToShow = limit ? transactions.slice(0, limit) : transactions;
+    const filteredTransactions = walletId 
+      ? transactions.filter(t => t.walletId === walletId) 
+      : transactions;
+
+    const transactionsToShow = limit ? filteredTransactions.slice(0, limit) : filteredTransactions;
 
     const groupedTransactions = transactionsToShow.reduce((acc, t) => {
         const date = parseISO(t.date).toISOString().split('T')[0];
@@ -38,7 +42,7 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
         )
     }
 
-    if (transactions.length === 0) {
+    if (transactionsToShow.length === 0) {
         return <div className="text-muted-foreground text-sm text-center py-8">Tidak ada transaksi.</div>;
     }
 
