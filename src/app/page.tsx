@@ -16,7 +16,7 @@ export default function AppPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/');
+      router.push('/home');
     }
   }, [user, isLoading, router]);
 
@@ -24,21 +24,19 @@ export default function AppPage() {
     return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
   }
   
-  if (!user) {
-     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
-            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background border-border md:border md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
-                <LandingPage setAuthModal={setAuthModal} />
-                 <AnimatePresence>
-                    {authModal === 'login' && <LoginPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
-                    {authModal === 'signup' && <SignUpPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
-                </AnimatePresence>
-            </div>
-        </div>
-    );
+  if (user) {
+     return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
   }
 
-  // User is logged in, content is handled by the layout and page in the (main) group.
-  return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
+  return (
+      <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
+          <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background border-border md:border md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+              <LandingPage setAuthModal={setAuthModal} />
+                <AnimatePresence>
+                  {authModal === 'login' && <LoginPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
+                  {authModal === 'signup' && <SignUpPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
+              </AnimatePresence>
+          </div>
+      </div>
+  );
 }
-

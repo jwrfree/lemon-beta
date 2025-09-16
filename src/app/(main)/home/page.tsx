@@ -10,7 +10,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 
 
-export default function TransactionsPage() {
+export default function HomePage() {
     const { wallets, transactions, openDeleteModal, handleEdit } = useApp();
     const router = useRouter();
 
@@ -71,4 +71,3 @@ export default function TransactionsPage() {
         </div>
     );
 }
-
