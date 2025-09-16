@@ -57,9 +57,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
               key={wallet.id}
               className={cn(
                 "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg cursor-grab active:cursor-grabbing",
+                gradient
               )}
               style={{
-                backgroundImage: `linear-gradient(to right, ${gradient.split(' ')[0]}, ${gradient.split(' ')[1]})`,
                 zIndex: wallets.length - Math.abs(activeIndex - i)
               }}
               initial={{
