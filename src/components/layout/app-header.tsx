@@ -25,7 +25,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { UserNav } from "./user-nav";
 import { Fragment } from "react";
 
@@ -53,7 +53,13 @@ export default function AppHeader() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="sm:max-w-xs">
-          <nav className="grid gap-6 text-lg font-medium">
+          <SheetHeader>
+            <SheetTitle>Navigation</SheetTitle>
+            <SheetDescription>
+              Navigate to different sections of the application.
+            </SheetDescription>
+          </SheetHeader>
+          <nav className="grid gap-6 text-lg font-medium mt-4">
             <Link
               href="/dashboard"
               className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
