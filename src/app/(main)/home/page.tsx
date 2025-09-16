@@ -4,16 +4,30 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
-import { Bell, Settings } from 'lucide-react';
+import { Bell, Settings, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/components/transaction-list';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { isSameMonth, isThisMonth, parseISO } from 'date-fns';
 
 
 export default function HomePage() {
-    const { wallets, isLoading } = useApp();
+    const { wallets, transactions, isLoading } = useApp();
     const router = useRouter();
+
+    const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
+
+    const now = new Date();
+    const monthlyIncome = transactions
+        .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), now))
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    const monthlyExpense = transactions
+        .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
+        .reduce((acc, t) => acc + t.amount, 0);
+
 
     return (
         <div className="flex flex-col h-full overflow-y-auto pb-16">
@@ -28,8 +42,40 @@ export default function HomePage() {
                     </Button>
                 </div>
             </header>
-            <main className="flex-1 p-4">
-                <div className="mb-6 space-y-2">
+            <main className="flex-1 p-4 space-y-6">
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         {isLoading ? 
+                            <Skeleton className="h-8 w-1/2" /> : 
+                            <p className="text-3xl font-bold">{formatCurrency(totalBalance)}</p>
+                         }
+                        <div className="flex gap-4 mt-4">
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-green-100 dark:bg-green-900/50 rounded-full">
+                                    <ArrowUpRight className="h-4 w-4 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Pemasukan</p>
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyIncome)}</p>}
+                                </div>
+                            </div>
+                             <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
+                                    <ArrowDownLeft className="h-4 w-4 text-rose-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Pengeluaran</p>
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyExpense)}</p>}
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <div className="space-y-2">
                     <div className="flex items-center justify-between">
                         <h2 className="text-lg font-semibold">Dompet Anda</h2>
                         <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
