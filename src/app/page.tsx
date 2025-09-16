@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, useCallback, useRef } from 'react';
-import { getAuth, signInAnonymously, onAuthStateChanged, User, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, writeBatch, query, orderBy } from 'firebase/firestore';
 import { format, isToday, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -22,6 +22,7 @@ import { SignUpPage } from '@/components/signup-page';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { LandingPage } from '@/components/landing-page';
 
 
 // ============================================================================
@@ -43,6 +44,8 @@ const AppContext = createContext<{
     isLoading: boolean;
     user: User | null;
     handleSignOut: () => void;
+    authModal: string | null;
+    setAuthModal: (modal: string | null) => void;
 } | null>(null);
 
 export const useData = () => {
@@ -256,12 +259,12 @@ const BottomNavigation = () => {
 // ============================================================================
 
 function App() {
-  const [activePage, setActivePage] = useState('login'); // Start at login page
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activePage, setActivePage] = useState('home');
+  const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const router = {
     push: (page: string) => {
         if (page === 'add') {
-            setIsModalOpen(true);
+            setIsTxModalOpen(true);
         } else {
             setActivePage(page);
         }
@@ -277,6 +280,8 @@ function App() {
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
+  const [authModal, setAuthModal] = useState<string | null>(null);
+
 
   const getWalletCollection = useCallback(() => collection(db, `users/${user?.uid}/wallets`), [user]);
   const getTransactionCollection = useCallback(() => collection(db, `users/${user?.uid}/transactions`), [user]);
@@ -284,12 +289,10 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
       if (user) {
-        setUser(user);
         setActivePage('home');
-      } else {
-        setUser(null);
-        setActivePage('login');
+        setAuthModal(null);
       }
       setIsLoading(false);
     });
@@ -342,7 +345,7 @@ function App() {
       const newBalance = data.type === 'income' ? currentBalance + data.amount : currentBalance - data.amount;
       await updateDoc(walletRef, { balance: newBalance });
     }
-     setIsModalOpen(false);
+     setIsTxModalOpen(false);
   }, [user, getTransactionCollection, getWalletCollection]);
   
   const addWallet = useCallback(async (walletData: any) => {
@@ -350,7 +353,7 @@ function App() {
       if (!user) throw new Error("User not authenticated.");
       await addDoc(getWalletCollection(), { ...walletData, balance: 0, createdAt: new Date().toISOString() });
       toast.success("Dompet berhasil dibuat!");
-      setIsModalOpen(false);
+      setIsTxModalOpen(false);
     } catch (error) {
       console.error("Error adding wallet:", error);
       toast.error("Gagal membuat dompet.");
@@ -443,6 +446,8 @@ function App() {
     router,
     activePage,
     handleSignOut,
+    authModal,
+    setAuthModal,
   };
 
   const showBottomNav = user && ['home', 'budgeting', 'charts', 'settings'].includes(activePage);
@@ -452,20 +457,13 @@ function App() {
         return <div className="flex h-full w-full items-center justify-center">Loading...</div>;
     }
     if (!user) {
-        switch(activePage) {
-            case 'login':
-                return <LoginPage />;
-            case 'signup':
-                return <SignUpPage />;
-            default:
-                return <LoginPage />;
-        }
+        return <LandingPage />;
     }
     switch(activePage) {
       case 'home':
         return <HomePage />;
       case 'wallets':
-        return <WalletsPage onAddWallet={() => setIsModalOpen(true)} />;
+        return <WalletsPage onAddWallet={() => setIsTxModalOpen(true)} />;
       case 'charts':
         return <ChartsPage />;
       case 'settings':
@@ -498,8 +496,10 @@ function App() {
             </motion.div>
           </AnimatePresence>
           <AnimatePresence>
-            {isModalOpen && <AddTransactionForm onClose={() => setIsModalOpen(false)} />}
+            {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
             {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
+            {authModal === 'login' && <LoginPage onClose={() => setAuthModal(null)} />}
+            {authModal === 'signup' && <SignUpPage onClose={() => setAuthModal(null)} />}
             {isDeleteModalOpen && transactionToDelete && (
               <ConfirmDeleteModal
                 transaction={transactionToDelete}
