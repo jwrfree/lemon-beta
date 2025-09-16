@@ -19,7 +19,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
     
     const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
+    const amountColor = isExpense ? 'text-destructive' : 'text-green-600 dark:text-green-500';
 
     return (
         <motion.div
@@ -54,8 +54,8 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                             <div className="font-medium">{transaction.description}</div>
                             <div className="text-sm text-muted-foreground">{transaction.category} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
                         </div>
-                        <div className="text-sm font-semibold text-right">
-                            <span className={amountColor}>
+                        <div className={cn("text-sm font-semibold text-right", amountColor)}>
+                            <span>
                                 {transaction.type === 'expense' ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                             </span>
                         </div>

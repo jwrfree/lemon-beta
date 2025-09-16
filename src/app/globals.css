@@ -66,22 +66,4 @@
   body {
     @apply bg-background text-foreground;
   }
-  .text-rose-600 {
-    color: hsl(var(--destructive));
-  }
-  .bg-rose-100 {
-    background-color: hsl(var(--destructive) / 0.1);
-  }
-  .dark .bg-rose-900 {
-     background-color: hsl(var(--destructive) / 0.2);
-  }
-   .text-green-600 {
-    color: hsl(var(--chart-1));
-  }
-  .bg-green-100 {
-    background-color: hsl(var(--chart-1) / 0.1);
-  }
-  .dark .bg-green-900 {
-      background-color: hsl(var(--chart-1) / 0.2);
-  }
 }

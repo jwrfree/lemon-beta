@@ -53,7 +53,7 @@ export default function HomePage() {
                         <div className="flex gap-4 mt-4">
                             <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-green-100 dark:bg-green-900/50 rounded-full">
-                                    <ArrowUpRight className="h-4 w-4 text-green-600" />
+                                    <ArrowUpRight className="h-4 w-4 text-green-600 dark:text-green-500" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pemasukan</p>
@@ -62,7 +62,7 @@ export default function HomePage() {
                             </div>
                              <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
-                                    <ArrowDownLeft className="h-4 w-4 text-rose-600" />
+                                    <ArrowDownLeft className="h-4 w-4 text-destructive" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pengeluaran</p>

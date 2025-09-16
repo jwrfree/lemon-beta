@@ -15,7 +15,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
     const wallet = wallets.find(w => w.id === transaction.walletId);
     const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
+    const amountColor = isExpense ? 'text-destructive' : 'text-green-600 dark:text-green-500';
 
     return (
         <div className="flex items-center gap-3 p-3">
@@ -36,8 +36,8 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
                     )}
                 </div>
             </div>
-            <div className="text-sm font-semibold text-right">
-                <span className={amountColor}>
+            <div className={cn("text-sm font-semibold text-right", amountColor)}>
+                <span>
                     {isExpense ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                 </span>
             </div>
