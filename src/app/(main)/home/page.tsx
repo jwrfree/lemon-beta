@@ -18,7 +18,7 @@ export default function HomePage() {
     return (
         <div className="flex flex-col h-full overflow-y-auto pb-16">
             <header className="p-4 border-b flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-                <h1 className="text-xl font-bold">Ringkasan</h1>
+                <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>
                         <Bell className="h-6 w-6" strokeWidth={1.75} />
