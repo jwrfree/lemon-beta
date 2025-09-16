@@ -1,7 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { PanInfo } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useAnimation, PanInfo } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -43,21 +42,15 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 
 
 export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
-    const [hapticTriggered, setHapticTriggered] = useState(false);
+    const vibrated = useRef(false);
     const controls = useAnimation();
     const ACTION_WIDTH = 80;
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-        if (info.offset.x < 0) { // Only on left swipe
-            const offset = Math.abs(info.offset.x);
-            if (!hapticTriggered && offset > ACTION_WIDTH / 2) {
-                if (window.navigator.vibrate) {
-                    window.navigator.vibrate(10);
-                }
-                setHapticTriggered(true);
-            } else if (hapticTriggered && offset <= ACTION_WIDTH / 2) {
-                setHapticTriggered(false);
-            }
+        const dist = info.offset.x;
+        if (dist < -40 && !vibrated.current) {
+          navigator.vibrate?.(50);
+          vibrated.current = true;
         }
     };
     
@@ -70,7 +63,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
         }
         
         controls.start({ x: 0 });
-        setHapticTriggered(false);
+        vibrated.current = false;
     };
 
     return (
