@@ -1,12 +1,15 @@
 'use client';
 import React, { useRef } from 'react';
-import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, PanInfo, useMotionValue, useTransform, animate, useAnimationControls } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2 } from 'lucide-react';
+import Lottie from 'lottie-react';
+import deleteIconAnimation from '@/lib/animations/delete-icon.json';
+
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
     const { wallets } = useApp();
@@ -47,13 +50,20 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     const vibrated = useRef(false);
     
     const x = useMotionValue(0);
-    const iconScale = useTransform(x, [-80, 0], [1.2, 0.5]);
+    const iconControls = useAnimationControls();
+
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const dist = info.offset.x;
         if (itemRef.current && dist < -(itemRef.current.offsetWidth / 2) && !vibrated.current) {
           navigator.vibrate?.(50);
+          iconControls.start({
+            scale: [1.2, 1],
+            transition: { type: 'spring', stiffness: 400, damping: 10 }
+          });
           vibrated.current = true;
+        } else if (itemRef.current && dist > -(itemRef.current.offsetWidth / 2) && vibrated.current) {
+            vibrated.current = false;
         }
     };
     
@@ -71,7 +81,6 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 damping: 50,
                 onComplete: () => {
                     onDelete(transaction);
-                    // After action, reset position for potential re-render/undo
                     setTimeout(() => x.set(0), 500);
                 }
             });
@@ -86,7 +95,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6"
                  style={{ width: '100%' }}
             >
-                <motion.div style={{ scale: iconScale }}>
+                <motion.div animate={iconControls}>
                     <Trash2 className="h-6 w-6 text-white" />
                 </motion.div>
             </div>
