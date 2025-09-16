@@ -26,8 +26,8 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
                 <div className="font-medium truncate">{transaction.description}</div>
                  <div className="text-sm text-muted-foreground flex items-center gap-1.5">
                     <span className="truncate">{transaction.category}</span>
-                    <span>&bull;</span>
-                    <span className="truncate">{wallet?.name || '...'}</span>
+                    {wallet && <span>&bull;</span>}
+                    {wallet && <span className="truncate">{wallet?.name || '...'}</span>}
                     {!hideDate && (
                         <>
                             <span>&bull;</span>
@@ -190,4 +190,5 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
         </div>
     );
 };
+
 
