@@ -16,7 +16,7 @@ export default function AppPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/transactions');
+      router.push('/');
     }
   }, [user, isLoading, router]);
 
@@ -41,3 +41,4 @@ export default function AppPage() {
   // User is logged in, content is handled by the layout and page in the (main) group.
   return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
 }
+

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { TransactionListItem } from '@/components/transaction-list-item';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Bell, Settings } from 'lucide-react';
+import { Bell, Settings } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 
@@ -71,3 +71,4 @@ export default function TransactionsPage() {
         </div>
     );
 }
+
