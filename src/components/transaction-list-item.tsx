@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useRef } from 'react';
 import { motion, useAnimation, PanInfo, useMotionValue, useTransform } from 'framer-motion';
@@ -43,14 +42,16 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 
 
 export const TransactionListItem = ({ transaction, onDelete, hideDate = false }: { transaction: any; onDelete: (t: any) => void; hideDate?: boolean; }) => {
+    const itemRef = useRef<HTMLDivElement>(null);
     const vibrated = useRef(false);
     const controls = useAnimation();
-    const itemRef = useRef<HTMLDivElement>(null);
     const ACTION_WIDTH = 80;
 
     const x = useMotionValue(0);
-    const iconScale = useTransform(x, [-ACTION_WIDTH, 0], [1, 0.6]);
-    const iconOpacity = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2], [1, 0]);
+    
+    // Animate icon scale and opacity based on drag distance
+    const iconContainerOpacity = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2], [1, 0]);
+    const iconScale = useTransform(x, [-ACTION_WIDTH, 0], [1, 0.5]);
 
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -62,28 +63,34 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     };
     
     const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-        const offset = Math.abs(info.offset.x);
-        const velocity = Math.abs(info.velocity.x);
+        vibrated.current = false;
+        const offset = info.offset.x;
+        const velocity = info.velocity.x;
+        const width = itemRef.current?.offsetWidth ?? 0;
 
-        if (info.offset.x < 0 && (offset > (itemRef.current?.offsetWidth ?? 0) / 2 || velocity > 200)) {
+        // Swipe left to delete
+        if (offset < -width / 2 || velocity < -500) {
             onDelete(transaction);
         }
         
         controls.start({ x: 0 });
-        vibrated.current = false;
     };
 
     return (
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
              <motion.div
-                className="absolute inset-y-0 right-0 flex items-center justify-center bg-destructive text-destructive-foreground"
-                style={{ width: ACTION_WIDTH, opacity: iconOpacity }}
+                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-destructive-foreground pr-6"
+                style={{ 
+                    opacity: iconContainerOpacity,
+                    width: '100%',
+                }}
             >
                 <motion.div
                     className="flex flex-col items-center gap-1"
                     style={{ scale: iconScale }}
                 >
                     <Trash2 className="h-5 w-5" />
+                    <span className="text-xs font-medium">Hapus</span>
                 </motion.div>
             </motion.div>
             
