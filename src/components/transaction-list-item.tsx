@@ -1,13 +1,13 @@
+
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion';
-import Lottie from 'lottie-react';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
-import animationData from '@/lib/animations/delete-icon.json';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { Trash2 } from 'lucide-react';
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
     const { wallets } = useApp();
@@ -45,13 +45,10 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 
 export const TransactionListItem = ({ transaction, onDelete, hideDate = false }: { transaction: any; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const itemRef = useRef<HTMLDivElement>(null);
-    const lottieRef = useRef<any>(null);
     const vibrated = useRef(false);
     
     const x = useMotionValue(0);
-
-    const animationFrame = useTransform(x, [-80, 0], [40, 0]);
-    animationFrame.onChange(v => lottieRef.current?.goToAndStop(v, true));
+    const iconScale = useTransform(x, [-80, 0], [1.2, 0.5]);
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const dist = info.offset.x;
@@ -87,16 +84,12 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     return (
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
              <div
-                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-destructive-foreground pr-6"
+                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6"
                  style={{ width: '100%' }}
             >
-                <Lottie
-                    lottieRef={lottieRef}
-                    animationData={animationData}
-                    loop={false}
-                    autoplay={false}
-                    className="h-10 w-10"
-                />
+                <motion.div style={{ scale: iconScale }}>
+                    <Trash2 className="h-6 w-6" />
+                </motion.div>
             </div>
             
             <motion.div
@@ -105,6 +98,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 onDragEnd={onDragEnd}
                 style={{ x }}
                 className="relative bg-card"
+                dragConstraints={{ left: 0, right: 0 }}
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
             </motion.div>
