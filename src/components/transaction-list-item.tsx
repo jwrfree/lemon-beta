@@ -12,48 +12,63 @@ import { Button } from '@/components/ui/button';
 import { useApp } from '@/components/app-provider';
 
 export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
-    const [swipeState, setSwipeState] = useState<'left' | 'right' | null>(null);
     const [hapticTriggered, setHapticTriggered] = useState(false);
     const controls = useAnimation();
     const ACTION_WIDTH = 80;
 
+    const resetSwipe = () => {
+        controls.start({ x: 0 });
+        setHapticTriggered(false);
+    };
+
     const handlers = useSwipeable({
         onSwiping: (eventData: EventData) => {
-            if (eventData.dir === "Left" || eventData.dir === "Right") {
-                controls.set({ x: eventData.deltaX });
+            // Only allow swiping left and right
+            if (eventData.dir !== 'Left' && eventData.dir !== 'Right') {
+                return;
+            }
 
-                if (!hapticTriggered && Math.abs(eventData.deltaX) > ACTION_WIDTH / 2) {
-                    if (window.navigator.vibrate) {
-                        window.navigator.vibrate(10);
-                    }
-                    setHapticTriggered(true);
+            // Prevent swiping too far
+            const newX = Math.max(Math.min(eventData.deltaX, ACTION_WIDTH), -ACTION_WIDTH);
+            controls.set({ x: newX });
+
+            // Haptic feedback at 50%
+            if (!hapticTriggered && Math.abs(eventData.deltaX) > ACTION_WIDTH / 2) {
+                if (window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
                 }
+                setHapticTriggered(true);
             }
         },
         onSwiped: (eventData) => {
-             setHapticTriggered(false);
-             if (Math.abs(eventData.deltaX) > ACTION_WIDTH) {
+             if (Math.abs(eventData.deltaX) > ACTION_WIDTH * 0.75) {
                 if (eventData.dir === "Left") {
-                    setSwipeState('left');
                     controls.start({ x: -ACTION_WIDTH });
                 } else if (eventData.dir === "Right") {
-                    setSwipeState('right');
                     controls.start({ x: ACTION_WIDTH });
                 }
             } else {
-                setSwipeState(null);
-                controls.start({ x: 0 });
+                resetSwipe();
             }
         },
         onTap: () => {
-            if (swipeState !== null) {
-                setSwipeState(null);
-                controls.start({ x: 0 });
-            }
+            resetSwipe();
         },
         trackMouse: true,
         preventScrollOnSwipe: true,
     });
+
+    const handleEditClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onEdit(transaction);
+        resetSwipe();
+    };
+
+    const handleDeleteClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onDelete(transaction);
+        resetSwipe();
+    };
 
     const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const { wallets } = useApp();
@@ -64,47 +79,45 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
 
     return (
         <div className="relative overflow-hidden rounded-lg bg-card">
-            <AnimatePresence>
-                {swipeState === 'left' && (
-                    <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: ACTION_WIDTH }}
-                        exit={{ width: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute right-0 top-0 h-full flex items-center justify-end bg-destructive"
-                    >
-                        <Button
-                            variant="destructive"
-                            size="icon"
-                            className="h-full w-20 rounded-none"
-                            onClick={(e) => { e.stopPropagation(); onDelete(transaction); }}
-                        >
-                            <Trash2 className="h-5 w-5" />
-                        </Button>
+            <div className="absolute inset-y-0 left-0 flex items-center bg-secondary" style={{width: ACTION_WIDTH}}>
+                 <Button
+                    variant="secondary"
+                    size="icon"
+                    className="h-full w-full rounded-none"
+                    onClick={handleEditClick}
+                >
+                    <motion.div animate={controls} transition={{type: 'spring', stiffness: 500, damping: 30}} style={{scale: 1}} whileHover={{scale: 1.1}}>
+                        <Edit2 className="h-5 w-5" />
                     </motion.div>
-                )}
-                {swipeState === 'right' && (
-                    <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: ACTION_WIDTH }}
-                        exit={{ width: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute left-0 top-0 h-full flex items-center justify-start bg-secondary"
-                    >
-                        <Button
-                            variant="secondary"
-                            size="icon"
-                            className="h-full w-20 rounded-none"
-                            onClick={(e) => { e.stopPropagation(); onEdit(transaction); }}
-                        >
-                            <Edit2 className="h-5 w-5" />
-                        </Button>
+                </Button>
+            </div>
+             <div className="absolute inset-y-0 right-0 flex items-center bg-destructive" style={{width: ACTION_WIDTH}}>
+                <Button
+                    variant="destructive"
+                    size="icon"
+                    className="h-full w-full rounded-none"
+                    onClick={handleDeleteClick}
+                >
+                    <motion.div animate={controls} transition={{type: 'spring', stiffness: 500, damping: 30}} style={{scale: 1}} whileHover={{scale: 1.1}}>
+                        <Trash2 className="h-5 w-5" />
                     </motion.div>
-                )}
-            </AnimatePresence>
+                </Button>
+            </div>
+            
             <motion.div
                 {...handlers}
                 animate={controls}
+                drag="x"
+                dragConstraints={{ left: -ACTION_WIDTH, right: ACTION_WIDTH }}
+                dragElastic={0.1}
+                onDragEnd={() => {
+                    const x = controls.get('x');
+                    if (Math.abs(x) < ACTION_WIDTH * 0.75) {
+                        resetSwipe();
+                    } else {
+                        controls.start({ x: x > 0 ? ACTION_WIDTH : -ACTION_WIDTH });
+                    }
+                }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="flex items-center gap-3 p-3 cursor-pointer relative bg-card"
             >
