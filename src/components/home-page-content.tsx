@@ -1,0 +1,124 @@
+
+'use client';
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import PullToRefresh from 'react-pull-to-refresh';
+import { useApp } from '@/components/app-provider';
+import { Button } from '@/components/ui/button';
+import { Bell, Settings, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { cn, formatCurrency } from '@/lib/utils';
+import { getWalletVisuals } from '@/lib/wallet-visuals';
+import { TransactionList } from '@/components/transaction-list';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { isSameMonth, parseISO } from 'date-fns';
+
+export const HomePageContent = () => {
+    const { wallets, transactions, isLoading } = useApp();
+    const router = useRouter();
+
+    const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
+
+    const now = new Date();
+    const monthlyIncome = transactions
+        .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), now))
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    const monthlyExpense = transactions
+        .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    const handleRefresh = async () => {
+        // In a real app, you'd re-fetch data here.
+        // For now, we just simulate a delay.
+        return new Promise(resolve => setTimeout(resolve, 1000));
+    };
+
+    return (
+        <PullToRefresh onRefresh={handleRefresh} className="h-full overflow-y-auto pb-16">
+            <header className="p-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+                <h1 className="text-2xl font-bold text-primary">Lemon</h1>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>
+                        <Bell className="h-6 w-6" strokeWidth={1.75} />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => router.push('/settings')}>
+                        <Settings className="h-6 w-6" strokeWidth={1.75} />
+                    </Button>
+                </div>
+            </header>
+            <main className="flex-1 p-4 space-y-6">
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         {isLoading ? 
+                            <Skeleton className="h-8 w-1/2" /> : 
+                            <p className="text-3xl font-bold">{formatCurrency(totalBalance)}</p>
+                         }
+                        <div className="flex gap-4 mt-4">
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-green-100 dark:bg-green-900/50 rounded-full">
+                                    <ArrowUpRight className="h-4 w-4 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Pemasukan</p>
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyIncome)}</p>}
+                                </div>
+                            </div>
+                             <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
+                                    <ArrowDownLeft className="h-4 w-4 text-rose-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Pengeluaran</p>
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyExpense)}</p>}
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-semibold">Dompet Anda</h2>
+                        <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
+                    </div>
+                    {isLoading ? (
+                        <div className="grid grid-cols-2 gap-4">
+                            <Skeleton className="h-24 rounded-lg" />
+                            <Skeleton className="h-24 rounded-lg" />
+                        </div>
+                    ) : wallets.length === 0 ? (
+                        <div className="text-muted-foreground text-sm">Anda belum memiliki dompet.</div>
+                    ) : (
+                        <div className="grid grid-cols-2 gap-4">
+                            {wallets.slice(0, 2).map(wallet => {
+                                const { Icon, color } = getWalletVisuals(wallet.icon);
+                                return (
+                                    <Card key={wallet.id} className={cn("overflow-hidden border-l-4", color.replace('bg-', 'border-'))} >
+                                        <CardContent className="p-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Icon className={cn("h-6 w-6", color.replace('bg-', 'text-'))} />
+                                                <span className="text-sm font-medium">{wallet.name}</span>
+                                            </div>
+                                            <p className="text-xl font-bold">{formatCurrency(wallet.balance)}</p>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-semibold">Riwayat Transaksi</h2>
+                        <Button variant="link" size="sm" onClick={() => router.push('/transactions/all')}>Lihat Semua</Button>
+                    </div>
+                   <TransactionList limit={5} />
+                </div>
+            </main>
+        </PullToRefresh>
+    );
+};
