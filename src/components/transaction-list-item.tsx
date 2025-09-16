@@ -15,6 +15,11 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
     const [swipeState, setSwipeState] = useState(0);
     const itemRef = useRef<HTMLDivElement>(null);
 
+    const resetSwipe = () => {
+        setSwipeState(0);
+        if (itemRef.current) itemRef.current.style.transform = `translateX(0px)`;
+    };
+
     const handlers = useSwipeable({
         onSwipedLeft: () => {
             setSwipeState(-1);
@@ -24,10 +29,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
             setSwipeState(1);
             if (itemRef.current) itemRef.current.style.transform = `translateX(80px)`;
         },
-        onTap: () => {
-            setSwipeState(0);
-            if (itemRef.current) itemRef.current.style.transform = `translateX(0px)`;
-        },
+        onTap: resetSwipe,
         trackMouse: true,
     });
 
@@ -82,10 +84,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                 className={cn(
                     "flex items-center gap-3 p-3 transition-transform duration-300 ease-in-out cursor-pointer relative bg-card"
                 )}
-                onClick={() => {
-                    setSwipeState(0);
-                    if (itemRef.current) itemRef.current.style.transform = `translateX(0px)`;
-                }}
+                onClick={resetSwipe}
             >
                 <div className={cn("flex-shrink-0 p-2 rounded-full", isExpense ? 'bg-rose-100 dark:bg-rose-900' : 'bg-green-100 dark:bg-green-900')}>
                     <CategoryIcon className={cn("h-5 w-5", isExpense ? 'text-rose-600' : 'text-green-600')} />
