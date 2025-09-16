@@ -11,7 +11,7 @@ import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
 
 export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
-  const { wallets, isLoading, openEditWalletModal } = useApp();
+  const { wallets, isLoading } = useApp();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -61,7 +61,7 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
         </main>
       ) : (
         <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="h-56 pt-4 flex-shrink-0">
+          <div className="h-64 pt-4 flex-shrink-0">
              <WalletCardStack 
                 wallets={wallets} 
                 activeIndex={activeIndex} 
