@@ -62,7 +62,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
           });
           rippleControls.start({
             scale: [0, 8],
-            opacity: [1, 1],
+            opacity: [1, 0],
             transition: { duration: 0.4, ease: "easeOut" }
           });
           vibrated.current = true;
