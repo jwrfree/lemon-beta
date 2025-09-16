@@ -11,7 +11,7 @@ import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
 
 export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
-  const { wallets, isLoading, transactions } = useApp();
+  const { wallets, isLoading, openEditWalletModal } = useApp();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 

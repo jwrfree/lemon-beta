@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { User, signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { categories } from '@/lib/categories';
@@ -20,6 +20,8 @@ interface AppContextType {
     addTransfer: (data: any) => Promise<void>;
     deleteTransaction: (transaction: any) => Promise<void>;
     addWallet: (walletData: any) => Promise<void>;
+    updateWallet: (walletId: string, walletData: any) => Promise<void>;
+    deleteWallet: (walletId: string) => Promise<void>;
     addBudget: (budgetData: any) => Promise<void>;
     isLoading: boolean;
     handleSignOut: () => void;
@@ -37,6 +39,10 @@ interface AppContextType {
     closeDeleteModal: () => void;
     handleConfirmDelete: () => Promise<void>;
     handleEdit: (transaction: any) => void;
+    isEditWalletModalOpen: boolean;
+    setIsEditWalletModalOpen: (isOpen: boolean) => void;
+    walletToEdit: any | null;
+    openEditWalletModal: (wallet: any) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -63,6 +69,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
+    const [isEditWalletModalOpen, setIsEditWalletModalOpen] = useState(false);
+    const [walletToEdit, setWalletToEdit] = useState<any | null>(null);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -207,6 +215,34 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsWalletModalOpen(false);
     }, [user, getWalletCollection]);
 
+     const updateWallet = useCallback(async (walletId: string, walletData: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const walletCollection = getWalletCollection();
+        if (!walletCollection) return;
+        const walletRef = doc(walletCollection, walletId);
+        await updateDoc(walletRef, walletData);
+        toast.success("Dompet berhasil diperbarui!");
+        setIsEditWalletModalOpen(false);
+    }, [user, getWalletCollection]);
+
+    const deleteWallet = useCallback(async (walletId: string) => {
+        if (!user) throw new Error("User not authenticated.");
+        
+        const walletHasTransactions = transactions.some(t => t.walletId === walletId);
+        if (walletHasTransactions) {
+            toast.error("Gagal menghapus.", { description: "Dompet tidak dapat dihapus karena masih memiliki riwayat transaksi."});
+            return;
+        }
+
+        const walletCollection = getWalletCollection();
+        if (!walletCollection) return;
+
+        const walletRef = doc(walletCollection, walletId);
+        await deleteDoc(walletRef);
+        toast.success("Dompet berhasil dihapus.");
+        setIsEditWalletModalOpen(false);
+    }, [user, getWalletCollection, transactions]);
+
     const addBudget = useCallback(async (budgetData: any) => {
         if (!user) throw new Error("User not authenticated.");
         const budgetCollection = getBudgetCollection();
@@ -299,6 +335,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             closeDeleteModal();
         }
     };
+    
+    const openEditWalletModal = (wallet: any) => {
+        setWalletToEdit(wallet);
+        setIsEditWalletModalOpen(true);
+    };
 
     const handleEdit = (transaction: any) => {
         toast.info("Fitur edit akan segera hadir!");
@@ -316,6 +357,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         addTransfer,
         deleteTransaction,
         addWallet,
+        updateWallet,
+        deleteWallet,
         addBudget,
         isLoading,
         handleSignOut,
@@ -333,6 +376,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         closeDeleteModal,
         handleConfirmDelete,
         handleEdit,
+        isEditWalletModalOpen,
+        setIsEditWalletModalOpen,
+        walletToEdit,
+        openEditWalletModal,
     };
 
     return (

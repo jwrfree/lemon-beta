@@ -10,6 +10,7 @@ import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
 import { useEffect } from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
+import { EditWalletModal } from '@/components/edit-wallet-modal';
 
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +31,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         closeDeleteModal,
         isTransferModalOpen,
         setIsTransferModalOpen,
+        isEditWalletModalOpen,
+        setIsEditWalletModalOpen,
+        walletToEdit,
     } = useApp();
 
     useEffect(() => {
@@ -42,7 +46,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
     }
 
-    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen && !isTransferModalOpen;
+    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen && !isTransferModalOpen && !isEditWalletModalOpen;
 
     return (
         <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
@@ -65,6 +69,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
                     {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
                     {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
+                    {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
                     {isDeleteModalOpen && transactionToDelete && (
                         <ConfirmDeleteModal
                             transaction={transactionToDelete}

@@ -5,8 +5,9 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import { Edit2 } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useApp } from './app-provider';
 
 interface WalletCardStackProps {
   wallets: any[];
@@ -20,7 +21,7 @@ const swipePower = (offset: number, velocity: number) => {
 };
 
 export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: WalletCardStackProps) => {
-
+  const { openEditWalletModal } = useApp();
   const paginate = (newDirection: number) => {
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);
   };
@@ -83,8 +84,8 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                             <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
                             <p className="font-semibold text-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.2)'}}>{wallet.name}</p>
                         </div>
-                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8">
-                            <Edit2 className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8" onClick={() => openEditWalletModal(wallet)}>
+                            <MoreVertical className="h-5 w-5" />
                         </Button>
                     </div>
 
