@@ -1,6 +1,6 @@
 'use client';
 import React, { useRef } from 'react';
-import { motion, useAnimation, PanInfo } from 'framer-motion';
+import { motion, useAnimation, PanInfo, useMotionValue, useTransform } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -47,6 +47,11 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
     const itemRef = useRef<HTMLDivElement>(null);
     const ACTION_WIDTH = 80;
 
+    const x = useMotionValue(0);
+    const iconScale = useTransform(x, [-ACTION_WIDTH, 0], [1.2, 0.6]);
+    const iconOpacity = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2], [1, 0]);
+
+
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const dist = info.offset.x;
         if (itemRef.current && dist < -(itemRef.current.offsetWidth / 2) && !vibrated.current) {
@@ -59,7 +64,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
         const offset = Math.abs(info.offset.x);
         const velocity = Math.abs(info.velocity.x);
 
-        if (info.offset.x < 0 && (offset > ACTION_WIDTH / 2 || velocity > 200)) {
+        if (info.offset.x < 0 && (offset > ACTION_WIDTH || velocity > 200)) {
             onDelete(transaction);
         }
         
@@ -68,22 +73,28 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
     };
 
     return (
-        <div className="relative bg-card rounded-lg overflow-hidden">
-            <div className="absolute inset-y-0 right-0 flex items-center justify-center bg-destructive text-destructive-foreground" style={{ width: ACTION_WIDTH }}>
-                <div className="flex flex-col items-center gap-1">
+        <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
+             <motion.div
+                className="absolute inset-y-0 right-0 flex items-center justify-center bg-destructive text-destructive-foreground"
+                style={{ width: ACTION_WIDTH, opacity: iconOpacity }}
+            >
+                <motion.div
+                    className="flex flex-col items-center gap-1"
+                    style={{ scale: iconScale }}
+                >
                     <Trash2 className="h-5 w-5" />
                     <span className="text-xs font-medium">Hapus</span>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
             
             <motion.div
-                ref={itemRef}
                 drag="x"
                 dragConstraints={{ left: -ACTION_WIDTH, right: 0 }}
                 dragElastic={0.2}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
                 animate={controls}
+                style={{ x }}
                 transition={{ type: 'spring', stiffness: 400, damping: 40 }}
                 className="relative bg-card"
             >
