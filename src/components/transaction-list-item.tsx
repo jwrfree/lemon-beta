@@ -1,12 +1,13 @@
 'use client';
 import React, { useRef } from 'react';
-import { motion, useAnimation, PanInfo, useMotionValue, useTransform } from 'framer-motion';
+import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion';
 import Lottie from 'lottie-react';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import animationData from '@/lib/animations/delete-icon.json';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
     const { wallets } = useApp();
@@ -22,12 +23,12 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
             </div>
             <div className="flex-1 overflow-hidden">
                 <div className="font-medium truncate">{transaction.description}</div>
-                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                 <div className="text-sm text-muted-foreground flex items-center gap-1">
                     <span>{wallet?.name || '...'}</span>
                     {!hideDate && (
                         <>
                             <span>&bull;</span>
-                            <span>{format(parseISO(transaction.date), 'dd/MM')}</span>
+                            <span>{format(parseISO(transaction.date), 'dd/MM/yy', { locale: dateFnsLocaleId })}</span>
                         </>
                     )}
                 </div>
@@ -46,7 +47,6 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     const itemRef = useRef<HTMLDivElement>(null);
     const lottieRef = useRef<any>(null);
     const vibrated = useRef(false);
-    const controls = useAnimation();
     const ACTION_WIDTH = 80;
 
     const x = useMotionValue(0);
@@ -68,13 +68,19 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
         const velocity = info.velocity.x;
         
         if (offset < -ACTION_WIDTH || velocity < -500) {
-            controls.start({ x: - (itemRef.current?.offsetWidth || 0) }).then(() => {
-                onDelete(transaction);
-                // After animation, reset position for potential re-render/undo
-                setTimeout(() => controls.start({ x: 0 }), 500);
+            const finalX = -(itemRef.current?.offsetWidth || 0);
+            animate(x, finalX, {
+                type: 'spring',
+                stiffness: 500,
+                damping: 50,
+                onComplete: () => {
+                    onDelete(transaction);
+                    // After action, reset position for potential re-render/undo
+                    setTimeout(() => x.set(0), 500);
+                }
             });
         } else {
-           controls.start({ x: 0 });
+           animate(x, 0, { type: 'spring', stiffness: 400, damping: 40 });
         }
     };
 
@@ -95,12 +101,10 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
             
             <motion.div
                 drag="x"
-                dragConstraints={{ right: 0 }}
+                dragConstraints={{ left: 0, right: 0 }}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
-                animate={controls}
                 style={{ x }}
-                transition={{ type: 'spring', stiffness: 400, damping: 40 }}
                 className="relative bg-card"
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
