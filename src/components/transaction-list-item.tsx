@@ -123,7 +123,6 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 onDragEnd={onDragEnd}
                 style={{ x }}
                 className="relative bg-card z-20"
-                dragConstraints={{ right: 0 }}
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
             </motion.div>
