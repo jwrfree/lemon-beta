@@ -1,11 +1,12 @@
 'use client';
 import React, { useRef } from 'react';
 import { motion, useAnimation, PanInfo, useMotionValue, useTransform } from 'framer-motion';
-import { Trash2 } from 'lucide-react';
+import Lottie from 'lottie-react';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
+import animationData from '@/lib/animations/delete-icon.json';
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
     const { wallets } = useApp();
@@ -43,16 +44,15 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 
 export const TransactionListItem = ({ transaction, onDelete, hideDate = false }: { transaction: any; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const itemRef = useRef<HTMLDivElement>(null);
+    const lottieRef = useRef<any>(null);
     const vibrated = useRef(false);
     const controls = useAnimation();
     const ACTION_WIDTH = 80;
 
     const x = useMotionValue(0);
-    
-    // Animate icon scale and opacity based on drag distance
-    const iconContainerOpacity = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2], [1, 0]);
-    const iconScale = useTransform(x, [-ACTION_WIDTH, 0], [1, 0.5]);
 
+    const animationFrame = useTransform(x, [-ACTION_WIDTH, 0], [40, 0]);
+    animationFrame.onChange(v => lottieRef.current?.goToAndStop(v, true));
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const dist = info.offset.x;
@@ -66,38 +66,36 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
         vibrated.current = false;
         const offset = info.offset.x;
         const velocity = info.velocity.x;
-        const width = itemRef.current?.offsetWidth ?? 0;
-
-        // Swipe left to delete
-        if (offset < -width / 2 || velocity < -500) {
-            onDelete(transaction);
-        }
         
-        controls.start({ x: 0 });
+        if (offset < -ACTION_WIDTH || velocity < -500) {
+            controls.start({ x: - (itemRef.current?.offsetWidth || 0) }).then(() => {
+                onDelete(transaction);
+                // After animation, reset position for potential re-render/undo
+                setTimeout(() => controls.start({ x: 0 }), 500);
+            });
+        } else {
+           controls.start({ x: 0 });
+        }
     };
 
     return (
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
-             <motion.div
+             <div
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-destructive-foreground pr-6"
-                style={{ 
-                    opacity: iconContainerOpacity,
-                    width: '100%',
-                }}
+                 style={{ width: ACTION_WIDTH }}
             >
-                <motion.div
-                    className="flex flex-col items-center gap-1"
-                    style={{ scale: iconScale }}
-                >
-                    <Trash2 className="h-5 w-5" />
-                    <span className="text-xs font-medium">Hapus</span>
-                </motion.div>
-            </motion.div>
+                <Lottie
+                    lottieRef={lottieRef}
+                    animationData={animationData}
+                    loop={false}
+                    autoplay={false}
+                    className="h-10 w-10"
+                />
+            </div>
             
             <motion.div
                 drag="x"
                 dragConstraints={{ right: 0 }}
-                dragElastic={{ left: 0.5, right: 0 }}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
                 animate={controls}
