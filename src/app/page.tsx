@@ -23,6 +23,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LandingPage } from '@/components/landing-page';
+import { AddWalletModal } from '@/components/add-wallet-modal';
+import { AddBudgetModal } from '@/components/add-budget-modal';
+import { BudgetingPage } from '@/components/budgeting-page';
 
 
 // ============================================================================
@@ -277,6 +280,7 @@ function App() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [budgets, setBudgets] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
@@ -353,7 +357,7 @@ function App() {
       if (!user) throw new Error("User not authenticated.");
       await addDoc(getWalletCollection(), { ...walletData, balance: 0, createdAt: new Date().toISOString() });
       toast.success("Dompet berhasil dibuat!");
-      setIsTxModalOpen(false);
+      setIsWalletModalOpen(false);
     } catch (error) {
       console.error("Error adding wallet:", error);
       toast.error("Gagal membuat dompet.");
@@ -463,7 +467,7 @@ function App() {
       case 'home':
         return <HomePage />;
       case 'wallets':
-        return <WalletsPage onAddWallet={() => setIsTxModalOpen(true)} />;
+        return <WalletsPage onAddWallet={() => setIsWalletModalOpen(true)} />;
       case 'charts':
         return <ChartsPage />;
       case 'settings':
@@ -497,6 +501,7 @@ function App() {
           </AnimatePresence>
           <AnimatePresence>
             {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
+            {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
             {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
             {authModal === 'login' && <LoginPage onClose={() => setAuthModal(null)} />}
             {authModal === 'signup' && <SignUpPage onClose={() => setAuthModal(null)} />}
@@ -687,220 +692,6 @@ const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
   );
 };
 
-const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet } = useData();
-  const [walletName, setWalletName] = useState('');
-  const [walletType, setWalletType] = useState('wallet');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!walletName) {
-      toast.error("Nama dompet tidak boleh kosong.");
-      return;
-    }
-    setIsSubmitting(true);
-    await addWallet({ name: walletName, icon: walletType });
-    setIsSubmitting(false);
-  };
-
-  const handlers = useSwipeable({
-    onSwipedDown: onClose,
-    preventScrollOnSwipe: true,
-    trackMouse: true,
-  });
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit md:h-auto"
-        onClick={(e) => e.stopPropagation()}
-        {...handlers}
-      >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-          <h2 className="text-xl font-bold">Buat Dompet Baru</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto max-h-[80vh]">
-          <div className="space-y-2">
-            <Label htmlFor="wallet-name">Nama Dompet</Label>
-            <Input
-              id="wallet-name"
-              placeholder="Contoh: Tabungan, E-Wallet"
-              value={walletName}
-              onChange={(e) => setWalletName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Jenis Dompet</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {Object.keys(walletVisuals).map(key => {
-                const { name, Icon } = getWalletVisuals(key);
-                return (
-                  <label key={key} htmlFor={`wallet-type-${key}`} className={cn(
-                    "relative flex flex-col items-center justify-center space-y-2 p-4 rounded-lg border-2 cursor-pointer transition-colors",
-                    walletType === key ? 'border-primary bg-primary/5' : 'border-muted'
-                  )}>
-                    <input type="radio" value={key} id={`wallet-type-${key}`} name="wallet-type" className="sr-only" onChange={() => setWalletType(key)} checked={walletType === key} />
-                    <Icon className={cn("h-8 w-8", walletType === key ? 'text-primary' : 'text-muted-foreground')} />
-                    <span className="text-sm font-medium">{name}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? 'Memproses...' : 'Simpan Dompet'}
-          </Button>
-        </form>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
-    const { back } = useNavigation();
-    const { budgets } = useData();
-
-    return (
-        <div className="flex flex-col h-full">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => useData().router.push('home')}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
-                <Button variant="ghost" size="icon" className="absolute right-4" onClick={onAddBudget}>
-                    <Plus className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-            </header>
-            <main className="flex-1 overflow-y-auto p-4">
-                {budgets.length === 0 ? (
-                    <div className="flex flex-col h-full items-center justify-center text-center">
-                        <div className="p-3 bg-destructive/10 rounded-full mb-3">
-                            <HandCoins className="h-8 w-8 text-destructive" strokeWidth={1.5} />
-                        </div>
-                        <h2 className="text-xl font-bold">Tidak ada Anggaran</h2>
-                        <p className="text-muted-foreground mt-2 mb-6">Buat anggaran pertama Anda untuk mengelola keuangan.</p>
-                        <Button onClick={onAddBudget}>
-                            <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
-                            Buat Anggaran Sekarang
-                        </Button>
-                    </div>
-                ) : (
-                    <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                        {budgets.map(budget => (
-                            <Card key={budget.id} className="p-4">
-                                <div className="flex justify-between items-center mb-2">
-                                    <h3 className="font-semibold">{budget.name}</h3>
-                                    <span className="text-sm text-muted-foreground">{formatCurrency(budget.spent)} / {formatCurrency(budget.targetAmount)}</span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-zinc-700">
-                                    <div className="bg-primary h-2.5 rounded-full" style={{ width: `${(budget.spent / budget.targetAmount) * 100}%` }}></div>
-                                </div>
-                                <div className="flex flex-wrap gap-1 mt-2">
-                                    {budget.categories.map((catName:string) => {
-                                        const { icon: CategoryIcon } = categoryDetails(catName);
-                                        return (
-                                            <span key={catName} className="text-xs flex items-center gap-1 rounded-full bg-muted px-2 py-1">
-                                                <CategoryIcon className="h-3 w-3" strokeWidth={2} />
-                                                {catName}
-                                            </span>
-                                        );
-                                    })}
-                                </div>
-                            </Card>
-                        ))}
-                    </div>
-                )}
-            </main>
-        </div>
-    );
-};
-
-const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
-  const { addBudget, expenseCategories } = useData();
-  const [budgetName, setBudgetName] = useState('');
-  const [targetAmount, setTargetAmount] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleCategoryToggle = (categoryName: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(categoryName)
-        ? prev.filter(c => c !== categoryName)
-        : [...prev, categoryName]
-    );
-  };
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!budgetName || !targetAmount || selectedCategories.length === 0) {
-      toast.error("Semua kolom harus diisi.");
-      return;
-    }
-    setIsSubmitting(true);
-    await addBudget({
-      name: budgetName,
-      targetAmount: parseInt(targetAmount.replace(/[^0-9]/g, '')),
-      categories: selectedCategories,
-    });
-    setIsSubmitting(false);
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = e.target.value.replace(/[^0-9]/g, '');
-      const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-      setTargetAmount(formattedValue);
-  };
-
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm" onClick={onClose}>
-      <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-          <h2 className="text-xl font-bold">Buat Anggaran Baru</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}><X className="h-5 w-5" /></Button>
-        </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto max-h-[80vh]">
-          <div className="space-y-2">
-            <Label htmlFor="budget-name">Nama Anggaran</Label>
-            <Input id="budget-name" placeholder="Contoh: Belanja Bulanan" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="target-amount">Target Anggaran</Label>
-            <Input id="target-amount" placeholder="Rp 0" value={targetAmount} onChange={handleAmountChange} required inputMode="numeric" />
-          </div>
-          <div className="space-y-2">
-            <Label>Kategori</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {expenseCategories.map(cat => (
-                <button type="button" key={cat.id} onClick={() => handleCategoryToggle(cat.name)} className={cn("p-2 text-center border rounded-lg flex flex-col items-center gap-2", selectedCategories.includes(cat.name) ? 'border-primary bg-primary/10' : 'border-muted')}>
-                  <cat.icon className={cn("h-6 w-6", selectedCategories.includes(cat.name) ? 'text-primary' : 'text-muted-foreground')} />
-                  <span className="text-xs">{cat.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>{isSubmitting ? 'Memproses...' : 'Simpan Anggaran'}</Button>
-        </form>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-
 const GoalsPage = () => {
     const { router } = useData();
     return (
@@ -1058,3 +849,5 @@ const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }) => {
 };
 
 export default App;
+
+    
