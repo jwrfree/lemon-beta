@@ -1,10 +1,9 @@
-
 'use client';
 import React, { useState } from 'react';
-import { motion, useAnimation, PanInfo } from 'framer-motion';
+import { motion, useAnimation, useMotionValue, useTransform, PanInfo } from 'framer-motion';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { Trash2, Edit2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { useApp } from '@/components/app-provider';
@@ -12,83 +11,77 @@ import { useApp } from '@/components/app-provider';
 export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const [hapticTriggered, setHapticTriggered] = useState(false);
     const controls = useAnimation();
-    const ACTION_WIDTH = 80;
+    const x = useMotionValue(0);
+    const ACTION_WIDTH = 100;
 
-    const resetSwipe = () => {
-        controls.start({ x: 0 });
-        setHapticTriggered(false);
-    };
+    const backgroundOpacity = useTransform(x, [-ACTION_WIDTH, 0], [1, 0]);
+    const iconScale = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2, 0], [1, 0.5, 0]);
 
-    const handleEditClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        onEdit(transaction);
-        resetSwipe();
-    };
-
-    const handleDeleteClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        onDelete(transaction);
-        resetSwipe();
-    };
-
-    const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const { wallets } = useApp();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
+    
+    const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-        if (!hapticTriggered && Math.abs(info.offset.x) > ACTION_WIDTH / 2) {
+        // Prevent dragging right
+        if (info.offset.x > 0) {
+            x.set(0);
+            return;
+        }
+
+        const offset = Math.abs(info.offset.x);
+        if (!hapticTriggered && offset > ACTION_WIDTH / 2) {
             if (window.navigator.vibrate) {
                 window.navigator.vibrate(10);
             }
             setHapticTriggered(true);
         }
     };
-    
-    const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-        const threshold = ACTION_WIDTH * 0.75;
-        const offset = info.offset.x;
 
-        if (offset < -threshold) {
-             controls.start({ x: -ACTION_WIDTH });
-        } else if (offset > threshold) {
-            controls.start({ x: ACTION_WIDTH });
-        } else {
-            resetSwipe();
+    const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+        const offset = Math.abs(info.offset.x);
+        const velocity = Math.abs(info.velocity.x);
+
+        // Animate back to origin
+        controls.start({ x: 0 }); 
+
+        // Trigger delete if swiped enough
+        if (offset > ACTION_WIDTH / 2 || velocity > 200) {
+           onDelete(transaction);
         }
+        
+        // Reset haptic trigger for next swipe
+        setHapticTriggered(false);
     };
 
     return (
-        <div className="relative overflow-hidden rounded-lg bg-card" onClick={resetSwipe}>
-            <div className="absolute inset-y-0 right-0 flex items-center bg-destructive text-destructive-foreground" style={{ width: ACTION_WIDTH }}>
-                <button 
-                    className="flex items-center justify-center h-full w-full" 
-                    onClick={handleDeleteClick}
+        <div className="relative overflow-hidden rounded-lg bg-card">
+            <motion.div 
+                className="absolute inset-y-0 right-0 flex items-center justify-start bg-destructive text-destructive-foreground"
+                style={{ width: ACTION_WIDTH, opacity: backgroundOpacity }}
+            >
+                <motion.div 
+                    className="flex items-center gap-2 pl-6"
+                    style={{ scale: iconScale }}
                 >
-                    <Trash2 className="h-5 w-5 ml-auto mr-6" />
-                </button>
-            </div>
-
-            <div className="absolute inset-y-0 left-0 flex items-center bg-secondary text-secondary-foreground" style={{ width: ACTION_WIDTH }}>
-                 <button 
-                    className="flex items-center justify-center h-full w-full" 
-                    onClick={handleEditClick}
-                >
-                    <Edit2 className="h-5 w-5 mr-auto ml-6" />
-                </button>
-            </div>
+                    <Trash2 className="h-5 w-5" />
+                    <span className="text-sm font-medium">Hapus</span>
+                </motion.div>
+            </motion.div>
             
             <motion.div
-                animate={controls}
+                className="flex items-center gap-3 p-3 cursor-pointer relative bg-card"
                 drag="x"
-                dragConstraints={{ left: -ACTION_WIDTH, right: ACTION_WIDTH }}
-                dragElastic={0.2}
+                dragConstraints={{ left: -ACTION_WIDTH * 1.5, right: 0 }}
+                dragElastic={0.1}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
-                onPanEnd={() => setHapticTriggered(false)}
-                className="flex items-center gap-3 p-3 cursor-pointer relative bg-card"
+                style={{ x }}
+                animate={controls}
+                transition={{ type: 'spring', stiffness: 400, damping: 40 }}
             >
                 <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
                     <CategoryIcon className={cn("h-5 w-5", color)} />
