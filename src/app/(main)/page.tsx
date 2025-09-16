@@ -9,8 +9,9 @@ import { useRouter } from 'next/navigation';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionListItem } from '@/components/transaction-list-item';
+import { AppProvider } from '@/components/app-provider';
 
-export default function DashboardPage() {
+function Dashboard() {
     const { wallets, transactions, openDeleteModal, handleEdit } = useApp();
     const router = useRouter();
 
@@ -70,4 +71,14 @@ export default function DashboardPage() {
             </main>
         </div>
     );
-};
+}
+
+export default function DashboardPage() {
+    const { user } = useApp();
+    if (!user) return null;
+    return (
+        <AppProvider user={user}>
+            <Dashboard />
+        </AppProvider>
+    )
+}

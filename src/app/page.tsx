@@ -3,13 +3,14 @@
 
 import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { AppProvider } from '@/components/app-provider';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
 import { AnimatePresence } from 'framer-motion';
-import { redirect } from 'next/navigation';
+import MainAppLayout from './(main)/layout';
+import DashboardPage from './(main)/page';
 
 export default function AppPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -45,6 +46,11 @@ export default function AppPage() {
     );
   }
 
-  // If user is logged in, redirect to the main app dashboard
-  return redirect('/');
+  return (
+    <AppProvider user={user}>
+      <MainAppLayout>
+        <DashboardPage />
+      </MainAppLayout>
+    </AppProvider>
+  );
 }
