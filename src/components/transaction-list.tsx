@@ -52,12 +52,9 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
 
     if (limit) {
         return (
-             <div className="bg-card rounded-lg">
-                {transactionsToShow.map((t, index) => (
-                    <React.Fragment key={t.id}>
-                        <TransactionListItem transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
-                        {index < transactionsToShow.length - 1 && <hr className="border-border" />}
-                    </React.Fragment>
+             <div className="bg-card rounded-lg divide-y divide-border">
+                {transactionsToShow.map((t) => (
+                    <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
                 ))}
             </div>
         );
@@ -70,12 +67,9 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">
                         {formatRelativeDate(parseISO(date))}
                     </h3>
-                    <div className="bg-card rounded-lg">
-                        {transactionsForDay.map((t, index) => (
-                           <React.Fragment key={t.id}>
-                             <TransactionListItem transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
-                             {index < transactionsForDay.length - 1 && <hr className="border-border" />}
-                           </React.Fragment>
+                    <div className="bg-card rounded-lg divide-y divide-border">
+                        {transactionsForDay.map((t) => (
+                           <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
                         ))}
                     </div>
                 </div>
