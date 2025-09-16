@@ -144,7 +144,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         if (!user) throw new Error("User not authenticated.");
         const walletCollection = getWalletCollection();
         if (!walletCollection) return;
-        await addDoc(walletCollection, { ...walletData, balance: 0, createdAt: new Date().toISOString() });
+        await addDoc(walletCollection, {
+            ...walletData,
+            balance: walletData.balance || 0,
+            createdAt: new Date().toISOString()
+        });
         toast.success("Dompet berhasil dibuat!");
         setIsWalletModalOpen(false);
     }, [user, getWalletCollection]);
