@@ -29,7 +29,7 @@ export const HomePageContent = () => {
 
     return (
         <div className="h-full overflow-y-auto pb-16">
-            <header className="p-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+            <header className="p-4 flex items-center justify-between sticky top-0 bg-muted/80 backdrop-blur-sm z-10">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>
@@ -90,7 +90,7 @@ export const HomePageContent = () => {
                             {wallets.slice(0, 2).map(wallet => {
                                 const { Icon, color } = getWalletVisuals(wallet.icon);
                                 return (
-                                    <Card key={wallet.id} className={cn("overflow-hidden border-l-4", color.replace('bg-', 'border-'))} >
+                                    <Card key={wallet.id}>
                                         <CardContent className="p-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Icon className={cn("h-6 w-6", color.replace('bg-', 'text-'))} />
