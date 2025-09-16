@@ -2,11 +2,11 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, useCallback, useRef } from 'react';
-import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
+import { getAuth, signInAnonymously, onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, writeBatch, query, orderBy } from 'firebase/firestore';
 import { format, isToday, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { ChevronLeft, CalendarIcon, AlertCircle, PlusCircle, Trash2, Edit2, Wallet, Banknote, Landmark, Utensils, TShirt, Gift, Home, Car, Phone, Gamepad2, Briefcase, GraduationCap, Wrench, Handshake, PiggyBank, BarChart3, Settings, X, Plus, ShoppingCart, Bell, HandCoins, Target, TrendingUp, ArrowUp, ArrowDown, HeartPulse } from 'lucide-react';
+import { ChevronLeft, CalendarIcon, AlertCircle, PlusCircle, Trash2, Edit2, Wallet, Banknote, Landmark, Utensils, TShirt, Gift, Home, Car, Phone, Gamepad2, Briefcase, GraduationCap, Wrench, Handshake, PiggyBank, BarChart3, Settings, X, Plus, ShoppingCart, Bell, HandCoins, Target, TrendingUp, ArrowUp, ArrowDown, HeartPulse, LogOut } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { toast, Toaster } from 'sonner';
@@ -17,6 +17,11 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { AddTransactionForm } from '@/components/add-transaction-form';
+import { LoginPage } from '@/components/login-page';
+import { SignUpPage } from '@/components/signup-page';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 
 // ============================================================================
@@ -36,6 +41,8 @@ const AppContext = createContext<{
     addWallet: (walletData: any) => Promise<void>;
     addBudget: (budgetData: any) => Promise<void>;
     isLoading: boolean;
+    user: User | null;
+    handleSignOut: () => void;
 } | null>(null);
 
 export const useData = () => {
@@ -83,49 +90,22 @@ export const categoryDetails = (name: string) => {
 };
 
 // ============================================================================
-// 3. Komponen UI Dasar
+// 3. Komponen UI Dasar (Yang tidak ada di shadcn)
 // ============================================================================
-
-export const Label = ({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) => <label htmlFor={htmlFor} className="text-sm font-medium">{children}</label>;
-export const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />;
-export const Button = ({ variant, size, className, ...props }: { variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"; size?: "default" | "sm" | "lg" | "icon"; className?: string; [key: string]: any }) => (
-  <button
-    className={cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-      {
-        "default": "bg-primary text-primary-foreground hover:bg-primary/90",
-        "destructive": "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        "outline": "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        "ghost": "hover:bg-accent hover:text-accent-foreground",
-        "link": "text-primary underline-offset-4 hover:underline",
-      }[variant || "default"],
-      {
-        "default": "h-10 px-4 py-2",
-        "sm": "h-9 rounded-md px-3",
-        "lg": "h-11 rounded-md px-8",
-        "icon": "h-10 w-10",
-      }[size || "default"],
-      className
-    )}
-    {...props}
-  />
-);
-
 export const RadioGroupItem = ({ value, id, className, labelClassName, children, ...props }: { value: string; id: string; className?: string; labelClassName?: string; children: React.ReactNode; [key: string]: any }) => (
-  <>
-    <input type="radio" value={value} id={id} className="sr-only" {...props} />
-    <label
-      htmlFor={id}
-      className={cn(
-        "flex h-10 w-full cursor-pointer items-center justify-center rounded-full px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        labelClassName
-      )}
-    >
-      {children}
-    </label>
-  </>
-);
+    <>
+      <input type="radio" value={value} id={id} className="sr-only" {...props} />
+      <label
+        htmlFor={id}
+        className={cn(
+          "flex h-10 w-full cursor-pointer items-center justify-center rounded-full px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          labelClassName
+        )}
+      >
+        {children}
+      </label>
+    </>
+  );
 
 // ============================================================================
 // 4. Komponen Halaman dan Fungsionalitas
@@ -255,7 +235,7 @@ const BottomNavigation = () => {
                         key={item.id}
                         variant="ghost"
                         size="icon"
-                        onClick={() => router.push(item.id)}
+                        onClick={() => router.push(item.id === 'add' ? 'add' : item.id)}
                         className={cn(
                             "flex flex-col items-center justify-center h-full w-1/5 text-muted-foreground rounded-none",
                             activePage === item.id && "text-primary",
@@ -276,15 +256,20 @@ const BottomNavigation = () => {
 // ============================================================================
 
 function App() {
-  const [activePage, setActivePage] = useState('home');
+  const [activePage, setActivePage] = useState('login'); // Start at login page
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = {
-    push: setActivePage,
+    push: (page: string) => {
+        if (page === 'add') {
+            setIsModalOpen(true);
+        } else {
+            setActivePage(page);
+        }
+    },
     back: () => setActivePage('home'),
   };
-  const showBottomNav = ['home', 'budgeting', 'charts', 'settings'].includes(activePage);
 
-  const [userId, setUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [wallets, setWallets] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [budgets, setBudgets] = useState<any[]>([]);
@@ -293,28 +278,32 @@ function App() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
 
-  const getWalletCollection = useCallback(() => collection(db, `users/${userId}/wallets`), [userId]);
-  const getTransactionCollection = useCallback(() => collection(db, `users/${userId}/transactions`), [userId]);
-  const getBudgetCollection = useCallback(() => collection(db, `users/${userId}/budgets`), [userId]);
+  const getWalletCollection = useCallback(() => collection(db, `users/${user?.uid}/wallets`), [user]);
+  const getTransactionCollection = useCallback(() => collection(db, `users/${user?.uid}/transactions`), [user]);
+  const getBudgetCollection = useCallback(() => collection(db, `users/${user?.uid}/budgets`), [user]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUserId(user.uid);
+        setUser(user);
+        setActivePage('home');
       } else {
-        try {
-          await signInAnonymously(auth);
-        } catch (error) {
-          console.error("Anonymous sign-in failed:", error);
-          toast.error("Gagal terhubung ke server.");
-        }
+        setUser(null);
+        setActivePage('login');
       }
+      setIsLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
+
   useEffect(() => {
-    if (!userId) return;
+    if (!user) {
+        setWallets([]);
+        setTransactions([]);
+        setBudgets([]);
+        return;
+    };
 
     const walletsQuery = query(getWalletCollection(), orderBy("createdAt", "desc"));
     const transactionsQuery = query(getTransactionCollection(), orderBy("date", "desc"));
@@ -341,10 +330,10 @@ function App() {
       unsubscribeTransactions();
       unsubscribeBudgets();
     };
-  }, [userId, getWalletCollection, getTransactionCollection, getBudgetCollection]);
+  }, [user, getWalletCollection, getTransactionCollection, getBudgetCollection]);
 
   const addTransaction = useCallback(async (data: any) => {
-    if (!userId) return;
+    if (!user) return;
     const walletRef = doc(db, getWalletCollection().path, data.walletId);
     await addDoc(getTransactionCollection(), data);
     const walletDoc = await getDoc(walletRef);
@@ -353,11 +342,12 @@ function App() {
       const newBalance = data.type === 'income' ? currentBalance + data.amount : currentBalance - data.amount;
       await updateDoc(walletRef, { balance: newBalance });
     }
-  }, [userId, getTransactionCollection, getWalletCollection]);
+     setIsModalOpen(false);
+  }, [user, getTransactionCollection, getWalletCollection]);
   
   const addWallet = useCallback(async (walletData: any) => {
     try {
-      if (!userId) throw new Error("User not authenticated.");
+      if (!user) throw new Error("User not authenticated.");
       await addDoc(getWalletCollection(), { ...walletData, balance: 0, createdAt: new Date().toISOString() });
       toast.success("Dompet berhasil dibuat!");
       setIsModalOpen(false);
@@ -365,11 +355,11 @@ function App() {
       console.error("Error adding wallet:", error);
       toast.error("Gagal membuat dompet.");
     }
-  }, [userId, getWalletCollection]);
+  }, [user, getWalletCollection]);
 
   const addBudget = useCallback(async (budgetData: any) => {
     try {
-      if (!userId) throw new Error("User not authenticated.");
+      if (!user) throw new Error("User not authenticated.");
       await addDoc(getBudgetCollection(), { ...budgetData, spent: 0, createdAt: new Date().toISOString() });
       toast.success("Anggaran berhasil dibuat!");
       setIsBudgetModalOpen(false);
@@ -377,10 +367,10 @@ function App() {
       console.error("Error adding budget:", error);
       toast.error("Gagal membuat anggaran.");
     }
-  }, [userId, getBudgetCollection]);
+  }, [user, getBudgetCollection]);
 
   const deleteTransaction = useCallback(async (transaction: any) => {
-    if (!userId) return;
+    if (!user) return;
     const transactionRef = doc(db, getTransactionCollection().path, transaction.id);
     const walletRef = doc(db, getWalletCollection().path, transaction.walletId);
     
@@ -426,9 +416,20 @@ function App() {
             }
         }
     });
-  }, [userId, getTransactionCollection, getWalletCollection]);
+  }, [user, getTransactionCollection, getWalletCollection]);
+
+  const handleSignOut = async () => {
+    try {
+        await signOut(auth);
+        toast.success("Anda telah berhasil keluar.");
+    } catch (error) {
+        toast.error("Gagal keluar.");
+        console.error("Sign out error:", error);
+    }
+  };
 
   const contextValue = {
+    user,
     wallets,
     transactions,
     budgets,
@@ -441,14 +442,28 @@ function App() {
     isLoading,
     router,
     activePage,
+    handleSignOut,
   };
 
+  const showBottomNav = user && ['home', 'budgeting', 'charts', 'settings'].includes(activePage);
+
   const renderPage = () => {
+    if (isLoading) {
+        return <div className="flex h-full w-full items-center justify-center">Loading...</div>;
+    }
+    if (!user) {
+        switch(activePage) {
+            case 'login':
+                return <LoginPage />;
+            case 'signup':
+                return <SignUpPage />;
+            default:
+                return <LoginPage />;
+        }
+    }
     switch(activePage) {
       case 'home':
         return <HomePage />;
-      case 'add':
-        return <AddTransactionPage />;
       case 'wallets':
         return <WalletsPage onAddWallet={() => setIsModalOpen(true)} />;
       case 'charts':
@@ -483,7 +498,7 @@ function App() {
             </motion.div>
           </AnimatePresence>
           <AnimatePresence>
-            {isModalOpen && <AddWalletModal onClose={() => setIsModalOpen(false)} />}
+            {isModalOpen && <AddTransactionForm onClose={() => setIsModalOpen(false)} />}
             {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
             {isDeleteModalOpen && transactionToDelete && (
               <ConfirmDeleteModal
@@ -619,9 +634,6 @@ const HomePage = () => {
   );
 };
 
-const AddTransactionPage = () => {
-  return <AddTransactionForm />;
-};
 
 const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
   const { wallets, router } = useData();
@@ -936,7 +948,7 @@ const ChartsPage = () => {
 };
 
 const SettingsPage = () => {
-    const { router } = useData();
+    const { router, handleSignOut } = useData();
     const settingsItems = [
         { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: 'wallets' },
         { id: 'categories', name: 'Kelola Kategori', icon: Wrench, page: 'categories' },
@@ -959,6 +971,10 @@ const SettingsPage = () => {
                         <ChevronLeft className="h-5 w-5 text-muted-foreground transform rotate-180" />
                     </button>
                 ))}
+                 <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left text-destructive">
+                    <LogOut className="h-6 w-6" />
+                    <span className="font-medium flex-1">Keluar</span>
+                </button>
             </main>
         </div>
     );
@@ -1043,5 +1059,3 @@ const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transaction: 
 };
 
 export default App;
-
-    
