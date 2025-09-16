@@ -14,7 +14,7 @@ export default function TransactionsPage() {
     return (
         <div className="flex flex-col h-full">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.push('/')}>
+                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Semua Transaksi</h1>

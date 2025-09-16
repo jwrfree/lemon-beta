@@ -16,7 +16,9 @@ export default function AppPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/');
+      // The (main)/layout.tsx now handles showing the main content,
+      // so this page's only job for logged-in users is to ensure they are on the right path.
+      // If we are at the root, the (main)/page.tsx will be rendered by the layout.
     }
   }, [user, isLoading, router]);
 
@@ -38,7 +40,7 @@ export default function AppPage() {
     );
   }
 
-  // User is logged in, but content is handled by the layout and page in the (main) group.
+  // User is logged in, content is handled by the layout and page in the (main) group.
   // This page just ensures the redirect happens and avoids showing a blank page.
   return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
 }
