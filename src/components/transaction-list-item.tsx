@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useRef } from 'react';
 import { motion, useAnimation, PanInfo, useMotionValue, useTransform } from 'framer-motion';
@@ -41,14 +42,14 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 };
 
 
-export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
+export const TransactionListItem = ({ transaction, onDelete, hideDate = false }: { transaction: any; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const vibrated = useRef(false);
     const controls = useAnimation();
     const itemRef = useRef<HTMLDivElement>(null);
     const ACTION_WIDTH = 80;
 
     const x = useMotionValue(0);
-    const iconScale = useTransform(x, [-ACTION_WIDTH, 0], [1.2, 0.6]);
+    const iconScale = useTransform(x, [-ACTION_WIDTH, 0], [1, 0.6]);
     const iconOpacity = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2], [1, 0]);
 
 
@@ -64,7 +65,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
         const offset = Math.abs(info.offset.x);
         const velocity = Math.abs(info.velocity.x);
 
-        if (info.offset.x < 0 && (offset > ACTION_WIDTH || velocity > 200)) {
+        if (info.offset.x < 0 && (offset > (itemRef.current?.offsetWidth ?? 0) / 2 || velocity > 200)) {
             onDelete(transaction);
         }
         
@@ -83,14 +84,13 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
                     style={{ scale: iconScale }}
                 >
                     <Trash2 className="h-5 w-5" />
-                    <span className="text-xs font-medium">Hapus</span>
                 </motion.div>
             </motion.div>
             
             <motion.div
                 drag="x"
-                dragConstraints={{ left: -ACTION_WIDTH, right: 0 }}
-                dragElastic={0.2}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={{ left: 0.5, right: 0 }}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
                 animate={controls}

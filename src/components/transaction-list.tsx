@@ -8,7 +8,7 @@ import { parseISO } from 'date-fns';
 import React from 'react';
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
-    const { transactions: allTransactions, handleEdit, openDeleteModal, isLoading } = useApp();
+    const { transactions: allTransactions, openDeleteModal, isLoading } = useApp();
 
     if (!transactionsToShow) {
       transactionsToShow = walletId 
@@ -33,7 +33,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         return (
             <div className="space-y-2">
                 {[...Array(limit || 5)].map((_, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3">
+                    <div key={i} className="flex items-center gap-3 p-3 bg-card rounded-lg">
                         <Skeleton className="h-10 w-10 rounded-full" />
                         <div className="flex-1 space-y-2">
                             <Skeleton className="h-4 w-3/4" />
@@ -53,9 +53,9 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
     if (limit || walletId) {
         const list = walletId ? transactionsToShow.filter(t => t.walletId === walletId) : transactionsToShow;
         return (
-             <div className="bg-card rounded-lg divide-y divide-border">
+             <div className="space-y-2">
                 {list.map((t) => (
-                    <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                    <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} />
                 ))}
             </div>
         );
@@ -68,9 +68,9 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">
                         {formatRelativeDate(parseISO(date))}
                     </h3>
-                    <div className="bg-card rounded-lg divide-y divide-border">
+                    <div className="space-y-2">
                         {transactionsForDay.map((t) => (
-                           <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} hideDate={true} />
+                           <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} hideDate={true} />
                         ))}
                     </div>
                 </div>
