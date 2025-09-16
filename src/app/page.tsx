@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
+import { AddTransactionForm } from '@/components/add-transaction-form';
 
 
 // ============================================================================
@@ -37,7 +38,7 @@ const AppContext = createContext<{
     isLoading: boolean;
 } | null>(null);
 
-const useData = () => {
+export const useData = () => {
     const context = useContext(AppContext);
     if (!context) {
         throw new Error('useData must be used within an AppProvider');
@@ -54,9 +55,9 @@ const walletVisuals: Record<string, { name: string; Icon: React.ElementType; col
   bank: { name: 'Bank', Icon: Banknote, color: 'bg-teal-500' },
   landmark: { name: 'Lainnya', Icon: Landmark, color: 'bg-orange-500' },
 };
-const getWalletVisuals = (key: string) => walletVisuals[key] || walletVisuals.wallet;
+export const getWalletVisuals = (key: string) => walletVisuals[key] || walletVisuals.wallet;
 
-const categories = {
+export const categories = {
   expense: [
     { id: 'cat-e-1', name: 'Makanan & Minuman', icon: Utensils },
     { id: 'cat-e-2', name: 'Belanja', icon: ShoppingCart },
@@ -75,7 +76,7 @@ const categories = {
     { id: 'cat-i-4', name: 'Lain-lain', icon: Handshake },
   ],
 };
-const categoryDetails = (name: string) => {
+export const categoryDetails = (name: string) => {
   const allCategories = [...categories.expense, ...categories.income];
   const category = allCategories.find(c => c.name === name);
   return category || { name: 'Lain-lain', icon: Wrench };
@@ -85,9 +86,9 @@ const categoryDetails = (name: string) => {
 // 3. Komponen UI Dasar
 // ============================================================================
 
-const Label = ({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) => <label htmlFor={htmlFor} className="text-sm font-medium">{children}</label>;
-const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />;
-const Button = ({ variant, size, className, ...props }: { variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"; size?: "default" | "sm" | "lg" | "icon"; className?: string; [key: string]: any }) => (
+export const Label = ({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) => <label htmlFor={htmlFor} className="text-sm font-medium">{children}</label>;
+export const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />;
+export const Button = ({ variant, size, className, ...props }: { variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"; size?: "default" | "sm" | "lg" | "icon"; className?: string; [key: string]: any }) => (
   <button
     className={cn(
       "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -111,7 +112,7 @@ const Button = ({ variant, size, className, ...props }: { variant?: "default" | 
   />
 );
 
-const RadioGroupItem = ({ value, id, className, labelClassName, children, ...props }: { value: string; id: string; className?: string; labelClassName?: string; children: React.ReactNode; [key: string]: any }) => (
+export const RadioGroupItem = ({ value, id, className, labelClassName, children, ...props }: { value: string; id: string; className?: string; labelClassName?: string; children: React.ReactNode; [key: string]: any }) => (
   <>
     <input type="radio" value={value} id={id} className="sr-only" {...props} />
     <label
@@ -130,34 +131,10 @@ const RadioGroupItem = ({ value, id, className, labelClassName, children, ...pro
 // 4. Komponen Halaman dan Fungsionalitas
 // ============================================================================
 
-const useNavigation = () => {
+export const useNavigation = () => {
     const { router } = useData();
     const back = () => router.back();
     return { back };
-};
-
-const AddTransactionForm = () => {
-    const { back } = useNavigation();
-    return (
-        <div className="flex flex-col h-full">
-            <header className="h-16 flex items-center relative px-4 shrink-0">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={back}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Tambah Transaksi</h1>
-            </header>
-            <div className="flex-1 overflow-y-auto p-4">
-                <div className="space-y-4 pb-24 animate-in fade-in zoom-in-95 duration-300">
-                    <p className="text-muted-foreground text-center p-8">Formulir akan muncul di sini.</p>
-                </div>
-            </div>
-            <div className="bg-background/80 backdrop-blur-lg p-4 border-t shrink-0 fixed bottom-0 w-full max-w-md mx-auto">
-                <Button size="lg" className="w-full">
-                    Simpan Transaksi
-                </Button>
-            </div>
-        </div>
-    );
 };
 
 const TransactionListItem = ({ transaction, onEdit, onDelete }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; }) => {
@@ -1066,3 +1043,5 @@ const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transaction: 
 };
 
 export default App;
+
+    
