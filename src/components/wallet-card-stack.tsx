@@ -56,11 +56,11 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             <motion.div
               key={wallet.id}
               className={cn(
-                "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg cursor-grab active:cursor-grabbing",
-                gradient
+                "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg cursor-grab active:cursor-grabbing"
               )}
               style={{
-                zIndex: wallets.length - Math.abs(activeIndex - i)
+                zIndex: wallets.length - Math.abs(activeIndex - i),
+                backgroundImage: `linear-gradient(to right, ${gradient.from}, ${gradient.to})`
               }}
               initial={{
                  scale: i === activeIndex ? 1 : 0.9,
