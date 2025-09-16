@@ -10,7 +10,8 @@ import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/components/transaction-list';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { isSameMonth, isThisMonth, parseISO } from 'date-fns';
+import { isSameMonth, parseISO } from 'date-fns';
+import PullToRefresh from 'react-pull-to-refresh';
 
 
 export default function HomePage() {
@@ -27,10 +28,16 @@ export default function HomePage() {
     const monthlyExpense = transactions
         .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
         .reduce((acc, t) => acc + t.amount, 0);
+    
+    const handleRefresh = async () => {
+        // In a real app, you'd re-fetch data here.
+        // For now, we just simulate a delay.
+        return new Promise(resolve => setTimeout(resolve, 1000));
+    };
 
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto pb-16">
+        <PullToRefresh onRefresh={handleRefresh} className="h-full overflow-y-auto pb-16">
             <header className="p-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
@@ -114,6 +121,6 @@ export default function HomePage() {
                    <TransactionList limit={5} />
                 </div>
             </main>
-        </div>
+        </PullToRefresh>
     );
 }
