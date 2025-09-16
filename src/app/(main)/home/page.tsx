@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { isSameMonth, parseISO } from 'date-fns';
 
-export const HomePageContent = () => {
+export default function HomePage() {
     const { wallets, transactions, isLoading } = useApp();
     const router = useRouter();
 
