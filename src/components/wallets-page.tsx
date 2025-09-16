@@ -61,15 +61,15 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
         </main>
       ) : (
         <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="h-64 pt-4 flex-shrink-0">
+          <div className="h-64 pt-4 flex-shrink-0 bg-muted">
              <WalletCardStack 
                 wallets={wallets} 
                 activeIndex={activeIndex} 
                 setActiveIndex={setActiveIndex} 
             />
           </div>
-          <div className="flex-1 overflow-y-auto px-4 pb-16">
-             <h2 className="text-lg font-semibold mb-2 mt-4 sticky top-0 bg-muted py-2">Riwayat Transaksi</h2>
+          <div className="flex-1 bg-background rounded-t-2xl overflow-y-auto px-4 pb-16 -mt-4 z-10 pt-4">
+             <h2 className="text-lg font-semibold mb-2 mt-4 sticky top-0 bg-background py-2">Riwayat Transaksi</h2>
              {activeWallet ? (
                 <TransactionList walletId={activeWallet.id} />
              ) : (
