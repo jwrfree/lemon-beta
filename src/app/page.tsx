@@ -9,7 +9,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { ChevronLeft, CalendarIcon, AlertCircle, PlusCircle, Trash2, Edit2, Wallet, Banknote, Landmark, Utensils, TShirt, Gift, Home, Car, Phone, Gamepad2, Briefcase, GraduationCap, Wrench, Handshake, PiggyBank, BarChart3, Settings, X, Plus, ShoppingCart, Bell, HandCoins, Target, TrendingUp, ArrowUp, ArrowDown, HeartPulse, LogOut } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 import { auth, db } from '@/lib/firebase';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -523,7 +523,7 @@ function App() {
           </AnimatePresence>
         </div>
       </div>
-      <Toaster position="top-center" richColors />
+      
       <AnimatePresence>
         {showBottomNav && <BottomNavigation />}
       </AnimatePresence>
@@ -1003,13 +1003,12 @@ const AssetsLiabilitiesPage = () => {
     );
 };
 
-const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transaction: any; onClose: () => void; onConfirm: () => void; }) => {
+const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }) => {
     const handlers = useSwipeable({
         onSwipedDown: onClose,
         preventScrollOnSwipe: true,
         trackMouse: true,
     });
-    const { icon: CategoryIcon } = categoryDetails(transaction.category);
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -1035,9 +1034,9 @@ const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transaction: 
                 </div>
                 <div className="p-4 space-y-4">
                     <p className="text-sm text-muted-foreground">Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted">
+                    <div className="flex items-center gap-3">
                         <div className={cn("flex-shrink-0 p-2 rounded-full", transaction.type === 'expense' ? 'bg-rose-100 dark:bg-rose-900' : 'bg-green-100 dark:bg-green-900')}>
-                            <CategoryIcon className={cn("h-5 w-5", transaction.type === 'expense' ? 'text-rose-600' : 'text-green-600')} />
+                            <Wallet className={cn("h-5 w-5", transaction.type === 'expense' ? 'text-rose-600' : 'text-green-600')} />
                         </div>
                         <div className="flex-1">
                             <div className="font-medium">{transaction.description}</div>
@@ -1049,7 +1048,7 @@ const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transaction: 
                             </span>
                         </div>
                     </div>
-                    <Button onClick={onConfirm} variant="destructive" className="w-full" size="lg">
+                    <Button onClick={onConfirm} variant="destructive" className="w-full">
                         Hapus Transaksi
                     </Button>
                 </div>
