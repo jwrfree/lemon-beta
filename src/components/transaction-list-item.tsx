@@ -38,6 +38,8 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
                 window.navigator.vibrate(10);
             }
             setHapticTriggered(true);
+        } else if (hapticTriggered && offset <= ACTION_WIDTH / 2) {
+            setHapticTriggered(false);
         }
     };
 
@@ -75,7 +77,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
             <motion.div
                 className="flex items-center gap-3 p-3 cursor-pointer relative bg-card"
                 drag="x"
-                dragConstraints={{ left: -ACTION_WIDTH * 1.5, right: 0 }}
+                dragConstraints={{ left: -ACTION_WIDTH, right: 0 }}
                 dragElastic={0.1}
                 onDrag={onDrag}
                 onDragEnd={onDragEnd}
