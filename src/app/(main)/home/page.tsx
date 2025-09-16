@@ -92,13 +92,15 @@ export default function HomePage() {
                             {wallets.slice(0, 2).map(wallet => {
                                 const { Icon, color } = getWalletVisuals(wallet.icon);
                                 return (
-                                    <div key={wallet.id} className={cn("p-4 rounded-lg text-white", color)}>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <Icon />
-                                            <span className="text-xs font-medium opacity-80">{wallet.name}</span>
-                                        </div>
-                                        <p className="text-xl font-bold">{formatCurrency(wallet.balance)}</p>
-                                    </div>
+                                    <Card key={wallet.id} className={cn("overflow-hidden", color.replace('bg-', 'border-'))} style={{borderLeftWidth: 4}}>
+                                        <CardContent className="p-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Icon className={cn("h-6 w-6", color.replace('bg-', 'text-'))} />
+                                                <span className="text-sm font-medium">{wallet.name}</span>
+                                            </div>
+                                            <p className="text-xl font-bold">{formatCurrency(wallet.balance)}</p>
+                                        </CardContent>
+                                    </Card>
                                 );
                             })}
                         </div>
