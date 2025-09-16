@@ -40,7 +40,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
                     <h2 className="text-xl font-bold text-destructive">Konfirmasi Hapus</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose}>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
                     </Button>
                 </div>

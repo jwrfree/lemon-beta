@@ -75,7 +75,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
             >
                  <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
                     <h2 className="text-xl font-bold">Buat Akun</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose}><X className="h-5 w-5" /></Button>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
                 </div>
                 <div className="p-4 overflow-y-auto">
                      <p className="text-muted-foreground text-sm mb-4">Mulai kelola keuangan Anda dengan Lemon.</p>

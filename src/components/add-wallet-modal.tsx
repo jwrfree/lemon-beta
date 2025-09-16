@@ -120,7 +120,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
           <h2 className="text-xl font-bold text-center">
             {step === 1 ? 'Pilih Jenis Dompet' : `Detail Dompet ${selectedCategory?.name}`}
           </h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-muted rounded-full">
             <X className="h-5 w-5" />
           </Button>
         </div>

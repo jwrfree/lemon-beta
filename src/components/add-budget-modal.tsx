@@ -53,7 +53,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
       <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", stiffness: 300, damping: 30 }} className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
           <h2 className="text-xl font-bold">Buat Anggaran Baru</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}><X className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
         <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto max-h-[80vh]">
           <div className="space-y-2">

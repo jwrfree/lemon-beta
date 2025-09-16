@@ -65,7 +65,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
       >
         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
           <h2 className="text-xl font-bold">Edit Dompet</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}><X className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div className="space-y-2">
