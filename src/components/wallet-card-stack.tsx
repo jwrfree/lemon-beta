@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSwipeable } from 'react-swipeable';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { Edit2 } from 'lucide-react';
@@ -26,37 +25,36 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);
   };
 
-  const handlers = useSwipeable({
-    onSwipedUp: (eventData) => {
-        paginate(1);
-    },
-    onSwipedDown: (eventData) => {
-       paginate(-1);
-    },
-    preventScrollOnSwipe: true,
-    trackMouse: true
-  });
+  const onDragEnd = (e: any, { offset, velocity }: { offset: any, velocity: any }) => {
+    const swipe = swipePower(offset.y, velocity.y);
+
+    if (swipe < -swipeConfidenceThreshold) {
+      paginate(1);
+    } else if (swipe > swipeConfidenceThreshold) {
+      paginate(-1);
+    }
+  };
 
   return (
-    <div {...handlers} className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-full flex items-center justify-center">
       <AnimatePresence initial={false}>
         {wallets.map((wallet, i) => {
           const isActive = i === activeIndex;
           const isPrevious = i === (activeIndex - 1 + wallets.length) % wallets.length;
           const isNext = i === (activeIndex + 1) % wallets.length;
 
-          let state = 'middle';
-          if (isActive) state = 'top';
-          else if (isPrevious) state = 'bottom';
-          else if (isNext) state = 'middle';
-          
           const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon);
 
           return (
             <motion.div
               key={wallet.id}
+              drag={isActive ? "y" : false}
+              onDragEnd={onDragEnd}
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.2}
               className={cn(
-                "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg cursor-grab active:cursor-grabbing"
+                "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg",
+                isActive ? "cursor-grab active:cursor-grabbing" : ""
               )}
               style={{
                 zIndex: wallets.length - Math.abs(activeIndex - i),
@@ -75,8 +73,8 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
               }}
               transition={{
                 type: 'spring',
-                stiffness: 300,
-                damping: 30,
+                stiffness: 250,
+                damping: 25,
               }}
             >
                 <div className="p-5 flex flex-col h-full">
