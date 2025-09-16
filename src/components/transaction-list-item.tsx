@@ -1,7 +1,7 @@
 
 'use client';
 import React, { useState, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { useSwipeable, EventData } from 'react-swipeable';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -12,22 +12,17 @@ import { Button } from '@/components/ui/button';
 import { useApp } from '@/components/app-provider';
 
 export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; }) => {
-    const [swipeState, setSwipeState] = useState(0);
+    const [swipeState, setSwipeState] = useState<'left' | 'right' | null>(null);
     const [hapticTriggered, setHapticTriggered] = useState(false);
-    const itemRef = useRef<HTMLDivElement>(null);
+    const controls = useAnimation();
     const ACTION_WIDTH = 80;
 
-    const resetSwipe = () => {
-        setSwipeState(0);
-        setHapticTriggered(false);
-        if (itemRef.current) itemRef.current.style.transform = `translateX(0px)`;
-    };
-
     const handlers = useSwipeable({
-        onSwiped: resetSwipe,
         onSwiping: (eventData: EventData) => {
-            if (!hapticTriggered) {
-                if ((eventData.dir === "Left" && eventData.absX > ACTION_WIDTH / 2) || (eventData.dir === "Right" && eventData.absX > ACTION_WIDTH / 2)) {
+            if (eventData.dir === "Left" || eventData.dir === "Right") {
+                controls.set({ x: eventData.deltaX });
+
+                if (!hapticTriggered && Math.abs(eventData.deltaX) > ACTION_WIDTH / 2) {
                     if (window.navigator.vibrate) {
                         window.navigator.vibrate(10);
                     }
@@ -35,17 +30,27 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                 }
             }
         },
-        onSwipedLeft: () => {
-            setSwipeState(-1);
-            setHapticTriggered(false);
-            if (itemRef.current) itemRef.current.style.transform = `translateX(-${ACTION_WIDTH}px)`;
+        onSwiped: (eventData) => {
+             setHapticTriggered(false);
+             if (Math.abs(eventData.deltaX) > ACTION_WIDTH) {
+                if (eventData.dir === "Left") {
+                    setSwipeState('left');
+                    controls.start({ x: -ACTION_WIDTH });
+                } else if (eventData.dir === "Right") {
+                    setSwipeState('right');
+                    controls.start({ x: ACTION_WIDTH });
+                }
+            } else {
+                setSwipeState(null);
+                controls.start({ x: 0 });
+            }
         },
-        onSwipedRight: () => {
-            setSwipeState(1);
-            setHapticTriggered(false);
-            if (itemRef.current) itemRef.current.style.transform = `translateX(${ACTION_WIDTH}px)`;
+        onTap: () => {
+            if (swipeState !== null) {
+                setSwipeState(null);
+                controls.start({ x: 0 });
+            }
         },
-        onTap: resetSwipe,
         trackMouse: true,
         preventScrollOnSwipe: true,
     });
@@ -57,17 +62,16 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
 
-
     return (
         <div className="relative overflow-hidden rounded-lg bg-card">
             <AnimatePresence>
-                {swipeState === -1 && (
+                {swipeState === 'left' && (
                     <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: ACTION_WIDTH }}
                         exit={{ width: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 top-0 h-full flex items-center justify-end"
+                        className="absolute right-0 top-0 h-full flex items-center justify-end bg-destructive"
                     >
                         <Button
                             variant="destructive"
@@ -79,13 +83,13 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                         </Button>
                     </motion.div>
                 )}
-                {swipeState === 1 && (
+                {swipeState === 'right' && (
                     <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: ACTION_WIDTH }}
                         exit={{ width: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 top-0 h-full flex items-center justify-start"
+                        className="absolute left-0 top-0 h-full flex items-center justify-start bg-secondary"
                     >
                         <Button
                             variant="secondary"
@@ -98,18 +102,11 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                     </motion.div>
                 )}
             </AnimatePresence>
-            <div
-                ref={itemRef}
+            <motion.div
                 {...handlers}
-                className={cn(
-                    "flex items-center gap-3 p-3 transition-transform duration-300 ease-in-out cursor-pointer relative bg-card"
-                )}
-                onClick={(e) => {
-                    if (swipeState !== 0) {
-                        e.stopPropagation();
-                        resetSwipe();
-                    }
-                }}
+                animate={controls}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="flex items-center gap-3 p-3 cursor-pointer relative bg-card"
             >
                 <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
                     <CategoryIcon className={cn("h-5 w-5", color)} />
@@ -123,7 +120,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                         {isExpense ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                     </span>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
