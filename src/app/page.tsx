@@ -2,31 +2,25 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { AppProvider } from '@/components/app-provider';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
 import { AnimatePresence } from 'framer-motion';
-import MainAppLayout from './(main)/layout';
-import DashboardPage from './(main)/page';
+import { useRouter } from 'next/navigation';
+import { useApp } from '@/components/app-provider';
 
 export default function AppPage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, isLoading } = useApp();
   const [authModal, setAuthModal] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setIsLoading(false);
-      if(user) {
-        setAuthModal(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+    if (!isLoading && user) {
+      router.push('/');
+    }
+  }, [user, isLoading, router]);
 
   if (isLoading) {
     return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
@@ -46,11 +40,7 @@ export default function AppPage() {
     );
   }
 
-  return (
-    <AppProvider user={user}>
-      <MainAppLayout>
-        <DashboardPage />
-      </MainAppLayout>
-    </AppProvider>
-  );
+  // User is logged in, but content is handled by the layout and page in the (main) group.
+  // This page just ensures the redirect happens and avoids showing a blank page.
+  return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
 }

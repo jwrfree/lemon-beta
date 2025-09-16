@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
-import { User, signOut } from 'firebase/auth';
+import { User, signOut, onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { toast } from 'sonner';
@@ -46,8 +46,9 @@ export const useApp = () => {
     return context;
 };
 
-export const AppProvider = ({ user, children }: { user: User, children: React.ReactNode }) => {
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const router = useNextRouter();
+    const [user, setUser] = useState<User | null>(null);
     const [wallets, setWallets] = useState<any[]>([]);
     const [transactions, setTransactions] = useState<any[]>([]);
     const [budgets, setBudgets] = useState<any[]>([]);
@@ -59,9 +60,28 @@ export const AppProvider = ({ user, children }: { user: User, children: React.Re
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
 
-    const getWalletCollection = useCallback(() => collection(db, `users/${user.uid}/wallets`), [user]);
-    const getTransactionCollection = useCallback(() => collection(db, `users/${user.uid}/transactions`), [user]);
-    const getBudgetCollection = useCallback(() => collection(db, `users/${user.uid}/budgets`), [user]);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+            setIsLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const getWalletCollection = useCallback(() => {
+        if (!user) return null;
+        return collection(db, `users/${user.uid}/wallets`);
+    }, [user]);
+
+    const getTransactionCollection = useCallback(() => {
+        if (!user) return null;
+        return collection(db, `users/${user.uid}/transactions`);
+    }, [user]);
+    
+    const getBudgetCollection = useCallback(() => {
+        if (!user) return null;
+        return collection(db, `users/${user.uid}/budgets`);
+    }, [user]);
 
     useEffect(() => {
         if (!user) {
@@ -71,14 +91,19 @@ export const AppProvider = ({ user, children }: { user: User, children: React.Re
             return;
         }
 
-        const walletsQuery = query(getWalletCollection(), orderBy("createdAt", "desc"));
-        const transactionsQuery = query(getTransactionCollection(), orderBy("date", "desc"));
-        const budgetsQuery = query(getBudgetCollection(), orderBy("createdAt", "desc"));
+        const walletCollection = getWalletCollection();
+        const transactionCollection = getTransactionCollection();
+        const budgetCollection = getBudgetCollection();
+
+        if (!walletCollection || !transactionCollection || !budgetCollection) return;
+
+        const walletsQuery = query(walletCollection, orderBy("createdAt", "desc"));
+        const transactionsQuery = query(transactionCollection, orderBy("date", "desc"));
+        const budgetsQuery = query(budgetCollection, orderBy("createdAt", "desc"));
 
         const unsubWallets = onSnapshot(walletsQuery, (snapshot) => {
             const walletsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setWallets(walletsData);
-            setIsLoading(false);
         });
 
         const unsubTransactions = onSnapshot(transactionsQuery, (snapshot) => {
@@ -100,8 +125,12 @@ export const AppProvider = ({ user, children }: { user: User, children: React.Re
     
     const addTransaction = useCallback(async (data: any) => {
         if (!user) return;
-        const walletRef = doc(db, getWalletCollection().path, data.walletId);
-        await addDoc(getTransactionCollection(), data);
+        const walletCollection = getWalletCollection();
+        const transactionCollection = getTransactionCollection();
+        if (!walletCollection || !transactionCollection) return;
+
+        const walletRef = doc(db, walletCollection.path, data.walletId);
+        await addDoc(transactionCollection, data);
         const walletDoc = await getDoc(walletRef);
         if (walletDoc.exists()) {
             const currentBalance = walletDoc.data().balance;
@@ -113,22 +142,30 @@ export const AppProvider = ({ user, children }: { user: User, children: React.Re
 
     const addWallet = useCallback(async (walletData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        await addDoc(getWalletCollection(), { ...walletData, balance: 0, createdAt: new Date().toISOString() });
+        const walletCollection = getWalletCollection();
+        if (!walletCollection) return;
+        await addDoc(walletCollection, { ...walletData, balance: 0, createdAt: new Date().toISOString() });
         toast.success("Dompet berhasil dibuat!");
         setIsWalletModalOpen(false);
     }, [user, getWalletCollection]);
 
     const addBudget = useCallback(async (budgetData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        await addDoc(getBudgetCollection(), { ...budgetData, spent: 0, createdAt: new Date().toISOString() });
+        const budgetCollection = getBudgetCollection();
+        if (!budgetCollection) return;
+        await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString() });
         toast.success("Anggaran berhasil dibuat!");
         setIsBudgetModalOpen(false);
     }, [user, getBudgetCollection]);
 
     const deleteTransaction = useCallback(async (transaction: any) => {
         if (!user || !transaction) return;
-        const transactionRef = doc(db, getTransactionCollection().path, transaction.id);
-        const walletRef = doc(db, getWalletCollection().path, transaction.walletId);
+        const walletCollection = getWalletCollection();
+        const transactionCollection = getTransactionCollection();
+        if (!walletCollection || !transactionCollection) return;
+
+        const transactionRef = doc(db, transactionCollection.path, transaction.id);
+        const walletRef = doc(db, walletCollection.path, transaction.walletId);
 
         const originalTransaction = { ...transaction };
         delete originalTransaction.id;
@@ -149,7 +186,7 @@ export const AppProvider = ({ user, children }: { user: User, children: React.Re
                 label: "Urungkan",
                 onClick: async () => {
                     const undoBatch = writeBatch(db);
-                    const newTransactionRef = doc(getTransactionCollection());
+                    const newTransactionRef = doc(transactionCollection);
                     undoBatch.set(newTransactionRef, originalTransaction);
 
                     const walletDoc = await getDoc(walletRef);

@@ -1,6 +1,6 @@
 
 'use client';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { AddTransactionForm } from '@/components/add-transaction-form';
@@ -8,11 +8,15 @@ import { useApp } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
+import { useEffect } from 'react';
 
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
     const { 
+        user,
+        isLoading,
         isTxModalOpen, 
         setIsTxModalOpen, 
         isWalletModalOpen,
@@ -24,6 +28,16 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         handleConfirmDelete,
         closeDeleteModal
     } = useApp();
+
+    useEffect(() => {
+        if (!isLoading && !user) {
+            router.push('/');
+        }
+    }, [user, isLoading, router]);
+
+    if (isLoading || !user) {
+        return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
+    }
 
     const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen;
 
