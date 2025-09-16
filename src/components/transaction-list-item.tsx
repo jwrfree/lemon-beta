@@ -1,14 +1,12 @@
 'use client';
 import React, { useRef } from 'react';
-import { motion, PanInfo, useMotionValue, useTransform, animate, useAnimationControls } from 'framer-motion';
+import { motion, PanInfo, useMotionValue, useAnimationControls, animate } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2 } from 'lucide-react';
-import Lottie from 'lottie-react';
-import deleteIconAnimation from '@/lib/animations/delete-icon.json';
 
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
@@ -51,6 +49,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     
     const x = useMotionValue(0);
     const iconControls = useAnimationControls();
+    const rippleControls = useAnimationControls();
 
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -61,6 +60,11 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
             scale: [1.2, 1],
             transition: { type: 'spring', stiffness: 400, damping: 10 }
           });
+          rippleControls.start({
+            scale: [0, 8],
+            opacity: [1, 1],
+            transition: { duration: 0.4, ease: "easeOut" }
+          });
           vibrated.current = true;
         } else if (itemRef.current && dist > -(itemRef.current.offsetWidth / 2) && vibrated.current) {
             vibrated.current = false;
@@ -68,10 +72,12 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     };
     
     const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-        vibrated.current = false;
         const offset = info.offset.x;
         const velocity = info.velocity.x;
         const threshold = itemRef.current ? -itemRef.current.offsetWidth / 2 : -100;
+        
+        rippleControls.start({ scale: 0, opacity: 0, transition: { duration: 0.1 } });
+        vibrated.current = false;
         
         if (offset < threshold || velocity < -500) {
             const finalX = -(itemRef.current?.offsetWidth || 0);
@@ -92,11 +98,15 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     return (
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
              <div
-                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6"
-                 style={{ width: '100%' }}
+                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
             >
+                <motion.div
+                    className="absolute right-6 h-10 w-10 bg-destructive/80 rounded-full"
+                    animate={rippleControls}
+                    initial={{ scale: 0, opacity: 0 }}
+                />
                 <motion.div animate={iconControls}>
-                    <Trash2 className="h-6 w-6 text-white" />
+                    <Trash2 className="h-6 w-6 text-white relative z-10" />
                 </motion.div>
             </div>
             
