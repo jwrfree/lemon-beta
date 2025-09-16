@@ -1,8 +1,7 @@
 
 'use client';
 import React, { useState } from 'react';
-import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import { useSwipeable, EventData } from 'react-swipeable';
+import { motion, useAnimation, PanInfo } from 'framer-motion';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Edit2 } from 'lucide-react';
@@ -20,43 +19,6 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
         controls.start({ x: 0 });
         setHapticTriggered(false);
     };
-
-    const handlers = useSwipeable({
-        onSwiping: (eventData: EventData) => {
-            // Only allow swiping left and right
-            if (eventData.dir !== 'Left' && eventData.dir !== 'Right') {
-                return;
-            }
-
-            // Prevent swiping too far
-            const newX = Math.max(Math.min(eventData.deltaX, ACTION_WIDTH), -ACTION_WIDTH);
-            controls.set({ x: newX });
-
-            // Haptic feedback at 50%
-            if (!hapticTriggered && Math.abs(eventData.deltaX) > ACTION_WIDTH / 2) {
-                if (window.navigator.vibrate) {
-                    window.navigator.vibrate(10);
-                }
-                setHapticTriggered(true);
-            }
-        },
-        onSwiped: (eventData) => {
-             if (Math.abs(eventData.deltaX) > ACTION_WIDTH * 0.75) {
-                if (eventData.dir === "Left") {
-                    controls.start({ x: -ACTION_WIDTH });
-                } else if (eventData.dir === "Right") {
-                    controls.start({ x: ACTION_WIDTH });
-                }
-            } else {
-                resetSwipe();
-            }
-        },
-        onTap: () => {
-            resetSwipe();
-        },
-        trackMouse: true,
-        preventScrollOnSwipe: true,
-    });
 
     const handleEditClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -77,8 +39,30 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
 
+    const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+        if (!hapticTriggered && Math.abs(info.offset.x) > ACTION_WIDTH / 2) {
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+            setHapticTriggered(true);
+        }
+    };
+    
+    const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+        const x = info.offset.x;
+        const threshold = ACTION_WIDTH * 0.75;
+
+        if (x < -threshold) {
+             controls.start({ x: -ACTION_WIDTH });
+        } else if (x > threshold) {
+            controls.start({ x: ACTION_WIDTH });
+        } else {
+            resetSwipe();
+        }
+    };
+
     return (
-        <div className="relative overflow-hidden rounded-lg bg-card">
+        <div className="relative overflow-hidden rounded-lg bg-card" onClick={resetSwipe}>
             <div className="absolute inset-y-0 left-0 flex items-center bg-secondary" style={{width: ACTION_WIDTH}}>
                  <Button
                     variant="secondary"
@@ -105,19 +89,13 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
             </div>
             
             <motion.div
-                {...handlers}
                 animate={controls}
                 drag="x"
                 dragConstraints={{ left: -ACTION_WIDTH, right: ACTION_WIDTH }}
-                dragElastic={0.1}
-                onDragEnd={() => {
-                    const x = controls.get('x');
-                    if (Math.abs(x) < ACTION_WIDTH * 0.75) {
-                        resetSwipe();
-                    } else {
-                        controls.start({ x: x > 0 ? ACTION_WIDTH : -ACTION_WIDTH });
-                    }
-                }}
+                dragElastic={0.2}
+                onDrag={onDrag}
+                onDragEnd={onDragEnd}
+                onPanEnd={() => setHapticTriggered(false)}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="flex items-center gap-3 p-3 cursor-pointer relative bg-card"
             >
