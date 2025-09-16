@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { AppProvider } from "@/components/app-provider";
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="font-sans antialiased">
+        <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
         <AppProvider>
           {children}
         </AppProvider>
