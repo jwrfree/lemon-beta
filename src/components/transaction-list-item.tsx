@@ -1,7 +1,7 @@
 
 'use client';
 import React, { useRef } from 'react';
-import { motion, PanInfo, useAnimationControls, animate } from 'framer-motion';
+import { motion, PanInfo, useAnimationControls, animate, useMotionValue } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
@@ -77,24 +77,28 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const offset = info.offset.x;
         const velocity = info.velocity.x;
-        const threshold = itemRef.current ? -itemRef.current.offsetWidth / 2 : -100;
         
-        rippleControls.start({ scale: 0, opacity: 0, transition: { duration: 0.1 } });
-        vibrated.current = false;
-        
-        if (offset < threshold || velocity < -500) {
-            const finalX = -(itemRef.current?.offsetWidth || 0);
-            animate(x, finalX, {
-                type: 'spring',
-                stiffness: 500,
-                damping: 50,
-                onComplete: () => {
-                    onDelete(transaction);
-                    setTimeout(() => x.set(0), 500);
-                }
-            });
-        } else {
-           animate(x, 0, { type: 'spring', stiffness: 400, damping: 40 });
+        if (itemRef.current) {
+            const threshold = -itemRef.current.offsetWidth / 2;
+            
+            rippleControls.start({ scale: 0, opacity: 0, transition: { duration: 0.1 } });
+            vibrated.current = false;
+            
+            if (offset < threshold || velocity < -500) {
+                const finalX = -itemRef.current.offsetWidth;
+                animate(x, finalX, {
+                    type: 'spring',
+                    stiffness: 500,
+                    damping: 50,
+                    onComplete: () => {
+                        onDelete(transaction);
+                        // Reset position after animation for recycling
+                        setTimeout(() => x.set(0), 500);
+                    }
+                });
+            } else {
+               animate(x, 0, { type: 'spring', stiffness: 400, damping: 40 });
+            }
         }
     };
 
@@ -104,7 +108,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
             >
                 <motion.div
-                    className="absolute right-6 h-10 w-10 bg-destructive/80 rounded-full z-0"
+                    className="absolute right-6 h-10 w-10 bg-red-800/80 rounded-full z-0"
                     animate={rippleControls}
                     initial={{ scale: 0, opacity: 0 }}
                 />
