@@ -8,7 +8,7 @@ import { parseISO } from 'date-fns';
 import React from 'react';
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
-    const { transactions: allTransactions, openDeleteModal, isLoading } = useApp();
+    const { transactions: allTransactions, openDeleteModal, openEditModal, isLoading } = useApp();
 
     if (!transactionsToShow) {
       transactionsToShow = walletId 
@@ -55,7 +55,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         return (
              <div className="space-y-2">
                 {list.map((t) => (
-                    <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} />
+                    <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} onEdit={openEditModal} />
                 ))}
             </div>
         );
@@ -70,7 +70,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     </h3>
                     <div className="space-y-2">
                         {transactionsForDay.map((t) => (
-                           <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} hideDate={true} />
+                           <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} onEdit={openEditModal} hideDate={true} />
                         ))}
                     </div>
                 </div>

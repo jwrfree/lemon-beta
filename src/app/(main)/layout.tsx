@@ -8,9 +8,10 @@ import { useApp } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
-import { useEffect } from 'react';
+import { useEffect }from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
+import { EditTransactionForm } from '@/components/edit-transaction-form';
 
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         isEditWalletModalOpen,
         setIsEditWalletModalOpen,
         walletToEdit,
+        isEditTxModalOpen,
+        setIsEditTxModalOpen,
+        transactionToEdit,
     } = useApp();
 
     useEffect(() => {
@@ -46,7 +50,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
     }
 
-    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen && !isTransferModalOpen && !isEditWalletModalOpen;
+    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen && !isTransferModalOpen && !isEditWalletModalOpen && !isEditTxModalOpen;
 
     return (
         <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
@@ -66,6 +70,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
                  <AnimatePresence>
                     {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
+                    {isEditTxModalOpen && transactionToEdit && <EditTransactionForm transaction={transactionToEdit} onClose={() => setIsEditTxModalOpen(false)} />}
                     {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
                     {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
                     {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}

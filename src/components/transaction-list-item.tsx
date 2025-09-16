@@ -7,7 +7,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Pencil } from 'lucide-react';
 
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
@@ -46,74 +46,130 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 };
 
 
-export const TransactionListItem = ({ transaction, onDelete, hideDate = false }: { transaction: any; onDelete: (t: any) => void; hideDate?: boolean; }) => {
+export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = false }: { transaction: any; onDelete: (t: any) => void; onEdit: (t: any) => void; hideDate?: boolean; }) => {
     const itemRef = useRef<HTMLDivElement>(null);
-    const vibrated = useRef(false);
+    const deleteVibrated = useRef(false);
+    const editVibrated = useRef(false);
     
     const x = useMotionValue(0);
-    const iconControls = useAnimationControls();
-    const rippleControls = useAnimationControls();
+    const deleteIconControls = useAnimationControls();
+    const deleteRippleControls = useAnimationControls();
+    const editIconControls = useAnimationControls();
+    const editRippleControls = useAnimationControls();
 
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const dist = info.offset.x;
-        if (itemRef.current && dist < -(itemRef.current.offsetWidth / 2) && !vibrated.current) {
+        if (!itemRef.current) return;
+        
+        const deleteThreshold = -itemRef.current.offsetWidth / 2;
+        const editThreshold = itemRef.current.offsetWidth / 2;
+
+        // Swipe left for delete
+        if (dist < deleteThreshold && !deleteVibrated.current) {
           navigator.vibrate?.(50);
-          iconControls.start({
+          deleteIconControls.start({
             scale: [1.2, 1],
             transition: { type: 'spring', stiffness: 400, damping: 10 }
           });
-          rippleControls.start({
+          deleteRippleControls.start({
             scale: [0, 8],
             opacity: [1, 0],
             transition: { duration: 0.4, ease: "easeOut" }
           });
-          vibrated.current = true;
-        } else if (itemRef.current && dist > -(itemRef.current.offsetWidth / 2) && vibrated.current) {
-            vibrated.current = false;
+          deleteVibrated.current = true;
+          editVibrated.current = false;
+        } else if (dist > deleteThreshold && deleteVibrated.current) {
+            deleteVibrated.current = false;
         }
+
+        // Swipe right for edit
+        if (dist > editThreshold && !editVibrated.current) {
+            navigator.vibrate?.(50);
+            editIconControls.start({
+              scale: [1.2, 1],
+              transition: { type: 'spring', stiffness: 400, damping: 10 }
+            });
+            editRippleControls.start({
+              scale: [0, 8],
+              opacity: [1, 0],
+              transition: { duration: 0.4, ease: "easeOut" }
+            });
+            editVibrated.current = true;
+            deleteVibrated.current = false;
+          } else if (dist < editThreshold && editVibrated.current) {
+              editVibrated.current = false;
+          }
     };
     
     const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const offset = info.offset.x;
         const velocity = info.velocity.x;
         
-        if (itemRef.current) {
-            const threshold = -itemRef.current.offsetWidth / 2;
-            
-            rippleControls.start({ scale: 0, opacity: 0, transition: { duration: 0.1 } });
-            vibrated.current = false;
-            
-            if (offset < threshold || velocity < -500) {
-                const finalX = -itemRef.current.offsetWidth;
-                animate(x, finalX, {
-                    type: 'spring',
-                    stiffness: 500,
-                    damping: 50,
-                    onComplete: () => {
-                        onDelete(transaction);
-                        // Reset position after animation for recycling
-                        setTimeout(() => x.set(0), 500);
-                    }
-                });
-            } else {
-               animate(x, 0, { type: 'spring', stiffness: 400, damping: 40 });
-            }
+        if (!itemRef.current) return;
+
+        const deleteThreshold = -itemRef.current.offsetWidth / 2;
+        const editThreshold = itemRef.current.offsetWidth / 2;
+        
+        deleteRippleControls.start({ scale: 0, opacity: 0, transition: { duration: 0.1 } });
+        editRippleControls.start({ scale: 0, opacity: 0, transition: { duration: 0.1 } });
+        deleteVibrated.current = false;
+        editVibrated.current = false;
+        
+        if (offset < deleteThreshold || velocity < -500) { // Swipe left complete
+            const finalX = -itemRef.current.offsetWidth;
+            animate(x, finalX, {
+                type: 'spring',
+                stiffness: 500,
+                damping: 50,
+                onComplete: () => {
+                    onDelete(transaction);
+                    setTimeout(() => x.set(0), 500);
+                }
+            });
+        } else if (offset > editThreshold || velocity > 500) { // Swipe right complete
+            const finalX = itemRef.current.offsetWidth;
+            animate(x, finalX, {
+                type: 'spring',
+                stiffness: 500,
+                damping: 50,
+                onComplete: () => {
+                    onEdit(transaction);
+                    setTimeout(() => x.set(0), 500);
+                }
+            });
+        }
+        else { // Cancel swipe
+           animate(x, 0, { type: 'spring', stiffness: 400, damping: 40 });
         }
     };
 
     return (
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
+             {/* Delete Action BG */}
              <div
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
             >
                 <motion.div
                     className="absolute right-6 h-10 w-10 bg-red-800/80 rounded-full z-0"
-                    animate={rippleControls}
+                    animate={deleteRippleControls}
                     initial={{ scale: 0, opacity: 0 }}
                 />
-                <motion.div animate={iconControls} className="relative z-10">
+                <motion.div animate={deleteIconControls} className="relative z-10">
                     <Trash2 className="h-6 w-6 text-white" />
+                </motion.div>
+            </div>
+             {/* Edit Action BG */}
+             <div
+                className="absolute inset-y-0 left-0 flex items-center justify-start bg-blue-600 text-white pl-6 w-full"
+            >
+                <motion.div
+                    className="absolute left-6 h-10 w-10 bg-blue-800/80 rounded-full z-0"
+                    animate={editRippleControls}
+                    initial={{ scale: 0, opacity: 0 }}
+                />
+                <motion.div animate={editIconControls} className="relative z-10">
+                    <Pencil className="h-6 w-6 text-white" />
                 </motion.div>
             </div>
             

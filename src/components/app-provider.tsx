@@ -17,6 +17,7 @@ interface AppContextType {
     expenseCategories: any[];
     incomeCategories: any[];
     addTransaction: (data: any) => Promise<void>;
+    updateTransaction: (transactionId: string, oldData: any, newData: any) => Promise<void>;
     addTransfer: (data: any) => Promise<void>;
     deleteTransaction: (transaction: any) => Promise<void>;
     addWallet: (walletData: any) => Promise<void>;
@@ -27,6 +28,10 @@ interface AppContextType {
     handleSignOut: () => void;
     isTxModalOpen: boolean;
     setIsTxModalOpen: (isOpen: boolean) => void;
+    isEditTxModalOpen: boolean;
+    setIsEditTxModalOpen: (isOpen: boolean) => void;
+    transactionToEdit: any | null;
+    openEditModal: (transaction: any) => void;
     isWalletModalOpen: boolean;
     setIsWalletModalOpen: (isOpen: boolean) => void;
     isBudgetModalOpen: boolean;
@@ -38,7 +43,6 @@ interface AppContextType {
     openDeleteModal: (transaction: any) => void;
     closeDeleteModal: () => void;
     handleConfirmDelete: () => Promise<void>;
-    handleEdit: (transaction: any) => void;
     isEditWalletModalOpen: boolean;
     setIsEditWalletModalOpen: (isOpen: boolean) => void;
     walletToEdit: any | null;
@@ -64,6 +68,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
     
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
+    const [isEditTxModalOpen, setIsEditTxModalOpen] = useState(false);
+    const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
@@ -150,6 +156,47 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             await updateDoc(walletRef, { balance: newBalance });
         }
         setIsTxModalOpen(false);
+    }, [user, getTransactionCollection, getWalletCollection]);
+
+    const updateTransaction = useCallback(async (transactionId: string, oldData: any, newData: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const transactionCollection = getTransactionCollection();
+        const walletCollection = getWalletCollection();
+        if (!transactionCollection || !walletCollection) return;
+
+        const batch = writeBatch(db);
+        const transactionRef = doc(transactionCollection, transactionId);
+
+        batch.update(transactionRef, newData);
+
+        const oldWalletRef = doc(walletCollection, oldData.walletId);
+        const newWalletRef = doc(walletCollection, newData.walletId);
+        
+        const oldWalletDoc = await getDoc(oldWalletRef);
+        const newWalletDoc = await getDoc(newWalletRef);
+
+        if (!oldWalletDoc.exists() || (oldData.walletId !== newData.walletId && !newWalletDoc.exists())) {
+            throw new Error("Wallet not found.");
+        }
+
+        if (oldData.walletId === newData.walletId) {
+            // Wallet is the same, just adjust balance
+            const balanceAdjustment = (oldData.type === 'income' ? -oldData.amount : oldData.amount) + (newData.type === 'income' ? newData.amount : -newData.amount);
+            const newBalance = oldWalletDoc.data()!.balance + balanceAdjustment;
+            batch.update(oldWalletRef, { balance: newBalance });
+        } else {
+            // Wallet changed, revert old wallet and apply to new wallet
+            const oldWalletBalanceReverted = oldWalletDoc.data()!.balance + (oldData.type === 'income' ? -oldData.amount : oldData.amount);
+            batch.update(oldWalletRef, { balance: oldWalletBalanceReverted });
+
+            const newWalletBalanceUpdated = newWalletDoc.data()!.balance + (newData.type === 'income' ? newData.amount : -newData.amount);
+            batch.update(newWalletRef, { balance: newWalletBalanceUpdated });
+        }
+        
+        await batch.commit();
+        toast.success("Transaksi berhasil diperbarui!");
+        setIsEditTxModalOpen(false);
+
     }, [user, getTransactionCollection, getWalletCollection]);
 
     const addTransfer = useCallback(async (data: any) => {
@@ -341,9 +388,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsEditWalletModalOpen(true);
     };
 
-    const handleEdit = (transaction: any) => {
-        toast.info("Fitur edit akan segera hadir!");
-        console.log("Edit transaction:", transaction);
+    const openEditModal = (transaction: any) => {
+        if (transaction.category === 'Transfer') {
+            toast.error("Mengedit transaksi transfer belum didukung.");
+            return;
+        }
+        setTransactionToEdit(transaction);
+        setIsEditTxModalOpen(true);
     };
 
     const contextValue = {
@@ -354,6 +405,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         expenseCategories: categories.expense,
         incomeCategories: categories.income,
         addTransaction,
+        updateTransaction,
         addTransfer,
         deleteTransaction,
         addWallet,
@@ -364,6 +416,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         handleSignOut,
         isTxModalOpen,
         setIsTxModalOpen,
+        isEditTxModalOpen,
+        setIsEditTxModalOpen,
+        transactionToEdit,
+        openEditModal,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -375,7 +431,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         openDeleteModal,
         closeDeleteModal,
         handleConfirmDelete,
-        handleEdit,
         isEditWalletModalOpen,
         setIsEditWalletModalOpen,
         walletToEdit,
