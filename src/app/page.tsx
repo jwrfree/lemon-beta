@@ -29,8 +29,8 @@ export default function AppPage() {
   }
 
   return (
-      <div className="min-h-screen bg-background text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
-          <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background border-border md:border md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+      <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
+          <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
               <LandingPage setAuthModal={setAuthModal} />
                 <AnimatePresence>
                   {authModal === 'login' && <LoginPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
