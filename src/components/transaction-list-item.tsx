@@ -47,11 +47,10 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
     const itemRef = useRef<HTMLDivElement>(null);
     const lottieRef = useRef<any>(null);
     const vibrated = useRef(false);
-    const ACTION_WIDTH = 80;
-
+    
     const x = useMotionValue(0);
 
-    const animationFrame = useTransform(x, [-ACTION_WIDTH, 0], [40, 0]);
+    const animationFrame = useTransform(x, [-80, 0], [40, 0]);
     animationFrame.onChange(v => lottieRef.current?.goToAndStop(v, true));
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -66,8 +65,9 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
         vibrated.current = false;
         const offset = info.offset.x;
         const velocity = info.velocity.x;
+        const threshold = itemRef.current ? -itemRef.current.offsetWidth / 2 : -100;
         
-        if (offset < -ACTION_WIDTH || velocity < -500) {
+        if (offset < threshold || velocity < -500) {
             const finalX = -(itemRef.current?.offsetWidth || 0);
             animate(x, finalX, {
                 type: 'spring',
@@ -88,7 +88,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
              <div
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-destructive-foreground pr-6"
-                 style={{ width: ACTION_WIDTH }}
+                 style={{ width: '100%' }}
             >
                 <Lottie
                     lottieRef={lottieRef}
