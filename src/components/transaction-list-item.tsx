@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { motion, useAnimation, useMotionValue, useTransform, PanInfo } from 'framer-motion';
+import { motion, useAnimation, PanInfo, useMotionValue, useTransform } from 'framer-motion';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2 } from 'lucide-react';
@@ -12,7 +12,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
     const [hapticTriggered, setHapticTriggered] = useState(false);
     const controls = useAnimation();
     const x = useMotionValue(0);
-    const ACTION_WIDTH = 100;
+    const ACTION_WIDTH = 80;
 
     const backgroundOpacity = useTransform(x, [-ACTION_WIDTH, 0], [1, 0]);
     const iconScale = useTransform(x, [-ACTION_WIDTH, -ACTION_WIDTH / 2, 0], [1, 0.5, 0]);
