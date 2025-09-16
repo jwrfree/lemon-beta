@@ -44,7 +44,7 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
 
     if (limit) {
         return (
-             <div className="bg-card rounded-lg shadow-md">
+             <div className="bg-card rounded-lg">
                 {transactionsToShow.map((t, index) => (
                     <React.Fragment key={t.id}>
                         <TransactionListItem transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
@@ -62,7 +62,7 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">
                         {formatRelativeDate(parseISO(date))}
                     </h3>
-                    <div className="bg-card rounded-lg shadow-md">
+                    <div className="bg-card rounded-lg">
                         {transactionsForDay.map((t, index) => (
                            <React.Fragment key={t.id}>
                              <TransactionListItem transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
