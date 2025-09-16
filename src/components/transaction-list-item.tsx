@@ -86,7 +86,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                 ref={itemRef}
                 {...handlers}
                 className={cn(
-                    "flex items-center gap-3 p-3 transition-transform duration-300 ease-in-out cursor-pointer relative bg-card"
+                    "flex items-center gap-3 p-3 transition-transform duration-300 ease-in-out cursor-pointer relative bg-transparent"
                 )}
                 onClick={resetSwipe}
             >

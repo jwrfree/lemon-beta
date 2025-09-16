@@ -15,7 +15,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
 
     return (
         <div className="flex flex-col h-full">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
+            <header className="h-16 flex items-center relative px-4 shrink-0">
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
                 <Button variant="ghost" size="icon" className="absolute right-4" onClick={onAddBudget}>
                     <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
@@ -42,7 +42,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
                                     <h3 className="font-semibold">{budget.name}</h3>
                                     <span className="text-sm text-muted-foreground">{formatCurrency(budget.spent)} / {formatCurrency(budget.targetAmount)}</span>
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-zinc-700">
+                                <div className="w-full bg-muted rounded-full h-2.5">
                                     <div className="bg-primary h-2.5 rounded-full" style={{ width: `${(budget.spent / budget.targetAmount) * 100}%` }}></div>
                                 </div>
                                 <div className="flex flex-wrap gap-1 mt-2">

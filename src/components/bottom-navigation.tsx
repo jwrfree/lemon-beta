@@ -42,9 +42,9 @@ export const BottomNavigation = () => {
             animate={{ y: 0 }}
             exit={{ y: 100 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-lg border-t"
+            className="fixed bottom-0 left-0 right-0 z-40"
         >
-            <div className="w-full max-w-md mx-auto flex h-16 items-center justify-around">
+            <div className="w-full max-w-md mx-auto flex h-16 items-center justify-around bg-card shadow-[0_-2px_10px_rgba(0,0,0,0.05)] rounded-t-2xl md:rounded-b-lg md:rounded-t-none">
                 {navItems.map(item => (
                     <Button
                         key={item.id}

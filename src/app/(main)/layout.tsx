@@ -42,8 +42,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
-            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background border-border md:border md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+        <div className="min-h-screen bg-background text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
+            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:bg-card border-border md:border md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={pathname}

@@ -43,9 +43,12 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
 
     if (limit) {
         return (
-            <div className="space-y-2">
-                {transactionsToShow.map(t => (
-                    <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+             <div className="bg-card rounded-lg shadow-md">
+                {transactionsToShow.map((t, index) => (
+                    <>
+                        <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                        {index < transactionsToShow.length - 1 && <hr className="border-border" />}
+                    </>
                 ))}
             </div>
         );
@@ -58,9 +61,12 @@ export const TransactionList = ({ limit }: { limit?: number }) => {
                     <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">
                         {formatRelativeDate(parseISO(date))}
                     </h3>
-                    <div className="space-y-2">
-                        {transactionsForDay.map(t => (
-                            <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                    <div className="bg-card rounded-lg shadow-md">
+                        {transactionsForDay.map((t, index) => (
+                           <>
+                             <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                             {index < transactionsForDay.length - 1 && <hr className="border-border" />}
+                           </>
                         ))}
                     </div>
                 </div>

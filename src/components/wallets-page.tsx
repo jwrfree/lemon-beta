@@ -19,7 +19,7 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
+      <header className="h-16 flex items-center relative px-4 shrink-0">
         <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
           <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
         </Button>
@@ -59,7 +59,7 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
           {wallets.map(wallet => {
             const { Icon, color } = getWalletVisuals(wallet.icon);
             return (
-              <Card key={wallet.id} className={cn("overflow-hidden", color.replace('bg-', 'border-'))} style={{borderLeftWidth: 4}}>
+              <Card key={wallet.id} className={cn("overflow-hidden border-l-4", color.replace('bg-', 'border-'))}>
                 <div className="p-4 flex items-center gap-4">
                     <Icon className={cn("h-8 w-8", color.replace('bg-', 'text-'))} />
                     <div className="flex-1">
