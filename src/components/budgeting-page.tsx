@@ -1,24 +1,22 @@
 
 'use client';
 
-import {
-  Card,
-} from '@/components/ui/card';
-import {
-  Button,
-} from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { HandCoins, PlusCircle, ChevronLeft } from 'lucide-react';
-import { categoryDetails, useData, useNavigation } from '@/app/page';
+import { useApp } from '@/components/app-provider';
+import { categoryDetails } from '@/lib/categories';
 import { formatCurrency } from '@/lib/utils';
 
 export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
-    const { back } = useNavigation();
-    const { budgets } = useData();
+    const router = useRouter();
+    const { budgets } = useApp();
 
     return (
         <div className="flex flex-col h-full">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => useData().router.push('home')}>
+                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
@@ -26,7 +24,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
                     <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
             </header>
-            <main className="flex-1 overflow-y-auto p-4">
+            <main className="flex-1 overflow-y-auto p-4 pb-16">
                 {budgets.length === 0 ? (
                     <div className="flex flex-col h-full items-center justify-center text-center">
                         <div className="p-3 bg-destructive/10 rounded-full mb-3">
@@ -69,6 +67,3 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
         </div>
     );
 };
-
-
-    

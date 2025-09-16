@@ -1,14 +1,11 @@
 
 'use client';
 
-import { useData } from "@/app/page";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Wallet, BarChart3, PiggyBank, LogIn, UserPlus } from 'lucide-react';
+import { Wallet, LogIn, UserPlus } from 'lucide-react';
 
-export const LandingPage = () => {
-    const { setAuthModal } = useData();
-
+export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | null) => void; }) => {
     return (
         <div className="flex flex-col h-full bg-background">
             <main className="flex-1 flex flex-col items-center justify-center p-8 text-center">

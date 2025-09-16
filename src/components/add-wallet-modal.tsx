@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem as ShadCNRadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
-import { useData, getWalletVisuals } from '@/app/page';
+import { useApp } from '@/components/app-provider';
+import { getWalletVisuals } from '@/lib/wallet-visuals';
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet } = useData();
+  const { addWallet } = useApp();
   const [walletName, setWalletName] = useState('');
   const [walletType, setWalletType] = useState('wallet');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,11 +38,11 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     trackMouse: true,
   });
   
-  const walletVisuals: Record<string, { name: string; Icon: React.ElementType }> = {
-    wallet: { name: 'Dompet', Icon: Wallet },
-    bank: { name: 'Bank', Icon: Banknote },
-    landmark: { name: 'Lainnya', Icon: Landmark },
-  };
+  const walletTypes = [
+    { key: 'wallet', name: 'Dompet', Icon: Wallet },
+    { key: 'bank', name: 'Bank', Icon: Banknote },
+    { key: 'landmark', name: 'Lainnya', Icon: Landmark },
+  ];
 
   return (
     <motion.div
@@ -80,8 +81,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
           <div className="space-y-2">
             <Label>Jenis Dompet</Label>
             <RadioGroup onValueChange={setWalletType} value={walletType} className="grid grid-cols-3 gap-2">
-              {Object.keys(walletVisuals).map(key => {
-                const { name, Icon } = getWalletVisuals(key);
+              {walletTypes.map(({key, name, Icon}) => {
                 return (
                   <Label key={key} htmlFor={`wallet-type-${key}`} className={cn(
                     "relative flex flex-col items-center justify-center space-y-2 p-4 rounded-lg border-2 cursor-pointer",
@@ -104,4 +104,3 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
-    

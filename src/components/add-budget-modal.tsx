@@ -10,10 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { useData } from '@/app/page';
+import { useApp } from '@/components/app-provider';
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
-  const { addBudget, expenseCategories } = useData();
+  const { addBudget, expenseCategories } = useApp();
   const [budgetName, setBudgetName] = useState('');
   const [targetAmount, setTargetAmount] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -81,5 +81,3 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
-
-    

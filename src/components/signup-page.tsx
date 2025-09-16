@@ -7,8 +7,7 @@ import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useData } from '@/app/page';
-import { User, Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -26,17 +25,12 @@ const formSchema = z.object({
 });
 
 
-export const SignUpPage = ({ onClose }: { onClose: () => void }) => {
-    const { setAuthModal } = useData();
+export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-            confirmPassword: "",
-        },
+        defaultValues: { email: "", password: "", confirmPassword: "" },
         mode: 'onTouched'
     });
 
@@ -51,7 +45,7 @@ export const SignUpPage = ({ onClose }: { onClose: () => void }) => {
             if (error.code === 'auth/email-already-in-use') {
                 toast.error("Email sudah terdaftar.");
             } else {
-                toast.error(error.message);
+                toast.error("Gagal membuat akun.");
             }
         }
     };
@@ -96,21 +90,10 @@ export const SignUpPage = ({ onClose }: { onClose: () => void }) => {
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input
-                                                    type="email"
-                                                    placeholder="email@example.com"
-                                                    className="pl-10"
-                                                    {...field}
-                                                />
+                                                <Input type="email" placeholder="email@example.com" className="pl-10" {...field} />
                                             </FormControl>
                                             {field.value && (
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
-                                                    onClick={() => form.setValue('email', '')}
-                                                >
+                                                <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')}>
                                                     <X className="h-4 w-4" />
                                                 </Button>
                                             )}
@@ -128,12 +111,7 @@ export const SignUpPage = ({ onClose }: { onClose: () => void }) => {
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="********"
-                                                    className="pl-10 pr-10"
-                                                    {...field}
-                                                />
+                                                <Input type={showPassword ? "text" : "password"} placeholder="********" className="pl-10 pr-10" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
@@ -152,12 +130,7 @@ export const SignUpPage = ({ onClose }: { onClose: () => void }) => {
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="********"
-                                                    className="pl-10 pr-10"
-                                                    {...field}
-                                                />
+                                                <Input type={showPassword ? "text" : "password"} placeholder="********" className="pl-10 pr-10" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
@@ -174,9 +147,7 @@ export const SignUpPage = ({ onClose }: { onClose: () => void }) => {
                     </Form>
                     <p className="text-sm text-muted-foreground mt-4 text-center">
                         Sudah punya akun?{' '}
-                        <Button variant="link" onClick={() => setAuthModal('login')} className="p-0 h-auto">
-                            Masuk di sini
-                        </Button>
+                        <Button variant="link" onClick={() => setAuthModal('login')} className="p-0 h-auto">Masuk di sini</Button>
                     </p>
                 </div>
             </motion.div>

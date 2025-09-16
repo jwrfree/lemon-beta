@@ -2,8 +2,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useData, categoryDetails } from '@/app/page';
-import { format, parseISO } from 'date-fns';
+import { useApp } from '@/components/app-provider';
+import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,12 +13,12 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { X, CalendarIcon } from 'lucide-react';
 
 export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
-    const { addTransaction, wallets, expenseCategories, incomeCategories } = useData();
+    const { addTransaction, wallets, expenseCategories, incomeCategories } = useApp();
     const [type, setType] = useState('expense');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');

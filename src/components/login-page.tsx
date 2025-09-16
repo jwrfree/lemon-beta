@@ -7,15 +7,13 @@ import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useData } from '@/app/page';
-import { LogIn, Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -31,17 +29,12 @@ const formSchema = z.object({
     password: z.string().min(6, { message: "Password minimal 6 karakter." }),
 });
 
-
-export const LoginPage = ({ onClose }: { onClose: () => void }) => {
-    const { setAuthModal } = useData();
+export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-        },
+        defaultValues: { email: "", password: "" },
         mode: 'onTouched'
     });
 
@@ -53,7 +46,7 @@ export const LoginPage = ({ onClose }: { onClose: () => void }) => {
             toast.success("Login berhasil!");
             onClose();
         } catch (error: any) {
-            toast.error(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : error.message);
+            toast.error(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal untuk masuk.');
         }
     };
 
@@ -64,7 +57,7 @@ export const LoginPage = ({ onClose }: { onClose: () => void }) => {
             toast.success("Login dengan Google berhasil!");
             onClose();
         } catch (error: any) {
-            toast.error(error.message);
+            toast.error('Gagal masuk dengan Google.');
         }
     };
 
@@ -109,21 +102,10 @@ export const LoginPage = ({ onClose }: { onClose: () => void }) => {
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input
-                                                    type="email"
-                                                    placeholder="email@example.com"
-                                                    className="pl-10"
-                                                    {...field}
-                                                />
+                                                <Input type="email" placeholder="email@example.com" className="pl-10" {...field} />
                                             </FormControl>
                                             {field.value && (
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
-                                                    onClick={() => form.setValue('email', '')}
-                                                >
+                                                <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')}>
                                                     <X className="h-4 w-4" />
                                                 </Button>
                                             )}
@@ -141,12 +123,7 @@ export const LoginPage = ({ onClose }: { onClose: () => void }) => {
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="********"
-                                                    className="pl-10 pr-10"
-                                                    {...field}
-                                                />
+                                                <Input type={showPassword ? "text" : "password"} placeholder="********" className="pl-10 pr-10" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
@@ -163,13 +140,9 @@ export const LoginPage = ({ onClose }: { onClose: () => void }) => {
                     </Form>
                     <div className="mt-4">
                         <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t" />
-                            </div>
+                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
                             <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-background px-2 text-muted-foreground">
-                                    Atau lanjutkan dengan
-                                </span>
+                                <span className="bg-background px-2 text-muted-foreground">Atau lanjutkan dengan</span>
                             </div>
                         </div>
                         <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignIn}>
@@ -179,9 +152,7 @@ export const LoginPage = ({ onClose }: { onClose: () => void }) => {
                     </div>
                     <p className="text-sm text-muted-foreground mt-4 text-center">
                         Belum punya akun?{' '}
-                        <Button variant="link" onClick={() => setAuthModal('signup')} className="p-0 h-auto">
-                            Daftar di sini
-                        </Button>
+                        <Button variant="link" onClick={() => setAuthModal('signup')} className="p-0 h-auto">Daftar di sini</Button>
                     </p>
                 </div>
             </motion.div>
