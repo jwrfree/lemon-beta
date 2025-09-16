@@ -14,7 +14,7 @@ export const BottomNavigation = () => {
     const { setIsTxModalOpen } = useApp();
 
     const navItems = [
-        { id: 'home', href: '/', icon: Home, name: 'Beranda' },
+        { id: 'home', href: '/transactions', icon: Home, name: 'Beranda' },
         { id: 'budgeting', href: '/budgeting', icon: PiggyBank, name: 'Anggaran' },
         { id: 'add', href: '#', icon: PlusCircle, name: 'Tambah', primary: true },
         { id: 'charts', href: '/charts', icon: BarChart3, name: 'Analisis' },
