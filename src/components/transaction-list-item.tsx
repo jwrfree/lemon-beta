@@ -1,6 +1,7 @@
+
 'use client';
 import React, { useRef } from 'react';
-import { motion, PanInfo, useMotionValue, useAnimationControls, animate } from 'framer-motion';
+import { motion, PanInfo, useAnimationControls, animate } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
@@ -23,8 +24,10 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
             </div>
             <div className="flex-1 overflow-hidden">
                 <div className="font-medium truncate">{transaction.description}</div>
-                 <div className="text-sm text-muted-foreground flex items-center gap-1">
-                    <span>{wallet?.name || '...'}</span>
+                 <div className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    <span className="truncate">{transaction.category}</span>
+                    <span>&bull;</span>
+                    <span className="truncate">{wallet?.name || '...'}</span>
                     {!hideDate && (
                         <>
                             <span>&bull;</span>
