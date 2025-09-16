@@ -28,7 +28,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
   };
 
   const onDragEnd = (e: any, { offset, velocity }: { offset: any, velocity: any }) => {
-    const swipe = swipePower(offset.x, velocity.x);
+    const swipe = swipePower(offset.y, velocity.y);
 
     if (swipe < -swipeConfidenceThreshold) {
       paginate(1);
@@ -51,9 +51,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             return (
               <motion.div
                 key={wallet.id}
-                drag={isActive ? "x" : false}
+                drag={isActive ? "y" : false}
                 onDragEnd={onDragEnd}
-                dragConstraints={{ left: 0, right: 0 }}
+                dragConstraints={{ top: 0, bottom: 0 }}
                 dragElastic={0.2}
                 className={cn(
                   "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg",
@@ -64,7 +64,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 }}
                 initial={{
                    scale: i === activeIndex ? 1 : 0.85,
-                   y: (i - activeIndex) * 30, // Increased vertical spacing
+                   y: (i - activeIndex) * 30,
                    opacity: i === activeIndex ? 1 : (i === (activeIndex + 1) % wallets.length ? 1 : 0),
                 }}
                 animate={{
@@ -85,7 +85,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                               <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
                               <p className="font-semibold text-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.2)'}}>{wallet.name}</p>
                           </div>
-                          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8" onClick={() => openEditWalletModal(wallet)}>
+                          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8 rounded-full" onClick={() => openEditWalletModal(wallet)}>
                               <MoreVertical className="h-5 w-5" />
                           </Button>
                       </div>
