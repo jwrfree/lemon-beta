@@ -2,7 +2,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X, Wallet } from 'lucide-react';
+import { X } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 
@@ -17,7 +17,9 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
         trackMouse: true,
     });
     
-    const { icon: CategoryIcon } = categoryDetails(transaction.category);
+    const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
+    const isExpense = transaction.type === 'expense';
+    const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
 
     return (
         <motion.div
@@ -45,15 +47,15 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                 <div className="p-4 space-y-4">
                     <p className="text-sm text-muted-foreground">Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
                     <div className="flex items-center gap-3 rounded-lg border p-3">
-                        <div className={cn("flex-shrink-0 p-2 rounded-full", transaction.type === 'expense' ? 'bg-rose-100 dark:bg-rose-900' : 'bg-green-100 dark:bg-green-900')}>
-                             <CategoryIcon className={cn("h-5 w-5", transaction.type === 'expense' ? 'text-rose-600' : 'text-green-600')} />
+                        <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
+                             <CategoryIcon className={cn("h-5 w-5", color)} />
                         </div>
                         <div className="flex-1">
                             <div className="font-medium">{transaction.description}</div>
                             <div className="text-sm text-muted-foreground">{transaction.category} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
                         </div>
                         <div className="text-sm font-semibold text-right">
-                            <span className={transaction.type === 'expense' ? 'text-rose-600' : 'text-green-600'}>
+                            <span className={amountColor}>
                                 {transaction.type === 'expense' ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                             </span>
                         </div>

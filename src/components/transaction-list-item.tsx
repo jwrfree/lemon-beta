@@ -31,12 +31,16 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
         },
         onTap: resetSwipe,
         trackMouse: true,
+        preventScrollOnSwipe: true,
     });
 
-    const { icon: CategoryIcon } = categoryDetails(transaction.category);
-    const isExpense = transaction.type === 'expense';
+    const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const { wallets } = useApp();
     const wallet = wallets.find(w => w.id === transaction.walletId);
+    
+    const isExpense = transaction.type === 'expense';
+    const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
+
 
     return (
         <div className="relative overflow-hidden rounded-lg">
@@ -86,15 +90,15 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                 )}
                 onClick={resetSwipe}
             >
-                <div className={cn("flex-shrink-0 p-2 rounded-full", isExpense ? 'bg-rose-100 dark:bg-rose-900' : 'bg-green-100 dark:bg-green-900')}>
-                    <CategoryIcon className={cn("h-5 w-5", isExpense ? 'text-rose-600' : 'text-green-600')} />
+                <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
+                    <CategoryIcon className={cn("h-5 w-5", color)} />
                 </div>
                 <div className="flex-1">
                     <div className="font-medium">{transaction.description}</div>
                     <div className="text-sm text-muted-foreground">{wallet?.name} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
                 </div>
                 <div className="text-sm font-semibold text-right">
-                    <span className={cn(isExpense ? 'text-rose-600' : 'text-green-600')}>
+                    <span className={cn(amountColor)}>
                         {isExpense ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                     </span>
                 </div>

@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { X, CalendarIcon } from 'lucide-react';
+import { categoryDetails } from '@/lib/categories';
 
 export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
     const { addTransaction, wallets, expenseCategories, incomeCategories } = useApp();
@@ -178,20 +179,25 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                     <div className="space-y-2">
                         <Label>Kategori</Label>
                         <div className="grid grid-cols-4 gap-2">
-                            {categories.map((cat) => (
-                                <button
-                                    type="button"
-                                    key={cat.id}
-                                    onClick={() => setCategory(cat.name)}
-                                    className={cn(
-                                        "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1 aspect-square",
-                                        category === cat.name ? 'border-primary bg-primary/10' : 'border-muted'
-                                    )}
-                                >
-                                    <cat.icon className={cn("h-5 w-5", category === cat.name ? 'text-primary' : 'text-muted-foreground')} />
-                                    <span className="text-xs text-center">{cat.name}</span>
-                                </button>
-                            ))}
+                            {categories.map((cat) => {
+                                const isSelected = category === cat.name;
+                                return (
+                                    <button
+                                        type="button"
+                                        key={cat.id}
+                                        onClick={() => setCategory(cat.name)}
+                                        className={cn(
+                                            "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1 aspect-square",
+                                            isSelected ? 'border-primary bg-primary/10' : 'border-muted'
+                                        )}
+                                    >
+                                        <div className={cn("p-2 rounded-full", isSelected ? 'bg-transparent' : cat.bgColor)}>
+                                            <cat.icon className={cn("h-5 w-5", isSelected ? 'text-primary' : cat.color)} />
+                                        </div>
+                                        <span className="text-xs text-center">{cat.name}</span>
+                                    </button>
+                                )
+                            })}
                         </div>
                     </div>
                     
