@@ -6,12 +6,16 @@ import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/a
 import { getFirestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, writeBatch, query, orderBy } from 'firebase/firestore';
 import { format, isToday, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { ChevronLeft, CalendarIcon, AlertCircle, PlusCircle, Trash2, Edit2, Wallet, Banknote, Landmark, Utensils, TShirt, Gift, Home, Car, Phone, Gamepad2, Briefcase, GraduationCap, Wrench, Handshake, PiggyBank, BarChart3, Settings, X, Plus, ShoppingCart, Bell, HandCoins, Target, TrendingUp, ArrowUp, ArrowDown, Stethoscope } from 'lucide-react';
+import { ChevronLeft, CalendarIcon, AlertCircle, PlusCircle, Trash2, Edit2, Wallet, Banknote, Landmark, Utensils, TShirt, Gift, Home, Car, Phone, Gamepad2, Briefcase, GraduationCap, Wrench, Handshake, PiggyBank, BarChart3, Settings, X, Plus, ShoppingCart, Bell, HandCoins, Target, TrendingUp, ArrowUp, ArrowDown, HeartPulse } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { toast, Toaster } from 'sonner';
 import { auth, db } from '@/lib/firebase';
 import { cn, formatCurrency } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
 
 
 // ============================================================================
@@ -61,7 +65,7 @@ const categories = {
     { id: 'cat-e-5', name: 'Hiburan', icon: Gamepad2 },
     { id: 'cat-e-6', name: 'Rumah', icon: Home },
     { id: 'cat-e-7', name: 'Pendidikan', icon: GraduationCap },
-    { id: 'cat-e-8', name: 'Kesehatan', icon: Stethoscope },
+    { id: 'cat-e-8', name: 'Kesehatan', icon: HeartPulse },
     { id: 'cat-e-9', name: 'Lain-lain', icon: Wrench },
   ],
   income: [
@@ -106,7 +110,7 @@ const Button = ({ variant, size, className, ...props }: { variant?: "default" | 
     {...props}
   />
 );
-const Card = ({ className, ...props }: { className?: string; [key: string]: any }) => <div className={cn("rounded-xl border bg-card text-card-foreground shadow", className)} {...props} />;
+
 const RadioGroupItem = ({ value, id, className, labelClassName, children, ...props }: { value: string; id: string; className?: string; labelClassName?: string; children: React.ReactNode; [key: string]: any }) => (
   <>
     <input type="radio" value={value} id={id} className="sr-only" {...props} />
@@ -321,7 +325,12 @@ function App() {
       if (user) {
         setUserId(user.uid);
       } else {
-        await signInAnonymously(auth);
+        try {
+          await signInAnonymously(auth);
+        } catch (error) {
+          console.error("Anonymous sign-in failed:", error);
+          toast.error("Gagal terhubung ke server.");
+        }
       }
     });
     return () => unsubscribe();
