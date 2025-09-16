@@ -190,3 +190,4 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
         </div>
     );
 };
+
