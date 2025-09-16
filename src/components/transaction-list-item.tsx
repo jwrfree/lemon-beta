@@ -1,7 +1,7 @@
 
 'use client';
 import React, { useRef } from 'react';
-import { motion, PanInfo, useAnimationControls, animate, useMotionValue } from 'framer-motion';
+import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
@@ -56,6 +56,9 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
     const deleteRippleControls = useAnimationControls();
     const editIconControls = useAnimationControls();
     const editRippleControls = useAnimationControls();
+
+    const deleteOpacity = useTransform(x, [-80, 0], [1, 0]);
+    const editOpacity = useTransform(x, [0, 80], [0, 1]);
 
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
@@ -147,7 +150,8 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
     return (
         <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
              {/* Delete Action BG */}
-             <div
+             <motion.div
+                style={{ opacity: deleteOpacity }}
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
             >
                 <motion.div
@@ -158,9 +162,10 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
                 <motion.div animate={deleteIconControls} className="relative z-10">
                     <Trash2 className="h-6 w-6 text-white" />
                 </motion.div>
-            </div>
+            </motion.div>
              {/* Edit Action BG */}
-             <div
+             <motion.div
+                style={{ opacity: editOpacity }}
                 className="absolute inset-y-0 left-0 flex items-center justify-start bg-blue-600 text-white pl-6 w-full"
             >
                 <motion.div
@@ -171,7 +176,7 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
                 <motion.div animate={editIconControls} className="relative z-10">
                     <Pencil className="h-6 w-6 text-white" />
                 </motion.div>
-            </div>
+            </motion.div>
             
             <motion.div
                 drag="x"
