@@ -21,11 +21,11 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
     }
     
     const groupedTransactions = transactionsToShow.reduce((acc, t) => {
-        const date = parseISO(t.date).toISOString().split('T')[0];
-        if (!acc[date]) {
-            acc[date] = [];
+        const dateKey = parseISO(t.date).toISOString().split('T')[0];
+        if (!acc[dateKey]) {
+            acc[dateKey] = [];
         }
-        acc[date].push(t);
+        acc[dateKey].push(t);
         return acc;
     }, {} as Record<string, any[]>);
 
