@@ -1,42 +1,46 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useApp } from '@/components/app-provider';
+import { useRouter } from 'next/navigation';
+import { AnimatePresence } from 'framer-motion';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
-import { AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
 
-export default function AppPage() {
-  const { user, isLoading } = useApp();
-  const [authModal, setAuthModal] = useState<string | null>(null);
-  const router = useRouter();
+export default function WelcomePage() {
+    const { user, isLoading } = useApp();
+    const router = useRouter();
+    const [authModal, setAuthModal] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isLoading && user) {
-      router.push('/home');
+    useEffect(() => {
+        if (!isLoading && user) {
+            router.replace('/home');
+        }
+    }, [user, isLoading, router]);
+
+    if (isLoading || user) {
+        // Show a global loader or a blank screen while redirecting
+        return (
+             <div className="flex h-dvh w-full items-center justify-center bg-background">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+        );
     }
-  }, [user, isLoading, router]);
+    
+    const closeModal = () => setAuthModal(null);
 
-  if (isLoading) {
-    return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
-  }
-  
-  if (user) {
-     return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
-  }
+    return (
+        <div className="min-h-screen bg-background text-foreground flex flex-col items-center p-0 md:p-8 font-sans">
+            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+                <LandingPage setAuthModal={setAuthModal} />
 
-  return (
-      <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
-          <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
-              <LandingPage setAuthModal={setAuthModal} />
                 <AnimatePresence>
-                  {authModal === 'login' && <LoginPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
-                  {authModal === 'signup' && <SignUpPage onClose={() => setAuthModal(null)} setAuthModal={setAuthModal} />}
-              </AnimatePresence>
-          </div>
-      </div>
-  );
+                    {authModal === 'login' && <LoginPage onClose={closeModal} setAuthModal={setAuthModal} />}
+                    {authModal === 'signup' && <SignUpPage onClose={closeModal} setAuthModal={setAuthModal} />}
+                </AnimatePresence>
+            </div>
+        </div>
+    );
 }
