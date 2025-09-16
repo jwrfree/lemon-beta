@@ -236,4 +236,3 @@ export const AppProvider = ({ user, children }: { user: User, children: React.Re
         </AppContext.Provider>
     );
 };
-
