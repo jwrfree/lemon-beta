@@ -48,7 +48,7 @@ export default function HomePage() {
                                 return (
                                     <div key={wallet.id} className={cn("p-4 rounded-lg text-white", color)}>
                                         <div className="flex items-center justify-between mb-2">
-                                            <Icon className="h-6 w-6" />
+                                            <Icon />
                                             <span className="text-xs font-medium opacity-80">{wallet.name}</span>
                                         </div>
                                         <p className="text-xl font-bold">{formatCurrency(wallet.balance)}</p>
