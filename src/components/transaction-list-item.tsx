@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { useSwipeable, EventData } from 'react-swipeable';
 import { format, parseISO } from 'date-fns';
@@ -11,7 +11,7 @@ import { categoryDetails } from '@/lib/categories';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/components/app-provider';
 
-export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; }) => {
+export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const [swipeState, setSwipeState] = useState<'left' | 'right' | null>(null);
     const [hapticTriggered, setHapticTriggered] = useState(false);
     const controls = useAnimation();
@@ -113,7 +113,9 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete }: { transac
                 </div>
                 <div className="flex-1">
                     <div className="font-medium">{transaction.description}</div>
-                    <div className="text-sm text-muted-foreground">{wallet?.name} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
+                    <div className="text-sm text-muted-foreground">
+                        {wallet?.name}{!hideDate && ` • ${format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}`}
+                    </div>
                 </div>
                 <div className="text-sm font-semibold text-right">
                     <span className={cn(amountColor)}>

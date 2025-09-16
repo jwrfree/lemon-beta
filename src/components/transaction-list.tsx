@@ -50,10 +50,11 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         return <div className="text-muted-foreground text-sm text-center py-8">Tidak ada transaksi yang cocok.</div>;
     }
 
-    if (limit) {
+    if (limit || walletId) {
+        const list = walletId ? transactionsToShow.filter(t => t.walletId === walletId) : transactionsToShow;
         return (
              <div className="bg-card rounded-lg divide-y divide-border">
-                {transactionsToShow.map((t) => (
+                {list.map((t) => (
                     <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
                 ))}
             </div>
@@ -69,7 +70,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     </h3>
                     <div className="bg-card rounded-lg divide-y divide-border">
                         {transactionsForDay.map((t) => (
-                           <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} />
+                           <TransactionListItem key={t.id} transaction={t} onEdit={handleEdit} onDelete={openDeleteModal} hideDate={true} />
                         ))}
                     </div>
                 </div>
