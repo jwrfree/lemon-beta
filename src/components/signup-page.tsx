@@ -7,32 +7,50 @@ import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useData } from '@/app/page';
-import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+const formSchema = z.object({
+    email: z.string().email({ message: "Format email tidak valid." }),
+    password: z.string().min(6, { message: "Password minimal 6 karakter." }),
+    confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Konfirmasi password tidak cocok.",
+    path: ["confirmPassword"],
+});
+
 
 export const SignUpPage = () => {
     const { router } = useData();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSignUp = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (password !== confirmPassword) {
-            toast.error("Passwords do not match.");
-            return;
-        }
-        setIsLoading(true);
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+            confirmPassword: "",
+        },
+        mode: 'onTouched'
+    });
+
+    const { formState: { isSubmitting } } = form;
+
+    const handleSignUp = async (values: z.infer<typeof formSchema>) => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            toast.success("Akun berhasil dibuat!");
+            await createUserWithEmailAndPassword(auth, values.email, values.password);
+            toast.success("Akun berhasil dibuat! Silakan masuk.");
+            router.push('login');
         } catch (error: any) {
-            toast.error(error.message);
-        } finally {
-            setIsLoading(false);
+            if (error.code === 'auth/email-already-in-use') {
+                toast.error("Email sudah terdaftar.");
+            } else {
+                toast.error(error.message);
+            }
         }
     };
 
@@ -43,62 +61,93 @@ export const SignUpPage = () => {
                 <h1 className="text-3xl font-bold mt-4">Buat Akun</h1>
                 <p className="text-muted-foreground mt-2">Mulai kelola keuangan Anda dengan Lemon.</p>
             </div>
-            <form onSubmit={handleSignUp} className="w-full max-w-sm mt-8 space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="email@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="pl-10"
-                        />
-                    </div>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input
-                            id="password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="********"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="pl-10 pr-10"
-                        />
-                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
-                            {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                        </button>
-                    </div>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Konfirmasi Password</Label>
-                     <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                        <Input
-                            id="confirm-password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="********"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                            className="pl-10 pr-10"
-                        />
-                         <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
-                            {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                        </button>
-                    </div>
-                </div>
-                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                    {isLoading ? 'Membuat Akun...' : 'Daftar'}
-                </Button>
-            </form>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSignUp)} className="w-full max-w-sm mt-8 space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <FormControl>
+                                        <Input
+                                            type="email"
+                                            placeholder="email@example.com"
+                                            className="pl-10"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    {field.value && (
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                                            onClick={() => form.setValue('email', '')}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Password</FormLabel>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <FormControl>
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="********"
+                                            className="pl-10 pr-10"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                    </button>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Konfirmasi Password</FormLabel>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <FormControl>
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="********"
+                                            className="pl-10 pr-10"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                    </button>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? 'Membuat Akun...' : 'Daftar'}
+                    </Button>
+                </form>
+            </Form>
             <p className="text-sm text-muted-foreground mt-8">
                 Sudah punya akun?{' '}
                 <Button variant="link" onClick={() => router.push('login')} className="p-0 h-auto">
