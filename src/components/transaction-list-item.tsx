@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform, animate } from 'framer-motion';
@@ -88,7 +87,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                  style={{ width: '100%' }}
             >
                 <motion.div style={{ scale: iconScale }}>
-                    <Trash2 className="h-6 w-6" />
+                    <Trash2 className="h-6 w-6 text-white" />
                 </motion.div>
             </div>
             
@@ -98,7 +97,7 @@ export const TransactionListItem = ({ transaction, onDelete, hideDate = false }:
                 onDragEnd={onDragEnd}
                 style={{ x }}
                 className="relative bg-card"
-                dragConstraints={{ left: 0, right: 0 }}
+                dragConstraints={{ right: 0 }}
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
             </motion.div>
