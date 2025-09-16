@@ -44,11 +44,12 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
     const vibrated = useRef(false);
     const controls = useAnimation();
+    const itemRef = useRef<HTMLDivElement>(null);
     const ACTION_WIDTH = 80;
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const dist = info.offset.x;
-        if (dist < -40 && !vibrated.current) {
+        if (itemRef.current && dist < -(itemRef.current.offsetWidth / 2) && !vibrated.current) {
           navigator.vibrate?.(50);
           vibrated.current = true;
         }
@@ -76,6 +77,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
             </div>
             
             <motion.div
+                ref={itemRef}
                 drag="x"
                 dragConstraints={{ left: -ACTION_WIDTH, right: 0 }}
                 dragElastic={0.2}
