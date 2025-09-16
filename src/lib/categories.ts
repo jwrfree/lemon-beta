@@ -38,10 +38,10 @@ export const categories: Categories = {
   ]
 };
 
-const defaultCategory = { name: 'Lain-lain', icon: Wrench, color: 'text-gray-600 dark:text-gray-500', bgColor: 'bg-gray-100 dark:bg-gray-900/50' };
+const allCategories = [...categories.expense, ...categories.income, ...categories.internal];
+const defaultCategory: Category = { id: 'default', name: 'Lain-lain', icon: Wrench, color: 'text-gray-600 dark:text-gray-500', bgColor: 'bg-gray-100 dark:bg-gray-900/50' };
 
 export const categoryDetails = (name: string): Category => {
-  const allCategories = [...categories.expense, ...categories.income, ...categories.internal];
   const category = allCategories.find(c => c.name === name);
   return category || defaultCategory;
 };
