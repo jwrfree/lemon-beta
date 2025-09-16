@@ -1,54 +1,117 @@
 
 'use client';
-import dynamic from 'next/dynamic';
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useApp } from '@/components/app-provider';
+import { Button } from '@/components/ui/button';
+import { Bell, Settings, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { cn, formatCurrency } from '@/lib/utils';
+import { getWalletVisuals } from '@/lib/wallet-visuals';
+import { TransactionList } from '@/components/transaction-list';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { isSameMonth, parseISO } from 'date-fns';
 
-const HomePageContent = dynamic(() => import('@/components/home-page-content').then(mod => mod.HomePageContent), { 
-    ssr: false,
-    loading: () => (
-        <div className="flex flex-col h-full">
-            <header className="p-4 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-sm z-10">
+export const HomePageContent = () => {
+    const { wallets, transactions, isLoading } = useApp();
+    const router = useRouter();
+
+    const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
+
+    const now = new Date();
+    const monthlyIncome = transactions
+        .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), now))
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    const monthlyExpense = transactions
+        .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
+        .reduce((acc, t) => acc + t.amount, 0);
+
+    return (
+        <div className="h-full overflow-y-auto pb-16">
+            <header className="p-4 flex items-center justify-between sticky top-0 bg-muted/80 backdrop-blur-sm z-10">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>
+                        <Bell className="h-6 w-6" strokeWidth={1.75} />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => router.push('/settings')}>
+                        <Settings className="h-6 w-6" strokeWidth={1.75} />
+                    </Button>
                 </div>
             </header>
             <main className="flex-1 p-4 space-y-6">
-                <Skeleton className="h-36 w-full rounded-lg" />
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         {isLoading ? 
+                            <Skeleton className="h-8 w-1/2" /> : 
+                            <p className="text-3xl font-bold">{formatCurrency(totalBalance)}</p>
+                         }
+                        <div className="flex gap-4 mt-4">
+                            <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-green-100 dark:bg-green-900/50 rounded-full">
+                                    <ArrowUpRight className="h-4 w-4 text-green-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Pemasukan</p>
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyIncome)}</p>}
+                                </div>
+                            </div>
+                             <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
+                                    <ArrowDownLeft className="h-4 w-4 text-rose-600" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Pengeluaran</p>
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyExpense)}</p>}
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                        <Skeleton className="h-6 w-32" />
-                        <Skeleton className="h-6 w-20" />
+                        <h2 className="text-lg font-semibold">Dompet Anda</h2>
+                        <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <Skeleton className="h-24 rounded-lg" />
-                        <Skeleton className="h-24 rounded-lg" />
-                    </div>
+                    {isLoading ? (
+                        <div className="grid grid-cols-2 gap-4">
+                            <Skeleton className="h-24 rounded-lg" />
+                            <Skeleton className="h-24 rounded-lg" />
+                        </div>
+                    ) : wallets.length === 0 ? (
+                        <div className="text-muted-foreground text-sm">Anda belum memiliki dompet.</div>
+                    ) : (
+                        <div className="grid grid-cols-2 gap-4">
+                            {wallets.slice(0, 2).map(wallet => {
+                                const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon);
+                                return (
+                                    <Card key={wallet.id}>
+                                        <CardContent className="p-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Icon className={cn("h-6 w-6 text-muted-foreground")} />
+                                                <span className="text-sm font-medium">{wallet.name}</span>
+                                            </div>
+                                            <p className="text-xl font-bold">{formatCurrency(wallet.balance)}</p>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                        <Skeleton className="h-6 w-40" />
-                        <Skeleton className="h-6 w-20" />
+                        <h2 className="text-lg font-semibold">Riwayat Transaksi</h2>
+                        <Button variant="link" size="sm" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                     </div>
-                    <div className="space-y-2">
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="flex items-center gap-3 p-3">
-                                <Skeleton className="h-10 w-10 rounded-full" />
-                                <div className="flex-1 space-y-2">
-                                    <Skeleton className="h-4 w-3/4" />
-                                    <Skeleton className="h-3 w-1/2" />
-                                </div>
-                                <Skeleton className="h-5 w-1/4" />
-                            </div>
-                        ))}
-                    </div>
+                   <TransactionList limit={5} />
                 </div>
             </main>
         </div>
-    )
-});
-
-export default function HomePage() {
-    return <HomePageContent />;
-}
+    );
+};
