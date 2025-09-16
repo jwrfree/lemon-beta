@@ -55,9 +55,10 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 onDragEnd={onDragEnd}
                 dragConstraints={{ top: 0, bottom: 0 }}
                 dragElastic={0.2}
+                onClick={() => !isActive && setActiveIndex(i)}
                 className={cn(
                   "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg",
-                  isActive ? "cursor-grab active:cursor-grabbing" : ""
+                  isActive ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                 )}
                 style={{
                   backgroundImage: `linear-gradient(to right, ${gradient.from}, ${gradient.to})`
@@ -85,7 +86,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                               <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
                               <p className="font-semibold text-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.2)'}}>{wallet.name}</p>
                           </div>
-                          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8 rounded-full" onClick={() => openEditWalletModal(wallet)}>
+                          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8 rounded-full" onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}>
                               <MoreVertical className="h-5 w-5" />
                           </Button>
                       </div>
