@@ -1,16 +1,15 @@
 
 'use client';
 import React, { useState } from 'react';
-import { motion, useAnimation, PanInfo } from 'framer-motion';
+import { motion, useAnimation, PanInfo, useMotionValue } from 'framer-motion';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Edit2 } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
-import { Button } from '@/components/ui/button';
 import { useApp } from '@/components/app-provider';
 
-export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t: any) => void; hideDate?: boolean; }) => {
+export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = false }: { transaction: any; onEdit: (t: any) => void; onDelete: (t.any) => void; hideDate?: boolean; }) => {
     const [hapticTriggered, setHapticTriggered] = useState(false);
     const controls = useAnimation();
     const ACTION_WIDTH = 80;
@@ -40,6 +39,7 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
     const amountColor = isExpense ? 'text-rose-600' : 'text-green-600';
 
     const onDrag = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+        controls.set({ x: info.offset.x });
         if (!hapticTriggered && Math.abs(info.offset.x) > ACTION_WIDTH / 2) {
             if (window.navigator.vibrate) {
                 window.navigator.vibrate(10);
@@ -63,30 +63,33 @@ export const TransactionListItem = ({ transaction, onEdit, onDelete, hideDate = 
 
     return (
         <div className="relative overflow-hidden rounded-lg bg-card" onClick={resetSwipe}>
-            <div className="absolute inset-y-0 left-0 flex items-center bg-secondary" style={{width: ACTION_WIDTH}}>
-                 <Button
-                    variant="secondary"
-                    size="icon"
-                    className="h-full w-full rounded-none"
-                    onClick={handleEditClick}
-                >
-                    <motion.div animate={controls} transition={{type: 'spring', stiffness: 500, damping: 30}} style={{scale: 1}} whileHover={{scale: 1.1}}>
-                        <Edit2 className="h-5 w-5" />
-                    </motion.div>
-                </Button>
-            </div>
-             <div className="absolute inset-y-0 right-0 flex items-center bg-destructive" style={{width: ACTION_WIDTH}}>
-                <Button
-                    variant="destructive"
-                    size="icon"
-                    className="h-full w-full rounded-none"
+            <motion.div 
+                className="absolute inset-y-0 right-0 flex items-center justify-start bg-destructive text-destructive-foreground" 
+                style={{ width: ACTION_WIDTH, scaleX: 0, transformOrigin: 'right' }} 
+                animate={{ scaleX: controls.get("x") < 0 ? Math.min(Math.abs(controls.get("x")) / ACTION_WIDTH, 1) : 0 }}
+                transition={{type: 'spring', stiffness: 500, damping: 40}}
+            >
+                <motion.div 
+                    className="flex items-center justify-center h-full w-full" 
                     onClick={handleDeleteClick}
                 >
-                    <motion.div animate={controls} transition={{type: 'spring', stiffness: 500, damping: 30}} style={{scale: 1}} whileHover={{scale: 1.1}}>
-                        <Trash2 className="h-5 w-5" />
-                    </motion.div>
-                </Button>
-            </div>
+                    <Trash2 className="h-5 w-5 ml-auto mr-6" />
+                </motion.div>
+            </motion.div>
+
+            <motion.div 
+                className="absolute inset-y-0 left-0 flex items-center justify-end bg-secondary text-secondary-foreground" 
+                style={{ width: ACTION_WIDTH, scaleX: 0, transformOrigin: 'left' }}
+                animate={{ scaleX: controls.get("x") > 0 ? Math.min(controls.get("x") / ACTION_WIDTH, 1) : 0 }}
+                transition={{type: 'spring', stiffness: 500, damping: 40}}
+            >
+                <motion.div 
+                    className="flex items-center justify-center h-full w-full" 
+                    onClick={handleEditClick}
+                >
+                    <Edit2 className="h-5 w-5 mr-auto ml-6" />
+                </motion.div>
+            </motion.div>
             
             <motion.div
                 animate={controls}
