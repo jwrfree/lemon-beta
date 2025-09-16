@@ -17,6 +17,7 @@ interface AppContextType {
     expenseCategories: any[];
     incomeCategories: any[];
     addTransaction: (data: any) => Promise<void>;
+    addTransfer: (data: any) => Promise<void>;
     deleteTransaction: (transaction: any) => Promise<void>;
     addWallet: (walletData: any) => Promise<void>;
     addBudget: (budgetData: any) => Promise<void>;
@@ -28,6 +29,8 @@ interface AppContextType {
     setIsWalletModalOpen: (isOpen: boolean) => void;
     isBudgetModalOpen: boolean;
     setIsBudgetModalOpen: (isOpen: boolean) => void;
+    isTransferModalOpen: boolean;
+    setIsTransferModalOpen: (isOpen: boolean) => void;
     isDeleteModalOpen: boolean;
     transactionToDelete: any | null;
     openDeleteModal: (transaction: any) => void;
@@ -57,6 +60,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
 
@@ -140,6 +144,56 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen(false);
     }, [user, getTransactionCollection, getWalletCollection]);
 
+    const addTransfer = useCallback(async (data: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const walletCollection = getWalletCollection();
+        const transactionCollection = getTransactionCollection();
+        if (!walletCollection || !transactionCollection) return;
+
+        const { fromWalletId, toWalletId, amount, date, description } = data;
+        const fromWalletRef = doc(walletCollection, fromWalletId);
+        const toWalletRef = doc(walletCollection, toWalletId);
+
+        const batch = writeBatch(db);
+
+        // Create expense transaction
+        batch.set(doc(transactionCollection), {
+            type: 'expense',
+            amount,
+            category: 'Transfer',
+            walletId: fromWalletId,
+            description: `Transfer ke ${wallets.find(w => w.id === toWalletId)?.name}: ${description}`,
+            date,
+        });
+
+        // Create income transaction
+        batch.set(doc(transactionCollection), {
+            type: 'income',
+            amount,
+            category: 'Transfer',
+            walletId: toWalletId,
+            description: `Transfer dari ${wallets.find(w => w.id === fromWalletId)?.name}: ${description}`,
+            date,
+        });
+
+        const fromWalletDoc = await getDoc(fromWalletRef);
+        if (fromWalletDoc.exists()) {
+            const newBalance = fromWalletDoc.data().balance - amount;
+            batch.update(fromWalletRef, { balance: newBalance });
+        }
+
+        const toWalletDoc = await getDoc(toWalletRef);
+        if (toWalletDoc.exists()) {
+            const newBalance = toWalletDoc.data().balance + amount;
+            batch.update(toWalletRef, { balance: newBalance });
+        }
+
+        await batch.commit();
+        toast.success("Transfer berhasil dicatat!");
+        setIsTransferModalOpen(false);
+
+    }, [user, getTransactionCollection, getWalletCollection, setIsTransferModalOpen, wallets]);
+
     const addWallet = useCallback(async (walletData: any) => {
         if (!user) throw new Error("User not authenticated.");
         const walletCollection = getWalletCollection();
@@ -164,9 +218,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     const deleteTransaction = useCallback(async (transaction: any) => {
         if (!user || !transaction) return;
+        // This is a simplified delete for now. A full implementation would need to handle transfer pairs.
+        if (transaction.category === 'Transfer') {
+            toast.error("Menghapus transaksi transfer belum didukung.");
+            return;
+        }
+
         const walletCollection = getWalletCollection();
         const transactionCollection = getTransactionCollection();
         if (!walletCollection || !transactionCollection) return;
+
 
         const transactionRef = doc(db, transactionCollection.path, transaction.id);
         const walletRef = doc(db, walletCollection.path, transaction.walletId);
@@ -252,6 +313,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         expenseCategories: categories.expense,
         incomeCategories: categories.income,
         addTransaction,
+        addTransfer,
         deleteTransaction,
         addWallet,
         addBudget,
@@ -263,6 +325,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsWalletModalOpen,
         isBudgetModalOpen,
         setIsBudgetModalOpen,
+        isTransferModalOpen,
+        setIsTransferModalOpen,
         isDeleteModalOpen,
         transactionToDelete,
         openDeleteModal,

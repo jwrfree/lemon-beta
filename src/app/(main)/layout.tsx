@@ -9,6 +9,7 @@ import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
 import { useEffect } from 'react';
+import { AddTransferModal } from '@/components/add-transfer-modal';
 
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
@@ -26,7 +27,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         isDeleteModalOpen,
         transactionToDelete,
         handleConfirmDelete,
-        closeDeleteModal
+        closeDeleteModal,
+        isTransferModalOpen,
+        setIsTransferModalOpen,
     } = useApp();
 
     useEffect(() => {
@@ -39,7 +42,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
     }
 
-    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen;
+    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen && !isTransferModalOpen;
 
     return (
         <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
@@ -61,6 +64,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
                     {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
                     {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
+                    {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
                     {isDeleteModalOpen && transactionToDelete && (
                         <ConfirmDeleteModal
                             transaction={transactionToDelete}

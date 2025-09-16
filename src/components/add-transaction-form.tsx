@@ -15,10 +15,10 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X, CalendarIcon } from 'lucide-react';
+import { X, CalendarIcon, ArrowRightLeft } from 'lucide-react';
 
 export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
-    const { addTransaction, wallets, expenseCategories, incomeCategories } = useApp();
+    const { addTransaction, wallets, expenseCategories, incomeCategories, setIsTxModalOpen, setIsTransferModalOpen } = useApp();
     const [type, setType] = useState('expense');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
@@ -35,6 +35,16 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
         setAmount(formattedValue);
     };
 
+    const handleTypeChange = (newType: string) => {
+        if (newType === 'transfer') {
+            setIsTxModalOpen(false);
+            setTimeout(() => setIsTransferModalOpen(true), 100); 
+        } else {
+            setType(newType);
+            setCategory('');
+        }
+    };
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!amount || !category || !walletId || !date || !description) {
@@ -94,10 +104,10 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
-                    <div className="grid grid-cols-2 gap-2 rounded-full bg-muted p-1">
+                    <div className="grid grid-cols-3 gap-2 rounded-full bg-muted p-1">
                         <Button
                             type="button"
-                            onClick={() => setType('expense')}
+                            onClick={() => handleTypeChange('expense')}
                             className={cn(
                                 "rounded-full",
                                 type === 'expense' ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : 'bg-transparent text-muted-foreground hover:bg-background/50'
@@ -107,13 +117,20 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                         </Button>
                         <Button
                             type="button"
-                            onClick={() => setType('income')}
+                            onClick={() => handleTypeChange('income')}
                              className={cn(
                                 "rounded-full",
                                 type === 'income' ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-transparent text-muted-foreground hover:bg-background/50'
                             )}
                         >
                             Pemasukan
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={() => handleTypeChange('transfer')}
+                            className="rounded-full bg-transparent text-muted-foreground hover:bg-background/50 flex items-center gap-1"
+                        >
+                           <ArrowRightLeft className="h-4 w-4" /> Transfer
                         </Button>
                     </div>
 

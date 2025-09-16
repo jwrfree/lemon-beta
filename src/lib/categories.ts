@@ -1,5 +1,5 @@
 
-import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon } from 'lucide-react';
+import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -12,6 +12,7 @@ interface Category {
 interface Categories {
   expense: Category[];
   income: Category[];
+  internal: Category[];
 }
 
 export const categories: Categories = {
@@ -32,12 +33,15 @@ export const categories: Categories = {
     { id: 'cat-i-3', name: 'Investasi', icon: PiggyBank, color: 'text-blue-600', bgColor: 'bg-blue-100 dark:bg-blue-900/50' },
     { id: 'cat-i-4', name: 'Lain-lain', icon: Handshake, color: 'text-gray-600', bgColor: 'bg-gray-100 dark:bg-gray-900/50' },
   ],
+  internal: [
+    { id: 'cat-t-1', name: 'Transfer', icon: ArrowRightLeft, color: 'text-slate-600', bgColor: 'bg-slate-100 dark:bg-slate-900/50' },
+  ]
 };
 
 const defaultCategory = { name: 'Lain-lain', icon: Wrench, color: 'text-gray-600', bgColor: 'bg-gray-100 dark:bg-gray-900/50' };
 
 export const categoryDetails = (name: string): Category => {
-  const allCategories = [...categories.expense, ...categories.income];
+  const allCategories = [...categories.expense, ...categories.income, ...categories.internal];
   const category = allCategories.find(c => c.name === name);
   return category || defaultCategory;
 };
