@@ -57,16 +57,27 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
         ) : (
           <div className="space-y-3">
           {wallets.map(wallet => {
-            const { Icon, color } = getWalletVisuals(wallet.icon);
+            const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon);
             return (
-              <Card key={wallet.id} className={cn("overflow-hidden border-l-4", color.replace('bg-', 'border-'))}>
-                <div className="p-4 flex items-center gap-4">
-                    <Icon className={cn("h-8 w-8", color.replace('bg-', 'text-'))} />
+              <Card 
+                key={wallet.id} 
+                className={cn("overflow-hidden text-white")}
+                style={{backgroundImage: `linear-gradient(to right, ${gradient.split(' ')[0].replace('from-','--tw-gradient-from: var(--tw-gradient-to) calc(var(--tw-gradient-stops) * 0)); --tw-gradient-to: ').replace('-500', ' 500').replace('-400', ' 400').replace('-600', ' 600').replace('-700', ' 700').replace('-800', ' 800').replace('-900', ' 900')}, ${gradient.split(' ')[1].replace('to-','').replace('-500', ' 500').replace('-400', ' 400').replace('-600', ' 600').replace('-700', ' 700').replace('-800', ' 800').replace('-900', ' 900')})`
+                  .replace(/(\w+)-(\d+)/g, (match, color, number) => `hsl(var(--${color}-${number}))`)
+                  .replace(/hsl\(var\(--(\w+)-(\d+)\)\)/g, (match, color, number) => `var(--${color}-${number})`)
+                  .replace(/--tw-gradient-from: var\(--tw-gradient-to\) calc\(var\(--tw-gradient-stops\) \* 0\); --tw-gradient-to: (\w+)-(\d+)/g, `var(--${'gray'}-${'500'})`)
+                  .replace(/(\w+)-(\d+)/g, `var(--${'gray'}-${'700'})`)
+                  }}
+              >
+                <div 
+                    className={cn("p-4 flex items-center gap-4 bg-gradient-to-r", gradient)}
+                >
+                    <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
                     <div className="flex-1">
-                      <p className="font-semibold">{wallet.name}</p>
-                      <p className="text-lg font-bold text-muted-foreground">{formatCurrency(wallet.balance)}</p>
+                      <p className="font-semibold" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.2)'}}>{wallet.name}</p>
+                      <p className={cn("text-xl font-bold", textColor)} style={{textShadow: '1px 1px 3px rgba(0,0,0,0.3)'}}>{formatCurrency(wallet.balance)}</p>
                     </div>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                       <Edit2 className="h-5 w-5" />
                     </Button>
                 </div>
