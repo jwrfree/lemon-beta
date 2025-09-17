@@ -2,7 +2,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Bell } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
+import Lottie from 'lottie-react';
+import emptyNotifAnimation from '@/lib/animations/empty-notif.json';
 
 export default function NotificationsPage() {
     const router = useRouter();
@@ -16,10 +18,8 @@ export default function NotificationsPage() {
             </header>
             <main className="flex-1 flex items-center justify-center p-4">
                 <div className="flex flex-col h-full items-center justify-center text-center">
-                    <div className="p-3 bg-primary/10 rounded-full mb-3">
-                        <Bell className="h-8 w-8 text-primary" strokeWidth={1.5} />
-                    </div>
-                    <h2 className="text-xl font-bold">Belum Ada Notifikasi</h2>
+                    <Lottie animationData={emptyNotifAnimation} loop={true} className="w-48 h-48" />
+                    <h2 className="text-xl font-bold -mt-4">Belum Ada Notifikasi</h2>
                     <p className="text-muted-foreground mt-2 mb-6">Semua notifikasimu akan muncul di sini.</p>
                 </div>
             </main>

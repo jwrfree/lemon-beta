@@ -4,11 +4,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Plus, Wallet, PlusCircle } from 'lucide-react';
+import { ChevronLeft, Plus, PlusCircle } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
+import Lottie from 'lottie-react';
+import emptyWalletAnimation from '@/lib/animations/empty-wallet.json';
+
 
 export default function WalletsPage() {
   const { wallets, isLoading, setIsWalletModalOpen } = useApp();
@@ -48,10 +51,8 @@ export default function WalletsPage() {
       ) : wallets.length === 0 ? (
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="flex flex-col items-center justify-center text-center">
-             <div className="p-3 bg-primary/10 rounded-full mb-3">
-                <Wallet className="h-8 w-8 text-primary" strokeWidth={1.5} />
-            </div>
-            <h2 className="text-xl font-bold">Belum Ada Dompet</h2>
+            <Lottie animationData={emptyWalletAnimation} loop={true} className="w-56 h-56" />
+            <h2 className="text-xl font-bold -mt-4">Belum Ada Dompet</h2>
             <p className="text-muted-foreground mt-2 mb-6">Yuk, buat dompet pertamamu untuk memulai!</p>
             <Button onClick={() => setIsWalletModalOpen(true)}>
               <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />

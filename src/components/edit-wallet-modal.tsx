@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { X, Trash2 } from 'lucide-react';
+import { LordIcon } from '@/components/lord-icon';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -106,7 +107,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
-                  <Trash2 className="h-5 w-5" />
+                  <LordIcon iconName="delete-icon" size={20} />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
