@@ -1,5 +1,6 @@
+
 'use client';
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Search, X, ChevronsUpDown, Check } from 'lucide-react';
@@ -143,9 +144,10 @@ export default function AllTransactionsPage() {
                 )}
             </div>
 
-            <main className="flex-1 p-4 space-y-2">
+            <main className="p-4 space-y-2">
                 <TransactionList transactions={filteredTransactions} />
             </main>
         </div>
     );
 }
+

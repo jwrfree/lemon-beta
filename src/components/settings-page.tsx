@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -52,8 +51,8 @@ export const SettingsPage = () => {
                 {/* Preferences Card */}
                 <Card className="p-2 bg-background">
                     {preferenceItems.map((item, index) => (
-                        <React.Fragment key={item.id}>
-                            <button onClick={() => item.page !== '#' && router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left disabled:opacity-50" disabled={item.page === '#'}>
+                        <>
+                            <button key={item.id} onClick={() => item.page !== '#' && router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left disabled:opacity-50" disabled={item.page === '#'}>
                                 <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                 <span className="font-medium flex-1">{item.name}</span>
                                 {item.id === 'theme' ? (
@@ -65,21 +64,21 @@ export const SettingsPage = () => {
                                 )}
                             </button>
                             {index < preferenceItems.length - 1 && <Separator />}
-                        </React.Fragment>
+                        </>
                     ))}
                 </Card>
 
                 {/* Management Card */}
                 <Card className="p-2 bg-background">
                     {managementItems.map((item, index) => (
-                        <React.Fragment key={item.id}>
-                            <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
+                        <>
+                            <button key={item.id} onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
                                 <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                 <span className="font-medium flex-1">{item.name}</span>
                                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
                             </button>
                              {index < managementItems.length - 1 && <Separator />}
-                        </React.Fragment>
+                        </>
                     ))}
                 </Card>
                 

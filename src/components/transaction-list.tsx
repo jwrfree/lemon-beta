@@ -5,7 +5,6 @@ import { TransactionListItem } from './transaction-list-item';
 import { Skeleton } from './ui/skeleton';
 import { formatRelativeDate } from '@/lib/utils';
 import { parseISO } from 'date-fns';
-import React from 'react';
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
     const { transactions: allTransactions, openDeleteModal, openEditModal, isLoading } = useApp();
