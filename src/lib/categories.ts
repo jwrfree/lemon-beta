@@ -1,5 +1,5 @@
 
-import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft } from 'lucide-react';
+import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft, ReceiptText, ShieldCheck } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -50,6 +50,14 @@ export const categories: Categories = {
       bgColor: 'bg-cyan-100 dark:bg-cyan-900/50',
       subCategories: ['Listrik', 'Air', 'Internet', 'Telepon', 'TV Kabel & Streaming']
     },
+    {
+      id: 'cat-e-10',
+      name: 'Langganan',
+      icon: ReceiptText,
+      color: 'text-orange-600 dark:text-orange-500',
+      bgColor: 'bg-orange-100 dark:bg-orange-900/50',
+      subCategories: ['Software Desain', 'Penyimpanan Cloud', 'Musik & Hiburan', 'Lainnya']
+    },
     { 
       id: 'cat-e-5', 
       name: 'Hiburan', 
@@ -80,7 +88,15 @@ export const categories: Categories = {
       icon: HeartPulse, 
       color: 'text-red-600 dark:text-red-500', 
       bgColor: 'bg-red-100 dark:bg-red-900/50',
-      subCategories: ['Dokter & Rumah Sakit', 'Obat & Vitamin', 'Asuransi Kesehatan', 'Perawatan Diri']
+      subCategories: ['Dokter & Rumah Sakit', 'Obat & Vitamin', 'Perawatan Diri']
+    },
+    {
+      id: 'cat-e-11',
+      name: 'Asuransi',
+      icon: ShieldCheck,
+      color: 'text-teal-600 dark:text-teal-500',
+      bgColor: 'bg-teal-100 dark:bg-teal-900/50',
+      subCategories: ['Asuransi Jiwa', 'Asuransi Kesehatan', 'Asuransi Kendaraan']
     },
     { 
       id: 'cat-e-9', 
@@ -88,7 +104,7 @@ export const categories: Categories = {
       icon: Wrench, 
       color: 'text-gray-600 dark:text-gray-500', 
       bgColor: 'bg-gray-100 dark:bg-gray-900/50',
-      subCategories: ['Anak', 'Hewan Peliharaan', 'Amal & Donasi', 'Pajak', 'Biaya Admin Bank']
+      subCategories: ['Anak', 'Hewan Peliharaan', 'Amal & Donasi', 'Pajak', 'Biaya Admin Bank', 'Kebutuhan Kerja']
     },
   ],
   income: [
