@@ -89,7 +89,7 @@ export const SettingsPage = () => {
                     </button>
                 </Card>
                 
-                 <p className="text-xs text-muted-foreground text-center">Lemon App v1.0.0</p>
+                 <p className="text-xs text-muted-foreground text-center">Lemon App v1.2.0</p>
             </main>
         </div>
     );

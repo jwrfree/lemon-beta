@@ -2,6 +2,23 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 1.2.0] - October 2025
+
+This release focuses on significant UI/UX enhancements to make the app feel more modern, playful, and visually consistent.
+
+### ✨ New Features
+
+- **More Digital Banks**: Added support for popular digital banks and e-wallets including Jenius, Bank Jago, Seabank, Superbank, Blue by BCA, and PayPal.
+
+### 🎨 Enhancements & Fixes
+
+- **Playful UI**: Increased the corner radius (`border-radius`) across all components for a softer and more modern look.
+- **Improved Wallet Visuals**: Each bank and e-wallet now has a unique, more accurate color gradient on its card, making them easier to identify at a glance.
+- **Consistent Headers**: Standardized the height of all page headers for a more consistent and polished user experience.
+- **Softer Background**: Adjusted the global background color (`bg-muted`) to a softer "soft teal mint" for better visual comfort.
+- **Cleaner Links**: Removed the underline from "Lihat Semua" link buttons for a cleaner and more minimalist design.
+- **Homepage Wallet Display**: The homepage now shows up to 3 wallet cards instead of 2.
+
 ## [Version 1.1.0] - September 2025
 
 This is our first major feature release focused on improving tracking details and user experience.
