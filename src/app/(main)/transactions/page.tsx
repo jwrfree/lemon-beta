@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -54,15 +53,15 @@ export default function AllTransactionsPage() {
     const hasActiveFilters = searchQuery !== '' || activeTab !== 'all' || selectedCategories.length > 0;
 
     return (
-        <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
+        <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-10">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Riwayat Transaksi</h1>
             </header>
             
-            <div className="p-4 flex flex-col gap-3 bg-background border-b">
+            <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -144,10 +143,9 @@ export default function AllTransactionsPage() {
                 )}
             </div>
 
-            <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-16">
+            <main className="flex-1 p-4 space-y-2">
                 <TransactionList transactions={filteredTransactions} />
             </main>
         </div>
     );
 }
-
