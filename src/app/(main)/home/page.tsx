@@ -1,3 +1,4 @@
+
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -34,9 +35,6 @@ export default function HomePage() {
                     <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>
                         <Bell className="h-6 w-6" strokeWidth={1.75} />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => router.push('/settings')}>
-                        <Settings className="h-6 w-6" strokeWidth={1.75} />
-                    </Button>
                 </div>
             </header>
             <main className="flex-1 p-4 space-y-6">
@@ -62,7 +60,7 @@ export default function HomePage() {
                              <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
                                     <ArrowDownLeft className="h-4 w-4 text-destructive" />
-                                </div>
+                                d_v>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pengeluaran</p>
                                     {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyExpense)}</p>}
