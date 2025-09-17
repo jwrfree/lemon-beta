@@ -6,13 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis } from "recharts"
-import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, Banknote } from 'lucide-react';
+import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, Banknote, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
-import { isSameMonth, startOfMonth, parseISO } from 'date-fns';
+import { isSameMonth, startOfMonth, parseISO, endOfMonth } from 'date-fns';
 import { cn, formatCurrency } from '@/lib/utils';
+import { categoryDetails } from '@/lib/categories';
 
 type TabValue = 'expense' | 'income' | 'net';
 
@@ -21,6 +22,83 @@ const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
     { value: 'income', label: 'Pemasukan', icon: ArrowUpRight },
     { value: 'net', label: 'Net Income', icon: Scale },
 ];
+
+const SummaryCard = ({ tab }: { tab: TabValue }) => {
+    const { transactions } = useApp();
+
+    const summaryData = useMemo(() => {
+        const now = new Date();
+        const start = startOfMonth(now);
+        const end = endOfMonth(now);
+        
+        const monthlyTransactions = transactions.filter(t => {
+            const tDate = parseISO(t.date);
+            return tDate >= start && tDate <= end;
+        });
+
+        const expenseTransactions = monthlyTransactions.filter(t => t.type === 'expense');
+        const incomeTransactions = monthlyTransactions.filter(t => t.type === 'income');
+
+        const totalExpense = expenseTransactions.reduce((acc, t) => acc + t.amount, 0);
+        const totalIncome = incomeTransactions.reduce((acc, t) => acc + t.amount, 0);
+
+        const categoryMap: { [key: string]: number } = {};
+        expenseTransactions.forEach(t => {
+            categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
+        });
+
+        const biggestCategory = Object.entries(categoryMap).sort((a, b) => b[1] - a[1])[0];
+        const biggestTransaction = expenseTransactions.sort((a, b) => b.amount - a.amount)[0];
+
+        return {
+            totalExpense,
+            biggestCategory: biggestCategory ? { name: biggestCategory[0], amount: biggestCategory[1] } : null,
+            biggestTransaction: biggestTransaction ? { description: biggestTransaction.description, amount: biggestTransaction.amount } : null,
+            totalIncome
+        };
+    }, [transactions]);
+    
+    if (tab === 'expense') {
+        const { icon: CategoryIcon } = summaryData.biggestCategory ? categoryDetails(summaryData.biggestCategory.name) : { icon: TrendingDown };
+
+        return (
+             <Card>
+                <CardHeader>
+                    <CardTitle className="text-base font-medium text-muted-foreground flex items-center gap-2">
+                        <TrendingDown className="h-5 w-5" /> Ringkasan Pengeluaran
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-3 gap-4 text-center">
+                    <div className="flex flex-col gap-1">
+                        <p className="text-xs text-muted-foreground">Total</p>
+                        <p className="text-lg font-bold text-destructive">{formatCurrency(summaryData.totalExpense)}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <p className="text-xs text-muted-foreground">Kategori Terbesar</p>
+                        <div className="flex items-center justify-center gap-1.5 font-bold">
+                           <CategoryIcon className="h-4 w-4" />
+                           <span className="truncate">{summaryData.biggestCategory?.name || '-'}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <p className="text-xs text-muted-foreground">Transaksi Terbesar</p>
+                        <p className="text-sm font-bold truncate">{summaryData.biggestTransaction?.description || '-'}</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+    
+    if (tab === 'income') {
+        return <PlaceholderContent label="Ringkasan Pemasukan" icon={Banknote} text="Ringkasan data pemasukan Anda akan muncul di sini." />;
+    }
+    
+    if (tab === 'net') {
+        return <PlaceholderContent label="Ringkasan Net Income" icon={Landmark} text="Ringkasan selisih pemasukan dan pengeluaran akan muncul di sini." />;
+    }
+
+    return null;
+}
 
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
@@ -46,7 +124,6 @@ const ExpenseAnalysis = () => {
                 return { 
                     name, 
                     value, 
-                    total: value, // for bar chart
                     fill: `hsl(var(--chart-${(index % 5) + 1}))`
                 };
             })
@@ -67,27 +144,22 @@ const ExpenseAnalysis = () => {
 
 
     return (
-        <div className="p-4 space-y-6">
+        <div className="space-y-6">
              <Card>
                 <CardHeader>
                     <CardTitle>Pengeluaran per Kategori (Bulan Ini)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <ChartContainer config={{
-                        total: {
-                            label: "Pengeluaran",
-                            color: "hsl(var(--chart-1))",
-                        },
-                        }} className="aspect-video h-80">
-                            <BarChart data={categoryExpenseData} layout="vertical" margin={{ left: 20, right: 20 }}>
+                    <ChartContainer config={{}} className="aspect-video h-80">
+                         <BarChart data={categoryExpenseData} layout="vertical" margin={{ left: 20, right: 20 }}>
                             <CartesianGrid horizontal={false} />
                             <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} minTickGap={1} width={80} />
-                            <XAxis dataKey="total" type="number" tickFormatter={formatTick} axisLine={false} tickLine={false}/>
+                            <XAxis dataKey="value" type="number" tickFormatter={formatTick} axisLine={false} tickLine={false}/>
                             <ChartTooltip 
                                 cursor={false}
                                 content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
                             />
-                            <Bar dataKey="total" fill="var(--color-total)" radius={[0, 4, 4, 0]} />
+                            <Bar dataKey="value" fill="var(--color-value)" radius={[0, 4, 4, 0]} />
                         </BarChart>
                     </ChartContainer>
                 </CardContent>
@@ -111,14 +183,15 @@ const ExpenseAnalysis = () => {
                                     indicator="dot"
                                 />}
                             />
-                            <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} strokeWidth={2} label={(props) => {
-                                const { cx, cy, midAngle, innerRadius, outerRadius, value, index } = props;
-                                return (
-                                    <text x={cx} y={cy} fill="hsl(var(--card-foreground))" textAnchor="middle" dominantBaseline="central">
-                                        {categoryExpenseData[index].name}
-                                    </text>
-                                );
-                            }} labelLine={false} />
+                            <Pie 
+                                data={categoryExpenseData} 
+                                dataKey="value" 
+                                nameKey="name" 
+                                cx="50%" 
+                                cy="50%" 
+                                outerRadius={80} 
+                                strokeWidth={2}
+                            />
                         </PieChart>
                     </ChartContainer>
                      <div className="mt-4 space-y-2 w-full">
@@ -139,37 +212,21 @@ const ExpenseAnalysis = () => {
 };
 
 
-const PlaceholderContent = ({ label, icon: Icon }: { label: string, icon: React.ElementType }) => (
+const PlaceholderContent = ({ label, icon: Icon, text }: { label: string, icon: React.ElementType, text?: string }) => (
     <div className="flex flex-col h-full items-center justify-center text-center p-4">
         <div className="p-3 bg-primary/10 rounded-full mb-3">
             <Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
         </div>
-        <h2 className="text-xl font-bold">Analisis {label}</h2>
-        <p className="text-muted-foreground mt-2 mb-6">Grafik dan data untuk {label} akan segera hadir.</p>
+        <h2 className="text-xl font-bold">{label}</h2>
+        <p className="text-muted-foreground mt-2 mb-6">{text || `Grafik dan data untuk ${label.toLowerCase()} akan segera hadir.`}</p>
     </div>
 );
 
 
 export const ChartsPage = () => {
     const router = useRouter();
-    const { transactions } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
-
-     const overview = useMemo(() => {
-        const now = new Date();
-        const monthlyIncome = transactions
-            .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), now))
-            .reduce((acc, t) => acc + t.amount, 0);
-        
-        const monthlyExpense = transactions
-            .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
-            .reduce((acc, t) => acc + t.amount, 0);
-        
-        const remaining = monthlyIncome - monthlyExpense;
-        
-        return { monthlyIncome, monthlyExpense, remaining };
-    }, [transactions]);
 
     const handleTabChange = (value: string) => {
         const newIndex = tabs.findIndex(tab => tab.value === value);
@@ -219,32 +276,6 @@ export const ChartsPage = () => {
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
             <main className="flex-1 flex flex-col overflow-hidden">
-                 <div className="p-4 bg-background">
-                    <Card>
-                        <CardHeader className="pb-2">
-                             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                                <Banknote className="h-5 w-5" />
-                                Ringkasan Bulan Ini
-                             </CardTitle>
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-3 divide-x">
-                            <div className="pr-4">
-                                <p className="text-xs text-muted-foreground">Pemasukan</p>
-                                <p className="text-lg font-bold text-green-600">{formatCurrency(overview.monthlyIncome)}</p>
-                            </div>
-                            <div className="px-4">
-                                <p className="text-xs text-muted-foreground">Pengeluaran</p>
-                                <p className="text-lg font-bold text-destructive">{formatCurrency(overview.monthlyExpense)}</p>
-                            </div>
-                             <div className="pl-4">
-                                <p className="text-xs text-muted-foreground">Sisa</p>
-                                <p className={cn("text-lg font-bold", overview.remaining >= 0 ? 'text-primary' : 'text-destructive')}>
-                                    {formatCurrency(overview.remaining)}
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full bg-background flex flex-col flex-1">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-0 sticky top-0">
                        {tabs.map(tab => (
@@ -254,7 +285,7 @@ export const ChartsPage = () => {
                             </TabsTrigger>
                        ))}
                     </TabsList>
-                    <div {...handlers} className="flex-1 overflow-y-auto bg-muted">
+                    <div {...handlers} className="flex-1 overflow-y-auto bg-muted p-4">
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
                                 key={activeTab}
@@ -264,10 +295,12 @@ export const ChartsPage = () => {
                                 animate="center"
                                 exit="exit"
                                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                className="space-y-6"
                             >
+                                <SummaryCard tab={activeTab} />
                                 {activeTab === 'expense' && <ExpenseAnalysis />}
-                                {activeTab === 'income' && <PlaceholderContent label="Pemasukan" icon={ArrowUpRight} />}
-                                {activeTab === 'net' && <PlaceholderContent label="Net Income" icon={Scale} />}
+                                {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
+                                {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
                             </motion.div>
                         </AnimatePresence>
                     </div>
