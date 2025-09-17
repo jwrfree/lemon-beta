@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -79,7 +78,7 @@ const ExpenseAnalysis = () => {
 
     const formatTick = (value: number) => {
         if (value >= 1000000) {
-            return `${value / 1000000}Jt`;
+            return `${(value / 1000000).toFixed(value % 1000000 !== 0 ? 1 : 0)}Jt`;
         }
         if (value >= 1000) {
             return `${value / 1000}Rb`;
@@ -95,61 +94,58 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Tren Pengeluaran (6 Bulan Terakhir)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-64 w-full">
-                         <ChartContainer config={{
-                            total: {
-                                label: "Pengeluaran",
-                                color: "hsl(var(--chart-1))",
-                            },
-                         }}>
-                             <BarChart data={monthlyExpenseData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `Rp ${formatTick(Number(value))}`} />
-                                <ChartTooltip 
-                                    cursor={false}
-                                    content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
-                                />
-                                <Bar dataKey="total" fill="var(--color-total)" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ChartContainer>
-                    </div>
+                    <ChartContainer config={{
+                        total: {
+                            label: "Pengeluaran",
+                            color: "hsl(var(--chart-1))",
+                        },
+                        }} className="aspect-video">
+                            <BarChart data={monthlyExpenseData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `Rp ${formatTick(Number(value))}`} />
+                            <ChartTooltip 
+                                cursor={false}
+                                content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
+                            />
+                            <Bar dataKey="total" fill="var(--color-total)" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                    </ChartContainer>
                 </CardContent>
             </Card>
             <Card>
                 <CardHeader>
                     <CardTitle>Rincian Kategori Bulan Ini</CardTitle>
                 </CardHeader>
-                <CardContent>
-                     <div className="h-64 w-full">
-                         <ChartContainer config={{}}>
-                            <PieChart>
-                                <ChartTooltip
-                                    cursor={true}
-                                    content={<ChartTooltipContent
-                                        formatter={(value, name) => (
-                                             <div className="flex flex-col">
-                                                <span>{name}</span>
-                                                <span className="font-bold">{formatCurrency(Number(value))}</span>
-                                            </div>
-                                        )}
-                                    />}
-                                />
-                                <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                                    const RADIAN = Math.PI / 180;
-                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                                    return (
-                                        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs font-semibold">
-                                            {`${(percent * 100).toFixed(0)}%`}
-                                        </text>
-                                    );
-                                }} />
-                            </PieChart>
-                        </ChartContainer>
-                    </div>
-                     <div className="mt-4 space-y-2">
+                <CardContent className="flex flex-col items-center">
+                     <ChartContainer config={{}} className="mx-auto aspect-square h-48">
+                        <PieChart>
+                            <ChartTooltip
+                                cursor={true}
+                                content={<ChartTooltipContent
+                                    formatter={(value, name) => (
+                                         <div className="flex flex-col">
+                                            <span>{name}</span>
+                                            <span className="font-bold">{formatCurrency(Number(value))}</span>
+                                        </div>
+                                    )}
+                                />}
+                            />
+                            <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                                const RADIAN = Math.PI / 180;
+                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                                if (percent < 0.05) return null;
+                                return (
+                                    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-[10px] font-semibold">
+                                        {`${(percent * 100).toFixed(0)}%`}
+                                    </text>
+                                );
+                            }} />
+                        </PieChart>
+                    </ChartContainer>
+                     <div className="mt-4 space-y-2 w-full">
                         {categoryExpenseData.slice(0, 5).map((item, index) => (
                             <div key={index} className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
@@ -266,3 +262,4 @@ export const ChartsPage = () => {
     
 
     
+
