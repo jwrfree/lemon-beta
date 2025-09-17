@@ -37,9 +37,9 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string }> 
     'shopeepay': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // orange-500 to orange-600
     // Banks
     'bca': { gradient: { from: '#1e40af', to: '#1e3a8a' }, textColor: 'text-white' }, // blue-800 to blue-900
-    'mandiri': { gradient: { from: '#1e3a8a', to: '#facc15' }, textColor: 'text-white' }, // blue-900 to yellow-400
+    'mandiri': { gradient: { from: '#1e40af', to: '#facc15' }, textColor: 'text-white' }, // blue-800 to yellow-400
     'bni': { gradient: { from: '#f97316', to: '#14b8a6' }, textColor: 'text-white' }, // orange-500 to teal-500
-    'bri': { gradient: { from: '#2563eb', to: '#f59e0b' }, textColor: 'text-white' }, // blue-600 to yellow-500
+    'bri': { gradient: { from: '#2563eb', to: '#3b82f6' }, textColor: 'text-white' }, // blue-600 to blue-500
     'cimb niaga': { gradient: { from: '#dc2626', to: '#881337' }, textColor: 'text-white' }, // red-600 to rose-800
     // Cash
     'tunai': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' }, // green-500 to green-700
