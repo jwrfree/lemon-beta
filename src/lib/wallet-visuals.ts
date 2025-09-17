@@ -24,7 +24,7 @@ const walletCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textCol
 const defaultVisuals: WalletVisuals = {
     name: 'Lainnya',
     Icon: CircleDollarSign,
-    gradient: { from: '#4f46e5', to: '#312e81' }, // indigo-600 to indigo-800
+    gradient: { from: '#4338ca', to: '#312e81' }, // indigo-700 to indigo-900
     textColor: 'text-white'
 };
 
@@ -35,12 +35,25 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string }> 
     'dana': { gradient: { from: '#38bdf8', to: '#2563eb' }, textColor: 'text-white' }, // sky-400 to blue-600
     'linkaja': { gradient: { from: '#ef4444', to: '#b91c1c' }, textColor: 'text-white' }, // red-500 to red-700
     'shopeepay': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // orange-500 to orange-600
+    'paypal': { gradient: { from: '#0ea5e9', to: '#0284c7' }, textColor: 'text-white' }, // sky-500 to sky-600
+    
     // Banks
     'bca': { gradient: { from: '#1e40af', to: '#1e3a8a' }, textColor: 'text-white' }, // blue-800 to blue-900
-    'mandiri': { gradient: { from: '#1e40af', to: '#facc15' }, textColor: 'text-white' }, // blue-800 to yellow-400
+    'mandiri': { gradient: { from: '#1e3a8a', to: '#facc15' }, textColor: 'text-white' }, // blue-900 to yellow-400
     'bni': { gradient: { from: '#f97316', to: '#14b8a6' }, textColor: 'text-white' }, // orange-500 to teal-500
-    'bri': { gradient: { from: '#2563eb', to: '#3b82f6' }, textColor: 'text-white' }, // blue-600 to blue-500
+    'bri': { gradient: { from: '#1d4ed8', to: '#3b82f6' }, textColor: 'text-white' }, // blue-700 to blue-500
     'cimb niaga': { gradient: { from: '#dc2626', to: '#881337' }, textColor: 'text-white' }, // red-600 to rose-800
+    
+    // Digital Banks
+    'bank neo': { gradient: { from: '#d946ef', to: '#a855f7' }, textColor: 'text-white' }, // fuchsia-500 to purple-500
+    'bank neo e-commerce': { gradient: { from: '#d946ef', to: '#a855f7' }, textColor: 'text-white' },
+    'seabank': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // Same as ShopeePay
+    'superbank': { gradient: { from: '#facc15', to: '#f97316' }, textColor: 'text-white' }, // yellow-400 to orange-500
+    'blue by bca': { gradient: { from: '#38bdf8', to: '#3b82f6' }, textColor: 'text-white' }, // sky-400 to blue-500
+    'jenius': { gradient: { from: '#2dd4bf', to: '#14b8a6' }, textColor: 'text-white' }, // teal-400 to teal-500
+    'bank jago': { gradient: { from: '#a78bfa', to: '#7c3aed' }, textColor: 'text-white' }, // violet-400 to violet-600
+    'jago': { gradient: { from: '#a78bfa', to: '#7c3aed' }, textColor: 'text-white' }, // violet-400 to violet-600
+
     // Cash
     'tunai': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' }, // green-500 to green-700
     'cash': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' }, // green-500 to green-700
@@ -65,7 +78,7 @@ export const getWalletVisuals = (walletName: string, walletCategory: string): Wa
       'e-wallet': { from: '#0ea5e9', to: '#0369a1' }, // sky-500 to sky-700
       'bank': { from: '#10b981', to: '#047857' }, // emerald-500 to emerald-700
       'cash': { from: '#f97316', to: '#c2410c' }, // orange-500 to orange-700
-      'other': { from: '#4f46e5', to: '#312e81' }, // indigo-600 to indigo-800
+      'other': { from: '#4338ca', to: '#312e81' }, // indigo-700 to indigo-900
     };
 
     return {

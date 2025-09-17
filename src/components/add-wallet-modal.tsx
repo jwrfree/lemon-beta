@@ -14,7 +14,7 @@ import { useApp } from '@/components/app-provider';
 
 const popularWallets: Record<string, string[]> = {
   'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay'],
-  'bank': ['BCA', 'Mandiri', 'BNI', 'BRI', 'CIMB Niaga'],
+  'bank': ['BCA', 'Mandiri', 'BNI', 'BRI', 'Jenius', 'Bank Jago'],
 };
 
 const walletCategories = [
