@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
-import { categoryDetails } from '@/lib/categories';
+import { categories } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
@@ -13,7 +13,15 @@ import { Trash2, Pencil } from 'lucide-react';
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
     const { wallets } = useApp();
     const wallet = wallets.find(w => w.id === transaction.walletId);
-    const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
+    
+    const categoryDetails = 
+      categories.expense.find(c => c.name === transaction.category) || 
+      categories.income.find(c => c.name === transaction.category) || 
+      categories.internal.find(c => c.name === transaction.category) || 
+      { icon: Pencil, color: 'text-gray-500', bgColor: 'bg-gray-100' };
+      
+    const { icon: CategoryIcon, color, bgColor } = categoryDetails;
+
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-destructive' : 'text-green-600 dark:text-green-500';
 
@@ -31,7 +39,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
                     {!hideDate && (
                         <>
                             <span>&bull;</span>
-                            <span>{format(parseISO(transaction.date), 'dd/MM/yy', { locale: dateFnsLocaleId })}</span>
+                            <span>{format(parseISO(transaction.date), 'd MMM', { locale: dateFnsLocaleId })}</span>
                         </>
                     )}
                 </div>
