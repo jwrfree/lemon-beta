@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -26,27 +27,6 @@ const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
 
-    const monthlyExpenseData = useMemo(() => {
-        const data = Array.from({ length: 6 }).map((_, i) => {
-            const month = subMonths(new Date(), 5 - i);
-            const start = startOfMonth(month);
-            const end = endOfMonth(month);
-
-            const total = transactions
-                .filter(t => {
-                    const tDate = parseISO(t.date);
-                    return t.type === 'expense' && tDate >= start && tDate <= end;
-                })
-                .reduce((acc, t) => acc + t.amount, 0);
-
-            return {
-                name: format(month, 'MMM', { locale: dateFnsLocaleId }),
-                total: total,
-            };
-        });
-        return data;
-    }, [transactions]);
-    
     const categoryExpenseData = useMemo(() => {
         const currentMonthStart = startOfMonth(new Date());
         const categoryMap: { [key: string]: number } = {};
@@ -68,19 +48,20 @@ const ExpenseAnalysis = () => {
                 return { 
                     name, 
                     value, 
+                    total: value, // for bar chart
                     fill: `hsl(var(--chart-${index + 1}))`
                 };
             })
             .sort((a, b) => b.value - a.value);
 
     }, [transactions]);
-
+    
     const formatTick = (value: number) => {
         if (value >= 1000000) {
             return `Rp${(value / 1000000).toFixed(value % 1000000 !== 0 ? 1 : 0)}Jt`;
         }
         if (value >= 1000) {
-            return `Rp${value / 1000}Rb`;
+            return `Rp${(value / 1000).toFixed(0)}Rb`;
         }
         return `Rp${value}`;
     };
@@ -90,7 +71,7 @@ const ExpenseAnalysis = () => {
         <div className="p-4 space-y-6">
              <Card>
                 <CardHeader>
-                    <CardTitle>Tren Pengeluaran (6 Bulan Terakhir)</CardTitle>
+                    <CardTitle>Pengeluaran per Kategori (Bulan Ini)</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{
@@ -99,15 +80,15 @@ const ExpenseAnalysis = () => {
                             color: "hsl(var(--chart-1))",
                         },
                         }} className="aspect-video">
-                            <BarChart data={monthlyExpenseData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                            <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => formatTick(Number(value))} />
+                            <BarChart data={categoryExpenseData} layout="vertical" margin={{ top: 20, right: 20, bottom: 20, left: 40 }}>
+                            <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+                            <YAxis dataKey="name" type="category" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} width={80} />
+                            <XAxis dataKey="total" type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => formatTick(Number(value))} />
                             <ChartTooltip 
                                 cursor={false}
                                 content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
                             />
-                            <Bar dataKey="total" fill="var(--color-total)" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="total" fill="var(--color-total)" radius={[0, 4, 4, 0]} />
                         </BarChart>
                     </ChartContainer>
                 </CardContent>
