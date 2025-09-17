@@ -47,8 +47,8 @@ export const SettingsPage = () => {
                 </div>
 
                 {/* Preferences Card */}
-                <Card className="p-2 bg-background">
-                    <div className="w-full flex items-center gap-4 p-3 rounded-lg text-left">
+                <div className="rounded-lg bg-background overflow-hidden">
+                    <div className="w-full flex items-center gap-4 p-3 text-left">
                         <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                         <span className="font-medium flex-1">Tema Aplikasi</span>
                         <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
@@ -62,7 +62,7 @@ export const SettingsPage = () => {
                                 size="icon"
                                 variant='ghost'
                                 onClick={() => setTheme('light')}
-                                className={cn("rounded-full z-10", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                                className={cn("rounded-full z-10 h-7 w-7", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
                                 aria-label="Set theme to light"
                             >
                                 <Sun className="h-5 w-5" />
@@ -71,48 +71,48 @@ export const SettingsPage = () => {
                                 size="icon"
                                 variant='ghost'
                                 onClick={() => setTheme('dark')}
-                                className={cn("rounded-full z-10", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                                className={cn("rounded-full z-10 h-7 w-7", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
                                 aria-label="Set theme to dark"
                             >
                                 <Moon className="h-5 w-5" />
                             </Button>
                         </div>
                     </div>
-                    <Separator />
-                    <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
+                    <Separator className="mx-3 w-auto"/>
+                    <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
                         <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                         <span className="font-medium flex-1">Notifikasi</span>
                         <ChevronRight className="h-5 w-5 text-muted-foreground" />
                     </button>
-                    <Separator />
-                    <button className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left" disabled>
+                    <Separator className="mx-3 w-auto"/>
+                    <button className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left" disabled>
                         <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                         <span className="font-medium flex-1">Keamanan</span>
                         <ChevronRight className="h-5 w-5 text-muted-foreground" />
                     </button>
-                </Card>
+                </div>
 
                 {/* Management Card */}
-                <Card className="p-2 bg-background">
+                <div className="rounded-lg bg-background overflow-hidden">
                     {managementItems.map((item, index) => (
                         <React.Fragment key={item.id}>
-                            <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
+                            <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
                                 <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                 <span className="font-medium flex-1">{item.name}</span>
                                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
                             </button>
-                             {index < managementItems.length - 1 && <Separator />}
+                             {index < managementItems.length - 1 && <Separator className="mx-3 w-auto"/>}
                         </React.Fragment>
                     ))}
-                </Card>
+                </div>
                 
                  {/* Logout Button */}
-                 <Card className="p-2 bg-background">
-                    <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-destructive/10 text-left text-destructive">
+                 <div className="rounded-lg bg-background overflow-hidden">
+                    <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-3 hover:bg-destructive/10 text-left text-destructive">
                         <LogOut className="h-6 w-6" strokeWidth={1.5}/>
                         <span className="font-medium flex-1">Keluar</span>
                     </button>
-                </Card>
+                </div>
                 
                  <p className="text-xs text-muted-foreground text-center">Lemon App v1.2.0</p>
             </main>
