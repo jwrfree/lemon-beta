@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
-import { categories } from '@/lib/categories';
+import { categories, categoryDetails as getCategoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
@@ -14,8 +14,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
     const { wallets } = useApp();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
-    const allCategories = [...categories.expense, ...categories.income, ...categories.internal];
-    const categoryDetails = allCategories.find(c => c.name === transaction.category) || { icon: Pencil, color: 'text-gray-500', bgColor: 'bg-gray-100' };
+    const categoryDetails = getCategoryDetails(transaction.category);
       
     const { icon: CategoryIcon, color, bgColor } = categoryDetails;
 
@@ -30,7 +29,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
             <div className="flex-1 overflow-hidden">
                 <div className="font-medium truncate">{transaction.description}</div>
                  <div className="text-sm text-muted-foreground flex items-center gap-1.5 flex-wrap">
-                    <span className="truncate">{transaction.category}</span>
+                    <span className="truncate">{transaction.subCategory || transaction.category}</span>
                     {transaction.location && <span>&bull;</span>}
                     {transaction.location && <span className="truncate">{transaction.location}</span>}
                     {wallet && <span>&bull;</span>}

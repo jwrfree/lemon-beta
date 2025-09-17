@@ -1,7 +1,7 @@
 
 import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft, ReceiptText, ShieldCheck } from 'lucide-react';
 
-interface Category {
+export interface Category {
   id: string;
   name: string;
   icon: LucideIcon;
@@ -168,7 +168,6 @@ const defaultCategory: Category = {
   icon: Wrench, 
   color: 'text-gray-600 dark:text-gray-500', 
   bgColor: 'bg-gray-100 dark:bg-gray-900/50',
-  subCategories: []
 };
 
 export const categoryDetails = (name: string): Category => {
