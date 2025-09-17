@@ -2,7 +2,7 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Version 1.1.0] - September 2024
+## [Version 1.1.0] - September 2025
 
 This is our first major feature release focused on improving tracking details and user experience.
 
