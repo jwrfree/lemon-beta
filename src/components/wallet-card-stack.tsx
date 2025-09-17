@@ -5,7 +5,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import { MoreVertical, Star } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useApp } from './app-provider';
 
@@ -86,7 +86,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                               <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
                               <p className="font-semibold text-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.2)'}}>{wallet.name}</p>
                               {wallet.isDefault && (
-                                <Star className="h-4 w-4 text-yellow-300 fill-current" />
+                                <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">
+                                    Utama
+                                </div>
                               )}
                           </div>
                           <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8 rounded-full" onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}>
