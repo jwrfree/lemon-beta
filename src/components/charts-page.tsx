@@ -89,7 +89,7 @@ const ExpenseAnalysis = () => {
 
 
     return (
-        <div className="p-4 space-y-6 overflow-y-auto">
+        <div className="p-4 space-y-6">
              <Card>
                 <CardHeader>
                     <CardTitle>Tren Pengeluaran (6 Bulan Terakhir)</CardTitle>
@@ -241,7 +241,7 @@ export const ChartsPage = () => {
                        ))}
                     </TabsList>
                 </Tabs>
-                <div {...handlers} className="flex-1 overflow-hidden relative">
+                <div {...handlers} className="flex-1 overflow-y-auto">
                     <AnimatePresence initial={false} custom={direction}>
                         <motion.div
                             key={activeTab}
@@ -251,7 +251,6 @@ export const ChartsPage = () => {
                             animate="center"
                             exit="exit"
                             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            className="absolute w-full h-full"
                         >
                             {activeTab === 'expense' && <ExpenseAnalysis />}
                             {activeTab === 'income' && <PlaceholderContent label="Pemasukan" icon={ArrowUpRight} />}
