@@ -50,8 +50,6 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
     }
 
-    const showBottomNav = !isTxModalOpen && !isWalletModalOpen && !isBudgetModalOpen && !isDeleteModalOpen && !isTransferModalOpen && !isEditWalletModalOpen && !isEditTxModalOpen;
-
     return (
         <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
             <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
@@ -62,7 +60,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="flex-1 flex flex-col"
+                        className="flex-1 flex flex-col overflow-y-auto"
                     >
                         {children}
                     </motion.div>
@@ -83,11 +81,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         />
                     )}
                 </AnimatePresence>
-
+                <BottomNavigation />
             </div>
-             <AnimatePresence>
-                {showBottomNav && <BottomNavigation />}
-            </AnimatePresence>
         </div>
     );
 }
