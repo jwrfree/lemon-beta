@@ -6,15 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis } from "recharts"
-import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale } from 'lucide-react';
+import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, Banknote } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
-import { format, subMonths, startOfMonth, endOfMonth, parseISO } from 'date-fns';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { isSameMonth, startOfMonth, parseISO } from 'date-fns';
 import { cn, formatCurrency } from '@/lib/utils';
-import { categoryDetails } from '@/lib/categories';
 
 type TabValue = 'expense' | 'income' | 'net';
 
@@ -28,13 +26,13 @@ const ExpenseAnalysis = () => {
     const { transactions } = useApp();
 
     const categoryExpenseData = useMemo(() => {
-        const currentMonthStart = startOfMonth(new Date());
+        const now = new Date();
         const categoryMap: { [key: string]: number } = {};
 
         transactions
             .filter(t => {
                 const tDate = parseISO(t.date);
-                return t.type === 'expense' && tDate >= currentMonthStart;
+                return t.type === 'expense' && isSameMonth(tDate, now);
             })
             .forEach(t => {
                 if (!categoryMap[t.category]) {
@@ -49,7 +47,7 @@ const ExpenseAnalysis = () => {
                     name, 
                     value, 
                     total: value, // for bar chart
-                    fill: `hsl(var(--chart-${index + 1}))`
+                    fill: `hsl(var(--chart-${(index % 5) + 1}))`
                 };
             })
             .sort((a, b) => b.value - a.value);
@@ -57,13 +55,14 @@ const ExpenseAnalysis = () => {
     }, [transactions]);
     
     const formatTick = (value: number) => {
-        if (value >= 1000000) {
-            return `Rp${(value / 1000000).toFixed(value % 1000000 !== 0 ? 1 : 0)}Jt`;
+        const numValue = Number(value);
+        if (numValue >= 1000000) {
+            return `Rp${(numValue / 1000000).toFixed(numValue % 1000000 !== 0 ? 1 : 0)}Jt`;
         }
-        if (value >= 1000) {
-            return `Rp${(value / 1000).toFixed(0)}Rb`;
+        if (numValue >= 1000) {
+            return `Rp${(numValue / 1000).toFixed(0)}Rb`;
         }
-        return `Rp${value}`;
+        return `Rp${numValue}`;
     };
 
 
@@ -79,11 +78,11 @@ const ExpenseAnalysis = () => {
                             label: "Pengeluaran",
                             color: "hsl(var(--chart-1))",
                         },
-                        }} className="aspect-video">
-                            <BarChart data={categoryExpenseData} layout="vertical" margin={{ top: 20, right: 20, bottom: 20, left: 40 }}>
-                            <CartesianGrid horizontal={false} strokeDasharray="3 3" />
-                            <YAxis dataKey="name" type="category" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} width={80} />
-                            <XAxis dataKey="total" type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => formatTick(Number(value))} />
+                        }} className="aspect-video h-80">
+                            <BarChart data={categoryExpenseData} layout="vertical" margin={{ left: 20, right: 20 }}>
+                            <CartesianGrid horizontal={false} />
+                            <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} minTickGap={1} width={80} />
+                            <XAxis dataKey="total" type="number" tickFormatter={formatTick} axisLine={false} tickLine={false}/>
                             <ChartTooltip 
                                 cursor={false}
                                 content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
@@ -109,9 +108,17 @@ const ExpenseAnalysis = () => {
                                             <span className="font-bold">{formatCurrency(Number(value))}</span>
                                         </div>
                                     )}
+                                    indicator="dot"
                                 />}
                             />
-                            <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} strokeWidth={2} />
+                            <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} strokeWidth={2} label={(props) => {
+                                const { cx, cy, midAngle, innerRadius, outerRadius, value, index } = props;
+                                return (
+                                    <text x={cx} y={cy} fill="hsl(var(--card-foreground))" textAnchor="middle" dominantBaseline="central">
+                                        {categoryExpenseData[index].name}
+                                    </text>
+                                );
+                            }} labelLine={false} />
                         </PieChart>
                     </ChartContainer>
                      <div className="mt-4 space-y-2 w-full">
@@ -145,8 +152,24 @@ const PlaceholderContent = ({ label, icon: Icon }: { label: string, icon: React.
 
 export const ChartsPage = () => {
     const router = useRouter();
+    const { transactions } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
+
+     const overview = useMemo(() => {
+        const now = new Date();
+        const monthlyIncome = transactions
+            .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), now))
+            .reduce((acc, t) => acc + t.amount, 0);
+        
+        const monthlyExpense = transactions
+            .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
+            .reduce((acc, t) => acc + t.amount, 0);
+        
+        const remaining = monthlyIncome - monthlyExpense;
+        
+        return { monthlyIncome, monthlyExpense, remaining };
+    }, [transactions]);
 
     const handleTabChange = (value: string) => {
         const newIndex = tabs.findIndex(tab => tab.value === value);
@@ -196,8 +219,34 @@ export const ChartsPage = () => {
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
             <main className="flex-1 flex flex-col overflow-hidden">
-                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full bg-background">
-                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm sticky top-0 p-1 h-auto mt-4">
+                 <div className="p-4 bg-background">
+                    <Card>
+                        <CardHeader className="pb-2">
+                             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                                <Banknote className="h-5 w-5" />
+                                Ringkasan Bulan Ini
+                             </CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-3 divide-x">
+                            <div className="pr-4">
+                                <p className="text-xs text-muted-foreground">Pemasukan</p>
+                                <p className="text-lg font-bold text-green-600">{formatCurrency(overview.monthlyIncome)}</p>
+                            </div>
+                            <div className="px-4">
+                                <p className="text-xs text-muted-foreground">Pengeluaran</p>
+                                <p className="text-lg font-bold text-destructive">{formatCurrency(overview.monthlyExpense)}</p>
+                            </div>
+                             <div className="pl-4">
+                                <p className="text-xs text-muted-foreground">Sisa</p>
+                                <p className={cn("text-lg font-bold", overview.remaining >= 0 ? 'text-primary' : 'text-destructive')}>
+                                    {formatCurrency(overview.remaining)}
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full bg-background flex flex-col flex-1">
+                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-0 sticky top-0">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value} className="flex gap-2 items-center">
                                <tab.icon className="h-4 w-4" />
@@ -205,24 +254,24 @@ export const ChartsPage = () => {
                             </TabsTrigger>
                        ))}
                     </TabsList>
+                    <div {...handlers} className="flex-1 overflow-y-auto bg-muted">
+                        <AnimatePresence initial={false} custom={direction}>
+                            <motion.div
+                                key={activeTab}
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            >
+                                {activeTab === 'expense' && <ExpenseAnalysis />}
+                                {activeTab === 'income' && <PlaceholderContent label="Pemasukan" icon={ArrowUpRight} />}
+                                {activeTab === 'net' && <PlaceholderContent label="Net Income" icon={Scale} />}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
                 </Tabs>
-                <div {...handlers} className="flex-1 overflow-y-auto">
-                    <AnimatePresence initial={false} custom={direction}>
-                        <motion.div
-                            key={activeTab}
-                            custom={direction}
-                            variants={slideVariants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        >
-                            {activeTab === 'expense' && <ExpenseAnalysis />}
-                            {activeTab === 'income' && <PlaceholderContent label="Pemasukan" icon={ArrowUpRight} />}
-                            {activeTab === 'net' && <PlaceholderContent label="Net Income" icon={Scale} />}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
             </main>
         </div>
     );
