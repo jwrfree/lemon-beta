@@ -48,11 +48,11 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string }> 
     'bank neo': { gradient: { from: '#d946ef', to: '#a855f7' }, textColor: 'text-white' }, // fuchsia-500 to purple-500
     'bank neo e-commerce': { gradient: { from: '#d946ef', to: '#a855f7' }, textColor: 'text-white' },
     'seabank': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // Same as ShopeePay
-    'superbank': { gradient: { from: '#facc15', to: '#f97316' }, textColor: 'text-white' }, // yellow-400 to orange-500
+    'superbank': { gradient: { from: '#a3e635', to: '#4d7c0f' }, textColor: 'text-white' }, // lime-400 to green-800
     'blue by bca': { gradient: { from: '#38bdf8', to: '#3b82f6' }, textColor: 'text-white' }, // sky-400 to blue-500
-    'jenius': { gradient: { from: '#2dd4bf', to: '#14b8a6' }, textColor: 'text-white' }, // teal-400 to teal-500
-    'bank jago': { gradient: { from: '#a78bfa', to: '#7c3aed' }, textColor: 'text-white' }, // violet-400 to violet-600
-    'jago': { gradient: { from: '#a78bfa', to: '#7c3aed' }, textColor: 'text-white' }, // violet-400 to violet-600
+    'jenius': { gradient: { from: '#38bdf8', to: '#0284c7' }, textColor: 'text-white' }, // sky-400 to sky-600
+    'bank jago': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' }, // orange-500 to amber-500
+    'jago': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' }, // orange-500 to amber-500
 
     // Cash
     'tunai': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' }, // green-500 to green-700
