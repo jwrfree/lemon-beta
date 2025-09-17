@@ -196,7 +196,7 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
 
                     <div className="space-y-2">
                         <Label>Kategori</Label>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-4 gap-2">
                             {categories.map((cat) => {
                                 const isSelected = category === cat.name;
                                 const { icon: CategoryIcon, color, bgColor } = categoryDetails(cat.name);
