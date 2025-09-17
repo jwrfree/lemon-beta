@@ -24,7 +24,7 @@ const walletCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textCol
 const defaultVisuals: WalletVisuals = {
     name: 'Lainnya',
     Icon: CircleDollarSign,
-    gradient: { from: '#64748b', to: '#334155' }, // slate-500 to slate-700
+    gradient: { from: '#4f46e5', to: '#312e81' }, // indigo-600 to indigo-800
     textColor: 'text-white'
 };
 
@@ -65,7 +65,7 @@ export const getWalletVisuals = (walletName: string, walletCategory: string): Wa
       'e-wallet': { from: '#0ea5e9', to: '#0369a1' }, // sky-500 to sky-700
       'bank': { from: '#10b981', to: '#047857' }, // emerald-500 to emerald-700
       'cash': { from: '#f97316', to: '#c2410c' }, // orange-500 to orange-700
-      'other': { from: '#64748b', to: '#334155' }, // slate-500 to slate-700
+      'other': { from: '#4f46e5', to: '#312e81' }, // slate-500 to slate-700 -> Changed to indigo
     };
 
     return {
