@@ -64,12 +64,11 @@ const ExpenseAnalysis = () => {
             });
         
         return Object.entries(categoryMap)
-            .map(([name, value]) => {
-                const details = categoryDetails(name);
+            .map(([name, value], index) => {
                 return { 
                     name, 
                     value, 
-                    fill: `hsl(${getComputedStyle(document.documentElement).getPropertyValue(details.color.startsWith('text-red') ? '--destructive' : '--primary').trim()})`
+                    fill: `hsl(var(--chart-${index + 1}))`
                 };
             })
             .sort((a, b) => b.value - a.value);
@@ -78,12 +77,12 @@ const ExpenseAnalysis = () => {
 
     const formatTick = (value: number) => {
         if (value >= 1000000) {
-            return `${(value / 1000000).toFixed(value % 1000000 !== 0 ? 1 : 0)}Jt`;
+            return `Rp${(value / 1000000).toFixed(value % 1000000 !== 0 ? 1 : 0)}Jt`;
         }
         if (value >= 1000) {
-            return `${value / 1000}Rb`;
+            return `Rp${value / 1000}Rb`;
         }
-        return `${value}`;
+        return `Rp${value}`;
     };
 
 
@@ -103,7 +102,7 @@ const ExpenseAnalysis = () => {
                             <BarChart data={monthlyExpenseData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                             <CartesianGrid vertical={false} strokeDasharray="3 3" />
                             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `Rp ${formatTick(Number(value))}`} />
+                            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => formatTick(Number(value))} />
                             <ChartTooltip 
                                 cursor={false}
                                 content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
@@ -131,18 +130,7 @@ const ExpenseAnalysis = () => {
                                     )}
                                 />}
                             />
-                            <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                                const RADIAN = Math.PI / 180;
-                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                                if (percent < 0.05) return null;
-                                return (
-                                    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-[10px] font-semibold">
-                                        {`${(percent * 100).toFixed(0)}%`}
-                                    </text>
-                                );
-                            }} />
+                            <Pie data={categoryExpenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} strokeWidth={2} />
                         </PieChart>
                     </ChartContainer>
                      <div className="mt-4 space-y-2 w-full">
@@ -258,8 +246,3 @@ export const ChartsPage = () => {
         </div>
     );
 };
-
-    
-
-    
-
