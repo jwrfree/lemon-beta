@@ -77,6 +77,16 @@ const ExpenseAnalysis = () => {
 
     }, [transactions]);
 
+    const formatTick = (value: number) => {
+        if (value >= 1000000) {
+            return `${value / 1000000}Jt`;
+        }
+        if (value >= 1000) {
+            return `${value / 1000}Rb`;
+        }
+        return `${value}`;
+    };
+
 
     return (
         <div className="p-4 space-y-6 overflow-y-auto">
@@ -89,17 +99,18 @@ const ExpenseAnalysis = () => {
                          <ChartContainer config={{
                             total: {
                                 label: "Pengeluaran",
+                                color: "hsl(var(--chart-1))",
                             },
                          }}>
                              <BarChart data={monthlyExpenseData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${formatCurrency(Number(value) / 1000000)}Jt`} />
+                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `Rp ${formatTick(Number(value))}`} />
                                 <ChartTooltip 
                                     cursor={false}
                                     content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
                                 />
-                                <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="total" fill="var(--color-total)" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ChartContainer>
                     </div>
