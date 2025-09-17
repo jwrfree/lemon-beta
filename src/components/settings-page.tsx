@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -24,14 +25,14 @@ export const SettingsPage = () => {
     ];
 
     return (
-        <div className="flex flex-col bg-muted">
+        <div className="flex flex-col bg-muted overflow-y-auto">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
                  <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
             </header>
-            <main className="flex-1 overflow-y-auto p-4 space-y-6 pb-20">
+            <main className="flex-1 p-4 space-y-6 pb-20">
                 
                 {/* User Profile Section */}
                 <div className="flex items-center gap-4">
@@ -51,8 +52,8 @@ export const SettingsPage = () => {
                 {/* Preferences Card */}
                 <Card className="p-2 bg-background">
                     {preferenceItems.map((item, index) => (
-                        <>
-                            <button key={item.id} onClick={() => item.page !== '#' && router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left disabled:opacity-50" disabled={item.page === '#'}>
+                        <React.Fragment key={item.id}>
+                            <button onClick={() => item.page !== '#' && router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left disabled:opacity-50" disabled={item.page === '#'}>
                                 <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                 <span className="font-medium flex-1">{item.name}</span>
                                 {item.id === 'theme' ? (
@@ -64,21 +65,21 @@ export const SettingsPage = () => {
                                 )}
                             </button>
                             {index < preferenceItems.length - 1 && <Separator />}
-                        </>
+                        </React.Fragment>
                     ))}
                 </Card>
 
                 {/* Management Card */}
                 <Card className="p-2 bg-background">
                     {managementItems.map((item, index) => (
-                        <>
-                            <button key={item.id} onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
+                        <React.Fragment key={item.id}>
+                            <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
                                 <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                 <span className="font-medium flex-1">{item.name}</span>
                                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
                             </button>
                              {index < managementItems.length - 1 && <Separator />}
-                        </>
+                        </React.Fragment>
                     ))}
                 </Card>
                 
