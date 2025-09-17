@@ -57,7 +57,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.2}
                 onClick={() => !isActive && setActiveIndex(i)}
                 className={cn(
-                  "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg",
+                  "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg overflow-hidden",
                   isActive ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                 )}
                 style={{
@@ -80,7 +80,11 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   damping: 25,
                 }}
               >
-                  <div className="p-5 flex flex-col h-full">
+                  {/* Ornaments */}
+                  <div className="absolute -top-1/4 -left-1/4 w-48 h-48 bg-white/10 rounded-full" />
+                  <div className="absolute -bottom-1/4 -right-10 w-40 h-40 bg-white/5 rounded-full" />
+                  
+                  <div className="relative p-5 flex flex-col h-full">
                       <div className="flex items-start justify-between">
                            <div className="flex items-center gap-3">
                               <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
