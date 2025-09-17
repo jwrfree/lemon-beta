@@ -52,7 +52,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                         </div>
                         <div className="flex-1">
                             <div className="font-medium">{transaction.description}</div>
-                            <div className="text-sm text-muted-foreground">{transaction.category} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
+                            <div className="text-sm text-muted-foreground">{transaction.location ? `${transaction.location} • ` : ''}{transaction.category} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
                         </div>
                         <div className={cn("text-sm font-semibold text-right", amountColor)}>
                             <span>

@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
@@ -28,8 +29,10 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
             </div>
             <div className="flex-1 overflow-hidden">
                 <div className="font-medium truncate">{transaction.description}</div>
-                 <div className="text-sm text-muted-foreground flex items-center gap-1.5">
+                 <div className="text-sm text-muted-foreground flex items-center gap-1.5 flex-wrap">
                     <span className="truncate">{transaction.category}</span>
+                    {transaction.location && <span>&bull;</span>}
+                    {transaction.location && <span className="truncate">{transaction.location}</span>}
                     {wallet && <span>&bull;</span>}
                     {wallet && <span className="truncate">{wallet?.name || '...'}</span>}
                     {!hideDate && (

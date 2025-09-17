@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X, CalendarIcon, ArrowRightLeft } from 'lucide-react';
+import { X, CalendarIcon, ArrowRightLeft, MapPin } from 'lucide-react';
 import { categoryDetails } from '@/lib/categories';
 
 export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
@@ -28,6 +28,7 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
     const [category, setCategory] = useState('');
     const [walletId, setWalletId] = useState(defaultWallet?.id || '');
     const [description, setDescription] = useState('');
+    const [location, setLocation] = useState('');
     const [date, setDate] = useState<Date | undefined>(new Date());
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -64,6 +65,7 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                 category,
                 walletId,
                 description,
+                location,
                 date: date.toISOString(),
             });
             toast.success('Transaksi berhasil ditambahkan!');
@@ -231,6 +233,19 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                             onChange={(e) => setDescription(e.target.value)}
                             required
                         />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="location">Lokasi / Toko (Opsional)</Label>
+                        <div className="relative">
+                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input
+                                id="location"
+                                placeholder="e.g., Starbucks"
+                                className="pl-10"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </form>
                 

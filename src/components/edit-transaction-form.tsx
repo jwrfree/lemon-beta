@@ -15,7 +15,9 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X, CalendarIcon } from 'lucide-react';
+import { X, CalendarIcon, MapPin } from 'lucide-react';
+import { categoryDetails } from '@/lib/categories';
+
 
 export const EditTransactionForm = ({ transaction, onClose }: { transaction: any, onClose: () => void }) => {
     const { updateTransaction, wallets, expenseCategories, incomeCategories } = useApp();
@@ -25,6 +27,7 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
     const [category, setCategory] = useState(transaction.category);
     const [walletId, setWalletId] = useState(transaction.walletId);
     const [description, setDescription] = useState(transaction.description);
+    const [location, setLocation] = useState(transaction.location || '');
     const [date, setDate] = useState<Date | undefined>(parseISO(transaction.date));
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,6 +69,7 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
                 category,
                 walletId,
                 description,
+                location,
                 date: date.toISOString(),
             };
             await updateTransaction(transaction.id, transaction, newData);
@@ -195,6 +199,7 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
                         <div className="grid grid-cols-3 gap-2">
                             {categories.map((cat) => {
                                 const isSelected = category === cat.name;
+                                const { icon: CategoryIcon, color, bgColor } = categoryDetails(cat.name);
                                 return (
                                     <button
                                         type="button"
@@ -205,8 +210,8 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
                                             isSelected ? 'border-primary bg-primary/10' : 'border-muted'
                                         )}
                                     >
-                                        <div className={cn("p-3 rounded-full", isSelected ? 'bg-transparent' : cat.bgColor)}>
-                                            <cat.icon className={cn("h-6 w-6", isSelected ? 'text-primary' : cat.color)} />
+                                        <div className={cn("p-3 rounded-full", isSelected ? 'bg-transparent' : bgColor)}>
+                                            <CategoryIcon className={cn("h-6 w-6", isSelected ? 'text-primary' : color)} />
                                         </div>
                                         <span className="text-sm text-center">{cat.name}</span>
                                     </button>
@@ -224,6 +229,19 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
                             onChange={(e) => setDescription(e.target.value)}
                             required
                         />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="location">Lokasi / Toko (Opsional)</Label>
+                         <div className="relative">
+                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input
+                                id="location"
+                                placeholder="e.g., Starbucks"
+                                className="pl-10"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </form>
                 
