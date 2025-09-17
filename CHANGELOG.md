@@ -1,20 +1,20 @@
 # Changelog
 
-Semua pembaruan dan peningkatan pada aplikasi Lemon akan dicatat di sini.
+All updates and improvements to the Lemon app will be documented here.
 
-## [Versi 1.1.0] - September 2024
+## [Version 1.1.0] - September 2024
 
-Ini adalah rilis fitur besar pertama kami yang berfokus pada peningkatan detail pelacakan dan pengalaman pengguna.
+This is our first major feature release focused on improving tracking details and user experience.
 
-### ✨ Fitur Baru
+### ✨ New Features
 
-- **Sub-Kategori**: Sekarang Anda dapat menambahkan sub-kategori untuk setiap transaksi, memberikan wawasan yang lebih dalam tentang pengeluaran dan pemasukan Anda. Cukup pilih kategori utama, dan sebuah panel akan muncul untuk memilih sub-kategori.
-- **Lokasi/Toko Transaksi**: Tambahkan lokasi atau nama toko sebagai kolom opsional saat membuat transaksi untuk mengingat di mana Anda melakukan pembelian.
-- **Struktur Kategori Diperbarui**: Kami telah merombak dan menambahkan beberapa kategori baru yang lebih relevan untuk para pekerja digital dan *freelancer*, seperti "Langganan" (untuk software, cloud, dll.) dan "Pekerjaan Sampingan" sebagai kategori pendapatan utama.
+- **Sub-Categories**: You can now add sub-categories for each transaction, providing deeper insights into your spending and income. Simply select a main category, and a panel will appear to choose a sub-category.
+- **Transaction Location/Store**: Add a location or store name as an optional field when creating a transaction to remember where you made the purchase.
+- **Updated Category Structure**: We've revamped and added several new, more relevant categories for digital workers and freelancers, such as "Subscriptions" (for software, cloud, etc.) and "Side Hustle" as a primary income category.
 
-### 🎨 Peningkatan & Perbaikan
+### 🎨 Enhancements & Fixes
 
-- **Konsistensi UI**: Riwayat transaksi sekarang selalu dikelompokkan berdasarkan tanggal (`Hari ini`, `Kemarin`, dll.) di semua bagian aplikasi untuk pengalaman yang lebih konsisten.
-- **Tampilan Rapi**: Nama kategori yang panjang pada formulir transaksi sekarang akan dipotong dengan elipsis (...) untuk menjaga tata letak tetap bersih.
-- **Latar Belakang Homepage**: Halaman beranda sekarang menggunakan latar belakang abu-abu muda (`bg-muted`) agar seragam dengan halaman lainnya.
-- **Header Disederhanakan**: Tombol "Pengaturan" yang ganda di header halaman beranda telah dihapus untuk menyederhanakan navigasi.
+- **UI Consistency**: The transaction history is now always grouped by date (`Today`, `Yesterday`, etc.) across all sections of the app for a more consistent experience.
+- **Cleaner Layout**: Long category names in the transaction form will now be truncated with an ellipsis (...) to keep the layout clean.
+- **Homepage Background**: The homepage now uses a light gray background (`bg-muted`) to be uniform with other pages.
+- **Simplified Header**: The duplicate "Settings" button in the homepage header has been removed to simplify navigation.
