@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
-import { Bell, Settings, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Bell, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/components/transaction-list';
@@ -60,7 +60,7 @@ export default function HomePage() {
                              <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
                                     <ArrowDownLeft className="h-4 w-4 text-destructive" />
-                                d_v>
+                                </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pengeluaran</p>
                                     {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyExpense)}</p>}
