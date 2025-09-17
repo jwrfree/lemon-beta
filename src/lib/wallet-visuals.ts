@@ -45,8 +45,8 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string }> 
     'cimb niaga': { gradient: { from: '#dc2626', to: '#881337' }, textColor: 'text-white' }, // red-600 to rose-800
     
     // Digital Banks
-    'bank neo': { gradient: { from: '#d946ef', to: '#a855f7' }, textColor: 'text-white' }, // fuchsia-500 to purple-500
-    'bank neo e-commerce': { gradient: { from: '#d946ef', to: '#a855f7' }, textColor: 'text-white' },
+    'bank neo': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' }, // orange-500 to amber-500
+    'bank neo e-commerce': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' },
     'seabank': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // Same as ShopeePay
     'superbank': { gradient: { from: '#a3e635', to: '#4d7c0f' }, textColor: 'text-white' }, // lime-400 to green-800
     'blue by bca': { gradient: { from: '#38bdf8', to: '#3b82f6' }, textColor: 'text-white' }, // sky-400 to blue-500
