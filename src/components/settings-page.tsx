@@ -2,15 +2,19 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+
 
 export const SettingsPage = () => {
     const router = useRouter();
     const { user, handleSignOut } = useApp();
+    const { theme, setTheme } = useTheme();
 
     const managementItems = [
         { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: '/wallets' },
@@ -49,22 +53,40 @@ export const SettingsPage = () => {
 
                 {/* Preferences Card */}
                 <Card className="p-2 bg-background">
-                    {preferenceItems.map((item, index) => (
-                        <React.Fragment key={item.id}>
-                            <button onClick={() => item.page !== '#' && router.push(item.page)} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left disabled:opacity-50" disabled={item.page === '#'}>
-                                <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
-                                <span className="font-medium flex-1">{item.name}</span>
-                                {item.id === 'theme' ? (
-                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                        Sistem <ChevronRight className="h-5 w-5" />
-                                    </div>
-                                ) : (
-                                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                                )}
-                            </button>
-                            {index < preferenceItems.length - 1 && <Separator />}
-                        </React.Fragment>
-                    ))}
+                    <div className="w-full flex items-center gap-4 p-3 rounded-lg text-left">
+                        <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                        <span className="font-medium flex-1">Tema Aplikasi</span>
+                        <div className="flex items-center gap-1 p-1 rounded-full bg-muted">
+                            <Button
+                                size="sm"
+                                variant={theme === 'light' ? 'default' : 'ghost'}
+                                onClick={() => setTheme('light')}
+                                className={cn("rounded-full flex-1 px-3", theme === 'light' && 'bg-background shadow-sm')}
+                            >
+                                <Sun className="h-4 w-4 mr-1" /> Terang
+                            </Button>
+                            <Button
+                                size="sm"
+                                variant={theme === 'dark' ? 'default' : 'ghost'}
+                                onClick={() => setTheme('dark')}
+                                className={cn("rounded-full flex-1 px-3", theme === 'dark' && 'bg-background shadow-sm')}
+                            >
+                                <Moon className="h-4 w-4 mr-1" /> Gelap
+                            </Button>
+                        </div>
+                    </div>
+                    <Separator />
+                    <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left">
+                        <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                        <span className="font-medium flex-1">Notifikasi</span>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    </button>
+                    <Separator />
+                    <button className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-accent text-left" disabled>
+                        <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                        <span className="font-medium flex-1">Keamanan</span>
+                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    </button>
                 </Card>
 
                 {/* Management Card */}
