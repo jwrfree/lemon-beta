@@ -150,10 +150,10 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Pengeluaran per Kategori (Bulan Ini)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <ChartContainer config={{}} className="aspect-video h-80">
+                    <ChartContainer config={{}} className="aspect-video h-96">
                          <BarChart data={categoryExpenseData} layout="vertical" margin={{ left: 20, right: 20 }}>
                             <CartesianGrid horizontal={false} />
-                            <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} minTickGap={1} width={80} />
+                            <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} minTickGap={1} width={80} className="truncate" />
                             <XAxis dataKey="value" type="number" tickFormatter={formatTick} axisLine={false} tickLine={false}/>
                             <ChartTooltip 
                                 cursor={false}
@@ -169,7 +169,7 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Rincian Kategori Bulan Ini</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center">
-                     <ChartContainer config={{}} className="mx-auto aspect-square h-48">
+                     <ChartContainer config={{}} className="mx-auto aspect-square h-64">
                         <PieChart>
                             <ChartTooltip
                                 cursor={true}
@@ -189,8 +189,8 @@ const ExpenseAnalysis = () => {
                                 nameKey="name" 
                                 cx="50%" 
                                 cy="50%"
-                                innerRadius={60} 
-                                outerRadius={80} 
+                                innerRadius={80} 
+                                outerRadius={120} 
                                 strokeWidth={2}
                             />
                         </PieChart>
