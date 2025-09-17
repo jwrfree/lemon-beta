@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis } from "recharts"
 import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
@@ -86,8 +86,12 @@ const ExpenseAnalysis = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="h-64 w-full">
-                        <ResponsiveContainer>
-                             <BarChart data={monthlyExpenseData}>
+                         <ChartContainer config={{
+                            total: {
+                                label: "Pengeluaran",
+                            },
+                         }}>
+                             <BarChart data={monthlyExpenseData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${formatCurrency(Number(value) / 1000000)}Jt`} />
@@ -97,7 +101,7 @@ const ExpenseAnalysis = () => {
                                 />
                                 <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                             </BarChart>
-                        </ResponsiveContainer>
+                        </ChartContainer>
                     </div>
                 </CardContent>
             </Card>
@@ -107,7 +111,7 @@ const ExpenseAnalysis = () => {
                 </CardHeader>
                 <CardContent>
                      <div className="h-64 w-full">
-                         <ResponsiveContainer>
+                         <ChartContainer config={{}}>
                             <PieChart>
                                 <ChartTooltip
                                     cursor={true}
@@ -132,7 +136,7 @@ const ExpenseAnalysis = () => {
                                     );
                                 }} />
                             </PieChart>
-                        </ResponsiveContainer>
+                        </ChartContainer>
                     </div>
                      <div className="mt-4 space-y-2">
                         {categoryExpenseData.slice(0, 5).map((item, index) => (
@@ -248,5 +252,7 @@ export const ChartsPage = () => {
         </div>
     );
 };
+
+    
 
     
