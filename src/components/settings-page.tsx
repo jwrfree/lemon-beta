@@ -1,4 +1,3 @@
-
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -26,7 +25,7 @@ export const SettingsPage = () => {
     ];
 
     return (
-        <div className="flex flex-col h-full bg-muted">
+        <div className="flex flex-col bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
                  <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useMemo } from 'react';
@@ -106,7 +105,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col">
             <header className="h-16 flex items-center relative px-4 shrink-0">
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
                 <Button variant="ghost" size="icon" className="absolute right-4" onClick={onAddBudget}>
@@ -115,7 +114,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
             </header>
             <main className="flex-1 overflow-y-auto p-4 pb-16">
                 {budgets.length === 0 ? (
-                    <div className="flex flex-col h-full items-center justify-center text-center">
+                    <div className="flex flex-col h-full items-center justify-center text-center pt-16">
                         <div className="p-3 bg-primary/10 rounded-full mb-3">
                             <HandCoins className="h-8 w-8 text-primary" strokeWidth={1.5} />
                         </div>

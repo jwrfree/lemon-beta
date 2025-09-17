@@ -1,4 +1,3 @@
-
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -28,7 +27,7 @@ export default function HomePage() {
         .reduce((acc, t) => acc + t.amount, 0);
 
     return (
-        <div className="h-full overflow-y-auto pb-16">
+        <div className="overflow-y-auto pb-16">
             <header className="p-4 flex items-center justify-between sticky top-0 bg-muted/80 backdrop-blur-sm z-10">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">

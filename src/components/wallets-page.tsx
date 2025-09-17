@@ -18,7 +18,7 @@ export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
   const activeWallet = wallets.length > 0 ? wallets[activeIndex] : null;
 
   return (
-    <div className="flex flex-col h-full bg-muted">
+    <div className="flex flex-col bg-muted h-full">
       <header className="h-16 flex items-center relative px-4 shrink-0 bg-muted z-20">
         <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
           <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
