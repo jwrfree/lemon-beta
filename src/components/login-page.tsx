@@ -43,7 +43,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
             await signInWithEmailAndPassword(auth, values.email, values.password);
-            toast.success("Login berhasil!");
+            toast.success("Login berhasil! Selamat datang kembali.");
             onClose();
         } catch (error: any) {
             toast.error(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal untuk masuk.');
@@ -85,7 +85,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                 {...handlers}
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-                    <h2 className="text-xl font-bold">Selamat Datang!</h2>
+                    <h2 className="text-xl font-bold">Selamat Datang Kembali!</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
                 </div>
 

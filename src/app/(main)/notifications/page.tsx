@@ -19,8 +19,8 @@ export default function NotificationsPage() {
                     <div className="p-3 bg-primary/10 rounded-full mb-3">
                         <Bell className="h-8 w-8 text-primary" strokeWidth={1.5} />
                     </div>
-                    <h2 className="text-xl font-bold">Tidak Ada Notifikasi</h2>
-                    <p className="text-muted-foreground mt-2 mb-6">Semua notifikasi Anda akan muncul di sini.</p>
+                    <h2 className="text-xl font-bold">Belum Ada Notifikasi</h2>
+                    <p className="text-muted-foreground mt-2 mb-6">Semua notifikasimu akan muncul di sini.</p>
                 </div>
             </main>
         </div>

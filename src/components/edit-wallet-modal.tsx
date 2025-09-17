@@ -87,7 +87,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
               <div className="space-y-0.5">
                   <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
                   <p className="text-xs text-muted-foreground">
-                      Dompet ini akan otomatis terpilih saat membuat transaksi baru.
+                      Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
                   </p>
               </div>
               <Switch
@@ -111,7 +111,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Anda yakin ingin menghapus dompet ini?</AlertDialogTitle>
+                  <AlertDialogTitle>Yakin mau menghapus dompet ini?</AlertDialogTitle>
                   <AlertDialogDescription>
                     Tindakan ini tidak dapat dibatalkan. Dompet hanya bisa dihapus jika tidak memiliki riwayat transaksi.
                   </AlertDialogDescription>

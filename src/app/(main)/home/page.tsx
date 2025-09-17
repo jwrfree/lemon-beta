@@ -72,7 +72,7 @@ export default function HomePage() {
 
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-semibold">Dompet Anda</h2>
+                        <h2 className="text-lg font-semibold">Dompet Kamu</h2>
                         <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
                     </div>
                     {isLoading ? (
@@ -82,7 +82,7 @@ export default function HomePage() {
                             <Skeleton className="h-24 rounded-lg" />
                         </div>
                     ) : wallets.length === 0 ? (
-                        <div className="text-muted-foreground text-sm">Anda belum memiliki dompet.</div>
+                        <div className="text-muted-foreground text-sm">Kamu belum punya dompet.</div>
                     ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {wallets.slice(0, 3).map(wallet => {

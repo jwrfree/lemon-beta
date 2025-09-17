@@ -35,7 +35,7 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount || !fromWalletId || !toWalletId || !date || !description) {
-      toast.error("Semua kolom harus diisi.");
+      toast.error("Harap isi semua kolom.");
       return;
     }
     if (fromWalletId === toWalletId) {

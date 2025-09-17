@@ -53,7 +53,7 @@ export default function NetWorthPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground text-sm">Ini adalah daftar aset yang Anda miliki.</p>
+                    <p className="text-muted-foreground text-sm">Semua aset yang kamu miliki akan muncul di sini.</p>
                 </CardContent>
             </Card>
 
@@ -66,7 +66,7 @@ export default function NetWorthPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground text-sm">Ini adalah daftar liabilitas atau utang Anda.</p>
+                    <p className="text-muted-foreground text-sm">Daftar utang atau cicilanmu akan muncul di sini.</p>
                 </CardContent>
             </Card>
         </main>

@@ -176,7 +176,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const newWalletDoc = await getDoc(newWalletRef);
 
         if (!oldWalletDoc.exists() || (oldData.walletId !== newData.walletId && !newWalletDoc.exists())) {
-            throw new Error("Wallet not found.");
+            throw new Error("Dompet tidak ditemukan.");
         }
 
         if (oldData.walletId === newData.walletId) {
@@ -369,7 +369,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const handleSignOut = async () => {
         try {
             await signOut(auth);
-            toast.success("Anda telah berhasil keluar.");
+            toast.success("Kamu berhasil keluar.");
             router.push('/');
         } catch (error) {
             toast.error("Gagal keluar.");

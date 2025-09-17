@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useMemo } from 'react';
@@ -122,7 +123,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
                             <HandCoins className="h-8 w-8 text-primary" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-xl font-bold">Belum Ada Anggaran</h2>
-                        <p className="text-muted-foreground mt-2 mb-6 max-w-sm">Buat anggaran untuk melacak pengeluaran Anda pada kategori tertentu setiap bulan.</p>
+                        <p className="text-muted-foreground mt-2 mb-6 max-w-sm">Mulai lacak pengeluaranmu dengan membuat anggaran pertama.</p>
                         <Button onClick={onAddBudget}>
                             <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
                             Buat Anggaran Baru

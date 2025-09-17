@@ -30,7 +30,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!budgetName || !targetAmount || selectedCategories.length === 0) {
-      toast.error("Semua kolom harus diisi.");
+      toast.error("Nama, target, dan kategori anggaran harus diisi.");
       return;
     }
     setIsSubmitting(true);
@@ -66,6 +66,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           </div>
           <div className="space-y-2">
             <Label>Kategori</Label>
+            <p className="text-sm text-muted-foreground">Pilih satu atau lebih kategori untuk anggaran ini.</p>
             <div className="grid grid-cols-3 gap-2">
               {expenseCategories.map(cat => (
                 <button type="button" key={cat.id} onClick={() => handleCategoryToggle(cat.name)} className={cn("p-2 text-center border rounded-lg flex flex-col items-center gap-2", selectedCategories.includes(cat.name) ? 'border-primary bg-primary/10' : 'border-muted')}>

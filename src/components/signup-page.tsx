@@ -43,7 +43,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
             setAuthModal('login');
         } catch (error: any) {
             if (error.code === 'auth/email-already-in-use') {
-                toast.error("Email sudah terdaftar.");
+                toast.error("Email ini sudah terdaftar.");
             } else {
                 toast.error("Gagal membuat akun.");
             }
@@ -74,11 +74,11 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                 {...handlers}
             >
                  <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-                    <h2 className="text-xl font-bold">Buat Akun</h2>
+                    <h2 className="text-xl font-bold">Buat Akun Baru</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
                 </div>
                 <div className="p-4 overflow-y-auto">
-                     <p className="text-muted-foreground text-sm mb-4">Mulai kelola keuangan Anda dengan Lemon.</p>
+                     <p className="text-muted-foreground text-sm mb-4">Mulai kelola keuanganmu bersama Lemon.</p>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-4">
                             <FormField

@@ -90,11 +90,11 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
     }
     
     if (tab === 'income') {
-        return <PlaceholderContent label="Ringkasan Pemasukan" icon={Banknote} text="Ringkasan data pemasukan Anda akan muncul di sini." />;
+        return <PlaceholderContent label="Ringkasan Pemasukan" icon={Banknote} text="Ringkasan data pemasukanmu akan muncul di sini." />;
     }
     
     if (tab === 'net') {
-        return <PlaceholderContent label="Ringkasan Net Income" icon={Landmark} text="Ringkasan selisih pemasukan dan pengeluaran akan muncul di sini." />;
+        return <PlaceholderContent label="Ringkasan Net Income" icon={Landmark} text="Ringkasan selisih pemasukan dan pengeluaranmu akan muncul di sini." />;
     }
 
     return null;

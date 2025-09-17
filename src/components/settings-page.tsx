@@ -4,7 +4,6 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';

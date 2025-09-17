@@ -45,7 +45,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                     </Button>
                 </div>
                 <div className="p-4 space-y-4">
-                    <p className="text-sm text-muted-foreground">Apakah Anda yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
+                    <p className="text-sm text-muted-foreground">Yakin mau menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
                     <div className="flex items-center gap-3 rounded-lg border p-3">
                         <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
                              <CategoryIcon className={cn("h-5 w-5", color)} />
@@ -61,7 +61,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                         </div>
                     </div>
                     <Button onClick={onConfirm} variant="destructive" className="w-full">
-                        Hapus Transaksi
+                        Ya, Hapus Transaksi
                     </Button>
                 </div>
             </motion.div>

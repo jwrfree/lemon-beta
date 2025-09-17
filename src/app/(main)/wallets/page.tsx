@@ -23,7 +23,7 @@ export default function WalletsPage() {
         <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
           <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
         </Button>
-        <h1 className="text-xl font-bold text-center w-full">Dompet Saya</h1>
+        <h1 className="text-xl font-bold text-center w-full">Dompet Kamu</h1>
         <Button variant="ghost" size="icon" className="absolute right-4" onClick={() => setIsWalletModalOpen(true)}>
           <Plus className="h-6 w-6" strokeWidth={1.75} />
         </Button>
@@ -51,8 +51,8 @@ export default function WalletsPage() {
              <div className="p-3 bg-primary/10 rounded-full mb-3">
                 <Wallet className="h-8 w-8 text-primary" strokeWidth={1.5} />
             </div>
-            <h2 className="text-xl font-bold">Tidak ada Dompet</h2>
-            <p className="text-muted-foreground mt-2 mb-6">Buat dompet pertama Anda untuk memulai.</p>
+            <h2 className="text-xl font-bold">Belum Ada Dompet</h2>
+            <p className="text-muted-foreground mt-2 mb-6">Yuk, buat dompet pertamamu untuk memulai!</p>
             <Button onClick={() => setIsWalletModalOpen(true)}>
               <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
               Buat Dompet

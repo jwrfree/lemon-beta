@@ -48,7 +48,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
     }
 
     if (!finalTransactions || finalTransactions.length === 0) {
-        return <div className="text-muted-foreground text-sm text-center py-8">Tidak ada transaksi yang cocok.</div>;
+        return <div className="text-muted-foreground text-sm text-center py-8">Belum ada transaksi di sini.</div>;
     }
     
     return (

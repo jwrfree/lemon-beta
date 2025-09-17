@@ -75,7 +75,7 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!amount || !category || !walletId || !date || !description) {
-            toast.error('Harap isi semua kolom.');
+            toast.error('Harap isi semua kolom yang wajib diisi.');
             return;
         }
 
