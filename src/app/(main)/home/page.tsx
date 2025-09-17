@@ -28,7 +28,7 @@ export default function HomePage() {
 
     return (
         <div className="overflow-y-auto pb-16">
-            <header className="p-4 flex items-center justify-between sticky top-0 bg-muted/80 backdrop-blur-sm z-10">
+            <header className="p-4 flex items-center justify-between sticky top-0 bg-background z-10 border-b">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>

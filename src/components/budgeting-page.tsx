@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HandCoins, PlusCircle } from 'lucide-react';
+import { HandCoins, PlusCircle, ChevronLeft } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -105,14 +105,17 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     
 
     return (
-        <div className="flex flex-col">
-            <header className="h-16 flex items-center relative px-4 shrink-0">
+        <div className="flex flex-col overflow-y-auto pb-16">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
+                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
+                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+                </Button>
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
                 <Button variant="ghost" size="icon" className="absolute right-4" onClick={onAddBudget}>
                     <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
             </header>
-            <main className="flex-1 overflow-y-auto p-4 pb-16">
+            <main className="flex-1 p-4">
                 {budgets.length === 0 ? (
                     <div className="flex flex-col h-full items-center justify-center text-center pt-16">
                         <div className="p-3 bg-primary/10 rounded-full mb-3">
