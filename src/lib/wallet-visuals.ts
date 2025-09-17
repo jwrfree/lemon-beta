@@ -30,7 +30,7 @@ const defaultVisuals: WalletVisuals = {
 
 const brandGradients: Record<string, { gradient: Gradient; textColor: string }> = {
     // E-Wallets
-    'gopay': { gradient: { from: '#3b82f6', to: '#1d4ed8' }, textColor: 'text-white' }, // blue-500 to blue-700
+    'gopay': { gradient: { from: '#06b6d4', to: '#0284c7' }, textColor: 'text-white' }, // cyan-500 to sky-600
     'ovo': { gradient: { from: '#8b5cf6', to: '#5b21b6' }, textColor: 'text-white' }, // purple-500 to purple-800
     'dana': { gradient: { from: '#38bdf8', to: '#2563eb' }, textColor: 'text-white' }, // sky-400 to blue-600
     'linkaja': { gradient: { from: '#ef4444', to: '#b91c1c' }, textColor: 'text-white' }, // red-500 to red-700
@@ -65,7 +65,7 @@ export const getWalletVisuals = (walletName: string, walletCategory: string): Wa
       'e-wallet': { from: '#0ea5e9', to: '#0369a1' }, // sky-500 to sky-700
       'bank': { from: '#10b981', to: '#047857' }, // emerald-500 to emerald-700
       'cash': { from: '#f97316', to: '#c2410c' }, // orange-500 to orange-700
-      'other': { from: '#4f46e5', to: '#312e81' }, // slate-500 to slate-700 -> Changed to indigo
+      'other': { from: '#4f46e5', to: '#312e81' }, // indigo-600 to indigo-800
     };
 
     return {
