@@ -28,7 +28,7 @@ export default function HomePage() {
         .reduce((acc, t) => acc + t.amount, 0);
 
     return (
-        <div className="overflow-y-auto pb-16">
+        <div className="overflow-y-auto pb-16 bg-muted">
             <header className="p-4 flex items-center justify-between sticky top-0 bg-background z-10 border-b">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
