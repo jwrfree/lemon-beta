@@ -9,17 +9,19 @@ import { parseISO } from 'date-fns';
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
     const { transactions: allTransactions, openDeleteModal, openEditModal, isLoading } = useApp();
 
-    if (!transactionsToShow) {
-      transactionsToShow = walletId 
+    let finalTransactions = transactionsToShow;
+
+    if (!finalTransactions) {
+      finalTransactions = walletId 
         ? allTransactions.filter(t => t.walletId === walletId) 
         : allTransactions;
 
       if (limit) {
-        transactionsToShow = transactionsToShow.slice(0, limit);
+        finalTransactions = finalTransactions.slice(0, limit);
       }
     }
     
-    const groupedTransactions = transactionsToShow.reduce((acc, t) => {
+    const groupedTransactions = (finalTransactions || []).reduce((acc, t) => {
         const dateKey = parseISO(t.date).toISOString().split('T')[0];
         if (!acc[dateKey]) {
             acc[dateKey] = [];
@@ -45,19 +47,8 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         )
     }
 
-    if (transactionsToShow.length === 0) {
+    if (!finalTransactions || finalTransactions.length === 0) {
         return <div className="text-muted-foreground text-sm text-center py-8">Tidak ada transaksi yang cocok.</div>;
-    }
-
-    if (limit || walletId) {
-        const list = walletId ? transactionsToShow.filter(t => t.walletId === walletId) : transactionsToShow;
-        return (
-             <div className="space-y-2">
-                {list.map((t) => (
-                    <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} onEdit={openEditModal} />
-                ))}
-            </div>
-        );
     }
     
     return (
