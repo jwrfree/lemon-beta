@@ -117,6 +117,14 @@ export const categories: Categories = {
       subCategories: ['Gaji Pokok', 'Tunjangan']
     },
     { 
+      id: 'cat-i-5', 
+      name: 'Pekerjaan Sampingan', 
+      icon: Briefcase, 
+      color: 'text-cyan-600 dark:text-cyan-500', 
+      bgColor: 'bg-cyan-100 dark:bg-cyan-900/50',
+      subCategories: ['Proyek Desain', 'Konsultasi', 'Lainnya']
+    },
+    { 
       id: 'cat-i-2', 
       name: 'Bonus', 
       icon: Gift, 
@@ -138,7 +146,7 @@ export const categories: Categories = {
       icon: Handshake, 
       color: 'text-gray-600 dark:text-gray-500', 
       bgColor: 'bg-gray-100 dark:bg-gray-900/50',
-      subCategories: ['Pekerjaan Sampingan', 'Hadiah Uang', 'Penjualan Barang']
+      subCategories: ['Hadiah Uang', 'Penjualan Barang']
     },
   ],
   internal: [
