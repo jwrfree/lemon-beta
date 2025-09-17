@@ -76,15 +76,16 @@ export default function HomePage() {
                         <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
                     </div>
                     {isLoading ? (
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <Skeleton className="h-24 rounded-lg" />
                             <Skeleton className="h-24 rounded-lg" />
                             <Skeleton className="h-24 rounded-lg" />
                         </div>
                     ) : wallets.length === 0 ? (
                         <div className="text-muted-foreground text-sm">Anda belum memiliki dompet.</div>
                     ) : (
-                        <div className="grid grid-cols-2 gap-4">
-                            {wallets.slice(0, 2).map(wallet => {
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {wallets.slice(0, 3).map(wallet => {
                                 const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon);
                                 return (
                                     <Card key={wallet.id}>
