@@ -247,7 +247,7 @@ export const EditTransactionForm = ({ transaction, onClose }: { transaction: any
                                             <div className={cn("p-3 rounded-full", isSelected ? 'bg-transparent' : bgColor)}>
                                                 <CategoryIcon className={cn("h-6 w-6", isSelected ? 'text-primary' : color)} />
                                             </div>
-                                            <span className="text-sm text-center">{cat.name}</span>
+                                            <span className="text-sm text-center truncate">{cat.name}</span>
                                         </button>
                                     )
                                 })}
