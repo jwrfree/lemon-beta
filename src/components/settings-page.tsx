@@ -9,6 +9,7 @@ import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, Us
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 
 export const SettingsPage = () => {
@@ -23,12 +24,6 @@ export const SettingsPage = () => {
         { id: 'assets_liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities' },
     ];
     
-    const preferenceItems = [
-        { id: 'notifications', name: 'Notifikasi', icon: Bell, page: '/notifications' },
-        { id: 'theme', name: 'Tema Aplikasi', icon: Moon, page: '#' },
-        { id: 'security', name: 'Keamanan', icon: Shield, page: '#' },
-    ];
-
     return (
         <div className="flex flex-col bg-muted overflow-y-auto">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-10">
@@ -56,22 +51,30 @@ export const SettingsPage = () => {
                     <div className="w-full flex items-center gap-4 p-3 rounded-lg text-left">
                         <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                         <span className="font-medium flex-1">Tema Aplikasi</span>
-                        <div className="flex items-center gap-1 p-1 rounded-full bg-muted">
+                        <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
+                            {theme === 'light' && (
+                                <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 bg-background rounded-full shadow-sm" />
+                            )}
+                             {theme === 'dark' && (
+                                <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
+                            )}
                             <Button
-                                size="sm"
-                                variant={theme === 'light' ? 'default' : 'ghost'}
+                                size="icon"
+                                variant='ghost'
                                 onClick={() => setTheme('light')}
-                                className={cn("rounded-full flex-1 px-3", theme === 'light' && 'bg-background shadow-sm')}
+                                className={cn("rounded-full z-10", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                                aria-label="Set theme to light"
                             >
-                                <Sun className="h-4 w-4 mr-1" /> Terang
+                                <Sun className="h-5 w-5" />
                             </Button>
                             <Button
-                                size="sm"
-                                variant={theme === 'dark' ? 'default' : 'ghost'}
+                                size="icon"
+                                variant='ghost'
                                 onClick={() => setTheme('dark')}
-                                className={cn("rounded-full flex-1 px-3", theme === 'dark' && 'bg-background shadow-sm')}
+                                className={cn("rounded-full z-10", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                                aria-label="Set theme to dark"
                             >
-                                <Moon className="h-4 w-4 mr-1" /> Gelap
+                                <Moon className="h-5 w-5" />
                             </Button>
                         </div>
                     </div>
