@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
@@ -14,11 +13,8 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
     const { wallets } = useApp();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
-    const categoryDetails = 
-      categories.expense.find(c => c.name === transaction.category) || 
-      categories.income.find(c => c.name === transaction.category) || 
-      categories.internal.find(c => c.name === transaction.category) || 
-      { icon: Pencil, color: 'text-gray-500', bgColor: 'bg-gray-100' };
+    const allCategories = [...categories.expense, ...categories.income, ...categories.internal];
+    const categoryDetails = allCategories.find(c => c.name === transaction.category) || { icon: Pencil, color: 'text-gray-500', bgColor: 'bg-gray-100' };
       
     const { icon: CategoryIcon, color, bgColor } = categoryDetails;
 
@@ -39,7 +35,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
                     {!hideDate && (
                         <>
                             <span>&bull;</span>
-                            <span>{format(parseISO(transaction.date), 'd MMM', { locale: dateFnsLocaleId })}</span>
+                            <span>{format(parseISO(transaction.date), 'EEE, d MMM', { locale: dateFnsLocaleId })}</span>
                         </>
                     )}
                 </div>
