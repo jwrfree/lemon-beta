@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '@/components/app-provider';
 import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -16,13 +16,17 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { X, CalendarIcon, ArrowRightLeft } from 'lucide-react';
+import { categoryDetails } from '@/lib/categories';
 
 export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
     const { addTransaction, wallets, expenseCategories, incomeCategories, setIsTxModalOpen, setIsTransferModalOpen } = useApp();
+    
+    const defaultWallet = wallets.find(w => w.isDefault);
+
     const [type, setType] = useState('expense');
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
-    const [walletId, setWalletId] = useState('');
+    const [walletId, setWalletId] = useState(defaultWallet?.id || '');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState<Date | undefined>(new Date());
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -197,6 +201,7 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                         <div className="grid grid-cols-3 gap-2">
                             {categories.map((cat) => {
                                 const isSelected = category === cat.name;
+                                const { icon: CategoryIcon, color, bgColor } = categoryDetails(cat.name);
                                 return (
                                     <button
                                         type="button"
@@ -207,8 +212,8 @@ export const AddTransactionForm = ({ onClose }: { onClose: () => void }) => {
                                             isSelected ? 'border-primary bg-primary/10' : 'border-muted'
                                         )}
                                     >
-                                        <div className={cn("p-3 rounded-full", isSelected ? 'bg-transparent' : cat.bgColor)}>
-                                            <cat.icon className={cn("h-6 w-6", isSelected ? 'text-primary' : cat.color)} />
+                                        <div className={cn("p-3 rounded-full", isSelected ? 'bg-transparent' : bgColor)}>
+                                            <CategoryIcon className={cn("h-6 w-6", isSelected ? 'text-primary' : color)} />
                                         </div>
                                         <span className="text-sm text-center">{cat.name}</span>
                                     </button>

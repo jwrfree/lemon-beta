@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { User, signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { categories } from '@/lib/categories';
@@ -256,7 +256,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         await addDoc(walletCollection, {
             ...walletData,
             balance: walletData.balance || 0,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            isDefault: walletData.isDefault || false,
         });
         toast.success("Dompet berhasil dibuat!");
         setIsWalletModalOpen(false);
@@ -266,8 +267,23 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         if (!user) throw new Error("User not authenticated.");
         const walletCollection = getWalletCollection();
         if (!walletCollection) return;
+
+        const batch = writeBatch(db);
         const walletRef = doc(walletCollection, walletId);
-        await updateDoc(walletRef, walletData);
+
+        // If setting a wallet to default, unset all others
+        if (walletData.isDefault === true) {
+            const walletsSnapshot = await getDocs(walletCollection);
+            walletsSnapshot.forEach((doc) => {
+                if (doc.id !== walletId) {
+                    batch.update(doc.ref, { isDefault: false });
+                }
+            });
+        }
+        
+        batch.update(walletRef, walletData);
+        await batch.commit();
+        
         toast.success("Dompet berhasil diperbarui!");
         setIsEditWalletModalOpen(false);
     }, [user, getWalletCollection]);

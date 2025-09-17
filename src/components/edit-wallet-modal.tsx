@@ -11,10 +11,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useApp } from '@/components/app-provider';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+import { Switch } from './ui/switch';
 
 export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () => void }) => {
   const { updateWallet, deleteWallet } = useApp();
   const [walletName, setWalletName] = useState(wallet.name);
+  const [isDefault, setIsDefault] = useState(wallet.isDefault || false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -26,7 +28,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
     }
     setIsSubmitting(true);
     try {
-      await updateWallet(wallet.id, { name: walletName });
+      await updateWallet(wallet.id, { name: walletName, isDefault });
     } catch (error) {
       toast.error("Gagal memperbarui dompet.");
       console.error(error);
@@ -46,6 +48,8 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
       setIsDeleting(false);
     }
   };
+
+  const hasChanges = walletName !== wallet.name || isDefault !== !!wallet.isDefault;
 
   return (
     <motion.div
@@ -78,10 +82,25 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
               disabled={wallet.name === 'Tunai'}
             />
           </div>
+          
+          <div className="flex items-center justify-between rounded-lg border p-3">
+              <div className="space-y-0.5">
+                  <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
+                  <p className="text-xs text-muted-foreground">
+                      Dompet ini akan otomatis terpilih saat membuat transaksi baru.
+                  </p>
+              </div>
+              <Switch
+                id="is-default"
+                checked={isDefault}
+                onCheckedChange={setIsDefault}
+              />
+          </div>
+          
           <p className="text-xs text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
           
           <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1" size="lg" disabled={isSubmitting || walletName === wallet.name}>
+            <Button type="submit" className="flex-1" size="lg" disabled={isSubmitting || !hasChanges}>
               {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
             <AlertDialog>
