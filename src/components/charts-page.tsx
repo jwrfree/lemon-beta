@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Pie, PieChart } from "recharts"
 import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
@@ -288,17 +288,6 @@ const ExpenseAnalysis = () => {
 
     }, [transactions]);
     
-    const formatTick = (value: number) => {
-        const numValue = Number(value);
-        if (numValue >= 1000000) {
-            return `Rp${(numValue / 1000000).toFixed(numValue % 1000000 !== 0 ? 1 : 0)}Jt`;
-        }
-        if (numValue >= 1000) {
-            return `Rp${(numValue / 1000).toFixed(0)}Rb`;
-        }
-        return `Rp${numValue}`;
-    };
-
 
     return (
         <div className="space-y-6">
@@ -317,17 +306,22 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Pengeluaran per Kategori (Bulan Ini)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <ChartContainer config={{}} className="aspect-video h-96">
-                         <BarChart data={categoryExpenseData.breakdown} layout="vertical" margin={{ left: 20, right: 20 }}>
-                            <CartesianGrid horizontal={false} />
-                            <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} minTickGap={1} width={80} className="truncate" />
-                            <XAxis dataKey="value" type="number" tickFormatter={formatTick} axisLine={false} tickLine={false}/>
+                    <ChartContainer config={{}} className="aspect-square h-80">
+                         <PieChart>
                             <ChartTooltip 
                                 cursor={false}
-                                content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />} 
+                                content={<ChartTooltipContent 
+                                    formatter={(value) => formatCurrency(Number(value))}
+                                />}
                             />
-                            <Bar dataKey="value" fill="var(--color-value)" radius={[0, 4, 4, 0]} />
-                        </BarChart>
+                            <Pie
+                                data={categoryExpenseData.breakdown}
+                                dataKey="value"
+                                nameKey="name"
+                                innerRadius={60}
+                                strokeWidth={5}
+                            />
+                        </PieChart>
                     </ChartContainer>
                 </CardContent>
             </Card>
