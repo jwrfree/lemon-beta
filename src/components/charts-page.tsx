@@ -273,13 +273,24 @@ const ExpenseAnalysis = () => {
         return {
             totalExpense,
             breakdown: Object.entries(categoryMap)
-                .map(([name, value], index) => {
-                    const { icon: Icon } = categoryDetails(name);
+                .map(([name, value]) => {
+                    const details = categoryDetails(name);
+                    const colorClass = details.color.match(/(\w+)-(\d+)/);
+                    let fill = 'hsl(var(--muted-foreground))';
+                    if (colorClass) {
+                        const [_, colorName, colorStrength] = colorClass;
+                        fill = `hsl(var(--chart-${colorName}-${colorStrength}))`;
+                    }
+                    
+                    // A very basic way to generate HSL vars for Tailwind config
+                    const cssVarFriendlyName = name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+                    
                     return { 
                         name, 
                         value, 
-                        icon: Icon,
-                        fill: `hsl(var(--chart-${(index % 5) + 1}))`,
+                        icon: details.icon,
+                        fill: `var(--cat-color-${cssVarFriendlyName})`,
+                        color: details.color,
                         percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                     };
                 })
@@ -334,13 +345,13 @@ const ExpenseAnalysis = () => {
                         <div key={item.name} className="flex flex-col gap-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                    <item.icon className="h-4 w-4 text-muted-foreground" />
+                                    <item.icon className={cn("h-4 w-4", item.color)} />
                                     <span className="font-medium">{item.name}</span>
                                 </div>
                                 <span className="font-semibold">{formatCurrency(item.value)}</span>
                             </div>
                             <div className="h-2 w-full bg-muted rounded-full">
-                                <div className="h-2 rounded-full" style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
+                                <div className={cn("h-2 rounded-full", item.color.replace('text-', 'bg-'))} style={{ width: `${item.percentage}%` }}></div>
                             </div>
                         </div>
                     ))}
@@ -408,16 +419,16 @@ export const ChartsPage = () => {
     };
 
     return (
-        <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
+        <div className="flex flex-col overflow-y-auto pb-16">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <main className="flex-1 overflow-y-auto">
+            <main className="flex-1 bg-muted">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full flex flex-col flex-1">
-                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-0 sticky top-0">
+                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-16 z-10">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value} className="flex gap-2 items-center">
                                <tab.icon className="h-4 w-4" />
