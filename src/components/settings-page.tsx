@@ -9,11 +9,49 @@ import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { Skeleton } from './ui/skeleton';
 
+
+const SettingsSkeleton = () => (
+    <div className="p-4 space-y-6">
+        <div className="flex items-center gap-4">
+            <Skeleton className="w-16 h-16 rounded-full" />
+            <div className="space-y-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-48" />
+            </div>
+        </div>
+        <div className="rounded-lg bg-background p-3 space-y-2">
+             <div className="flex items-center justify-between">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-7 w-16" />
+            </div>
+            <Separator />
+            <div className="flex items-center justify-between">
+                <Skeleton className="h-5 w-20" />
+                <Skeleton className="h-5 w-5" />
+            </div>
+        </div>
+         <div className="rounded-lg bg-background p-3 space-y-2">
+            {[...Array(4)].map((_, i) => (
+                <React.Fragment key={i}>
+                    <div className="flex items-center justify-between">
+                        <Skeleton className="h-5 w-28" />
+                        <Skeleton className="h-5 w-5" />
+                    </div>
+                    {i < 3 && <Separator />}
+                </React.Fragment>
+            ))}
+        </div>
+         <div className="rounded-lg bg-background p-3">
+            <Skeleton className="h-5 w-16" />
+        </div>
+    </div>
+);
 
 export const SettingsPage = () => {
     const router = useRouter();
-    const { user, handleSignOut } = useApp();
+    const { user, handleSignOut, isLoading } = useApp();
     const { theme, setTheme } = useTheme();
 
     const managementItems = [
@@ -28,92 +66,95 @@ export const SettingsPage = () => {
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-10">
                 <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
             </header>
-            <main className="flex-1 p-4 space-y-6 pb-20">
-                
-                {/* User Profile Section */}
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                        {user?.photoURL ? (
-                            <img src={user.photoURL} alt="User Avatar" className="w-full h-full rounded-full" />
-                        ) : (
-                            <UserCircle className="w-10 h-10 text-primary" strokeWidth={1.5} />
-                        )}
-                    </div>
-                    <div>
-                        <p className="text-lg font-semibold">{user?.displayName || 'Pengguna Lemon'}</p>
-                        <p className="text-sm text-muted-foreground">{user?.email}</p>
-                    </div>
-                </div>
-
-                {/* Preferences Card */}
-                <div className="rounded-lg bg-background overflow-hidden">
-                    <div className="w-full flex items-center gap-4 p-3 text-left">
-                        <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
-                        <span className="font-medium flex-1">Tema Aplikasi</span>
-                        <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
-                            {theme === 'light' && (
-                                <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 bg-background rounded-full shadow-sm" />
-                            )}
-                             {theme === 'dark' && (
-                                <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
-                            )}
-                            <Button
-                                size="icon"
-                                variant='ghost'
-                                onClick={() => setTheme('light')}
-                                className={cn("rounded-full z-10 h-7 w-7", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
-                                aria-label="Set theme to light"
-                            >
-                                <Sun className="h-5 w-5" />
-                            </Button>
-                            <Button
-                                size="icon"
-                                variant='ghost'
-                                onClick={() => setTheme('dark')}
-                                className={cn("rounded-full z-10 h-7 w-7", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
-                                aria-label="Set theme to dark"
-                            >
-                                <Moon className="h-5 w-5" />
-                            </Button>
+            <main className="flex-1 pb-20">
+                {isLoading ? <SettingsSkeleton /> : (
+                    <div className="p-4 space-y-6">
+                        {/* User Profile Section */}
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                                {user?.photoURL ? (
+                                    <img src={user.photoURL} alt="User Avatar" className="w-full h-full rounded-full" />
+                                ) : (
+                                    <UserCircle className="w-10 h-10 text-primary" strokeWidth={1.5} />
+                                )}
+                            </div>
+                            <div>
+                                <p className="text-lg font-semibold">{user?.displayName || 'Pengguna Lemon'}</p>
+                                <p className="text-sm text-muted-foreground">{user?.email}</p>
+                            </div>
                         </div>
-                    </div>
-                    <Separator className="mx-3 w-auto"/>
-                    <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
-                        <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
-                        <span className="font-medium flex-1">Notifikasi</span>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </button>
-                    <Separator className="mx-3 w-auto"/>
-                    <button className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left" disabled>
-                        <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
-                        <span className="font-medium flex-1">Keamanan</span>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </button>
-                </div>
 
-                {/* Management Card */}
-                <div className="rounded-lg bg-background overflow-hidden">
-                    {managementItems.map((item, index) => (
-                        <React.Fragment key={item.id}>
-                            <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
-                                <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
-                                <span className="font-medium flex-1">{item.name}</span>
+                        {/* Preferences Card */}
+                        <div className="rounded-lg bg-background overflow-hidden">
+                            <div className="w-full flex items-center gap-4 p-3 text-left">
+                                <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                                <span className="font-medium flex-1">Tema Aplikasi</span>
+                                <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
+                                    {theme === 'light' && (
+                                        <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 bg-background rounded-full shadow-sm" />
+                                    )}
+                                     {theme === 'dark' && (
+                                        <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
+                                    )}
+                                    <Button
+                                        size="icon"
+                                        variant='ghost'
+                                        onClick={() => setTheme('light')}
+                                        className={cn("rounded-full z-10 h-7 w-7", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                                        aria-label="Set theme to light"
+                                    >
+                                        <Sun className="h-5 w-5" />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant='ghost'
+                                        onClick={() => setTheme('dark')}
+                                        className={cn("rounded-full z-10 h-7 w-7", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                                        aria-label="Set theme to dark"
+                                    >
+                                        <Moon className="h-5 w-5" />
+                                    </Button>
+                                </div>
+                            </div>
+                            <Separator className="mx-3 w-auto"/>
+                            <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
+                                <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                                <span className="font-medium flex-1">Notifikasi</span>
                                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
                             </button>
-                             {index < managementItems.length - 1 && <Separator className="mx-3 w-auto"/>}
-                        </React.Fragment>
-                    ))}
-                </div>
-                
-                 {/* Logout Button */}
-                 <div className="rounded-lg bg-background overflow-hidden">
-                    <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-3 hover:bg-destructive/10 text-left text-destructive">
-                        <LogOut className="h-6 w-6" strokeWidth={1.5}/>
-                        <span className="font-medium flex-1">Keluar</span>
-                    </button>
-                </div>
-                
-                 <p className="text-xs text-muted-foreground text-center">Lemon App v1.2.0</p>
+                            <Separator className="mx-3 w-auto"/>
+                            <button className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left" disabled>
+                                <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                                <span className="font-medium flex-1">Keamanan</span>
+                                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                            </button>
+                        </div>
+
+                        {/* Management Card */}
+                        <div className="rounded-lg bg-background overflow-hidden">
+                            {managementItems.map((item, index) => (
+                                <React.Fragment key={item.id}>
+                                    <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
+                                        <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                                        <span className="font-medium flex-1">{item.name}</span>
+                                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                                    </button>
+                                     {index < managementItems.length - 1 && <Separator className="mx-3 w-auto"/>}
+                                </React.Fragment>
+                            ))}
+                        </div>
+                        
+                         {/* Logout Button */}
+                         <div className="rounded-lg bg-background overflow-hidden">
+                            <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-3 hover:bg-destructive/10 text-left text-destructive">
+                                <LogOut className="h-6 w-6" strokeWidth={1.5}/>
+                                <span className="font-medium flex-1">Keluar</span>
+                            </button>
+                        </div>
+                        
+                         <p className="text-xs text-muted-foreground text-center">Lemon App v1.2.0</p>
+                    </div>
+                )}
             </main>
         </div>
     );

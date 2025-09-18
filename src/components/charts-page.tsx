@@ -14,6 +14,7 @@ import { useApp } from '@/components/app-provider';
 import { isSameMonth, startOfMonth, parseISO, endOfMonth } from 'date-fns';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
+import { Skeleton } from './ui/skeleton';
 
 type TabValue = 'expense' | 'income' | 'net';
 
@@ -22,6 +23,44 @@ const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
     { value: 'income', label: 'Pemasukan', icon: ArrowUpRight },
     { value: 'net', label: 'Net Income', icon: Scale },
 ];
+
+const ChartsSkeleton = () => (
+    <div className="p-4 space-y-6">
+        <Card>
+            <CardHeader>
+                <Skeleton className="h-5 w-1/3" />
+            </CardHeader>
+            <CardContent className="grid grid-cols-3 gap-4 text-center">
+                <div className="flex flex-col items-center gap-1">
+                    <Skeleton className="h-3 w-10" />
+                    <Skeleton className="h-6 w-20" />
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="h-6 w-16" />
+                </div>
+                <div className="flex flex-col items-center gap-1">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-6 w-20" />
+                </div>
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <Skeleton className="h-6 w-3/4" />
+            </CardHeader>
+            <CardContent className="space-y-2">
+                 {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                        <Skeleton className="h-4 w-16" />
+                        <Skeleton className="h-4 flex-1" />
+                    </div>
+                ))}
+            </CardContent>
+        </Card>
+    </div>
+);
+
 
 const SummaryCard = ({ tab }: { tab: TabValue }) => {
     const { transactions } = useApp();
@@ -226,6 +265,7 @@ const PlaceholderContent = ({ label, icon: Icon, text }: { label: string, icon: 
 
 export const ChartsPage = () => {
     const router = useRouter();
+    const { isLoading } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
 
@@ -286,23 +326,27 @@ export const ChartsPage = () => {
                             </TabsTrigger>
                        ))}
                     </TabsList>
-                    <div {...handlers} className="flex-1 overflow-y-auto bg-muted p-4">
+                    <div {...handlers} className="flex-1 overflow-y-auto bg-muted">
                         <AnimatePresence initial={false} custom={direction}>
-                            <motion.div
-                                key={activeTab}
-                                custom={direction}
-                                variants={slideVariants}
-                                initial="enter"
-                                animate="center"
-                                exit="exit"
-                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                className="space-y-6"
-                            >
-                                <SummaryCard tab={activeTab} />
-                                {activeTab === 'expense' && <ExpenseAnalysis />}
-                                {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                                {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
-                            </motion.div>
+                             {isLoading ? (
+                                <ChartsSkeleton />
+                             ) : (
+                                <motion.div
+                                    key={activeTab}
+                                    custom={direction}
+                                    variants={slideVariants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                    className="space-y-6 p-4"
+                                >
+                                    <SummaryCard tab={activeTab} />
+                                    {activeTab === 'expense' && <ExpenseAnalysis />}
+                                    {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
+                                    {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                                </motion.div>
+                            )}
                         </AnimatePresence>
                     </div>
                 </Tabs>

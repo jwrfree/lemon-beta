@@ -13,10 +13,46 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const TransactionsSkeleton = () => (
+    <div className="p-4 space-y-4">
+        <Skeleton className="h-6 w-1/3" />
+        <div className="space-y-2">
+            <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                </div>
+                <Skeleton className="h-5 w-1/4" />
+            </div>
+             <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-2/4" />
+                    <Skeleton className="h-3 w-1/3" />
+                </div>
+                <Skeleton className="h-5 w-1/5" />
+            </div>
+        </div>
+        <Skeleton className="h-6 w-1/4" />
+        <div className="space-y-2">
+             <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                </div>
+                <Skeleton className="h-5 w-1/4" />
+            </div>
+        </div>
+    </div>
+);
 
 export default function AllTransactionsPage() {
     const router = useRouter();
-    const { transactions, expenseCategories, incomeCategories, wallets } = useApp();
+    const { transactions, expenseCategories, incomeCategories, wallets, isLoading } = useApp();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -209,8 +245,8 @@ export default function AllTransactionsPage() {
                 )}
             </div>
 
-            <main className="p-4 space-y-2">
-                <TransactionList transactions={filteredTransactions} />
+            <main className="space-y-2">
+                {isLoading ? <TransactionsSkeleton /> : <TransactionList transactions={filteredTransactions} />}
             </main>
         </div>
     );
