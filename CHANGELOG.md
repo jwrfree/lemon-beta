@@ -4,20 +4,29 @@ All updates and improvements to the Lemon app will be documented here.
 
 ## [Version 1.2.0] - October 2025
 
-This release focuses on significant UI/UX enhancements to make the app feel more modern, playful, and visually consistent.
+This release focuses on significant UI/UX enhancements and the introduction of AI-powered features to make transaction logging faster and more intuitive.
 
 ### ✨ New Features
 
-- **More Digital Banks**: Added support for popular digital banks and e-wallets including Jenius, Bank Jago, Seabank, Superbank, Blue by BCA, and PayPal.
+- **"Catat Cepat" with AI**: A new way to add transactions using natural language.
+    - **Text Input**: Type or paste transaction details like "beli kopi 25rb pake GoPay".
+    - **Voice Input**: Use your voice to dictate transactions for a hands-free experience.
+    - **Receipt Scanning**: Snap a photo of a receipt, and the AI will extract the details automatically.
+- **Smart Transaction Defaults**: The AI will now intelligently default to "Tunai" (Cash) for the wallet and "today" for the date if not specified, reducing manual input.
+- **Instant Transaction Insights**: When using "Catat Cepat", the app now provides instant, non-AI insights on how the new transaction will affect your budget and wallet balance before you even save it.
+- **Animated Counters**: Key financial numbers like total balance, income, and expenses on the homepage now animate when they change, providing a more dynamic and satisfying user experience.
 
 ### 🎨 Enhancements & Fixes
 
-- **Playful UI**: Increased the corner radius (`border-radius`) across all components for a softer and more modern look.
-- **Improved Wallet Visuals**: Each bank and e-wallet now has a unique, more accurate color gradient on its card, making them easier to identify at a glance.
-- **Consistent Headers**: Standardized the height of all page headers for a more consistent and polished user experience.
-- **Softer Background**: Adjusted the global background color (`bg-muted`) to a softer "soft teal mint" for better visual comfort.
-- **Cleaner Links**: Removed the underline from "Lihat Semua" link buttons for a cleaner and more minimalist design.
-- **Homepage Wallet Display**: The homepage now shows up to 3 wallet cards instead of 2.
+- **Intuitive Budget Creation**: The "Add Budget" flow has been revamped with a slider and quick-select buttons, making it easier and more interactive to set a target amount.
+- **Streamlined Transaction History**: The transaction history page now features a cleaner header with a compact, icon-based filter sheet, providing more space for content. Filters are now progressively disclosed for a tidier interface.
+- **Improved Budget Visualization**: The progress bar on the budget detail page now dynamically changes color (blue, yellow, red) to indicate whether spending is safe, nearing the limit, or has exceeded it.
+- **UI Consistency & Fixes**:
+    - Addressed a key `z-index` issue where page content would scroll over the header.
+    - Fixed a page-flickering issue during navigation by optimizing the global state provider's location.
+    - Resolved several React warnings and errors, including `indicatorClassName` prop and initialization errors.
+    - Improved the touch target and visual design of the filter removal "X" button.
+    - Removed the inconsistent "Back" button from the main Budgeting page header.
 
 ## [Version 1.1.0] - September 2025
 

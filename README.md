@@ -4,16 +4,18 @@ Lemon is a modern and intuitive personal finance management application designed
 
 ## ✨ Key Features
 
+- **AI-Powered Quick Add**: Log transactions effortlessly using natural language—type it, say it, or scan a receipt.
 - **Transaction Tracking**: Easily add, edit, and delete income and expense transactions.
 - **Detailed Categorization**: Organize transactions with main categories and sub-categories for deeper insights.
-- **Wallet Management**: Create and manage multiple wallets (e.g., E-Wallet, Bank, Cash) with a beautiful card stack UI.
-- **Budgeting**: Set monthly budgets for specific categories and track your spending against them.
+- **Wallet Management**: Create and manage multiple wallets (e.g., E-Wallet, Bank, Cash) with a beautiful, animated card stack UI.
+- **Interactive Budgeting**: Set monthly budgets for specific categories with an intuitive slider and track your spending with color-coded progress bars.
 - **Authentication**: Secure user authentication powered by Firebase.
 - **Responsive Design**: A mobile-first design that works beautifully on all devices.
 
 ## 🚀 Tech Stack
 
 - **Framework**: Next.js (App Router)
+- **AI**: Google Gemini & Genkit
 - **Styling**: Tailwind CSS & shadcn/ui
 - **Backend & Database**: Firebase (Firestore, Authentication)
 - **State Management**: React Context

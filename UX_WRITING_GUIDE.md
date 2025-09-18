@@ -79,3 +79,5 @@ Untuk menjaga konsistensi, gunakan istilah-istilah berikut di seluruh aplikasi:
 | **Transfer**          | Pindah Dana, Kirim Uang     |
 | **Kelola**            | Atur, Manajemen             |
 | **Simpan**            | Submit, Kirim, Ok           |
+| **Catat Cepat**       | Smart Add, Input Cerdas     |
+
