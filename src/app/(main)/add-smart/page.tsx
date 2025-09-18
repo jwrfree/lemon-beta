@@ -198,9 +198,6 @@ export default function SmartAddPage() {
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
                 <h1 className="text-xl font-bold text-center w-full">Catat Transaksi Baru</h1>
             </header>
 
@@ -323,37 +320,41 @@ export default function SmartAddPage() {
                 )}
             </main>
 
-            <div className="p-2 border-t bg-background">
-                <div className="relative">
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileSelect}
-                        className="hidden"
-                        accept="image/*"
-                    />
-                    <Textarea
-                        placeholder="Tulis, tempel, atau foto transaksimu di sini..."
-                        className="pr-24 min-h-[48px] max-h-48"
-                        rows={1}
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                                e.preventDefault();
-                                handleSendText();
-                            }
-                        }}
-                    />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Camera className="h-5 w-5" /></Button>
-                        <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
-                            {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
-                        </Button>
+             {!extractedData && (
+                <div className="p-2 border-t bg-background">
+                    <div className="relative">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileSelect}
+                            className="hidden"
+                            accept="image/*"
+                        />
+                        <Textarea
+                            placeholder="Tulis, tempel, atau foto transaksimu di sini..."
+                            className="pr-24 min-h-[48px] max-h-48"
+                            rows={1}
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSendText();
+                                }
+                            }}
+                        />
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Camera className="h-5 w-5" /></Button>
+                            <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
+                                {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </div>
+             )}
         </div>
     );
 }
+
+    

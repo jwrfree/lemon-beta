@@ -25,7 +25,7 @@ export const BottomNavigation = () => {
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'budgeting', href: '/budgeting', icon: PiggyBank, name: 'Anggaran' },
-        { id: 'add', href: '/add-smart', icon: Sparkles, name: 'Tambah', primary: true },
+        { id: 'add', href: '/add-smart', icon: PlusCircle, name: 'Tambah', primary: true },
         { id: 'charts', href: '/charts', icon: BarChart3, name: 'Analisis' },
         { id: 'settings', href: '/settings', icon: Settings, name: 'Pengaturan' },
     ];
@@ -75,3 +75,5 @@ export const BottomNavigation = () => {
         </AnimatePresence>
     );
 };
+
+    
