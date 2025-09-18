@@ -1,21 +1,24 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { ChevronLeft, Paperclip, Camera, Send, LoaderCircle, Pencil, Check } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
+import { isSameMonth, parseISO } from 'date-fns';
 
 type Message = {
     id: string;
@@ -25,11 +28,12 @@ type Message = {
 
 export default function SmartAddPage() {
     const router = useRouter();
-    const { addTransaction, wallets, expenseCategories, incomeCategories } = useApp();
+    const { addTransaction, wallets, expenseCategories, incomeCategories, budgets, transactions } = useApp();
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [extractedData, setExtractedData] = useState<any | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
@@ -63,11 +67,11 @@ export default function SmartAddPage() {
             const matchingWallet = wallets.find(w => w.name.toLowerCase() === result.wallet?.toLowerCase());
 
             const dataToConfirm = {
-                type: 'expense',
+                type: result.amount > 0 ? (result.category === 'Gaji' || result.category === 'Bonus' || result.category === 'Investasi' ? 'income' : 'expense') : 'expense',
                 amount: result.amount || 0,
                 description: result.description || 'Transaksi baru',
                 category: result.category || '',
-                walletId: matchingWallet?.id || '',
+                walletId: matchingWallet?.id || wallets.find(w=>w.isDefault)?.id || '',
                 location: result.location || '',
                 date: new Date().toISOString(),
             };
@@ -123,7 +127,7 @@ export default function SmartAddPage() {
                 amount: result.amount || 0,
                 description: result.description || 'Transaksi dari struk',
                 category: result.category || '',
-                walletId: '',
+                walletId: wallets.find(w=>w.isDefault)?.id || '',
                 location: result.merchant || '',
                 date: result.transactionDate ? new Date(result.transactionDate).toISOString() : new Date().toISOString(),
             };
@@ -144,7 +148,10 @@ export default function SmartAddPage() {
     };
     
     const handleSaveTransaction = async () => {
-        if (!extractedData) return;
+        if (!extractedData || !extractedData.walletId) {
+            toast.error("Gagal menyimpan.", { description: "Harap pilih dompet terlebih dahulu." });
+            return;
+        }
         setIsLoading(true);
         try {
             await addTransaction(extractedData);
@@ -163,6 +170,29 @@ export default function SmartAddPage() {
     };
 
     const { icon: CategoryIcon } = extractedData ? categoryDetails(extractedData.category) : { icon: null };
+
+    const budgetInsight = useMemo(() => {
+        if (!extractedData?.category || !budgets.length) return null;
+
+        const relevantBudget = budgets.find(b => b.categories.includes(extractedData.category));
+        if (!relevantBudget) return null;
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const spent = transactions
+            .filter(t => 
+                t.type === 'expense' && 
+                relevantBudget.categories.includes(t.category) &&
+                parseISO(t.date) >= startOfMonth
+            )
+            .reduce((acc, t) => acc + t.amount, 0);
+        
+        const remaining = relevantBudget.targetAmount - spent;
+
+        return `Sisa budget '${relevantBudget.name}' kamu bulan ini ${formatCurrency(remaining)}`;
+
+    }, [extractedData, budgets, transactions]);
 
 
     return (
@@ -211,10 +241,32 @@ export default function SmartAddPage() {
                                 {msg.type === 'ai-confirmation' && extractedData && (
                                     <Card className="p-4 space-y-4">
                                         <div className="flex justify-between items-center">
-                                            <h3 className="text-3xl font-bold">{formatCurrency(extractedData.amount)}</h3>
-                                            <Button size="icon" variant="ghost"><Pencil className="h-5 w-5" /></Button>
+                                            {isEditing ? (
+                                                 <Input
+                                                    type="text"
+                                                    value={extractedData.amount}
+                                                    onChange={(e) => updateExtractedData('amount', parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
+                                                    className="text-3xl font-bold h-auto p-0 border-none focus-visible:ring-0"
+                                                    autoFocus
+                                                    onBlur={() => setIsEditing(false)}
+                                                />
+                                            ) : (
+                                                <h3 className="text-3xl font-bold">{formatCurrency(extractedData.amount)}</h3>
+                                            )}
+                                            <Button size="icon" variant="ghost" onClick={() => setIsEditing(!isEditing)}>
+                                                {isEditing ? <Check className="h-5 w-5" /> : <Pencil className="h-5 w-5" />}
+                                            </Button>
                                         </div>
-                                        <p className="font-medium text-lg">{extractedData.description}</p>
+
+                                        {isEditing ? (
+                                            <Input
+                                                value={extractedData.description}
+                                                onChange={(e) => updateExtractedData('description', e.target.value)}
+                                                className="font-medium text-lg h-auto p-0 border-none focus-visible:ring-0"
+                                            />
+                                        ) : (
+                                            <p className="font-medium text-lg">{extractedData.description}</p>
+                                        )}
                                         <Separator />
                                         <div className="space-y-3">
                                             <div className="flex items-center gap-3">
@@ -228,6 +280,10 @@ export default function SmartAddPage() {
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         {expenseCategories.map(cat => (
+                                                            <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
+                                                        ))}
+                                                        <Separator className="my-1"/>
+                                                        {incomeCategories.map(cat => (
                                                             <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -255,9 +311,11 @@ export default function SmartAddPage() {
                 </div>
                  {extractedData && (
                     <div className="p-4 border-t bg-background space-y-3">
-                         <div className="text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 p-3 rounded-lg text-sm">
-                            💡 Sisa budget Transportasi kamu bulan ini Rp 350.000
-                        </div>
+                         {budgetInsight && (
+                            <div className="text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 p-3 rounded-lg text-sm">
+                                💡 {budgetInsight}
+                            </div>
+                         )}
                         <Button size="lg" className="w-full" onClick={handleSaveTransaction} disabled={isLoading}>
                              {isLoading ? <LoaderCircle className="animate-spin" /> : <><Check className="mr-2 h-5 w-5" /> Simpan Transaksi</>}
                         </Button>
@@ -299,8 +357,3 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-// Separator component if it's not globally available
-const Separator = () => <div className="h-px bg-border my-2" />;
-
-    
