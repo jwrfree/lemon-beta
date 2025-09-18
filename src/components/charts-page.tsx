@@ -344,7 +344,7 @@ export const ChartsPage = () => {
                                     <SummaryCard tab={activeTab} />
                                     {activeTab === 'expense' && <ExpenseAnalysis />}
                                     {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                                    {active-tab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                                    {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
                                 </motion.div>
                             )}
                         </AnimatePresence>
