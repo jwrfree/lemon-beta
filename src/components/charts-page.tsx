@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis } from "recharts"
-import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, Banknote, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -49,11 +49,20 @@ const ChartsSkeleton = () => (
             <CardHeader>
                 <Skeleton className="h-6 w-3/4" />
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="h-96">
+                 <Skeleton className="h-full w-full" />
+            </CardContent>
+        </Card>
+        <Card>
+            <CardHeader>
+                <Skeleton className="h-6 w-1/2" />
+            </CardHeader>
+             <CardContent className="space-y-2">
                  {[...Array(5)].map((_, i) => (
                     <div key={i} className="flex items-center gap-2">
                         <Skeleton className="h-4 w-16" />
                         <Skeleton className="h-4 flex-1" />
+                        <Skeleton className="h-4 w-12" />
                     </div>
                 ))}
             </CardContent>
@@ -129,11 +138,11 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
     }
     
     if (tab === 'income') {
-        return <PlaceholderContent label="Ringkasan Pemasukan" icon={Banknote} text="Ringkasan data pemasukanmu akan muncul di sini." />;
+        return <PlaceholderContent label="Ringkasan Pemasukan" icon={ArrowUpRight} text="Ringkasan data pemasukanmu akan muncul di sini." />;
     }
     
     if (tab === 'net') {
-        return <PlaceholderContent label="Ringkasan Net Income" icon={Landmark} text="Ringkasan selisih pemasukan dan pengeluaranmu akan muncul di sini." />;
+        return <PlaceholderContent label="Ringkasan Net Income" icon={Scale} text="Ringkasan selisih pemasukan dan pengeluaranmu akan muncul di sini." />;
     }
 
     return null;
@@ -146,27 +155,36 @@ const ExpenseAnalysis = () => {
         const now = new Date();
         const categoryMap: { [key: string]: number } = {};
 
-        transactions
+        const expenseTransactions = transactions
             .filter(t => {
                 const tDate = parseISO(t.date);
                 return t.type === 'expense' && isSameMonth(tDate, now);
-            })
-            .forEach(t => {
-                if (!categoryMap[t.category]) {
-                    categoryMap[t.category] = 0;
-                }
-                categoryMap[t.category] += t.amount;
             });
+            
+        const totalExpense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);
+
+        expenseTransactions.forEach(t => {
+            if (!categoryMap[t.category]) {
+                categoryMap[t.category] = 0;
+            }
+            categoryMap[t.category] += t.amount;
+        });
         
-        return Object.entries(categoryMap)
-            .map(([name, value], index) => {
-                return { 
-                    name, 
-                    value, 
-                    fill: `hsl(var(--chart-${(index % 5) + 1}))`
-                };
-            })
-            .sort((a, b) => b.value - a.value);
+        return {
+            totalExpense,
+            breakdown: Object.entries(categoryMap)
+                .map(([name, value], index) => {
+                    const { icon: Icon } = categoryDetails(name);
+                    return { 
+                        name, 
+                        value, 
+                        icon: Icon,
+                        fill: `hsl(var(--chart-${(index % 5) + 1}))`,
+                        percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
+                    };
+                })
+                .sort((a, b) => b.value - a.value)
+        };
 
     }, [transactions]);
     
@@ -190,7 +208,7 @@ const ExpenseAnalysis = () => {
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{}} className="aspect-video h-96">
-                         <BarChart data={categoryExpenseData} layout="vertical" margin={{ left: 20, right: 20 }}>
+                         <BarChart data={categoryExpenseData.breakdown} layout="vertical" margin={{ left: 20, right: 20 }}>
                             <CartesianGrid horizontal={false} />
                             <YAxis dataKey="name" type="category" tickLine={false} axisLine={false} tickMargin={10} minTickGap={1} width={80} className="truncate" />
                             <XAxis dataKey="value" type="number" tickFormatter={formatTick} axisLine={false} tickLine={false}/>
@@ -205,46 +223,23 @@ const ExpenseAnalysis = () => {
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle>Rincian Kategori Bulan Ini</CardTitle>
+                    <CardTitle>Rincian Kategori</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center">
-                     <ChartContainer config={{}} className="mx-auto aspect-square h-64">
-                        <PieChart>
-                            <ChartTooltip
-                                cursor={true}
-                                content={<ChartTooltipContent
-                                    formatter={(value, name) => (
-                                         <div className="flex flex-col">
-                                            <span>{name}</span>
-                                            <span className="font-bold">{formatCurrency(Number(value))}</span>
-                                        </div>
-                                    )}
-                                    indicator="dot"
-                                />}
-                            />
-                            <Pie 
-                                data={categoryExpenseData} 
-                                dataKey="value" 
-                                nameKey="name" 
-                                cx="50%" 
-                                cy="50%"
-                                innerRadius={80} 
-                                outerRadius={120} 
-                                strokeWidth={2}
-                            />
-                        </PieChart>
-                    </ChartContainer>
-                     <div className="mt-4 space-y-2 w-full">
-                        {categoryExpenseData.slice(0, 5).map((item, index) => (
-                            <div key={index} className="flex items-center justify-between text-sm">
+                <CardContent className="space-y-4">
+                    {categoryExpenseData.breakdown.slice(0, 5).map((item) => (
+                        <div key={item.name} className="flex flex-col gap-2">
+                            <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.fill }} />
-                                    <span>{item.name}</span>
+                                    <item.icon className="h-4 w-4 text-muted-foreground" />
+                                    <span className="font-medium">{item.name}</span>
                                 </div>
-                                <span className="font-medium">{formatCurrency(item.value)}</span>
+                                <span className="font-semibold">{formatCurrency(item.value)}</span>
                             </div>
-                        ))}
-                    </div>
+                            <div className="h-2 w-full bg-muted rounded-full">
+                                <div className="h-2 rounded-full" style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
+                            </div>
+                        </div>
+                    ))}
                 </CardContent>
             </Card>
         </div>
