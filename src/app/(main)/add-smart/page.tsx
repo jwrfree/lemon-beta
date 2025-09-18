@@ -129,9 +129,9 @@ export default function SmartAddPage() {
                 amount: result.amount || 0,
                 description: result.description || 'Transaksi baru',
                 category: result.category || '',
-                walletId: matchingWallet?.id || wallets.find(w=>w.isDefault)?.id || '',
+                walletId: matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '',
                 location: result.location || '',
-                date: new Date().toISOString(),
+                date: result.date ? new Date(result.date).toISOString() : new Date().toISOString(),
             };
             
             setExtractedData(dataToConfirm);
