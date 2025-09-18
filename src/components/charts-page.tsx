@@ -316,7 +316,7 @@ export const ChartsPage = () => {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <main className="flex-1 flex flex-col overflow-hidden">
+            <main className="flex-1 overflow-y-auto">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full bg-background flex flex-col flex-1">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-0 sticky top-0">
                        {tabs.map(tab => (
@@ -326,7 +326,7 @@ export const ChartsPage = () => {
                             </TabsTrigger>
                        ))}
                     </TabsList>
-                    <div {...handlers} className="flex-1 overflow-y-auto bg-muted">
+                    <div {...handlers} className="flex-1 bg-muted">
                         <AnimatePresence initial={false} custom={direction}>
                              {isLoading ? (
                                 <ChartsSkeleton />
@@ -344,7 +344,7 @@ export const ChartsPage = () => {
                                     <SummaryCard tab={activeTab} />
                                     {activeTab === 'expense' && <ExpenseAnalysis />}
                                     {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                                    {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                                    {active-tab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
                                 </motion.div>
                             )}
                         </AnimatePresence>
