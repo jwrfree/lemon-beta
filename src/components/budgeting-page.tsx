@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, ChevronLeft, HandCoins } from 'lucide-react';
+import { PlusCircle, HandCoins } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -167,9 +167,6 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
-                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
                 <Button variant="ghost" size="icon" className="absolute right-4" onClick={onAddBudget}>
                     <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
