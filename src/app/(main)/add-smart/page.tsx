@@ -475,7 +475,7 @@ export default function SmartAddPage() {
                             accept="image/*"
                         />
                         <Textarea
-                            placeholder={isListening ? "Mendengarkan..." : "Tulis, tempel, atau foto transaksimu di sini..."}
+                            placeholder={isListening ? "Mendengarkan..." : "Ketik, rekam suara, atau foto struk..."}
                             className="pr-28 min-h-[48px] max-h-48"
                             rows={1}
                             value={inputValue}
@@ -509,5 +509,7 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
 
     
