@@ -5,14 +5,12 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, ChevronLeft } from 'lucide-react';
+import { PlusCircle, ChevronLeft, HandCoins } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Pie, PieChart } from "recharts"
-import Lottie from 'lottie-react';
-import emptyBudgetAnimation from '@/lib/animations/empty-budget.json';
 
 const BudgetCard = ({ budget }: { budget: any }) => {
     const { transactions } = useApp();
@@ -121,8 +119,10 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
             <main className="flex-1 p-4">
                 {budgets.length === 0 ? (
                     <div className="flex flex-col h-full items-center justify-center text-center pt-16">
-                         <Lottie animationData={emptyBudgetAnimation} loop={true} className="w-48 h-48" />
-                        <h2 className="text-xl font-bold -mt-4">Belum Ada Anggaran</h2>
+                        <div className="p-3 bg-primary/10 rounded-full mb-3">
+                           <HandCoins className="h-8 w-8 text-primary" strokeWidth={1.5} />
+                        </div>
+                        <h2 className="text-xl font-bold">Belum Ada Anggaran</h2>
                         <p className="text-muted-foreground mt-2 mb-6 max-w-sm">Mulai lacak pengeluaranmu dengan membuat anggaran pertama.</p>
                         <Button onClick={onAddBudget}>
                             <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
