@@ -92,7 +92,7 @@ export default function SmartAddPage() {
                 }
             }
             
-            const matchingWallet = wallets.find(w => w.name.toLowerCase() === (result.wallet || result.sourceWallet)?.toLowerCase());
+            const matchingWallet = wallets.find(w => w.name.toLowerCase() === (result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())));
 
             const dataToConfirm = {
                 type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
@@ -384,5 +384,3 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
