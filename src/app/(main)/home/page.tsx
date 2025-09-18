@@ -11,6 +11,7 @@ import { TransactionList } from '@/components/transaction-list';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { isSameMonth, parseISO } from 'date-fns';
+import { AnimatedCounter } from '@/components/animated-counter';
 
 export default function HomePage() {
     const { wallets, transactions, isLoading } = useApp();
@@ -45,7 +46,7 @@ export default function HomePage() {
                     <CardContent>
                          {isLoading ? 
                             <Skeleton className="h-8 w-1/2" /> : 
-                            <p className="text-3xl font-bold">{formatCurrency(totalBalance)}</p>
+                            <AnimatedCounter value={totalBalance} className="text-3xl font-bold" />
                          }
                         <div className="flex gap-4 mt-4">
                             <div className="flex items-center gap-2">
@@ -54,7 +55,7 @@ export default function HomePage() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pemasukan</p>
-                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyIncome)}</p>}
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold" />}
                                 </div>
                             </div>
                              <div className="flex items-center gap-2">
@@ -63,7 +64,7 @@ export default function HomePage() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pengeluaran</p>
-                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <p className="text-sm font-semibold">{formatCurrency(monthlyExpense)}</p>}
+                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold" />}
                                 </div>
                             </div>
                         </div>
