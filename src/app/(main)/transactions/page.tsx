@@ -16,11 +16,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function AllTransactionsPage() {
     const router = useRouter();
-    const { transactions, expenseCategories, incomeCategories } = useApp();
+    const { transactions, expenseCategories, incomeCategories, wallets } = useApp();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
     const [isCategoryPopoverOpen, setIsCategoryPopoverOpen] = useState(false);
+    const [isWalletPopoverOpen, setIsWalletPopoverOpen] = useState(false);
 
     const categoriesForFilter = useMemo(() => {
         if (activeTab === 'expense') return expenseCategories;
@@ -33,9 +35,10 @@ export default function AllTransactionsPage() {
             const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesType = activeTab === 'all' || t.type === activeTab;
             const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(t.category);
-            return matchesSearch && matchesType && matchesCategory;
+            const matchesWallet = selectedWallets.length === 0 || selectedWallets.includes(t.walletId);
+            return matchesSearch && matchesType && matchesCategory && matchesWallet;
         });
-    }, [transactions, searchQuery, activeTab, selectedCategories]);
+    }, [transactions, searchQuery, activeTab, selectedCategories, selectedWallets]);
     
     const handleCategorySelect = (categoryName: string) => {
         setSelectedCategories(prev =>
@@ -44,14 +47,23 @@ export default function AllTransactionsPage() {
                 : [...prev, categoryName]
         );
     };
+    
+    const handleWalletSelect = (walletId: string) => {
+        setSelectedWallets(prev =>
+            prev.includes(walletId)
+                ? prev.filter(id => id !== walletId)
+                : [...prev, walletId]
+        );
+    };
 
     const resetFilters = () => {
         setSearchQuery('');
         setActiveTab('all');
         setSelectedCategories([]);
+        setSelectedWallets([]);
     };
     
-    const hasActiveFilters = searchQuery !== '' || activeTab !== 'all' || selectedCategories.length > 0;
+    const hasActiveFilters = searchQuery !== '' || activeTab !== 'all' || selectedCategories.length > 0 || selectedWallets.length > 0;
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
@@ -82,46 +94,88 @@ export default function AllTransactionsPage() {
                 </Tabs>
                 
                  <div className="flex items-center justify-between">
-                    <Popover open={isCategoryPopoverOpen} onOpenChange={setIsCategoryPopoverOpen}>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={isCategoryPopoverOpen}
-                                className="w-fit justify-between"
-                            >
-                                Filter Kategori
-                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                             <Command>
-                                <CommandInput placeholder="Cari kategori..." />
-                                <CommandList>
-                                    <CommandEmpty>Kategori tidak ditemukan.</CommandEmpty>
-                                    <CommandGroup>
-                                        <ScrollArea className="h-48">
-                                            {categoriesForFilter.map((category) => (
-                                                <CommandItem
-                                                    key={category.id}
-                                                    value={category.name}
-                                                    onSelect={() => handleCategorySelect(category.name)}
-                                                >
-                                                    <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            selectedCategories.includes(category.name) ? "opacity-100" : "opacity-0"
-                                                        )}
-                                                    />
-                                                    {category.name}
-                                                </CommandItem>
-                                            ))}
-                                        </ScrollArea>
-                                    </CommandGroup>
-                                </CommandList>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
+                    <div className="flex items-center gap-2">
+                        <Popover open={isCategoryPopoverOpen} onOpenChange={setIsCategoryPopoverOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={isCategoryPopoverOpen}
+                                    className="w-fit justify-between"
+                                >
+                                    Kategori
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                 <Command>
+                                    <CommandInput placeholder="Cari kategori..." />
+                                    <CommandList>
+                                        <CommandEmpty>Kategori tidak ditemukan.</CommandEmpty>
+                                        <CommandGroup>
+                                            <ScrollArea className="h-48">
+                                                {categoriesForFilter.map((category) => (
+                                                    <CommandItem
+                                                        key={category.id}
+                                                        value={category.name}
+                                                        onSelect={() => handleCategorySelect(category.name)}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                "mr-2 h-4 w-4",
+                                                                selectedCategories.includes(category.name) ? "opacity-100" : "opacity-0"
+                                                            )}
+                                                        />
+                                                        {category.name}
+                                                    </CommandItem>
+                                                ))}
+                                            </ScrollArea>
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                        <Popover open={isWalletPopoverOpen} onOpenChange={setIsWalletPopoverOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={isWalletPopoverOpen}
+                                    className="w-fit justify-between"
+                                >
+                                    Dompet
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                 <Command>
+                                    <CommandInput placeholder="Cari dompet..." />
+                                    <CommandList>
+                                        <CommandEmpty>Dompet tidak ditemukan.</CommandEmpty>
+                                        <CommandGroup>
+                                            <ScrollArea className="h-48">
+                                                {wallets.map((wallet) => (
+                                                    <CommandItem
+                                                        key={wallet.id}
+                                                        value={wallet.name}
+                                                        onSelect={() => handleWalletSelect(wallet.id)}
+                                                    >
+                                                        <Check
+                                                            className={cn(
+                                                                "mr-2 h-4 w-4",
+                                                                selectedWallets.includes(wallet.id) ? "opacity-100" : "opacity-0"
+                                                            )}
+                                                        />
+                                                        {wallet.name}
+                                                    </CommandItem>
+                                                ))}
+                                            </ScrollArea>
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                     
                     {hasActiveFilters && (
                         <Button variant="ghost" className="text-destructive hover:text-destructive" size="sm" onClick={resetFilters}>
@@ -130,16 +184,27 @@ export default function AllTransactionsPage() {
                     )}
                 </div>
 
-                {selectedCategories.length > 0 && (
+                {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap gap-1">
                         {selectedCategories.map(category => (
                             <Badge key={category} variant="secondary" className="gap-1">
                                 {category}
-                                <button onClick={() => handleCategorySelect(category)}>
+                                <button onClick={() => handleCategorySelect(category)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
                                     <X className="h-3 w-3" />
                                 </button>
                             </Badge>
                         ))}
+                         {selectedWallets.map(walletId => {
+                            const wallet = wallets.find(w => w.id === walletId);
+                            return wallet && (
+                                <Badge key={walletId} variant="secondary" className="gap-1">
+                                    {wallet.name}
+                                    <button onClick={() => handleWalletSelect(walletId)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </Badge>
+                            )
+                        })}
                     </div>
                 )}
             </div>
@@ -150,5 +215,3 @@ export default function AllTransactionsPage() {
         </div>
     );
 }
-
-
