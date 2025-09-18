@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -288,7 +289,7 @@ export default function SmartAddPage() {
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                         <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                        <Button size="icon" variant="ghost" onClick={() => fileInput_current?.click()}><Camera className="h-5 w-5" /></Button>
+                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Camera className="h-5 w-5" /></Button>
                         <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
                             {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                         </Button>
@@ -301,3 +302,5 @@ export default function SmartAddPage() {
 
 // Separator component if it's not globally available
 const Separator = () => <div className="h-px bg-border my-2" />;
+
+    
