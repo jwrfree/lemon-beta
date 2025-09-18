@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { X, CalendarIcon, ArrowRightLeft } from 'lucide-react';
@@ -18,13 +18,26 @@ import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
-  const { addTransfer, wallets } = useApp();
-  const [fromWalletId, setFromWalletId] = useState('');
-  const [toWalletId, setToWalletId] = useState('');
+  const { addTransfer, wallets, preFilledTransfer, setPreFilledTransfer } = useApp();
+  
+  const [fromWalletId, setFromWalletId] = useState(preFilledTransfer?.fromWalletId || '');
+  const [toWalletId, setToWalletId] = useState(preFilledTransfer?.toWalletId || '');
   const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(preFilledTransfer?.description || '');
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (preFilledTransfer) {
+      const formattedValue = new Intl.NumberFormat('id-ID').format(preFilledTransfer.amount || 0);
+      setAmount(formattedValue);
+    }
+    // Clear the pre-filled data after using it
+    return () => {
+      setPreFilledTransfer(null);
+    };
+  }, [preFilledTransfer, setPreFilledTransfer]);
+
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/[^0-9]/g, '');

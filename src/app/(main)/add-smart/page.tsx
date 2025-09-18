@@ -7,7 +7,7 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { ChevronLeft, Paperclip, Camera, Send, LoaderCircle, Pencil, Check } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -28,7 +28,16 @@ type Message = {
 
 export default function SmartAddPage() {
     const router = useRouter();
-    const { addTransaction, wallets, expenseCategories, incomeCategories, budgets, transactions } = useApp();
+    const { 
+        addTransaction, 
+        wallets, 
+        expenseCategories, 
+        incomeCategories, 
+        budgets, 
+        transactions,
+        setIsTransferModalOpen,
+        setPreFilledTransfer,
+    } = useApp();
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -63,11 +72,30 @@ export default function SmartAddPage() {
                 availableCategories,
                 availableWallets
             });
+
+            // Check for smart transfer
+            if (result.category === 'Transfer' && result.sourceWallet && result.destinationWallet) {
+                const fromWallet = wallets.find(w => w.name.toLowerCase() === result.sourceWallet?.toLowerCase());
+                const toWallet = wallets.find(w => w.name.toLowerCase() === result.destinationWallet?.toLowerCase());
+
+                if (fromWallet && toWallet) {
+                    setPreFilledTransfer({
+                        fromWalletId: fromWallet.id,
+                        toWalletId: toWallet.id,
+                        amount: result.amount || 0,
+                        description: result.description || 'Transfer',
+                    });
+                    setIsTransferModalOpen(true);
+                    setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+                    setIsLoading(false);
+                    return; // Stop further processing
+                }
+            }
             
-            const matchingWallet = wallets.find(w => w.name.toLowerCase() === result.wallet?.toLowerCase());
+            const matchingWallet = wallets.find(w => w.name.toLowerCase() === (result.wallet || result.sourceWallet)?.toLowerCase());
 
             const dataToConfirm = {
-                type: result.amount > 0 ? (result.category === 'Gaji' || result.category === 'Bonus' || result.category === 'Investasi' ? 'income' : 'expense') : 'expense',
+                type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
                 amount: result.amount || 0,
                 description: result.description || 'Transaksi baru',
                 category: result.category || '',

@@ -9,6 +9,13 @@ import { toast } from 'sonner';
 import { categories } from '@/lib/categories';
 import { useRouter as useNextRouter } from 'next/navigation';
 
+interface PreFilledTransfer {
+    fromWalletId: string;
+    toWalletId: string;
+    amount: number;
+    description: string;
+}
+
 interface AppContextType {
     user: User | null;
     wallets: any[];
@@ -38,6 +45,8 @@ interface AppContextType {
     setIsBudgetModalOpen: (isOpen: boolean) => void;
     isTransferModalOpen: boolean;
     setIsTransferModalOpen: (isOpen: boolean) => void;
+    preFilledTransfer: PreFilledTransfer | null;
+    setPreFilledTransfer: (transfer: PreFilledTransfer | null) => void;
     isDeleteModalOpen: boolean;
     transactionToDelete: any | null;
     openDeleteModal: (transaction: any) => void;
@@ -77,6 +86,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
     const [isEditWalletModalOpen, setIsEditWalletModalOpen] = useState(false);
     const [walletToEdit, setWalletToEdit] = useState<any | null>(null);
+    const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -442,6 +453,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsBudgetModalOpen,
         isTransferModalOpen,
         setIsTransferModalOpen,
+        preFilledTransfer,
+        setPreFilledTransfer,
         isDeleteModalOpen,
         transactionToDelete,
         openDeleteModal,

@@ -21,8 +21,10 @@ export type TransactionExtractionInput = z.infer<typeof TransactionExtractionInp
 const TransactionExtractionOutputSchema = z.object({
   amount: z.number().describe('The transaction amount.'),
   description: z.string().describe('A concise description of the transaction.'),
-  category: z.string().describe('The most likely category for this transaction.'),
-  wallet: z.string().describe('The wallet used for the transaction, if mentioned.'),
+  category: z.string().describe('The most likely category for this transaction. If it is a transfer, this MUST be "Transfer".'),
+  wallet: z.string().optional().describe('The source wallet for the transaction (e.g., "pake Mandiri", "dari BCA"). For transfers, this is the source wallet.'),
+  sourceWallet: z.string().optional().describe('For transfers only. The name of the wallet where the money is coming FROM.'),
+  destinationWallet: z.string().optional().describe('For transfers only. The name of the wallet where the money is going TO.'),
   location: z.string().optional().describe('The store or location where the transaction occurred, if mentioned.'),
 });
 export type TransactionExtractionOutput = z.infer<typeof TransactionExtractionOutputSchema>;
@@ -44,13 +46,16 @@ Analyze the text and fill in the following fields. The 'amount' and 'description
 - amount: The monetary value of the transaction.
 - description: A clear and concise summary of what the transaction was for.
 - category: From the available categories, choose the one that best fits the transaction. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
-- wallet: Identify the source wallet for the transaction (e.g., "pake Mandiri", "dari BCA"). If it is a transfer, this is the 'from' wallet.
+- wallet: Identify the source wallet for the transaction (e.g., "pake Mandiri", "dari BCA"). For transfers, this is the 'from' wallet.
+- sourceWallet: FOR TRANSFERS ONLY. The source wallet name.
+- destinationWallet: FOR TRANSFERS ONLY. The destination wallet name.
 - location: If a store, place, or merchant is mentioned, extract it.
 
 Available Categories: {{{json availableCategories}}}
 Available Wallets: {{{json availableWallets}}}
 
 If the user mentions a specific item, use that as the primary description. For example, if the user says "beli bensin pertamax 150rb", the description should be "Beli bensin Pertamax".
+If the input is clearly a transfer between two wallets, you MUST fill out sourceWallet and destinationWallet.
 Do not make up information. If a detail (like wallet or location) is not mentioned, leave it empty.
 Provide your response in the requested JSON format.`,
 });
