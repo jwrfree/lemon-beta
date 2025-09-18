@@ -103,15 +103,11 @@ export default function AllTransactionsPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-10">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
+            <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-10">
+                <Button variant="ghost" size="icon" className="shrink-0" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
-                <h1 className="text-xl font-bold text-center w-full">Riwayat Transaksi</h1>
-            </header>
-            
-            <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
-                <div className="relative">
+                <div className="relative w-full">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                         placeholder="Cari transaksi..."
@@ -120,7 +116,9 @@ export default function AllTransactionsPage() {
                         onChange={e => setSearchQuery(e.target.value)}
                     />
                 </div>
-
+            </header>
+            
+            <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="all">Semua</TabsTrigger>
@@ -251,3 +249,5 @@ export default function AllTransactionsPage() {
         </div>
     );
 }
+
+    
