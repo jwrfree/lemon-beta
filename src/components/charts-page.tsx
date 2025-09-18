@@ -5,18 +5,21 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart } from "recharts"
 import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
-import { isSameMonth, startOfMonth, parseISO, endOfMonth } from 'date-fns';
+import { isSameMonth, startOfMonth, parseISO, endOfMonth, subDays, format, eachDayOfInterval, startOfDay } from 'date-fns';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { Skeleton } from './ui/skeleton';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 type TabValue = 'expense' | 'income' | 'net';
+type TimeRange = 'last7d' | 'last30d' | 'this_month';
+
 
 const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
     { value: 'expense', label: 'Pengeluaran', icon: ArrowDownLeft },
@@ -113,7 +116,7 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
              <Card>
                 <CardHeader>
                     <CardTitle className="text-base font-medium text-muted-foreground flex items-center gap-2">
-                        <TrendingDown className="h-5 w-5" /> Ringkasan Pengeluaran
+                        <TrendingDown className="h-5 w-5" /> Ringkasan Pengeluaran Bulan Ini
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-3 gap-4 text-center">
@@ -148,8 +151,105 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
     return null;
 }
 
+const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
+    const { transactions } = useApp();
+
+    const trendData = useMemo(() => {
+        const now = new Date();
+        let startDate, endDate;
+
+        if (timeRange === 'last7d') {
+            startDate = startOfDay(subDays(now, 6));
+            endDate = startOfDay(now);
+        } else if (timeRange === 'last30d') {
+            startDate = startOfDay(subDays(now, 29));
+            endDate = startOfDay(now);
+        } else { // 'this_month'
+            startDate = startOfMonth(now);
+            endDate = endOfMonth(now);
+        }
+
+        const dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
+        
+        const dailyExpenses: { [key: string]: number } = {};
+        dateInterval.forEach(day => {
+            dailyExpenses[format(day, 'yyyy-MM-dd')] = 0;
+        });
+
+        transactions
+            .filter(t => {
+                const tDate = parseISO(t.date);
+                return t.type === 'expense' && tDate >= startDate && tDate <= endDate;
+            })
+            .forEach(t => {
+                const dateKey = format(parseISO(t.date), 'yyyy-MM-dd');
+                if (dailyExpenses[dateKey] !== undefined) {
+                    dailyExpenses[dateKey] += t.amount;
+                }
+            });
+
+        return Object.entries(dailyExpenses).map(([date, total]) => ({
+            date,
+            total,
+            formattedDate: format(parseISO(date), 'd MMM', { locale: dateFnsLocaleId }),
+        }));
+    }, [transactions, timeRange]);
+    
+    const formatTick = (value: number) => {
+        const numValue = Number(value);
+        if (numValue >= 1000000) return `Rp${(numValue / 1000000).toFixed(1)}Jt`;
+        if (numValue >= 1000) return `Rp${(numValue / 1000).toFixed(0)}k`;
+        return `Rp${numValue}`;
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Tren Pengeluaran</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <ChartContainer config={{}} className="h-80 w-full">
+                    <LineChart data={trendData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="formattedDate"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            interval="preserveStartEnd"
+                        />
+                         <YAxis 
+                            tickFormatter={formatTick} 
+                            axisLine={false} 
+                            tickLine={false}
+                            width={50}
+                        />
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent 
+                                            labelFormatter={(value) => format(parseISO(trendData.find(d => d.formattedDate === value)?.date || new Date()), 'eeee, d MMM yyyy', { locale: dateFnsLocaleId })}
+                                            formatter={(value) => formatCurrency(Number(value))} 
+                                            indicator="dot" 
+                                        />}
+                        />
+                        <Line
+                            dataKey="total"
+                            type="monotone"
+                            stroke="hsl(var(--destructive))"
+                            strokeWidth={2}
+                            dot={false}
+                        />
+                    </LineChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
+    );
+};
+
+
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
+    const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
 
     const categoryExpenseData = useMemo(() => {
         const now = new Date();
@@ -202,6 +302,16 @@ const ExpenseAnalysis = () => {
 
     return (
         <div className="space-y-6">
+            <div className="flex justify-center">
+                 <div className="p-1 bg-card rounded-full flex items-center gap-1 border">
+                    <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full">7 Hari</Button>
+                    <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full">30 Hari</Button>
+                    <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full">Bulan Ini</Button>
+                </div>
+            </div>
+
+            <SpendingTrendChart timeRange={timeRange} />
+
              <Card>
                 <CardHeader>
                     <CardTitle>Pengeluaran per Kategori (Bulan Ini)</CardTitle>
@@ -312,7 +422,7 @@ export const ChartsPage = () => {
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
             <main className="flex-1 overflow-y-auto">
-                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full bg-background flex flex-col flex-1">
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full flex flex-col flex-1">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-0 sticky top-0">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value} className="flex gap-2 items-center">
