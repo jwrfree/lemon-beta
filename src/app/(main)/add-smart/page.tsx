@@ -7,7 +7,7 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -229,28 +229,36 @@ export default function SmartAddPage() {
 
     const { icon: CategoryIcon } = extractedData ? categoryDetails(extractedData.category) : { icon: null };
 
-    const budgetInsight = useMemo(() => {
-        if (!extractedData?.category || !budgets.length) return null;
+    const insights = useMemo(() => {
+        if (!extractedData) return { budgetInsight: null, walletInsight: null };
 
-        const relevantBudget = budgets.find(b => b.categories.includes(extractedData.category));
-        if (!relevantBudget) return null;
+        let budgetInsight = null;
+        if (extractedData.category && budgets.length > 0 && extractedData.type === 'expense') {
+            const relevantBudget = budgets.find(b => b.categories.includes(extractedData.category));
+            if (relevantBudget) {
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const spent = transactions
+                    .filter(t => t.type === 'expense' && relevantBudget.categories.includes(t.category) && parseISO(t.date) >= startOfMonth)
+                    .reduce((acc, t) => acc + t.amount, 0);
+                const remaining = relevantBudget.targetAmount - (spent + extractedData.amount);
+                budgetInsight = `Sisa budget '${relevantBudget.name}' kamu akan menjadi ${formatCurrency(remaining)}.`;
+            }
+        }
 
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        let walletInsight = null;
+        if (extractedData.walletId) {
+            const wallet = wallets.find(w => w.id === extractedData.walletId);
+            if (wallet) {
+                const newBalance = extractedData.type === 'expense' 
+                    ? wallet.balance - extractedData.amount
+                    : wallet.balance + extractedData.amount;
+                walletInsight = `Saldo dompet '${wallet.name}' kamu akan menjadi ${formatCurrency(newBalance)}.`;
+            }
+        }
 
-        const spent = transactions
-            .filter(t => 
-                t.type === 'expense' && 
-                relevantBudget.categories.includes(t.category) &&
-                parseISO(t.date) >= startOfMonth
-            )
-            .reduce((acc, t) => acc + t.amount, 0);
-        
-        const remaining = relevantBudget.targetAmount - spent;
-
-        return `Sisa budget '${relevantBudget.name}' kamu bulan ini ${formatCurrency(remaining)}`;
-
-    }, [extractedData, budgets, transactions]);
+        return { budgetInsight, walletInsight };
+    }, [extractedData, budgets, transactions, wallets]);
 
 
     return (
@@ -376,10 +384,21 @@ export default function SmartAddPage() {
                 </div>
                  {extractedData && (
                     <div className="p-4 border-t bg-background space-y-3">
-                         {budgetInsight && (
-                            <div className="text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 p-3 rounded-lg text-sm">
-                                💡 {budgetInsight}
-                            </div>
+                         {(insights.budgetInsight || insights.walletInsight) && (
+                            <Card className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 space-y-2 text-sm">
+                                {insights.budgetInsight && (
+                                    <div className="flex items-start gap-2">
+                                        <PiggyBank className="h-4 w-4 mt-0.5 shrink-0" />
+                                        <span>{insights.budgetInsight}</span>
+                                    </div>
+                                )}
+                                {insights.walletInsight && (
+                                     <div className="flex items-start gap-2">
+                                        <Wallet className="h-4 w-4 mt-0.5 shrink-0" />
+                                        <span>{insights.walletInsight}</span>
+                                    </div>
+                                )}
+                            </Card>
                          )}
                         <Button size="lg" className="w-full" onClick={handleSaveTransaction} disabled={isLoading}>
                              {isLoading ? <LoaderCircle className="animate-spin" /> : <><Check className="mr-2 h-5 w-5" /> Simpan Transaksi</>}
@@ -413,7 +432,7 @@ export default function SmartAddPage() {
                         />
                         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                             <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                            <Button size="icon" variant="ghost" onClick={() => fileInput_current?.click()}><Camera className="h-5 w-5" /></Button>
+                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Camera className="h-5 w-5" /></Button>
                             <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
                                 {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                             </Button>
@@ -424,5 +443,7 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
 
     
