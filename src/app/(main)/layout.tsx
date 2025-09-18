@@ -46,6 +46,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         }
     }, [user, isLoading, router]);
 
+    const isSmartAddPage = pathname === '/add-smart';
+
     if (isLoading || !user) {
         return <div className="flex h-dvh w-full items-center justify-center bg-background">Loading...</div>;
     }
@@ -81,7 +83,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         />
                     )}
                 </AnimatePresence>
-                <BottomNavigation />
+                
+                {!isSmartAddPage && <BottomNavigation />}
             </div>
         </div>
     );

@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, PiggyBank, PlusCircle, BarChart3, Settings } from 'lucide-react';
+import { Home, PiggyBank, PlusCircle, BarChart3, Settings, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
@@ -25,7 +25,7 @@ export const BottomNavigation = () => {
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'budgeting', href: '/budgeting', icon: PiggyBank, name: 'Anggaran' },
-        { id: 'add', href: '#', icon: PlusCircle, name: 'Tambah', primary: true },
+        { id: 'add', href: '/add-smart', icon: Sparkles, name: 'Tambah', primary: true },
         { id: 'charts', href: '/charts', icon: BarChart3, name: 'Analisis' },
         { id: 'settings', href: '/settings', icon: Settings, name: 'Pengaturan' },
     ];
@@ -36,7 +36,7 @@ export const BottomNavigation = () => {
     const isVisible = mainPages.includes(pathname) && !isModalOpen;
 
     const handleNavClick = (item: any) => {
-        if (item.id === 'add') {
+        if (item.id === 'add-old') { // Keep old logic if needed, but disable for now
             setIsTxModalOpen(true);
         } else {
             router.push(item.href);
