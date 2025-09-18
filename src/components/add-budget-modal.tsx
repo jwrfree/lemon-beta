@@ -114,7 +114,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           </Button>
         </div>
 
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 p-4 relative overflow-y-auto">
             <AnimatePresence initial={false} custom={direction}>
                  <motion.div
                     key={step}
@@ -124,7 +124,6 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                     animate="center"
                     exit="exit"
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="p-4 absolute w-full"
                  >
                     {step === 1 && (
                         <div className="space-y-2">
@@ -141,7 +140,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                     {step === 3 && (
                          <div className="space-y-3">
                             <p className="text-sm text-muted-foreground">Pilih satu atau lebih kategori yang masuk dalam anggaran '{budgetName}'.</p>
-                            <ScrollArea className="max-h-80">
+                            <ScrollArea className="h-64">
                                 <div className="grid grid-cols-4 gap-2 pr-4">
                                 {expenseCategories.map(cat => (
                                     <button type="button" key={cat.id} onClick={() => handleCategoryToggle(cat.name)} 
