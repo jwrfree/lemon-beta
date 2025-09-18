@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Pie, PieChart, Cell } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Pie, PieChart, Cell, AreaChart, Area } from "recharts"
 import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
@@ -209,7 +209,7 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
             </CardHeader>
             <CardContent>
                 <ChartContainer config={{}} className="h-80 w-full">
-                    <LineChart data={trendData}>
+                    <AreaChart accessibilityLayer data={trendData}>
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="formattedDate"
@@ -232,14 +232,29 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
                                             indicator="dot" 
                                         />}
                         />
-                        <Line
+                         <defs>
+                            <linearGradient id="fill-destructive" x1="0" y1="0" x2="0" y2="1">
+                                <stop
+                                    offset="5%"
+                                    stopColor="hsl(var(--destructive))"
+                                    stopOpacity={0.8}
+                                />
+                                <stop
+                                    offset="95%"
+                                    stopColor="hsl(var(--destructive))"
+                                    stopOpacity={0.1}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <Area
                             dataKey="total"
                             type="monotone"
                             stroke="hsl(var(--destructive))"
+                            fill="url(#fill-destructive)"
                             strokeWidth={2}
                             dot={false}
                         />
-                    </LineChart>
+                    </AreaChart>
                 </ChartContainer>
             </CardContent>
         </Card>
@@ -272,12 +287,14 @@ const ExpenseAnalysis = () => {
 
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
-                const details = categoryDetails(name);
+                 const details = categoryDetails(name);
+                 const id = name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
                 return {
+                    id,
                     name,
                     value,
                     icon: details.icon,
-                    fill: `var(--color-${name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')})`,
+                    fill: `var(--color-${id})`,
                     color: details.color,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
@@ -286,10 +303,10 @@ const ExpenseAnalysis = () => {
 
         const dynamicChartConfig = Object.fromEntries(
             sortedBreakdown.map(item => [
-                item.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'),
+                item.id,
                 {
                     label: item.name,
-                    color: item.color,
+                    color: item.color.match(/hsl\(var\((.*?)\)\)/)?.[1] ?? item.color,
                 },
             ])
         ) as ChartConfig;
@@ -355,7 +372,7 @@ const ExpenseAnalysis = () => {
                                 <span className="font-semibold">{formatCurrency(item.value)}</span>
                             </div>
                             <div className="h-2 w-full bg-muted rounded-full">
-                                <div className={cn("h-2 rounded-full", item.color.replace('text-', 'bg-'))} style={{ width: `${item.percentage}%` }}></div>
+                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: `hsl(var(--${item.id}))` }}></div>
                             </div>
                         </div>
                     ))}
@@ -423,14 +440,14 @@ export const ChartsPage = () => {
     };
 
     return (
-        <div className="flex flex-col overflow-y-auto pb-16">
+        <div className="flex flex-col h-full overflow-y-auto bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <main className="flex-1 bg-muted">
+            <main className="flex-1">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full flex flex-col flex-1">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-16 z-10">
                        {tabs.map(tab => (
@@ -440,7 +457,7 @@ export const ChartsPage = () => {
                             </TabsTrigger>
                        ))}
                     </TabsList>
-                    <div {...handlers} className="flex-1 bg-muted">
+                    <div {...handlers} className="flex-1">
                         <AnimatePresence initial={false} custom={direction}>
                              {isLoading ? (
                                 <ChartsSkeleton />
