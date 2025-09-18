@@ -8,10 +8,8 @@ import { TransactionList } from '@/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useApp } from '@/components/app-provider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
@@ -58,6 +56,9 @@ export default function AllTransactionsPage() {
     const [activeTab, setActiveTab] = useState('all');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
+    const [showAllCategories, setShowAllCategories] = useState(false);
+    const [showAllWallets, setShowAllWallets] = useState(false);
+
 
     const categoriesForFilter = useMemo(() => {
         const cats = activeTab === 'expense' ? expenseCategories : activeTab === 'income' ? incomeCategories : [...incomeCategories, ...expenseCategories];
@@ -96,7 +97,9 @@ export default function AllTransactionsPage() {
     };
     
     const activeFilterCount = selectedCategories.length + selectedWallets.length;
-    const hasActiveFilters = searchQuery !== '' || activeTab !== 'all' || activeFilterCount > 0;
+
+    const displayedCategories = showAllCategories ? categoriesForFilter : categoriesForFilter.slice(0, 8);
+    const displayedWallets = showAllWallets ? wallets : wallets.slice(0, 8);
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
@@ -124,29 +127,35 @@ export default function AllTransactionsPage() {
                             )}
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="bottom" className="rounded-t-2xl">
+                    <SheetContent side="bottom" className="rounded-t-2xl max-h-[80vh] flex flex-col">
                         <SheetHeader className="text-left">
                             <SheetTitle>Filter Transaksi</SheetTitle>
                         </SheetHeader>
-                        <div className="space-y-4 py-4">
+                        <div className="space-y-4 py-4 overflow-y-auto">
                             <div>
                                 <Label className="text-sm font-medium">Kategori</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
-                                    {categoriesForFilter.map(c => (
+                                    {displayedCategories.map(c => (
                                         <Button key={c.id} variant={selectedCategories.includes(c.name) ? 'default' : 'outline'} size="sm" onClick={() => handleCategoryToggle(c.name)}>{c.name}</Button>
                                     ))}
+                                    {categoriesForFilter.length > 8 && !showAllCategories && (
+                                        <Button variant="link" size="sm" onClick={() => setShowAllCategories(true)}>Lihat Semua</Button>
+                                    )}
                                 </div>
                             </div>
                              <div>
                                 <Label className="text-sm font-medium">Dompet</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
-                                    {wallets.map(w => (
+                                    {displayedWallets.map(w => (
                                         <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
                                     ))}
+                                    {wallets.length > 8 && !showAllWallets && (
+                                        <Button variant="link" size="sm" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
+                                    )}
                                 </div>
                             </div>
                         </div>
-                        {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="w-full text-destructive" onClick={resetFilters}>Reset Filter</Button>}
+                        {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="w-full text-destructive mt-auto" onClick={resetFilters}>Reset Filter</Button>}
                     </SheetContent>
                 </Sheet>
             </header>
