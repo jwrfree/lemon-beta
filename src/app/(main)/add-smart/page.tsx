@@ -7,7 +7,7 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic, CalendarIcon } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic, CalendarIcon, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -68,20 +68,22 @@ export default function SmartAddPage() {
     const [isEditing, setIsEditing] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isListening, setIsListening] = useState(false);
+    const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
     const recognitionRef = useRef<any>(null);
 
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
 
-    const handleSendText = useCallback(async () => {
-        const textToSend = inputValue;
+    const handleSendText = useCallback(async (text: string) => {
+        const textToSend = text || inputValue;
         if (!textToSend.trim() || isLoading) return;
 
         const userInput = textToSend.trim();
         setInputValue('');
         setExtractedData(null);
         setIsLoading(true);
+        setIsVoiceInputMode(false);
 
         const newMessages: Message[] = [
             { id: `user-${Date.now()}`, type: 'user', content: userInput },
@@ -174,10 +176,12 @@ export default function SmartAddPage() {
                 toast.error("Oops! Terjadi error pada input suara.");
             }
             setIsListening(false);
+            setIsVoiceInputMode(false);
         };
 
         recognition.onend = () => {
             setIsListening(false);
+            // Don't automatically switch off voice input mode here, let user confirm
         };
         
         recognitionRef.current = recognition;
@@ -267,12 +271,40 @@ export default function SmartAddPage() {
 
         if (isListening) {
             recognitionRef.current?.stop();
+            setIsListening(false);
+            if (inputValue) {
+                handleSendText(inputValue);
+            } else {
+                setIsVoiceInputMode(false);
+            }
         } else {
             recognitionRef.current?.start();
+            setIsListening(true);
+            setIsVoiceInputMode(true);
+            setInputValue(''); // Clear input when starting
         }
-        setIsListening(!isListening);
     };
     
+    const handleVoiceConfirm = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+        }
+        setIsListening(false);
+        setIsVoiceInputMode(false);
+        if (inputValue) {
+            handleSendText(inputValue);
+        }
+    };
+
+    const handleVoiceCancel = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+        }
+        setIsListening(false);
+        setIsVoiceInputMode(false);
+        setInputValue('');
+    };
+
     const handleSaveTransaction = async () => {
         if (!extractedData || !extractedData.walletId) {
             toast.error("Gagal menyimpan.", { description: "Harap pilih dompet terlebih dahulu." });
@@ -331,6 +363,45 @@ export default function SmartAddPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted">
+            <AnimatePresence>
+                {isVoiceInputMode && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 bg-background/80 backdrop-blur-lg z-30 flex flex-col items-center justify-center p-8"
+                    >
+                         <Button variant="ghost" size="icon" className="absolute top-4 right-4 bg-white/10 rounded-full" onClick={handleVoiceCancel}>
+                            <X className="h-5 w-5" />
+                        </Button>
+                        <div className="flex-1 flex items-center justify-center">
+                            <p className="text-3xl font-medium text-center leading-relaxed">
+                                {inputValue || "Mendengarkan..."}
+                            </p>
+                        </div>
+                        <div className="w-full flex flex-col items-center gap-4">
+                             <motion.div className="flex justify-center items-center gap-1.5 h-10">
+                                {[...Array(5)].map((_, i) => (
+                                    <motion.div
+                                        key={i}
+                                        className="w-1.5 bg-primary rounded-full"
+                                        animate={{ height: isListening ? [8, 32, 8] : 8 }}
+                                        transition={{
+                                            duration: 1.2,
+                                            repeat: Infinity,
+                                            delay: i * 0.2,
+                                            ease: 'easeInOut'
+                                        }}
+                                    />
+                                ))}
+                            </motion.div>
+                            <Button size="lg" className="w-full" onClick={handleVoiceConfirm} disabled={!inputValue.trim()}>
+                                <Check className="mr-2 h-5 w-5" /> Konfirmasi
+                            </Button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <h1 className="text-xl font-bold text-center w-full">Catat Transaksi Baru</h1>
             </header>
@@ -512,7 +583,7 @@ export default function SmartAddPage() {
                             accept="image/*"
                         />
                         <Textarea
-                            placeholder={isListening ? "Mendengarkan..." : "Ketik, rekam suara, atau foto struk..."}
+                            placeholder={ "Ketik, rekam suara, atau foto struk..."}
                             className="pr-24 min-h-[48px] max-h-48"
                             rows={1}
                             value={inputValue}
@@ -520,7 +591,7 @@ export default function SmartAddPage() {
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
-                                    handleSendText();
+                                    handleSendText('');
                                 }
                             }}
                         />
@@ -534,7 +605,7 @@ export default function SmartAddPage() {
                                         exit={{ scale: 0, opacity: 0 }}
                                         transition={{ duration: 0.2 }}
                                     >
-                                        <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
+                                        <Button size="icon" variant="default" onClick={() => handleSendText('')} disabled={!inputValue.trim() || isLoading}>
                                             {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                                         </Button>
                                     </motion.div>
@@ -554,7 +625,7 @@ export default function SmartAddPage() {
                                             onClick={toggleListening}
                                             className={cn(isListening && 'text-red-500')}
                                         >
-                                            <motion.div animate={{ scale: isListening ? [1, 1.2, 1] : 1 }} transition={{ duration: 0.5, repeat: Infinity }}>
+                                            <motion.div>
                                                 <Mic className="h-5 w-5" />
                                             </motion.div>
                                         </Button>
@@ -568,5 +639,7 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
 
     
