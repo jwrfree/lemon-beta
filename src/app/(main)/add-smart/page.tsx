@@ -7,10 +7,10 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
@@ -40,6 +40,11 @@ const imageLoadingMessages = [
     "Menyiapkan hasil...",
 ];
 
+// Speech Recognition setup
+const SpeechRecognition =
+  (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition));
+
+
 export default function SmartAddPage() {
     const router = useRouter();
     const { 
@@ -59,9 +64,46 @@ export default function SmartAddPage() {
     const [extractedData, setExtractedData] = useState<any | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isListening, setIsListening] = useState(false);
+    const recognitionRef = useRef<any>(null);
+
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
+
+     useEffect(() => {
+        if (!SpeechRecognition) {
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'id-ID';
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setInputValue(transcript);
+            // Auto-send after successful recognition
+            handleSendText(transcript); 
+        };
+
+        recognition.onerror = (event) => {
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                 toast.error("Akses mikrofon ditolak.", { description: "Ubah izin di pengaturan browsermu untuk menggunakan fitur ini." });
+            } else {
+                toast.error("Oops! Terjadi error pada input suara.");
+            }
+            setIsListening(false);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+        
+        recognitionRef.current = recognition;
+
+    }, [handleSendText]);
 
     useEffect(() => {
         if (isLoading) {
@@ -82,10 +124,11 @@ export default function SmartAddPage() {
         setInputValue(e.target.value);
     };
 
-    const handleSendText = async () => {
-        if (!inputValue.trim() || isLoading) return;
+    const handleSendText = async (text?: string) => {
+        const textToSend = typeof text === 'string' ? text : inputValue;
+        if (!textToSend.trim() || isLoading) return;
 
-        const userInput = inputValue.trim();
+        const userInput = textToSend.trim();
         setInputValue('');
         setExtractedData(null);
         setIsLoading(true);
@@ -203,6 +246,20 @@ export default function SmartAddPage() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const toggleListening = () => {
+        if (!SpeechRecognition) {
+            toast.error("Browser tidak mendukung input suara.");
+            return;
+        }
+
+        if (isListening) {
+            recognitionRef.current?.stop();
+        } else {
+            recognitionRef.current?.start();
+        }
+        setIsListening(!isListening);
     };
     
     const handleSaveTransaction = async () => {
@@ -418,8 +475,8 @@ export default function SmartAddPage() {
                             accept="image/*"
                         />
                         <Textarea
-                            placeholder="Tulis, tempel, atau foto transaksimu di sini..."
-                            className="pr-24 min-h-[48px] max-h-48"
+                            placeholder={isListening ? "Mendengarkan..." : "Tulis, tempel, atau foto transaksimu di sini..."}
+                            className="pr-28 min-h-[48px] max-h-48"
                             rows={1}
                             value={inputValue}
                             onChange={handleInputChange}
@@ -432,8 +489,17 @@ export default function SmartAddPage() {
                         />
                         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                             <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Camera className="h-5 w-5" /></Button>
-                            <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
+                             <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={toggleListening}
+                                className={cn(isListening && 'text-red-500')}
+                            >
+                                <motion.div animate={{ scale: isListening ? [1, 1.2, 1] : 1 }} transition={{ duration: 0.5, repeat: Infinity }}>
+                                    <Mic className="h-5 w-5" />
+                                </motion.div>
+                            </Button>
+                            <Button size="icon" variant="default" onClick={() => handleSendText()} disabled={!inputValue.trim() || isLoading}>
                                 {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                             </Button>
                         </div>
@@ -443,7 +509,5 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
 
     

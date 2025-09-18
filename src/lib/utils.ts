@@ -26,3 +26,5 @@ export function formatRelativeDate(date: Date) {
     }
     return format(date, 'EEEE, d MMMM yyyy', { locale: id });
 }
+
+    
