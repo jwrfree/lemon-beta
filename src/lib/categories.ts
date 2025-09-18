@@ -96,7 +96,7 @@ export const categories: Categories = {
       icon: ShieldCheck,
       color: 'text-teal-600 dark:text-teal-500',
       bgColor: 'bg-teal-100 dark:bg-teal-900/50',
-      subCategories: ['Asuransi Jiwa', 'Asuransi Kesehatan', 'Asuransi Kendaraan']
+      subCategories: ['Asuransi Jiwa', 'Asuransi Kesehatan', 'Asuransi Kendaraan', 'BPJS']
     },
     { 
       id: 'cat-e-9', 
