@@ -150,32 +150,19 @@ export default function SmartAddPage() {
         }
 
         const recognition = new SpeechRecognition();
-        recognition.continuous = true; // Keep listening
+        recognition.continuous = true;
         recognition.lang = 'id-ID';
-        recognition.interimResults = true; // Get real-time results
+        recognition.interimResults = false; // Set to false to only get final results
 
         recognition.onresult = (event) => {
-            let interim_transcript = '';
             let final_transcript = '';
-
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     final_transcript += event.results[i][0].transcript;
-                } else {
-                    interim_transcript += event.results[i][0].transcript;
                 }
             }
-             // Use a function for state update to get the previous value correctly
-            setInputValue(prev => {
-                // If there's a final part, it means the previous interim part is now final.
-                // We reset the base to the full final transcript and only add the new interim part.
-                const newFinals = Array.from(event.results)
-                                      .slice(0, event.resultIndex)
-                                      .map(res => res[0].transcript)
-                                      .join('');
-
-                return newFinals + final_transcript + interim_transcript;
-            });
+            // Append the new final transcript to the existing value
+            setInputValue(prev => (prev + final_transcript).trim() + ' ');
         };
 
 
@@ -652,3 +639,5 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
