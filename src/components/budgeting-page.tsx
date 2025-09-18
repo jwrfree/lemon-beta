@@ -157,8 +157,8 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     
 
     return (
-        <div className="flex flex-col overflow-y-auto pb-16">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
+        <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
                  <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
