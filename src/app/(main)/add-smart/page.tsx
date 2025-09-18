@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
@@ -71,60 +71,7 @@ export default function SmartAddPage() {
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
 
-     useEffect(() => {
-        if (!SpeechRecognition) {
-            return;
-        }
-
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.lang = 'id-ID';
-        recognition.interimResults = false;
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            setInputValue(transcript);
-            // Auto-send after successful recognition
-            handleSendText(transcript); 
-        };
-
-        recognition.onerror = (event) => {
-            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                 toast.error("Akses mikrofon ditolak.", { description: "Ubah izin di pengaturan browsermu untuk menggunakan fitur ini." });
-            } else {
-                toast.error("Oops! Terjadi error pada input suara.");
-            }
-            setIsListening(false);
-        };
-
-        recognition.onend = () => {
-            setIsListening(false);
-        };
-        
-        recognitionRef.current = recognition;
-
-    }, [handleSendText]);
-
-    useEffect(() => {
-        if (isLoading) {
-            const loadingMessages = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
-            let messageIndex = 0;
-            setLoadingMessage(loadingMessages[messageIndex]);
-
-            const interval = setInterval(() => {
-                messageIndex = (messageIndex + 1) % loadingMessages.length;
-                setLoadingMessage(loadingMessages[messageIndex]);
-            }, 1500); // Ganti pesan setiap 1.5 detik
-
-            return () => clearInterval(interval);
-        }
-    }, [isLoading, messages]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInputValue(e.target.value);
-    };
-
-    const handleSendText = async (text?: string) => {
+    const handleSendText = useCallback(async (text?: string) => {
         const textToSend = typeof text === 'string' ? text : inputValue;
         if (!textToSend.trim() || isLoading) return;
 
@@ -190,8 +137,61 @@ export default function SmartAddPage() {
         } finally {
             setIsLoading(false);
         }
+    }, [inputValue, isLoading, availableCategories, availableWallets, wallets, incomeCategories, setPreFilledTransfer, setIsTransferModalOpen]);
+
+     useEffect(() => {
+        if (!SpeechRecognition) {
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'id-ID';
+        recognition.interimResults = false;
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setInputValue(transcript);
+            // Auto-send after successful recognition
+            handleSendText(transcript); 
+        };
+
+        recognition.onerror = (event) => {
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                 toast.error("Akses mikrofon ditolak.", { description: "Ubah izin di pengaturan browsermu untuk menggunakan fitur ini." });
+            } else {
+                toast.error("Oops! Terjadi error pada input suara.");
+            }
+            setIsListening(false);
+        };
+
+        recognition.onend = () => {
+            setIsListening(false);
+        };
+        
+        recognitionRef.current = recognition;
+
+    }, [handleSendText]);
+
+    useEffect(() => {
+        if (isLoading) {
+            const loadingMessages = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
+            let messageIndex = 0;
+            setLoadingMessage(loadingMessages[messageIndex]);
+
+            const interval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                setLoadingMessage(loadingMessages[messageIndex]);
+            }, 1500); // Ganti pesan setiap 1.5 detik
+
+            return () => clearInterval(interval);
+        }
+    }, [isLoading, messages]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setInputValue(e.target.value);
     };
-    
+
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
