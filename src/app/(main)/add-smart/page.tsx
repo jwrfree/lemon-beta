@@ -26,6 +26,20 @@ type Message = {
     content: any;
 };
 
+const textLoadingMessages = [
+    "Menganalisis teks...",
+    "Mengidentifikasi detail...",
+    "Memilih kategori...",
+    "Hampir selesai...",
+];
+
+const imageLoadingMessages = [
+    "Membaca struk...",
+    "Mengekstrak total & merchant...",
+    "Menebak kategori belanja...",
+    "Menyiapkan hasil...",
+];
+
 export default function SmartAddPage() {
     const router = useRouter();
     const { 
@@ -41,12 +55,28 @@ export default function SmartAddPage() {
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState('');
     const [extractedData, setExtractedData] = useState<any | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
+
+    useEffect(() => {
+        if (isLoading) {
+            const loadingMessages = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
+            let messageIndex = 0;
+            setLoadingMessage(loadingMessages[messageIndex]);
+
+            const interval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                setLoadingMessage(loadingMessages[messageIndex]);
+            }, 1500); // Ganti pesan setiap 1.5 detik
+
+            return () => clearInterval(interval);
+        }
+    }, [isLoading, messages]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
@@ -62,7 +92,7 @@ export default function SmartAddPage() {
 
         const newMessages: Message[] = [
             { id: `user-${Date.now()}`, type: 'user', content: userInput },
-            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: 'Menganalisis...' }
+            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }
         ];
         setMessages(newMessages);
 
@@ -92,7 +122,7 @@ export default function SmartAddPage() {
                 }
             }
             
-            const matchingWallet = wallets.find(w => w.name.toLowerCase() === (result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())));
+            const matchingWallet = wallets.find(w => w.name.toLowerCase() === ((result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())) || '').toLowerCase());
 
             const dataToConfirm = {
                 type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
@@ -140,7 +170,7 @@ export default function SmartAddPage() {
 
         const newMessages: Message[] = [
             { id: `user-image-${Date.now()}`, type: 'user-image', content: imageDataUrl },
-            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: 'Membaca struk...' }
+            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }
         ];
         setMessages(newMessages);
 
@@ -259,7 +289,17 @@ export default function SmartAddPage() {
                                     <div className="flex justify-start">
                                         <Card className="p-3 bg-card max-w-xs sm:max-w-sm flex items-center gap-2">
                                             <LoaderCircle className="h-4 w-4 animate-spin" />
-                                            {msg.content}
+                                            <AnimatePresence mode="wait">
+                                                <motion.span
+                                                    key={loadingMessage}
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: 10 }}
+                                                    transition={{ duration: 0.2 }}
+                                                >
+                                                    {loadingMessage}
+                                                </motion.span>
+                                            </AnimatePresence>
                                         </Card>
                                     </div>
                                 )}
