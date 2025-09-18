@@ -3,6 +3,7 @@
 
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, ChevronLeft, HandCoins } from 'lucide-react';
@@ -15,6 +16,7 @@ import { Skeleton } from './ui/skeleton';
 
 const BudgetCard = ({ budget }: { budget: any }) => {
     const { transactions } = useApp();
+    const router = useRouter();
 
     const spent = useMemo(() => {
         const now = new Date();
@@ -48,29 +50,35 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 
 
     return (
-        <Card className="p-4 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                     <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
-                        <CategoryIcon className={cn("h-5 w-5", color)} />
+         <motion.div
+            onClick={() => router.push(`/budgeting/${budget.id}`)}
+            whileTap={{ scale: 0.98 }}
+            className="cursor-pointer"
+        >
+            <Card className="p-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                         <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
+                            <CategoryIcon className={cn("h-5 w-5", color)} />
+                        </div>
+                        <h3 className="font-semibold">{budget.name}</h3>
                     </div>
-                    <h3 className="font-semibold">{budget.name}</h3>
+                    <span className="text-sm text-muted-foreground">{daysLeft} hari lagi</span>
                 </div>
-                <span className="text-sm text-muted-foreground">{daysLeft} hari lagi</span>
-            </div>
-            
-            <div>
-                 <div className="w-full bg-muted rounded-full h-2.5">
-                    <div className={cn("h-2.5 rounded-full", progressBarColor)} style={{ width: `${Math.min(progress, 100)}%` }}></div>
+                
+                <div>
+                     <div className="w-full bg-muted rounded-full h-2.5">
+                        <div className={cn("h-2.5 rounded-full", progressBarColor)} style={{ width: `${Math.min(progress, 100)}%` }}></div>
+                    </div>
+                     <div className="flex justify-between items-center mt-1.5">
+                        <span className="text-xs font-medium text-muted-foreground">
+                            {progress > 100 ? `Terlampaui ${formatCurrency(Math.abs(remaining))}` : `${formatCurrency(remaining)} tersisa`}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{formatCurrency(budget.targetAmount)}</span>
+                    </div>
                 </div>
-                 <div className="flex justify-between items-center mt-1.5">
-                    <span className="text-xs font-medium text-muted-foreground">
-                        {progress > 100 ? `Terlampaui ${formatCurrency(Math.abs(remaining))}` : `${formatCurrency(remaining)} tersisa`}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{formatCurrency(budget.targetAmount)}</span>
-                </div>
-            </div>
-        </Card>
+            </Card>
+        </motion.div>
     );
 };
 
