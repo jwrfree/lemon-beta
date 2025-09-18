@@ -161,11 +161,11 @@ export default function AllTransactionsPage() {
                 </Tabs>
                 
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-2">
                         {selectedCategories.map(category => (
-                            <Badge key={category} variant="secondary" className="gap-1">
+                            <Badge key={category} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                 {category}
-                                <button onClick={() => handleCategoryToggle(category)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
+                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
                                     <X className="h-3 w-3" />
                                 </button>
                             </Badge>
@@ -173,9 +173,9 @@ export default function AllTransactionsPage() {
                          {selectedWallets.map(walletId => {
                             const wallet = wallets.find(w => w.id === walletId);
                             return wallet && (
-                                <Badge key={walletId} variant="secondary" className="gap-1">
+                                <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                     {wallet.name}
-                                    <button onClick={() => handleWalletToggle(walletId)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
+                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
                                         <X className="h-3 w-3" />
                                     </button>
                                 </Badge>
