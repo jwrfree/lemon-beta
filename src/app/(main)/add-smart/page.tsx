@@ -5,19 +5,21 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ChevronLeft, Paperclip, Camera, Send, LoaderCircle, Pencil, ChevronDown, Check } from 'lucide-react';
+import { ChevronLeft, Paperclip, Camera, Send, LoaderCircle, Pencil, Check } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { formatCurrency, cn } from '@/lib/utils';
-import { categoryDetails, Category } from '@/lib/categories';
+import { formatCurrency } from '@/lib/utils';
+import { categoryDetails } from '@/lib/categories';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
+import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
+import Image from 'next/image';
 
 type Message = {
     id: string;
-    type: 'user' | 'ai-thinking' | 'ai-confirmation';
-    content: string | any;
+    type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation';
+    content: any;
 };
 
 export default function SmartAddPage() {
@@ -27,6 +29,7 @@ export default function SmartAddPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [extractedData, setExtractedData] = useState<any | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
@@ -35,11 +38,12 @@ export default function SmartAddPage() {
         setInputValue(e.target.value);
     };
 
-    const handleSend = async () => {
+    const handleSendText = async () => {
         if (!inputValue.trim() || isLoading) return;
 
         const userInput = inputValue.trim();
         setInputValue('');
+        setExtractedData(null);
         setIsLoading(true);
 
         const newMessages: Message[] = [
@@ -58,7 +62,7 @@ export default function SmartAddPage() {
             const matchingWallet = wallets.find(w => w.name.toLowerCase() === result.wallet?.toLowerCase());
 
             const dataToConfirm = {
-                type: 'expense', // Default to expense, AI can refine later
+                type: 'expense',
                 amount: result.amount || 0,
                 description: result.description || 'Transaksi baru',
                 category: result.category || '',
@@ -77,6 +81,62 @@ export default function SmartAddPage() {
             console.error("AI extraction failed:", error);
             toast.error("Oops! Gagal menganalisis transaksimu. Coba lagi ya.");
              setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (loadEvent) => {
+            const imageDataUrl = loadEvent.target?.result as string;
+            handleSendImage(imageDataUrl);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleSendImage = async (imageDataUrl: string) => {
+        if (!imageDataUrl || isLoading) return;
+        
+        setInputValue('');
+        setExtractedData(null);
+        setIsLoading(true);
+
+        const newMessages: Message[] = [
+            { id: `user-image-${Date.now()}`, type: 'user-image', content: imageDataUrl },
+            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: 'Membaca struk...' }
+        ];
+        setMessages(newMessages);
+
+        try {
+             const result = await scanReceipt({
+                photoDataUri: imageDataUrl,
+                availableCategories,
+            });
+            
+            const dataToConfirm = {
+                type: 'expense',
+                amount: result.amount || 0,
+                description: result.description || 'Transaksi dari struk',
+                category: result.category || '',
+                walletId: '',
+                location: result.merchant || '',
+                date: result.transactionDate ? new Date(result.transactionDate).toISOString() : new Date().toISOString(),
+            };
+            
+            setExtractedData(dataToConfirm);
+            setMessages(prev => [
+                ...prev.filter(m => m.type !== 'ai-thinking'),
+                { id: `ai-confirm-${Date.now()}`, type: 'ai-confirmation', content: dataToConfirm }
+            ]);
+
+        } catch (error) {
+            console.error("AI receipt scan failed:", error);
+            toast.error("Oops! Gagal membaca struk. Coba foto lagi atau masukkan manual ya.");
+            setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
         } finally {
             setIsLoading(false);
         }
@@ -129,6 +189,13 @@ export default function SmartAddPage() {
                                     <div className="flex justify-end">
                                         <Card className="p-3 bg-primary text-primary-foreground max-w-xs sm:max-w-sm break-words">
                                             {msg.content}
+                                        </Card>
+                                    </div>
+                                )}
+                                {msg.type === 'user-image' && (
+                                    <div className="flex justify-end">
+                                        <Card className="p-2 bg-primary max-w-xs sm:max-w-sm break-words">
+                                            <Image src={msg.content} alt="Receipt" width={200} height={200} className="rounded-md" />
                                         </Card>
                                     </div>
                                 )}
@@ -199,6 +266,13 @@ export default function SmartAddPage() {
 
             <div className="p-2 border-t bg-background">
                 <div className="relative">
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileSelect}
+                        className="hidden"
+                        accept="image/*"
+                    />
                     <Textarea
                         placeholder="Tulis, tempel, atau foto transaksimu di sini..."
                         className="pr-24 min-h-[48px] max-h-48"
@@ -208,14 +282,14 @@ export default function SmartAddPage() {
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
                                 e.preventDefault();
-                                handleSend();
+                                handleSendText();
                             }
                         }}
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                        <Button size="icon" variant="ghost"><Paperclip className="h-5 w-5" /></Button>
-                        <Button size="icon" variant="ghost"><Camera className="h-5 w-5" /></Button>
-                        <Button size="icon" variant="default" onClick={handleSend} disabled={!inputValue.trim() || isLoading}>
+                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                        <Button size="icon" variant="ghost" onClick={() => fileInput_current?.click()}><Camera className="h-5 w-5" /></Button>
+                        <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
                             {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                         </Button>
                     </div>
