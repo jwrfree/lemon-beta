@@ -71,8 +71,8 @@ export default function SmartAddPage() {
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
 
-    const handleSendText = useCallback(async (text?: string) => {
-        const textToSend = typeof text === 'string' ? text : inputValue;
+    const handleSendText = useCallback(async () => {
+        const textToSend = inputValue;
         if (!textToSend.trim() || isLoading) return;
 
         const userInput = textToSend.trim();
@@ -145,16 +145,24 @@ export default function SmartAddPage() {
         }
 
         const recognition = new SpeechRecognition();
-        recognition.continuous = false;
+        recognition.continuous = true; // Keep listening
         recognition.lang = 'id-ID';
-        recognition.interimResults = false;
+        recognition.interimResults = true; // Get real-time results
 
         recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            setInputValue(transcript);
-            // Auto-send after successful recognition
-            handleSendText(transcript); 
+            let final_transcript = '';
+            let interim_transcript = '';
+
+            for (let i = 0; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                } else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }
+            setInputValue(final_transcript + interim_transcript);
         };
+
 
         recognition.onerror = (event) => {
             if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
@@ -171,7 +179,7 @@ export default function SmartAddPage() {
         
         recognitionRef.current = recognition;
 
-    }, [handleSendText]);
+    }, []);
 
     useEffect(() => {
         if (isLoading) {
@@ -499,7 +507,7 @@ export default function SmartAddPage() {
                                     <Mic className="h-5 w-5" />
                                 </motion.div>
                             </Button>
-                            <Button size="icon" variant="default" onClick={() => handleSendText()} disabled={!inputValue.trim() || isLoading}>
+                            <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
                                 {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                             </Button>
                         </div>
@@ -509,6 +517,8 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
 
     
 
