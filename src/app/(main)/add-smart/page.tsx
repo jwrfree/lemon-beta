@@ -70,6 +70,7 @@ export default function SmartAddPage() {
     const [isListening, setIsListening] = useState(false);
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
     const recognitionRef = useRef<any>(null);
+    const finalTranscriptRef = useRef('');
 
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
@@ -81,6 +82,7 @@ export default function SmartAddPage() {
 
         const userInput = textToSend.trim();
         setInputValue('');
+        finalTranscriptRef.current = '';
         setExtractedData(null);
         setIsLoading(true);
         setIsVoiceInputMode(false);
@@ -152,17 +154,18 @@ export default function SmartAddPage() {
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.lang = 'id-ID';
-        recognition.interimResults = false; // Set to false to only get final results
+        recognition.interimResults = false;
 
         recognition.onresult = (event) => {
-            let final_transcript = '';
+            let latestTranscript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
-                    final_transcript += event.results[i][0].transcript;
+                    latestTranscript += event.results[i][0].transcript;
                 }
             }
-            // Append the new final transcript to the existing value
-            setInputValue(prev => (prev + final_transcript).trim() + ' ');
+            
+            finalTranscriptRef.current += (latestTranscript + ' ');
+            setInputValue(finalTranscriptRef.current);
         };
 
 
@@ -202,6 +205,7 @@ export default function SmartAddPage() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
+        finalTranscriptRef.current = e.target.value;
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,6 +224,7 @@ export default function SmartAddPage() {
         if (!imageDataUrl || isLoading) return;
         
         setInputValue('');
+        finalTranscriptRef.current = '';
         setExtractedData(null);
         setIsLoading(true);
 
@@ -269,17 +274,12 @@ export default function SmartAddPage() {
         if (isListening) {
             recognitionRef.current?.stop();
             setIsListening(false);
-            if (inputValue) {
-                // Now we don't auto-send
-                // handleSendText(inputValue);
-            } else {
-                setIsVoiceInputMode(false);
-            }
         } else {
             recognitionRef.current?.start();
             setIsListening(true);
             setIsVoiceInputMode(true);
             setInputValue(''); // Clear input when starting
+            finalTranscriptRef.current = '';
         }
     };
     
@@ -301,6 +301,7 @@ export default function SmartAddPage() {
         setIsListening(false);
         setIsVoiceInputMode(false);
         setInputValue('');
+        finalTranscriptRef.current = '';
     };
 
     const handleSaveTransaction = async () => {
@@ -581,7 +582,7 @@ export default function SmartAddPage() {
                             accept="image/*"
                         />
                         <Textarea
-                            placeholder={ "Ketik, rekam suara, atau foto struk..."}
+                            placeholder={"Ketik atau rekam suara..."}
                             className="pr-24 min-h-[48px] max-h-48"
                             rows={1}
                             value={inputValue}
