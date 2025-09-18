@@ -272,7 +272,7 @@ const ExpenseAnalysis = () => {
     const { transactions } = useApp();
     const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
 
-    const { breakdown, chartConfig } = useMemo(() => {
+    const { categoryExpenseData, chartConfig } = useMemo(() => {
         const now = new Date();
         const categoryMap: { [key: string]: number } = {};
 
@@ -292,9 +292,9 @@ const ExpenseAnalysis = () => {
         });
 
         const sortedBreakdown = Object.entries(categoryMap)
-            .map(([name, value]) => {
+            .map(([name, value], index) => {
                  const details = categoryDetails(name);
-                 const id = name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+                 const id = `chart-${index + 1}`
                 return {
                     id,
                     name,
@@ -305,27 +305,9 @@ const ExpenseAnalysis = () => {
                 };
             })
             .sort((a, b) => b.value - a.value);
-
-        const dynamicChartConfig = Object.fromEntries(
-            sortedBreakdown.map(item => {
-                const details = categoryDetails(item.name);
-                 return [
-                    item.id,
-                    {
-                        label: item.name,
-                        color: details.color.match(/text-(.*?)-/)?.[1] ? `hsl(var(--chart-${Object.keys(dynamicChartConfig).length + 1}))` : details.color
-                    },
-                ]
-            })
-        ) as ChartConfig;
-        
-        const finalBreakdown = sortedBreakdown.map((item, index) => ({
-            ...item,
-            fill: `hsl(var(--chart-${index + 1}))`,
-        }));
         
         const finalChartConfig = Object.fromEntries(
-             finalBreakdown.map((item, index) => [
+             sortedBreakdown.map((item, index) => [
                 item.id,
                 {
                     label: item.name,
@@ -336,7 +318,7 @@ const ExpenseAnalysis = () => {
         ) as ChartConfig;
 
         return {
-            breakdown: finalBreakdown,
+            categoryExpenseData: sortedBreakdown,
             chartConfig: finalChartConfig,
         };
 
@@ -365,25 +347,31 @@ const ExpenseAnalysis = () => {
                                 cursor={false}
                                 content={<ChartTooltipContent 
                                     formatter={(value, name, props) => {
-                                        const {id} = props.payload.payload
-                                        const icon = chartConfig[id]?.icon
+                                        const {id} = props.payload.payload;
+                                        const config = chartConfig[id as keyof typeof chartConfig];
+                                        if (!config) return null;
+                                        
                                         return (
                                             <div className="flex items-center gap-2">
-                                                {icon && React.createElement(icon, { className: "h-4 w-4" })}
-                                                <span>{formatCurrency(Number(value))}</span>
+                                                {config.icon && React.createElement(config.icon, { className: "h-4 w-4" })}
+                                                <div className="flex flex-col">
+                                                     <span className="font-semibold">{config.label}</span>
+                                                     <span className="text-muted-foreground">{formatCurrency(Number(value))}</span>
+                                                </div>
                                             </div>
                                         )
                                     }}
+                                    hideLabel
                                 />}
                             />
                             <Pie
-                                data={breakdown}
+                                data={categoryExpenseData}
                                 dataKey="value"
                                 nameKey="name"
                                 innerRadius={60}
                                 strokeWidth={5}
                                 >
-                                {breakdown.map((entry) => (
+                                {categoryExpenseData.map((entry) => (
                                     <Cell key={`cell-${entry.name}`} fill={entry.fill} />
                                 ))}
                                 </Pie>
@@ -396,7 +384,7 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Rincian Kategori</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {breakdown.slice(0, 5).map((item) => (
+                    {categoryExpenseData.slice(0, 5).map((item) => (
                         <div key={item.name} className="flex flex-col gap-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
