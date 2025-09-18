@@ -188,7 +188,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
                                     <CardTitle>Ringkasan Bulan Ini</CardTitle>
                                 </CardHeader>
                                 <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-                                    <div className="w-full sm:w-1/2 h-32">
+                                    <div className="w-full sm:w-1/2 h-32 flex justify-center">
                                          <ChartContainer config={{}} className="aspect-square h-full">
                                             <PieChart>
                                                  <ChartTooltip
