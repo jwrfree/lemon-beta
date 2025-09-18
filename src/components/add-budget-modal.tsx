@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { X, ArrowLeft } from 'lucide-react';
@@ -9,15 +9,18 @@ import { X, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
 import { ScrollArea } from './ui/scroll-area';
+import { Slider } from './ui/slider';
+
+const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const { addBudget, expenseCategories } = useApp();
   const [step, setStep] = useState(1);
   const [budgetName, setBudgetName] = useState('');
-  const [targetAmount, setTargetAmount] = useState('');
+  const [targetAmount, setTargetAmount] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,8 +37,8 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         toast.error("Nama anggaran tidak boleh kosong.");
         return;
     }
-    if (step === 2 && !targetAmount) {
-        toast.error("Target anggaran harus diisi.");
+    if (step === 2 && targetAmount <= 0) {
+        toast.error("Target anggaran harus lebih besar dari nol.");
         return;
     }
     setStep(s => s + 1);
@@ -55,7 +58,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     try {
         await addBudget({
             name: budgetName,
-            targetAmount: parseInt(targetAmount.replace(/[^0-9]/g, '')),
+            targetAmount: targetAmount,
             categories: selectedCategories,
         });
     } catch(e) {
@@ -63,12 +66,6 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     } finally {
         setIsSubmitting(false);
     }
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = e.target.value.replace(/[^0-9]/g, '');
-      const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-      setTargetAmount(formattedValue);
   };
   
   const stepTitles = ["Beri Nama Anggaran", "Tentukan Target", "Pilih Kategori"];
@@ -114,7 +111,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           </Button>
         </div>
 
-        <div className="flex-1 p-4 relative overflow-y-auto">
+        <div className="flex-1 p-6 relative overflow-y-auto">
             <AnimatePresence initial={false} custom={direction}>
                  <motion.div
                     key={step}
@@ -132,9 +129,31 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                         </div>
                     )}
                     {step === 2 && (
-                         <div className="space-y-2">
-                            <Label htmlFor="target-amount">Target Pengeluaran per Bulan</Label>
-                            <Input id="target-amount" placeholder="Rp 0" value={targetAmount} onChange={handleAmountChange} required inputMode="numeric" autoFocus />
+                         <div className="space-y-8">
+                            <div className="space-y-2 text-center">
+                                <Label htmlFor="target-amount" className="text-sm">Target Pengeluaran per Bulan</Label>
+                                <Input 
+                                    id="target-amount" 
+                                    value={formatCurrency(targetAmount)}
+                                    onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
+                                    className="text-4xl font-bold h-auto border-none focus-visible:ring-0 text-center"
+                                    inputMode="numeric"
+                                    autoFocus
+                                />
+                            </div>
+                            <Slider
+                                value={[targetAmount]}
+                                onValueChange={(value) => setTargetAmount(value[0])}
+                                max={10000000}
+                                step={50000}
+                            />
+                            <div className="grid grid-cols-4 gap-2">
+                                {budgetSteps.map(val => (
+                                    <Button key={val} variant="outline" size="sm" onClick={() => setTargetAmount(val)}>
+                                        {formatCurrency(val / 1000)}k
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
                     )}
                     {step === 3 && (
