@@ -7,7 +7,7 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic, CalendarIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -18,7 +18,10 @@ import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
-import { isSameMonth, parseISO } from 'date-fns';
+import { isSameMonth, parseISO, format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 type Message = {
     id: string;
@@ -440,6 +443,32 @@ export default function SmartAddPage() {
                                                     </SelectContent>
                                                 </Select>
                                             </div>
+                                            <div className="flex items-center gap-3">
+                                                <span className="w-24 text-sm text-muted-foreground">Tanggal</span>
+                                                 <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "flex-1 justify-start text-left font-normal",
+                                                                !extractedData.date && "text-muted-foreground"
+                                                            )}
+                                                        >
+                                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                                            {extractedData.date ? format(parseISO(extractedData.date), "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={new Date(extractedData.date)}
+                                                            onSelect={(d) => d && updateExtractedData('date', d.toISOString())}
+                                                            initialFocus
+                                                            locale={dateFnsLocaleId}
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
                                         </div>
                                     </Card>
                                 )}
@@ -517,9 +546,3 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
-
-    
-
-    
