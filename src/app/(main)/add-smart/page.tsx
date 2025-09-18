@@ -155,17 +155,27 @@ export default function SmartAddPage() {
         recognition.interimResults = true; // Get real-time results
 
         recognition.onresult = (event) => {
-            let final_transcript = '';
             let interim_transcript = '';
+            let final_transcript = '';
 
-            for (let i = 0; i < event.results.length; ++i) {
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) {
                     final_transcript += event.results[i][0].transcript;
                 } else {
                     interim_transcript += event.results[i][0].transcript;
                 }
             }
-            setInputValue(final_transcript + interim_transcript);
+             // Use a function for state update to get the previous value correctly
+            setInputValue(prev => {
+                // If there's a final part, it means the previous interim part is now final.
+                // We reset the base to the full final transcript and only add the new interim part.
+                const newFinals = Array.from(event.results)
+                                      .slice(0, event.resultIndex)
+                                      .map(res => res[0].transcript)
+                                      .join('');
+
+                return newFinals + final_transcript + interim_transcript;
+            });
         };
 
 
@@ -273,7 +283,8 @@ export default function SmartAddPage() {
             recognitionRef.current?.stop();
             setIsListening(false);
             if (inputValue) {
-                handleSendText(inputValue);
+                // Now we don't auto-send
+                // handleSendText(inputValue);
             } else {
                 setIsVoiceInputMode(false);
             }
@@ -604,7 +615,9 @@ export default function SmartAddPage() {
                                         animate={{ scale: 1, opacity: 1 }}
                                         exit={{ scale: 0, opacity: 0 }}
                                         transition={{ duration: 0.2 }}
+                                        className="flex items-center gap-1"
                                     >
+                                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
                                         <Button size="icon" variant="default" onClick={() => handleSendText('')} disabled={!inputValue.trim() || isLoading}>
                                             {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
                                         </Button>
@@ -639,7 +652,3 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
-
-    
