@@ -70,7 +70,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
     useEffect(() => {
         if (!isLoading && !user) {
-            router.push('/');
+            router.replace('/');
         }
     }, [user, isLoading, router]);
 
@@ -78,48 +78,44 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
     if (isLoading || !user) {
         return (
-            <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
-                <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
-                    <AppSkeleton />
-                </div>
+            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+                <AppSkeleton />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-muted text-zinc-900 dark:text-gray-50 flex flex-col items-center p-0 md:p-8 font-sans">
-            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={pathname}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex-1 flex flex-col overflow-y-auto"
-                    >
-                        {children}
-                    </motion.div>
-                </AnimatePresence>
+        <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={pathname}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex-1 flex flex-col overflow-y-auto"
+                >
+                    {children}
+                </motion.div>
+            </AnimatePresence>
 
-                 <AnimatePresence>
-                    {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
-                    {isEditTxModalOpen && transactionToEdit && <EditTransactionForm transaction={transactionToEdit} onClose={() => setIsEditTxModalOpen(false)} />}
-                    {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
-                    {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
-                    {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
-                    {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
-                    {isDeleteModalOpen && transactionToDelete && (
-                        <ConfirmDeleteModal
-                            transaction={transactionToDelete}
-                            onClose={closeDeleteModal}
-                            onConfirm={handleConfirmDelete}
-                        />
-                    )}
-                </AnimatePresence>
-                
-                {!isSmartAddPage && <BottomNavigation />}
-            </div>
+             <AnimatePresence>
+                {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
+                {isEditTxModalOpen && transactionToEdit && <EditTransactionForm transaction={transactionToEdit} onClose={() => setIsEditTxModalOpen(false)} />}
+                {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
+                {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
+                {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
+                {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
+                {isDeleteModalOpen && transactionToDelete && (
+                    <ConfirmDeleteModal
+                        transaction={transactionToDelete}
+                        onClose={closeDeleteModal}
+                        onConfirm={handleConfirmDelete}
+                    />
+                )}
+            </AnimatePresence>
+            
+            {!isSmartAddPage && <BottomNavigation />}
         </div>
     );
 }
