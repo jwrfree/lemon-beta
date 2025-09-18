@@ -1,4 +1,5 @@
 
+
 'use client';
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -227,7 +228,12 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
                         <ChartTooltip
                             cursor={false}
                             content={<ChartTooltipContent 
-                                            labelFormatter={(value) => format(parseISO(trendData.find(d => d.formattedDate === value)?.date || new Date()), 'eeee, d MMM yyyy', { locale: dateFnsLocaleId })}
+                                            labelFormatter={(value, payload) => {
+                                                if (payload && payload.length > 0 && payload[0].payload) {
+                                                    return format(parseISO(payload[0].payload.date), 'eeee, d MMM yyyy', { locale: dateFnsLocaleId });
+                                                }
+                                                return value;
+                                            }}
                                             formatter={(value) => formatCurrency(Number(value))} 
                                             indicator="dot" 
                                         />}
@@ -295,26 +301,45 @@ const ExpenseAnalysis = () => {
                     value,
                     icon: details.icon,
                     fill: `var(--color-${id})`,
-                    color: details.color,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
             .sort((a, b) => b.value - a.value);
 
         const dynamicChartConfig = Object.fromEntries(
-            sortedBreakdown.map(item => [
+            sortedBreakdown.map(item => {
+                const details = categoryDetails(item.name);
+                 return [
+                    item.id,
+                    {
+                        label: item.name,
+                        color: details.color.match(/text-(.*?)-/)?.[1] ? `hsl(var(--chart-${Object.keys(dynamicChartConfig).length + 1}))` : details.color
+                    },
+                ]
+            })
+        ) as ChartConfig;
+        
+        const finalBreakdown = sortedBreakdown.map((item, index) => ({
+            ...item,
+            fill: `hsl(var(--chart-${index + 1}))`,
+        }));
+        
+        const finalChartConfig = Object.fromEntries(
+             finalBreakdown.map((item, index) => [
                 item.id,
                 {
                     label: item.name,
-                    color: item.color.match(/hsl\(var\((.*?)\)\)/)?.[1] ?? item.color,
+                    color: `hsl(var(--chart-${index + 1}))`,
+                    icon: item.icon,
                 },
             ])
         ) as ChartConfig;
-        
+
         return {
-            breakdown: sortedBreakdown,
-            chartConfig: dynamicChartConfig
+            breakdown: finalBreakdown,
+            chartConfig: finalChartConfig,
         };
+
     }, [transactions]);
 
     return (
@@ -339,7 +364,16 @@ const ExpenseAnalysis = () => {
                             <ChartTooltip 
                                 cursor={false}
                                 content={<ChartTooltipContent 
-                                    formatter={(value) => formatCurrency(Number(value))}
+                                    formatter={(value, name, props) => {
+                                        const {id} = props.payload.payload
+                                        const icon = chartConfig[id]?.icon
+                                        return (
+                                            <div className="flex items-center gap-2">
+                                                {icon && React.createElement(icon, { className: "h-4 w-4" })}
+                                                <span>{formatCurrency(Number(value))}</span>
+                                            </div>
+                                        )
+                                    }}
                                 />}
                             />
                             <Pie
@@ -348,11 +382,11 @@ const ExpenseAnalysis = () => {
                                 nameKey="name"
                                 innerRadius={60}
                                 strokeWidth={5}
-                            >
+                                >
                                 {breakdown.map((entry) => (
                                     <Cell key={`cell-${entry.name}`} fill={entry.fill} />
                                 ))}
-                            </Pie>
+                                </Pie>
                         </PieChart>
                     </ChartContainer>
                 </CardContent>
@@ -366,13 +400,13 @@ const ExpenseAnalysis = () => {
                         <div key={item.name} className="flex flex-col gap-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                    <item.icon className={cn("h-4 w-4", item.color)} />
+                                    <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
                                     <span className="font-medium">{item.name}</span>
                                 </div>
                                 <span className="font-semibold">{formatCurrency(item.value)}</span>
                             </div>
                             <div className="h-2 w-full bg-muted rounded-full">
-                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: `hsl(var(--${item.id}))` }}></div>
+                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
                             </div>
                         </div>
                     ))}
@@ -440,16 +474,16 @@ export const ChartsPage = () => {
     };
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto bg-muted">
+        <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <main className="flex-1">
+            <main className="flex-1 overflow-y-auto">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full flex flex-col flex-1">
-                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-16 z-10">
+                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-0 z-10">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value} className="flex gap-2 items-center">
                                <tab.icon className="h-4 w-4" />
