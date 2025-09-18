@@ -133,16 +133,25 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const unsubWallets = onSnapshot(walletsQuery, (snapshot) => {
             const walletsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setWallets(walletsData);
+        }, (error) => {
+            console.error("Error fetching wallets: ", error);
+            toast.error("Gagal memuat data dompet.");
         });
 
         const unsubTransactions = onSnapshot(transactionsQuery, (snapshot) => {
             const transactionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setTransactions(transactionsData);
+        }, (error) => {
+            console.error("Error fetching transactions: ", error);
+            toast.error("Gagal memuat data transaksi.");
         });
 
         const unsubBudgets = onSnapshot(budgetsQuery, (snapshot) => {
             const budgetsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setBudgets(budgetsData);
+        }, (error) => {
+            console.error("Error fetching budgets: ", error);
+            toast.error("Gagal memuat data anggaran.");
         });
 
         return () => {
@@ -159,7 +168,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         if (!walletCollection || !transactionCollection) return;
 
         const walletRef = doc(db, walletCollection.path, data.walletId);
-        await addDoc(transactionCollection, data);
+        await addDoc(transactionCollection, { ...data, userId: user.uid });
         const walletDoc = await getDoc(walletRef);
         if (walletDoc.exists()) {
             const currentBalance = walletDoc.data().balance;
@@ -178,7 +187,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const batch = writeBatch(db);
         const transactionRef = doc(transactionCollection, transactionId);
 
-        batch.update(transactionRef, newData);
+        batch.update(transactionRef, { ...newData, userId: user.uid });
 
         const oldWalletRef = doc(walletCollection, oldData.walletId);
         const newWalletRef = doc(walletCollection, newData.walletId);
@@ -230,6 +239,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             walletId: fromWalletId,
             description: `Transfer ke ${wallets.find(w => w.id === toWalletId)?.name}: ${description}`,
             date,
+            userId: user.uid,
         });
 
         // Create income transaction
@@ -240,6 +250,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             walletId: toWalletId,
             description: `Transfer dari ${wallets.find(w => w.id === fromWalletId)?.name}: ${description}`,
             date,
+            userId: user.uid,
         });
 
         const fromWalletDoc = await getDoc(fromWalletRef);
@@ -269,6 +280,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             balance: walletData.balance || 0,
             createdAt: new Date().toISOString(),
             isDefault: walletData.isDefault || false,
+            userId: user.uid,
         });
         toast.success("Dompet berhasil dibuat!");
         setIsWalletModalOpen(false);
@@ -321,7 +333,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         if (!user) throw new Error("User not authenticated.");
         const budgetCollection = getBudgetCollection();
         if (!budgetCollection) return;
-        await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString() });
+        await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString(), userId: user.uid });
         toast.success("Anggaran berhasil dibuat!");
         setIsBudgetModalOpen(false);
     }, [user, getBudgetCollection]);
