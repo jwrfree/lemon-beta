@@ -24,7 +24,7 @@ export const categories: Categories = {
       icon: Utensils, 
       color: 'text-yellow-600 dark:text-yellow-500', 
       bgColor: 'bg-yellow-100 dark:bg-yellow-900/50',
-      subCategories: ['Restoran & Kafe', 'Bahan Makanan', 'Kopi', 'Jajanan', 'Pesan Antar']
+      subCategories: ['Restoran & Kafe', 'Bahan Makanan', 'Kopi', 'Jajanan', 'Delivery']
     },
     { 
       id: 'cat-e-2', 
@@ -32,7 +32,7 @@ export const categories: Categories = {
       icon: ShoppingCart, 
       color: 'text-blue-600 dark:text-blue-500', 
       bgColor: 'bg-blue-100 dark:bg-blue-900/50',
-      subCategories: ['Pakaian & Aksesoris', 'Elektronik', 'Hobi', 'Perabotan', 'Hadiah']
+      subCategories: ['Fashion', 'Elektronik', 'Hobi', 'Rumah Tangga', 'Hadiah']
     },
     { 
       id: 'cat-e-3', 
@@ -40,7 +40,7 @@ export const categories: Categories = {
       icon: Car, 
       color: 'text-purple-600 dark:text-purple-500', 
       bgColor: 'bg-purple-100 dark:bg-purple-900/50',
-      subCategories: ['Transportasi Umum', 'Bensin', 'Taksi & Ojek Online', 'Parkir', 'Perawatan Kendaraan']
+      subCategories: ['Transportasi Umum', 'Bensin', 'Gojek/Grab', 'Parkir', 'Servis & Cuci']
     },
     { 
       id: 'cat-e-4', 
@@ -48,7 +48,7 @@ export const categories: Categories = {
       icon: Phone, 
       color: 'text-cyan-600 dark:text-cyan-500', 
       bgColor: 'bg-cyan-100 dark:bg-cyan-900/50',
-      subCategories: ['Listrik', 'Air', 'Internet', 'Telepon', 'TV Kabel & Streaming']
+      subCategories: ['Listrik', 'Air', 'Internet', 'Telepon', 'Streaming Service']
     },
     {
       id: 'cat-e-10',
@@ -56,7 +56,7 @@ export const categories: Categories = {
       icon: ReceiptText,
       color: 'text-orange-600 dark:text-orange-500',
       bgColor: 'bg-orange-100 dark:bg-orange-900/50',
-      subCategories: ['Software Desain', 'Penyimpanan Cloud', 'Musik & Hiburan', 'Lainnya']
+      subCategories: ['Software', 'Cloud Storage', 'Lainnya']
     },
     { 
       id: 'cat-e-5', 
@@ -88,7 +88,7 @@ export const categories: Categories = {
       icon: HeartPulse, 
       color: 'text-red-600 dark:text-red-500', 
       bgColor: 'bg-red-100 dark:bg-red-900/50',
-      subCategories: ['Dokter & Rumah Sakit', 'Obat & Vitamin', 'Perawatan Diri']
+      subCategories: ['Berobat', 'Apotek', 'Perawatan Diri']
     },
     {
       id: 'cat-e-11',
@@ -104,7 +104,7 @@ export const categories: Categories = {
       icon: Wrench, 
       color: 'text-gray-600 dark:text-gray-500', 
       bgColor: 'bg-gray-100 dark:bg-gray-900/50',
-      subCategories: ['Anak', 'Hewan Peliharaan', 'Amal & Donasi', 'Pajak', 'Biaya Admin Bank', 'Kebutuhan Kerja']
+      subCategories: ['Anak', 'Hewan Peliharaan', 'Donasi/Sedekah', 'Pajak', 'Biaya Admin Bank', 'Kebutuhan Kerja']
     },
   ],
   income: [
