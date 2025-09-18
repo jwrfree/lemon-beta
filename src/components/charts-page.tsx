@@ -4,8 +4,8 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Pie, PieChart } from "recharts"
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Pie, PieChart, Cell } from "recharts"
 import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
@@ -251,7 +251,7 @@ const ExpenseAnalysis = () => {
     const { transactions } = useApp();
     const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
 
-    const categoryExpenseData = useMemo(() => {
+    const { breakdown, chartConfig } = useMemo(() => {
         const now = new Date();
         const categoryMap: { [key: string]: number } = {};
 
@@ -269,36 +269,36 @@ const ExpenseAnalysis = () => {
             }
             categoryMap[t.category] += t.amount;
         });
+
+        const sortedBreakdown = Object.entries(categoryMap)
+            .map(([name, value]) => {
+                const details = categoryDetails(name);
+                return {
+                    name,
+                    value,
+                    icon: details.icon,
+                    fill: `var(--color-${name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')})`,
+                    color: details.color,
+                    percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
+                };
+            })
+            .sort((a, b) => b.value - a.value);
+
+        const dynamicChartConfig = Object.fromEntries(
+            sortedBreakdown.map(item => [
+                item.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-'),
+                {
+                    label: item.name,
+                    color: item.color,
+                },
+            ])
+        ) as ChartConfig;
         
         return {
-            totalExpense,
-            breakdown: Object.entries(categoryMap)
-                .map(([name, value]) => {
-                    const details = categoryDetails(name);
-                    const colorClass = details.color.match(/(\w+)-(\d+)/);
-                    let fill = 'hsl(var(--muted-foreground))';
-                    if (colorClass) {
-                        const [_, colorName, colorStrength] = colorClass;
-                        fill = `hsl(var(--chart-${colorName}-${colorStrength}))`;
-                    }
-                    
-                    // A very basic way to generate HSL vars for Tailwind config
-                    const cssVarFriendlyName = name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
-                    
-                    return { 
-                        name, 
-                        value, 
-                        icon: details.icon,
-                        fill: `var(--cat-color-${cssVarFriendlyName})`,
-                        color: details.color,
-                        percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
-                    };
-                })
-                .sort((a, b) => b.value - a.value)
+            breakdown: sortedBreakdown,
+            chartConfig: dynamicChartConfig
         };
-
     }, [transactions]);
-    
 
     return (
         <div className="space-y-6">
@@ -317,7 +317,7 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Pengeluaran per Kategori</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <ChartContainer config={{}} className="aspect-square h-80">
+                    <ChartContainer config={chartConfig} className="aspect-square h-80">
                          <PieChart>
                             <ChartTooltip 
                                 cursor={false}
@@ -326,12 +326,16 @@ const ExpenseAnalysis = () => {
                                 />}
                             />
                             <Pie
-                                data={categoryExpenseData.breakdown}
+                                data={breakdown}
                                 dataKey="value"
                                 nameKey="name"
                                 innerRadius={60}
                                 strokeWidth={5}
-                            />
+                            >
+                                {breakdown.map((entry) => (
+                                    <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                                ))}
+                            </Pie>
                         </PieChart>
                     </ChartContainer>
                 </CardContent>
@@ -341,7 +345,7 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Rincian Kategori</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {categoryExpenseData.breakdown.slice(0, 5).map((item) => (
+                    {breakdown.slice(0, 5).map((item) => (
                         <div key={item.name} className="flex flex-col gap-2">
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
