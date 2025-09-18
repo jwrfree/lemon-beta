@@ -43,8 +43,8 @@ User input: "{{{text}}}"
 Analyze the text and fill in the following fields. The 'amount' and 'description' fields are mandatory.
 - amount: The monetary value of the transaction.
 - description: A clear and concise summary of what the transaction was for.
-- category: From the available categories, choose the one that best fits the transaction.
-- wallet: If a payment method or wallet is mentioned, match it to one of the available wallets.
+- category: From the available categories, choose the one that best fits the transaction. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
+- wallet: Identify the source wallet for the transaction (e.g., "pake Mandiri", "dari BCA"). If it is a transfer, this is the 'from' wallet.
 - location: If a store, place, or merchant is mentioned, extract it.
 
 Available Categories: {{{json availableCategories}}}
