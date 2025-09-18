@@ -3,17 +3,18 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Search, X, ChevronsUpDown, Check } from 'lucide-react';
+import { ChevronLeft, Search, X, ListFilter } from 'lucide-react';
 import { TransactionList } from '@/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useApp } from '@/components/app-provider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Label } from '@/components/ui/label';
 
 const TransactionsSkeleton = () => (
     <div className="p-4 space-y-4">
@@ -57,13 +58,10 @@ export default function AllTransactionsPage() {
     const [activeTab, setActiveTab] = useState('all');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
-    const [isCategoryPopoverOpen, setIsCategoryPopoverOpen] = useState(false);
-    const [isWalletPopoverOpen, setIsWalletPopoverOpen] = useState(false);
 
     const categoriesForFilter = useMemo(() => {
-        if (activeTab === 'expense') return expenseCategories;
-        if (activeTab === 'income') return incomeCategories;
-        return [...expenseCategories, ...incomeCategories];
+        const cats = activeTab === 'expense' ? expenseCategories : activeTab === 'income' ? incomeCategories : [...incomeCategories, ...expenseCategories];
+        return cats.sort((a,b) => a.name.localeCompare(b.name));
     }, [activeTab, expenseCategories, incomeCategories]);
 
     const filteredTransactions = useMemo(() => {
@@ -76,7 +74,7 @@ export default function AllTransactionsPage() {
         });
     }, [transactions, searchQuery, activeTab, selectedCategories, selectedWallets]);
     
-    const handleCategorySelect = (categoryName: string) => {
+    const handleCategoryToggle = (categoryName: string) => {
         setSelectedCategories(prev =>
             prev.includes(categoryName)
                 ? prev.filter(c => c !== categoryName)
@@ -84,7 +82,7 @@ export default function AllTransactionsPage() {
         );
     };
     
-    const handleWalletSelect = (walletId: string) => {
+    const handleWalletToggle = (walletId: string) => {
         setSelectedWallets(prev =>
             prev.includes(walletId)
                 ? prev.filter(id => id !== walletId)
@@ -93,13 +91,12 @@ export default function AllTransactionsPage() {
     };
 
     const resetFilters = () => {
-        setSearchQuery('');
-        setActiveTab('all');
         setSelectedCategories([]);
         setSelectedWallets([]);
     };
     
-    const hasActiveFilters = searchQuery !== '' || activeTab !== 'all' || selectedCategories.length > 0 || selectedWallets.length > 0;
+    const activeFilterCount = selectedCategories.length + selectedWallets.length;
+    const hasActiveFilters = searchQuery !== '' || activeTab !== 'all' || activeFilterCount > 0;
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
@@ -116,10 +113,46 @@ export default function AllTransactionsPage() {
                         onChange={e => setSearchQuery(e.target.value)}
                     />
                 </div>
+                 <Sheet>
+                    <SheetTrigger asChild>
+                         <Button variant="ghost" size="icon" className="shrink-0 relative">
+                            <ListFilter className="h-5 w-5" />
+                            {activeFilterCount > 0 && (
+                                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
+                                    {activeFilterCount}
+                                </span>
+                            )}
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="rounded-t-2xl">
+                        <SheetHeader className="text-left">
+                            <SheetTitle>Filter Transaksi</SheetTitle>
+                        </SheetHeader>
+                        <div className="space-y-4 py-4">
+                            <div>
+                                <Label className="text-sm font-medium">Kategori</Label>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {categoriesForFilter.map(c => (
+                                        <Button key={c.id} variant={selectedCategories.includes(c.name) ? 'default' : 'outline'} size="sm" onClick={() => handleCategoryToggle(c.name)}>{c.name}</Button>
+                                    ))}
+                                </div>
+                            </div>
+                             <div>
+                                <Label className="text-sm font-medium">Dompet</Label>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {wallets.map(w => (
+                                        <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="w-full text-destructive" onClick={resetFilters}>Reset Filter</Button>}
+                    </SheetContent>
+                </Sheet>
             </header>
             
             <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); resetFilters(); }} className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="all">Semua</TabsTrigger>
                         <TabsTrigger value="expense">Pengeluaran</TabsTrigger>
@@ -127,103 +160,12 @@ export default function AllTransactionsPage() {
                     </TabsList>
                 </Tabs>
                 
-                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Popover open={isCategoryPopoverOpen} onOpenChange={setIsCategoryPopoverOpen}>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={isCategoryPopoverOpen}
-                                    className="w-fit justify-between"
-                                >
-                                    Kategori
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                                 <Command>
-                                    <CommandInput placeholder="Cari kategori..." />
-                                    <CommandList>
-                                        <CommandEmpty>Kategori tidak ditemukan.</CommandEmpty>
-                                        <CommandGroup>
-                                            <ScrollArea className="h-48">
-                                                {categoriesForFilter.map((category) => (
-                                                    <CommandItem
-                                                        key={category.id}
-                                                        value={category.name}
-                                                        onSelect={() => handleCategorySelect(category.name)}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                selectedCategories.includes(category.name) ? "opacity-100" : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {category.name}
-                                                    </CommandItem>
-                                                ))}
-                                            </ScrollArea>
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                        <Popover open={isWalletPopoverOpen} onOpenChange={setIsWalletPopoverOpen}>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={isWalletPopoverOpen}
-                                    className="w-fit justify-between"
-                                >
-                                    Dompet
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                                 <Command>
-                                    <CommandInput placeholder="Cari dompet..." />
-                                    <CommandList>
-                                        <CommandEmpty>Dompet tidak ditemukan.</CommandEmpty>
-                                        <CommandGroup>
-                                            <ScrollArea className="h-48">
-                                                {wallets.map((wallet) => (
-                                                    <CommandItem
-                                                        key={wallet.id}
-                                                        value={wallet.name}
-                                                        onSelect={() => handleWalletSelect(wallet.id)}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                selectedWallets.includes(wallet.id) ? "opacity-100" : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {wallet.name}
-                                                    </CommandItem>
-                                                ))}
-                                            </ScrollArea>
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                    
-                    {hasActiveFilters && (
-                        <Button variant="ghost" className="text-destructive hover:text-destructive" size="sm" onClick={resetFilters}>
-                           <X className="mr-1 h-4 w-4" /> Reset
-                        </Button>
-                    )}
-                </div>
-
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap gap-1">
                         {selectedCategories.map(category => (
                             <Badge key={category} variant="secondary" className="gap-1">
                                 {category}
-                                <button onClick={() => handleCategorySelect(category)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
+                                <button onClick={() => handleCategoryToggle(category)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
                                     <X className="h-3 w-3" />
                                 </button>
                             </Badge>
@@ -233,7 +175,7 @@ export default function AllTransactionsPage() {
                             return wallet && (
                                 <Badge key={walletId} variant="secondary" className="gap-1">
                                     {wallet.name}
-                                    <button onClick={() => handleWalletSelect(walletId)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
+                                    <button onClick={() => handleWalletToggle(walletId)} className="rounded-full hover:bg-black/10 dark:hover:bg-white/10">
                                         <X className="h-3 w-3" />
                                     </button>
                                 </Badge>
@@ -249,5 +191,3 @@ export default function AllTransactionsPage() {
         </div>
     );
 }
-
-    
