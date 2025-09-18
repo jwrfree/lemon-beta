@@ -513,7 +513,7 @@ export default function SmartAddPage() {
                         />
                         <Textarea
                             placeholder={isListening ? "Mendengarkan..." : "Ketik, rekam suara, atau foto struk..."}
-                            className="pr-28 min-h-[48px] max-h-48"
+                            className="pr-24 min-h-[48px] max-h-48"
                             rows={1}
                             value={inputValue}
                             onChange={handleInputChange}
@@ -524,21 +524,43 @@ export default function SmartAddPage() {
                                 }
                             }}
                         />
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                             <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={toggleListening}
-                                className={cn(isListening && 'text-red-500')}
-                            >
-                                <motion.div animate={{ scale: isListening ? [1, 1.2, 1] : 1 }} transition={{ duration: 0.5, repeat: Infinity }}>
-                                    <Mic className="h-5 w-5" />
-                                </motion.div>
-                            </Button>
-                            <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
-                                {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
-                            </Button>
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                            <AnimatePresence mode="wait">
+                                {inputValue && !isListening ? (
+                                    <motion.div
+                                        key="send"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <Button size="icon" variant="default" onClick={handleSendText} disabled={!inputValue.trim() || isLoading}>
+                                            {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
+                                        </Button>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="mic"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0, opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="flex items-center gap-1"
+                                    >
+                                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                                        <Button
+                                            size="icon"
+                                            variant="ghost"
+                                            onClick={toggleListening}
+                                            className={cn(isListening && 'text-red-500')}
+                                        >
+                                            <motion.div animate={{ scale: isListening ? [1, 1.2, 1] : 1 }} transition={{ duration: 0.5, repeat: Infinity }}>
+                                                <Mic className="h-5 w-5" />
+                                            </motion.div>
+                                        </Button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>
@@ -546,3 +568,5 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
