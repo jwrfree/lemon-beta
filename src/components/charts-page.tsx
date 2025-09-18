@@ -303,7 +303,7 @@ const ExpenseAnalysis = () => {
 
              <Card>
                 <CardHeader>
-                    <CardTitle>Pengeluaran per Kategori (Bulan Ini)</CardTitle>
+                    <CardTitle>Pengeluaran per Kategori</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={{}} className="aspect-square h-80">
