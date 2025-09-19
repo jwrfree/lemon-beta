@@ -46,7 +46,7 @@ export const CustomToast = () => {
             >
               <div
                 className={cn(
-                  'flex items-center gap-3 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg',
+                  'flex items-center gap-3 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap',
                   toastColors[type]
                 )}
               >
@@ -59,5 +59,3 @@ export const CustomToast = () => {
     </AnimatePresence>
   );
 };
-
-    
