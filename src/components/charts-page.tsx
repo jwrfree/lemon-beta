@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Pie, PieChart, Cell, AreaChart, Area } from "recharts"
-import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText } from 'lucide-react';
+import { ChevronLeft, ArrowUpRight, ArrowDownLeft, Scale, TrendingDown, Landmark, ReceiptText, Tags } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -68,25 +68,30 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
         return (
              <Card>
                 <CardHeader>
-                    <CardTitle className="text-base font-medium text-muted-foreground flex items-center gap-2">
-                        <TrendingDown className="h-5 w-5" /> Ringkasan Pengeluaran Bulan Ini
+                    <CardTitle className="text-base font-medium text-muted-foreground">
+                        Ringkasan Pengeluaran Bulan Ini
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="grid grid-cols-3 gap-4 text-center">
-                    <div className="flex flex-col gap-1">
-                        <p className="text-xs text-muted-foreground">Total</p>
-                        <p className="text-lg font-bold text-destructive">{formatCurrency(summaryData.totalExpense)}</p>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <p className="text-xs text-muted-foreground">Kategori Terbesar</p>
-                        <div className="flex items-center justify-center gap-1.5 font-bold">
-                           <CategoryIcon className="h-4 w-4" />
-                           <span className="truncate">{summaryData.biggestCategory?.name || '-'}</span>
+                <CardContent className="flex flex-col items-center justify-center gap-4 text-center">
+                    <p className="text-4xl font-bold text-destructive">{formatCurrency(summaryData.totalExpense)}</p>
+                    <div className="grid grid-cols-2 gap-4 w-full pt-2">
+                        <div className="flex flex-col gap-1 items-center p-2 rounded-lg bg-muted/50">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Tags className="h-4 w-4" />
+                                <span>Kategori Terbesar</span>
+                            </div>
+                            <div className="flex items-center justify-center gap-1.5 font-bold text-base">
+                               {summaryData.biggestCategory && <CategoryIcon className="h-5 w-5" />}
+                               <span className="truncate">{summaryData.biggestCategory?.name || '-'}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <p className="text-xs text-muted-foreground">Transaksi Terbesar</p>
-                        <p className="text-sm font-bold truncate">{summaryData.biggestTransaction?.description || '-'}</p>
+                         <div className="flex flex-col gap-1 items-center p-2 rounded-lg bg-muted/50">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <ReceiptText className="h-4 w-4" />
+                                <span>Transaksi Terbesar</span>
+                            </div>
+                            <p className="text-base font-bold truncate">{summaryData.biggestTransaction?.description || '-'}</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
