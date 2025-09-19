@@ -2,14 +2,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useApp } from '@/components/app-provider';
+import { useApp, AppProvider } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
 
-export default function WelcomePage() {
+
+const WelcomePageContent = () => {
     const { user, isLoading } = useApp();
     const router = useRouter();
     const [authModal, setAuthModal] = useState<string | null>(null);
@@ -21,7 +22,6 @@ export default function WelcomePage() {
     }, [user, isLoading, router]);
 
     if (isLoading || user) {
-        // Show a global loader or a blank screen while redirecting
         return (
              <div className="flex h-dvh w-full items-center justify-center bg-background">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -40,5 +40,14 @@ export default function WelcomePage() {
                 {authModal === 'signup' && <SignUpPage onClose={closeModal} setAuthModal={setAuthModal} />}
             </AnimatePresence>
         </>
+    );
+}
+
+
+export default function WelcomePage() {
+    return (
+        <AppProvider>
+            <WelcomePageContent />
+        </AppProvider>
     );
 }

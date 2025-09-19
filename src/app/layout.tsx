@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
-import { AppProvider } from "@/components/app-provider";
 import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -28,9 +27,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
-          <AppProvider>
-            {children}
-          </AppProvider>
+          {children}
           <Toaster position="bottom-center" richColors />
         </ThemeProvider>
       </body>

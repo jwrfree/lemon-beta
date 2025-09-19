@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { AddTransactionForm } from '@/components/add-transaction-form';
-import { useApp } from '@/components/app-provider';
+import { useApp, AppProvider } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
@@ -42,7 +42,7 @@ const AppSkeleton = () => (
 );
 
 
-export default function MainAppLayout({ children }: { children: React.ReactNode }) {
+const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
     const router = useRouter();
     const { 
@@ -118,4 +118,13 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
             {!isSmartAddPage && <BottomNavigation />}
         </div>
     );
+};
+
+
+export default function MainAppLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <AppProvider>
+            <MainLayoutContent>{children}</MainLayoutContent>
+        </AppProvider>
+    )
 }
