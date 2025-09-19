@@ -65,7 +65,7 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
         const { icon: CategoryIcon } = summaryData.biggestCategory ? categoryDetails(summaryData.biggestCategory.name) : { icon: TrendingDown };
 
         return (
-            <Card>
+             <Card>
                 <CardHeader>
                     <CardTitle className="text-base font-medium text-muted-foreground">
                         Ringkasan Pengeluaran Bulan Ini
@@ -230,20 +230,20 @@ const SpendingTrendChart = () => {
 };
 
 const ExpenseAnalysis = () => {
-    const { transactions } = useApp();
+    const { transactions, expenseCategories } = useApp();
     
-    return useMemo(() => {
+    const { chartData, chartConfig } = useMemo(() => {
         const now = new Date();
-        const categoryMap: { [key: string]: number } = {};
+        const monthlyExpenseTransactions = transactions.filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now));
+        
+        const totalExpense = monthlyExpenseTransactions.reduce((sum, t) => sum + t.amount, 0);
 
-        const expenseTransactions = transactions.filter(t => {
-            const tDate = parseISO(t.date);
-            return t.type === 'expense' && isSameMonth(tDate, now);
+        const categoryMap: { [key: string]: number } = {};
+        monthlyExpenseTransactions.forEach(t => {
+            categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
         });
         
-        const totalExpense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);
-
-        const categoryExpenseData = Object.entries(categoryMap)
+        const chartData = Object.entries(categoryMap)
             .map(([name, value]) => {
                 const details = categoryDetails(name);
                 return {
@@ -257,7 +257,7 @@ const ExpenseAnalysis = () => {
             .sort((a, b) => b.value - a.value);
         
         const chartConfig = Object.fromEntries(
-             categoryExpenseData.map((item) => [
+             chartData.map((item) => [
                 item.name,
                 {
                     label: item.name,
@@ -267,78 +267,82 @@ const ExpenseAnalysis = () => {
             ])
         ) as ChartConfig;
 
-        return (
-            <div className="space-y-6">
-                <SpendingTrendChart />
-    
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Pengeluaran per Kategori</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ChartContainer config={chartConfig} className="aspect-square h-80">
-                             <PieChart>
-                                <ChartTooltip 
-                                    cursor={false}
-                                    content={<ChartTooltipContent 
-                                        formatter={(value, name, props) => {
-                                            const config = chartConfig[name as keyof typeof chartConfig];
-                                            if (!config) return null;
-                                            
-                                            return (
-                                                <div className="flex items-center gap-2">
-                                                    {config.icon && React.createElement(config.icon, { className: "h-4 w-4" })}
-                                                    <div className="flex flex-col">
-                                                         <span className="font-semibold">{config.label}</span>
-                                                         <span className="text-muted-foreground">{formatCurrency(Number(value))}</span>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }}
-                                        hideLabel
-                                    />}
-                                />
-                                <Pie
-                                    data={categoryExpenseData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    innerRadius={60}
-                                    strokeWidth={5}
-                                    >
-                                    {categoryExpenseData.map((entry) => (
-                                        <Cell key={`cell-${entry.name}`} fill={entry.fill} />
-                                    ))}
-                                    </Pie>
-                            </PieChart>
-                        </ChartContainer>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Rincian Kategori</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {categoryExpenseData.slice(0, 5).map((item) => {
-                            return (
-                                <div key={item.name} className="flex flex-col gap-2">
-                                    <div className="flex items-center justify-between text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
-                                            <span className="font-medium">{item.name}</span>
-                                        </div>
-                                        <span className="font-semibold">{formatCurrency(item.value)}</span>
-                                    </div>
-                                    <div className="h-2 w-full bg-muted rounded-full">
-                                        <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </CardContent>
-                </Card>
-            </div>
-        );
+        return { chartData, chartConfig };
     }, [transactions]);
+    
+    if (chartData.length === 0) {
+        return <PlaceholderContent label="Analisis Pengeluaran" icon={ArrowDownLeft} text="Data pengeluaranmu belum cukup untuk dianalisis. Mulai catat transaksi yuk!" />;
+    }
+
+    return (
+        <div className="space-y-6">
+            <SpendingTrendChart />
+
+             <Card>
+                <CardHeader>
+                    <CardTitle>Pengeluaran per Kategori</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ChartContainer config={chartConfig} className="aspect-square h-80">
+                         <PieChart>
+                            <ChartTooltip 
+                                cursor={false}
+                                content={<ChartTooltipContent 
+                                    formatter={(value, name, props) => {
+                                        const config = chartConfig[name as keyof typeof chartConfig];
+                                        if (!config) return null;
+                                        
+                                        return (
+                                            <div className="flex items-center gap-2">
+                                                {config.icon && React.createElement(config.icon, { className: "h-4 w-4" })}
+                                                <div className="flex flex-col">
+                                                     <span className="font-semibold">{config.label}</span>
+                                                     <span className="text-muted-foreground">{formatCurrency(Number(value))}</span>
+                                                </div>
+                                            </div>
+                                        )
+                                    }}
+                                    hideLabel
+                                />}
+                            />
+                            <Pie
+                                data={chartData}
+                                dataKey="value"
+                                nameKey="name"
+                                innerRadius={60}
+                                strokeWidth={5}
+                                >
+                                {chartData.map((entry) => (
+                                    <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                                ))}
+                                </Pie>
+                        </PieChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Rincian Kategori</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {chartData.slice(0, 5).map((item) => (
+                        <div key={item.name} className="flex flex-col gap-2">
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
+                                    <span className="font-medium">{item.name}</span>
+                                </div>
+                                <span className="font-semibold">{formatCurrency(item.value)}</span>
+                            </div>
+                            <div className="h-2 w-full bg-muted rounded-full">
+                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+        </div>
+    );
 };
 
 
@@ -400,9 +404,6 @@ export const ChartsPage = () => {
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
             <div className="bg-background border-b p-2 sticky top-16 z-10">
