@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
@@ -48,6 +49,7 @@ interface AppContextType {
     setIsTxModalOpen: (isOpen: boolean) => void;
     transactionToEdit: any | null;
     setTransactionToEdit: (transaction: any | null) => void;
+    openEditTransactionModal: (transaction: any) => void;
 
     isWalletModalOpen: boolean;
     setIsWalletModalOpen: (isOpen: boolean) => void;
@@ -153,6 +155,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setBudgets([]);
             setAssets([]);
             setLiabilities([]);
+            setIsLoading(false);
             return;
         }
 
@@ -253,6 +256,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         await batch.commit();
         showToast("Transaksi berhasil diperbarui!", 'success');
         setIsTxModalOpen(false);
+        setTransactionToEdit(null);
 
     }, [user, getTransactionCollection, getWalletCollection]);
 
@@ -333,7 +337,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         // If setting a wallet to default, unset all others
         if (walletData.isDefault === true) {
-            const walletsSnapshot = await getDocs(walletCollection);
+            const walletsSnapshot = await getDocs(query(walletCollection, where('isDefault', '==', true)));
             walletsSnapshot.forEach((doc) => {
                 if (doc.id !== walletId) {
                     batch.update(doc.ref, { isDefault: false });
@@ -474,7 +478,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsEditWalletModalOpen(true);
     };
 
-    const openEditModal = (transaction: any) => {
+    const openEditTransactionModal = (transaction: any) => {
         if (transaction.category === 'Transfer') {
             showToast("Mengedit transaksi transfer belum didukung.", 'error');
             return;
@@ -509,6 +513,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen,
         transactionToEdit,
         setTransactionToEdit,
+        openEditTransactionModal,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -537,5 +542,3 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         </AppContext.Provider>
     );
 };
-
-    

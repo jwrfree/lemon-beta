@@ -1,4 +1,5 @@
 
+
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
@@ -54,7 +55,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 
 export const TransactionListItem = ({ transaction }: { transaction: any; hideDate?: boolean; }) => {
     const itemRef = useRef<HTMLDivElement>(null);
-    const { openDeleteModal, openEditModal } = useApp();
+    const { openDeleteModal, openEditTransactionModal } = useApp();
     
     const deleteVibrated = useRef(false);
     const editVibrated = useRef(false);
@@ -145,7 +146,7 @@ export const TransactionListItem = ({ transaction }: { transaction: any; hideDat
                 stiffness: 500,
                 damping: 50,
                 onComplete: () => {
-                    openEditModal(transaction);
+                    openEditTransactionModal(transaction);
                     setTimeout(() => x.set(0), 500);
                 }
             });
