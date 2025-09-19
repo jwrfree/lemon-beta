@@ -29,10 +29,10 @@ export const BottomNavigation = () => {
     ];
     
     // The pages where the bottom nav should be visible
-    const mainPages = navItems.filter(item => !item.primary).map(item => item.href);
+    const mainPages = navItems.map(item => item.href);
 
     const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || isEditTxModalOpen;
-    const isVisible = (mainPages.includes(pathname) || pathname === '/') && !isModalOpen;
+    const isVisible = (mainPages.includes(pathname) || pathname === '/' || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets')) && !isModalOpen;
 
     return (
         <AnimatePresence>
@@ -53,7 +53,7 @@ export const BottomNavigation = () => {
                                          <Link 
                                             href={item.href}
                                             className={cn(
-                                                "flex items-center justify-center rounded-full h-14 w-14 bg-blue-600 text-white shadow-lg -translate-y-4 hover:bg-blue-700",
+                                                "flex items-center justify-center rounded-full h-14 w-14 bg-primary text-white shadow-lg -translate-y-4 hover:bg-primary/90 transition-colors",
                                             )}
                                             aria-label={item.name}
                                         >
@@ -68,8 +68,8 @@ export const BottomNavigation = () => {
                                     key={item.id} 
                                     href={item.href}
                                     className={cn(
-                                        "flex flex-col items-center justify-center h-full w-full rounded-none text-gray-500 hover:bg-gray-50",
-                                        isActive && "text-blue-600",
+                                        "flex flex-col items-center justify-center h-full w-full rounded-none transition-colors text-muted-foreground hover:bg-accent",
+                                        isActive && "text-primary",
                                     )}
                                 >
                                     <item.icon className="h-6 w-6" />
