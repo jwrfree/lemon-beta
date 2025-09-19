@@ -51,7 +51,7 @@ export const BottomNavigation = () => {
                              if (item.primary) {
                                  return (
                                      <div key={item.id} className="flex justify-center items-center">
-                                         <Link href={item.href} passHref>
+                                         <Link href={item.href} passHref legacyBehavior>
                                              <Button
                                                 asChild
                                                 className={cn(
@@ -69,7 +69,7 @@ export const BottomNavigation = () => {
                                  )
                              }
                             return (
-                                <Link key={item.id} href={item.href} passHref>
+                                <Link key={item.id} href={item.href} passHref legacyBehavior>
                                     <Button
                                         asChild
                                         variant="ghost"
@@ -93,3 +93,4 @@ export const BottomNavigation = () => {
         </AnimatePresence>
     );
 };
+
