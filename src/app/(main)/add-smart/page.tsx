@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
-import { isSameMonth, parseISO, format } from 'date-fns';
+import { isSameMonth, parseISO, format, isToday, isYesterday } from 'date-fns';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -367,6 +367,13 @@ export default function SmartAddPage() {
         return { budgetInsight, walletInsight };
     }, [extractedData, budgets, transactions, wallets]);
 
+    const formatDateForDisplay = (dateString: string) => {
+        if (!dateString) return "Pilih tanggal";
+        const date = parseISO(dateString);
+        if (isToday(date)) return "Hari ini";
+        if (isYesterday(date)) return "Kemarin";
+        return format(date, "d MMM yyyy", { locale: dateFnsLocaleId });
+    };
 
     return (
         <div className="flex flex-col h-full bg-muted">
@@ -538,7 +545,7 @@ export default function SmartAddPage() {
                                                             )}
                                                         >
                                                             <CalendarIcon className="mr-2 h-4 w-4" />
-                                                            {extractedData.date ? format(parseISO(extractedData.date), "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
+                                                            {formatDateForDisplay(extractedData.date)}
                                                         </Button>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-auto p-0">
@@ -653,5 +660,3 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
