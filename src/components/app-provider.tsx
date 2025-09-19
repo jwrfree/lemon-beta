@@ -3,11 +3,13 @@
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { User, signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc, getDocs, where, Timestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { categories } from '@/lib/categories';
 import { useRouter as useNextRouter } from 'next/navigation';
+import { subDays } from 'date-fns';
+
 
 interface PreFilledTransfer {
     fromWalletId: string;
@@ -127,7 +129,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         if (!walletCollection || !transactionCollection || !budgetCollection) return;
 
         const walletsQuery = query(walletCollection, orderBy("createdAt", "desc"));
-        const transactionsQuery = query(transactionCollection, orderBy("date", "desc"));
+        
+        // Fetch transactions from the last 90 days
+        const ninetyDaysAgo = subDays(new Date(), 90);
+        const transactionsQuery = query(
+            transactionCollection, 
+            where("date", ">=", Timestamp.fromDate(ninetyDaysAgo)),
+            orderBy("date", "desc")
+        );
+
         const budgetsQuery = query(budgetCollection, orderBy("createdAt", "desc"));
 
         const unsubWallets = onSnapshot(walletsQuery, (snapshot) => {
@@ -141,9 +151,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const unsubTransactions = onSnapshot(transactionsQuery, (snapshot) => {
             const transactionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setTransactions(transactionsData);
+            setIsLoading(false); // Set loading to false after initial transaction fetch
         }, (error) => {
             console.error("Error fetching transactions: ", error);
             toast.error("Gagal memuat data transaksi.");
+            setIsLoading(false);
         });
 
         const unsubBudgets = onSnapshot(budgetsQuery, (snapshot) => {

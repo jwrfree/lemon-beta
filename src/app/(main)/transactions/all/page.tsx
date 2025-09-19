@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Search, X, ChevronsUpDown, Check } from 'lucide-react';
@@ -13,14 +13,74 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const TransactionsSkeleton = () => (
+    <div className="space-y-4">
+         <div className="space-y-2">
+            <Skeleton className="h-4 w-24 mb-2" />
+            {[...Array(3)].map((_, i) => (
+                 <div key={i} className="flex items-center gap-3 p-3 bg-background rounded-lg">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-1/2" />
+                    </div>
+                    <Skeleton className="h-5 w-1/4" />
+                </div>
+            ))}
+        </div>
+         <div className="space-y-2">
+            <Skeleton className="h-4 w-20 mb-2" />
+            {[...Array(2)].map((_, i) => (
+                 <div key={i} className="flex items-center gap-3 p-3 bg-background rounded-lg">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-2/4" />
+                        <Skeleton className="h-3 w-1/4" />
+                    </div>
+                    <Skeleton className="h-5 w-1/5" />
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
 
 export default function AllTransactionsPage() {
     const router = useRouter();
-    const { transactions, expenseCategories, incomeCategories } = useApp();
+    const { user, expenseCategories, incomeCategories } = useApp();
+    const [allTransactions, setAllTransactions] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [isCategoryPopoverOpen, setIsCategoryPopoverOpen] = useState(false);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchAllTransactions = async () => {
+            setIsLoading(true);
+            try {
+                const transactionCollection = collection(db, `users/${user.uid}/transactions`);
+                const transactionsQuery = query(transactionCollection, orderBy("date", "desc"));
+                const querySnapshot = await getDocs(transactionsQuery);
+                const transactionsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setAllTransactions(transactionsData);
+            } catch (error) {
+                console.error("Failed to fetch all transactions", error);
+                // Optionally show a toast message
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchAllTransactions();
+    }, [user]);
 
     const categoriesForFilter = useMemo(() => {
         if (activeTab === 'expense') return expenseCategories;
@@ -29,13 +89,13 @@ export default function AllTransactionsPage() {
     }, [activeTab, expenseCategories, incomeCategories]);
 
     const filteredTransactions = useMemo(() => {
-        return transactions.filter(t => {
+        return allTransactions.filter(t => {
             const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesType = activeTab === 'all' || t.type === activeTab;
             const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(t.category);
             return matchesSearch && matchesType && matchesCategory;
         });
-    }, [transactions, searchQuery, activeTab, selectedCategories]);
+    }, [allTransactions, searchQuery, activeTab, selectedCategories]);
     
     const handleCategorySelect = (categoryName: string) => {
         setSelectedCategories(prev =>
@@ -145,10 +205,8 @@ export default function AllTransactionsPage() {
             </div>
 
             <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-16">
-                <TransactionList transactions={filteredTransactions} />
+                {isLoading ? <TransactionsSkeleton /> : <TransactionList transactions={filteredTransactions} />}
             </main>
         </div>
     );
 }
-
-
