@@ -292,26 +292,28 @@ const ExpenseAnalysis = () => {
         });
 
         const sortedBreakdown = Object.entries(categoryMap)
-            .map(([name, value], index) => {
+            .map(([name, value]) => {
                  const details = categoryDetails(name);
-                 const id = `chart-${index + 1}`
+                 const colorMatch = details.color.match(/(\w+)-(\d+)/);
+                 const colorName = colorMatch ? colorMatch[1] : 'gray';
+                 const colorShade = colorMatch ? colorMatch[2] : '500';
+                 
                 return {
-                    id,
                     name,
                     value,
                     icon: details.icon,
-                    fill: `var(--color-${id})`,
+                    fill: `hsl(var(--${colorName}-${colorShade}))`,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
             .sort((a, b) => b.value - a.value);
         
         const finalChartConfig = Object.fromEntries(
-             sortedBreakdown.map((item, index) => [
-                item.id,
+             sortedBreakdown.map((item) => [
+                item.name,
                 {
                     label: item.name,
-                    color: `hsl(var(--chart-${index + 1}))`,
+                    color: item.fill,
                     icon: item.icon,
                 },
             ])
@@ -347,8 +349,7 @@ const ExpenseAnalysis = () => {
                                 cursor={false}
                                 content={<ChartTooltipContent 
                                     formatter={(value, name, props) => {
-                                        const {id} = props.payload.payload;
-                                        const config = chartConfig[id as keyof typeof chartConfig];
+                                        const config = chartConfig[name as keyof typeof chartConfig];
                                         if (!config) return null;
                                         
                                         return (
