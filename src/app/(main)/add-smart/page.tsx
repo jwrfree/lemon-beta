@@ -458,7 +458,7 @@ export default function SmartAddPage() {
                                             <Button className="flex-1" size="lg" onClick={() => handleSave(false)}>
                                                 <Check className="mr-2 h-5 w-5" /> Iya, simpan
                                             </Button>
-                                            <Button variant="outline" size="icon" onClick={() => setPageState('EDITING')}>
+                                            <Button variant="outline" size="lg" onClick={() => setPageState('EDITING')}>
                                                 <Pencil className="h-5 w-5" />
                                             </Button>
                                         </div>
@@ -514,5 +514,7 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
 
     
