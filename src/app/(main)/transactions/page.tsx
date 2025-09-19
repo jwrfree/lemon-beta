@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 
-const TransactionsSkeleton = () => (
+export const TransactionsSkeleton = () => (
     <div className="p-4 space-y-4">
         <Skeleton className="h-6 w-1/3" />
         <div className="space-y-2">

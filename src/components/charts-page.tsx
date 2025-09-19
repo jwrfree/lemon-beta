@@ -28,7 +28,7 @@ const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
     { value: 'net', label: 'Net Income', icon: Scale },
 ];
 
-const ChartsSkeleton = () => (
+export const ChartsSkeleton = () => (
     <div className="p-4 space-y-6">
         <Card>
             <CardHeader>
@@ -418,7 +418,6 @@ const PlaceholderContent = ({ label, icon: Icon, text }: { label: string, icon: 
 
 export const ChartsPage = () => {
     const router = useRouter();
-    const { isLoading } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
 
@@ -481,25 +480,21 @@ export const ChartsPage = () => {
                     </TabsList>
                     <div {...handlers} className="flex-1">
                         <AnimatePresence initial={false} custom={direction}>
-                             {isLoading ? (
-                                <ChartsSkeleton />
-                             ) : (
-                                <motion.div
-                                    key={activeTab}
-                                    custom={direction}
-                                    variants={slideVariants}
-                                    initial="enter"
-                                    animate="center"
-                                    exit="exit"
-                                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                    className="space-y-6 p-4"
-                                >
-                                    <SummaryCard tab={activeTab} />
-                                    {activeTab === 'expense' && <ExpenseAnalysis />}
-                                    {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                                    {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
-                                </motion.div>
-                            )}
+                            <motion.div
+                                key={activeTab}
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                className="space-y-6 p-4"
+                            >
+                                <SummaryCard tab={activeTab} />
+                                {activeTab === 'expense' && <ExpenseAnalysis />}
+                                {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
+                                {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                            </motion.div>
                         </AnimatePresence>
                     </div>
                 </Tabs>

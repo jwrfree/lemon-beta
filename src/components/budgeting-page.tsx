@@ -82,7 +82,7 @@ const BudgetCard = ({ budget }: { budget: any }) => {
     );
 };
 
-const BudgetingSkeleton = () => (
+export const BudgetingSkeleton = () => (
     <div className="p-4 space-y-6">
         <Card>
             <CardHeader>
@@ -135,7 +135,7 @@ const BudgetingSkeleton = () => (
 
 export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     const router = useRouter();
-    const { budgets, transactions, isLoading } = useApp();
+    const { budgets, transactions } = useApp();
 
     const overview = useMemo(() => {
         const now = new Date();
@@ -173,70 +173,68 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
                 </Button>
             </header>
             <main className="flex-1">
-                {isLoading ? <BudgetingSkeleton /> : (
-                    budgets.length === 0 ? (
-                        <div className="flex flex-col h-full items-center justify-center text-center pt-16">
-                            <div className="p-3 bg-primary/10 rounded-full mb-3">
-                               <HandCoins className="h-8 w-8 text-primary" strokeWidth={1.5} />
-                            </div>
-                            <h2 className="text-xl font-bold">Belum Ada Anggaran</h2>
-                            <p className="text-muted-foreground mt-2 mb-6 max-w-sm">Mulai lacak pengeluaranmu dengan membuat anggaran pertama.</p>
-                            <Button onClick={onAddBudget}>
-                                <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
-                                Buat Anggaran Baru
-                            </Button>
+                {budgets.length === 0 ? (
+                    <div className="flex flex-col h-full items-center justify-center text-center pt-16">
+                        <div className="p-3 bg-primary/10 rounded-full mb-3">
+                            <HandCoins className="h-8 w-8 text-primary" strokeWidth={1.5} />
                         </div>
-                    ) : (
-                        <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 p-4">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Ringkasan Bulan Ini</CardTitle>
-                                </CardHeader>
-                                <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-                                    <div className="w-full sm:w-1/2 h-32 flex justify-center">
-                                         <ChartContainer config={{}} className="aspect-square h-full">
-                                            <PieChart>
-                                                 <ChartTooltip
-                                                    cursor={false}
-                                                    content={<ChartTooltipContent hideLabel />}
-                                                    />
-                                                <Pie
-                                                    data={overview.chartData}
-                                                    dataKey="value"
-                                                    nameKey="name"
-                                                    innerRadius={30}
-                                                    strokeWidth={2}
+                        <h2 className="text-xl font-bold">Belum Ada Anggaran</h2>
+                        <p className="text-muted-foreground mt-2 mb-6 max-w-sm">Mulai lacak pengeluaranmu dengan membuat anggaran pertama.</p>
+                        <Button onClick={onAddBudget}>
+                            <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
+                            Buat Anggaran Baru
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 p-4">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Ringkasan Bulan Ini</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex flex-col sm:flex-row items-center gap-4">
+                                <div className="w-full sm:w-1/2 h-32 flex justify-center">
+                                        <ChartContainer config={{}} className="aspect-square h-full">
+                                        <PieChart>
+                                                <ChartTooltip
+                                                cursor={false}
+                                                content={<ChartTooltipContent hideLabel />}
                                                 />
-                                            </PieChart>
-                                        </ChartContainer>
+                                            <Pie
+                                                data={overview.chartData}
+                                                dataKey="value"
+                                                nameKey="name"
+                                                innerRadius={30}
+                                                strokeWidth={2}
+                                            />
+                                        </PieChart>
+                                    </ChartContainer>
+                                </div>
+                                <div className="w-full sm:w-1/2 space-y-2">
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Total Anggaran</p>
+                                        <p className="text-lg font-bold">{formatCurrency(overview.totalBudget)}</p>
                                     </div>
-                                    <div className="w-full sm:w-1/2 space-y-2">
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Total Anggaran</p>
-                                            <p className="text-lg font-bold">{formatCurrency(overview.totalBudget)}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-muted-foreground text-destructive">Terpakai</p>
-                                            <p className="text-lg font-bold text-destructive">{formatCurrency(overview.totalSpent)}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm text-muted-foreground text-primary">Sisa</p>
-                                            <p className={cn("text-lg font-bold", overview.totalRemaining < 0 ? 'text-destructive' : 'text-primary')}>
-                                                {formatCurrency(overview.totalRemaining)}
-                                            </p>
-                                        </div>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground text-destructive">Terpakai</p>
+                                        <p className="text-lg font-bold text-destructive">{formatCurrency(overview.totalSpent)}</p>
                                     </div>
-                                </CardContent>
-                            </Card>
-                            
-                            <div className="space-y-4">
-                               <h2 className="text-lg font-semibold">Rincian Anggaran</h2>
-                                {budgets.map(budget => (
-                                    <BudgetCard key={budget.id} budget={budget} />
-                                ))}
-                            </div>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground text-primary">Sisa</p>
+                                        <p className={cn("text-lg font-bold", overview.totalRemaining < 0 ? 'text-destructive' : 'text-primary')}>
+                                            {formatCurrency(overview.totalRemaining)}
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        
+                        <div className="space-y-4">
+                            <h2 className="text-lg font-semibold">Rincian Anggaran</h2>
+                            {budgets.map(budget => (
+                                <BudgetCard key={budget.id} budget={budget} />
+                            ))}
                         </div>
-                    )
+                    </div>
                 )}
             </main>
         </div>

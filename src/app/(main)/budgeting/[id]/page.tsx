@@ -13,7 +13,7 @@ import { ChevronLeft, AlertTriangle, Pencil } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { startOfMonth, parseISO } from 'date-fns';
 
-const BudgetDetailSkeleton = () => (
+export const BudgetDetailSkeleton = () => (
     <div className="p-4 space-y-6">
         <Card>
             <CardHeader className="items-center text-center">
@@ -82,19 +82,7 @@ export default function BudgetDetailPage() {
     }, [budget, transactions]);
 
     if (isLoading) {
-        return (
-             <div className="flex flex-col h-full bg-muted">
-                 <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
-                    <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
-                        <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                    </Button>
-                    <Skeleton className="h-6 w-40 mx-auto" />
-                </header>
-                <main className="flex-1 overflow-y-auto">
-                    <BudgetDetailSkeleton />
-                </main>
-             </div>
-        );
+        return <BudgetDetailSkeleton />;
     }
     
     if (!budget) {
