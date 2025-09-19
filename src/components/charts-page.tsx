@@ -104,8 +104,9 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
     return null;
 }
 
-const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
+const SpendingTrendChart = () => {
     const { transactions } = useApp();
+    const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
 
     const trendData = useMemo(() => {
         const now = new Date();
@@ -157,8 +158,13 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
 
     return (
         <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Tren Pengeluaran</CardTitle>
+                <div className="p-1 bg-muted rounded-full flex items-center gap-1 border">
+                    <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
+                    <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
+                    <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">Bulan Ini</Button>
+                </div>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={{}} className="h-80 w-full">
@@ -221,8 +227,7 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
 
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
-    const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
-
+    
     const { categoryExpenseData, chartConfig } = useMemo(() => {
         const now = new Date();
         const categoryMap: { [key: string]: number } = {};
@@ -245,8 +250,7 @@ const ExpenseAnalysis = () => {
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
                 const details = categoryDetails(name);
-                const colorClass = details.color;
-                const colorVarName = colorClass.match(/text-([\w-]+)-/)?.[1] || 'primary';
+                const colorVarName = details.color.match(/text-([\w-]+)-/)?.[1] || 'primary';
                 return {
                     name,
                     value,
@@ -277,15 +281,7 @@ const ExpenseAnalysis = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-center">
-                 <div className="p-1 bg-card rounded-full flex items-center gap-1 border">
-                    <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full">7 Hari</Button>
-                    <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full">30 Hari</Button>
-                    <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full">Bulan Ini</Button>
-                </div>
-            </div>
-
-            <SpendingTrendChart timeRange={timeRange} />
+            <SpendingTrendChart />
 
              <Card>
                 <CardHeader>
@@ -423,9 +419,9 @@ export const ChartsPage = () => {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <main className="flex-1 overflow-y-auto">
+            <main className="overflow-y-auto">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-0 z-10">
+                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-16 z-10">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value}>
                                {tab.label}
