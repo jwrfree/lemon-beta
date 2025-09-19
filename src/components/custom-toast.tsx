@@ -14,9 +14,9 @@ const toastIcons: { [key: string]: LucideIcon } = {
 };
 
 const toastColors: { [key: string]: string } = {
-  success: 'bg-green-600',
-  error: 'bg-destructive',
-  info: 'bg-primary',
+  success: 'bg-gray-800',
+  error: 'bg-gray-800',
+  info: 'bg-gray-800',
 };
 
 export const CustomToast = () => {
