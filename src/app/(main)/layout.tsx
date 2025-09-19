@@ -120,7 +120,7 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
                 )}
             </AnimatePresence>
             
-            {!isSmartAddPage && <BottomNavigation />}
+            <BottomNavigation />
         </div>
     );
 };
