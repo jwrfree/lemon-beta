@@ -43,6 +43,7 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         walletToEdit,
         transactionToEdit,
         setTransactionToEdit,
+        openEditTransactionModal,
     } = useApp();
     const [isHydrated, setIsHydrated] = useState(false);
 
