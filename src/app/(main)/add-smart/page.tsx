@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
-import { AddTransactionForm } from '@/components/add-transaction-form';
+import { TransactionForm } from '@/components/transaction-form';
 
 type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING';
 
@@ -58,6 +58,7 @@ export default function SmartAddPage() {
     const router = useRouter();
     const {
         addTransaction,
+        updateTransaction,
         wallets,
         expenseCategories,
         incomeCategories,
@@ -115,7 +116,7 @@ export default function SmartAddPage() {
         
         const dataToConfirm = {
             type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
-            amount: result.amount || 0,
+            amount: Math.abs(result.amount || 0),
             description: result.description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
             category: result.category || '',
             walletId: matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '',
@@ -240,217 +241,192 @@ export default function SmartAddPage() {
             setPageState('CONFIRMING');
         }
     };
-    
-    // This is a bit of a hack to pass pre-filled data to the modal
-    // In a real app, this would be better handled with a global state manager like Zustand or Redux
-    useEffect(() => {
-        if (pageState === 'EDITING' && parsedData) {
-            sessionStorage.setItem('prefilled-tx', JSON.stringify(parsedData));
-        } else {
-            sessionStorage.removeItem('prefilled-tx');
+
+    const handleCloseEdit = (updatedData: any | null) => {
+        if (updatedData) {
+            setParsedData(updatedData);
         }
-    }, [pageState, parsedData]);
+        setPageState('CONFIRMING');
+    }
     
-    const openEditForm = () => {
-        setPageState('EDITING');
-    }
-
-    if (pageState === 'EDITING') {
-         // The AddTransactionForm will now read from sessionStorage to pre-fill itself
-        return <AddTransactionForm onClose={() => setPageState('CONFIRMING')} isModal={false} />;
-    }
-
     return (
         <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
-                    <X className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Catat Cepat</h1>
-            </header>
+             <AnimatePresence>
+                {pageState === 'EDITING' && parsedData && (
+                    <TransactionForm 
+                        isModal={false} 
+                        initialData={parsedData} 
+                        onClose={(data) => handleCloseEdit(data)}
+                    />
+                )}
+            </AnimatePresence>
+            <div className={cn("flex flex-col h-full", pageState === 'EDITING' && 'hidden')}>
+                <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
+                     <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
+                        <X className="h-6 w-6" strokeWidth={1.75} />
+                    </Button>
+                    <h1 className="text-xl font-bold text-center w-full">Catat Cepat</h1>
+                </header>
 
-            {isVoiceInputMode ? (
-                <div className="flex-1 flex flex-col items-center justify-center p-4">
-                    <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
-                        <p className="text-muted-foreground mb-4">Mendengarkan...</p>
-                        <div className="relative h-24 w-24 flex items-center justify-center">
-                             <motion.div 
-                                className="absolute inset-0 bg-primary/20 rounded-full"
-                                animate={{ 
-                                    scale: isListening ? [1, 1.2, 1] : 1,
-                                }}
-                                transition={{
-                                    duration: 1.5,
-                                    repeat: Infinity,
-                                    ease: "easeInOut"
-                                }}
-                            />
-                            <Mic className="h-10 w-10 text-primary" />
+                {isVoiceInputMode ? (
+                    <div className="flex-1 flex flex-col items-center justify-center p-4">
+                        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
+                            <p className="text-muted-foreground mb-4">Mendengarkan...</p>
+                            <div className="relative h-24 w-24 flex items-center justify-center">
+                                 <motion.div 
+                                    className="absolute inset-0 bg-primary/20 rounded-full"
+                                    animate={{ 
+                                        scale: isListening ? [1, 1.2, 1] : 1,
+                                    }}
+                                    transition={{
+                                        duration: 1.5,
+                                        repeat: Infinity,
+                                        ease: "easeInOut"
+                                    }}
+                                />
+                                <Mic className="h-10 w-10 text-primary" />
+                            </div>
+                            <p className="mt-4 min-h-6 text-lg font-medium">{inputValue}</p>
+                        </motion.div>
+                        <div className="absolute bottom-4 left-4 right-4 flex justify-center items-center gap-4">
+                            <Button size="lg" variant="ghost" className="w-24" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}>
+                                <Keyboard className="h-6 w-6" />
+                            </Button>
+                            <Button size="lg" className="w-24 rounded-full" onClick={() => { toggleListening(); processInput(inputValue); }}>
+                                <Check className="h-6 w-6" />
+                            </Button>
+                             <Button size="lg" variant="ghost" className="w-24" onClick={() => setIsVoiceInputMode(false)}>
+                                Batal
+                            </Button>
                         </div>
-                        <p className="mt-4 min-h-6 text-lg font-medium">{inputValue}</p>
-                    </motion.div>
-                    <div className="absolute bottom-4 left-4 right-4 flex justify-center items-center gap-4">
-                        <Button size="lg" variant="ghost" className="w-24" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}>
-                            <Keyboard className="h-6 w-6" />
-                        </Button>
-                        <Button size="lg" className="w-24 rounded-full" onClick={() => { toggleListening(); processInput(inputValue); }}>
-                            <Check className="h-6 w-6" />
-                        </Button>
-                         <Button size="lg" variant="ghost" className="w-24" onClick={() => setIsVoiceInputMode(false)}>
-                            Batal
-                        </Button>
                     </div>
-                </div>
-            ) : (
-                <>
-                    <main className="flex-1 flex flex-col justify-end overflow-hidden">
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                             {messages.length === 0 && pageState === 'IDLE' && <WelcomePlaceholder />}
-                            <AnimatePresence>
-                                {messages.map((msg) => (
-                                    <motion.div
-                                        key={msg.id}
-                                        layout
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                    >
-                                        {msg.type === 'user' && (
-                                            <div className="flex justify-end">
-                                                <div className="p-3 bg-primary text-primary-foreground rounded-2xl">
-                                                    {msg.content}
+                ) : (
+                    <>
+                        <main className="flex-1 flex flex-col justify-end overflow-hidden">
+                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                 {messages.length === 0 && pageState === 'IDLE' && <WelcomePlaceholder />}
+                                <AnimatePresence>
+                                    {messages.map((msg) => (
+                                        <motion.div
+                                            key={msg.id}
+                                            layout
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                        >
+                                            {msg.type === 'user' && (
+                                                <div className="flex justify-end">
+                                                    <div className="p-3 bg-primary text-primary-foreground rounded-2xl">
+                                                        {msg.content}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                        {msg.type === 'user-image' && (
-                                            <div className="flex justify-end">
-                                                <Card className="p-2 bg-primary max-w-xs sm:max-w-sm">
-                                                    <Image src={msg.content} alt="Receipt" width={200} height={300} className="rounded-md object-contain" />
-                                                </Card>
-                                            </div>
-                                        )}
-                                        {msg.type === 'ai-thinking' && (
-                                            <div className="flex justify-start">
-                                                <div className="p-3 bg-card rounded-2xl flex items-center gap-2">
-                                                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                                                    <AnimatePresence mode="wait">
-                                                        <motion.span key={loadingMessage} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
-                                                            {loadingMessage}
-                                                        </motion.span>
-                                                    </AnimatePresence>
+                                            )}
+                                            {msg.type === 'user-image' && (
+                                                <div className="flex justify-end">
+                                                    <Card className="p-2 bg-primary max-w-xs sm:max-w-sm">
+                                                        <Image src={msg.content} alt="Receipt" width={200} height={300} className="rounded-md object-contain" />
+                                                    </Card>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </motion.div>
-                                ))}
+                                            )}
+                                            {msg.type === 'ai-thinking' && (
+                                                <div className="flex justify-start">
+                                                    <div className="p-3 bg-card rounded-2xl flex items-center gap-2">
+                                                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                                                        <AnimatePresence mode="wait">
+                                                            <motion.span key={loadingMessage} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
+                                                                {loadingMessage}
+                                                            </motion.span>
+                                                        </AnimatePresence>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    ))}
 
-                                {pageState === 'CONFIRMING' && parsedData && (
-                                    <motion.div
-                                        layout
+                                    {pageState === 'CONFIRMING' && parsedData && (
+                                        <motion.div
+                                            layout
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                        >
+                                            <div className="flex justify-start">
+                                                 <div className="p-3 bg-card rounded-2xl">
+                                                    Oke, aku catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold">{formatCurrency(parsedData.amount)}</span>. Sudah benar?
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </main>
+
+                        <footer className="p-2 border-t bg-background">
+                             <AnimatePresence mode="wait">
+                                {pageState === 'CONFIRMING' ? (
+                                     <motion.div
+                                        key="confirming-actions"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20}}
+                                        className="flex flex-col gap-2"
                                     >
-                                        <div className="flex justify-start">
-                                             <div className="p-3 bg-card rounded-2xl">
-                                                Oke, aku catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold">{formatCurrency(parsedData.amount)}</span>. Sudah benar?
-                                            </div>
+                                        <div className="flex gap-2">
+                                            <Button className="flex-1" size="lg" onClick={() => handleSave(false)}>
+                                                <Check className="mr-2 h-5 w-5" /> Iya, simpan
+                                            </Button>
+                                            <Button variant="outline" size="icon" onClick={() => setPageState('EDITING')}>
+                                                <Pencil className="h-5 w-5" />
+                                            </Button>
+                                        </div>
+                                         <Button variant="ghost" size="sm" className="w-full" onClick={() => handleSave(true)}>
+                                            <Save className="mr-2 h-4 w-4" /> Simpan & catat lagi
+                                        </Button>
+                                    </motion.div>
+                                ) : (
+                                     <motion.div
+                                        key="idle-input"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20}}
+                                        className="relative"
+                                    >
+                                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
+                                        <Textarea
+                                            placeholder="Ketik atau rekam suara..."
+                                            className="pr-24 min-h-[48px] max-h-48"
+                                            rows={1}
+                                            value={inputValue}
+                                            onChange={(e) => setInputValue(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault();
+                                                    processInput(inputValue);
+                                                }
+                                            }}
+                                            disabled={pageState !== 'IDLE'}
+                                        />
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                                            {pageState === 'ANALYZING' ? (
+                                                <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
+                                            ) : (
+                                                <>
+                                                    <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                                                    <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>
+                                                    {inputValue && (
+                                                        <Button size="icon" variant="ghost" onClick={() => processInput(inputValue)}>
+                                                            <Send className="h-5 w-5" />
+                                                        </Button>
+                                                    )}
+                                                </>
+                                            )}
                                         </div>
                                     </motion.div>
                                 )}
-                            </AnimatePresence>
-                        </div>
-                    </main>
-
-                    <footer className="p-2 border-t bg-background">
-                         <AnimatePresence mode="wait">
-                            {pageState === 'CONFIRMING' ? (
-                                 <motion.div
-                                    key="confirming-actions"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20}}
-                                    className="flex flex-col gap-2"
-                                >
-                                    <div className="flex gap-2">
-                                        <Button className="flex-1" size="lg" onClick={() => handleSave(false)}>
-                                            <Check className="mr-2 h-5 w-5" /> Iya, simpan
-                                        </Button>
-                                        <Button variant="outline" size="icon" onClick={openEditForm}>
-                                            <Pencil className="h-5 w-5" />
-                                        </Button>
-                                    </div>
-                                     <Button variant="ghost" size="sm" className="w-full" onClick={() => handleSave(true)}>
-                                        <Save className="mr-2 h-4 w-4" /> Simpan & catat lagi
-                                    </Button>
-                                </motion.div>
-                            ) : (
-                                 <motion.div
-                                    key="idle-input"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20}}
-                                    className="relative"
-                                >
-                                    <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
-                                    <Textarea
-                                        placeholder="Ketik atau rekam suara..."
-                                        className="pr-24 min-h-[48px] max-h-48"
-                                        rows={1}
-                                        value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault();
-                                                processInput(inputValue);
-                                            }
-                                        }}
-                                        disabled={pageState !== 'IDLE'}
-                                    />
-                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                                        {pageState === 'ANALYZING' ? (
-                                            <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
-                                        ) : (
-                                            <>
-                                                <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                                <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>
-                                                {inputValue && (
-                                                    <Button size="icon" variant="ghost" onClick={() => processInput(inputValue)}>
-                                                        <Send className="h-5 w-5" />
-                                                    </Button>
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            )}
-                         </AnimatePresence>
-                    </footer>
-                </>
-            )}
+                             </AnimatePresence>
+                        </footer>
+                    </>
+                )}
+            </div>
         </div>
     );
 }
-
-// Update AddTransactionForm to accept props and read from session storage
-const OriginalAddTransactionForm = AddTransactionForm;
-
-const PatchedAddTransactionForm = ({ onClose, isModal = true }: { onClose: () => void, isModal?: boolean }) => {
-    const [initialData, setInitialData] = useState(null);
-
-    useEffect(() => {
-        const prefilled = sessionStorage.getItem('prefilled-tx');
-        if (prefilled) {
-            setInitialData(JSON.parse(prefilled));
-            sessionStorage.removeItem('prefilled-tx');
-        }
-    }, []);
-
-    // Pass initialData to the original form
-    // @ts-ignore
-    return <OriginalAddTransactionForm onClose={onClose} isModal={isModal} initialData={initialData} />;
-};
-
-// Replace the export in a way that doesn't break other files
-export { PatchedAddTransactionForm as AddTransactionForm };
-
-    

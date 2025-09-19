@@ -6,7 +6,7 @@ import { formatRelativeDate } from '@/lib/utils';
 import { parseISO } from 'date-fns';
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
-    const { transactions: allTransactions, openDeleteModal, openEditModal, isLoading } = useApp();
+    const { transactions: allTransactions, isLoading } = useApp();
 
     let finalTransactions = transactionsToShow;
 
@@ -46,7 +46,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     </h3>
                     <div className="space-y-2">
                         {transactionsForDay.map((t) => (
-                           <TransactionListItem key={t.id} transaction={t} onDelete={openDeleteModal} onEdit={openEditModal} hideDate={true} />
+                           <TransactionListItem key={t.id} transaction={t} hideDate={true} />
                         ))}
                     </div>
                 </div>

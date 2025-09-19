@@ -33,12 +33,12 @@ interface AppContextType {
     addBudget: (budgetData: any) => Promise<void>;
     isLoading: boolean;
     handleSignOut: () => void;
+    
     isTxModalOpen: boolean;
     setIsTxModalOpen: (isOpen: boolean) => void;
-    isEditTxModalOpen: boolean;
-    setIsEditTxModalOpen: (isOpen: boolean) => void;
     transactionToEdit: any | null;
-    openEditModal: (transaction: any) => void;
+    setTransactionToEdit: (transaction: any | null) => void;
+
     isWalletModalOpen: boolean;
     setIsWalletModalOpen: (isOpen: boolean) => void;
     isBudgetModalOpen: boolean;
@@ -77,7 +77,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
     
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
-    const [isEditTxModalOpen, setIsEditTxModalOpen] = useState(false);
     const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
@@ -219,7 +218,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         await batch.commit();
         toast.success("Transaksi berhasil diperbarui!");
-        setIsEditTxModalOpen(false);
+        setIsTxModalOpen(false);
 
     }, [user, getTransactionCollection, getWalletCollection]);
 
@@ -437,7 +436,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
         setTransactionToEdit(transaction);
-        setIsEditTxModalOpen(true);
+        setIsTxModalOpen(true);
     };
 
     const contextValue = {
@@ -459,10 +458,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         handleSignOut,
         isTxModalOpen,
         setIsTxModalOpen,
-        isEditTxModalOpen,
-        setIsEditTxModalOpen,
         transactionToEdit,
-        openEditModal,
+        setTransactionToEdit,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,

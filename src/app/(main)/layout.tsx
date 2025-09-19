@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
-import { AddTransactionForm } from '@/components/add-transaction-form';
+import { TransactionForm } from '@/components/transaction-form';
 import { useApp, AppProvider } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
@@ -11,7 +11,6 @@ import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
 import { useEffect, useState }from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
-import { EditTransactionForm } from '@/components/edit-transaction-form';
 
 const AppSkeleton = () => (
     <div className="flex h-dvh w-full items-center justify-center bg-background">
@@ -41,9 +40,8 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         isEditWalletModalOpen,
         setIsEditWalletModalOpen,
         walletToEdit,
-        isEditTxModalOpen,
-        setIsEditTxModalOpen,
         transactionToEdit,
+        setTransactionToEdit,
     } = useApp();
     const [isHydrated, setIsHydrated] = useState(false);
 
@@ -59,6 +57,11 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
 
     if (!isHydrated || isLoading || !user) {
         return <AppSkeleton />;
+    }
+
+    const handleCloseTxModal = () => {
+        setIsTxModalOpen(false);
+        setTransactionToEdit(null);
     }
 
     return (
@@ -77,8 +80,7 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
             </AnimatePresence>
 
              <AnimatePresence>
-                {isTxModalOpen && <AddTransactionForm onClose={() => setIsTxModalOpen(false)} />}
-                {isEditTxModalOpen && transactionToEdit && <EditTransactionForm transaction={transactionToEdit} onClose={() => setIsEditTxModalOpen(false)} />}
+                {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
                 {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
                 {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
                 {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}

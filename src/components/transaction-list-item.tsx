@@ -52,8 +52,10 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 };
 
 
-export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = false }: { transaction: any; onDelete: (t: any) => void; onEdit: (t: any) => void; hideDate?: boolean; }) => {
+export const TransactionListItem = ({ transaction }: { transaction: any; hideDate?: boolean; }) => {
     const itemRef = useRef<HTMLDivElement>(null);
+    const { openDeleteModal, openEditModal } = useApp();
+    
     const deleteVibrated = useRef(false);
     const editVibrated = useRef(false);
     
@@ -132,7 +134,7 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
                 stiffness: 500,
                 damping: 50,
                 onComplete: () => {
-                    onDelete(transaction);
+                    openDeleteModal(transaction);
                     setTimeout(() => x.set(0), 500);
                 }
             });
@@ -143,7 +145,7 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
                 stiffness: 500,
                 damping: 50,
                 onComplete: () => {
-                    onEdit(transaction);
+                    openEditModal(transaction);
                     setTimeout(() => x.set(0), 500);
                 }
             });
@@ -191,7 +193,7 @@ export const TransactionListItem = ({ transaction, onDelete, onEdit, hideDate = 
                 style={{ x }}
                 className="relative bg-card z-20"
             >
-                <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
+                <TransactionListItemContent transaction={transaction} hideDate={true} />
             </motion.div>
         </div>
     );

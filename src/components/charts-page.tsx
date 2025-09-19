@@ -1,5 +1,4 @@
 
-
 'use client';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -239,11 +238,14 @@ const ExpenseAnalysis = () => {
         const now = new Date();
         const categoryMap: { [key: string]: number } = {};
 
-        const expenseTransactions = transactions
-            .filter(t => {
-                const tDate = parseISO(t.date);
-                return t.type === 'expense' && isSameMonth(tDate, now);
-            });
+        const expenseTransactions = transactions.filter(t => {
+            const tDate = parseISO(t.date);
+            return t.type === 'expense' && isSameMonth(tDate, now);
+        });
+
+        expenseTransactions.forEach(t => {
+            categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
+        });
             
         const totalExpense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);
 
@@ -339,7 +341,7 @@ const ExpenseAnalysis = () => {
                                 <span className="font-semibold">{formatCurrency(item.value)}</span>
                             </div>
                             <div className="h-2 w-full bg-muted rounded-full">
-                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
+                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%", backgroundColor: item.fill }}></div>
                             </div>
                         </div>
                     ))}
@@ -413,7 +415,7 @@ export const ChartsPage = () => {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col flex-1">
                 <div className="bg-background border-b p-2 sticky top-16 z-10">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm">
                        {tabs.map(tab => (
@@ -423,7 +425,7 @@ export const ChartsPage = () => {
                        ))}
                     </TabsList>
                 </div>
-                <main className="overflow-y-auto">
+                <main className="flex-1 overflow-y-auto">
                     <div {...handlers}>
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
