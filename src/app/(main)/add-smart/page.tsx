@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -37,6 +37,19 @@ const imageLoadingMessages = [
     "Menebak kategori belanja...",
     "Menyiapkan hasil...",
 ];
+
+const WelcomePlaceholder = () => (
+    <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500">
+        <div className="p-3 bg-primary/10 rounded-full mb-4">
+            <Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} />
+        </div>
+        <h2 className="text-lg font-semibold text-foreground">Catat Cepat dengan AI</h2>
+        <p className="mt-1 max-w-xs">
+            Ketik transaksi seperti "beli kopi 25rb", rekam suara, atau pindai struk untuk memulai.
+        </p>
+    </div>
+);
+
 
 const SpeechRecognition =
   (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition));
@@ -254,6 +267,7 @@ export default function SmartAddPage() {
 
             <main className="flex-1 flex flex-col justify-end overflow-hidden">
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                     {messages.length === 0 && pageState === 'IDLE' && <WelcomePlaceholder />}
                     <AnimatePresence>
                         {messages.map((msg) => (
                             <motion.div
