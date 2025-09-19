@@ -6,15 +6,16 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ShieldAlert, ArrowRight, TrendingDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { cn, formatCurrency, formatRelativeDate } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
 import { TransactionForm } from '@/components/transaction-form';
+import { startOfMonth, parseISO } from 'date-fns';
 
 type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING';
 
@@ -23,6 +24,18 @@ type Message = {
     type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation';
     content: any;
 };
+
+type InsightData = {
+    wallet: {
+        currentBalance: number;
+        newBalance: number;
+    } | null;
+    budget: {
+        name: string;
+        currentRemaining: number;
+        newRemaining: number;
+    } | null;
+}
 
 const textLoadingMessages = [
     "Menganalisis teks...",
@@ -58,8 +71,9 @@ export default function SmartAddPage() {
     const router = useRouter();
     const {
         addTransaction,
-        updateTransaction,
         wallets,
+        budgets,
+        transactions,
         expenseCategories,
         incomeCategories,
         setIsTransferModalOpen,
@@ -71,6 +85,8 @@ export default function SmartAddPage() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [loadingMessage, setLoadingMessage] = useState('');
     const [parsedData, setParsedData] = useState<any | null>(null);
+    const [insightData, setInsightData] = useState<InsightData | null>(null);
+
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isListening, setIsListening] = useState(false);
@@ -86,6 +102,7 @@ export default function SmartAddPage() {
     const resetFlow = (keepInput = false) => {
         setPageState('IDLE');
         setParsedData(null);
+        setInsightData(null);
         setMessages([]);
         if (!keepInput) {
             setInputValue('');
@@ -113,17 +130,51 @@ export default function SmartAddPage() {
         }
         
         const matchingWallet = wallets.find(w => w.name.toLowerCase() === ((result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())) || '').toLowerCase());
+        const walletId = matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '';
         
         const dataToConfirm = {
             type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
             amount: Math.abs(result.amount || 0),
             description: result.description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
             category: result.category || '',
-            walletId: matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '',
+            walletId: walletId,
             location: result.location || result.merchant || '',
             date: result.date ? new Date(result.date).toISOString() : new Date().toISOString(),
         };
 
+        // --- Calculate Insights ---
+        const finalWallet = wallets.find(w => w.id === walletId);
+        let walletInsight = null;
+        if(finalWallet) {
+            walletInsight = {
+                currentBalance: finalWallet.balance,
+                newBalance: dataToConfirm.type === 'expense' ? finalWallet.balance - dataToConfirm.amount : finalWallet.balance + dataToConfirm.amount
+            };
+        }
+
+        let budgetInsight = null;
+        if(dataToConfirm.type === 'expense') {
+            const relevantBudget = budgets.find(b => b.categories.includes(dataToConfirm.category));
+            if(relevantBudget) {
+                 const now = new Date();
+                const start = startOfMonth(now);
+                const budgetTransactions = transactions.filter(t => 
+                    t.type === 'expense' && 
+                    relevantBudget.categories.includes(t.category) &&
+                    parseISO(t.date) >= start
+                );
+                const spent = budgetTransactions.reduce((acc, t) => acc + t.amount, 0);
+                const currentRemaining = relevantBudget.targetAmount - spent;
+
+                budgetInsight = {
+                    name: relevantBudget.name,
+                    currentRemaining,
+                    newRemaining: currentRemaining - dataToConfirm.amount,
+                }
+            }
+        }
+
+        setInsightData({ wallet: walletInsight, budget: budgetInsight });
         setParsedData(dataToConfirm);
         setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
         setPageState('CONFIRMING');
@@ -348,12 +399,45 @@ export default function SmartAddPage() {
                                             layout
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
+                                            className="space-y-3"
                                         >
                                             <div className="flex justify-start">
                                                  <div className="p-3 bg-card rounded-2xl">
                                                     Oke, aku catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold">{formatCurrency(parsedData.amount)}</span>. Sudah benar?
                                                 </div>
                                             </div>
+                                             {insightData && (
+                                                <Card className="p-4 bg-primary/5 border-primary/20">
+                                                    <CardContent className="p-0 space-y-3">
+                                                         {insightData.wallet && (
+                                                            <div className="flex items-center text-sm">
+                                                                <Wallet className="h-5 w-5 text-primary mr-3" />
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-muted-foreground">Saldo dompet</span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.wallet.currentBalance)}</span>
+                                                                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                                                        <span className="font-semibold text-foreground">{formatCurrency(insightData.wallet.newBalance)}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                         )}
+                                                          {insightData.budget && (
+                                                            <div className="flex items-center text-sm">
+                                                                <TrendingDown className="h-5 w-5 text-primary mr-3" />
+                                                                <div className="flex flex-col">
+                                                                     <span className="text-muted-foreground">Sisa budget '{insightData.budget.name}'</span>
+                                                                     <div className="flex items-center gap-2">
+                                                                        <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.budget.currentRemaining)}</span>
+                                                                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                                                        <span className={cn("font-semibold", insightData.budget.newRemaining < 0 ? "text-destructive" : "text-foreground")}>{formatCurrency(insightData.budget.newRemaining)}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                         )}
+                                                    </CardContent>
+                                                </Card>
+                                             )}
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -430,3 +514,5 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
