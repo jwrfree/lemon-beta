@@ -21,6 +21,8 @@ interface AppContextType {
     wallets: any[];
     transactions: any[];
     budgets: any[];
+    assets: any[];
+    liabilities: any[];
     expenseCategories: any[];
     incomeCategories: any[];
     addTransaction: (data: any) => Promise<void>;
@@ -31,6 +33,9 @@ interface AppContextType {
     updateWallet: (walletId: string, walletData: any) => Promise<void>;
     deleteWallet: (walletId: string) => Promise<void>;
     addBudget: (budgetData: any) => Promise<void>;
+    addAssetLiability: (data: any) => Promise<void>;
+    updateAssetLiability: (id: string, type: 'asset' | 'liability', data: any) => Promise<void>;
+    deleteAssetLiability: (id: string, type: 'asset' | 'liability') => Promise<void>;
     isLoading: boolean;
     handleSignOut: () => void;
     
@@ -74,6 +79,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [wallets, setWallets] = useState<any[]>([]);
     const [transactions, setTransactions] = useState<any[]>([]);
     const [budgets, setBudgets] = useState<any[]>([]);
+    const [assets, setAssets] = useState<any[]>([]);
+    const [liabilities, setLiabilities] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
@@ -111,58 +118,67 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return collection(db, `users/${user.uid}/budgets`);
     }, [user]);
 
+    const getAssetCollection = useCallback(() => {
+        if (!user) return null;
+        return collection(db, `users/${user.uid}/assets`);
+    }, [user]);
+
+    const getLiabilityCollection = useCallback(() => {
+        if (!user) return null;
+        return collection(db, `users/${user.uid}/liabilities`);
+    }, [user]);
+
     useEffect(() => {
         if (!user) {
             setWallets([]);
             setTransactions([]);
             setBudgets([]);
+            setAssets([]);
+            setLiabilities([]);
             return;
         }
 
-        const walletCollection = getWalletCollection();
-        const transactionCollection = getTransactionCollection();
-        const budgetCollection = getBudgetCollection();
-
-        if (!walletCollection || !transactionCollection || !budgetCollection) return;
-
-        const walletsQuery = query(walletCollection, orderBy("createdAt", "desc"));
-        
-        const transactionsQuery = query(transactionCollection, orderBy("date", "desc"));
-
-        const budgetsQuery = query(budgetCollection, orderBy("createdAt", "desc"));
-
-        const unsubWallets = onSnapshot(walletsQuery, (snapshot) => {
-            const walletsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setWallets(walletsData);
-        }, (error) => {
-            console.error("Error fetching wallets: ", error);
-            toast.error("Gagal memuat data dompet.");
-        });
-
-        const unsubTransactions = onSnapshot(transactionsQuery, (snapshot) => {
-            const transactionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setTransactions(transactionsData);
-            setIsLoading(false); // Set loading to false after initial transaction fetch
-        }, (error) => {
-            console.error("Error fetching transactions: ", error);
-            toast.error("Gagal memuat data transaksi.");
-            setIsLoading(false);
-        });
-
-        const unsubBudgets = onSnapshot(budgetsQuery, (snapshot) => {
-            const budgetsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setBudgets(budgetsData);
-        }, (error) => {
-            console.error("Error fetching budgets: ", error);
-            toast.error("Gagal memuat data anggaran.");
-        });
-
-        return () => {
-            unsubWallets();
-            unsubTransactions();
-            unsubBudgets();
+        const collections = {
+            wallets: getWalletCollection(),
+            transactions: getTransactionCollection(),
+            budgets: getBudgetCollection(),
+            assets: getAssetCollection(),
+            liabilities: getLiabilityCollection()
         };
-    }, [user, getWalletCollection, getTransactionCollection, getBudgetCollection]);
+
+        const unsubscribers = [
+            onSnapshot(query(collections.wallets!, orderBy("createdAt", "desc")), (snapshot) => {
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setWallets(data);
+            }, (error) => console.error("Error fetching wallets: ", error)),
+            
+            onSnapshot(query(collections.transactions!, orderBy("date", "desc")), (snapshot) => {
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setTransactions(data);
+                setIsLoading(false);
+            }, (error) => {
+                console.error("Error fetching transactions: ", error);
+                setIsLoading(false);
+            }),
+
+            onSnapshot(query(collections.budgets!, orderBy("createdAt", "desc")), (snapshot) => {
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setBudgets(data);
+            }, (error) => console.error("Error fetching budgets: ", error)),
+
+            onSnapshot(query(collections.assets!, orderBy("createdAt", "desc")), (snapshot) => {
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setAssets(data);
+            }, (error) => console.error("Error fetching assets: ", error)),
+
+            onSnapshot(query(collections.liabilities!, orderBy("createdAt", "desc")), (snapshot) => {
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setLiabilities(data);
+            }, (error) => console.error("Error fetching liabilities: ", error)),
+        ];
+
+        return () => unsubscribers.forEach(unsub => unsub());
+    }, [user, getWalletCollection, getTransactionCollection, getBudgetCollection, getAssetCollection, getLiabilityCollection]);
     
     const addTransaction = useCallback(async (data: any) => {
         if (!user) return;
@@ -341,6 +357,41 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsBudgetModalOpen(false);
     }, [user, getBudgetCollection]);
 
+    const addAssetLiability = useCallback(async (data: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const { type, ...itemData } = data;
+        const collection = type === 'asset' ? getAssetCollection() : getLiabilityCollection();
+        if (!collection) return;
+        
+        await addDoc(collection, {
+            ...itemData,
+            createdAt: new Date().toISOString(),
+            userId: user.uid
+        });
+
+        toast.success(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`);
+    }, [user, getAssetCollection, getLiabilityCollection]);
+
+    const updateAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability', data: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const collection = type === 'asset' ? getAssetCollection() : getLiabilityCollection();
+        if (!collection) return;
+
+        const docRef = doc(collection, id);
+        await updateDoc(docRef, data);
+        toast.success(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`);
+    }, [user, getAssetCollection, getLiabilityCollection]);
+
+    const deleteAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability') => {
+        if (!user) throw new Error("User not authenticated.");
+        const collection = type === 'asset' ? getAssetCollection() : getLiabilityCollection();
+        if (!collection) return;
+        
+        const docRef = doc(collection, id);
+        await deleteDoc(docRef);
+        toast.success(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`);
+    }, [user, getAssetCollection, getLiabilityCollection]);
+
     const deleteTransaction = useCallback(async (transaction: any) => {
         if (!user || !transaction) return;
         // This is a simplified delete for now. A full implementation would need to handle transfer pairs.
@@ -444,6 +495,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         wallets,
         transactions,
         budgets,
+        assets,
+        liabilities,
         expenseCategories: categories.expense,
         incomeCategories: categories.income,
         addTransaction,
@@ -454,6 +507,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         updateWallet,
         deleteWallet,
         addBudget,
+        addAssetLiability,
+        updateAssetLiability,
+        deleteAssetLiability,
         isLoading,
         handleSignOut,
         isTxModalOpen,
@@ -464,7 +520,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsWalletModalOpen,
         isBudgetModalOpen,
         setIsBudgetModalOpen,
-        isTransferModalOpen,
+isTransferModalOpen,
         setIsTransferModalOpen,
         preFilledTransfer,
         setPreFilledTransfer,

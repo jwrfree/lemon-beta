@@ -1,6 +1,6 @@
 
 'use client';
-import { Wallet, Banknote, Landmark, Smartphone, CircleDollarSign } from 'lucide-react';
+import { Wallet, Banknote, Landmark, Smartphone, CircleDollarSign, TrendingUp, Home, Building } from 'lucide-react';
 
 interface Gradient {
     from: string;
@@ -14,11 +14,18 @@ interface WalletVisuals {
   textColor: string;
 }
 
-const walletCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textColor'>> = {
+const itemCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textColor'>> = {
+  // Wallets
   'e-wallet': { name: 'E-Wallet', Icon: Smartphone },
   'bank': { name: 'Bank', Icon: Landmark },
   'cash': { name: 'Tunai', Icon: Wallet },
   'other': { name: 'Lainnya', Icon: CircleDollarSign },
+  // Assets
+  'investment': { name: 'Investasi', Icon: TrendingUp },
+  'property': { name: 'Properti', Icon: Home },
+  // Liabilities
+  'loan': { name: 'Pinjaman', Icon: Building },
+  'credit-card': { name: 'Kartu Kredit', Icon: Smartphone },
 };
 
 const defaultVisuals: WalletVisuals = {
@@ -60,11 +67,11 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string }> 
 };
 
 
-export const getWalletVisuals = (walletName: string, walletCategory: string): WalletVisuals => {
-    const normalizedName = walletName.toLowerCase();
+export const getWalletVisuals = (itemName: string, itemCategoryKey: string): WalletVisuals => {
+    const normalizedName = itemName.toLowerCase();
     const brand = brandGradients[normalizedName];
 
-    const categoryInfo = walletCategories[walletCategory] || walletCategories.other;
+    const categoryInfo = itemCategories[itemCategoryKey] || itemCategories.other;
 
     if (brand) {
         return {
@@ -73,17 +80,24 @@ export const getWalletVisuals = (walletName: string, walletCategory: string): Wa
         };
     }
     
-    // Fallback for categories without specific brand matches
     const categoryDefaultGradients: Record<string, Gradient> = {
+      // Wallets
       'e-wallet': { from: '#0ea5e9', to: '#0369a1' }, // sky-500 to sky-700
       'bank': { from: '#10b981', to: '#047857' }, // emerald-500 to emerald-700
       'cash': { from: '#f97316', to: '#c2410c' }, // orange-500 to orange-700
+      // Assets
+      'investment': { from: '#10b981', to: '#047857' }, // emerald
+      'property': { from: '#2563eb', to: '#1e3a8a' }, // blue
+      // Liabilities
+      'loan': { from: '#ef4444', to: '#991b1b' }, // red
+      'credit-card': { from: '#f97316', to: '#9a3412' }, // orange
+      // Default
       'other': { from: '#4338ca', to: '#312e81' }, // indigo-700 to indigo-900
     };
 
     return {
         ...categoryInfo,
-        gradient: categoryDefaultGradients[walletCategory] || defaultVisuals.gradient,
+        gradient: categoryDefaultGradients[itemCategoryKey] || defaultVisuals.gradient,
         textColor: 'text-white'
     };
 };

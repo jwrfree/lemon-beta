@@ -1,22 +1,42 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { Separator } from "@/components/ui/separator"
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Plus } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useApp } from "@/components/app-provider";
+import { AssetLiabilityList } from '@/components/asset-liability-list';
+import { AssetLiabilityForm } from '@/components/asset-liability-form';
 
 export default function NetWorthPage() {
-  const { isLoading } = useApp();
-  const assets = 48000000
-  const liabilities = 7000000
-  const netWorth = assets - liabilities
-  const isPositive = netWorth >= 0;
+  const { isLoading, assets, liabilities } = useApp();
   const router = useRouter();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<any | null>(null);
+
+  const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
+  const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.value, 0);
+  const netWorth = totalAssets - totalLiabilities;
+  const isPositive = netWorth >= 0;
+
+  const handleEdit = (item: any, type: 'asset' | 'liability') => {
+    setItemToEdit({ ...item, type });
+    setIsSheetOpen(true);
+  };
+
+  const handleAdd = () => {
+    setItemToEdit(null);
+    setIsSheetOpen(true);
+  };
+
+  const handleSheetClose = () => {
+    setIsSheetOpen(false);
+    setItemToEdit(null);
+  }
 
   if (isLoading) {
     return null;
@@ -29,16 +49,14 @@ export default function NetWorthPage() {
                 <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
             </Button>
             <h1 className="text-xl font-bold text-center w-full">Aset & Liabilitas</h1>
-             <Sheet>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon" className="absolute right-4">
+                    <Button variant="ghost" size="icon" className="absolute right-4" onClick={handleAdd}>
                         <Plus className="h-6 w-6" strokeWidth={1.75} />
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="bottom" className="p-6 space-y-4 rounded-t-2xl">
-                    <h2 className="text-xl font-semibold text-center">Tambah Entri</h2>
-                    {/* form input asset/liability */}
-                    <p className="text-center text-muted-foreground">Formulir untuk menambah aset atau liabilitas baru akan muncul di sini.</p>
+                <SheetContent side="bottom" className="p-0 rounded-t-2xl max-h-[85vh] flex flex-col" onInteractOutside={handleSheetClose}>
+                    <AssetLiabilityForm initialData={itemToEdit} onClose={handleSheetClose} />
                 </SheetContent>
             </Sheet>
         </header>
@@ -51,29 +69,27 @@ export default function NetWorthPage() {
                     </p>
                 </div>
 
-                {/* Assets */}
-                <Card className="shadow-lg hover:shadow-xl transition-shadow">
+                <Card className="shadow-sm">
                     <CardHeader>
                         <div className="flex justify-between items-center">
                             <CardTitle>Aset</CardTitle>
-                            <span className="font-bold text-lg text-emerald-600">{formatCurrency(assets)}</span>
+                            <span className="font-bold text-lg text-emerald-600">{formatCurrency(totalAssets)}</span>
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground text-sm">Semua aset yang kamu miliki akan muncul di sini.</p>
+                        <AssetLiabilityList type="asset" items={assets} onEdit={handleEdit} />
                     </CardContent>
                 </Card>
 
-                {/* Liabilities */}
-                <Card className="shadow-lg hover:shadow-xl transition-shadow">
+                <Card className="shadow-sm">
                     <CardHeader>
                          <div className="flex justify-between items-center">
                             <CardTitle>Liabilitas</CardTitle>
-                            <span className="font-bold text-lg text-rose-600">{formatCurrency(liabilities)}</span>
+                            <span className="font-bold text-lg text-rose-600">{formatCurrency(totalLiabilities)}</span>
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground text-sm">Daftar utang atau cicilanmu akan muncul di sini.</p>
+                        <AssetLiabilityList type="liability" items={liabilities} onEdit={handleEdit} />
                     </CardContent>
                 </Card>
             </div>
