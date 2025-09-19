@@ -8,7 +8,7 @@ import { useApp, AppProvider } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
-import { useEffect }from 'react';
+import { useEffect, useState }from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditTransactionForm } from '@/components/edit-transaction-form';
@@ -67,16 +67,21 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         setIsEditTxModalOpen,
         transactionToEdit,
     } = useApp();
+    const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
-        if (!isLoading && !user) {
+        setIsHydrated(true);
+    }, []);
+
+    useEffect(() => {
+        if (isHydrated && !isLoading && !user) {
             router.replace('/');
         }
-    }, [user, isLoading, router]);
+    }, [user, isLoading, router, isHydrated]);
 
     const isSmartAddPage = pathname === '/add-smart';
 
-    if (isLoading || !user) {
+    if (!isHydrated || isLoading || !user) {
         return (
             <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
                 <AppSkeleton />
