@@ -83,7 +83,7 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 
 export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     const router = useRouter();
-    const { budgets, transactions, isLoading } = useApp();
+    const { budgets, transactions } = useApp();
 
     const overview = useMemo(() => {
         const now = new Date();
@@ -111,9 +111,6 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
         return { totalBudget, totalSpent, totalRemaining, chartData };
     }, [budgets, transactions]);
     
-    if (isLoading) {
-        return null;
-    }
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
