@@ -28,7 +28,15 @@ export default function RootLayout({
         >
           <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
           {children}
-          <Toaster position="bottom-center" richColors />
+          <Toaster 
+            position="bottom-center" 
+            richColors 
+            toastOptions={{
+              classNames: {
+                toast: 'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom-12 data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom-12 data-[state=closed]:fade-out-0',
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
