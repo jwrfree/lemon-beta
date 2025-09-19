@@ -26,19 +26,17 @@ export default function WelcomePage() {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-            setIsLoading(false);
+            if (user) {
+                router.replace('/home');
+            } else {
+                setUser(null);
+                setIsLoading(false);
+            }
         });
         return () => unsubscribe();
-    }, []);
-    
-    useEffect(() => {
-        if (!isLoading && user) {
-            router.replace('/home');
-        }
-    }, [user, isLoading, router]);
+    }, [router]);
 
-    if (isLoading || user) {
+    if (isLoading) {
         return <LoadingSpinner />;
     }
     
