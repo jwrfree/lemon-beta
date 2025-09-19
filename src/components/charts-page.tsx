@@ -158,12 +158,14 @@ const SpendingTrendChart = () => {
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Tren Pengeluaran</CardTitle>
-                <div className="p-1 bg-muted rounded-full flex items-center gap-1 border">
-                    <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
-                    <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
-                    <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">Bulan Ini</Button>
+            <CardHeader>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <CardTitle>Tren Pengeluaran</CardTitle>
+                    <div className="p-1 bg-muted rounded-full flex items-center gap-1 border w-fit">
+                        <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
+                        <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
+                        <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">Bulan Ini</Button>
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>
@@ -250,12 +252,13 @@ const ExpenseAnalysis = () => {
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
                 const details = categoryDetails(name);
-                const colorVarName = details.color.match(/text-([\w-]+)-/)?.[1] || 'primary';
+                const colorVarName = details.color.match(/text-([\w-]+)-/)?.[1];
+                const fill = colorVarName ? `hsl(var(--${colorVarName}-500))` : 'hsl(var(--primary))';
                 return {
                     name,
                     value,
                     icon: details.icon,
-                    fill: `hsl(var(--${colorVarName}-500))`,
+                    fill: fill,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
@@ -407,10 +410,6 @@ export const ChartsPage = () => {
         }),
     };
 
-    if (isLoading) {
-        return null;
-    }
-
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
@@ -438,12 +437,14 @@ export const ChartsPage = () => {
                                 animate="center"
                                 exit="exit"
                                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                className="space-y-6 p-4 pb-20"
+                                className="p-4 pb-20"
                             >
-                                <SummaryCard tab={activeTab} />
-                                {activeTab === 'expense' && <ExpenseAnalysis />}
-                                {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                                {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                                <div className="space-y-6">
+                                    <SummaryCard tab={activeTab} />
+                                    {activeTab === 'expense' && <ExpenseAnalysis />}
+                                    {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
+                                    {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                                </div>
                             </motion.div>
                         </AnimatePresence>
                     </div>
