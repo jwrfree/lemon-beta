@@ -7,7 +7,7 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic, CalendarIcon, X } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic, CalendarIcon, X, Keyboard } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -304,6 +304,14 @@ export default function SmartAddPage() {
         finalTranscriptRef.current = '';
     };
 
+    const switchToKeyboard = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+        }
+        setIsListening(false);
+        setIsVoiceInputMode(false);
+    };
+
     const handleSaveTransaction = async () => {
         if (!extractedData || !extractedData.walletId) {
             toast.error("Gagal menyimpan.", { description: "Harap pilih dompet terlebih dahulu." });
@@ -394,9 +402,14 @@ export default function SmartAddPage() {
                                     />
                                 ))}
                             </motion.div>
-                            <Button size="lg" className="w-full" onClick={handleVoiceConfirm} disabled={!inputValue.trim()}>
-                                <Check className="mr-2 h-5 w-5" /> Konfirmasi
-                            </Button>
+                            <div className="flex w-full gap-2">
+                                <Button size="lg" variant="outline" className="w-fit" onClick={switchToKeyboard}>
+                                    <Keyboard className="h-5 w-5" />
+                                </Button>
+                                <Button size="lg" className="w-full" onClick={handleVoiceConfirm} disabled={!inputValue.trim()}>
+                                    <Check className="mr-2 h-5 w-5" /> Konfirmasi
+                                </Button>
+                            </div>
                         </div>
                     </motion.div>
                 )}
