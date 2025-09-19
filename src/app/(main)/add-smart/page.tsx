@@ -1,27 +1,22 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Paperclip, Camera, Send, LoaderCircle, Pencil, Check, Wallet, PiggyBank, Mic, CalendarIcon, X, Keyboard } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Card } from '@/components/ui/card';
-import { formatCurrency, cn } from '@/lib/utils';
-import { categoryDetails } from '@/lib/categories';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
+import { cn, formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
-import { isSameMonth, parseISO, format, isToday, isYesterday } from 'date-fns';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { AddTransactionForm } from '@/components/add-transaction-form';
+
+type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING';
 
 type Message = {
     id: string;
@@ -43,389 +38,221 @@ const imageLoadingMessages = [
     "Menyiapkan hasil...",
 ];
 
-// Speech Recognition setup
 const SpeechRecognition =
   (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition));
 
-
 export default function SmartAddPage() {
     const router = useRouter();
-    const { 
-        addTransaction, 
-        wallets, 
-        expenseCategories, 
-        incomeCategories, 
-        budgets, 
-        transactions,
+    const {
+        addTransaction,
+        wallets,
+        expenseCategories,
+        incomeCategories,
         setIsTransferModalOpen,
         setPreFilledTransfer,
     } = useApp();
+
+    const [pageState, setPageState] = useState<PageState>('IDLE');
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
-    const [extractedData, setExtractedData] = useState<any | null>(null);
-    const [isEditing, setIsEditing] = useState(false);
+    const [parsedData, setParsedData] = useState<any | null>(null);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isListening, setIsListening] = useState(false);
-    const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
     const recognitionRef = useRef<any>(null);
     const finalTranscriptRef = useRef('');
-
 
     const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
     const availableWallets = wallets.map(w => w.name);
 
-    const handleSendText = useCallback(async (text: string) => {
-        const textToSend = text || inputValue;
-        if (!textToSend.trim() || isLoading) return;
+    const resetFlow = (keepInput = false) => {
+        setPageState('IDLE');
+        setParsedData(null);
+        setMessages([]);
+        if (!keepInput) {
+            setInputValue('');
+            finalTranscriptRef.current = '';
+        }
+    };
+    
+    const handleAISuccess = (result: any, isReceipt = false) => {
+        // Check for smart transfer
+        if (result.category === 'Transfer' && result.sourceWallet && result.destinationWallet) {
+            const fromWallet = wallets.find(w => w.name.toLowerCase() === result.sourceWallet?.toLowerCase());
+            const toWallet = wallets.find(w => w.name.toLowerCase() === result.destinationWallet?.toLowerCase());
 
-        const userInput = textToSend.trim();
-        setInputValue('');
-        finalTranscriptRef.current = '';
-        setExtractedData(null);
-        setIsLoading(true);
-        setIsVoiceInputMode(false);
+            if (fromWallet && toWallet) {
+                setPreFilledTransfer({
+                    fromWalletId: fromWallet.id,
+                    toWalletId: toWallet.id,
+                    amount: result.amount || 0,
+                    description: result.description || 'Transfer',
+                });
+                setIsTransferModalOpen(true);
+                resetFlow();
+                return;
+            }
+        }
+        
+        const matchingWallet = wallets.find(w => w.name.toLowerCase() === ((result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())) || '').toLowerCase());
+        
+        const dataToConfirm = {
+            type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
+            amount: result.amount || 0,
+            description: result.description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
+            category: result.category || '',
+            walletId: matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '',
+            location: result.location || result.merchant || '',
+            date: result.date ? new Date(result.date).toISOString() : new Date().toISOString(),
+        };
 
-        const newMessages: Message[] = [
-            { id: `user-${Date.now()}`, type: 'user', content: userInput },
-            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }
-        ];
-        setMessages(newMessages);
+        setParsedData(dataToConfirm);
+        setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+        setPageState('CONFIRMING');
+    };
+
+    const handleAIFailure = (error: any, type: 'text' | 'image' = 'text') => {
+        console.error(`AI ${type} processing failed:`, error);
+        toast.error(`Oops! Gagal menganalisis ${type === 'image' ? 'struk' : 'teks'}. Coba lagi ya.`);
+        resetFlow(true);
+    };
+
+    const processInput = async (input: string | { type: 'image', dataUrl: string }) => {
+        if (typeof input === 'string') {
+            if (!input.trim()) return;
+            setInputValue(input);
+            setMessages([{ id: `user-${Date.now()}`, type: 'user', content: input }]);
+        } else {
+            setMessages([{ id: `user-image-${Date.now()}`, type: 'user-image', content: input.dataUrl }]);
+        }
+        
+        setPageState('ANALYZING');
+        setMessages(prev => [...prev, { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }]);
 
         try {
-            const result = await extractTransaction({
-                text: userInput,
-                availableCategories,
-                availableWallets
-            });
-
-            // Check for smart transfer
-            if (result.category === 'Transfer' && result.sourceWallet && result.destinationWallet) {
-                const fromWallet = wallets.find(w => w.name.toLowerCase() === result.sourceWallet?.toLowerCase());
-                const toWallet = wallets.find(w => w.name.toLowerCase() === result.destinationWallet?.toLowerCase());
-
-                if (fromWallet && toWallet) {
-                    setPreFilledTransfer({
-                        fromWalletId: fromWallet.id,
-                        toWalletId: toWallet.id,
-                        amount: result.amount || 0,
-                        description: result.description || 'Transfer',
-                    });
-                    setIsTransferModalOpen(true);
-                    setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
-                    setIsLoading(false);
-                    return; // Stop further processing
-                }
+            if (typeof input === 'string') {
+                const result = await extractTransaction({ text: input, availableCategories, availableWallets });
+                handleAISuccess(result);
+            } else {
+                const result = await scanReceipt({ photoDataUri: input.dataUrl, availableCategories });
+                handleAISuccess(result, true);
             }
-            
-            const matchingWallet = wallets.find(w => w.name.toLowerCase() === ((result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())) || '').toLowerCase());
-
-            const dataToConfirm = {
-                type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
-                amount: result.amount || 0,
-                description: result.description || 'Transaksi baru',
-                category: result.category || '',
-                walletId: matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '',
-                location: result.location || '',
-                date: result.date ? new Date(result.date).toISOString() : new Date().toISOString(),
-            };
-            
-            setExtractedData(dataToConfirm);
-            setMessages(prev => [
-                ...prev.filter(m => m.type !== 'ai-thinking'),
-                { id: `ai-confirm-${Date.now()}`, type: 'ai-confirmation', content: dataToConfirm }
-            ]);
-
         } catch (error) {
-            console.error("AI extraction failed:", error);
-            toast.error("Oops! Gagal menganalisis transaksimu. Coba lagi ya.");
-             setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
-        } finally {
-            setIsLoading(false);
+            handleAIFailure(error, typeof input === 'object' ? 'image' : 'text');
         }
-    }, [inputValue, isLoading, availableCategories, availableWallets, wallets, incomeCategories, setPreFilledTransfer, setIsTransferModalOpen]);
-
-     useEffect(() => {
-        if (!SpeechRecognition) {
-            return;
+    };
+    
+    useEffect(() => {
+        if (pageState === 'ANALYZING') {
+            const loadingMsgs = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
+            let i = 0;
+            setLoadingMessage(loadingMsgs[i]);
+            const interval = setInterval(() => {
+                i = (i + 1) % loadingMsgs.length;
+                setLoadingMessage(loadingMsgs[i]);
+            }, 1500);
+            return () => clearInterval(interval);
         }
+    }, [pageState, messages]);
 
+    useEffect(() => {
+        if (!SpeechRecognition) return;
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.lang = 'id-ID';
         recognition.interimResults = false;
-
         recognition.onresult = (event) => {
-            let latestTranscript = '';
+            let transcript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    latestTranscript += event.results[i][0].transcript;
-                }
+                if (event.results[i].isFinal) transcript += event.results[i][0].transcript + ' ';
             }
-            
-            finalTranscriptRef.current += (latestTranscript + ' ');
+            finalTranscriptRef.current += transcript;
             setInputValue(finalTranscriptRef.current);
         };
-
-
         recognition.onerror = (event) => {
-            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                 toast.error("Akses mikrofon ditolak.", { description: "Ubah izin di pengaturan browsermu untuk menggunakan fitur ini." });
-            } else {
-                toast.error("Oops! Terjadi error pada input suara.");
-            }
+            toast.error("Oops! Terjadi error pada input suara.");
             setIsListening(false);
-            setIsVoiceInputMode(false);
         };
-
-        recognition.onend = () => {
-            setIsListening(false);
-            // Don't automatically switch off voice input mode here, let user confirm
-        };
-        
+        recognition.onend = () => setIsListening(false);
         recognitionRef.current = recognition;
-
     }, []);
 
-    useEffect(() => {
-        if (isLoading) {
-            const loadingMessages = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
-            let messageIndex = 0;
-            setLoadingMessage(loadingMessages[messageIndex]);
-
-            const interval = setInterval(() => {
-                messageIndex = (messageIndex + 1) % loadingMessages.length;
-                setLoadingMessage(loadingMessages[messageIndex]);
-            }, 1500); // Ganti pesan setiap 1.5 detik
-
-            return () => clearInterval(interval);
+    const toggleListening = () => {
+        if (!SpeechRecognition) { toast.error("Browser tidak mendukung input suara."); return; }
+        if (isListening) {
+            recognitionRef.current?.stop();
+            setIsListening(false);
+            if (inputValue.trim()) {
+                processInput(inputValue.trim());
+            }
+        } else {
+            setInputValue('');
+            finalTranscriptRef.current = '';
+            recognitionRef.current?.start();
+            setIsListening(true);
         }
-    }, [isLoading, messages]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInputValue(e.target.value);
-        finalTranscriptRef.current = e.target.value;
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (loadEvent) => {
             const imageDataUrl = loadEvent.target?.result as string;
-            handleSendImage(imageDataUrl);
+            processInput({ type: 'image', dataUrl: imageDataUrl });
         };
         reader.readAsDataURL(file);
+        e.target.value = ''; // Reset file input
     };
 
-    const handleSendImage = async (imageDataUrl: string) => {
-        if (!imageDataUrl || isLoading) return;
-        
-        setInputValue('');
-        finalTranscriptRef.current = '';
-        setExtractedData(null);
-        setIsLoading(true);
-
-        const newMessages: Message[] = [
-            { id: `user-image-${Date.now()}`, type: 'user-image', content: imageDataUrl },
-            { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }
-        ];
-        setMessages(newMessages);
-
+    const handleSave = async (andAddAnother = false) => {
+        if (!parsedData) return;
+        setPageState('ANALYZING'); // Show loader while saving
         try {
-             const result = await scanReceipt({
-                photoDataUri: imageDataUrl,
-                availableCategories,
-            });
-            
-            const dataToConfirm = {
-                type: 'expense',
-                amount: result.amount || 0,
-                description: result.description || 'Transaksi dari struk',
-                category: result.category || '',
-                walletId: wallets.find(w=>w.isDefault)?.id || '',
-                location: result.merchant || '',
-                date: result.transactionDate ? new Date(result.transactionDate).toISOString() : new Date().toISOString(),
-            };
-            
-            setExtractedData(dataToConfirm);
-            setMessages(prev => [
-                ...prev.filter(m => m.type !== 'ai-thinking'),
-                { id: `ai-confirm-${Date.now()}`, type: 'ai-confirmation', content: dataToConfirm }
-            ]);
-
-        } catch (error) {
-            console.error("AI receipt scan failed:", error);
-            toast.error("Oops! Gagal membaca struk. Coba foto lagi atau masukkan manual ya.");
-            setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const toggleListening = () => {
-        if (!SpeechRecognition) {
-            toast.error("Browser tidak mendukung input suara.");
-            return;
-        }
-
-        if (isListening) {
-            recognitionRef.current?.stop();
-            setIsListening(false);
-        } else {
-            recognitionRef.current?.start();
-            setIsListening(true);
-            setIsVoiceInputMode(true);
-            setInputValue(''); // Clear input when starting
-            finalTranscriptRef.current = '';
-        }
-    };
-    
-    const handleVoiceConfirm = () => {
-        if (isListening) {
-            recognitionRef.current?.stop();
-        }
-        setIsListening(false);
-        setIsVoiceInputMode(false);
-        if (inputValue) {
-            handleSendText(inputValue);
-        }
-    };
-
-    const handleVoiceCancel = () => {
-        if (isListening) {
-            recognitionRef.current?.stop();
-        }
-        setIsListening(false);
-        setIsVoiceInputMode(false);
-        setInputValue('');
-        finalTranscriptRef.current = '';
-    };
-
-    const switchToKeyboard = () => {
-        if (isListening) {
-            recognitionRef.current?.stop();
-        }
-        setIsListening(false);
-        setIsVoiceInputMode(false);
-    };
-
-    const handleSaveTransaction = async () => {
-        if (!extractedData || !extractedData.walletId) {
-            toast.error("Gagal menyimpan.", { description: "Harap pilih dompet terlebih dahulu." });
-            return;
-        }
-        setIsLoading(true);
-        try {
-            await addTransaction(extractedData);
+            await addTransaction(parsedData);
             toast.success("Transaksi berhasil disimpan!");
-            router.back();
+            if (andAddAnother) {
+                resetFlow();
+            } else {
+                router.back();
+            }
         } catch (error) {
             console.error("Failed to save transaction:", error);
             toast.error("Gagal menyimpan transaksi.");
-        } finally {
-            setIsLoading(false);
+            setPageState('CONFIRMING');
         }
     };
-
-    const updateExtractedData = (field: string, value: any) => {
-        setExtractedData((prev: any) => ({ ...prev, [field]: value }));
-    };
-
-    const { icon: CategoryIcon } = extractedData ? categoryDetails(extractedData.category) : { icon: null };
-
-    const insights = useMemo(() => {
-        if (!extractedData) return { budgetInsight: null, walletInsight: null };
-
-        let budgetInsight = null;
-        if (extractedData.category && budgets.length > 0 && extractedData.type === 'expense') {
-            const relevantBudget = budgets.find(b => b.categories.includes(extractedData.category));
-            if (relevantBudget) {
-                const now = new Date();
-                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                const spent = transactions
-                    .filter(t => t.type === 'expense' && relevantBudget.categories.includes(t.category) && parseISO(t.date) >= startOfMonth)
-                    .reduce((acc, t) => acc + t.amount, 0);
-                const remaining = relevantBudget.targetAmount - (spent + extractedData.amount);
-                budgetInsight = `Sisa budget '${relevantBudget.name}' kamu akan menjadi ${formatCurrency(remaining)}.`;
-            }
+    
+    // This is a bit of a hack to pass pre-filled data to the modal
+    // In a real app, this would be better handled with a global state manager like Zustand or Redux
+    useEffect(() => {
+        if (pageState === 'EDITING' && parsedData) {
+            sessionStorage.setItem('prefilled-tx', JSON.stringify(parsedData));
+        } else {
+            sessionStorage.removeItem('prefilled-tx');
         }
+    }, [pageState, parsedData]);
+    
+    const openEditForm = () => {
+        setPageState('EDITING');
+    }
 
-        let walletInsight = null;
-        if (extractedData.walletId) {
-            const wallet = wallets.find(w => w.id === extractedData.walletId);
-            if (wallet) {
-                const newBalance = extractedData.type === 'expense' 
-                    ? wallet.balance - extractedData.amount
-                    : wallet.balance + extractedData.amount;
-                walletInsight = `Saldo dompet '${wallet.name}' kamu akan menjadi ${formatCurrency(newBalance)}.`;
-            }
-        }
-
-        return { budgetInsight, walletInsight };
-    }, [extractedData, budgets, transactions, wallets]);
-
-    const formatDateForDisplay = (dateString: string) => {
-        if (!dateString) return "Pilih tanggal";
-        const date = parseISO(dateString);
-        if (isToday(date)) return "Hari ini";
-        if (isYesterday(date)) return "Kemarin";
-        return format(date, "d MMM yyyy", { locale: dateFnsLocaleId });
-    };
+    if (pageState === 'EDITING') {
+         // The AddTransactionForm will now read from sessionStorage to pre-fill itself
+        return <AddTransactionForm onClose={() => setPageState('CONFIRMING')} isModal={false} />;
+    }
 
     return (
         <div className="flex flex-col h-full bg-muted">
-            <AnimatePresence>
-                {isVoiceInputMode && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-background/80 backdrop-blur-lg z-30 flex flex-col items-center justify-center p-8"
-                    >
-                         <Button variant="ghost" size="icon" className="absolute top-4 right-4 bg-white/10 rounded-full" onClick={handleVoiceCancel}>
-                            <X className="h-5 w-5" />
-                        </Button>
-                        <div className="flex-1 flex items-center justify-center">
-                            <p className="text-3xl font-medium text-center leading-relaxed">
-                                {inputValue || "Mendengarkan..."}
-                            </p>
-                        </div>
-                        <div className="w-full flex flex-col items-center gap-4">
-                             <motion.div className="flex justify-center items-center gap-1.5 h-10">
-                                {[...Array(5)].map((_, i) => (
-                                    <motion.div
-                                        key={i}
-                                        className="w-1.5 bg-primary rounded-full"
-                                        animate={{ height: isListening ? [8, 32, 8] : 8 }}
-                                        transition={{
-                                            duration: 1.2,
-                                            repeat: Infinity,
-                                            delay: i * 0.2,
-                                            ease: 'easeInOut'
-                                        }}
-                                    />
-                                ))}
-                            </motion.div>
-                            <div className="flex w-full gap-2">
-                                <Button size="lg" variant="outline" className="w-fit" onClick={switchToKeyboard}>
-                                    <Keyboard className="h-5 w-5" />
-                                </Button>
-                                <Button size="lg" className="w-full" onClick={handleVoiceConfirm} disabled={!inputValue.trim()}>
-                                    <Check className="mr-2 h-5 w-5" /> Konfirmasi
-                                </Button>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <h1 className="text-xl font-bold text-center w-full">Catat Transaksi Baru</h1>
+                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
+                    <X className="h-6 w-6" strokeWidth={1.75} />
+                </Button>
+                <h1 className="text-xl font-bold text-center w-full">Catat Cepat</h1>
             </header>
 
-            <main className="flex-1 flex flex-col overflow-hidden">
+            <main className="flex-1 flex flex-col justify-end overflow-hidden">
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     <AnimatePresence>
                         {messages.map((msg) => (
@@ -435,7 +262,6 @@ export default function SmartAddPage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                             >
                                 {msg.type === 'user' && (
                                     <div className="flex justify-end">
@@ -446,8 +272,8 @@ export default function SmartAddPage() {
                                 )}
                                 {msg.type === 'user-image' && (
                                     <div className="flex justify-end">
-                                        <Card className="p-2 bg-primary max-w-xs sm:max-w-sm break-words">
-                                            <Image src={msg.content} alt="Receipt" width={200} height={200} className="rounded-md" />
+                                        <Card className="p-2 bg-primary max-w-xs sm:max-w-sm">
+                                            <Image src={msg.content} alt="Receipt" width={200} height={300} className="rounded-md object-contain" />
                                         </Card>
                                     </div>
                                 )}
@@ -456,207 +282,119 @@ export default function SmartAddPage() {
                                         <Card className="p-3 bg-card max-w-xs sm:max-w-sm flex items-center gap-2">
                                             <LoaderCircle className="h-4 w-4 animate-spin" />
                                             <AnimatePresence mode="wait">
-                                                <motion.span
-                                                    key={loadingMessage}
-                                                    initial={{ opacity: 0, y: -10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: 10 }}
-                                                    transition={{ duration: 0.2 }}
-                                                >
+                                                <motion.span key={loadingMessage} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
                                                     {loadingMessage}
                                                 </motion.span>
                                             </AnimatePresence>
                                         </Card>
                                     </div>
                                 )}
-                                {msg.type === 'ai-confirmation' && extractedData && (
-                                    <Card className="p-4 space-y-4">
-                                        <div className="flex justify-between items-center">
-                                            {isEditing ? (
-                                                 <Input
-                                                    type="text"
-                                                    value={extractedData.amount}
-                                                    onChange={(e) => updateExtractedData('amount', parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                                                    className="text-3xl font-bold h-auto p-0 border-none focus-visible:ring-0"
-                                                    autoFocus
-                                                    onBlur={() => setIsEditing(false)}
-                                                />
-                                            ) : (
-                                                <h3 className="text-3xl font-bold">{formatCurrency(extractedData.amount)}</h3>
-                                            )}
-                                            <Button size="icon" variant="ghost" onClick={() => setIsEditing(!isEditing)}>
-                                                {isEditing ? <Check className="h-5 w-5" /> : <Pencil className="h-5 w-5" />}
-                                            </Button>
-                                        </div>
-
-                                        {isEditing ? (
-                                            <Input
-                                                value={extractedData.description}
-                                                onChange={(e) => updateExtractedData('description', e.target.value)}
-                                                className="font-medium text-lg h-auto p-0 border-none focus-visible:ring-0"
-                                            />
-                                        ) : (
-                                            <p className="font-medium text-lg">{extractedData.description}</p>
-                                        )}
-                                        <Separator />
-                                        <div className="space-y-3">
-                                            <div className="flex items-center gap-3">
-                                                <span className="w-24 text-sm text-muted-foreground">Kategori</span>
-                                                <Select value={extractedData.category} onValueChange={(v) => updateExtractedData('category', v)}>
-                                                    <SelectTrigger className="flex-1">
-                                                        <div className="flex items-center gap-2">
-                                                            {CategoryIcon && <CategoryIcon className="h-4 w-4" />}
-                                                            <SelectValue placeholder="Pilih kategori" />
-                                                        </div>
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {expenseCategories.map(cat => (
-                                                            <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
-                                                        ))}
-                                                        <Separator className="my-1"/>
-                                                        {incomeCategories.map(cat => (
-                                                            <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="w-24 text-sm text-muted-foreground">Bayar pakai</span>
-                                                 <Select value={extractedData.walletId} onValueChange={(v) => updateExtractedData('walletId', v)}>
-                                                    <SelectTrigger className="flex-1">
-                                                        <SelectValue placeholder="Pilih dompet" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {wallets.map(w => (
-                                                            <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className="w-24 text-sm text-muted-foreground">Tanggal</span>
-                                                 <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "flex-1 justify-start text-left font-normal",
-                                                                !extractedData.date && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                                            {formatDateForDisplay(extractedData.date)}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={new Date(extractedData.date)}
-                                                            onSelect={(d) => d && updateExtractedData('date', d.toISOString())}
-                                                            initialFocus
-                                                            locale={dateFnsLocaleId}
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                )}
                             </motion.div>
                         ))}
+
+                        {pageState === 'CONFIRMING' && parsedData && (
+                            <motion.div
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <div className="flex justify-start">
+                                     <Card className="p-3 bg-card max-w-xs sm:max-w-sm break-words">
+                                        Oke, aku catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold">{formatCurrency(parsedData.amount)}</span>. Sudah benar?
+                                    </Card>
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
                 </div>
-                 {extractedData && (
-                    <div className="p-4 border-t bg-background space-y-3">
-                         {(insights.budgetInsight || insights.walletInsight) && (
-                            <Card className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 space-y-2 text-sm">
-                                {insights.budgetInsight && (
-                                    <div className="flex items-start gap-2">
-                                        <PiggyBank className="h-4 w-4 mt-0.5 shrink-0" />
-                                        <span>{insights.budgetInsight}</span>
-                                    </div>
-                                )}
-                                {insights.walletInsight && (
-                                     <div className="flex items-start gap-2">
-                                        <Wallet className="h-4 w-4 mt-0.5 shrink-0" />
-                                        <span>{insights.walletInsight}</span>
-                                    </div>
-                                )}
-                            </Card>
-                         )}
-                        <Button size="lg" className="w-full" onClick={handleSaveTransaction} disabled={isLoading}>
-                             {isLoading ? <LoaderCircle className="animate-spin" /> : <><Check className="mr-2 h-5 w-5" /> Simpan Transaksi</>}
-                        </Button>
-                    </div>
-                )}
             </main>
 
-             {!extractedData && (
-                <div className="p-2 border-t bg-background">
-                    <div className="relative">
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileSelect}
-                            className="hidden"
-                            accept="image/*"
-                        />
-                        <Textarea
-                            placeholder={"Ketik atau rekam suara..."}
-                            className="pr-24 min-h-[48px] max-h-48"
-                            rows={1}
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleSendText('');
-                                }
-                            }}
-                        />
-                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                            <AnimatePresence mode="wait">
-                                {inputValue && !isListening ? (
-                                    <motion.div
-                                        key="send"
-                                        initial={{ scale: 0, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        exit={{ scale: 0, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="flex items-center gap-1"
-                                    >
-                                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                        <Button size="icon" variant="default" onClick={() => handleSendText('')} disabled={!inputValue.trim() || isLoading}>
-                                            {isLoading ? <LoaderCircle className="animate-spin h-5 w-5" /> : <Send className="h-5 w-5" />}
-                                        </Button>
-                                    </motion.div>
+            <footer className="p-2 border-t bg-background">
+                 <AnimatePresence mode="wait">
+                    {pageState === 'CONFIRMING' ? (
+                         <motion.div
+                            key="confirming-actions"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20}}
+                            className="flex flex-col gap-2"
+                        >
+                            <div className="flex gap-2">
+                                <Button className="flex-1" size="lg" onClick={() => handleSave(false)}>
+                                    <Check className="mr-2 h-5 w-5" /> Iya, simpan
+                                </Button>
+                                <Button variant="outline" size="icon" onClick={openEditForm}>
+                                    <Pencil className="h-5 w-5" />
+                                </Button>
+                            </div>
+                             <Button variant="ghost" size="sm" className="w-full" onClick={() => handleSave(true)}>
+                                <Save className="mr-2 h-4 w-4" /> Simpan & catat lagi
+                            </Button>
+                        </motion.div>
+                    ) : (
+                         <motion.div
+                            key="idle-input"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20}}
+                            className="relative"
+                        >
+                            <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
+                            <Textarea
+                                placeholder="Ketik atau rekam suara..."
+                                className="pr-24 min-h-[48px] max-h-48"
+                                rows={1}
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        processInput(inputValue);
+                                    }
+                                }}
+                                disabled={pageState !== 'IDLE'}
+                            />
+                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                                {pageState === 'ANALYZING' ? (
+                                    <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
                                 ) : (
-                                    <motion.div
-                                        key="mic"
-                                        initial={{ scale: 0, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        exit={{ scale: 0, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="flex items-center gap-1"
-                                    >
+                                    <>
                                         <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                        <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            onClick={toggleListening}
-                                            className={cn(isListening && 'text-red-500')}
-                                        >
-                                            <motion.div>
-                                                <Mic className="h-5 w-5" />
-                                            </motion.div>
-                                        </Button>
-                                    </motion.div>
+                                        <Button size="icon" variant="ghost" onClick={toggleListening} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>
+                                        {inputValue && (
+                                            <Button size="icon" variant="ghost" onClick={() => processInput(inputValue)}>
+                                                <Send className="h-5 w-5" />
+                                            </Button>
+                                        )}
+                                    </>
                                 )}
-                            </AnimatePresence>
-                        </div>
-                    </div>
-                </div>
-             )}
+                            </div>
+                        </motion.div>
+                    )}
+                 </AnimatePresence>
+            </footer>
         </div>
     );
 }
+
+// Update AddTransactionForm to accept props and read from session storage
+const OriginalAddTransactionForm = AddTransactionForm;
+
+const PatchedAddTransactionForm = ({ onClose, isModal = true }: { onClose: () => void, isModal?: boolean }) => {
+    const [initialData, setInitialData] = useState(null);
+
+    useEffect(() => {
+        const prefilled = sessionStorage.getItem('prefilled-tx');
+        if (prefilled) {
+            setInitialData(JSON.parse(prefilled));
+            sessionStorage.removeItem('prefilled-tx');
+        }
+    }, []);
+
+    // Pass initialData to the original form
+    // @ts-ignore
+    return <OriginalAddTransactionForm onClose={onClose} isModal={isModal} initialData={initialData} />;
+};
+
+// Replace the export in a way that doesn't break other files
+export { PatchedAddTransactionForm as AddTransactionForm };
