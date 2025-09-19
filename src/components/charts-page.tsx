@@ -247,13 +247,6 @@ const ExpenseAnalysis = () => {
             
         const totalExpense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);
 
-        expenseTransactions.forEach(t => {
-            if (!categoryMap[t.category]) {
-                categoryMap[t.category] = 0;
-            }
-            categoryMap[t.category] += t.amount;
-        });
-
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
                 const details = categoryDetails(name);
@@ -261,7 +254,7 @@ const ExpenseAnalysis = () => {
                     name,
                     value,
                     icon: details.icon,
-                    fill: `hsl(var(--${details.color.match(/text-([\w-]+)-/)?.[1]}-500))`,
+                    fill: `hsl(var(${details.color.match(/(--[\w-]+)/)?.[1]}))`,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
@@ -370,7 +363,6 @@ const PlaceholderContent = ({ label, icon: Icon, text }: { label: string, icon: 
 
 export const ChartsPage = () => {
     const router = useRouter();
-    const { isLoading } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
 
@@ -421,15 +413,17 @@ export const ChartsPage = () => {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <main className="overflow-y-auto">
-                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-16 z-10">
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                <div className="bg-background border-b p-2 sticky top-16 z-10">
+                    <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value}>
                                {tab.label}
                             </TabsTrigger>
                        ))}
                     </TabsList>
+                </div>
+                <main className="overflow-y-auto">
                     <div {...handlers}>
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
@@ -451,8 +445,8 @@ export const ChartsPage = () => {
                             </motion.div>
                         </AnimatePresence>
                     </div>
-                </Tabs>
-            </main>
+                </main>
+            </Tabs>
         </div>
     );
 };
