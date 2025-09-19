@@ -162,14 +162,12 @@ const SpendingTrendChart = () => {
 
     return (
         <Card>
-            <CardHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <CardTitle>Tren Pengeluaran</CardTitle>
-                    <div className="p-1 bg-muted rounded-full flex items-center gap-1 border w-fit">
-                        <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
-                        <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
-                        <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">Bulan Ini</Button>
-                    </div>
+            <CardHeader className="flex flex-col gap-3">
+                <CardTitle>Tren Pengeluaran</CardTitle>
+                <div className="p-1 bg-muted rounded-full flex items-center gap-1 border w-fit">
+                    <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
+                    <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
+                    <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">Bulan Ini</Button>
                 </div>
             </CardHeader>
             <CardContent>
@@ -331,20 +329,22 @@ const ExpenseAnalysis = () => {
                     <CardTitle>Rincian Kategori</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {categoryExpenseData.slice(0, 5).map((item) => (
-                        <div key={item.name} className="flex flex-col gap-2">
-                            <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center gap-2">
-                                    <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
-                                    <span className="font-medium">{item.name}</span>
+                    {categoryExpenseData.slice(0, 5).map((item) => {
+                        return (
+                            <div key={item.name} className="flex flex-col gap-2">
+                                <div className="flex items-center justify-between text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
+                                        <span className="font-medium">{item.name}</span>
+                                    </div>
+                                    <span className="font-semibold">{formatCurrency(item.value)}</span>
                                 </div>
-                                <span className="font-semibold">{formatCurrency(item.value)}</span>
+                                <div className="h-2 w-full bg-muted rounded-full">
+                                    <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%", backgroundColor: item.fill }}></div>
+                                </div>
                             </div>
-                            <div className="h-2 w-full bg-muted rounded-full">
-                                <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%", backgroundColor: item.fill }}></div>
-                            </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </CardContent>
             </Card>
         </div>
@@ -415,7 +415,7 @@ export const ChartsPage = () => {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col flex-1">
+            <Tabs value={activeTab} onValueChange={handleTabChange}>
                 <div className="bg-background border-b p-2 sticky top-16 z-10">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm">
                        {tabs.map(tab => (
@@ -425,7 +425,7 @@ export const ChartsPage = () => {
                        ))}
                     </TabsList>
                 </div>
-                <main className="flex-1 overflow-y-auto">
+                <main className="overflow-y-auto">
                     <div {...handlers}>
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
@@ -452,3 +452,5 @@ export const ChartsPage = () => {
         </div>
     );
 };
+
+    
