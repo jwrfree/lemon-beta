@@ -15,6 +15,20 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const TransactionSkeleton = () => (
+    <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+             <div key={i} className="space-y-2">
+                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="h-16 w-full rounded-lg" />
+                <Skeleton className="h-16 w-full rounded-lg" />
+            </div>
+        ))}
+    </div>
+);
+
 
 export default function AllTransactionsPage() {
     const router = useRouter();
@@ -172,7 +186,7 @@ export default function AllTransactionsPage() {
             </div>
 
             <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-16">
-                {isLoading ? null : <TransactionList transactions={filteredTransactions} />}
+                {isLoading ? <TransactionSkeleton /> : <TransactionList transactions={filteredTransactions} />}
             </main>
         </div>
     );
