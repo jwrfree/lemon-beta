@@ -8,8 +8,6 @@ import { auth, db } from '@/lib/firebase';
 import { toast } from 'sonner';
 import { categories } from '@/lib/categories';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { subDays } from 'date-fns';
-
 
 interface PreFilledTransfer {
     fromWalletId: string;
@@ -130,13 +128,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const walletsQuery = query(walletCollection, orderBy("createdAt", "desc"));
         
-        // Fetch transactions from the last 90 days
-        const ninetyDaysAgo = subDays(new Date(), 90);
-        const transactionsQuery = query(
-            transactionCollection, 
-            where("date", ">=", Timestamp.fromDate(ninetyDaysAgo)),
-            orderBy("date", "desc")
-        );
+        const transactionsQuery = query(transactionCollection, orderBy("date", "desc"));
 
         const budgetsQuery = query(budgetCollection, orderBy("createdAt", "desc"));
 
