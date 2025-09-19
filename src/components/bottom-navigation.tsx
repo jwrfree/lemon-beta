@@ -1,10 +1,9 @@
 
 'use client';
 import React from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, PieChart, Plus, Activity, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
 import Link from 'next/link';
@@ -51,39 +50,30 @@ export const BottomNavigation = () => {
                              if (item.primary) {
                                  return (
                                      <div key={item.id} className="flex justify-center items-center">
-                                         <Link href={item.href} passHref legacyBehavior>
-                                             <Button
-                                                asChild
-                                                className={cn(
-                                                    "rounded-full h-14 w-14 bg-blue-600 text-white shadow-lg -translate-y-4 hover:bg-blue-700",
-                                                )}
-                                                aria-label={item.name}
-                                            >
-                                                <a>
-                                                    <item.icon className="h-8 w-8" />
-                                                    <span className="sr-only">{item.name}</span>
-                                                </a>
-                                            </Button>
+                                         <Link 
+                                            href={item.href}
+                                            className={cn(
+                                                "flex items-center justify-center rounded-full h-14 w-14 bg-blue-600 text-white shadow-lg -translate-y-4 hover:bg-blue-700",
+                                            )}
+                                            aria-label={item.name}
+                                        >
+                                            <item.icon className="h-8 w-8" />
+                                            <span className="sr-only">{item.name}</span>
                                          </Link>
                                      </div>
                                  )
                              }
                             return (
-                                <Link key={item.id} href={item.href} passHref legacyBehavior>
-                                    <Button
-                                        asChild
-                                        variant="ghost"
-                                        className={cn(
-                                            "flex flex-col items-center justify-center h-full w-full text-gray-500 rounded-none",
-                                            isActive && "text-blue-600",
-                                            "hover:bg-gray-50"
-                                        )}
-                                    >
-                                        <a>
-                                            <item.icon className="h-6 w-6" />
-                                            <span className={cn("text-xs mt-1", isActive && "font-semibold")}>{item.name}</span>
-                                        </a>
-                                    </Button>
+                                <Link 
+                                    key={item.id} 
+                                    href={item.href}
+                                    className={cn(
+                                        "flex flex-col items-center justify-center h-full w-full rounded-none text-gray-500 hover:bg-gray-50",
+                                        isActive && "text-blue-600",
+                                    )}
+                                >
+                                    <item.icon className="h-6 w-6" />
+                                    <span className={cn("text-xs mt-1", isActive && "font-semibold")}>{item.name}</span>
                                 </Link>
                             )
                         })}
@@ -93,4 +83,3 @@ export const BottomNavigation = () => {
         </AnimatePresence>
     );
 };
-
