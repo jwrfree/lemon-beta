@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight } from 'lucide-react';
@@ -26,7 +25,7 @@ interface TransactionFormProps {
 }
 
 export const TransactionForm = ({ onClose, isModal = true, initialData = null }: TransactionFormProps) => {
-    const { addTransaction, updateTransaction, wallets, expenseCategories, incomeCategories, setIsTransferModalOpen } = useApp();
+    const { addTransaction, updateTransaction, wallets, expenseCategories, incomeCategories, setIsTransferModalOpen, showToast } = useApp();
     
     const isEditMode = !!initialData;
     const defaultWallet = wallets.find(w => w.isDefault);
@@ -99,7 +98,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!amount || !category || !walletId || !date || !description) {
-            toast.error('Harap isi semua kolom yang wajib diisi.');
+            showToast('Harap isi semua kolom yang wajib diisi.', 'error');
             return;
         }
 
@@ -118,14 +117,13 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
         try {
             if (isEditMode) {
                 await updateTransaction(initialData.id, initialData, transactionData);
-                toast.success('Transaksi berhasil diperbarui!');
             } else {
                 await addTransaction(transactionData);
-                toast.success('Transaksi berhasil ditambahkan!');
+                showToast('Transaksi berhasil ditambahkan!', 'success');
             }
             onClose(transactionData);
         } catch (error) {
-            toast.error(`Gagal ${isEditMode ? 'memperbarui' : 'menambahkan'} transaksi.`);
+            showToast(`Gagal ${isEditMode ? 'memperbarui' : 'menambahkan'} transaksi.`, 'error');
             console.error(error);
         } finally {
             setIsSubmitting(false);
@@ -355,3 +353,5 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
         </>
     );
 };
+
+    

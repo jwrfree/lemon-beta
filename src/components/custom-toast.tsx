@@ -1,0 +1,62 @@
+
+'use client';
+
+import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useApp } from './app-provider';
+import { CheckCircle2, XCircle, Info, LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const toastIcons: { [key: string]: LucideIcon } = {
+  success: CheckCircle2,
+  error: XCircle,
+  info: Info,
+};
+
+const toastColors: { [key: string]: string } = {
+  success: 'bg-green-600',
+  error: 'bg-destructive',
+  info: 'bg-primary',
+};
+
+export const CustomToast = () => {
+  const { toastState, hideToast } = useApp();
+  const { show, message, type } = toastState;
+
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        hideToast();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [show, hideToast]);
+
+  const ToastIcon = toastIcons[type];
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          layout
+          initial={{ y: 100, scaleX: 0.3, opacity: 0 }}
+          animate={{ y: 0, scaleX: 1, opacity: 1, transition: { type: 'spring', damping: 20, stiffness: 150 } }}
+          exit={{ y: 100, scaleX: 0.3, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50"
+        >
+          <div
+            className={cn(
+              'flex items-center gap-3 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg',
+              toastColors[type]
+            )}
+          >
+            <ToastIcon className="h-5 w-5" />
+            <span>{message}</span>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+    

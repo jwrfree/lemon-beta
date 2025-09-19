@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'sonner';
 import { X, ArrowLeft } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ import { Slider } from './ui/slider';
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
-  const { addBudget, expenseCategories } = useApp();
+  const { addBudget, expenseCategories, showToast } = useApp();
   const [step, setStep] = useState(1);
   const [budgetName, setBudgetName] = useState('');
   const [targetAmount, setTargetAmount] = useState(0);
@@ -34,11 +33,11 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   
   const handleNext = () => {
     if (step === 1 && !budgetName) {
-        toast.error("Nama anggaran tidak boleh kosong.");
+        showToast("Nama anggaran tidak boleh kosong.", 'error');
         return;
     }
     if (step === 2 && targetAmount <= 0) {
-        toast.error("Target anggaran harus lebih besar dari nol.");
+        showToast("Target anggaran harus lebih besar dari nol.", 'error');
         return;
     }
     setStep(s => s + 1);
@@ -51,7 +50,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedCategories.length === 0) {
-      toast.error("Pilih minimal satu kategori untuk anggaran ini.");
+      showToast("Pilih minimal satu kategori untuk anggaran ini.", 'error');
       return;
     }
     setIsSubmitting(true);
@@ -191,3 +190,5 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+
+    

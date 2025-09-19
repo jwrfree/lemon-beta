@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'sonner';
 import { X, Wallet, Banknote, Landmark, Smartphone, ArrowLeft, CaseSensitive, CircleDollarSign } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -25,7 +24,7 @@ const walletCategories = [
 ];
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet } = useApp();
+  const { addWallet, showToast } = useApp();
   const [step, setStep] = useState(1);
   const [walletName, setWalletName] = useState('');
   const [initialBalance, setInitialBalance] = useState('');
@@ -56,7 +55,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!walletName) {
-      toast.error("Nama dompet tidak boleh kosong.");
+      showToast("Nama dompet tidak boleh kosong.", 'error');
       return;
     }
     setIsSubmitting(true);
@@ -69,7 +68,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
       });
       // The addWallet function in provider now closes the modal
     } catch (error) {
-      toast.error("Gagal membuat dompet.");
+      showToast("Gagal membuat dompet.", 'error');
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -208,3 +207,5 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+
+    

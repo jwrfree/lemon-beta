@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
@@ -14,6 +13,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
+import { useApp } from './app-provider';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -31,6 +31,7 @@ const formSchema = z.object({
 
 export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
+    const { showToast } = useApp();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -43,10 +44,10 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
             await signInWithEmailAndPassword(auth, values.email, values.password);
-            toast.success("Login berhasil! Selamat datang kembali.");
+            showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
         } catch (error: any) {
-            toast.error(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal untuk masuk.');
+            showToast(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal untuk masuk.', 'error');
         }
     };
 
@@ -54,10 +55,10 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
         const provider = new GoogleAuthProvider();
         try {
             await signInWithPopup(auth, provider);
-            toast.success("Login dengan Google berhasil!");
+            showToast("Login dengan Google berhasil!", 'success');
             onClose();
         } catch (error: any) {
-            toast.error('Gagal masuk dengan Google.');
+            showToast('Gagal masuk dengan Google.', 'error');
         }
     };
 
@@ -159,3 +160,5 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
         </motion.div>
     );
 };
+
+    

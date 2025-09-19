@@ -10,7 +10,6 @@ import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Spa
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency } from '@/lib/utils';
-import { toast } from 'sonner';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
@@ -78,6 +77,7 @@ export default function SmartAddPage() {
         incomeCategories,
         setIsTransferModalOpen,
         setPreFilledTransfer,
+        showToast,
     } = useApp();
 
     const [pageState, setPageState] = useState<PageState>('IDLE');
@@ -182,7 +182,7 @@ export default function SmartAddPage() {
 
     const handleAIFailure = (error: any, type: 'text' | 'image' = 'text') => {
         console.error(`AI ${type} processing failed:`, error);
-        toast.error(`Oops! Gagal menganalisis ${type === 'image' ? 'struk' : 'teks'}. Coba lagi ya.`);
+        showToast(`Oops! Gagal menganalisis ${type === 'image' ? 'struk' : 'teks'}. Coba lagi ya.`, 'error');
         resetFlow(true);
     };
 
@@ -240,15 +240,15 @@ export default function SmartAddPage() {
             setInputValue(finalTranscriptRef.current);
         };
         recognition.onerror = (event) => {
-            toast.error("Oops! Terjadi error pada input suara.");
+            showToast("Oops! Terjadi error pada input suara.", 'error');
             setIsListening(false);
         };
         recognition.onend = () => setIsListening(false);
         recognitionRef.current = recognition;
-    }, []);
+    }, [showToast]);
 
     const toggleListening = () => {
-        if (!SpeechRecognition) { toast.error("Browser tidak mendukung input suara."); return; }
+        if (!SpeechRecognition) { showToast("Browser tidak mendukung input suara.", 'error'); return; }
         if (isListening) {
             recognitionRef.current?.stop();
             setIsListening(false);
@@ -280,7 +280,7 @@ export default function SmartAddPage() {
         setPageState('ANALYZING'); // Show loader while saving
         try {
             await addTransaction(parsedData);
-            toast.success("Transaksi berhasil disimpan!");
+            showToast("Transaksi berhasil disimpan!", 'success');
             if (andAddAnother) {
                 resetFlow();
             } else {
@@ -288,7 +288,7 @@ export default function SmartAddPage() {
             }
         } catch (error) {
             console.error("Failed to save transaction:", error);
-            toast.error("Gagal menyimpan transaksi.");
+            showToast("Gagal menyimpan transaksi.", 'error');
             setPageState('CONFIRMING');
         }
     };
@@ -514,7 +514,5 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
 
     

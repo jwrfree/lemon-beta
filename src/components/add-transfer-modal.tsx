@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
 import { X, CalendarIcon, ArrowRightLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -18,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
-  const { addTransfer, wallets, preFilledTransfer, setPreFilledTransfer } = useApp();
+  const { addTransfer, wallets, preFilledTransfer, setPreFilledTransfer, showToast } = useApp();
   
   const [fromWalletId, setFromWalletId] = useState(preFilledTransfer?.fromWalletId || '');
   const [toWalletId, setToWalletId] = useState(preFilledTransfer?.toWalletId || '');
@@ -48,11 +47,11 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount || !fromWalletId || !toWalletId || !date || !description) {
-      toast.error("Harap isi semua kolom.");
+      showToast("Harap isi semua kolom.", 'error');
       return;
     }
     if (fromWalletId === toWalletId) {
-        toast.error("Dompet asal dan tujuan tidak boleh sama.");
+        showToast("Dompet asal dan tujuan tidak boleh sama.", 'error');
         return;
     }
     setIsSubmitting(true);
@@ -65,7 +64,7 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
             date: date.toISOString(),
         });
     } catch (error) {
-        toast.error('Gagal mencatat transfer.');
+        showToast('Gagal mencatat transfer.', 'error');
         console.error(error);
     } finally {
         setIsSubmitting(false);
@@ -176,3 +175,5 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+
+    

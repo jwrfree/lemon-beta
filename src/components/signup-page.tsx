@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
@@ -14,6 +13,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
+import { useApp } from './app-provider';
 
 const formSchema = z.object({
     email: z.string().email({ message: "Format email tidak valid." }),
@@ -27,6 +27,7 @@ const formSchema = z.object({
 
 export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
+    const { showToast } = useApp();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -39,13 +40,13 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
     const handleSignUp = async (values: z.infer<typeof formSchema>) => {
         try {
             await createUserWithEmailAndPassword(auth, values.email, values.password);
-            toast.success("Akun berhasil dibuat! Silakan masuk.");
+            showToast("Akun berhasil dibuat! Silakan masuk.", 'success');
             setAuthModal('login');
         } catch (error: any) {
             if (error.code === 'auth/email-already-in-use') {
-                toast.error("Email ini sudah terdaftar.");
+                showToast("Email ini sudah terdaftar.", 'error');
             } else {
-                toast.error("Gagal membuat akun.");
+                showToast("Gagal membuat akun.", 'error');
             }
         }
     };
@@ -154,3 +155,5 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
         </motion.div>
     );
 };
+
+    

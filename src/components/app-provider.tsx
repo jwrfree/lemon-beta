@@ -5,7 +5,6 @@ import React, { useState, useEffect, createContext, useContext, useCallback } fr
 import { User, signOut, onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc, getDocs, where, Timestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import { toast } from 'sonner';
 import { categories } from '@/lib/categories';
 import { useRouter as useNextRouter } from 'next/navigation';
 
@@ -14,6 +13,12 @@ interface PreFilledTransfer {
     toWalletId: string;
     amount: number;
     description: string;
+}
+
+interface ToastState {
+    show: boolean;
+    message: string;
+    type: 'success' | 'error' | 'info';
 }
 
 interface AppContextType {
@@ -61,6 +66,9 @@ interface AppContextType {
     setIsEditWalletModalOpen: (isOpen: boolean) => void;
     walletToEdit: any | null;
     openEditWalletModal: (wallet: any) => void;
+    toastState: ToastState;
+    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+    hideToast: () => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -93,6 +101,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isEditWalletModalOpen, setIsEditWalletModalOpen] = useState(false);
     const [walletToEdit, setWalletToEdit] = useState<any | null>(null);
     const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
+
+    const [toastState, setToastState] = useState<ToastState>({ show: false, message: '', type: 'info' });
+
+    const showToast = (message: string, type: 'success' | 'error' | 'info') => {
+        setToastState({ show: true, message, type });
+    };
+
+    const hideToast = () => {
+        setToastState(prev => ({ ...prev, show: false }));
+    };
 
 
     useEffect(() => {
@@ -233,7 +251,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
         
         await batch.commit();
-        toast.success("Transaksi berhasil diperbarui!");
+        showToast("Transaksi berhasil diperbarui!", 'success');
         setIsTxModalOpen(false);
 
     }, [user, getTransactionCollection, getWalletCollection]);
@@ -285,7 +303,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         await batch.commit();
-        toast.success("Transfer berhasil dicatat!");
+        showToast("Transfer berhasil dicatat!", 'success');
         setIsTransferModalOpen(false);
 
     }, [user, getTransactionCollection, getWalletCollection, setIsTransferModalOpen, wallets]);
@@ -301,7 +319,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             isDefault: walletData.isDefault || false,
             userId: user.uid,
         });
-        toast.success("Dompet berhasil dibuat!");
+        showToast("Dompet berhasil dibuat!", 'success');
         setIsWalletModalOpen(false);
     }, [user, getWalletCollection]);
 
@@ -326,7 +344,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         batch.update(walletRef, walletData);
         await batch.commit();
         
-        toast.success("Dompet berhasil diperbarui!");
+        showToast("Dompet berhasil diperbarui!", 'success');
         setIsEditWalletModalOpen(false);
     }, [user, getWalletCollection]);
 
@@ -335,7 +353,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         const walletHasTransactions = transactions.some(t => t.walletId === walletId);
         if (walletHasTransactions) {
-            toast.error("Gagal menghapus.", { description: "Dompet tidak dapat dihapus karena masih memiliki riwayat transaksi."});
+            showToast("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
             return;
         }
 
@@ -344,7 +362,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const walletRef = doc(walletCollection, walletId);
         await deleteDoc(walletRef);
-        toast.success("Dompet berhasil dihapus.");
+        showToast("Dompet berhasil dihapus.", 'success');
         setIsEditWalletModalOpen(false);
     }, [user, getWalletCollection, transactions]);
 
@@ -353,7 +371,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const budgetCollection = getBudgetCollection();
         if (!budgetCollection) return;
         await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString(), userId: user.uid });
-        toast.success("Anggaran berhasil dibuat!");
+        showToast("Anggaran berhasil dibuat!", 'success');
         setIsBudgetModalOpen(false);
     }, [user, getBudgetCollection]);
 
@@ -369,7 +387,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             userId: user.uid
         });
 
-        toast.success(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`);
+        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
     }, [user, getAssetCollection, getLiabilityCollection]);
 
     const updateAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability', data: any) => {
@@ -379,7 +397,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const docRef = doc(collection, id);
         await updateDoc(docRef, data);
-        toast.success(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`);
+        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
     }, [user, getAssetCollection, getLiabilityCollection]);
 
     const deleteAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability') => {
@@ -389,14 +407,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         const docRef = doc(collection, id);
         await deleteDoc(docRef);
-        toast.success(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`);
+        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
     }, [user, getAssetCollection, getLiabilityCollection]);
 
     const deleteTransaction = useCallback(async (transaction: any) => {
         if (!user || !transaction) return;
-        // This is a simplified delete for now. A full implementation would need to handle transfer pairs.
         if (transaction.category === 'Transfer') {
-            toast.error("Menghapus transaksi transfer belum didukung.");
+            showToast("Menghapus transaksi transfer belum didukung.", 'error');
             return;
         }
 
@@ -404,52 +421,28 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const transactionCollection = getTransactionCollection();
         if (!walletCollection || !transactionCollection) return;
 
-
         const transactionRef = doc(db, transactionCollection.path, transaction.id);
         const walletRef = doc(db, walletCollection.path, transaction.walletId);
-
-        const originalTransaction = { ...transaction };
-        delete originalTransaction.id;
-
-        const batch = writeBatch(db);
-        batch.delete(transactionRef);
+        
+        await deleteDoc(transactionRef);
 
         const walletDoc = await getDoc(walletRef);
         if (walletDoc.exists()) {
             const currentBalance = walletDoc.data().balance;
             const newBalance = transaction.type === 'income' ? currentBalance - transaction.amount : currentBalance + transaction.amount;
-            batch.update(walletRef, { balance: newBalance });
+            await updateDoc(walletRef, { balance: newBalance });
         }
-
-        await batch.commit();
-        toast.success("Transaksi berhasil dihapus!", {
-            action: {
-                label: "Urungkan",
-                onClick: async () => {
-                    const undoBatch = writeBatch(db);
-                    const newTransactionRef = doc(transactionCollection);
-                    undoBatch.set(newTransactionRef, originalTransaction);
-
-                    const walletDoc = await getDoc(walletRef);
-                    if (walletDoc.exists()) {
-                        const currentBalance = walletDoc.data().balance;
-                        const revertedBalance = originalTransaction.type === 'income' ? currentBalance + originalTransaction.amount : currentBalance - originalTransaction.amount;
-                        undoBatch.update(walletRef, { balance: revertedBalance });
-                    }
-                    await undoBatch.commit();
-                    toast.success("Penghapusan berhasil diurungkan.");
-                }
-            }
-        });
+        
+        showToast("Transaksi berhasil dihapus!", 'success');
     }, [user, getTransactionCollection, getWalletCollection]);
 
     const handleSignOut = async () => {
         try {
             await signOut(auth);
-            toast.success("Kamu berhasil keluar.");
+            showToast("Kamu berhasil keluar.", 'info');
             router.push('/');
         } catch (error) {
-            toast.error("Gagal keluar.");
+            showToast("Gagal keluar.", 'error');
             console.error("Sign out error:", error);
         }
     };
@@ -470,7 +463,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             await deleteTransaction(transactionToDelete);
         } catch (error) {
             console.error("Gagal menghapus transaksi:", error);
-            toast.error("Gagal menghapus transaksi.");
+            showToast("Gagal menghapus transaksi.", 'error');
         } finally {
             closeDeleteModal();
         }
@@ -483,7 +476,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     const openEditModal = (transaction: any) => {
         if (transaction.category === 'Transfer') {
-            toast.error("Mengedit transaksi transfer belum didukung.");
+            showToast("Mengedit transaksi transfer belum didukung.", 'error');
             return;
         }
         setTransactionToEdit(transaction);
@@ -520,7 +513,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsWalletModalOpen,
         isBudgetModalOpen,
         setIsBudgetModalOpen,
-isTransferModalOpen,
+        isTransferModalOpen,
         setIsTransferModalOpen,
         preFilledTransfer,
         setPreFilledTransfer,
@@ -533,6 +526,9 @@ isTransferModalOpen,
         setIsEditWalletModalOpen,
         walletToEdit,
         openEditWalletModal,
+        toastState,
+        showToast,
+        hideToast,
     };
 
     return (
@@ -541,3 +537,5 @@ isTransferModalOpen,
         </AppContext.Provider>
     );
 };
+
+    

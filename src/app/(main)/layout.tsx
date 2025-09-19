@@ -11,6 +11,7 @@ import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
 import { useEffect, useState }from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
+import { CustomToast } from '@/components/custom-toast';
 
 const AppSkeleton = () => (
     <div className="flex h-dvh w-full items-center justify-center bg-background">
@@ -79,6 +80,8 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
                 </motion.div>
             </AnimatePresence>
 
+            <CustomToast />
+
              <AnimatePresence>
                 {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
                 {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
@@ -107,3 +110,5 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         </AppProvider>
     )
 }
+
+    

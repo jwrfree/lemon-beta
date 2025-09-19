@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
 import { X, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Switch } from './ui/switch';
 
 export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () => void }) => {
-  const { updateWallet, deleteWallet } = useApp();
+  const { updateWallet, deleteWallet, showToast } = useApp();
   const [walletName, setWalletName] = useState(wallet.name);
   const [isDefault, setIsDefault] = useState(wallet.isDefault || false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,14 +22,14 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!walletName) {
-      toast.error("Nama dompet tidak boleh kosong.");
+      showToast("Nama dompet tidak boleh kosong.", 'error');
       return;
     }
     setIsSubmitting(true);
     try {
       await updateWallet(wallet.id, { name: walletName, isDefault });
     } catch (error) {
-      toast.error("Gagal memperbarui dompet.");
+      showToast("Gagal memperbarui dompet.", 'error');
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -42,7 +41,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
     try {
       await deleteWallet(wallet.id);
     } catch (error) {
-      toast.error("Gagal menghapus dompet.");
+      showToast("Gagal menghapus dompet.", 'error');
       console.error(error);
     } finally {
       setIsDeleting(false);
@@ -130,3 +129,5 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
     </motion.div>
   );
 };
+
+    

@@ -6,7 +6,6 @@ import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 import { X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -30,7 +29,7 @@ const liabilityCategories = [
 ];
 
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
-    const { addAssetLiability, updateAssetLiability } = useApp();
+    const { addAssetLiability, updateAssetLiability, showToast } = useApp();
     
     const isEditMode = !!initialData;
 
@@ -61,7 +60,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name || !value || !categoryKey) {
-            toast.error('Harap isi semua kolom yang wajib diisi.');
+            showToast('Harap isi semua kolom yang wajib diisi.', 'error');
             return;
         }
         setIsSubmitting(true);
@@ -80,7 +79,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             }
             onClose();
         } catch (error) {
-            toast.error(`Gagal ${isEditMode ? 'memperbarui' : 'menambahkan'} entri.`);
+            showToast(`Gagal ${isEditMode ? 'memperbarui' : 'menambahkan'} entri.`, 'error');
             console.error(error);
         } finally {
             setIsSubmitting(false);
@@ -157,3 +156,5 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         </>
     );
 };
+
+    
