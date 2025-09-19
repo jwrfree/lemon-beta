@@ -245,13 +245,13 @@ const ExpenseAnalysis = () => {
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
                 const details = categoryDetails(name);
-                const colorClass = details.color; // e.g., 'text-yellow-600'
-                const colorVarName = colorClass.match(/text-([\w-]+)-/)?.[1]; // Extracts 'yellow'
+                const colorClass = details.color;
+                const colorVarName = colorClass.match(/text-([\w-]+)-/)?.[1] || 'primary';
                 return {
                     name,
                     value,
                     icon: details.icon,
-                    fill: `hsl(var(--${colorVarName}-500))`, // Use the CSS variable from globals.css
+                    fill: `hsl(var(--${colorVarName}-500))`,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
@@ -424,15 +424,15 @@ export const ChartsPage = () => {
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
             <main className="flex-1 overflow-y-auto">
-                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full flex flex-col flex-1">
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-0 z-10">
                        {tabs.map(tab => (
-                           <TabsTrigger key={tab.value} value={tab.value} className="flex gap-2 items-center">
+                           <TabsTrigger key={tab.value} value={tab.value}>
                                {tab.label}
                             </TabsTrigger>
                        ))}
                     </TabsList>
-                    <div {...handlers} className="flex-1">
+                    <div {...handlers}>
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
                                 key={activeTab}
@@ -442,7 +442,7 @@ export const ChartsPage = () => {
                                 animate="center"
                                 exit="exit"
                                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                className="space-y-6 p-4"
+                                className="space-y-6 p-4 pb-20"
                             >
                                 <SummaryCard tab={activeTab} />
                                 {activeTab === 'expense' && <ExpenseAnalysis />}
@@ -456,5 +456,3 @@ export const ChartsPage = () => {
         </div>
     );
 };
-
-    
