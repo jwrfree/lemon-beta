@@ -10,49 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { TransactionList } from '@/components/transaction-list';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChevronLeft, AlertTriangle, Pencil } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { startOfMonth, parseISO } from 'date-fns';
-
-export const BudgetDetailSkeleton = () => (
-    <div className="p-4 space-y-6">
-        <Card>
-            <CardHeader className="items-center text-center">
-                <Skeleton className="h-6 w-32" />
-                <Skeleton className="h-4 w-48 mt-1" />
-            </CardHeader>
-            <CardContent className="flex flex-col items-center gap-4">
-                <Skeleton className="h-4 w-full" />
-                <div className="grid grid-cols-3 gap-4 w-full text-center">
-                    <div>
-                        <Skeleton className="h-4 w-16 mx-auto mb-1" />
-                        <Skeleton className="h-5 w-24 mx-auto" />
-                    </div>
-                    <div>
-                        <Skeleton className="h-4 w-16 mx-auto mb-1" />
-                        <Skeleton className="h-5 w-24 mx-auto" />
-                    </div>
-                    <div>
-                        <Skeleton className="h-4 w-16 mx-auto mb-1" />
-                        <Skeleton className="h-5 w-24 mx-auto" />
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-        <div className="space-y-2">
-            <Skeleton className="h-6 w-1/3" />
-            <div className="space-y-2">
-                 <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-1/2" />
-                    </div>
-                    <Skeleton className="h-5 w-1/4" />
-                </div>
-            </div>
-        </div>
-    </div>
-);
 
 export default function BudgetDetailPage() {
     const router = useRouter();
@@ -82,7 +40,7 @@ export default function BudgetDetailPage() {
     }, [budget, transactions]);
 
     if (isLoading) {
-        return <BudgetDetailSkeleton />;
+        return null;
     }
     
     if (!budget) {

@@ -12,32 +12,10 @@ import { useEffect, useState }from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditTransactionForm } from '@/components/edit-transaction-form';
-import { Skeleton } from '@/components/ui/skeleton';
-
 
 const AppSkeleton = () => (
-    <div className="flex flex-col h-full">
-        <header className="h-16 flex items-center px-4 shrink-0 border-b">
-            <Skeleton className="h-8 w-24" />
-            <div className="flex-1" />
-            <Skeleton className="h-8 w-8 rounded-full" />
-        </header>
-        <main className="flex-1 p-4 space-y-6">
-            <Skeleton className="h-28 w-full rounded-lg" />
-            <Skeleton className="h-24 w-full rounded-lg" />
-            <div className="space-y-2">
-                <Skeleton className="h-6 w-1/2" />
-                <Skeleton className="h-16 w-full rounded-lg" />
-                <Skeleton className="h-16 w-full rounded-lg" />
-            </div>
-        </main>
-        <footer className="h-16 w-full border-t flex justify-around items-center">
-            <Skeleton className="h-8 w-10" />
-            <Skeleton className="h-8 w-10" />
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <Skeleton className="h-8 w-10" />
-            <Skeleton className="h-8 w-10" />
-        </footer>
+    <div className="flex h-dvh w-full items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
 );
 
@@ -79,14 +57,8 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         }
     }, [user, isLoading, router, isHydrated]);
 
-    const isSmartAddPage = pathname === '/add-smart';
-
     if (!isHydrated || isLoading || !user) {
-        return (
-            <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
-                <AppSkeleton />
-            </div>
-        );
+        return <AppSkeleton />;
     }
 
     return (

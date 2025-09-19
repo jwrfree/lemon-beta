@@ -9,45 +9,8 @@ import { Input } from '@/components/ui/input';
 import { useApp } from '@/components/app-provider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
-
-export const TransactionsSkeleton = () => (
-    <div className="p-4 space-y-4">
-        <Skeleton className="h-6 w-1/3" />
-        <div className="space-y-2">
-            <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                </div>
-                <Skeleton className="h-5 w-1/4" />
-            </div>
-             <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-2/4" />
-                    <Skeleton className="h-3 w-1/3" />
-                </div>
-                <Skeleton className="h-5 w-1/5" />
-            </div>
-        </div>
-        <Skeleton className="h-6 w-1/4" />
-        <div className="space-y-2">
-             <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                </div>
-                <Skeleton className="h-5 w-1/4" />
-            </div>
-        </div>
-    </div>
-);
 
 export default function AllTransactionsPage() {
     const router = useRouter();
@@ -195,7 +158,7 @@ export default function AllTransactionsPage() {
             </div>
 
             <main className="space-y-2">
-                {isLoading ? <TransactionsSkeleton /> : <TransactionList transactions={filteredTransactions} />}
+                {isLoading ? null : <TransactionList transactions={filteredTransactions} />}
             </main>
         </div>
     );

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Plus, PlusCircle, Wallet } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
-import { Skeleton } from '@/components/ui/skeleton';
 import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
 
@@ -17,6 +16,10 @@ export default function WalletsPage() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeWallet = wallets.length > 0 ? wallets[activeIndex] : null;
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col bg-muted h-full">
@@ -30,7 +33,7 @@ export default function WalletsPage() {
         </Button>
       </header>
       
-      {wallets.length === 0 && !isLoading ? (
+      {wallets.length === 0 ? (
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="flex flex-col items-center justify-center text-center">
              <div className="p-3 bg-primary/10 rounded-full mb-3">

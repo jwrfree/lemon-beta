@@ -12,7 +12,6 @@ import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Pie, PieChart } from "recharts"
-import { Skeleton } from './ui/skeleton';
 
 const BudgetCard = ({ budget }: { budget: any }) => {
     const { transactions } = useApp();
@@ -82,60 +81,9 @@ const BudgetCard = ({ budget }: { budget: any }) => {
     );
 };
 
-export const BudgetingSkeleton = () => (
-    <div className="p-4 space-y-6">
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-6 w-1/2" />
-            </CardHeader>
-            <CardContent className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="w-full sm:w-1/2 flex justify-center">
-                    <Skeleton className="h-32 w-32 rounded-full" />
-                </div>
-                <div className="w-full sm:w-1/2 space-y-4">
-                    <div className="space-y-1">
-                        <Skeleton className="h-4 w-1/3" />
-                        <Skeleton className="h-6 w-2/3" />
-                    </div>
-                    <div className="space-y-1">
-                        <Skeleton className="h-4 w-1/3" />
-                        <Skeleton className="h-6 w-2/3" />
-                    </div>
-                    <div className="space-y-1">
-                        <Skeleton className="h-4 w-1/3" />
-                        <Skeleton className="h-6 w-2/3" />
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-        <div className="space-y-4">
-            <Skeleton className="h-6 w-1/3" />
-            <div className="space-y-2">
-                {[...Array(2)].map((_, i) => (
-                    <div key={i} className="flex flex-col gap-3 p-4 bg-background rounded-lg">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Skeleton className="h-8 w-8 rounded-full" />
-                                <Skeleton className="h-5 w-24" />
-                            </div>
-                            <Skeleton className="h-4 w-16" />
-                        </div>
-                        <Skeleton className="h-2.5 w-full rounded-full" />
-                         <div className="flex justify-between items-center">
-                            <Skeleton className="h-3 w-1/3" />
-                            <Skeleton className="h-3 w-1/4" />
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    </div>
-);
-
-
 export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
     const router = useRouter();
-    const { budgets, transactions } = useApp();
+    const { budgets, transactions, isLoading } = useApp();
 
     const overview = useMemo(() => {
         const now = new Date();
@@ -163,6 +111,9 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
         return { totalBudget, totalSpent, totalRemaining, chartData };
     }, [budgets, transactions]);
     
+    if (isLoading) {
+        return null;
+    }
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">

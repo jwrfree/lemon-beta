@@ -9,39 +9,6 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, Plus } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useApp } from "@/components/app-provider";
-import { Skeleton } from "@/components/ui/skeleton";
-
-const AssetsLiabilitiesSkeleton = () => (
-    <div className="p-4 space-y-6">
-        <div className="text-center space-y-2">
-            <Skeleton className="h-4 w-24 mx-auto" />
-            <Skeleton className="h-10 w-48 mx-auto" />
-        </div>
-        <Card className="shadow-none border-0">
-            <CardHeader>
-                <div className="flex justify-between items-center">
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-6 w-24" />
-                </div>
-            </CardHeader>
-            <CardContent>
-                <Skeleton className="h-4 w-full" />
-            </CardContent>
-        </Card>
-        <Card className="shadow-none border-0">
-            <CardHeader>
-                <div className="flex justify-between items-center">
-                    <Skeleton className="h-6 w-20" />
-                    <Skeleton className="h-6 w-24" />
-                </div>
-            </CardHeader>
-            <CardContent>
-                <Skeleton className="h-4 w-full" />
-            </CardContent>
-        </Card>
-    </div>
-);
-
 
 export default function NetWorthPage() {
   const { isLoading } = useApp();
@@ -50,6 +17,10 @@ export default function NetWorthPage() {
   const netWorth = assets - liabilities
   const isPositive = netWorth >= 0;
   const router = useRouter();
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-full bg-muted">
@@ -72,42 +43,40 @@ export default function NetWorthPage() {
             </Sheet>
         </header>
         <main className="flex-1 overflow-y-auto">
-            {isLoading ? <AssetsLiabilitiesSkeleton /> : (
-                <div className="p-4 space-y-6">
-                    <div className="text-center">
-                        <p className="text-sm text-muted-foreground">Total Kekayaan Bersih</p>
-                        <p className={`text-4xl font-extrabold ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
-                            {formatCurrency(netWorth)}
-                        </p>
-                    </div>
-
-                    {/* Assets */}
-                    <Card className="shadow-lg hover:shadow-xl transition-shadow">
-                        <CardHeader>
-                            <div className="flex justify-between items-center">
-                                <CardTitle>Aset</CardTitle>
-                                <span className="font-bold text-lg text-emerald-600">{formatCurrency(assets)}</span>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground text-sm">Semua aset yang kamu miliki akan muncul di sini.</p>
-                        </CardContent>
-                    </Card>
-
-                    {/* Liabilities */}
-                    <Card className="shadow-lg hover:shadow-xl transition-shadow">
-                        <CardHeader>
-                             <div className="flex justify-between items-center">
-                                <CardTitle>Liabilitas</CardTitle>
-                                <span className="font-bold text-lg text-rose-600">{formatCurrency(liabilities)}</span>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground text-sm">Daftar utang atau cicilanmu akan muncul di sini.</p>
-                        </CardContent>
-                    </Card>
+            <div className="p-4 space-y-6">
+                <div className="text-center">
+                    <p className="text-sm text-muted-foreground">Total Kekayaan Bersih</p>
+                    <p className={`text-4xl font-extrabold ${isPositive ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        {formatCurrency(netWorth)}
+                    </p>
                 </div>
-            )}
+
+                {/* Assets */}
+                <Card className="shadow-lg hover:shadow-xl transition-shadow">
+                    <CardHeader>
+                        <div className="flex justify-between items-center">
+                            <CardTitle>Aset</CardTitle>
+                            <span className="font-bold text-lg text-emerald-600">{formatCurrency(assets)}</span>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground text-sm">Semua aset yang kamu miliki akan muncul di sini.</p>
+                    </CardContent>
+                </Card>
+
+                {/* Liabilities */}
+                <Card className="shadow-lg hover:shadow-xl transition-shadow">
+                    <CardHeader>
+                         <div className="flex justify-between items-center">
+                            <CardTitle>Liabilitas</CardTitle>
+                            <span className="font-bold text-lg text-rose-600">{formatCurrency(liabilities)}</span>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground text-sm">Daftar utang atau cicilanmu akan muncul di sini.</p>
+                    </CardContent>
+                </Card>
+            </div>
         </main>
     </div>
   )

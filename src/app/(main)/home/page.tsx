@@ -8,7 +8,6 @@ import { Bell, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/components/transaction-list';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { isSameMonth, parseISO } from 'date-fns';
 import { AnimatedCounter } from '@/components/animated-counter';
@@ -28,6 +27,10 @@ export default function HomePage() {
         .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
         .reduce((acc, t) => acc + t.amount, 0);
 
+    if (isLoading) {
+        return null;
+    }
+
     return (
         <div className="overflow-y-auto pb-16 bg-muted">
             <header className="h-16 px-4 flex items-center justify-between sticky top-0 bg-background z-10 border-b">
@@ -44,10 +47,7 @@ export default function HomePage() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
                     </CardHeader>
                     <CardContent>
-                         {isLoading ? 
-                            <Skeleton className="h-8 w-1/2" /> : 
-                            <AnimatedCounter value={totalBalance} className="text-3xl font-bold" />
-                         }
+                         <AnimatedCounter value={totalBalance} className="text-3xl font-bold" />
                         <div className="flex gap-4 mt-4">
                             <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-green-100 dark:bg-green-900/50 rounded-full">
@@ -55,7 +55,7 @@ export default function HomePage() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pemasukan</p>
-                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold" />}
+                                    <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold" />
                                 </div>
                             </div>
                              <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function HomePage() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Pengeluaran</p>
-                                    {isLoading ? <Skeleton className="h-5 w-20 mt-1" /> : <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold" />}
+                                    <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold" />
                                 </div>
                             </div>
                         </div>
@@ -76,13 +76,7 @@ export default function HomePage() {
                         <h2 className="text-lg font-semibold">Dompet Kamu</h2>
                         <Button onClick={() => router.push('/wallets')} variant="link" size="sm">Lihat Semua</Button>
                     </div>
-                    {isLoading ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                            <Skeleton className="h-24 rounded-lg" />
-                            <Skeleton className="h-24 rounded-lg" />
-                            <Skeleton className="h-24 rounded-lg" />
-                        </div>
-                    ) : wallets.length === 0 ? (
+                    {wallets.length === 0 ? (
                         <div className="text-muted-foreground text-sm">Kamu belum punya dompet.</div>
                     ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

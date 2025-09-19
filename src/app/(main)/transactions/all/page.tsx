@@ -15,39 +15,6 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Skeleton } from '@/components/ui/skeleton';
-
-const TransactionsSkeleton = () => (
-    <div className="space-y-4">
-         <div className="space-y-2">
-            <Skeleton className="h-4 w-24 mb-2" />
-            {[...Array(3)].map((_, i) => (
-                 <div key={i} className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-1/2" />
-                    </div>
-                    <Skeleton className="h-5 w-1/4" />
-                </div>
-            ))}
-        </div>
-         <div className="space-y-2">
-            <Skeleton className="h-4 w-20 mb-2" />
-            {[...Array(2)].map((_, i) => (
-                 <div key={i} className="flex items-center gap-3 p-3 bg-background rounded-lg">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-2/4" />
-                        <Skeleton className="h-3 w-1/4" />
-                    </div>
-                    <Skeleton className="h-5 w-1/5" />
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
 
 export default function AllTransactionsPage() {
     const router = useRouter();
@@ -205,7 +172,7 @@ export default function AllTransactionsPage() {
             </div>
 
             <main className="flex-1 overflow-y-auto p-4 space-y-2 pb-16">
-                {isLoading ? <TransactionsSkeleton /> : <TransactionList transactions={filteredTransactions} />}
+                {isLoading ? null : <TransactionList transactions={filteredTransactions} />}
             </main>
         </div>
     );

@@ -1,7 +1,7 @@
 
 
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,6 @@ import { useApp } from '@/components/app-provider';
 import { isSameMonth, startOfMonth, parseISO, endOfMonth, subDays, format, eachDayOfInterval, startOfDay } from 'date-fns';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
-import { Skeleton } from './ui/skeleton';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 type TabValue = 'expense' | 'income' | 'net';
@@ -27,53 +26,6 @@ const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
     { value: 'income', label: 'Pemasukan', icon: ArrowUpRight },
     { value: 'net', label: 'Net Income', icon: Scale },
 ];
-
-export const ChartsSkeleton = () => (
-    <div className="p-4 space-y-6">
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-5 w-1/3" />
-            </CardHeader>
-            <CardContent className="grid grid-cols-3 gap-4 text-center">
-                <div className="flex flex-col items-center gap-1">
-                    <Skeleton className="h-3 w-10" />
-                    <Skeleton className="h-6 w-20" />
-                </div>
-                <div className="flex flex-col items-center gap-1">
-                    <Skeleton className="h-3 w-20" />
-                    <Skeleton className="h-6 w-16" />
-                </div>
-                <div className="flex flex-col items-center gap-1">
-                    <Skeleton className="h-3 w-24" />
-                    <Skeleton className="h-6 w-20" />
-                </div>
-            </CardContent>
-        </Card>
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-6 w-3/4" />
-            </CardHeader>
-            <CardContent className="h-96">
-                 <Skeleton className="h-full w-full" />
-            </CardContent>
-        </Card>
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-6 w-1/2" />
-            </CardHeader>
-             <CardContent className="space-y-2">
-                 {[...Array(5)].map((_, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                        <Skeleton className="h-4 w-16" />
-                        <Skeleton className="h-4 flex-1" />
-                        <Skeleton className="h-4 w-12" />
-                    </div>
-                ))}
-            </CardContent>
-        </Card>
-    </div>
-);
-
 
 const SummaryCard = ({ tab }: { tab: TabValue }) => {
     const { transactions } = useApp();
@@ -267,10 +219,34 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
     );
 };
 
-
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
     const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
+    const [colorVars, setColorVars] = useState<Record<string, string>>({});
+
+     useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const allCategories = [...new Set(transactions.filter(t => t.type === 'expense').map(t => t.category))];
+        const newColorVars: Record<string, string> = {};
+
+        allCategories.forEach(categoryName => {
+            const details = categoryDetails(categoryName);
+            const match = details.color.match(/var\((--[\w-]+)\)/);
+            if (match && match[1]) {
+                const colorVar = match[1];
+                 try {
+                    const hslColor = getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim();
+                    if (hslColor) {
+                        newColorVars[categoryName] = `hsl(${hslColor})`;
+                    }
+                } catch (e) {
+                    console.error(`Could not compute style for ${colorVar}`, e);
+                }
+            }
+        });
+        setColorVars(newColorVars);
+    }, [transactions]);
 
     const { categoryExpenseData, chartConfig } = useMemo(() => {
         const now = new Date();
@@ -294,15 +270,13 @@ const ExpenseAnalysis = () => {
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
                  const details = categoryDetails(name);
-                 const colorMatch = details.color.match(/(\w+)-(\d+)/);
-                 const colorName = colorMatch ? colorMatch[1] : 'gray';
-                 const colorShade = colorMatch ? colorMatch[2] : '500';
+                 const fill = colorVars[name] || 'hsl(var(--muted-foreground))';
                  
                 return {
                     name,
                     value,
                     icon: details.icon,
-                    fill: `hsl(var(--${colorName}-${colorShade}))`,
+                    fill: fill,
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
@@ -324,7 +298,7 @@ const ExpenseAnalysis = () => {
             chartConfig: finalChartConfig,
         };
 
-    }, [transactions]);
+    }, [transactions, colorVars]);
 
     return (
         <div className="space-y-6">
@@ -419,6 +393,7 @@ const PlaceholderContent = ({ label, icon: Icon, text }: { label: string, icon: 
 
 export const ChartsPage = () => {
     const router = useRouter();
+    const { isLoading } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
 
@@ -461,6 +436,10 @@ export const ChartsPage = () => {
         }),
     };
 
+    if (isLoading) {
+        return null;
+    }
+
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
@@ -474,7 +453,6 @@ export const ChartsPage = () => {
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm p-1 h-auto mt-4 sticky top-0 z-10">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value} className="flex gap-2 items-center">
-                               <tab.icon className="h-4 w-4" />
                                {tab.label}
                             </TabsTrigger>
                        ))}
