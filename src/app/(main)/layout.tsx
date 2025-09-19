@@ -45,19 +45,14 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         setTransactionToEdit,
         openEditTransactionModal,
     } = useApp();
-    const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
-        setIsHydrated(true);
-    }, []);
-
-    useEffect(() => {
-        if (isHydrated && !isLoading && !user) {
+        if (!isLoading && !user) {
             router.replace('/');
         }
-    }, [user, isLoading, router, isHydrated]);
+    }, [user, isLoading, router]);
 
-    if (!isHydrated || isLoading || !user) {
+    if (isLoading || !user) {
         return <AppSkeleton />;
     }
 
@@ -111,5 +106,3 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         </AppProvider>
     )
 }
-
-    
