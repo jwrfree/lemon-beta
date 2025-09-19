@@ -13,13 +13,6 @@ import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { CustomToast } from '@/components/custom-toast';
 
-const AppSkeleton = () => (
-    <div className="flex h-dvh w-full items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
-);
-
-
 const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
     const router = useRouter();
@@ -53,7 +46,7 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
     }, [user, isLoading, router]);
 
     if (isLoading || !user) {
-        return <AppSkeleton />;
+        return null;
     }
 
     const handleCloseTxModal = () => {
