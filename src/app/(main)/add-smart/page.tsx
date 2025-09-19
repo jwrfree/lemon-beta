@@ -317,7 +317,7 @@ export default function SmartAddPage() {
                                     >
                                         {msg.type === 'user' && (
                                             <div className="flex justify-end">
-                                                <div className="p-3 bg-primary text-primary-foreground rounded-full">
+                                                <div className="p-3 bg-primary text-primary-foreground rounded-2xl">
                                                     {msg.content}
                                                 </div>
                                             </div>
@@ -331,7 +331,7 @@ export default function SmartAddPage() {
                                         )}
                                         {msg.type === 'ai-thinking' && (
                                             <div className="flex justify-start">
-                                                <div className="p-3 bg-card rounded-full flex items-center gap-2">
+                                                <div className="p-3 bg-card rounded-2xl flex items-center gap-2">
                                                     <LoaderCircle className="h-4 w-4 animate-spin" />
                                                     <AnimatePresence mode="wait">
                                                         <motion.span key={loadingMessage} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>
@@ -351,7 +351,7 @@ export default function SmartAddPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                     >
                                         <div className="flex justify-start">
-                                             <div className="p-3 bg-card rounded-full">
+                                             <div className="p-3 bg-card rounded-2xl">
                                                 Oke, aku catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold">{formatCurrency(parsedData.amount)}</span>. Sudah benar?
                                             </div>
                                         </div>
