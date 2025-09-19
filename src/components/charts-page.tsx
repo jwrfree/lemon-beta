@@ -417,7 +417,7 @@ export const ChartsPage = () => {
                     </TabsList>
                 </Tabs>
             </div>
-            <main className="flex-1 overflow-y-auto" {...handlers}>
+            <main className="overflow-y-auto" {...handlers}>
                 <AnimatePresence initial={false} custom={direction}>
                     <motion.div
                         key={activeTab}

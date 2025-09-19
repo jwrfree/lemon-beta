@@ -74,9 +74,6 @@ export default function BudgetDetailPage() {
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
-                <Button variant="ghost" size="icon" className="absolute right-4">
-                    <Pencil className="h-5 w-5" strokeWidth={1.75} />
-                </Button>
             </header>
 
             <main className="flex-1 overflow-y-auto p-4 space-y-6 pb-16">

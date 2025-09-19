@@ -28,7 +28,7 @@ export const SettingsPage = () => {
 
     return (
         <div className="flex flex-col bg-muted overflow-y-auto">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-10">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
             </header>
             <main className="flex-1 pb-20">

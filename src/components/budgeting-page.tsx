@@ -114,7 +114,7 @@ export const BudgetingPage = ({ onAddBudget }: { onAddBudget: () => void }) => {
 
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
                 <Button variant="ghost" size="icon" className="absolute right-4" onClick={onAddBudget}>
                     <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
