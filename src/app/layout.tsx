@@ -33,7 +33,7 @@ export default function RootLayout({
             richColors 
             toastOptions={{
               classNames: {
-                toast: 'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom-12 data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom-12 data-[state=closed]:fade-out-0',
+                toast: 'w-full max-w-sm p-4 rounded-full data-[state=open]:animate-toast-enter data-[state=closed]:animate-toast-exit',
               },
             }}
           />
