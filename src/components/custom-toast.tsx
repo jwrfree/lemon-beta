@@ -37,23 +37,24 @@ export const CustomToast = () => {
   return (
     <AnimatePresence>
       {show && (
-        <motion.div
-          layout
-          initial={{ y: 100, scaleX: 0.3, opacity: 0 }}
-          animate={{ y: 0, scaleX: 1, opacity: 1, transition: { type: 'spring', damping: 20, stiffness: 150 } }}
-          exit={{ y: 100, scaleX: 0.3, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
-          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50"
-        >
-          <div
-            className={cn(
-              'flex items-center gap-3 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg',
-              toastColors[type]
-            )}
-          >
-            <ToastIcon className="h-5 w-5" />
-            <span>{message}</span>
-          </div>
-        </motion.div>
+        <div className="fixed bottom-20 inset-x-0 z-50 flex justify-center">
+            <motion.div
+              layout
+              initial={{ y: 100, scaleX: 0.3, opacity: 0 }}
+              animate={{ y: 0, scaleX: 1, opacity: 1, transition: { type: 'spring', damping: 20, stiffness: 150 } }}
+              exit={{ y: 100, scaleX: 0.3, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
+            >
+              <div
+                className={cn(
+                  'flex items-center gap-3 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-lg',
+                  toastColors[type]
+                )}
+              >
+                <ToastIcon className="h-5 w-5" />
+                <span>{message}</span>
+              </div>
+            </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
