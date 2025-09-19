@@ -2,19 +2,36 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useApp, AppProvider } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { AnimatePresence } from 'framer-motion';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
+import { app } from '@/lib/firebase';
 
+const auth = getAuth(app);
 
-const WelcomePageContent = () => {
-    const { user, isLoading } = useApp();
+const LoadingSpinner = () => (
+    <div className="flex h-dvh w-full items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+);
+
+export default function WelcomePage() {
     const router = useRouter();
+    const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [authModal, setAuthModal] = useState<string | null>(null);
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+            setIsLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
+    
     useEffect(() => {
         if (!isLoading && user) {
             router.replace('/home');
@@ -22,11 +39,7 @@ const WelcomePageContent = () => {
     }, [user, isLoading, router]);
 
     if (isLoading || user) {
-        return (
-             <div className="flex h-dvh w-full items-center justify-center bg-background">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            </div>
-        );
+        return <LoadingSpinner />;
     }
     
     const closeModal = () => setAuthModal(null);
@@ -40,14 +53,5 @@ const WelcomePageContent = () => {
                 {authModal === 'signup' && <SignUpPage onClose={closeModal} setAuthModal={setAuthModal} />}
             </AnimatePresence>
         </>
-    );
-}
-
-
-export default function WelcomePage() {
-    return (
-        <AppProvider>
-            <WelcomePageContent />
-        </AppProvider>
     );
 }
