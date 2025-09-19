@@ -65,7 +65,7 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
         const { icon: CategoryIcon } = summaryData.biggestCategory ? categoryDetails(summaryData.biggestCategory.name) : { icon: TrendingDown };
 
         return (
-             <Card>
+            <Card>
                 <CardHeader>
                     <CardTitle className="text-base font-medium text-muted-foreground">
                         Ringkasan Pengeluaran Bulan Ini
@@ -232,7 +232,7 @@ const SpendingTrendChart = () => {
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
     
-    const { categoryExpenseData, chartConfig } = useMemo(() => {
+    return useMemo(() => {
         const now = new Date();
         const categoryMap: { [key: string]: number } = {};
 
@@ -240,14 +240,10 @@ const ExpenseAnalysis = () => {
             const tDate = parseISO(t.date);
             return t.type === 'expense' && isSameMonth(tDate, now);
         });
-
-        expenseTransactions.forEach(t => {
-            categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
-        });
-            
+        
         const totalExpense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);
 
-        const sortedBreakdown = Object.entries(categoryMap)
+        const categoryExpenseData = Object.entries(categoryMap)
             .map(([name, value]) => {
                 const details = categoryDetails(name);
                 return {
@@ -260,8 +256,8 @@ const ExpenseAnalysis = () => {
             })
             .sort((a, b) => b.value - a.value);
         
-        const finalChartConfig = Object.fromEntries(
-             sortedBreakdown.map((item) => [
+        const chartConfig = Object.fromEntries(
+             categoryExpenseData.map((item) => [
                 item.name,
                 {
                     label: item.name,
@@ -271,84 +267,78 @@ const ExpenseAnalysis = () => {
             ])
         ) as ChartConfig;
 
-        return {
-            categoryExpenseData: sortedBreakdown,
-            chartConfig: finalChartConfig,
-        };
-
-    }, [transactions]);
-
-    return (
-        <div className="space-y-6">
-            <SpendingTrendChart />
-
-             <Card>
-                <CardHeader>
-                    <CardTitle>Pengeluaran per Kategori</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <ChartContainer config={chartConfig} className="aspect-square h-80">
-                         <PieChart>
-                            <ChartTooltip 
-                                cursor={false}
-                                content={<ChartTooltipContent 
-                                    formatter={(value, name, props) => {
-                                        const config = chartConfig[name as keyof typeof chartConfig];
-                                        if (!config) return null;
-                                        
-                                        return (
-                                            <div className="flex items-center gap-2">
-                                                {config.icon && React.createElement(config.icon, { className: "h-4 w-4" })}
-                                                <div className="flex flex-col">
-                                                     <span className="font-semibold">{config.label}</span>
-                                                     <span className="text-muted-foreground">{formatCurrency(Number(value))}</span>
+        return (
+            <div className="space-y-6">
+                <SpendingTrendChart />
+    
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Pengeluaran per Kategori</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer config={chartConfig} className="aspect-square h-80">
+                             <PieChart>
+                                <ChartTooltip 
+                                    cursor={false}
+                                    content={<ChartTooltipContent 
+                                        formatter={(value, name, props) => {
+                                            const config = chartConfig[name as keyof typeof chartConfig];
+                                            if (!config) return null;
+                                            
+                                            return (
+                                                <div className="flex items-center gap-2">
+                                                    {config.icon && React.createElement(config.icon, { className: "h-4 w-4" })}
+                                                    <div className="flex flex-col">
+                                                         <span className="font-semibold">{config.label}</span>
+                                                         <span className="text-muted-foreground">{formatCurrency(Number(value))}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    }}
-                                    hideLabel
-                                />}
-                            />
-                            <Pie
-                                data={categoryExpenseData}
-                                dataKey="value"
-                                nameKey="name"
-                                innerRadius={60}
-                                strokeWidth={5}
-                                >
-                                {categoryExpenseData.map((entry) => (
-                                    <Cell key={`cell-${entry.name}`} fill={entry.fill} />
-                                ))}
-                                </Pie>
-                        </PieChart>
-                    </ChartContainer>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Rincian Kategori</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {categoryExpenseData.slice(0, 5).map((item) => {
-                        return (
-                            <div key={item.name} className="flex flex-col gap-2">
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
-                                        <span className="font-medium">{item.name}</span>
+                                            )
+                                        }}
+                                        hideLabel
+                                    />}
+                                />
+                                <Pie
+                                    data={categoryExpenseData}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    innerRadius={60}
+                                    strokeWidth={5}
+                                    >
+                                    {categoryExpenseData.map((entry) => (
+                                        <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                                    ))}
+                                    </Pie>
+                            </PieChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Rincian Kategori</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {categoryExpenseData.slice(0, 5).map((item) => {
+                            return (
+                                <div key={item.name} className="flex flex-col gap-2">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />
+                                            <span className="font-medium">{item.name}</span>
+                                        </div>
+                                        <span className="font-semibold">{formatCurrency(item.value)}</span>
                                     </div>
-                                    <span className="font-semibold">{formatCurrency(item.value)}</span>
+                                    <div className="h-2 w-full bg-muted rounded-full">
+                                        <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%`, backgroundColor: item.fill }}></div>
+                                    </div>
                                 </div>
-                                <div className="h-2 w-full bg-muted rounded-full">
-                                    <div className={cn("h-2 rounded-full")} style={{ width: `${item.percentage}%", backgroundColor: item.fill }}></div>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </CardContent>
-            </Card>
-        </div>
-    );
+                            )
+                        })}
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }, [transactions]);
 };
 
 
@@ -415,8 +405,8 @@ export const ChartsPage = () => {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Analisis Keuangan</h1>
             </header>
-            <Tabs value={activeTab} onValueChange={handleTabChange}>
-                <div className="bg-background border-b p-2 sticky top-16 z-10">
+            <div className="bg-background border-b p-2 sticky top-16 z-10">
+                <Tabs value={activeTab} onValueChange={handleTabChange}>
                     <TabsList className="grid w-full grid-cols-3 mx-auto max-w-sm">
                        {tabs.map(tab => (
                            <TabsTrigger key={tab.value} value={tab.value}>
@@ -424,33 +414,29 @@ export const ChartsPage = () => {
                             </TabsTrigger>
                        ))}
                     </TabsList>
-                </div>
-                <main className="overflow-y-auto">
-                    <div {...handlers}>
-                        <AnimatePresence initial={false} custom={direction}>
-                            <motion.div
-                                key={activeTab}
-                                custom={direction}
-                                variants={slideVariants}
-                                initial="enter"
-                                animate="center"
-                                exit="exit"
-                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                className="p-4 pb-20"
-                            >
-                                <div className="space-y-6">
-                                    <SummaryCard tab={activeTab} />
-                                    {activeTab === 'expense' && <ExpenseAnalysis />}
-                                    {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                                    {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
-                    </div>
-                </main>
-            </Tabs>
+                </Tabs>
+            </div>
+            <main className="flex-1 overflow-y-auto" {...handlers}>
+                <AnimatePresence initial={false} custom={direction}>
+                    <motion.div
+                        key={activeTab}
+                        custom={direction}
+                        variants={slideVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                        className="p-4 pb-20"
+                    >
+                        <div className="space-y-6">
+                            <SummaryCard tab={activeTab} />
+                            {activeTab === 'expense' && <ExpenseAnalysis />}
+                            {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
+                            {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                        </div>
+                    </motion.div>
+                </AnimatePresence>
+            </main>
         </div>
     );
 };
-
-    
