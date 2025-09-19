@@ -31,7 +31,10 @@ export const BottomNavigation = () => {
     const mainPages = navItems.map(item => item.href);
 
     const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || !!transactionToEdit;
-    const isVisible = (mainPages.includes(pathname) || pathname === '/' || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets')) && !isModalOpen;
+    
+    // Hide bottom nav on the add-smart page for a more focused experience
+    const isVisible = pathname !== '/add-smart' && (mainPages.includes(pathname) || pathname === '/' || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets')) && !isModalOpen;
+
 
     return (
         <AnimatePresence>
