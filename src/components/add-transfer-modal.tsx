@@ -87,15 +87,15 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-full"
+        className="w-full max-w-md bg-popover rounded-t-2xl shadow-lg flex flex-col h-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
+        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
           <h2 className="text-xl font-bold flex items-center gap-2">
             <ArrowRightLeft className="h-5 w-5" />
             Transfer Antar Dompet
           </h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full"><X className="h-5 w-5" /></Button>
         </div>
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
           <div className="space-y-2">
@@ -167,7 +167,7 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
             />
           </div>
         </form>
-        <div className="p-4 border-t sticky bottom-0 bg-background z-10">
+        <div className="p-4 border-t sticky bottom-0 bg-popover z-10">
           <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
             {isSubmitting ? 'Memproses...' : 'Simpan Transfer'}
           </Button>

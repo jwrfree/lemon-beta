@@ -10,14 +10,14 @@ import Link from 'next/link';
 
 export const BottomNavigation = () => {
     const pathname = usePathname();
-    const {
+    const { 
         isTxModalOpen,
         isWalletModalOpen,
         isBudgetModalOpen,
         isDeleteModalOpen,
         isTransferModalOpen,
         isEditWalletModalOpen,
-        isEditTxModalOpen
+        transactionToEdit
     } = useApp();
 
     const navItems = [
@@ -28,10 +28,9 @@ export const BottomNavigation = () => {
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
     
-    // The pages where the bottom nav should be visible
     const mainPages = navItems.map(item => item.href);
 
-    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || isEditTxModalOpen;
+    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || !!transactionToEdit;
     const isVisible = (mainPages.includes(pathname) || pathname === '/' || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets')) && !isModalOpen;
 
     return (
@@ -44,7 +43,7 @@ export const BottomNavigation = () => {
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     className="fixed bottom-0 left-0 right-0 z-40"
                 >
-                    <div className="w-full max-w-md mx-auto grid grid-cols-5 h-16 items-center bg-card shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t md:rounded-b-lg md:rounded-t-none">
+                    <div className="w-full max-w-md mx-auto grid grid-cols-5 h-16 items-center bg-card/80 backdrop-blur-lg shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t md:rounded-b-lg md:rounded-t-none">
                         {navItems.map(item => {
                              const isActive = pathname === item.href;
                              if (item.primary) {

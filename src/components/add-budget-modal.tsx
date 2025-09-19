@@ -94,10 +94,10 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }} 
         exit={{ y: "100%" }} 
         transition={{ type: "spring", stiffness: 300, damping: 30 }} 
-        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit max-h-[85vh]" 
+        className="w-full max-w-md bg-popover rounded-t-2xl shadow-lg flex flex-col h-fit max-h-[85vh]" 
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
+        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
           <div className="w-8">
             {step > 1 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
@@ -106,7 +106,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
             )}
           </div>
           <h2 className="text-xl font-bold text-center">{stepTitles[step - 1]}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-muted rounded-full">
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -136,7 +136,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                                     id="target-amount" 
                                     value={formatCurrency(targetAmount)}
                                     onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                                    className="text-4xl font-bold h-auto border-none focus-visible:ring-0 text-center"
+                                    className="text-4xl font-bold h-auto border-none focus-visible:ring-0 text-center bg-transparent"
                                     inputMode="numeric"
                                     autoFocus
                                 />
@@ -165,7 +165,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                                     <button type="button" key={cat.id} onClick={() => handleCategoryToggle(cat.name)} 
                                     className={cn(
                                         "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1.5 aspect-square transition-colors", 
-                                        selectedCategories.includes(cat.name) ? 'border-primary bg-primary/10' : 'border-muted hover:bg-accent'
+                                        selectedCategories.includes(cat.name) ? 'border-primary bg-primary/10' : 'hover:bg-accent'
                                     )}>
                                     <cat.icon className={cn("h-6 w-6", selectedCategories.includes(cat.name) ? 'text-primary' : 'text-muted-foreground')} />
                                     <span className="text-xs text-center leading-tight">{cat.name}</span>
@@ -179,7 +179,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
             </AnimatePresence>
         </div>
         
-        <div className="p-4 border-t sticky bottom-0 bg-background">
+        <div className="p-4 border-t sticky bottom-0 bg-popover">
           {step < 3 ? (
              <Button onClick={handleNext} className="w-full" size="lg">Lanjut</Button>
           ) : (

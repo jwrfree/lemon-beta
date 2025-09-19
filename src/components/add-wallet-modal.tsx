@@ -106,10 +106,10 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit md:h-auto"
+        className="w-full max-w-md bg-popover rounded-t-2xl shadow-lg flex flex-col h-fit md:h-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
+        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl">
           <div className="w-8">
             {step === 2 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
@@ -120,7 +120,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
           <h2 className="text-xl font-bold text-center">
             {step === 1 ? 'Pilih Jenis Dompet' : `Detail Dompet ${selectedCategory?.name}`}
           </h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-muted rounded-full">
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
           </Button>
         </div>
