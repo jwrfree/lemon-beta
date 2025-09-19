@@ -222,31 +222,6 @@ const SpendingTrendChart = ({ timeRange }: { timeRange: TimeRange }) => {
 const ExpenseAnalysis = () => {
     const { transactions } = useApp();
     const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
-    const [colorVars, setColorVars] = useState<Record<string, string>>({});
-
-     useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        const allCategories = [...new Set(transactions.filter(t => t.type === 'expense').map(t => t.category))];
-        const newColorVars: Record<string, string> = {};
-
-        allCategories.forEach(categoryName => {
-            const details = categoryDetails(categoryName);
-            const match = details.color.match(/var\((--[\w-]+)\)/);
-            if (match && match[1]) {
-                const colorVar = match[1];
-                 try {
-                    const hslColor = getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim();
-                    if (hslColor) {
-                        newColorVars[categoryName] = `hsl(${hslColor})`;
-                    }
-                } catch (e) {
-                    console.error(`Could not compute style for ${colorVar}`, e);
-                }
-            }
-        });
-        setColorVars(newColorVars);
-    }, [transactions]);
 
     const { categoryExpenseData, chartConfig } = useMemo(() => {
         const now = new Date();
@@ -269,14 +244,14 @@ const ExpenseAnalysis = () => {
 
         const sortedBreakdown = Object.entries(categoryMap)
             .map(([name, value]) => {
-                 const details = categoryDetails(name);
-                 const fill = colorVars[name] || 'hsl(var(--muted-foreground))';
-                 
+                const details = categoryDetails(name);
+                const colorClass = details.color; // e.g., 'text-yellow-600'
+                const colorVarName = colorClass.match(/text-([\w-]+)-/)?.[1]; // Extracts 'yellow'
                 return {
                     name,
                     value,
                     icon: details.icon,
-                    fill: fill,
+                    fill: `hsl(var(--${colorVarName}-500))`, // Use the CSS variable from globals.css
                     percentage: totalExpense > 0 ? (value / totalExpense) * 100 : 0,
                 };
             })
@@ -298,7 +273,7 @@ const ExpenseAnalysis = () => {
             chartConfig: finalChartConfig,
         };
 
-    }, [transactions, colorVars]);
+    }, [transactions]);
 
     return (
         <div className="space-y-6">
@@ -481,3 +456,5 @@ export const ChartsPage = () => {
         </div>
     );
 };
+
+    

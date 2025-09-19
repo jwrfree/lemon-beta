@@ -6,7 +6,6 @@ const colorSafelist = [
 ].flatMap((color) => [
   `text-${color}-600`, `dark:text-${color}-500`,
   `bg-${color}-100`, `dark:bg-${color}-900/50`,
-  `var(--${color}-500)`, `var(--${color}-600)`,
 ]);
 
 
@@ -64,19 +63,19 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        // Adding HSL vars for category colors
-        yellow: { 500: 'var(--yellow-500)', 600: 'var(--yellow-600)' },
-        blue: { 500: 'var(--blue-500)', 600: 'var(--blue-600)' },
-        purple: { 500: 'var(--purple-500)', 600: 'var(--purple-600)' },
-        cyan: { 500: 'var(--cyan-500)', 600: 'var(--cyan-600)' },
-        orange: { 500: 'var(--orange-500)', 600: 'var(--orange-600)' },
-        pink: { 500: 'var(--pink-500)', 600: 'var(--pink-600)' },
-        green: { 500: 'var(--green-500)', 600: 'var(--green-600)' },
-        indigo: { 500: 'var(--indigo-500)', 600: 'var(--indigo-600)' },
-        red: { 500: 'var(--red-500)', 600: 'var(--red-600)' },
-        teal: { 500: 'var(--teal-500)', 600: 'var(--teal-600)' },
-        gray: { 500: 'var(--gray-500)', 600: 'var(--gray-600)' },
-        slate: { 500: 'var(--slate-500)', 600: 'var(--slate-600)' },
+        // Adding HSL vars for category colors to be accessible by JS
+        yellow: { '500': 'hsl(var(--yellow-500))', '600': 'hsl(var(--yellow-600))' },
+        blue: { '500': 'hsl(var(--blue-500))', '600': 'hsl(var(--blue-600))' },
+        purple: { '500': 'hsl(var(--purple-500))', '600': 'hsl(var(--purple-600))' },
+        cyan: { '500': 'hsl(var(--cyan-500))', '600': 'hsl(var(--cyan-600))' },
+        orange: { '500': 'hsl(var(--orange-500))', '600': 'hsl(var(--orange-600))' },
+        pink: { '500': 'hsl(var(--pink-500))', '600': 'hsl(var(--pink-600))' },
+        green: { '500': 'hsl(var(--green-500))', '600': 'hsl(var(--green-600))' },
+        indigo: { '500': 'hsl(var(--indigo-500))', '600': 'hsl(var(--indigo-600))' },
+        red: { '500': 'hsl(var(--red-500))', '600': 'hsl(var(--red-600))' },
+        teal: { '500': 'hsl(var(--teal-500))', '600': 'hsl(var(--teal-600))' },
+        gray: { '500': 'hsl(var(--gray-500))', '600': 'hsl(var(--gray-600))' },
+        slate: { '500': 'hsl(var(--slate-500))', '600': 'hsl(var(--slate-600))' },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -109,3 +108,5 @@ export default {
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+    
