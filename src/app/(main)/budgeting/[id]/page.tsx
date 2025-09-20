@@ -15,7 +15,7 @@ import { startOfMonth, parseISO } from 'date-fns';
 export default function BudgetDetailPage() {
     const router = useRouter();
     const params = useParams();
-    const { budgets, transactions, isLoading } = useApp();
+    const { budgets, transactions, isLoading, showToast } = useApp();
 
     const budgetId = params.id as string;
     const budget = useMemo(() => budgets.find(b => b.id === budgetId), [budgets, budgetId]);
@@ -67,6 +67,10 @@ export default function BudgetDetailPage() {
     if (progress > 80 && progress <= 100) progressBarColor = 'bg-yellow-500';
     else if (progress > 100) progressBarColor = 'bg-destructive';
 
+    const handleEditClick = () => {
+        showToast("Fitur edit anggaran sedang dalam pengembangan.", 'info');
+    }
+
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
@@ -74,6 +78,9 @@ export default function BudgetDetailPage() {
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
+                <Button variant="ghost" size="icon" className="absolute right-4" onClick={handleEditClick}>
+                    <Pencil className="h-5 w-5" strokeWidth={1.75} />
+                </Button>
             </header>
 
             <main className="flex-1 overflow-y-auto p-4 space-y-6 pb-16">
