@@ -37,12 +37,12 @@ export const CustomToast = () => {
   return (
     <AnimatePresence>
       {show && (
-        <div className="fixed bottom-20 inset-x-0 z-50 flex justify-center">
+        <div className="fixed top-4 inset-x-0 z-50 flex justify-center">
             <motion.div
               layout
-              initial={{ y: 100, scaleX: 0.3, opacity: 0 }}
+              initial={{ y: -100, scaleX: 0.3, opacity: 0 }}
               animate={{ y: 0, scaleX: 1, opacity: 1, transition: { type: 'spring', damping: 20, stiffness: 150 } }}
-              exit={{ y: 100, scaleX: 0.3, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
+              exit={{ y: -100, scaleX: 0.3, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
             >
               <div
                 className={cn(
