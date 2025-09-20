@@ -11,6 +11,7 @@ import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
 import { useEffect } from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
+import { EditBudgetModal } from '@/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
 
 const slideVariants = {
@@ -42,6 +43,9 @@ function MainAppLayout({ children }: { children: React.ReactNode }) {
         setIsWalletModalOpen,
         isBudgetModalOpen,
         setIsBudgetModalOpen,
+        isEditBudgetModalOpen,
+        setIsEditBudgetModalOpen,
+        budgetToEdit,
         isDeleteModalOpen,
         transactionToDelete,
         handleConfirmDelete,
@@ -96,6 +100,7 @@ function MainAppLayout({ children }: { children: React.ReactNode }) {
                 {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
                 {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
                 {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
+                {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
                 {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
                 {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
                 {isDeleteModalOpen && transactionToDelete && (

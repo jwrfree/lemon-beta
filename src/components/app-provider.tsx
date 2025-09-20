@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
@@ -39,6 +38,8 @@ interface AppContextType {
     updateWallet: (walletId: string, walletData: any) => Promise<void>;
     deleteWallet: (walletId: string) => Promise<void>;
     addBudget: (budgetData: any) => Promise<void>;
+    updateBudget: (budgetId: string, budgetData: any) => Promise<void>;
+    deleteBudget: (budgetId: string) => Promise<void>;
     addAssetLiability: (data: any) => Promise<void>;
     updateAssetLiability: (id: string, type: 'asset' | 'liability', data: any) => Promise<void>;
     deleteAssetLiability: (id: string, type: 'asset' | 'liability') => Promise<void>;
@@ -55,6 +56,10 @@ interface AppContextType {
     setIsWalletModalOpen: (isOpen: boolean) => void;
     isBudgetModalOpen: boolean;
     setIsBudgetModalOpen: (isOpen: boolean) => void;
+    isEditBudgetModalOpen: boolean;
+    setIsEditBudgetModalOpen: (isOpen: boolean) => void;
+    budgetToEdit: any | null;
+    openEditBudgetModal: (budget: any) => void;
     isTransferModalOpen: boolean;
     setIsTransferModalOpen: (isOpen: boolean) => void;
     preFilledTransfer: PreFilledTransfer | null;
@@ -97,6 +102,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+    const [isEditBudgetModalOpen, setIsEditBudgetModalOpen] = useState(false);
+    const [budgetToEdit, setBudgetToEdit] = useState<any | null>(null);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
@@ -382,6 +389,29 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsBudgetModalOpen(false);
     }, [user, getBudgetCollection]);
 
+    const updateBudget = useCallback(async (budgetId: string, budgetData: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const budgetCollection = getBudgetCollection();
+        if (!budgetCollection) return;
+        
+        const budgetRef = doc(budgetCollection, budgetId);
+        await updateDoc(budgetRef, budgetData);
+        showToast("Anggaran berhasil diperbarui!", 'success');
+        setIsEditBudgetModalOpen(false);
+    }, [user, getBudgetCollection]);
+
+    const deleteBudget = useCallback(async (budgetId: string) => {
+        if (!user) throw new Error("User not authenticated.");
+        const budgetCollection = getBudgetCollection();
+        if (!budgetCollection) return;
+        
+        const budgetRef = doc(budgetCollection, budgetId);
+        await deleteDoc(budgetRef);
+        showToast("Anggaran berhasil dihapus.", 'success');
+        setIsEditBudgetModalOpen(false);
+        router.back();
+    }, [user, getBudgetCollection, router]);
+
     const addAssetLiability = useCallback(async (data: any) => {
         if (!user) throw new Error("User not authenticated.");
         const { type, ...itemData } = data;
@@ -480,6 +510,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setWalletToEdit(wallet);
         setIsEditWalletModalOpen(true);
     };
+    
+    const openEditBudgetModal = (budget: any) => {
+        setBudgetToEdit(budget);
+        setIsEditBudgetModalOpen(true);
+    };
 
     const openEditTransactionModal = (transaction: any) => {
         if (transaction.category === 'Transfer') {
@@ -507,6 +542,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         updateWallet,
         deleteWallet,
         addBudget,
+        updateBudget,
+        deleteBudget,
         addAssetLiability,
         updateAssetLiability,
         deleteAssetLiability,
@@ -521,6 +558,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsWalletModalOpen,
         isBudgetModalOpen,
         setIsBudgetModalOpen,
+        isEditBudgetModalOpen,
+        setIsEditBudgetModalOpen,
+        budgetToEdit,
+        openEditBudgetModal,
         isTransferModalOpen,
         setIsTransferModalOpen,
         preFilledTransfer,
