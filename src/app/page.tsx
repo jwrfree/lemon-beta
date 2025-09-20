@@ -18,6 +18,17 @@ const LoadingSpinner = () => (
 export default function WelcomePage() {
     const [authModal, setAuthModal] = useState<string | null>(null);
     const closeModal = () => setAuthModal(null);
+    const { user, isLoading } = useApp();
+    const router = useRouter();
+
+    if (isLoading) {
+        return <LoadingSpinner />;
+    }
+
+    if (user) {
+        router.replace('/home');
+        return <LoadingSpinner />;
+    }
 
     return (
         <>
