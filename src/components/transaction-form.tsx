@@ -47,6 +47,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
         if (initialData) {
             setType(initialData.type || 'expense');
             setCategory(initialData.category || '');
+            setSubCategory(initialData.subCategory || '');
             setWalletId(initialData.walletId || defaultWallet?.id || '');
             setDescription(initialData.description || '');
             setLocation(initialData.location || '');
@@ -227,11 +228,11 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
             </div>
 
             <div className="space-y-2">
-                <Label>Semua kategori belum di update, cek kategori terbaru</Label>
+                <Label>Kategori</Label>
                 <div className="flex items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
                     {category ? (
                         <div className="flex flex-col">
-                            <span className="font-medium">{category}</span>
+                            <span className="font-medium truncate">{category}</span>
                             {subCategory && <span className="text-sm text-muted-foreground">{subCategory}</span>}
                         </div>
                     ) : (
@@ -353,4 +354,3 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
         </>
     );
 };
-

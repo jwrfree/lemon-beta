@@ -88,7 +88,7 @@ export const categories: Categories = {
       icon: HeartPulse, 
       color: 'text-red-600 dark:text-red-500', 
       bgColor: 'bg-red-100 dark:bg-red-900/50',
-      subCategories: ['Berobat', 'Apotek']
+      subCategories: ['Dokter & RS', 'Obat & Vitamin', 'Pemeriksaan']
     },
     { 
       id: 'cat-e-12', 
@@ -96,7 +96,7 @@ export const categories: Categories = {
       icon: Sparkles, 
       color: 'text-pink-600 dark:text-pink-500', 
       bgColor: 'bg-pink-100 dark:bg-pink-900/50',
-      subCategories: ['Skincare', 'Bodycare', 'Haircare', 'Deodorant', 'Makeup']
+      subCategories: ['Skincare', 'Potong Rambut', 'Perawatan Tubuh', 'Makeup']
     },
     {
       id: 'cat-e-11',
@@ -130,7 +130,7 @@ export const categories: Categories = {
       icon: Briefcase, 
       color: 'text-cyan-600 dark:text-cyan-500', 
       bgColor: 'bg-cyan-100 dark:bg-cyan-900/50',
-      subCategories: ['Proyek Desain', 'Konsultasi', 'Lainnya']
+      subCategories: ['Proyek Desain', 'Konsultasi', 'Penulisan', 'Lainnya']
     },
     { 
       id: 'cat-i-2', 
@@ -163,8 +163,7 @@ export const categories: Categories = {
       name: 'Transfer', 
       icon: ArrowRightLeft, 
       color: 'text-slate-600 dark:text-slate-500', 
-      bgColor: 'bg-slate-100 dark:bg-slate-900/50',
-      subCategories: ['Antar Dompet', 'Antar Bank']
+      bgColor: 'bg-slate-100 dark:bg-slate-900/50'
     },
   ]
 };
