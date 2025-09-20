@@ -156,7 +156,62 @@ const IncomeSummaryCard = () => {
     );
 };
 
-const TrendChart = ({ type }: { type: 'expense' | 'income' }) => {
+const NetIncomeSummaryCard = () => {
+    const { transactions } = useApp();
+
+    const summaryData = useMemo(() => {
+        const now = new Date();
+        const start = startOfMonth(now);
+        const end = endOfMonth(now);
+        
+        const monthlyTransactions = transactions.filter(t => {
+            const tDate = parseISO(t.date);
+            return tDate >= start && tDate <= end;
+        });
+
+        const totalIncome = monthlyTransactions.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+        const totalExpense = monthlyTransactions.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
+        const netIncome = totalIncome - totalExpense;
+
+        return { totalIncome, totalExpense, netIncome };
+    }, [transactions]);
+
+    const netColor = summaryData.netIncome >= 0 ? 'text-green-600' : 'text-destructive';
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-base font-medium text-muted-foreground">
+                    Ringkasan Arus Kas Bulan Ini
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center gap-2 text-center">
+                <p className={cn("text-4xl font-bold", netColor)}>{formatCurrency(summaryData.netIncome)}</p>
+                <p className="text-sm text-muted-foreground">
+                    {summaryData.netIncome >= 0 ? 'Surplus' : 'Defisit'}
+                </p>
+                <div className="grid grid-cols-2 gap-4 w-full pt-4">
+                    <div className="flex flex-col gap-1 items-center text-center p-2 rounded-lg bg-muted/50">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <ArrowUpRight className="h-4 w-4 text-green-600" />
+                            <span>Total Pemasukan</span>
+                        </div>
+                        <p className="text-sm font-semibold mt-1">{formatCurrency(summaryData.totalIncome)}</p>
+                    </div>
+                    <div className="flex flex-col gap-1 items-center text-center p-2 rounded-lg bg-muted/50">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <ArrowDownLeft className="h-4 w-4 text-destructive" />
+                            <span>Total Pengeluaran</span>
+                        </div>
+                        <p className="text-sm font-semibold mt-1">{formatCurrency(summaryData.totalExpense)}</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+const TrendChart = ({ type }: { type: 'expense' | 'income' | 'net' }) => {
     const { transactions } = useApp();
     const [timeRange, setTimeRange] = useState<TimeRange>('this_month');
 
@@ -177,26 +232,27 @@ const TrendChart = ({ type }: { type: 'expense' | 'income' }) => {
 
         const dateInterval = eachDayOfInterval({ start: startDate, end: endDate });
         
-        const dailyTotals: { [key: string]: number } = {};
+        const dailyTotals: { [key: string]: { income: number, expense: number } } = {};
         dateInterval.forEach(day => {
-            dailyTotals[format(day, 'yyyy-MM-dd')] = 0;
+            dailyTotals[format(day, 'yyyy-MM-dd')] = { income: 0, expense: 0 };
         });
 
         transactions
             .filter(t => {
                 const tDate = parseISO(t.date);
-                return t.type === type && tDate >= startDate && tDate <= endDate;
+                return tDate >= startDate && tDate <= endDate;
             })
             .forEach(t => {
                 const dateKey = format(parseISO(t.date), 'yyyy-MM-dd');
-                if (dailyTotals[dateKey] !== undefined) {
-                    dailyTotals[dateKey] += t.amount;
+                if (dailyTotals[dateKey]) {
+                    if (t.type === 'income') dailyTotals[dateKey].income += t.amount;
+                    if (t.type === 'expense') dailyTotals[dateKey].expense += t.amount;
                 }
             });
 
-        return Object.entries(dailyTotals).map(([date, total]) => ({
+        return Object.entries(dailyTotals).map(([date, totals]) => ({
             date,
-            total,
+            ...totals,
             formattedDate: format(parseISO(date), 'd MMM', { locale: dateFnsLocaleId }),
         }));
     }, [transactions, timeRange, type]);
@@ -208,14 +264,89 @@ const TrendChart = ({ type }: { type: 'expense' | 'income' }) => {
         return `Rp${numValue}`;
     };
     
-    const strokeColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--green-500))';
-    const fillId = type === 'expense' ? 'fill-destructive' : 'fill-green';
-    const gradientColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--green-500))';
+    if (type !== 'net') {
+        const dataKey = type === 'expense' ? 'expense' : 'income';
+        const strokeColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--green-500))';
+        const fillId = type === 'expense' ? 'fill-destructive' : 'fill-green';
+        const gradientColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--green-500))';
+
+        return (
+             <Card>
+                <CardHeader className="flex flex-col gap-3">
+                    <CardTitle>Tren {type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}</CardTitle>
+                    <div className="p-1 bg-muted rounded-full flex items-center gap-1 border w-fit">
+                        <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
+                        <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
+                        <Button onClick={() => setTimeRange('this_month')} variant={timeRange === 'this_month' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">Bulan Ini</Button>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <ChartContainer config={{}} className="h-80 w-full">
+                        <AreaChart accessibilityLayer data={trendData}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="formattedDate"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                interval="preserveStartEnd"
+                            />
+                            <YAxis 
+                                tickFormatter={formatTick} 
+                                axisLine={false} 
+                                tickLine={false}
+                                width={50}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent 
+                                                labelFormatter={(value, payload) => {
+                                                    if (payload && payload.length > 0 && payload[0].payload) {
+                                                        return format(parseISO(payload[0].payload.date), 'eeee, d MMM yyyy', { locale: dateFnsLocaleId });
+                                                    }
+                                                    return value;
+                                                }}
+                                                formatter={(value) => formatCurrency(Number(value))} 
+                                                indicator="dot" 
+                                            />}
+                            />
+                            <defs>
+                                <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor={gradientColor} stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor={gradientColor} stopOpacity={0.1} />
+                                </linearGradient>
+                            </defs>
+                            <Area
+                                dataKey={dataKey}
+                                type="monotone"
+                                stroke={strokeColor}
+                                fill={`url(#${fillId})`}
+                                strokeWidth={2}
+                                dot={false}
+                                name={type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}
+                            />
+                        </AreaChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
+        );
+    }
+    
+    const chartConfig: ChartConfig = {
+      income: {
+        label: "Pemasukan",
+        color: "hsl(var(--chart-2))",
+      },
+      expense: {
+        label: "Pengeluaran",
+        color: "hsl(var(--chart-1))",
+      },
+    }
 
     return (
-        <Card>
+         <Card>
             <CardHeader className="flex flex-col gap-3">
-                <CardTitle>Tren {type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}</CardTitle>
+                <CardTitle>Arus Kas Harian</CardTitle>
                 <div className="p-1 bg-muted rounded-full flex items-center gap-1 border w-fit">
                     <Button onClick={() => setTimeRange('last7d')} variant={timeRange === 'last7d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">7 Hari</Button>
                     <Button onClick={() => setTimeRange('last30d')} variant={timeRange === 'last30d' ? 'secondary' : 'ghost'} size="sm" className="rounded-full h-7 text-xs px-2">30 Hari</Button>
@@ -223,10 +354,10 @@ const TrendChart = ({ type }: { type: 'expense' | 'income' }) => {
                 </div>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={{}} className="h-80 w-full">
-                    <AreaChart accessibilityLayer data={trendData}>
+                 <ChartContainer config={chartConfig} className="h-80 w-full">
+                    <BarChart accessibilityLayer data={trendData}>
                         <CartesianGrid vertical={false} />
-                        <XAxis
+                         <XAxis
                             dataKey="formattedDate"
                             tickLine={false}
                             axisLine={false}
@@ -242,35 +373,28 @@ const TrendChart = ({ type }: { type: 'expense' | 'income' }) => {
                         <ChartTooltip
                             cursor={false}
                             content={<ChartTooltipContent 
-                                            labelFormatter={(value, payload) => {
-                                                if (payload && payload.length > 0 && payload[0].payload) {
-                                                    return format(parseISO(payload[0].payload.date), 'eeee, d MMM yyyy', { locale: dateFnsLocaleId });
-                                                }
-                                                return value;
-                                            }}
-                                            formatter={(value) => formatCurrency(Number(value))} 
-                                            indicator="dot" 
-                                        />}
+                                        labelFormatter={(value, payload) => {
+                                            if (payload && payload.length > 0 && payload[0].payload) {
+                                                return format(parseISO(payload[0].payload.date), 'eeee, d MMM yyyy', { locale: dateFnsLocaleId });
+                                            }
+                                            return value;
+                                        }}
+                                        formatter={(value, name) => (
+                                          <div className='flex flex-col'>
+                                            <span>{name === 'income' ? 'Pemasukan' : 'Pengeluaran'}</span>
+                                            <span className='font-bold'>{formatCurrency(Number(value))}</span>
+                                          </div>
+                                        )}
+                                        indicator="dot" 
+                                    />}
                         />
-                         <defs>
-                             <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor={gradientColor} stopOpacity={0.8} />
-                                <stop offset="95%" stopColor={gradientColor} stopOpacity={0.1} />
-                            </linearGradient>
-                        </defs>
-                        <Area
-                            dataKey="total"
-                            type="monotone"
-                            stroke={strokeColor}
-                            fill={`url(#${fillId})`}
-                            strokeWidth={2}
-                            dot={false}
-                        />
-                    </AreaChart>
+                        <Bar dataKey="income" fill="hsl(var(--green-500))" radius={4} name="Pemasukan" />
+                        <Bar dataKey="expense" fill="hsl(var(--destructive))" radius={4} name="Pengeluaran" />
+                    </BarChart>
                 </ChartContainer>
             </CardContent>
         </Card>
-    );
+    )
 };
 
 const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
@@ -497,7 +621,10 @@ export default function ChartsPage() {
                                 </>
                             )}
                             {activeTab === 'net' && (
-                                <PlaceholderContent label="Analisis Net Income" icon={Scale} />
+                                <>
+                                    <NetIncomeSummaryCard />
+                                    <TrendChart type="net" />
+                                </>
                             )}
                         </div>
                     </motion.div>
