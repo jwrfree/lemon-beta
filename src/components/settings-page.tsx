@@ -32,7 +32,7 @@ export const SettingsPage = () => {
                 <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
             </header>
             <main className="flex-1 pb-20">
-                <div className="p-4 space-y-6">
+                <div className="p-4 space-y-4">
                     {/* User Profile Section */}
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
@@ -116,11 +116,10 @@ export const SettingsPage = () => {
                         </button>
                     </div>
                     
-                     <p className="text-xs text-muted-foreground text-center">Lemon App v1.2.0</p>
+                     <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v1.2.0</p>
                 </div>
             </main>
         </div>
     );
 };
 
-    
