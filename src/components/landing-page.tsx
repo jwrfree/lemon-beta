@@ -56,7 +56,7 @@ const AppMockup = () => (
 
 export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | null) => void; }) => {
     return (
-        <div className="flex flex-col h-dvh bg-background">
+        <div className="flex flex-col h-dvh bg-background overflow-hidden">
             <main className="flex-1 flex flex-col items-center justify-center p-8 text-center -mt-8">
                 <AppMockup />
 
