@@ -9,6 +9,7 @@ import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
 import { app } from '@/lib/firebase';
+import { AppProvider, useApp } from '@/components/app-provider';
 
 const auth = getAuth(app);
 
@@ -18,25 +19,19 @@ const LoadingSpinner = () => (
     </div>
 );
 
-export default function WelcomePage() {
+const WelcomePageContent = () => {
     const router = useRouter();
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const { user, isLoading } = useApp();
     const [authModal, setAuthModal] = useState<string | null>(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                router.replace('/home');
-            } else {
-                setUser(null);
-                setIsLoading(false);
-            }
-        });
-        return () => unsubscribe();
-    }, [router]);
+        if (!isLoading && user) {
+            router.replace('/home');
+        }
+    }, [user, isLoading, router]);
 
-    if (isLoading) {
+
+    if (isLoading || (!isLoading && user)) {
         return <LoadingSpinner />;
     }
     
@@ -51,5 +46,13 @@ export default function WelcomePage() {
                 {authModal === 'signup' && <SignUpPage onClose={closeModal} setAuthModal={setAuthModal} />}
             </AnimatePresence>
         </>
+    );
+}
+
+export default function WelcomePage() {
+    return (
+        <AppProvider>
+            <WelcomePageContent />
+        </AppProvider>
     );
 }

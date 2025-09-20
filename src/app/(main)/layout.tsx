@@ -56,7 +56,7 @@ const MainLayoutContent = ({ children, pathname, router }: { children: React.Rea
     }, [user, isLoading, router]);
 
     if (isLoading || !user) {
-        return null; // Return null to prevent flickering during load or if no user
+        return null; // Prevent flicker/content flash until auth state is confirmed
     }
 
     const handleCloseTxModal = () => {
