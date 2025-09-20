@@ -56,7 +56,7 @@ function MainAppLayout({ children }: { children: React.ReactNode }) {
     } = useApp();
 
     useEffect(() => {
-        if (!isLoading && !user) {
+        if (!isLoading && user === null) {
             router.replace('/');
         }
     }, [user, isLoading, router]);
