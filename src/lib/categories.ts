@@ -118,7 +118,7 @@ export const categories: Categories = {
     },
     { 
       id: 'cat-i-5', 
-      name: 'Pekerjaan Sampingan', 
+      name: 'Freelance', 
       icon: Briefcase, 
       color: 'text-cyan-600 dark:text-cyan-500', 
       bgColor: 'bg-cyan-100 dark:bg-cyan-900/50',
