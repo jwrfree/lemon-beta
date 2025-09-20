@@ -59,12 +59,6 @@ function MainAppLayout({ children }: { children: React.ReactNode }) {
         setTransactionToEdit,
     } = useApp();
 
-    useEffect(() => {
-        if (!isLoading && user === null) {
-            router.replace('/');
-        }
-    }, [user, isLoading, router]);
-
     if (isLoading || !user) {
         return null; 
     }
@@ -124,5 +118,3 @@ export default function MainAppLayoutExport({ children }: { children: React.Reac
         </AppProvider>
     );
 }
-
-    
