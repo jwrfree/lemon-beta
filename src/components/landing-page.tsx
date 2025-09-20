@@ -7,7 +7,7 @@ import { Wallet, LogIn, UserPlus } from 'lucide-react';
 
 export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | null) => void; }) => {
     return (
-        <div className="flex flex-col h-full bg-background">
+        <div className="flex flex-col h-dvh bg-background">
             <main className="flex-1 flex flex-col items-center justify-center p-8 text-center">
                 <motion.div
                     initial={{ scale: 0.5, opacity: 0 }}

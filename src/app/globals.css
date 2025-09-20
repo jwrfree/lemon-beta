@@ -117,6 +117,9 @@
 }
 
 @layer base {
+  html, body, #__next {
+    @apply h-full;
+  }
   * {
     @apply border-border;
   }
@@ -170,5 +173,3 @@
     @apply border-white/20 dark:border-white/10;
    }
 }
-
-    

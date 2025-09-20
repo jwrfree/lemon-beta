@@ -10,7 +10,7 @@ import { AppProvider, useApp } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 
 const LoadingSpinner = () => (
-    <div className="flex h-dvh w-full items-center justify-center bg-background">
+    <div className="flex h-full w-full items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
 );
