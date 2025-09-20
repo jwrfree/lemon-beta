@@ -1,3 +1,12 @@
+/**
+ * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
+ * for Docker builds.
+ */
+// @ts-check
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -7,7 +16,7 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
+},
   images: {
     remotePatterns: [
       {
