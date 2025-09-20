@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ShieldAlert, ArrowRight, TrendingDown } from 'lucide-react';
+import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ShieldAlert, ArrowRight, TrendingDown, ChevronLeft } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -130,7 +130,10 @@ export default function SmartAddPage() {
         }
         
         const matchingWallet = wallets.find(w => w.name.toLowerCase() === ((result.wallet || (result.sourceWallet && result.sourceWallet.toLowerCase())) || '').toLowerCase());
-        const walletId = matchingWallet?.id || wallets.find(w=>w.name.toLowerCase() === "tunai")?.id || wallets.find(w=>w.isDefault)?.id || '';
+        const defaultWallet = wallets.find(w => w.isDefault);
+        const cashWallet = wallets.find(w => w.name.toLowerCase() === 'tunai');
+        
+        const walletId = matchingWallet?.id || defaultWallet?.id || cashWallet?.id || '';
         
         const dataToConfirm = {
             type: result.amount > 0 ? (incomeCategories.some(c => c.name === result.category) ? 'income' : 'expense') : 'expense',
@@ -316,7 +319,7 @@ export default function SmartAddPage() {
             <div className={cn("flex flex-col h-full", pageState === 'EDITING' && 'hidden')}>
                 <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                      <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
-                        <X className="h-6 w-6" strokeWidth={1.75} />
+                        {pageState === 'IDLE' ? <ChevronLeft className="h-6 w-6" strokeWidth={1.75} /> : <X className="h-6 w-6" strokeWidth={1.75} />}
                     </Button>
                     <h1 className="text-xl font-bold text-center w-full">Catat Cepat</h1>
                 </header>
@@ -348,7 +351,7 @@ export default function SmartAddPage() {
                             <Button size="lg" className="flex-1" onClick={() => { toggleListening(); processInput(inputValue); }}>
                                 <Check className="mr-2 h-5 w-5" /> Kirim
                             </Button>
-                             <Button size="lg" variant="outline" onClick={() => setIsVoiceInputMode(false)}>
+                             <Button size="lg" variant="outline" onClick={() => resetFlow()}>
                                 Batal
                             </Button>
                         </div>
@@ -523,3 +526,4 @@ export default function SmartAddPage() {
     
 
     
+
