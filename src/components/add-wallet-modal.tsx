@@ -207,5 +207,3 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
-
-    

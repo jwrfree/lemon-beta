@@ -175,5 +175,3 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
-
-    

@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight } from 'lucide-react';
+import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
 import { categoryDetails, Category } from '@/lib/categories';
 import { SubCategorySheet } from './sub-category-sheet';
 
@@ -218,9 +218,9 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
 
             <div className="space-y-2">
                 <Label>Kategori</Label>
-                <div className="flex items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
+                <button type="button" className="flex w-full items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
                     {category ? (
-                        <div className="flex flex-col">
+                        <div className="flex flex-col text-left">
                             <span className="font-medium truncate">{category}</span>
                             {subCategory && <span className="text-sm text-muted-foreground">{subCategory}</span>}
                         </div>
@@ -228,7 +228,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         <span className="text-muted-foreground">Pilih Kategori</span>
                     )}
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </div>
+                </button>
                 <div className="grid grid-cols-4 gap-2">
                     {categories.slice(0, 8).map((cat) => {
                         const isSelected = category === cat.name;
@@ -240,7 +240,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                                 onClick={() => handleCategorySelect(cat)}
                                 className={cn(
                                     "p-3 text-center border rounded-lg flex flex-col items-center justify-center gap-2 aspect-square",
-                                    isSelected ? 'border-primary bg-primary/10' : 'border-muted'
+                                    isSelected ? 'border-primary bg-primary/10' : 'border-transparent'
                                 )}
                             >
                                 <div className={cn("p-2 rounded-full", isSelected ? 'bg-transparent' : bgColor)}>
