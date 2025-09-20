@@ -4,9 +4,13 @@ import { useApp } from '@/components/app-provider';
 import { TransactionListItem } from './transaction-list-item';
 import { formatRelativeDate } from '@/lib/utils';
 import { parseISO } from 'date-fns';
+import { Button } from './ui/button';
+import { PlusCircle, ReceiptText } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
     const { transactions: allTransactions, isLoading } = useApp();
+    const router = useRouter();
 
     let finalTransactions = transactionsToShow;
 
@@ -34,7 +38,19 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
     }
 
     if (!finalTransactions || finalTransactions.length === 0) {
-        return <div className="text-muted-foreground text-sm text-center py-8">Belum ada transaksi di sini.</div>;
+        return (
+            <div className="flex flex-col h-full items-center justify-center text-center p-8">
+                <div className="p-3 bg-primary/10 rounded-full mb-3">
+                    <ReceiptText className="h-8 w-8 text-primary" strokeWidth={1.5} />
+                </div>
+                <h2 className="text-xl font-bold">Belum Ada Transaksi</h2>
+                <p className="text-muted-foreground mt-2 mb-6 max-w-sm">Semua transaksimu akan muncul di sini setelah kamu mencatatnya.</p>
+                <Button onClick={() => router.push('/add-smart')}>
+                    <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
+                    Tambah Transaksi
+                </Button>
+            </div>
+        );
     }
     
     return (
@@ -54,3 +70,4 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         </div>
     );
 };
+
