@@ -122,10 +122,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background-image: linear-gradient(to top, #a1c4fd 0%, #c2e9fb 100%);
+    z-index: -1;
   }
 
-  .dark body {
+  .dark body::before {
     background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
   }
 
@@ -160,3 +170,5 @@
     @apply border-white/20 dark:border-white/10;
    }
 }
+
+    

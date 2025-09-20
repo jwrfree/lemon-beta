@@ -193,3 +193,5 @@ export default function AllTransactionsPage() {
         </Suspense>
     );
 }
+
+    
