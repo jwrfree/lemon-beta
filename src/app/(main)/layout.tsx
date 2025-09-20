@@ -8,14 +8,25 @@ import { useApp, AppProvider } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
-import { useEffect, useState }from 'react';
+import { useEffect } from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { CustomToast } from '@/components/custom-toast';
 
-const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
+export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
+    
+    return (
+        <AppProvider>
+            <MainLayoutContent pathname={pathname} router={router}>
+                {children}
+            </MainLayoutContent>
+        </AppProvider>
+    )
+}
+
+const MainLayoutContent = ({ children, pathname, router }: { children: React.ReactNode, pathname: string, router: any }) => {
     const { 
         user,
         isLoading,
@@ -36,7 +47,6 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         walletToEdit,
         transactionToEdit,
         setTransactionToEdit,
-        openEditTransactionModal,
     } = useApp();
 
     useEffect(() => {
@@ -46,7 +56,7 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
     }, [user, isLoading, router]);
 
     if (isLoading || !user) {
-        return null;
+        return null; // Return null to prevent flickering during load or if no user
     }
 
     const handleCloseTxModal = () => {
@@ -90,12 +100,3 @@ const MainLayoutContent = ({ children }: { children: React.ReactNode }) => {
         </div>
     );
 };
-
-
-export default function MainAppLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <AppProvider>
-            <MainLayoutContent>{children}</MainLayoutContent>
-        </AppProvider>
-    )
-}
