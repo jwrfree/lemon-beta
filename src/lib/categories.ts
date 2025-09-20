@@ -44,11 +44,11 @@ export const categories: Categories = {
     },
     { 
       id: 'cat-e-4', 
-      name: 'Tagihan & Utilitas', 
+      name: 'Tagihan', 
       icon: Phone, 
       color: 'text-cyan-600 dark:text-cyan-500', 
       bgColor: 'bg-cyan-100 dark:bg-cyan-900/50',
-      subCategories: ['Listrik', 'Air', 'Internet', 'Telepon', 'Streaming Service']
+      subCategories: ['Listrik', 'Air', 'Internet', 'Telepon']
     },
     {
       id: 'cat-e-10',
@@ -56,7 +56,7 @@ export const categories: Categories = {
       icon: ReceiptText,
       color: 'text-orange-600 dark:text-orange-500',
       bgColor: 'bg-orange-100 dark:bg-orange-900/50',
-      subCategories: ['Software', 'Cloud Storage', 'Lainnya']
+      subCategories: ['Software', 'Cloud Storage', 'Streaming Service', 'Lainnya']
     },
     { 
       id: 'cat-e-5', 
