@@ -134,7 +134,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+                            <Button type="submit" className="w-full" disabled={isSubmitting}>
                                 {isSubmitting ? 'Memproses...' : 'Masuk'}
                             </Button>
                         </form>
@@ -146,7 +146,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                 <span className="bg-background px-2 text-muted-foreground">Atau lanjutkan dengan</span>
                             </div>
                         </div>
-                        <Button variant="outline" size="lg" className="w-full mt-4" onClick={handleGoogleSignIn}>
+                        <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignIn}>
                             <GoogleIcon className="mr-2 h-5 w-5" />
                             Google
                         </Button>

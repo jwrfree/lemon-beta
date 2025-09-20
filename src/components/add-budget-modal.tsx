@@ -180,9 +180,9 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         
         <div className="p-4 border-t sticky bottom-0 bg-popover">
           {step < 3 ? (
-             <Button onClick={handleNext} className="w-full" size="lg">Lanjut</Button>
+             <Button onClick={handleNext} className="w-full">Lanjut</Button>
           ) : (
-            <Button onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>{isSubmitting ? 'Memproses...' : 'Simpan Anggaran'}</Button>
+            <Button onClick={handleSubmit} className="w-full" disabled={isSubmitting}>{isSubmitting ? 'Memproses...' : 'Simpan Anggaran'}</Button>
           )}
         </div>
 
@@ -190,5 +190,3 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
-
-    

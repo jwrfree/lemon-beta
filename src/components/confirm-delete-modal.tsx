@@ -60,7 +60,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                             </span>
                         </div>
                     </div>
-                    <Button onClick={onConfirm} variant="destructive" size="lg" className="w-full">
+                    <Button onClick={onConfirm} variant="destructive" className="w-full">
                         Ya, Hapus Transaksi
                     </Button>
                 </div>

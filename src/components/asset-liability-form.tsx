@@ -148,7 +148,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
 
             </form>
             <div className="p-4 border-t sticky bottom-0 bg-background z-10">
-                <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
+                <Button type="submit" onClick={handleSubmit} className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : ''}`}
                 </Button>
             </div>

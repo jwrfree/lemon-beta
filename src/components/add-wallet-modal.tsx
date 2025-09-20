@@ -195,7 +195,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                       inputMode="numeric"
                     />
                   </div>
-                  <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? 'Memproses...' : 'Simpan Dompet'}
                   </Button>
                 </form>
