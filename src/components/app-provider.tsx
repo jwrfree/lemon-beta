@@ -238,17 +238,20 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         if (!oldWalletDoc.exists() || (oldData.walletId !== newData.walletId && !newWalletDoc.exists())) {
             throw new Error("Dompet tidak ditemukan.");
         }
-
+        
         if (oldData.walletId === newData.walletId) {
-            // Wallet is the same, just adjust balance
-            const balanceAdjustment = (oldData.type === 'income' ? -oldData.amount : oldData.amount) + (newData.type === 'income' ? newData.amount : -newData.amount);
-            const newBalance = oldWalletDoc.data()!.balance + balanceAdjustment;
+            const currentBalance = oldWalletDoc.data()!.balance;
+            const oldAmountEffect = oldData.type === 'income' ? -oldData.amount : +oldData.amount;
+            const newAmountEffect = newData.type === 'income' ? +newData.amount : -newData.amount;
+            const newBalance = currentBalance + oldAmountEffect + newAmountEffect;
             batch.update(oldWalletRef, { balance: newBalance });
+
         } else {
-            // Wallet changed, revert old wallet and apply to new wallet
+            // Revert old transaction from old wallet
             const oldWalletBalanceReverted = oldWalletDoc.data()!.balance + (oldData.type === 'income' ? -oldData.amount : oldData.amount);
             batch.update(oldWalletRef, { balance: oldWalletBalanceReverted });
 
+            // Apply new transaction to new wallet
             const newWalletBalanceUpdated = newWalletDoc.data()!.balance + (newData.type === 'income' ? newData.amount : -newData.amount);
             batch.update(newWalletRef, { balance: newWalletBalanceUpdated });
         }
