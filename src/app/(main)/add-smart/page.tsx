@@ -340,13 +340,13 @@ export default function SmartAddPage() {
                             <p className="mt-4 min-h-6 text-lg font-medium">{inputValue}</p>
                         </motion.div>
                         <div className="absolute bottom-4 left-4 right-4 flex justify-center items-center gap-4">
-                            <Button size="lg" variant="ghost" className="w-24" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}>
+                            <Button size="icon" variant="ghost" className="h-11 w-11" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}>
                                 <Keyboard className="h-6 w-6" />
                             </Button>
-                            <Button size="lg" className="w-24 rounded-full" onClick={() => { toggleListening(); processInput(inputValue); }}>
-                                <Check className="h-6 w-6" />
+                            <Button size="lg" className="flex-1" onClick={() => { toggleListening(); processInput(inputValue); }}>
+                                <Check className="mr-2 h-5 w-5" /> Kirim
                             </Button>
-                             <Button size="lg" variant="ghost" className="w-24" onClick={() => setIsVoiceInputMode(false)}>
+                             <Button size="lg" variant="outline" onClick={() => setIsVoiceInputMode(false)}>
                                 Batal
                             </Button>
                         </div>
@@ -473,7 +473,7 @@ export default function SmartAddPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20}}
                                     >
-                                        <div className="relative flex items-center">
+                                        <div className="relative">
                                             <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
                                             <Textarea
                                                 placeholder="Ketik atau rekam suara..."
@@ -515,6 +515,8 @@ export default function SmartAddPage() {
         </div>
     );
 }
+
+    
 
     
 
