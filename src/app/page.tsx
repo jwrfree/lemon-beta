@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
@@ -21,12 +21,14 @@ export default function WelcomePage() {
     const { user, isLoading } = useApp();
     const router = useRouter();
 
-    if (isLoading) {
-        return <LoadingSpinner />;
-    }
+    useEffect(() => {
+        if (!isLoading && user) {
+            router.replace('/home');
+        }
+    }, [user, isLoading, router]);
 
-    if (user) {
-        router.replace('/home');
+
+    if (isLoading || user) {
         return <LoadingSpinner />;
     }
 
@@ -41,3 +43,4 @@ export default function WelcomePage() {
         </>
     );
 }
+
