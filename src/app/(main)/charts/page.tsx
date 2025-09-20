@@ -231,6 +231,11 @@ const SpendingTrendChart = () => {
 
 const ExpenseAnalysis = () => {
     const { transactions, expenseCategories } = useApp();
+    const router = useRouter();
+
+    const handleCategoryClick = (category: string) => {
+        router.push(`/transactions?category=${encodeURIComponent(category)}`);
+    };
     
     const { chartData, chartConfig } = useMemo(() => {
         const now = new Date();
@@ -326,7 +331,7 @@ const ExpenseAnalysis = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {chartData.slice(0, 5).map((item) => (
-                        <div key={item.name} className="flex flex-col gap-2">
+                        <div key={item.name} className="flex flex-col gap-2 cursor-pointer" onClick={() => handleCategoryClick(item.name)}>
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
                                     <item.icon className={cn("h-4 w-4")} style={{color: item.fill}} />

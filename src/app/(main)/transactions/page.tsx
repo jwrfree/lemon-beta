@@ -1,7 +1,7 @@
 
 'use client';
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Search, X, ListFilter } from 'lucide-react';
 import { TransactionList } from '@/components/transaction-list';
@@ -12,9 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 
-export default function AllTransactionsPage() {
+const TransactionsPageContent = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { transactions, expenseCategories, incomeCategories, wallets, isLoading } = useApp();
+    
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -22,6 +24,13 @@ export default function AllTransactionsPage() {
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllWallets, setShowAllWallets] = useState(false);
 
+    useEffect(() => {
+        const categoryFromURL = searchParams.get('category');
+        if (categoryFromURL) {
+            setSelectedCategories([categoryFromURL]);
+            setActiveTab('expense'); // Assume filtered category is an expense for now
+        }
+    }, [searchParams]);
 
     const categoriesForFilter = useMemo(() => {
         const cats = activeTab === 'expense' ? expenseCategories : activeTab === 'income' ? incomeCategories : [...incomeCategories, ...expenseCategories];
@@ -161,5 +170,13 @@ export default function AllTransactionsPage() {
                 {isLoading ? null : <TransactionList transactions={filteredTransactions} />}
             </main>
         </div>
+    );
+}
+
+export default function AllTransactionsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <TransactionsPageContent />
+        </Suspense>
     );
 }
