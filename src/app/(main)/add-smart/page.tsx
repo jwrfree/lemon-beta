@@ -472,37 +472,38 @@ export default function SmartAddPage() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20}}
-                                        className="relative"
                                     >
-                                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
-                                        <Textarea
-                                            placeholder="Ketik atau rekam suara..."
-                                            className="pr-24 min-h-[48px] max-h-48"
-                                            rows={1}
-                                            value={inputValue}
-                                            onChange={(e) => setInputValue(e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter' && !e.shiftKey) {
-                                                    e.preventDefault();
-                                                    processInput(inputValue);
-                                                }
-                                            }}
-                                            disabled={pageState !== 'IDLE'}
-                                        />
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                                            {pageState === 'ANALYZING' ? (
-                                                <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
-                                            ) : (
-                                                <>
-                                                    <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                                    <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>
-                                                    {inputValue && (
-                                                        <Button size="icon" variant="ghost" onClick={() => processInput(inputValue)}>
-                                                            <Send className="h-5 w-5" />
-                                                        </Button>
-                                                    )}
-                                                </>
-                                            )}
+                                        <div className="relative flex items-center">
+                                            <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
+                                            <Textarea
+                                                placeholder="Ketik atau rekam suara..."
+                                                className="pr-24 min-h-[48px] max-h-48"
+                                                rows={1}
+                                                value={inputValue}
+                                                onChange={(e) => setInputValue(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                        e.preventDefault();
+                                                        processInput(inputValue);
+                                                    }
+                                                }}
+                                                disabled={pageState !== 'IDLE'}
+                                            />
+                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                                                {pageState === 'ANALYZING' ? (
+                                                    <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
+                                                ) : (
+                                                    <>
+                                                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                                                        <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>
+                                                        {inputValue && (
+                                                            <Button size="icon" variant="ghost" onClick={() => processInput(inputValue)}>
+                                                                <Send className="h-5 w-5" />
+                                                            </Button>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     </motion.div>
                                 )}
