@@ -266,9 +266,9 @@ const TrendChart = ({ type }: { type: 'expense' | 'income' | 'net' }) => {
     
     if (type !== 'net') {
         const dataKey = type === 'expense' ? 'expense' : 'income';
-        const strokeColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--green-500))';
+        const strokeColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--chart-2))';
         const fillId = type === 'expense' ? 'fill-destructive' : 'fill-green';
-        const gradientColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--green-500))';
+        const gradientColor = type === 'expense' ? 'hsl(var(--destructive))' : 'hsl(var(--chart-2))';
 
         return (
              <Card>
@@ -388,7 +388,7 @@ const TrendChart = ({ type }: { type: 'expense' | 'income' | 'net' }) => {
                                         indicator="dot" 
                                     />}
                         />
-                        <Bar dataKey="income" fill="hsl(var(--green-500))" radius={4} name="Pemasukan" />
+                        <Bar dataKey="income" fill="hsl(var(--chart-2))" radius={4} name="Pemasukan" />
                         <Bar dataKey="expense" fill="hsl(var(--destructive))" radius={4} name="Pengeluaran" />
                     </BarChart>
                 </ChartContainer>
@@ -449,9 +449,7 @@ const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
 
     return (
         <div className="space-y-6">
-            <TrendChart type={type} />
-
-             <Card>
+            <Card>
                 <CardHeader>
                     <CardTitle>{type === 'expense' ? 'Pengeluaran' : 'Pemasukan'} per Kategori</CardTitle>
                 </CardHeader>
@@ -611,12 +609,14 @@ export default function ChartsPage() {
                             {activeTab === 'expense' && (
                                 <>
                                     <ExpenseSummaryCard />
+                                    <TrendChart type="expense" />
                                     <CategoryAnalysis type="expense" />
                                 </>
                             )}
                              {activeTab === 'income' && (
                                 <>
                                     <IncomeSummaryCard />
+                                    <TrendChart type="income" />
                                     <CategoryAnalysis type="income" />
                                 </>
                             )}
@@ -633,5 +633,8 @@ export default function ChartsPage() {
         </div>
     );
 };
+
+    
+
 
     
