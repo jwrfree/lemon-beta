@@ -47,8 +47,7 @@ export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | n
                 className="p-6 bg-background border-t"
             >
                 <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" size="lg" onClick={() => setAuthModal('login')} className="gap-2">
-                        <LogIn className="mr-2 h-5 w-5" />
+                    <Button variant="outline" size="lg" onClick={() => setAuthModal('login')}>
                         Masuk
                     </Button>
                     <Button size="lg" onClick={() => setAuthModal('signup')} className="gap-2">
