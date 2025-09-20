@@ -50,8 +50,7 @@ export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | n
                     <Button variant="outline" onClick={() => setAuthModal('login')}>
                         Masuk
                     </Button>
-                    <Button onClick={() => setAuthModal('signup')} className="gap-2">
-                        <UserPlus className="mr-2 h-5 w-5" />
+                    <Button onClick={() => setAuthModal('signup')}>
                         Daftar Gratis
                     </Button>
                 </div>
