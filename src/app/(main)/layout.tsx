@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { TransactionForm } from '@/components/transaction-form';
-import { useApp, AppProvider } from '@/components/app-provider';
+import { useApp } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
@@ -16,17 +16,6 @@ import { CustomToast } from '@/components/custom-toast';
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
-    
-    return (
-        <AppProvider>
-            <MainLayoutContent pathname={pathname} router={router}>
-                {children}
-            </MainLayoutContent>
-        </AppProvider>
-    )
-}
-
-const MainLayoutContent = ({ children, pathname, router }: { children: React.ReactNode, pathname: string, router: any }) => {
     const { 
         user,
         isLoading,
@@ -50,13 +39,16 @@ const MainLayoutContent = ({ children, pathname, router }: { children: React.Rea
     } = useApp();
 
     useEffect(() => {
+        // Wait until loading is finished, then check for user.
+        // If no user, redirect to login page.
         if (!isLoading && !user) {
             router.replace('/');
         }
     }, [user, isLoading, router]);
 
+    // While loading or if no user, render nothing to prevent flicker
     if (isLoading || !user) {
-        return null; // Prevent flicker/content flash until auth state is confirmed
+        return null; 
     }
 
     const handleCloseTxModal = () => {

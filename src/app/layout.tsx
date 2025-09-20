@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider";
+import { AppProvider } from "@/components/app-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -26,12 +27,12 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
-          {children}
+          <AppProvider>
+            <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
+            {children}
+          </AppProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
-
-    
