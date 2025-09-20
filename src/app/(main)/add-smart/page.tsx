@@ -96,7 +96,7 @@ export default function SmartAddPage() {
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
 
 
-    const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
+    const availableCategoriesForAI = [...expenseCategories, ...incomeCategories].map(c => ({ name: c.name, subCategories: c.subCategories }));
     const availableWallets = wallets.map(w => w.name);
 
     const resetFlow = (keepInput = false) => {
@@ -137,6 +137,7 @@ export default function SmartAddPage() {
             amount: Math.abs(result.amount || 0),
             description: result.description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
             category: result.category || '',
+            subCategory: result.subCategory || '',
             walletId: walletId,
             location: result.location || result.merchant || '',
             date: result.date ? new Date(result.date).toISOString() : new Date().toISOString(),
@@ -201,9 +202,10 @@ export default function SmartAddPage() {
 
         try {
             if (typeof input === 'string') {
-                const result = await extractTransaction({ text: input, availableCategories, availableWallets });
+                const result = await extractTransaction({ text: input, availableCategories: availableCategoriesForAI, availableWallets });
                 handleAISuccess(result);
             } else {
+                const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
                 const result = await scanReceipt({ photoDataUri: input.dataUrl, availableCategories });
                 handleAISuccess(result, true);
             }
