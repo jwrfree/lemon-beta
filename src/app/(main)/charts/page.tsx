@@ -98,11 +98,11 @@ const SummaryCard = ({ tab }: { tab: TabValue }) => {
     }
     
     if (tab === 'income') {
-        return <PlaceholderContent label="Ringkasan Pemasukan" icon={ArrowUpRight} text="Ringkasan data pemasukanmu akan muncul di sini." />;
+        return <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />;
     }
     
     if (tab === 'net') {
-        return <PlaceholderContent label="Ringkasan Net Income" icon={Scale} text="Ringkasan selisih pemasukan dan pengeluaranmu akan muncul di sini." />;
+        return <PlaceholderContent label="Analisis Net Income" icon={Scale} />;
     }
 
     return null;
@@ -352,12 +352,17 @@ const ExpenseAnalysis = () => {
 
 
 const PlaceholderContent = ({ label, icon: Icon, text }: { label: string, icon: React.ElementType, text?: string }) => (
-    <div className="flex flex-col h-full items-center justify-center text-center p-4">
-        <div className="p-3 bg-primary/10 rounded-full mb-3">
-            <Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
+    <div className="flex flex-col h-full items-center justify-center text-center p-8">
+        <div className="relative w-40 h-40 flex items-center justify-center">
+            <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse" />
+            <div className="relative w-32 h-32 bg-primary/20 rounded-full flex items-center justify-center">
+                <Icon className="h-16 w-16 text-primary" strokeWidth={1} />
+            </div>
         </div>
-        <h2 className="text-xl font-bold">{label}</h2>
-        <p className="text-muted-foreground mt-2 mb-6">{text || `Grafik dan data untuk ${label.toLowerCase()} akan segera hadir.`}</p>
+        <h2 className="text-2xl font-bold mt-6">{label}</h2>
+        <p className="text-muted-foreground mt-2 max-w-sm">
+            {text || `Grafik dan data untuk analisis ${label.toLowerCase()} akan segera hadir untuk memberikanmu wawasan yang lebih dalam.`}
+        </p>
     </div>
 );
 
@@ -435,10 +440,16 @@ export default function ChartsPage() {
                         className="p-4 pb-20"
                     >
                         <div className="space-y-6">
-                            <SummaryCard tab={activeTab} />
-                            {activeTab === 'expense' && <ExpenseAnalysis />}
-                            {activeTab === 'income' && <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />}
-                            {activeTab === 'net' && <PlaceholderContent label="Analisis Net Income" icon={Scale} />}
+                            {activeTab === 'expense' ? (
+                                <>
+                                    <SummaryCard tab="expense" />
+                                    <ExpenseAnalysis />
+                                </>
+                            ) : activeTab === 'income' ? (
+                                <PlaceholderContent label="Analisis Pemasukan" icon={ArrowUpRight} />
+                            ) : (
+                                <PlaceholderContent label="Analisis Net Income" icon={Scale} />
+                            )}
                         </div>
                     </motion.div>
                 </AnimatePresence>
