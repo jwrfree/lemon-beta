@@ -13,7 +13,7 @@ interface AnimatedCounterProps {
 }
 
 export const AnimatedCounter = ({ value, className }: AnimatedCounterProps) => {
-  const count = useMotionValue(0);
+  const count = useMotionValue(value);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const display = useTransform(rounded, (latest) => formatCurrency(latest));
 

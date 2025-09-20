@@ -31,7 +31,7 @@ const liabilityCategories = [
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
     const { addAssetLiability, updateAssetLiability, showToast } = useApp();
     
-    const isEditMode = !!initialData;
+    const isEditMode = !!initialData?.id;
 
     const [type, setType] = useState<'asset' | 'liability'>(initialData?.type || 'asset');
     const [name, setName] = useState(initialData?.name || '');
@@ -40,8 +40,8 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (initialData) {
-            const formattedValue = new Intl.NumberFormat('id-ID').format(initialData.value || 0);
+        if (initialData?.value) {
+            const formattedValue = new Intl.NumberFormat('id-ID').format(initialData.value);
             setValue(formattedValue);
         }
     }, [initialData]);
@@ -68,14 +68,13 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             name,
             value: parseInt(value.replace(/[^0-9]/g, '')),
             categoryKey,
-            type,
         };
 
         try {
             if (isEditMode) {
-                await updateAssetLiability(initialData.id, type, { name: itemData.name, value: itemData.value, categoryKey: itemData.categoryKey });
+                await updateAssetLiability(initialData.id, type, itemData);
             } else {
-                await addAssetLiability(itemData);
+                await addAssetLiability({ ...itemData, type });
             }
             onClose();
         } catch (error) {
@@ -156,5 +155,3 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         </>
     );
 };
-
-    

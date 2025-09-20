@@ -19,13 +19,14 @@ const itemCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textColor
   'e-wallet': { name: 'E-Wallet', Icon: Smartphone },
   'bank': { name: 'Bank', Icon: Landmark },
   'cash': { name: 'Tunai', Icon: Wallet },
-  'other': { name: 'Lainnya', Icon: CircleDollarSign },
   // Assets
   'investment': { name: 'Investasi', Icon: TrendingUp },
   'property': { name: 'Properti', Icon: Home },
   // Liabilities
   'loan': { name: 'Pinjaman', Icon: Building },
   'credit-card': { name: 'Kartu Kredit', Icon: Smartphone },
+  // Default / Other
+  'other': { name: 'Lainnya', Icon: CircleDollarSign },
 };
 
 const defaultVisuals: WalletVisuals = {
@@ -67,11 +68,11 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string }> 
 };
 
 
-export const getWalletVisuals = (itemName: string, itemCategoryKey: string): WalletVisuals => {
+export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): WalletVisuals => {
     const normalizedName = itemName.toLowerCase();
     const brand = brandGradients[normalizedName];
 
-    const categoryInfo = itemCategories[itemCategoryKey] || itemCategories.other;
+    const categoryInfo = (itemCategoryKey && itemCategories[itemCategoryKey]) ? itemCategories[itemCategoryKey] : itemCategories.other;
 
     if (brand) {
         return {
@@ -97,7 +98,7 @@ export const getWalletVisuals = (itemName: string, itemCategoryKey: string): Wal
 
     return {
         ...categoryInfo,
-        gradient: categoryDefaultGradients[itemCategoryKey] || defaultVisuals.gradient,
+        gradient: (itemCategoryKey && categoryDefaultGradients[itemCategoryKey]) || defaultVisuals.gradient,
         textColor: 'text-white'
     };
 };

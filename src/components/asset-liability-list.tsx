@@ -20,7 +20,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
 
     if (items.length === 0) {
         const message = type === 'asset' ? "Aset yang kamu miliki akan muncul di sini." : "Daftar utang atau cicilanmu akan muncul di sini.";
-        return <p className="text-muted-foreground text-sm">{message}</p>;
+        return <p className="text-muted-foreground text-sm text-center py-4">{message}</p>;
     }
 
     return (
@@ -28,7 +28,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
             {items.map(item => {
                 const { Icon } = getWalletVisuals(item.name, item.categoryKey);
                 return (
-                    <div key={item.id} className="flex items-center gap-3">
+                    <div key={item.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted">
                         <div className="p-2 bg-muted rounded-md">
                             <Icon className="h-5 w-5 text-muted-foreground" />
                         </div>
@@ -48,7 +48,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                                 </DropdownMenuItem>
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive">
+                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                                             Hapus
                                         </DropdownMenuItem>
                                     </AlertDialogTrigger>
