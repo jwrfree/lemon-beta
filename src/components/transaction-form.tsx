@@ -227,7 +227,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
             </div>
 
             <div className="space-y-2">
-                <Label>Kategori</Label>
+                <Label>Semua kategori belum di update, cek kategori terbaru</Label>
                 <div className="flex items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
                     {category ? (
                         <div className="flex flex-col">
@@ -354,4 +354,3 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     );
 };
 
-    
