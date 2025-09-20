@@ -1,5 +1,5 @@
 
-import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft, ReceiptText, ShieldCheck } from 'lucide-react';
+import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft, ReceiptText, ShieldCheck, Sparkles } from 'lucide-react';
 
 export interface Category {
   id: string;
@@ -20,7 +20,7 @@ export const categories: Categories = {
   expense: [
     { 
       id: 'cat-e-1', 
-      name: 'Makanan & Minuman', 
+      name: 'Makanan', 
       icon: Utensils, 
       color: 'text-yellow-600 dark:text-yellow-500', 
       bgColor: 'bg-yellow-100 dark:bg-yellow-900/50',
@@ -88,7 +88,15 @@ export const categories: Categories = {
       icon: HeartPulse, 
       color: 'text-red-600 dark:text-red-500', 
       bgColor: 'bg-red-100 dark:bg-red-900/50',
-      subCategories: ['Berobat', 'Apotek', 'Perawatan Diri']
+      subCategories: ['Berobat', 'Apotek']
+    },
+    { 
+      id: 'cat-e-12', 
+      name: 'Perawatan Diri', 
+      icon: Sparkles, 
+      color: 'text-pink-600 dark:text-pink-500', 
+      bgColor: 'bg-pink-100 dark:bg-pink-900/50',
+      subCategories: ['Skincare', 'Bodycare', 'Haircare', 'Deodorant', 'Makeup']
     },
     {
       id: 'cat-e-11',
