@@ -31,7 +31,10 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     const defaultWallet = wallets.find(w => w.isDefault);
 
     const [type, setType] = useState(initialData?.type || 'expense');
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(() => {
+        if (!initialData?.amount) return '';
+        return new Intl.NumberFormat('id-ID').format(initialData.amount);
+    });
     const [category, setCategory] = useState(initialData?.category || '');
     const [subCategory, setSubCategory] = useState(initialData?.subCategory || '');
     const [walletId, setWalletId] = useState(initialData?.walletId || defaultWallet?.id || '');
@@ -42,20 +45,6 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     
     const [isSubCategorySheetOpen, setIsSubCategorySheetOpen] = useState(false);
     const [selectedCategoryForSub, setSelectedCategoryForSub] = useState<Category | null>(null);
-
-    useEffect(() => {
-        if (initialData) {
-            setType(initialData.type || 'expense');
-            setCategory(initialData.category || '');
-            setSubCategory(initialData.subCategory || '');
-            setWalletId(initialData.walletId || defaultWallet?.id || '');
-            setDescription(initialData.description || '');
-            setLocation(initialData.location || '');
-            setDate(initialData.date ? parseISO(initialData.date) : new Date());
-            const formattedValue = new Intl.NumberFormat('id-ID').format(initialData.amount || 0);
-            setAmount(formattedValue);
-        }
-    }, [initialData, defaultWallet?.id]);
 
     const categories = type === 'expense' ? expenseCategories : incomeCategories;
 
