@@ -72,7 +72,7 @@ export const categories: Categories = {
       icon: Home, 
       color: 'text-green-600 dark:text-green-500', 
       bgColor: 'bg-green-100 dark:bg-green-900/50',
-      subCategories: ['Sewa & Cicilan', 'Perbaikan', 'Dekorasi', 'Asisten Rumah Tangga', 'Keamanan']
+      subCategories: ['Sewa & Cicilan', 'Perbaikan', 'Dekorasi', 'Keamanan']
     },
     { 
       id: 'cat-e-7', 
