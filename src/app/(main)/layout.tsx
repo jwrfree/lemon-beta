@@ -39,14 +39,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     } = useApp();
 
     useEffect(() => {
-        // Wait until loading is finished, then check for user.
-        // If no user, redirect to login page.
         if (!isLoading && !user) {
             router.replace('/');
         }
     }, [user, isLoading, router]);
 
-    // While loading or if no user, render nothing to prevent flicker
     if (isLoading || !user) {
         return null; 
     }
