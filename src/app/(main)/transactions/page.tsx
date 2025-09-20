@@ -28,9 +28,17 @@ const TransactionsPageContent = () => {
         const categoryFromURL = searchParams.get('category');
         if (categoryFromURL) {
             setSelectedCategories([categoryFromURL]);
-            setActiveTab('expense'); // Assume filtered category is an expense for now
+            // Logic to determine if it's expense or income could be added here if needed
+            // For now, defaulting to expense is a reasonable assumption for category filters
+            const isExpense = expenseCategories.some(c => c.name === categoryFromURL);
+            if (isExpense) {
+              setActiveTab('expense');
+            } else {
+              const isIncome = incomeCategories.some(c => c.name === categoryFromURL);
+              if (isIncome) setActiveTab('income');
+            }
         }
-    }, [searchParams]);
+    }, [searchParams, expenseCategories, incomeCategories]);
 
     const categoriesForFilter = useMemo(() => {
         const cats = activeTab === 'expense' ? expenseCategories : activeTab === 'income' ? incomeCategories : [...incomeCategories, ...expenseCategories];
@@ -66,6 +74,11 @@ const TransactionsPageContent = () => {
     const resetFilters = () => {
         setSelectedCategories([]);
         setSelectedWallets([]);
+    };
+
+    const handleTabChange = (value: string) => {
+      setActiveTab(value);
+      resetFilters();
     };
     
     const activeFilterCount = selectedCategories.length + selectedWallets.length;
@@ -133,7 +146,7 @@ const TransactionsPageContent = () => {
             </header>
             
             <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
-                <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); resetFilters(); }} className="w-full">
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="all">Semua</TabsTrigger>
                         <TabsTrigger value="expense">Pengeluaran</TabsTrigger>
