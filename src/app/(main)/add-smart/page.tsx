@@ -342,7 +342,7 @@ export default function SmartAddPage() {
                             <p className="mt-4 min-h-6 text-lg font-medium">{inputValue}</p>
                         </motion.div>
                         <div className="absolute bottom-4 left-4 right-4 flex justify-center items-center gap-4">
-                            <Button size="icon" variant="ghost" className="h-11 w-11" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}>
+                            <Button size="lg" variant="ghost" className="h-11 w-11" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}>
                                 <Keyboard className="h-6 w-6" />
                             </Button>
                             <Button size="lg" className="flex-1" onClick={() => { toggleListening(); processInput(inputValue); }}>
