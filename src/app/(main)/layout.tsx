@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { TransactionForm } from '@/components/transaction-form';
-import { useApp } from '@/components/app-provider';
+import { AppProvider, useApp } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
@@ -13,7 +13,7 @@ import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { CustomToast } from '@/components/custom-toast';
 
-export default function MainAppLayout({ children }: { children: React.ReactNode }) {
+function MainAppLayoutContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     const { 
@@ -89,3 +89,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         </div>
     );
 };
+
+export default function MainAppLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <AppProvider>
+            <MainAppLayoutContent>{children}</MainAppLayoutContent>
+        </AppProvider>
+    );
+}

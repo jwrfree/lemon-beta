@@ -16,26 +16,9 @@ const LoadingSpinner = () => (
 );
 
 export default function WelcomePage() {
-    const router = useRouter();
-    const { user, isLoading } = useApp();
     const [authModal, setAuthModal] = useState<string | null>(null);
-
-    // This effect handles redirecting the user to the home page if they are already logged in.
-    React.useEffect(() => {
-        if (!isLoading && user) {
-            router.replace('/home');
-        }
-    }, [user, isLoading, router]);
-
-    // While loading, or if the user is logged in (and about to be redirected),
-    // show a spinner to prevent the landing page from flashing.
-    if (isLoading || (!isLoading && user)) {
-        return <LoadingSpinner />;
-    }
-    
     const closeModal = () => setAuthModal(null);
 
-    // If not loading and no user, show the landing page.
     return (
         <>
             <LandingPage setAuthModal={setAuthModal} />
