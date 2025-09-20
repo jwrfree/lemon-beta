@@ -91,7 +91,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type="email" placeholder="email@example.com" className="pl-10 text-base" {...field} />
+                                                <Input type="email" placeholder="email@example.com" {...field} />
                                             </FormControl>
                                             {field.value && (
                                                 <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')}>
@@ -112,7 +112,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} placeholder="********" className="pl-10 pr-10 text-base" {...field} />
+                                                <Input type={showPassword ? "text" : "password"} placeholder="********" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
@@ -131,7 +131,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} placeholder="********" className="pl-10 pr-10 text-base" {...field} />
+                                                <Input type={showPassword ? "text" : "password"} placeholder="********" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
