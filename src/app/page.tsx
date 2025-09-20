@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
-import { useApp } from '@/components/app-provider';
+import { AppProvider, useApp } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 
 const LoadingSpinner = () => (
@@ -15,7 +15,8 @@ const LoadingSpinner = () => (
     </div>
 );
 
-export default function WelcomePage() {
+
+const WelcomeContent = () => {
     const [authModal, setAuthModal] = useState<string | null>(null);
     const closeModal = () => setAuthModal(null);
     const { user, isLoading } = useApp();
@@ -44,3 +45,10 @@ export default function WelcomePage() {
     );
 }
 
+export default function WelcomePage() {
+    return (
+        <AppProvider>
+            <WelcomeContent />
+        </AppProvider>
+    );
+}
