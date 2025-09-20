@@ -17,7 +17,6 @@ export const BottomNavigation = () => {
         isDeleteModalOpen,
         isTransferModalOpen,
         isEditWalletModalOpen,
-        transactionToEdit
     } = useApp();
 
     const navItems = [
@@ -28,13 +27,10 @@ export const BottomNavigation = () => {
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
     
-    const mainPages = navItems.map(item => item.href);
-
-    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || !!transactionToEdit;
+    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen;
     
-    // Hide bottom nav on the add-smart page for a more focused experience
-    const isVisible = pathname !== '/add-smart' && (mainPages.includes(pathname) || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets')) && !isModalOpen;
-
+    // The parent layout now controls visibility, so we only need to check for modals here.
+    const isVisible = !isModalOpen;
 
     return (
         <AnimatePresence>
