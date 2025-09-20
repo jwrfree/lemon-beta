@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { UserPlus, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | null) => void; }) => {
     return (
@@ -46,13 +46,16 @@ export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | n
                 transition={{ type: 'spring', stiffness: 100, delay: 0.8 }}
                 className="p-6 bg-background border-t"
             >
-                <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" onClick={() => setAuthModal('login')}>
-                        Masuk
+                <div className="flex flex-col items-center gap-4">
+                    <Button onClick={() => setAuthModal('signup')} className="w-full">
+                        Mulai
                     </Button>
-                    <Button onClick={() => setAuthModal('signup')}>
-                        Daftar Gratis
-                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                        Sudah punya akun?{' '}
+                        <Button variant="link" onClick={() => setAuthModal('login')} className="p-0 h-auto">
+                            Masuk di sini
+                        </Button>
+                    </p>
                 </div>
             </motion.div>
         </div>
