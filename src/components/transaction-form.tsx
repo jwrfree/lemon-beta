@@ -219,7 +219,12 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
 
             <div className="space-y-2">
                 <Label htmlFor="category-button">Kategori</Label>
-                <button id="category-button" type="button" className="flex w-full items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
+                <button id="category-button" type="button" className="flex w-full items-center justify-between rounded-md border p-3" onClick={() => {
+                    const currentCategoryObject = categories.find(c => c.name === category);
+                    if (currentCategoryObject) {
+                        handleCategorySelect(currentCategoryObject);
+                    }
+                }}>
                     {category ? (
                         <div className="flex flex-col text-left">
                             <span className="font-medium truncate">{category}</span>
