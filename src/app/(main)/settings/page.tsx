@@ -48,20 +48,20 @@ export default function SettingsPage() {
                     variant='ghost'
                     onClick={() => setTheme('light')}
                     className={cn("rounded-full z-10 h-8 w-8", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
-                    aria-label="Set theme to light"
+                    aria-label="Ganti ke tema terang"
                 >
                     <Sun className="h-5 w-5" />
-                    <span className="sr-only">Ganti ke tema terang</span>
+                    <span className="sr-only">Tema Terang</span>
                 </Button>
                 <Button
                     size="icon"
                     variant='ghost'
                     onClick={() => setTheme('dark')}
                     className={cn("rounded-full z-10 h-8 w-8", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
-                    aria-label="Set theme to dark"
+                    aria-label="Ganti ke tema gelap"
                 >
                     <Moon className="h-5 w-5" />
-                    <span className="sr-only">Ganti ke tema gelap</span>
+                    <span className="sr-only">Tema Gelap</span>
                 </Button>
             </div>
         );

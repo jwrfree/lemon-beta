@@ -47,7 +47,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
             showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
         } catch (error: any) {
-            showToast(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal untuk masuk.', 'error');
+            showToast(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal masuk. Coba lagi ya.', 'error');
         }
     };
 
@@ -58,7 +58,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
             showToast("Login dengan Google berhasil!", 'success');
             onClose();
         } catch (error: any) {
-            showToast('Gagal masuk dengan Google.', 'error');
+            showToast('Gagal masuk dengan Google. Coba lagi ya.', 'error');
         }
     };
 

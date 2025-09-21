@@ -46,7 +46,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
             if (error.code === 'auth/email-already-in-use') {
                 showToast("Email ini sudah terdaftar.", 'error');
             } else {
-                showToast("Gagal membuat akun.", 'error');
+                showToast("Gagal membuat akun. Coba lagi ya.", 'error');
             }
         }
     };
