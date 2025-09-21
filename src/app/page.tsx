@@ -9,13 +9,6 @@ import { SignUpPage } from '@/components/signup-page';
 import { useApp } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 
-const LoadingSpinner = () => (
-    <div className="flex h-full w-full items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
-);
-
-
 export default function WelcomePage() {
     const [authModal, setAuthModal] = useState<string | null>(null);
     const closeModal = () => setAuthModal(null);
@@ -28,9 +21,10 @@ export default function WelcomePage() {
         }
     }, [user, isLoading, router]);
 
-
-    if (isLoading || user) {
-        return <LoadingSpinner />;
+    // If already logged in, the useEffect will handle the redirect.
+    // We render the landing page immediately to avoid a loading screen.
+    if (user) {
+        return null; // Or a minimal loader if you prefer, but this avoids showing landing then redirecting.
     }
 
     return (

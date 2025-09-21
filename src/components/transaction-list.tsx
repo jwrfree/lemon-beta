@@ -9,7 +9,7 @@ import { PlusCircle, ReceiptText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
-    const { transactions: allTransactions, isLoading } = useApp();
+    const { transactions: allTransactions } = useApp();
     const router = useRouter();
 
     let finalTransactions = transactionsToShow;
@@ -32,10 +32,6 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         acc[dateKey].push(t);
         return acc;
     }, {} as Record<string, any[]>);
-
-    if (isLoading) {
-        return null;
-    }
 
     if (!finalTransactions || finalTransactions.length === 0) {
         return (
@@ -70,4 +66,3 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
         </div>
     );
 };
-
