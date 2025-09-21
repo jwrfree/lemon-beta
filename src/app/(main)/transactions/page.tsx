@@ -159,7 +159,7 @@ const TransactionsPageContent = () => {
                         {selectedCategories.map(category => (
                             <Badge key={category} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                 {category}
-                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
+                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-5 w-5 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
                                     <X className="h-3 w-3" />
                                 </button>
                             </Badge>
@@ -169,7 +169,7 @@ const TransactionsPageContent = () => {
                             return wallet && (
                                 <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                     {wallet.name}
-                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
+                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-5 w-5 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
                                         <X className="h-3 w-3" />
                                     </button>
                                 </Badge>
