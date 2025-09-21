@@ -88,7 +88,7 @@ Analyze the provided text and fill in the following fields. The 'amount' and 'de
 - sourceWallet: FOR TRANSFERS ONLY. The source wallet name.
 - destinationWallet: FOR TRANSFERS ONLY. The destination wallet name.
 - location: If a store, place, or merchant is mentioned, extract it.
-- date: The date of the transaction in YYYY-MM-DD format. If no date is mentioned (e.g., "kemarin", "2 hari lalu", "minggu lalu"), **use today's date: ${new Date().toISOString().slice(0, 10)}**.
+- date: The date of the transaction. **Your default answer MUST be today's date: ${new Date().toISOString().slice(0, 10)}**. You must infer the date from phrases like "kemarin", "2 hari lalu", "minggu lalu", or a specific date like "17 Agustus" and convert it to 'YYYY-MM-DD' format.
 
 If the user mentions a specific item, use that as the primary description. For example, if the user says "beli bensin pertamax 150rb", the description should be "Beli bensin Pertamax".
 If the input is clearly a transfer between two wallets, you MUST fill out sourceWallet and destinationWallet.
