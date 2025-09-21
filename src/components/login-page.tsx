@@ -6,7 +6,7 @@ import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, X, LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -175,6 +175,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                 )}
                             />
                             <Button type="submit" size="lg" className="w-full text-base" disabled={isSubmitting}>
+                                {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? 'Memproses...' : 'Masuk'}
                             </Button>
                         </form>
@@ -191,9 +192,13 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                             className="w-full text-base"
                             onClick={handleGoogleSignIn}
                             type="button"
-                            disabled={isGoogleLoading}
+                            disabled={isSubmitting || isGoogleLoading}
                         >
-                            <GoogleIcon className="mr-2 h-5 w-5" />
+                            {isGoogleLoading ? (
+                                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <GoogleIcon className="mr-2 h-5 w-5" />
+                            )}
                             {isGoogleLoading ? 'Menghubungkan...' : 'Masuk dengan Google'}
                         </Button>
                     </div>

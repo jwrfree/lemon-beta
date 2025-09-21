@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } f
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, X, LoaderCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -30,7 +30,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const formSchema = z.object({
     email: z.string().email({ message: "Format email tidak valid." }),
-    password: z.string().min(6, { message: "Password minimal 6 karakter." }),
+    password: z.string().min(8, { message: "Password minimal 8 karakter." }),
     confirmPassword: z.string()
 }).refine(data => data.password === data.confirmPassword, {
     message: "Konfirmasi password tidak cocok.",
@@ -215,6 +215,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                 )}
                             />
                             <Button type="submit" size="lg" className="w-full text-base" disabled={isSubmitting}>
+                                {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? 'Membuat Akun...' : 'Daftar'}
                             </Button>
                         </form>
@@ -231,9 +232,13 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                             className="w-full text-base"
                             onClick={handleGoogleSignIn}
                             type="button"
-                            disabled={isGoogleLoading}
+                            disabled={isSubmitting || isGoogleLoading}
                         >
-                            <GoogleIcon className="mr-2 h-5 w-5" />
+                             {isGoogleLoading ? (
+                                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <GoogleIcon className="mr-2 h-5 w-5" />
+                            )}
                             {isGoogleLoading ? 'Menghubungkan...' : 'Daftar dengan Google'}
                         </Button>
                     </div>
