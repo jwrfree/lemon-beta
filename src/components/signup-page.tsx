@@ -119,7 +119,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
             onClick={onClose}
         >
             <motion.div
@@ -130,19 +130,16 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="signup-heading"
-                className="w-full max-w-md bg-background/95 border border-primary/10 rounded-t-3xl shadow-2xl flex flex-col h-fit backdrop-blur-lg"
+                className="w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
-                <div className="relative overflow-hidden rounded-t-3xl">
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/10" />
-                    <div className="relative flex items-center justify-between px-5 py-4">
-                        <h2 id="signup-heading" className="text-xl font-bold">Buat Akun Baru</h2>
-                        <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background/60 hover:bg-background">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Tutup</span>
-                        </Button>
-                    </div>
+                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
+                    <h2 id="signup-heading" className="text-xl font-bold">Buat Akun Baru</h2>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
+                        <X className="h-5 w-5" />
+                        <span className="sr-only">Tutup</span>
+                    </Button>
                 </div>
 
                 <div className="p-5 pb-6 overflow-y-auto">
