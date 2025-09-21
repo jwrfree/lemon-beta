@@ -3,7 +3,7 @@
 
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useApp } from './app-provider';
+import { useUI } from './ui-provider';
 import { CheckCircle2, XCircle, Info, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,7 +20,7 @@ const toastColors: { [key: string]: string } = {
 };
 
 export const CustomToast = () => {
-  const { toastState, hideToast } = useApp();
+  const { toastState, hideToast } = useUI();
   const { show, message, type } = toastState;
 
   useEffect(() => {

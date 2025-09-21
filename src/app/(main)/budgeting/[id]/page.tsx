@@ -11,11 +11,13 @@ import { TransactionList } from '@/components/transaction-list';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChevronLeft, AlertTriangle, Pencil } from 'lucide-react';
 import { startOfMonth, parseISO } from 'date-fns';
+import { useUI } from '@/components/ui-provider';
 
 export default function BudgetDetailPage() {
     const router = useRouter();
     const params = useParams();
-    const { budgets, transactions, openEditBudgetModal } = useApp();
+    const { budgets, transactions } = useApp();
+    const { openEditBudgetModal } = useUI();
 
     const budgetId = params.id as string;
     const budget = useMemo(() => budgets.find(b => b.id === budgetId), [budgets, budgetId]);
@@ -115,5 +117,3 @@ export default function BudgetDetailPage() {
         </div>
     )
 }
-
-    

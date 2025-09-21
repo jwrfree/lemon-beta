@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { useUI } from './ui-provider';
 
 interface AssetLiabilityFormProps {
   onClose: () => void;
@@ -29,7 +30,8 @@ const liabilityCategories = [
 ];
 
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
-    const { addAssetLiability, updateAssetLiability, showToast } = useApp();
+    const { addAssetLiability, updateAssetLiability } = useApp();
+    const { showToast } = useUI();
     
     const isEditMode = !!initialData?.id;
 

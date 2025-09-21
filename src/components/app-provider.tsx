@@ -7,19 +7,7 @@ import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, que
 import { auth, db } from '@/lib/firebase';
 import { categories } from '@/lib/categories';
 import { useRouter as useNextRouter } from 'next/navigation';
-
-interface PreFilledTransfer {
-    fromWalletId: string;
-    toWalletId: string;
-    amount: number;
-    description: string;
-}
-
-interface ToastState {
-    show: boolean;
-    message: string;
-    type: 'success' | 'error' | 'info';
-}
+import { useUI } from './ui-provider';
 
 interface AppContextType {
     user: User | null;
@@ -49,43 +37,6 @@ interface AppContextType {
     deleteGoal: (goalId: string) => Promise<void>;
     isLoading: boolean;
     handleSignOut: () => void;
-    
-    isTxModalOpen: boolean;
-    setIsTxModalOpen: (isOpen: boolean) => void;
-    transactionToEdit: any | null;
-    setTransactionToEdit: (transaction: any | null) => void;
-    openEditTransactionModal: (transaction: any) => void;
-
-    isWalletModalOpen: boolean;
-    setIsWalletModalOpen: (isOpen: boolean) => void;
-    isBudgetModalOpen: boolean;
-    setIsBudgetModalOpen: (isOpen: boolean) => void;
-    isEditBudgetModalOpen: boolean;
-    setIsEditBudgetModalOpen: (isOpen: boolean) => void;
-    budgetToEdit: any | null;
-    openEditBudgetModal: (budget: any) => void;
-    isTransferModalOpen: boolean;
-    setIsTransferModalOpen: (isOpen: boolean) => void;
-    preFilledTransfer: PreFilledTransfer | null;
-    setPreFilledTransfer: (transfer: PreFilledTransfer | null) => void;
-    isDeleteModalOpen: boolean;
-    transactionToDelete: any | null;
-    openDeleteModal: (transaction: any) => void;
-    closeDeleteModal: () => void;
-    handleConfirmDelete: () => Promise<void>;
-    isEditWalletModalOpen: boolean;
-    setIsEditWalletModalOpen: (isOpen: boolean) => void;
-    walletToEdit: any | null;
-    openEditWalletModal: (wallet: any) => void;
-
-    isGoalModalOpen: boolean;
-    setIsGoalModalOpen: (isOpen: boolean) => void;
-    goalToEdit: any | null;
-    openEditGoalModal: (goal: any) => void;
-
-    toastState: ToastState;
-    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
-    hideToast: () => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -108,33 +59,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [liabilities, setLiabilities] = useState<any[]>([]);
     const [goals, setGoals] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const ui = useUI();
     
-    const [isTxModalOpen, setIsTxModalOpen] = useState(false);
-    const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
-    const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-    const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
-    const [isEditBudgetModalOpen, setIsEditBudgetModalOpen] = useState(false);
-    const [budgetToEdit, setBudgetToEdit] = useState<any | null>(null);
-    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
-    const [isEditWalletModalOpen, setIsEditWalletModalOpen] = useState(false);
-    const [walletToEdit, setWalletToEdit] = useState<any | null>(null);
-    const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
-    const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
-    const [goalToEdit, setGoalToEdit] = useState<any | null>(null);
-
-    const [toastState, setToastState] = useState<ToastState>({ show: false, message: '', type: 'info' });
-
-    const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-        setToastState({ show: true, message, type });
-    };
-
-    const hideToast = () => {
-        setToastState(prev => ({ ...prev, show: false }));
-    };
-
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
@@ -198,8 +125,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             const newBalance = data.type === 'income' ? currentBalance + data.amount : currentBalance - data.amount;
             await updateDoc(walletRef, { balance: newBalance });
         }
-        setIsTxModalOpen(false);
-    }, [user, getCollectionRef]);
+        ui.setIsTxModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const updateTransaction = useCallback(async (transactionId: string, oldData: any, newData: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -240,11 +167,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
         
         await batch.commit();
-        showToast("Transaksi berhasil diperbarui!", 'success');
-        setIsTxModalOpen(false);
-        setTransactionToEdit(null);
+        ui.showToast("Transaksi berhasil diperbarui!", 'success');
+        ui.setIsTxModalOpen(false);
+        ui.setTransactionToEdit(null);
 
-    }, [user, getCollectionRef, showToast, setIsTxModalOpen, setTransactionToEdit]);
+    }, [user, getCollectionRef, ui]);
 
     const addTransfer = useCallback(async (data: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -293,10 +220,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         await batch.commit();
-        showToast("Transfer berhasil dicatat!", 'success');
-        setIsTransferModalOpen(false);
+        ui.showToast("Transfer berhasil dicatat!", 'success');
+        ui.setIsTransferModalOpen(false);
 
-    }, [user, getCollectionRef, setIsTransferModalOpen, wallets, showToast]);
+    }, [user, getCollectionRef, ui, wallets]);
 
     const addWallet = useCallback(async (walletData: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -309,9 +236,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             isDefault: walletData.isDefault || false,
             userId: user.uid,
         });
-        showToast("Dompet berhasil dibuat!", 'success');
-        setIsWalletModalOpen(false);
-    }, [user, getCollectionRef, setIsWalletModalOpen, showToast]);
+        ui.showToast("Dompet berhasil dibuat!", 'success');
+        ui.setIsWalletModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
      const updateWallet = useCallback(async (walletId: string, walletData: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -333,16 +260,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         batch.update(walletRef, walletData);
         await batch.commit();
         
-        showToast("Dompet berhasil diperbarui!", 'success');
-        setIsEditWalletModalOpen(false);
-    }, [user, getCollectionRef, setIsEditWalletModalOpen, showToast]);
+        ui.showToast("Dompet berhasil diperbarui!", 'success');
+        ui.setIsEditWalletModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const deleteWallet = useCallback(async (walletId: string) => {
         if (!user) throw new Error("User not authenticated.");
         
         const walletHasTransactions = transactions.some(t => t.walletId === walletId);
         if (walletHasTransactions) {
-            showToast("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
+            ui.showToast("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
             return;
         }
 
@@ -351,18 +278,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const walletRef = doc(walletCollection, walletId);
         await deleteDoc(walletRef);
-        showToast("Dompet berhasil dihapus.", 'success');
-        setIsEditWalletModalOpen(false);
-    }, [user, getCollectionRef, transactions, setIsEditWalletModalOpen, showToast]);
+        ui.showToast("Dompet berhasil dihapus.", 'success');
+        ui.setIsEditWalletModalOpen(false);
+    }, [user, getCollectionRef, transactions, ui]);
 
     const addBudget = useCallback(async (budgetData: any) => {
         if (!user) throw new Error("User not authenticated.");
         const budgetCollection = getCollectionRef('budgets');
         if (!budgetCollection) return;
         await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString(), userId: user.uid });
-        showToast("Anggaran berhasil dibuat!", 'success');
-        setIsBudgetModalOpen(false);
-    }, [user, getCollectionRef, setIsBudgetModalOpen, showToast]);
+        ui.showToast("Anggaran berhasil dibuat!", 'success');
+        ui.setIsBudgetModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const updateBudget = useCallback(async (budgetId: string, budgetData: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -371,9 +298,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         const budgetRef = doc(budgetCollection, budgetId);
         await updateDoc(budgetRef, budgetData);
-        showToast("Anggaran berhasil diperbarui!", 'success');
-        setIsEditBudgetModalOpen(false);
-    }, [user, getCollectionRef, setIsEditBudgetModalOpen, showToast]);
+        ui.showToast("Anggaran berhasil diperbarui!", 'success');
+        ui.setIsEditBudgetModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const deleteBudget = useCallback(async (budgetId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -382,10 +309,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         const budgetRef = doc(budgetCollection, budgetId);
         await deleteDoc(budgetRef);
-        showToast("Anggaran berhasil dihapus.", 'success');
-        setIsEditBudgetModalOpen(false);
+        ui.showToast("Anggaran berhasil dihapus.", 'success');
+        ui.setIsEditBudgetModalOpen(false);
         router.back();
-    }, [user, getCollectionRef, setIsEditBudgetModalOpen, router, showToast]);
+    }, [user, getCollectionRef, ui, router]);
 
     const addAssetLiability = useCallback(async (data: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -399,8 +326,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             userId: user.uid
         });
 
-        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
-    }, [user, getCollectionRef, showToast]);
+        ui.showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
+    }, [user, getCollectionRef, ui]);
 
     const updateAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability', data: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -409,8 +336,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const docRef = doc(collection, id);
         await updateDoc(docRef, data);
-        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
-    }, [user, getCollectionRef, showToast]);
+        ui.showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
+    }, [user, getCollectionRef, ui]);
 
     const deleteAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability') => {
         if (!user) throw new Error("User not authenticated.");
@@ -419,13 +346,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         const docRef = doc(collection, id);
         await deleteDoc(docRef);
-        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
-    }, [user, getCollectionRef, showToast]);
+        ui.showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
+    }, [user, getCollectionRef, ui]);
 
     const deleteTransaction = useCallback(async (transaction: any) => {
         if (!user || !transaction) return;
         if (transaction.category === 'Transfer') {
-            showToast("Menghapus transaksi transfer belum didukung.", 'error');
+            ui.showToast("Menghapus transaksi transfer belum didukung.", 'error');
             return;
         }
 
@@ -445,8 +372,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             await updateDoc(walletRef, { balance: newBalance });
         }
         
-        showToast("Transaksi berhasil dihapus!", 'success');
-    }, [user, getCollectionRef, showToast]);
+        ui.showToast("Transaksi berhasil dihapus!", 'success');
+    }, [user, getCollectionRef, ui]);
 
     const addGoal = useCallback(async (goalData: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -458,9 +385,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             createdAt: new Date().toISOString(),
             userId: user.uid,
         });
-        showToast("Target berhasil dibuat!", 'success');
-        setIsGoalModalOpen(false);
-    }, [user, getCollectionRef, setIsGoalModalOpen, showToast]);
+        ui.showToast("Target berhasil dibuat!", 'success');
+        ui.setIsGoalModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const updateGoal = useCallback(async (goalId: string, goalData: any) => {
         if (!user) throw new Error("User not authenticated.");
@@ -469,9 +396,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const goalRef = doc(goalsCollection, goalId);
         await updateDoc(goalRef, goalData);
-        showToast("Target berhasil diperbarui!", 'success');
-        setIsGoalModalOpen(false);
-    }, [user, getCollectionRef, setIsGoalModalOpen, showToast]);
+        ui.showToast("Target berhasil diperbarui!", 'success');
+        ui.setIsGoalModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const deleteGoal = useCallback(async (goalId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -480,65 +407,19 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         const goalRef = doc(goalsCollection, goalId);
         await deleteDoc(goalRef);
-        showToast("Target berhasil dihapus.", 'success');
-        setIsGoalModalOpen(false);
-    }, [user, getCollectionRef, setIsGoalModalOpen, showToast]);
+        ui.showToast("Target berhasil dihapus.", 'success');
+        ui.setIsGoalModalOpen(false);
+    }, [user, getCollectionRef, ui]);
 
     const handleSignOut = async () => {
         try {
             await signOut(auth);
-            showToast("Kamu berhasil keluar.", 'info');
+            ui.showToast("Kamu berhasil keluar.", 'info');
             router.push('/');
         } catch (error) {
-            showToast("Gagal keluar.", 'error');
+            ui.showToast("Gagal keluar.", 'error');
             console.error("Sign out error:", error);
         }
-    };
-    
-    const openDeleteModal = (transaction: any) => {
-        setTransactionToDelete(transaction);
-        setIsDeleteModalOpen(true);
-    };
-
-    const closeDeleteModal = () => {
-        setIsDeleteModalOpen(false);
-        setTransactionToDelete(null);
-    };
-
-    const handleConfirmDelete = async () => {
-        if (!transactionToDelete) return;
-        try {
-            await deleteTransaction(transactionToDelete);
-        } catch (error) {
-            console.error("Gagal menghapus transaksi:", error);
-            showToast("Gagal menghapus transaksi.", 'error');
-        } finally {
-            closeDeleteModal();
-        }
-    };
-    
-    const openEditWalletModal = (wallet: any) => {
-        setWalletToEdit(wallet);
-        setIsEditWalletModalOpen(true);
-    };
-    
-    const openEditBudgetModal = (budget: any) => {
-        setBudgetToEdit(budget);
-        setIsEditBudgetModalOpen(true);
-    };
-
-    const openEditTransactionModal = (transaction: any) => {
-        if (transaction.category === 'Transfer') {
-            showToast("Mengedit transaksi transfer belum didukung.", 'error');
-            return;
-        }
-        setTransactionToEdit(transaction);
-        setIsTxModalOpen(true);
-    };
-
-    const openEditGoalModal = (goal: any) => {
-        setGoalToEdit(goal);
-        setIsGoalModalOpen(true);
     };
 
     const contextValue = {
@@ -569,39 +450,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         deleteGoal,
         isLoading,
         handleSignOut,
-        isTxModalOpen,
-        setIsTxModalOpen,
-        transactionToEdit,
-        setTransactionToEdit,
-        openEditTransactionModal,
-        isWalletModalOpen,
-        setIsWalletModalOpen,
-        isBudgetModalOpen,
-        setIsBudgetModalOpen,
-        isEditBudgetModalOpen,
-        setIsEditBudgetModalOpen,
-        budgetToEdit,
-        openEditBudgetModal,
-        isTransferModalOpen,
-        setIsTransferModalOpen,
-        preFilledTransfer,
-        setPreFilledTransfer,
-        isDeleteModalOpen,
-        transactionToDelete,
-        openDeleteModal,
-        closeDeleteModal,
-        handleConfirmDelete,
-        isEditWalletModalOpen,
-        setIsEditWalletModalOpen,
-        walletToEdit,
-        openEditWalletModal,
-        isGoalModalOpen,
-        setIsGoalModalOpen,
-        goalToEdit,
-        openEditGoalModal,
-        toastState,
-        showToast,
-        hideToast,
     };
 
     return (

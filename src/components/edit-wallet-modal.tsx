@@ -11,9 +11,11 @@ import { Label } from '@/components/ui/label';
 import { useApp } from '@/components/app-provider';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { Switch } from './ui/switch';
+import { useUI } from './ui-provider';
 
 export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () => void }) => {
-  const { updateWallet, deleteWallet, showToast } = useApp();
+  const { updateWallet, deleteWallet } = useApp();
+  const { showToast } = useUI();
   const [walletName, setWalletName] = useState(wallet.name);
   const [isDefault, setIsDefault] = useState(wallet.isDefault || false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -129,5 +131,3 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
     </motion.div>
   );
 };
-
-    

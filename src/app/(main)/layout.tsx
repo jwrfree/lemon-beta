@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { TransactionForm } from '@/components/transaction-form';
-import { useApp } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
@@ -13,6 +12,8 @@ import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
 import { GoalForm } from '@/components/goal-form';
+import { useUI } from '@/components/ui-provider';
+import { useApp } from '@/components/app-provider';
 
 const zoomVariants = {
     initial: {
@@ -45,7 +46,6 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         budgetToEdit,
         isDeleteModalOpen,
         transactionToDelete,
-        handleConfirmDelete,
         closeDeleteModal,
         isTransferModalOpen,
         setIsTransferModalOpen,
@@ -57,7 +57,10 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         isGoalModalOpen,
         setIsGoalModalOpen,
         goalToEdit,
-    } = useApp();
+        setGoalToEdit,
+    } = useUI();
+
+    const { deleteTransaction } = useApp();
 
     const handleCloseTxModal = () => {
         setIsTxModalOpen(false);
@@ -66,7 +69,15 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
     const handleCloseGoalModal = () => {
         setIsGoalModalOpen(false);
+        setGoalToEdit(null);
     };
+
+    const handleConfirmDelete = async () => {
+        if (!transactionToDelete) return;
+        await deleteTransaction(transactionToDelete);
+        closeDeleteModal();
+    };
+
 
     const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings', '/budgeting'];
     const showBottomNav = mainPagesForNav.includes(pathname);

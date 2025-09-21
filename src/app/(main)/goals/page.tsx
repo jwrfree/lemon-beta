@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, PlusCircle, Rocket } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { GoalList } from '@/components/goal-list';
+import { useUI } from '@/components/ui-provider';
 
 export default function GoalsPage() {
     const router = useRouter();
-    const { goals, setIsGoalModalOpen } = useApp();
+    const { goals } = useApp();
+    const { setIsGoalModalOpen } = useUI();
 
     return (
         <div className="flex flex-col h-full bg-muted">

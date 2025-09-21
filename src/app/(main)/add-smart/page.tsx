@@ -15,6 +15,7 @@ import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
 import { TransactionForm } from '@/components/transaction-form';
 import { startOfMonth, parseISO } from 'date-fns';
+import { useUI } from '@/components/ui-provider';
 
 type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING';
 
@@ -75,10 +76,13 @@ export default function SmartAddPage() {
         transactions,
         expenseCategories,
         incomeCategories,
+    } = useApp();
+
+    const {
         setIsTransferModalOpen,
         setPreFilledTransfer,
         showToast,
-    } = useApp();
+    } = useUI();
 
     const [pageState, setPageState] = useState<PageState>('IDLE');
     const [inputValue, setInputValue] = useState('');

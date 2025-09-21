@@ -7,7 +7,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useApp } from './app-provider';
+import { useUI } from './ui-provider';
 
 interface WalletCardStackProps {
   wallets: any[];
@@ -21,7 +21,7 @@ const swipePower = (offset: number, velocity: number) => {
 };
 
 export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: WalletCardStackProps) => {
-  const { openEditWalletModal } = useApp();
+  const { openEditWalletModal } = useUI();
   
   const paginate = (newDirection: number) => {
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);

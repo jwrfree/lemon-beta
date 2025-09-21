@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, PieChart, Plus, HandCoins, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useApp } from '@/components/app-provider';
+import { useUI } from '@/components/ui-provider';
 import Link from 'next/link';
 
 export const BottomNavigation = () => {
@@ -18,7 +18,7 @@ export const BottomNavigation = () => {
         isTransferModalOpen,
         isEditWalletModalOpen,
         isGoalModalOpen,
-    } = useApp();
+    } = useUI();
 
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },

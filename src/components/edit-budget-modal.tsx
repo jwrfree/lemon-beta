@@ -12,11 +12,13 @@ import { Slider } from '@/components/ui/slider';
 import { ScrollArea } from './ui/scroll-area';
 import { cn, formatCurrency } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+import { useUI } from './ui-provider';
 
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const EditBudgetModal = ({ budget, onClose }: { budget: any, onClose: () => void }) => {
-  const { updateBudget, deleteBudget, expenseCategories, showToast } = useApp();
+  const { updateBudget, deleteBudget, expenseCategories } = useApp();
+  const { showToast } = useUI();
 
   const [budgetName, setBudgetName] = useState(budget.name);
   const [targetAmount, setTargetAmount] = useState(budget.targetAmount);

@@ -15,9 +15,11 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
+import { useUI } from './ui-provider';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
-  const { addTransfer, wallets, preFilledTransfer, setPreFilledTransfer, showToast } = useApp();
+  const { addTransfer, wallets } = useApp();
+  const { preFilledTransfer, setPreFilledTransfer, showToast } = useUI();
   
   const [fromWalletId, setFromWalletId] = useState(preFilledTransfer?.fromWalletId || '');
   const [toWalletId, setToWalletId] = useState(preFilledTransfer?.toWalletId || '');

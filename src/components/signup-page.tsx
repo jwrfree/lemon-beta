@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { useApp } from './app-provider';
+import { useUI } from './ui-provider';
 
 const formSchema = z.object({
     email: z.string().email({ message: "Format email tidak valid." }),
@@ -27,7 +27,7 @@ const formSchema = z.object({
 
 export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
-    const { showToast } = useApp();
+    const { showToast } = useUI();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

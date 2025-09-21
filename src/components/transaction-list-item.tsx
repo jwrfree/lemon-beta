@@ -1,5 +1,4 @@
 
-
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
@@ -9,6 +8,7 @@ import { categories, categoryDetails as getCategoryDetails } from '@/lib/categor
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
+import { useUI } from './ui-provider';
 
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
@@ -55,7 +55,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 
 export const TransactionListItem = ({ transaction }: { transaction: any; hideDate?: boolean; }) => {
     const itemRef = useRef<HTMLDivElement>(null);
-    const { openDeleteModal, openEditTransactionModal } = useApp();
+    const { openDeleteModal, openEditTransactionModal } = useUI();
     
     const deleteVibrated = useRef(false);
     const editVibrated = useRef(false);

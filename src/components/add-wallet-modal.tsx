@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
+import { useUI } from './ui-provider';
 
 const popularWallets: Record<string, string[]> = {
   'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay'],
@@ -24,7 +25,8 @@ const walletCategories = [
 ];
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet, showToast } = useApp();
+  const { addWallet } = useApp();
+  const { showToast } = useUI();
   const [step, setStep] = useState(1);
   const [walletName, setWalletName] = useState('');
   const [initialBalance, setInitialBalance] = useState('');

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Wrench, Mail, Send } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useApp } from '@/components/app-provider';
+import { useUI } from '@/components/ui-provider';
 
 const CategoryPlaceholderIllustration = () => (
     <div className="relative w-40 h-40 flex items-center justify-center">
@@ -17,7 +17,7 @@ const CategoryPlaceholderIllustration = () => (
 
 export default function CategoriesPage() {
     const router = useRouter();
-    const { showToast } = useApp();
+    const { showToast } = useUI();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -59,5 +59,3 @@ export default function CategoriesPage() {
         </div>
     );
 };
-
-    

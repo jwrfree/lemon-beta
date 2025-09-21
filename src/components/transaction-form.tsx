@@ -17,6 +17,7 @@ import { useSwipeable } from 'react-swipeable';
 import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
 import { categoryDetails, Category } from '@/lib/categories';
 import { SubCategorySheet } from './sub-category-sheet';
+import { useUI } from './ui-provider';
 
 interface TransactionFormProps {
   onClose: (data?: any) => void;
@@ -25,7 +26,8 @@ interface TransactionFormProps {
 }
 
 export const TransactionForm = ({ onClose, isModal = true, initialData = null }: TransactionFormProps) => {
-    const { addTransaction, updateTransaction, wallets, expenseCategories, incomeCategories, setIsTransferModalOpen, showToast } = useApp();
+    const { addTransaction, updateTransaction, wallets, expenseCategories, incomeCategories } = useApp();
+    const { setIsTransferModalOpen, showToast } = useUI();
     
     const isEditMode = !!initialData;
     const defaultWallet = wallets.find(w => w.isDefault);
@@ -219,12 +221,24 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
 
             <div className="space-y-2">
                 <Label htmlFor="category-button">Kategori</Label>
-                <button id="category-button" type="button" className="flex w-full items-center justify-between rounded-md border p-3" onClick={() => {
-                    const currentCategoryObject = categories.find(c => c.name === category);
-                    if (currentCategoryObject) {
-                        handleCategorySelect(currentCategoryObject);
-                    }
-                }}>
+                <button
+                    id="category-button"
+                    type="button"
+                    className="flex w-full items-center justify-between rounded-md border p-3"
+                    onClick={() => {
+                        const currentCategoryObject = categories.find(c => c.name === category);
+                        if (currentCategoryObject) {
+                            handleCategorySelect(currentCategoryObject);
+                        } else if (categories.length > 0) {
+                            // If no category is selected, or the selected one is invalid for the current type,
+                            // open the sheet for the first available category as a default action.
+                            // This case is unlikely if the first 8 are shown, but it's a good fallback.
+                            // A better UX might be a dedicated "Choose Category" button.
+                            // For now, we'll just log this. A dedicated category picker would be better.
+                            console.log("No valid category selected to open sub-category sheet for.");
+                        }
+                    }}
+                >
                     {category ? (
                         <div className="flex flex-col text-left">
                             <span className="font-medium truncate">{category}</span>

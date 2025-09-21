@@ -12,11 +12,13 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
 import { ScrollArea } from './ui/scroll-area';
 import { Slider } from './ui/slider';
+import { useUI } from './ui-provider';
 
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
-  const { addBudget, expenseCategories, showToast } = useApp();
+  const { addBudget, expenseCategories } = useApp();
+  const { showToast } = useUI();
   const [step, setStep] = useState(1);
   const [budgetName, setBudgetName] = useState('');
   const [targetAmount, setTargetAmount] = useState(0);

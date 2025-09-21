@@ -8,13 +8,14 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, LucideIcon, CalendarClock } from 'lucide-react';
 import { formatDistanceToNowStrict, parseISO, isPast } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { useUI } from './ui-provider';
 
 const goalIcons: { [key: string]: LucideIcon } = {
     Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer
 };
 
 export const GoalList = ({ goals }: { goals: any[] }) => {
-    const { openEditGoalModal } = useApp();
+    const { openEditGoalModal } = useUI();
 
     return (
         <div className="space-y-4">

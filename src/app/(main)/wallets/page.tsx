@@ -8,10 +8,12 @@ import { Plus, Wallet, PlusCircle } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
+import { useUI } from '@/components/ui-provider';
 
 
 export default function WalletsPage() {
-  const { wallets, setIsWalletModalOpen } = useApp();
+  const { wallets } = useApp();
+  const { setIsWalletModalOpen } = useUI();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 

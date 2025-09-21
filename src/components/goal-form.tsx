@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Calendar } from './ui/calendar';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { useUI } from './ui-provider';
 
 
 const goalIcons = [
@@ -33,7 +34,8 @@ interface GoalFormProps {
 }
 
 export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
-    const { addGoal, updateGoal, deleteGoal, showToast } = useApp();
+    const { addGoal, updateGoal, deleteGoal } = useApp();
+    const { showToast } = useUI();
     const isEditMode = !!initialData;
 
     const [name, setName] = useState(initialData?.name || '');

@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { useApp } from './app-provider';
+import { useUI } from './ui-provider';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -31,7 +31,7 @@ const formSchema = z.object({
 
 export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
-    const { showToast } = useApp();
+    const { showToast } = useUI();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),

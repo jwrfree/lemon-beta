@@ -12,6 +12,7 @@ import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Pie, PieChart } from "recharts"
+import { useUI } from '@/components/ui-provider';
 
 const BudgetCard = ({ budget }: { budget: any }) => {
     const { transactions } = useApp();
@@ -83,7 +84,8 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 
 export default function BudgetingPage() {
     const router = useRouter();
-    const { budgets, transactions, setIsBudgetModalOpen } = useApp();
+    const { budgets, transactions } = useApp();
+    const { setIsBudgetModalOpen } = useUI();
 
     const overview = useMemo(() => {
         const now = new Date();
