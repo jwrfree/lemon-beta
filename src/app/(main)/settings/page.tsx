@@ -61,23 +61,23 @@ export default function SettingsPage() {
                                     <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
                                 )}
                                 <Button
-                                    size="sm"
+                                    size="icon"
                                     variant='ghost'
                                     onClick={() => setTheme('light')}
-                                    className={cn("rounded-full z-10 h-8 w-8", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                                    className={cn("rounded-full z-10", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
                                     aria-label="Set theme to light"
                                 >
-                                    <Sun className="h-5 w-5" />
+                                    <Sun className="h-6 w-6" />
                                     <span className="sr-only">Ganti ke tema terang</span>
                                 </Button>
                                 <Button
-                                    size="sm"
+                                    size="icon"
                                     variant='ghost'
                                     onClick={() => setTheme('dark')}
-                                    className={cn("rounded-full z-10 h-8 w-8", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                                    className={cn("rounded-full z-10", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
                                     aria-label="Set theme to dark"
                                 >
-                                    <Moon className="h-5 w-5" />
+                                    <Moon className="h-6 w-6" />
                                     <span className="sr-only">Ganti ke tema gelap</span>
                                 </Button>
                             </div>
@@ -87,12 +87,14 @@ export default function SettingsPage() {
                             <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Notifikasi</span>
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                            <span className="sr-only">Buka Notifikasi</span>
                         </button>
                         <Separator className="mx-4 w-auto"/>
                         <button className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left" disabled>
                             <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Keamanan</span>
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                            <span className="sr-only">Buka Keamanan</span>
                         </button>
                     </div>
 
@@ -104,6 +106,7 @@ export default function SettingsPage() {
                                     <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                     <span className="font-medium flex-1">{item.name}</span>
                                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                                    <span className="sr-only">Buka {item.name}</span>
                                 </button>
                                  {index < managementItems.length - 1 && <Separator className="mx-4 w-auto"/>}
                             </React.Fragment>
