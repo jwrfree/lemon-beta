@@ -486,7 +486,7 @@ export default function SmartAddPage() {
                                             <Textarea
                                                 placeholder="Ketik atau rekam suara..."
                                                 className="pr-24 min-h-[48px] max-h-48"
-                                                rows={1}
+                                                minRows={1}
                                                 value={inputValue}
                                                 onChange={(e) => setInputValue(e.target.value)}
                                                 onKeyDown={(e) => {
