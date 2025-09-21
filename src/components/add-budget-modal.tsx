@@ -93,7 +93,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }} 
         exit={{ y: "100%" }} 
         transition={{ type: "spring", stiffness: 300, damping: 30 }} 
-        className="w-full max-w-md bg-popover rounded-t-2xl shadow-lg flex flex-col h-fit max-h-[85vh]" 
+        className="w-full max-w-md bg-popover rounded-t-2xl flex flex-col h-fit max-h-[85vh]" 
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
