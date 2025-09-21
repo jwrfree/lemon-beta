@@ -61,19 +61,19 @@ export default function SettingsPage() {
                                     <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
                                 )}
                                 <Button
-                                    size="icon"
+                                    size="sm"
                                     variant='ghost'
                                     onClick={() => setTheme('light')}
-                                    className={cn("rounded-full z-10 h-7 w-7", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                                    className={cn("rounded-full z-10 h-8 w-8", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
                                     aria-label="Set theme to light"
                                 >
                                     <Sun className="h-5 w-5" />
                                 </Button>
                                 <Button
-                                    size="icon"
+                                    size="sm"
                                     variant='ghost'
                                     onClick={() => setTheme('dark')}
-                                    className={cn("rounded-full z-10 h-7 w-7", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                                    className={cn("rounded-full z-10 h-8 w-8", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
                                     aria-label="Set theme to dark"
                                 >
                                     <Moon className="h-5 w-5" />

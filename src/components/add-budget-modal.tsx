@@ -97,15 +97,15 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
-          <div className="w-8">
+          <div className="w-11">
             {step > 1 && (
-              <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
+              <Button variant="ghost" size="icon" onClick={handleBack}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             )}
           </div>
           <h2 className="text-xl font-bold text-center">{stepTitles[step - 1]}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-black/10 dark:bg-white/10 rounded-full">
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
           </Button>
         </div>
