@@ -113,6 +113,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
             {step === 2 && (
               <Button variant="ghost" size="icon" onClick={handleBack}>
                 <ArrowLeft className="h-5 w-5" />
+                <span className="sr-only">Kembali</span>
               </Button>
             )}
           </div>
@@ -121,6 +122,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
           </h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
+            <span className="sr-only">Tutup</span>
           </Button>
         </div>
         
@@ -141,6 +143,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   {walletCategories.map((cat) => (
                     <button
                       key={cat.key}
+                      type="button"
                       onClick={() => handleCategorySelect(cat)}
                       className="flex flex-col items-center justify-center gap-2 p-4 border rounded-lg hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring"
                     >

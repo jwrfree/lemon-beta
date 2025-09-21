@@ -76,7 +76,10 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
             >
                  <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
                     <h2 className="text-xl font-bold">Buat Akun Baru</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
+                        <X className="h-5 w-5" />
+                        <span className="sr-only">Tutup</span>
+                    </Button>
                 </div>
                 <div className="p-4 overflow-y-auto">
                      <p className="text-muted-foreground text-sm mb-4">Mulai kelola keuanganmu bersama Lemon.</p>
@@ -91,11 +94,12 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type="email" placeholder="email@example.com" {...field} />
+                                                <Input type="email" id="signup-email" placeholder="email@example.com" {...field} />
                                             </FormControl>
                                             {field.value && (
                                                 <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')}>
                                                     <X className="h-4 w-4" />
+                                                    <span className="sr-only">Hapus email</span>
                                                 </Button>
                                             )}
                                         </div>
@@ -112,10 +116,11 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} placeholder="********" {...field} />
+                                                <Input type={showPassword ? "text" : "password"} id="signup-password" placeholder="********" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                                <span className="sr-only">{showPassword ? 'Sembunyikan' : 'Tampilkan'} password</span>
                                             </button>
                                         </div>
                                         <FormMessage />
@@ -131,10 +136,11 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} placeholder="********" {...field} />
+                                                <Input type={showPassword ? "text" : "password"} id="signup-confirm-password" placeholder="********" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                                <span className="sr-only">{showPassword ? 'Sembunyikan' : 'Tampilkan'} password</span>
                                             </button>
                                         </div>
                                         <FormMessage />
@@ -148,7 +154,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                     </Form>
                     <p className="text-sm text-muted-foreground mt-4 text-center">
                         Sudah punya akun?{' '}
-                        <Button variant="link" onClick={() => setAuthModal('login')} className="p-0 h-auto">Masuk di sini</Button>
+                        <Button variant="link" type="button" onClick={() => setAuthModal('login')} className="p-0 h-auto">Masuk di sini</Button>
                     </p>
                 </div>
             </motion.div>

@@ -193,6 +193,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         <PopoverTrigger asChild>
                             <Button
                                 id="date"
+                                type="button"
                                 variant={"outline"}
                                 className={cn(
                                     "w-full justify-start text-left font-normal",
@@ -217,8 +218,8 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
             </div>
 
             <div className="space-y-2">
-                <Label>Kategori</Label>
-                <button type="button" className="flex w-full items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
+                <Label htmlFor="category-button">Kategori</Label>
+                <button id="category-button" type="button" className="flex w-full items-center justify-between rounded-md border p-3" onClick={() => category && handleCategorySelect(categories.find(c => c.name === category)!)}>
                     {category ? (
                         <div className="flex flex-col text-left">
                             <span className="font-medium truncate">{category}</span>
@@ -304,6 +305,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                             <h2 className="text-xl font-bold">{title}</h2>
                             <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-full">
                                 <X className="h-5 w-5" />
+                                <span className="sr-only">Tutup</span>
                             </Button>
                         </div>
                         {formContent}
@@ -319,6 +321,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                      <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
                          <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => onClose()}>
                             <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+                            <span className="sr-only">Kembali</span>
                         </Button>
                         <h1 className="text-xl font-bold text-center w-full">{title}</h1>
                     </header>

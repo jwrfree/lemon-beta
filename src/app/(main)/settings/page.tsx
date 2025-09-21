@@ -68,6 +68,7 @@ export default function SettingsPage() {
                                     aria-label="Set theme to light"
                                 >
                                     <Sun className="h-5 w-5" />
+                                    <span className="sr-only">Ganti ke tema terang</span>
                                 </Button>
                                 <Button
                                     size="sm"
@@ -77,6 +78,7 @@ export default function SettingsPage() {
                                     aria-label="Set theme to dark"
                                 >
                                     <Moon className="h-5 w-5" />
+                                    <span className="sr-only">Ganti ke tema gelap</span>
                                 </Button>
                             </div>
                         </div>

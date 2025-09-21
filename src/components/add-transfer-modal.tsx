@@ -94,13 +94,16 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
             <ArrowRightLeft className="h-5 w-5" />
             Transfer Antar Dompet
           </h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full"><X className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
+            <X className="h-5 w-5" />
+            <span className="sr-only">Tutup</span>
+          </Button>
         </div>
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="amount">Jumlah</Label>
+            <Label htmlFor="amount-transfer">Jumlah</Label>
             <Input
-              id="amount"
+              id="amount-transfer"
               placeholder="Rp 0"
               value={amount}
               onChange={handleAmountChange}
@@ -142,10 +145,10 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="date">Tanggal</Label>
+            <Label htmlFor="date-transfer">Tanggal</Label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button id="date" variant={"outline"} className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}>
+                <Button id="date-transfer" variant={"outline"} className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}>
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
                 </Button>
@@ -156,9 +159,9 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
             </Popover>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Deskripsi</Label>
+            <Label htmlFor="description-transfer">Deskripsi</Label>
             <Input
-              id="description"
+              id="description-transfer"
               placeholder="e.g., Pindah dana untuk belanja"
               value={description}
               onChange={(e) => setDescription(e.target.value)}

@@ -87,7 +87,10 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
                     <h2 className="text-xl font-bold">Selamat Datang Kembali!</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
+                        <X className="h-5 w-5" />
+                        <span className="sr-only">Tutup</span>
+                    </Button>
                 </div>
 
                 <div className="p-4 overflow-y-auto">
@@ -103,11 +106,12 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type="email" placeholder="email@example.com" className="pl-10 text-base" {...field} />
+                                                <Input type="email" id="email" placeholder="email@example.com" className="pl-10 text-base" {...field} />
                                             </FormControl>
                                             {field.value && (
                                                 <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')}>
                                                     <X className="h-4 w-4" />
+                                                    <span className="sr-only">Hapus email</span>
                                                 </Button>
                                             )}
                                         </div>
@@ -124,10 +128,11 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} placeholder="********" className="pl-10 pr-10 text-base" {...field} />
+                                                <Input type={showPassword ? "text" : "password"} id="password" placeholder="********" className="pl-10 pr-10 text-base" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                                <span className="sr-only">{showPassword ? 'Sembunyikan' : 'Tampilkan'} password</span>
                                             </button>
                                         </div>
                                         <FormMessage />
@@ -146,14 +151,14 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                 <span className="bg-background px-2 text-muted-foreground">Atau lanjutkan dengan</span>
                             </div>
                         </div>
-                        <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignIn}>
+                        <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignIn} type="button">
                             <GoogleIcon className="mr-2 h-5 w-5" />
                             Google
                         </Button>
                     </div>
                     <p className="text-sm text-muted-foreground mt-4 text-center">
                         Belum punya akun?{' '}
-                        <Button variant="link" onClick={() => setAuthModal('signup')} className="p-0 h-auto">Daftar di sini</Button>
+                        <Button variant="link" onClick={() => setAuthModal('signup')} className="p-0 h-auto" type="button">Daftar di sini</Button>
                     </p>
                 </div>
             </motion.div>

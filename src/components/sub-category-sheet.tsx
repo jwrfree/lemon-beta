@@ -37,6 +37,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                     <h2 className="text-xl font-bold">Pilih Sub-kategori {category.name}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
+                        <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
                 <ScrollArea className="flex-1">
@@ -44,6 +45,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                         {category.subCategories?.map((subCat) => (
                             <button
                                 key={subCat}
+                                type="button"
                                 onClick={() => onSelect(subCat)}
                                 className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-accent text-left"
                             >

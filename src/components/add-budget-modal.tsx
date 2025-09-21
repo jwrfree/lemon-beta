@@ -101,12 +101,14 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
             {step > 1 && (
               <Button variant="ghost" size="icon" onClick={handleBack}>
                 <ArrowLeft className="h-5 w-5" />
+                <span className="sr-only">Kembali</span>
               </Button>
             )}
           </div>
           <h2 className="text-xl font-bold text-center">{stepTitles[step - 1]}</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
+            <span className="sr-only">Tutup</span>
           </Button>
         </div>
 
@@ -148,7 +150,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                             />
                             <div className="grid grid-cols-4 gap-2">
                                 {budgetSteps.map(val => (
-                                    <Button key={val} variant="outline" size="sm" onClick={() => setTargetAmount(val)}>
+                                    <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)}>
                                         {formatCurrency(val / 1000)}k
                                     </Button>
                                 ))}
@@ -180,7 +182,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         
         <div className="p-4 border-t sticky bottom-0 bg-popover">
           {step < 3 ? (
-             <Button onClick={handleNext} className="w-full">Lanjut</Button>
+             <Button onClick={handleNext} className="w-full" type="button">Lanjut</Button>
           ) : (
             <Button onClick={handleSubmit} className="w-full" disabled={isSubmitting}>{isSubmitting ? 'Memproses...' : 'Simpan Anggaran'}</Button>
           )}
