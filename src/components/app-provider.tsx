@@ -28,6 +28,7 @@ interface AppContextType {
     budgets: any[];
     assets: any[];
     liabilities: any[];
+    goals: any[];
     expenseCategories: any[];
     incomeCategories: any[];
     addTransaction: (data: any) => Promise<void>;
@@ -43,6 +44,9 @@ interface AppContextType {
     addAssetLiability: (data: any) => Promise<void>;
     updateAssetLiability: (id: string, type: 'asset' | 'liability', data: any) => Promise<void>;
     deleteAssetLiability: (id: string, type: 'asset' | 'liability') => Promise<void>;
+    addGoal: (goalData: any) => Promise<void>;
+    updateGoal: (goalId: string, goalData: any) => Promise<void>;
+    deleteGoal: (goalId: string) => Promise<void>;
     isLoading: boolean;
     handleSignOut: () => void;
     
@@ -73,6 +77,12 @@ interface AppContextType {
     setIsEditWalletModalOpen: (isOpen: boolean) => void;
     walletToEdit: any | null;
     openEditWalletModal: (wallet: any) => void;
+
+    isGoalModalOpen: boolean;
+    setIsGoalModalOpen: (isOpen: boolean) => void;
+    goalToEdit: any | null;
+    openEditGoalModal: (goal: any) => void;
+
     toastState: ToastState;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
     hideToast: () => void;
@@ -96,6 +106,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [budgets, setBudgets] = useState<any[]>([]);
     const [assets, setAssets] = useState<any[]>([]);
     const [liabilities, setLiabilities] = useState<any[]>([]);
+    const [goals, setGoals] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
@@ -110,6 +121,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isEditWalletModalOpen, setIsEditWalletModalOpen] = useState(false);
     const [walletToEdit, setWalletToEdit] = useState<any | null>(null);
     const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
+    const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+    const [goalToEdit, setGoalToEdit] = useState<any | null>(null);
 
     const [toastState, setToastState] = useState<ToastState>({ show: false, message: '', type: 'info' });
 
@@ -130,29 +143,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return () => unsubscribe();
     }, []);
 
-    const getWalletCollection = useCallback(() => {
+    const getCollectionRef = useCallback((collectionName: string) => {
         if (!user) return null;
-        return collection(db, `users/${user.uid}/wallets`);
-    }, [user]);
-
-    const getTransactionCollection = useCallback(() => {
-        if (!user) return null;
-        return collection(db, `users/${user.uid}/transactions`);
-    }, [user]);
-    
-    const getBudgetCollection = useCallback(() => {
-        if (!user) return null;
-        return collection(db, `users/${user.uid}/budgets`);
-    }, [user]);
-
-    const getAssetCollection = useCallback(() => {
-        if (!user) return null;
-        return collection(db, `users/${user.uid}/assets`);
-    }, [user]);
-
-    const getLiabilityCollection = useCallback(() => {
-        if (!user) return null;
-        return collection(db, `users/${user.uid}/liabilities`);
+        return collection(db, `users/${user.uid}/${collectionName}`);
     }, [user]);
 
     useEffect(() => {
@@ -162,56 +155,40 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setBudgets([]);
             setAssets([]);
             setLiabilities([]);
+            setGoals([]);
             setIsLoading(false);
             return;
         }
 
-        const collections = {
-            wallets: getWalletCollection(),
-            transactions: getTransactionCollection(),
-            budgets: getBudgetCollection(),
-            assets: getAssetCollection(),
-            liabilities: getLiabilityCollection()
+        const collections: { [key: string]: any } = {
+            wallets: { setter: setWallets, ref: getCollectionRef('wallets') },
+            transactions: { setter: setTransactions, ref: getCollectionRef('transactions'), orderByField: 'date' },
+            budgets: { setter: setBudgets, ref: getCollectionRef('budgets') },
+            assets: { setter: setAssets, ref: getCollectionRef('assets') },
+            liabilities: { setter: setLiabilities, ref: getCollectionRef('liabilities') },
+            goals: { setter: setGoals, ref: getCollectionRef('goals') },
         };
 
-        const unsubscribers = [
-            onSnapshot(query(collections.wallets!, orderBy("createdAt", "desc")), (snapshot) => {
+        const unsubscribers = Object.values(collections).map(({ setter, ref, orderByField = 'createdAt' }) => {
+            if (!ref) return () => {};
+            const q = query(ref, orderBy(orderByField, "desc"));
+            return onSnapshot(q, (snapshot) => {
                 const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setWallets(data);
-            }, (error) => console.error("Error fetching wallets: ", error)),
-            
-            onSnapshot(query(collections.transactions!, orderBy("date", "desc")), (snapshot) => {
-                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setTransactions(data);
+                setter(data);
                 setIsLoading(false);
             }, (error) => {
-                console.error("Error fetching transactions: ", error);
+                console.error(`Error fetching ${ref.id}: `, error);
                 setIsLoading(false);
-            }),
-
-            onSnapshot(query(collections.budgets!, orderBy("createdAt", "desc")), (snapshot) => {
-                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setBudgets(data);
-            }, (error) => console.error("Error fetching budgets: ", error)),
-
-            onSnapshot(query(collections.assets!, orderBy("createdAt", "desc")), (snapshot) => {
-                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setAssets(data);
-            }, (error) => console.error("Error fetching assets: ", error)),
-
-            onSnapshot(query(collections.liabilities!, orderBy("createdAt", "desc")), (snapshot) => {
-                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setLiabilities(data);
-            }, (error) => console.error("Error fetching liabilities: ", error)),
-        ];
+            });
+        });
 
         return () => unsubscribers.forEach(unsub => unsub());
-    }, [user, getWalletCollection, getTransactionCollection, getBudgetCollection, getAssetCollection, getLiabilityCollection]);
+    }, [user, getCollectionRef]);
     
     const addTransaction = useCallback(async (data: any) => {
         if (!user) return;
-        const walletCollection = getWalletCollection();
-        const transactionCollection = getTransactionCollection();
+        const walletCollection = getCollectionRef('wallets');
+        const transactionCollection = getCollectionRef('transactions');
         if (!walletCollection || !transactionCollection) return;
 
         const walletRef = doc(db, walletCollection.path, data.walletId);
@@ -223,12 +200,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             await updateDoc(walletRef, { balance: newBalance });
         }
         setIsTxModalOpen(false);
-    }, [user, getTransactionCollection, getWalletCollection]);
+    }, [user, getCollectionRef]);
 
     const updateTransaction = useCallback(async (transactionId: string, oldData: any, newData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const transactionCollection = getTransactionCollection();
-        const walletCollection = getWalletCollection();
+        const transactionCollection = getCollectionRef('transactions');
+        const walletCollection = getCollectionRef('wallets');
         if (!transactionCollection || !walletCollection) return;
 
         const batch = writeBatch(db);
@@ -268,12 +245,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen(false);
         setTransactionToEdit(null);
 
-    }, [user, getTransactionCollection, getWalletCollection]);
+    }, [user, getCollectionRef, showToast, setIsTxModalOpen, setTransactionToEdit]);
 
     const addTransfer = useCallback(async (data: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const walletCollection = getWalletCollection();
-        const transactionCollection = getTransactionCollection();
+        const walletCollection = getCollectionRef('wallets');
+        const transactionCollection = getCollectionRef('transactions');
         if (!walletCollection || !transactionCollection) return;
 
         const { fromWalletId, toWalletId, amount, date, description } = data;
@@ -320,11 +297,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         showToast("Transfer berhasil dicatat!", 'success');
         setIsTransferModalOpen(false);
 
-    }, [user, getTransactionCollection, getWalletCollection, setIsTransferModalOpen, wallets]);
+    }, [user, getCollectionRef, setIsTransferModalOpen, wallets, showToast]);
 
     const addWallet = useCallback(async (walletData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const walletCollection = getWalletCollection();
+        const walletCollection = getCollectionRef('wallets');
         if (!walletCollection) return;
         await addDoc(walletCollection, {
             ...walletData,
@@ -335,17 +312,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         });
         showToast("Dompet berhasil dibuat!", 'success');
         setIsWalletModalOpen(false);
-    }, [user, getWalletCollection]);
+    }, [user, getCollectionRef, setIsWalletModalOpen, showToast]);
 
      const updateWallet = useCallback(async (walletId: string, walletData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const walletCollection = getWalletCollection();
+        const walletCollection = getCollectionRef('wallets');
         if (!walletCollection) return;
 
         const batch = writeBatch(db);
         const walletRef = doc(walletCollection, walletId);
 
-        // If setting a wallet to default, unset all others
         if (walletData.isDefault === true) {
             const walletsSnapshot = await getDocs(query(walletCollection, where('isDefault', '==', true)));
             walletsSnapshot.forEach((doc) => {
@@ -360,7 +336,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         
         showToast("Dompet berhasil diperbarui!", 'success');
         setIsEditWalletModalOpen(false);
-    }, [user, getWalletCollection]);
+    }, [user, getCollectionRef, setIsEditWalletModalOpen, showToast]);
 
     const deleteWallet = useCallback(async (walletId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -371,38 +347,38 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
 
-        const walletCollection = getWalletCollection();
+        const walletCollection = getCollectionRef('wallets');
         if (!walletCollection) return;
 
         const walletRef = doc(walletCollection, walletId);
         await deleteDoc(walletRef);
         showToast("Dompet berhasil dihapus.", 'success');
         setIsEditWalletModalOpen(false);
-    }, [user, getWalletCollection, transactions]);
+    }, [user, getCollectionRef, transactions, setIsEditWalletModalOpen, showToast]);
 
     const addBudget = useCallback(async (budgetData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const budgetCollection = getBudgetCollection();
+        const budgetCollection = getCollectionRef('budgets');
         if (!budgetCollection) return;
         await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString(), userId: user.uid });
         showToast("Anggaran berhasil dibuat!", 'success');
         setIsBudgetModalOpen(false);
-    }, [user, getBudgetCollection]);
+    }, [user, getCollectionRef, setIsBudgetModalOpen, showToast]);
 
     const updateBudget = useCallback(async (budgetId: string, budgetData: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const budgetCollection = getBudgetCollection();
+        const budgetCollection = getCollectionRef('budgets');
         if (!budgetCollection) return;
         
         const budgetRef = doc(budgetCollection, budgetId);
         await updateDoc(budgetRef, budgetData);
         showToast("Anggaran berhasil diperbarui!", 'success');
         setIsEditBudgetModalOpen(false);
-    }, [user, getBudgetCollection]);
+    }, [user, getCollectionRef, setIsEditBudgetModalOpen, showToast]);
 
     const deleteBudget = useCallback(async (budgetId: string) => {
         if (!user) throw new Error("User not authenticated.");
-        const budgetCollection = getBudgetCollection();
+        const budgetCollection = getCollectionRef('budgets');
         if (!budgetCollection) return;
         
         const budgetRef = doc(budgetCollection, budgetId);
@@ -410,12 +386,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         showToast("Anggaran berhasil dihapus.", 'success');
         setIsEditBudgetModalOpen(false);
         router.back();
-    }, [user, getBudgetCollection, router]);
+    }, [user, getCollectionRef, setIsEditBudgetModalOpen, router, showToast]);
 
     const addAssetLiability = useCallback(async (data: any) => {
         if (!user) throw new Error("User not authenticated.");
         const { type, ...itemData } = data;
-        const collection = type === 'asset' ? getAssetCollection() : getLiabilityCollection();
+        const collection = type === 'asset' ? getCollectionRef('assets') : getCollectionRef('liabilities');
         if (!collection) return;
         
         await addDoc(collection, {
@@ -425,27 +401,27 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
-    }, [user, getAssetCollection, getLiabilityCollection]);
+    }, [user, getCollectionRef, showToast]);
 
     const updateAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability', data: any) => {
         if (!user) throw new Error("User not authenticated.");
-        const collection = type === 'asset' ? getAssetCollection() : getLiabilityCollection();
+        const collection = type === 'asset' ? getCollectionRef('assets') : getCollectionRef('liabilities');
         if (!collection) return;
 
         const docRef = doc(collection, id);
         await updateDoc(docRef, data);
         showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
-    }, [user, getAssetCollection, getLiabilityCollection]);
+    }, [user, getCollectionRef, showToast]);
 
     const deleteAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability') => {
         if (!user) throw new Error("User not authenticated.");
-        const collection = type === 'asset' ? getAssetCollection() : getLiabilityCollection();
+        const collection = type === 'asset' ? getCollectionRef('assets') : getCollectionRef('liabilities');
         if (!collection) return;
         
         const docRef = doc(collection, id);
         await deleteDoc(docRef);
         showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
-    }, [user, getAssetCollection, getLiabilityCollection]);
+    }, [user, getCollectionRef, showToast]);
 
     const deleteTransaction = useCallback(async (transaction: any) => {
         if (!user || !transaction) return;
@@ -454,8 +430,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
 
-        const walletCollection = getWalletCollection();
-        const transactionCollection = getTransactionCollection();
+        const walletCollection = getCollectionRef('wallets');
+        const transactionCollection = getCollectionRef('transactions');
         if (!walletCollection || !transactionCollection) return;
 
         const transactionRef = doc(db, transactionCollection.path, transaction.id);
@@ -471,7 +447,43 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
         
         showToast("Transaksi berhasil dihapus!", 'success');
-    }, [user, getTransactionCollection, getWalletCollection]);
+    }, [user, getCollectionRef, showToast]);
+
+    const addGoal = useCallback(async (goalData: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const goalsCollection = getCollectionRef('goals');
+        if (!goalsCollection) return;
+
+        await addDoc(goalsCollection, {
+            ...goalData,
+            createdAt: new Date().toISOString(),
+            userId: user.uid,
+        });
+        showToast("Target berhasil dibuat!", 'success');
+        setIsGoalModalOpen(false);
+    }, [user, getCollectionRef, setIsGoalModalOpen, showToast]);
+
+    const updateGoal = useCallback(async (goalId: string, goalData: any) => {
+        if (!user) throw new Error("User not authenticated.");
+        const goalsCollection = getCollectionRef('goals');
+        if (!goalsCollection) return;
+
+        const goalRef = doc(goalsCollection, goalId);
+        await updateDoc(goalRef, goalData);
+        showToast("Target berhasil diperbarui!", 'success');
+        setIsGoalModalOpen(false);
+    }, [user, getCollectionRef, setIsGoalModalOpen, showToast]);
+
+    const deleteGoal = useCallback(async (goalId: string) => {
+        if (!user) throw new Error("User not authenticated.");
+        const goalsCollection = getCollectionRef('goals');
+        if (!goalsCollection) return;
+
+        const goalRef = doc(goalsCollection, goalId);
+        await deleteDoc(goalRef);
+        showToast("Target berhasil dihapus.", 'success');
+        setIsGoalModalOpen(false);
+    }, [user, getCollectionRef, setIsGoalModalOpen, showToast]);
 
     const handleSignOut = async () => {
         try {
@@ -525,6 +537,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen(true);
     };
 
+    const openEditGoalModal = (goal: any) => {
+        setGoalToEdit(goal);
+        setIsGoalModalOpen(true);
+    };
+
     const contextValue = {
         user,
         wallets,
@@ -532,6 +549,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         budgets,
         assets,
         liabilities,
+        goals,
         expenseCategories: categories.expense,
         incomeCategories: categories.income,
         addTransaction,
@@ -547,6 +565,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         addAssetLiability,
         updateAssetLiability,
         deleteAssetLiability,
+        addGoal,
+        updateGoal,
+        deleteGoal,
         isLoading,
         handleSignOut,
         isTxModalOpen,
@@ -575,6 +596,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setIsEditWalletModalOpen,
         walletToEdit,
         openEditWalletModal,
+        isGoalModalOpen,
+        setIsGoalModalOpen,
+        goalToEdit,
+        openEditGoalModal,
         toastState,
         showToast,
         hideToast,

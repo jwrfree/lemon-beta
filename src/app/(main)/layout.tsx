@@ -13,6 +13,7 @@ import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
+import { GoalForm } from '@/components/goal-form';
 
 const slideVariants = {
     initial: {
@@ -57,6 +58,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         walletToEdit,
         transactionToEdit,
         setTransactionToEdit,
+        isGoalModalOpen,
+        setIsGoalModalOpen,
+        goalToEdit,
     } = useApp();
 
     if (isLoading || !user) {
@@ -68,9 +72,12 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         setTransactionToEdit(null);
     }
 
-    // Hide bottom nav on specific pages for a more focused experience
+    const handleCloseGoalModal = () => {
+        setIsGoalModalOpen(false);
+    }
+
     const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings'];
-    const showBottomNav = mainPagesForNav.includes(pathname) || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets');
+    const showBottomNav = mainPagesForNav.includes(pathname) || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets') || pathname.startsWith('/goals');
 
 
     return (
@@ -97,6 +104,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
                 {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
                 {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
+                {isGoalModalOpen && <GoalForm initialData={goalToEdit} onClose={handleCloseGoalModal} />}
                 {isDeleteModalOpen && transactionToDelete && (
                     <ConfirmDeleteModal
                         transaction={transactionToDelete}
