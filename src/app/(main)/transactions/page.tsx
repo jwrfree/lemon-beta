@@ -39,8 +39,15 @@ const TransactionsPageContent = () => {
     }, [searchParams, expenseCategories, incomeCategories]);
 
     const categoriesForFilter = useMemo(() => {
-        const cats = activeTab === 'expense' ? expenseCategories : activeTab === 'income' ? incomeCategories : [...incomeCategories, ...expenseCategories];
-        return cats.sort((a,b) => a.name.localeCompare(b.name));
+        if (activeTab === 'expense') {
+            return [...expenseCategories].sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        if (activeTab === 'income') {
+            return [...incomeCategories].sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        return [...expenseCategories, ...incomeCategories].sort((a, b) => a.name.localeCompare(b.name));
     }, [activeTab, expenseCategories, incomeCategories]);
 
     const filteredTransactions = useMemo(() => {
