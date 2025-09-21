@@ -1,5 +1,6 @@
 
 'use client';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -35,9 +36,10 @@ const zoomVariants = {
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const { 
-        isTxModalOpen, 
-        setIsTxModalOpen, 
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const {
+        isTxModalOpen,
+        setIsTxModalOpen,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -62,6 +64,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     } = useUI();
 
     const { deleteTransaction } = useApp();
+
+    useEffect(() => {
+        const container = scrollRef.current;
+        container?.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    }, [pathname]);
 
     const handleCloseTxModal = () => {
         setIsTxModalOpen(false);
@@ -92,6 +99,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     initial="initial"
                     animate="enter"
                     exit="exit"
+                    ref={scrollRef}
                     className={cn(
                         'flex-1 flex flex-col overflow-y-auto',
                         showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))]'
