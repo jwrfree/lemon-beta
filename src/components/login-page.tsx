@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -10,10 +9,11 @@ import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from './ui-provider';
+import { Separator } from '@/components/ui/separator';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -31,6 +31,7 @@ const formSchema = z.object({
 
 export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
     const [showPassword, setShowPassword] = useState(false);
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const { showToast } = useUI();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -54,11 +55,14 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
     const handleGoogleSignIn = async () => {
         const provider = new GoogleAuthProvider();
         try {
+            setIsGoogleLoading(true);
             await signInWithPopup(auth, provider);
             showToast("Login dengan Google berhasil!", 'success');
             onClose();
         } catch (error: any) {
             showToast('Gagal masuk dengan Google. Coba lagi ya.', 'error');
+        } finally {
+            setIsGoogleLoading(false);
         }
     };
 
@@ -81,20 +85,26 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="login-heading"
+                className="w-full max-w-md bg-background/95 border border-primary/10 rounded-t-3xl shadow-2xl flex flex-col h-fit backdrop-blur-lg"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-                    <h2 className="text-xl font-bold">Selamat Datang Kembali!</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
-                        <X className="h-5 w-5" />
-                        <span className="sr-only">Tutup</span>
-                    </Button>
+                <div className="relative overflow-hidden rounded-t-3xl">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/10" />
+                    <div className="relative flex items-center justify-between px-5 py-4">
+                        <h2 id="login-heading" className="text-xl font-bold">Selamat Datang Kembali!</h2>
+                        <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background/60 hover:bg-background">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Tutup</span>
+                        </Button>
+                    </div>
                 </div>
 
-                <div className="p-4 overflow-y-auto">
-                    <p className="text-muted-foreground text-sm mb-4">Masuk untuk melanjutkan ke aplikasi Lemon.</p>
+                <div className="p-5 pb-6 overflow-y-auto">
+                    <p className="text-sm text-muted-foreground mb-4">Masuk menggunakan email yang sudah terdaftar untuk membuka dashboard Lemon.</p>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
                             <FormField
@@ -106,12 +116,25 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type="email" id="email" placeholder="email@example.com" className="pl-10 text-base" {...field} />
+                                                <Input
+                                                    type="email"
+                                                    id="email"
+                                                    autoComplete="email"
+                                                    placeholder="email@example.com"
+                                                    className="pl-10 pr-12 text-base"
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             {field.value && (
-                                                <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')}>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
+                                                    onClick={() => form.setValue('email', '')}
+                                                    aria-label="Hapus email"
+                                                >
                                                     <X className="h-4 w-4" />
-                                                    <span className="sr-only">Hapus email</span>
                                                 </Button>
                                             )}
                                         </div>
@@ -128,35 +151,54 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} id="password" placeholder="********" className="pl-10 pr-10 text-base" {...field} />
+                                                <Input
+                                                    type={showPassword ? "text" : "password"}
+                                                    id="password"
+                                                    autoComplete="current-password"
+                                                    placeholder="********"
+                                                    className="pl-10 pr-12 text-base"
+                                                    {...field}
+                                                />
                                             </FormControl>
-                                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2"
+                                                aria-pressed={showPassword}
+                                                aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+                                            >
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                                                <span className="sr-only">{showPassword ? 'Sembunyikan' : 'Tampilkan'} password</span>
                                             </button>
                                         </div>
+                                        <FormDescription>Minimal 6 karakter kombinasi huruf dan angka.</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full" disabled={isSubmitting}>
+                            <Button type="submit" className="w-full h-11 text-base" disabled={isSubmitting}>
                                 {isSubmitting ? 'Memproses...' : 'Masuk'}
                             </Button>
                         </form>
                     </Form>
-                    <div className="mt-4">
+
+                    <div className="mt-6 space-y-4">
                         <div className="relative">
-                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-                            <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-background px-2 text-muted-foreground">Atau lanjutkan dengan</span>
-                            </div>
+                            <Separator className="bg-border" />
+                            <span className="absolute inset-x-0 -top-2 mx-auto w-max bg-background px-3 text-xs uppercase text-muted-foreground">atau lanjutkan</span>
                         </div>
-                        <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignIn} type="button">
+                        <Button
+                            variant="outline"
+                            className="w-full h-11 text-base"
+                            onClick={handleGoogleSignIn}
+                            type="button"
+                            disabled={isGoogleLoading}
+                        >
                             <GoogleIcon className="mr-2 h-5 w-5" />
-                            Google
+                            {isGoogleLoading ? 'Menghubungkan...' : 'Masuk dengan Google'}
                         </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-4 text-center">
+
+                    <p className="text-sm text-muted-foreground mt-6 text-center">
                         Belum punya akun?{' '}
                         <Button variant="link" onClick={() => setAuthModal('signup')} className="p-0 h-auto" type="button">Daftar di sini</Button>
                     </p>
