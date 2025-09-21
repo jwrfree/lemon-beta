@@ -50,7 +50,7 @@ export default function SettingsPage() {
 
                     {/* Preferences Card */}
                     <div className="rounded-lg bg-card overflow-hidden">
-                        <div className="w-full flex items-center gap-4 p-4 text-left">
+                        <div className="w-full flex items-center gap-4 px-4 py-3 text-left">
                             <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Tema Aplikasi</span>
                             <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
@@ -64,33 +64,33 @@ export default function SettingsPage() {
                                     size="icon"
                                     variant='ghost'
                                     onClick={() => setTheme('light')}
-                                    className={cn("rounded-full z-10", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                                    className={cn("rounded-full z-10 h-7 w-7", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
                                     aria-label="Set theme to light"
                                 >
-                                    <Sun className="h-6 w-6" />
+                                    <Sun className="h-5 w-5" />
                                     <span className="sr-only">Ganti ke tema terang</span>
                                 </Button>
                                 <Button
                                     size="icon"
                                     variant='ghost'
                                     onClick={() => setTheme('dark')}
-                                    className={cn("rounded-full z-10", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                                    className={cn("rounded-full z-10 h-7 w-7", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
                                     aria-label="Set theme to dark"
                                 >
-                                    <Moon className="h-6 w-6" />
+                                    <Moon className="h-5 w-5" />
                                     <span className="sr-only">Ganti ke tema gelap</span>
                                 </Button>
                             </div>
                         </div>
                         <Separator className="mx-4 w-auto"/>
-                        <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left">
+                        <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 px-4 py-3 h-[58px] hover:bg-accent text-left">
                             <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Notifikasi</span>
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
                             <span className="sr-only">Buka Notifikasi</span>
                         </button>
                         <Separator className="mx-4 w-auto"/>
-                        <button className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left" disabled>
+                        <button className="w-full flex items-center gap-4 px-4 py-3 h-[58px] hover:bg-accent text-left" disabled>
                             <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Keamanan</span>
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -102,7 +102,7 @@ export default function SettingsPage() {
                     <div className="rounded-lg bg-card overflow-hidden">
                         {managementItems.map((item, index) => (
                             <React.Fragment key={item.id}>
-                                <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left">
+                                <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 px-4 py-4 hover:bg-accent text-left">
                                     <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                     <span className="font-medium flex-1">{item.name}</span>
                                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -115,7 +115,7 @@ export default function SettingsPage() {
                     
                      {/* Logout Button */}
                      <div className="rounded-lg bg-card overflow-hidden">
-                        <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-4 hover:bg-destructive/10 text-left text-destructive">
+                        <button onClick={handleSignOut} className="w-full flex items-center gap-4 px-4 py-4 hover:bg-destructive/10 text-left text-destructive">
                             <LogOut className="h-6 w-6" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Keluar</span>
                         </button>
