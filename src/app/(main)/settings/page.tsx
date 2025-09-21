@@ -50,7 +50,7 @@ export default function SettingsPage() {
 
                     {/* Preferences Card */}
                     <div className="rounded-lg bg-background overflow-hidden">
-                        <div className="w-full flex items-center gap-4 p-3 text-left">
+                        <div className="w-full flex items-center gap-4 p-4 text-left">
                             <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Tema Aplikasi</span>
                             <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
@@ -80,14 +80,14 @@ export default function SettingsPage() {
                                 </Button>
                             </div>
                         </div>
-                        <Separator className="mx-3 w-auto"/>
-                        <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
+                        <Separator className="mx-4 w-auto"/>
+                        <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left">
                             <Bell className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Notifikasi</span>
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
                         </button>
-                        <Separator className="mx-3 w-auto"/>
-                        <button className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left" disabled>
+                        <Separator className="mx-4 w-auto"/>
+                        <button className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left" disabled>
                             <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Keamanan</span>
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -98,25 +98,25 @@ export default function SettingsPage() {
                     <div className="rounded-lg bg-background overflow-hidden">
                         {managementItems.map((item, index) => (
                             <React.Fragment key={item.id}>
-                                <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-3 hover:bg-accent text-left">
+                                <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left">
                                     <item.icon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                                     <span className="font-medium flex-1">{item.name}</span>
                                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
                                 </button>
-                                 {index < managementItems.length - 1 && <Separator className="mx-3 w-auto"/>}
+                                 {index < managementItems.length - 1 && <Separator className="mx-4 w-auto"/>}
                             </React.Fragment>
                         ))}
                     </div>
                     
                      {/* Logout Button */}
                      <div className="rounded-lg bg-background overflow-hidden">
-                        <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-3 hover:bg-destructive/10 text-left text-destructive">
+                        <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-4 hover:bg-destructive/10 text-left text-destructive">
                             <LogOut className="h-6 w-6" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Keluar</span>
                         </button>
                     </div>
                     
-                     <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v1.2.0</p>
+                     <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v1.3.0</p>
                 </div>
             </main>
         </div>
