@@ -994,10 +994,6 @@ export default function ChartsPage() {
                             </Badge>
                         </div>
                     </div>
-                    <p className="max-w-2xl text-sm text-muted-foreground">
-                        Jelajahi ringkasan interaktif untuk memahami pola pemasukan, pengeluaran, dan arus kasmu sehingga keputusan
-                        finansial makin percaya diri.
-                    </p>
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 gap-1 rounded-full border border-border/60 bg-muted/40 p-1 text-muted-foreground">
                             {tabs.map((tab) => (
