@@ -11,15 +11,11 @@ import { TransactionList } from '@/components/transaction-list';
 
 
 export default function WalletsPage() {
-  const { wallets, isLoading, setIsWalletModalOpen } = useApp();
+  const { wallets, setIsWalletModalOpen } = useApp();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeWallet = wallets.length > 0 ? wallets[activeIndex] : null;
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col bg-muted h-full">

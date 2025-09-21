@@ -13,7 +13,7 @@ import { isSameMonth, parseISO } from 'date-fns';
 import { AnimatedCounter } from '@/components/animated-counter';
 
 export default function HomePage() {
-    const { wallets, transactions, isLoading } = useApp();
+    const { wallets, transactions } = useApp();
     const router = useRouter();
 
     const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
@@ -26,10 +26,6 @@ export default function HomePage() {
     const monthlyExpense = transactions
         .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
         .reduce((acc, t) => acc + t.amount, 0);
-
-    if (isLoading) {
-        return null;
-    }
 
     return (
         <div className="overflow-y-auto pb-16 bg-muted">
@@ -108,5 +104,4 @@ export default function HomePage() {
         </div>
     );
 };
-
 

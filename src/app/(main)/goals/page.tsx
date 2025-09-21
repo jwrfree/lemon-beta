@@ -9,11 +9,7 @@ import { GoalList } from '@/components/goal-list';
 
 export default function GoalsPage() {
     const router = useRouter();
-    const { goals, isLoading, setIsGoalModalOpen } = useApp();
-
-    if (isLoading) {
-        return null; // or a loading skeleton
-    }
+    const { goals, setIsGoalModalOpen } = useApp();
 
     return (
         <div className="flex flex-col h-full bg-muted">

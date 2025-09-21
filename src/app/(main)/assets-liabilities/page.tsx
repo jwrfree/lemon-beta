@@ -15,7 +15,7 @@ import { AnimatedCounter } from '@/components/animated-counter';
 
 export default function AssetsLiabilitiesPage() {
     const router = useRouter();
-    const { assets, liabilities, isLoading } = useApp();
+    const { assets, liabilities } = useApp();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formInitialData, setFormInitialData] = useState<any | null>(null);
 
@@ -39,8 +39,6 @@ export default function AssetsLiabilitiesPage() {
     const handleEdit = (item: any, type: 'asset' | 'liability') => {
         handleOpenForm({ ...item, type });
     };
-
-    if (isLoading) return null;
 
     return (
         <div className="flex flex-col h-full bg-muted">

@@ -15,7 +15,7 @@ import { startOfMonth, parseISO } from 'date-fns';
 export default function BudgetDetailPage() {
     const router = useRouter();
     const params = useParams();
-    const { budgets, transactions, isLoading, openEditBudgetModal } = useApp();
+    const { budgets, transactions, openEditBudgetModal } = useApp();
 
     const budgetId = params.id as string;
     const budget = useMemo(() => budgets.find(b => b.id === budgetId), [budgets, budgetId]);
@@ -39,10 +39,6 @@ export default function BudgetDetailPage() {
         return { budgetTransactions, spent, remaining, progress };
     }, [budget, transactions]);
 
-    if (isLoading) {
-        return null;
-    }
-    
     if (!budget) {
         return (
              <div className="flex flex-col h-full bg-muted">

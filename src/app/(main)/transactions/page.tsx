@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 const TransactionsPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, expenseCategories, incomeCategories, wallets, isLoading } = useApp();
+    const { transactions, expenseCategories, incomeCategories, wallets } = useApp();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
@@ -180,7 +180,7 @@ const TransactionsPageContent = () => {
             </div>
 
             <main className="space-y-2">
-                {isLoading ? null : <TransactionList transactions={filteredTransactions} />}
+                <TransactionList transactions={filteredTransactions} />
             </main>
         </div>
     );
