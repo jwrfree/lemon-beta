@@ -5,7 +5,9 @@ import { useApp } from '@/components/app-provider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
-import { Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, LucideIcon } from 'lucide-react';
+import { Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, LucideIcon, CalendarClock } from 'lucide-react';
+import { formatDistanceToNowStrict, parseISO, isPast } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 const goalIcons: { [key: string]: LucideIcon } = {
     Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer
@@ -19,14 +21,33 @@ export const GoalList = ({ goals }: { goals: any[] }) => {
             {goals.map(goal => {
                 const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
                 const Icon = goalIcons[goal.icon] || Rocket;
+                const targetDate = parseISO(goal.targetDate);
+                const isOverdue = isPast(targetDate) && progress < 100;
+                
+                let timeLeftText = '';
+                if(progress < 100) {
+                    if (isOverdue) {
+                        timeLeftText = `Terlampaui ${formatDistanceToNowStrict(targetDate, { locale: dateFnsLocaleId })}`;
+                    } else {
+                        timeLeftText = `${formatDistanceToNowStrict(targetDate, { addSuffix: true, locale: dateFnsLocaleId })}`;
+                    }
+                }
 
                 return (
                     <Card key={goal.id} className="cursor-pointer" onClick={() => openEditGoalModal(goal)}>
-                        <CardHeader className="flex-row items-center gap-4 space-y-0 pb-2">
+                        <CardHeader className="flex-row items-start gap-4 space-y-0 pb-2">
                             <div className="p-3 bg-primary/10 rounded-full">
                                 <Icon className="h-6 w-6 text-primary" />
                             </div>
-                            <CardTitle className="text-lg">{goal.name}</CardTitle>
+                            <div className='flex-1'>
+                                <CardTitle className="text-lg">{goal.name}</CardTitle>
+                                {timeLeftText && (
+                                    <div className={cn("flex items-center gap-1.5 text-xs mt-1", isOverdue ? "text-destructive" : "text-muted-foreground")}>
+                                        <CalendarClock className="h-3.5 w-3.5" />
+                                        <span>{timeLeftText}</span>
+                                    </div>
+                                )}
+                            </div>
                         </CardHeader>
                         <CardContent className="space-y-2">
                              <div className="flex justify-between items-baseline">

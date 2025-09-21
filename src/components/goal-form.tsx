@@ -3,14 +3,18 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer } from 'lucide-react';
+import { X, Trash2, Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, CalendarIcon } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { formatCurrency } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Calendar } from './ui/calendar';
+import { format, parseISO } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
+
 
 const goalIcons = [
     { name: 'Rocket', Icon: Rocket },
@@ -36,6 +40,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
     const [icon, setIcon] = useState(initialData?.icon || 'Rocket');
     const [targetAmount, setTargetAmount] = useState(initialData?.targetAmount ? new Intl.NumberFormat('id-ID').format(initialData.targetAmount) : '');
     const [currentAmount, setCurrentAmount] = useState(initialData?.currentAmount ? new Intl.NumberFormat('id-ID').format(initialData.currentAmount) : '');
+    const [targetDate, setTargetDate] = useState<Date | undefined>(initialData?.targetDate ? parseISO(initialData.targetDate) : undefined);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -48,8 +53,8 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const parsedTarget = parseInt(targetAmount.replace(/[^0-9]/g, ''));
-        if (!name || !targetAmount || parsedTarget <= 0) {
-            showToast('Nama dan jumlah target wajib diisi.', 'error');
+        if (!name || !targetAmount || parsedTarget <= 0 || !targetDate) {
+            showToast('Nama, jumlah, dan tanggal target wajib diisi.', 'error');
             return;
         }
         setIsSubmitting(true);
@@ -58,6 +63,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
             icon,
             targetAmount: parsedTarget,
             currentAmount: parseInt(currentAmount.replace(/[^0-9]/g, '')) || 0,
+            targetDate: targetDate.toISOString(),
         };
 
         try {
@@ -133,14 +139,42 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                         </div>
                     </div>
                     
+                    <div className="space-y-2">
+                        <Label htmlFor="targetAmount">Jumlah Target</Label>
+                        <Input id="targetAmount" placeholder="Rp 0" value={targetAmount} onChange={handleAmountChange(setTargetAmount)} required inputMode="numeric" />
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="targetAmount">Jumlah Target</Label>
-                            <Input id="targetAmount" placeholder="Rp 0" value={targetAmount} onChange={handleAmountChange(setTargetAmount)} required inputMode="numeric" />
+                             <Label htmlFor="currentAmount">Sudah Terkumpul</Label>
+                             <Input id="currentAmount" placeholder="Rp 0" value={currentAmount} onChange={handleAmountChange(setCurrentAmount)} inputMode="numeric" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="currentAmount">Sudah Terkumpul</Label>
-                            <Input id="currentAmount" placeholder="Rp 0" value={currentAmount} onChange={handleAmountChange(setCurrentAmount)} inputMode="numeric" />
+                            <Label htmlFor="targetDate">Tanggal Target</Label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        id="targetDate"
+                                        variant={"outline"}
+                                        className={cn(
+                                            "w-full justify-start text-left font-normal",
+                                            !targetDate && "text-muted-foreground"
+                                        )}
+                                    >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {targetDate ? format(targetDate, "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0">
+                                    <Calendar
+                                        mode="single"
+                                        selected={targetDate}
+                                        onSelect={setTargetDate}
+                                        initialFocus
+                                        locale={dateFnsLocaleId}
+                                        disabled={(date) => date < new Date()}
+                                    />
+                                </PopoverContent>
+                            </Popover>
                         </div>
                     </div>
 

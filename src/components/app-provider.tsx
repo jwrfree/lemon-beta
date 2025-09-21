@@ -138,7 +138,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
-            setIsLoading(false);
         });
         return () => unsubscribe();
     }, []);
@@ -166,7 +165,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             budgets: { setter: setBudgets, ref: getCollectionRef('budgets') },
             assets: { setter: setAssets, ref: getCollectionRef('assets') },
             liabilities: { setter: setLiabilities, ref: getCollectionRef('liabilities') },
-            goals: { setter: setGoals, ref: getCollectionRef('goals') },
+            goals: { setter: setGoals, ref: getCollectionRef('goals'), orderByField: 'targetDate' },
         };
 
         const unsubscribers = Object.values(collections).map(({ setter, ref, orderByField = 'createdAt' }) => {
