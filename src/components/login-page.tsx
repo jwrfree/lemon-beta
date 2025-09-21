@@ -120,7 +120,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                                     id="email"
                                                     autoComplete="email"
                                                     placeholder="email@contoh.com"
-                                                    className="pl-10 pr-12 text-base"
+                                                    className="pl-10 pr-12 text-base h-12"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -155,7 +155,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                                     id="password"
                                                     autoComplete="current-password"
                                                     placeholder="********"
-                                                    className="pl-10 pr-12 text-base"
+                                                    className="pl-10 pr-12 text-base h-12"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -174,7 +174,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="w-full h-11 text-base" disabled={isSubmitting}>
+                            <Button type="submit" size="lg" className="w-full text-base" disabled={isSubmitting}>
                                 {isSubmitting ? 'Memproses...' : 'Masuk'}
                             </Button>
                         </form>
@@ -187,7 +187,8 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                         </div>
                         <Button
                             variant="outline"
-                            className="w-full h-11 text-base"
+                            size="lg"
+                            className="w-full text-base"
                             onClick={handleGoogleSignIn}
                             type="button"
                             disabled={isGoogleLoading}
