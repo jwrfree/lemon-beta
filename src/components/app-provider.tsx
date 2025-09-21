@@ -11,6 +11,7 @@ import { useUI } from './ui-provider';
 
 interface AppContextType {
     user: User | null;
+    userData: any | null; // Add userData to context
     wallets: any[];
     transactions: any[];
     budgets: any[];
@@ -35,6 +36,7 @@ interface AppContextType {
     addGoal: (goalData: any) => Promise<void>;
     updateGoal: (goalId: string, goalData: any) => Promise<void>;
     deleteGoal: (goalId: string) => Promise<void>;
+    updateUserBiometricStatus: (isBiometricEnabled: boolean) => Promise<void>; // New function
     isLoading: boolean;
     handleSignOut: () => void;
 }
@@ -52,6 +54,7 @@ export const useApp = () => {
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const router = useNextRouter();
     const [user, setUser] = useState<User | null>(null);
+    const [userData, setUserData] = useState<any | null>(null);
     const [wallets, setWallets] = useState<any[]>([]);
     const [transactions, setTransactions] = useState<any[]>([]);
     const [budgets, setBudgets] = useState<any[]>([]);
@@ -82,9 +85,21 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setAssets([]);
             setLiabilities([]);
             setGoals([]);
+            setUserData(null);
             setIsLoading(false);
             return;
         }
+
+        // Fetch user document
+        const userDocRef = doc(db, 'users', user.uid);
+        const unsubUser = onSnapshot(userDocRef, (doc) => {
+            if (doc.exists()) {
+                setUserData({ id: doc.id, ...doc.data() });
+            } else {
+                // Handle case where user doc might not exist yet
+                setUserData({ id: user.uid }); 
+            }
+        });
 
         const collections: { [key: string]: any } = {
             wallets: { setter: setWallets, ref: getCollectionRef('wallets') },
@@ -108,7 +123,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             });
         });
 
-        return () => unsubscribers.forEach(unsub => unsub());
+        return () => {
+            unsubUser();
+            unsubscribers.forEach(unsub => unsub());
+        }
     }, [user, getCollectionRef]);
     
     const addTransaction = useCallback(async (data: any) => {
@@ -411,9 +429,19 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         ui.setIsGoalModalOpen(false);
     }, [user, getCollectionRef, ui]);
 
+    const updateUserBiometricStatus = useCallback(async (isBiometricEnabled: boolean) => {
+        if (!user) throw new Error("User not authenticated.");
+        const userDocRef = doc(db, 'users', user.uid);
+        await updateDoc(userDocRef, { isBiometricEnabled });
+    }, [user]);
+
     const handleSignOut = async () => {
         try {
             await signOut(auth);
+            // Clear biometric login info on sign out
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('lemon_biometric_user');
+            }
             ui.showToast("Kamu berhasil keluar.", 'info');
             router.push('/');
         } catch (error) {
@@ -424,6 +452,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     const contextValue = {
         user,
+        userData,
         wallets,
         transactions,
         budgets,
@@ -448,6 +477,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         addGoal,
         updateGoal,
         deleteGoal,
+        updateUserBiometricStatus,
         isLoading,
         handleSignOut,
     };

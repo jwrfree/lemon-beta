@@ -15,21 +15,50 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun } from 'lucide-react';
+import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, Fingerprint } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useBiometric } from '@/hooks/use-biometric';
+import { Switch } from '@/components/ui/switch';
+import { useUI } from '@/components/ui-provider';
 
 export default function SettingsPage() {
     const router = useRouter();
-    const { user, handleSignOut } = useApp();
+    const { user, userData, handleSignOut, updateUserBiometricStatus } = useApp();
     const { theme, setTheme } = useTheme();
+    const { showToast } = useUI();
+    const { isBiometricSupported, registerBiometric, unregisterBiometric } = useBiometric();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    const handleBiometricToggle = async (enabled: boolean) => {
+        if (!user?.email) return;
+
+        try {
+            if (enabled) {
+                await registerBiometric(user.email, user.uid);
+                await updateUserBiometricStatus(true);
+                localStorage.setItem('lemon_biometric_user', user.email);
+                showToast("Login sidik jari diaktifkan.", 'success');
+            } else {
+                await unregisterBiometric(user.uid);
+                await updateUserBiometricStatus(false);
+                localStorage.removeItem('lemon_biometric_user');
+                showToast("Login sidik jari dinonaktifkan.", 'info');
+            }
+        } catch (error) {
+            console.error("Biometric operation failed:", error);
+            showToast("Operasi biometrik gagal. Coba lagi.", 'error');
+            // Revert UI state on failure
+            await updateUserBiometricStatus(!enabled);
+        }
+    };
+
 
     const managementItems = [
         { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: '/wallets' },
@@ -79,7 +108,7 @@ export default function SettingsPage() {
     }
     
     return (
-        <div className="flex flex-col bg-muted overflow-y-auto">
+        <div className="bg-muted overflow-y-auto">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
             </header>
@@ -114,14 +143,29 @@ export default function SettingsPage() {
                             <ChevronRight className="h-5 w-5 text-muted-foreground" />
                             <span className="sr-only">Buka Notifikasi</span>
                         </button>
-                        <Separator className="mx-4 w-auto"/>
-                        <button className="w-full flex items-center gap-4 px-4 py-3 h-[58px] hover:bg-accent text-left" disabled>
-                            <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
-                            <span className="font-medium flex-1">Keamanan</span>
-                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                            <span className="sr-only">Buka Keamanan</span>
-                        </button>
                     </div>
+
+                    {/* Security Card */}
+                    {isBiometricSupported && (
+                        <div className="rounded-lg bg-card overflow-hidden">
+                            <div className="w-full flex items-center gap-4 px-4 py-3 text-left">
+                                <Shield className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                                <span className="font-medium flex-1">Keamanan</span>
+                            </div>
+                            <Separator className="mx-4 w-auto"/>
+                            <div className="flex items-center gap-4 px-4 py-2 h-[68px]">
+                                <div className="flex-1">
+                                    <label htmlFor="biometric-switch" className="font-medium">Masuk dengan Sidik Jari</label>
+                                    <p className="text-xs text-muted-foreground">Gunakan biometrik untuk masuk lebih cepat.</p>
+                                </div>
+                                <Switch
+                                    id="biometric-switch"
+                                    checked={userData?.isBiometricEnabled || false}
+                                    onCheckedChange={handleBiometricToggle}
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {/* Management Card */}
                     <div className="rounded-lg bg-card overflow-hidden">

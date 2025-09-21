@@ -1,12 +1,12 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, Lock, Eye, EyeOff, X, LoaderCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, X, LoaderCircle, Fingerprint } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,6 +15,7 @@ import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from './ui-provider';
 import { Separator } from '@/components/ui/separator';
+import { useBiometric } from '@/hooks/use-biometric';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -34,6 +35,17 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
     const [showPassword, setShowPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const { showToast } = useUI();
+    const [biometricUser, setBiometricUser] = useState<string | null>(null);
+    const { isBiometricSupported, signInWithBiometric } = useBiometric();
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const savedUser = localStorage.getItem('lemon_biometric_user');
+            if (savedUser && isBiometricSupported) {
+                setBiometricUser(savedUser);
+            }
+        }
+    }, [isBiometricSupported]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -52,6 +64,18 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
             showToast(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal masuk. Coba lagi ya.', 'error');
         }
     };
+
+    const handleBiometricSignIn = async () => {
+        if (!biometricUser) return;
+        try {
+            await signInWithBiometric(biometricUser);
+            showToast("Login dengan sidik jari berhasil!", "success");
+            onClose();
+        } catch (error) {
+            showToast("Gagal masuk dengan sidik jari.", 'error');
+            console.error(error);
+        }
+    }
 
     const handleGoogleSignIn = async () => {
         const provider = new GoogleAuthProvider();
@@ -174,7 +198,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" size="lg" className="w-full text-base" disabled={isSubmitting}>
+                            <Button type="submit" size="lg" className="w-full text-base h-12" disabled={isSubmitting}>
                                 {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? 'Memproses...' : 'Masuk'}
                             </Button>
@@ -186,10 +210,24 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                             <Separator className="bg-border" />
                             <span className="absolute inset-x-0 -top-2 mx-auto w-max bg-background px-3 text-xs uppercase text-muted-foreground">atau lanjutkan</span>
                         </div>
+                        
+                        {biometricUser && (
+                           <Button
+                                variant="outline"
+                                size="lg"
+                                className="w-full text-base h-12"
+                                onClick={handleBiometricSignIn}
+                                type="button"
+                            >
+                                <Fingerprint className="mr-2 h-5 w-5" />
+                                Masuk dengan Sidik Jari
+                            </Button>
+                        )}
+                        
                         <Button
                             variant="outline"
                             size="lg"
-                            className="w-full text-base"
+                            className="w-full text-base h-12"
                             onClick={handleGoogleSignIn}
                             type="button"
                             disabled={isSubmitting || isGoogleLoading}
