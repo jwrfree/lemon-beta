@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
-export const SettingsPage = () => {
+export default function SettingsPage() {
     const router = useRouter();
     const { user, handleSignOut, isLoading } = useApp();
     const { theme, setTheme } = useTheme();
@@ -122,4 +122,3 @@ export const SettingsPage = () => {
         </div>
     );
 };
-
