@@ -955,7 +955,7 @@ export default function ChartsPage() {
 
     return (
         <div className="flex min-h-screen flex-col bg-muted/40">
-            <header className="sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="sticky top-0 z-30 border-b border-border/60 bg-background/90 pt-[env(safe-area-inset-top)] backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
@@ -1024,7 +1024,7 @@ export default function ChartsPage() {
                         animate="center"
                         exit="exit"
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        className="mx-auto w-full max-w-6xl px-4 py-8 pb-24"
+                        className="mx-auto w-full max-w-6xl px-4 py-8 pb-24 pb-[env(safe-area-inset-bottom)]"
                     >
                         <div className="space-y-10">
                             {activeTab === 'expense' && (
