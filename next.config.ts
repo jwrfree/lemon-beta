@@ -1,3 +1,4 @@
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
@@ -11,6 +12,19 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Permissions-Policy',
+            value: 'publickey-credentials-get=*, publickey-credentials-create=*',
+          },
+        ],
+      },
+    ];
+  },
   devIndicators: {
     allowedDevOrigins: [
         "https://9000-firebase-studio-1757997036082.cluster-nle52mxuvfhlkrzyrq6g2cwb52.cloudworkstations.dev",
