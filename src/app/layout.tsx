@@ -6,7 +6,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider";
 import { AppProvider } from "@/components/app-provider";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Lemon - Personal Finance Tracker",
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
-      <body className="font-sans antialiased">
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

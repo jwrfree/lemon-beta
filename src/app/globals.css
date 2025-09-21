@@ -16,7 +16,7 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215 25% 25%;
+    --muted-foreground: 215 25% 40%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
@@ -72,7 +72,7 @@
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 75%;
+    --muted-foreground: 215 20% 65%;
     --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
@@ -124,7 +124,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
   
   body::before {
@@ -140,14 +140,6 @@
 
   .dark body::before {
     background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
-  }
-
-  .glassmorphism {
-    @apply bg-card/60 backdrop-blur-sm border;
-  }
-
-  .dark .glassmorphism {
-    @apply bg-card/40 backdrop-blur-sm border;
   }
 }
 
