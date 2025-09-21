@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
-import { AppProvider, useApp } from '@/components/app-provider';
+import { useApp } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 
 const LoadingSpinner = () => (
@@ -16,7 +16,7 @@ const LoadingSpinner = () => (
 );
 
 
-const WelcomeContent = () => {
+export default function WelcomePage() {
     const [authModal, setAuthModal] = useState<string | null>(null);
     const closeModal = () => setAuthModal(null);
     const { user, isLoading } = useApp();
@@ -42,13 +42,5 @@ const WelcomeContent = () => {
                 {authModal === 'signup' && <SignUpPage onClose={closeModal} setAuthModal={setAuthModal} />}
             </AnimatePresence>
         </>
-    );
-}
-
-export default function WelcomePage() {
-    return (
-        <AppProvider>
-            <WelcomeContent />
-        </AppProvider>
     );
 }
