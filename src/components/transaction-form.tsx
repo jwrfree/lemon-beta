@@ -315,7 +315,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         initial={{ y: "100%" }}
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
                         className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-full"
                         onClick={(e) => e.stopPropagation()}
                         {...handlers}

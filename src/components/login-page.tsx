@@ -85,7 +85,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="login-heading"

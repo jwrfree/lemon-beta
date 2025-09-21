@@ -41,7 +41,7 @@ export default function AssetsLiabilitiesPage() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-muted">
+        <div className="h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
@@ -117,7 +117,7 @@ export default function AssetsLiabilitiesPage() {
                             initial={{ y: "100%" }}
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
                             className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit max-h-[85vh]"
                             onClick={(e) => e.stopPropagation()}
                         >
