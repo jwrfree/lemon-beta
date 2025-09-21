@@ -53,7 +53,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 };
 
 
-export const TransactionListItem = ({ transaction }: { transaction: any; hideDate?: boolean; }) => {
+export const TransactionListItem = ({ transaction, hideDate = false }: { transaction: any; hideDate?: boolean }) => {
     const itemRef = useRef<HTMLDivElement>(null);
     const { openDeleteModal, openEditTransactionModal } = useUI();
     
@@ -194,7 +194,7 @@ export const TransactionListItem = ({ transaction }: { transaction: any; hideDat
                 style={{ x }}
                 className="relative bg-card z-20"
             >
-                <TransactionListItemContent transaction={transaction} hideDate={true} />
+                <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
             </motion.div>
         </div>
     );
