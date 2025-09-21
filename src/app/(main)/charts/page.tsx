@@ -955,49 +955,24 @@ export default function ChartsPage() {
 
     return (
         <div className="flex min-h-screen flex-col bg-muted/40">
-            <header className="sticky top-0 z-30 border-b border-border/60 bg-background">
-                <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-9 w-9 rounded-full border border-border/60"
-                                onClick={() => router.back()}
-                            >
-                                <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                            <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Analisis</p>
-                                <h1 className="text-2xl font-bold leading-tight md:text-3xl">Wawasan Keuangan</h1>
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/30 px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                                <CalendarDays className="h-4 w-4" />
-                                <span>{monthLabel}</span>
-                            </div>
-                            <Badge
-                                variant="outline"
-                                className={cn(
-                                    'flex items-center gap-1 text-xs font-semibold',
-                                    netPositive
-                                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                                        : 'border-destructive/60 bg-destructive/10 text-destructive'
-                                )}
-                            >
-                                <Scale className="h-3.5 w-3.5" />
-                                {netPositive ? 'Surplus' : 'Defisit'} {formatCurrency(netValue)}
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs font-medium">
-                                {monthlySnapshot.count} transaksi dianalisis
-                            </Badge>
+            <header className="sticky top-0 z-30 border-b border-border/60 bg-background/95 backdrop-blur">
+                <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-3">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 rounded-full border border-border/60"
+                            onClick={() => router.back()}
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                        <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                                Analisis
+                            </p>
+                            <h1 className="text-2xl font-bold leading-tight md:text-3xl">Wawasan Keuangan</h1>
                         </div>
                     </div>
-                    <p className="max-w-2xl text-sm text-muted-foreground">
-                        Jelajahi ringkasan interaktif untuk memahami pola pemasukan, pengeluaran, dan arus kasmu sehingga keputusan
-                        finansial makin percaya diri.
-                    </p>
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 gap-1 rounded-full border border-border/60 bg-muted/40 p-1 text-muted-foreground">
                             {tabs.map((tab) => (
@@ -1015,6 +990,33 @@ export default function ChartsPage() {
                 </div>
             </header>
             <main className="flex-1 overflow-y-auto" {...handlers}>
+                <div className="mx-auto w-full max-w-6xl space-y-3 px-4 pb-4 pt-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/30 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                            <CalendarDays className="h-4 w-4" />
+                            <span>{monthLabel}</span>
+                        </div>
+                        <Badge
+                            variant="outline"
+                            className={cn(
+                                'flex items-center gap-1 text-xs font-semibold',
+                                netPositive
+                                    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                                    : 'border-destructive/60 bg-destructive/10 text-destructive'
+                            )}
+                        >
+                            <Scale className="h-3.5 w-3.5" />
+                            {netPositive ? 'Surplus' : 'Defisit'} {formatCurrency(netValue)}
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs font-medium">
+                            {monthlySnapshot.count} transaksi dianalisis
+                        </Badge>
+                    </div>
+                    <p className="max-w-2xl text-sm text-muted-foreground">
+                        Jelajahi ringkasan interaktif untuk memahami pola pemasukan, pengeluaran, dan arus kasmu sehingga
+                        keputusan finansial makin percaya diri.
+                    </p>
+                </div>
                 <AnimatePresence initial={false} custom={direction}>
                     <motion.div
                         key={activeTab}
@@ -1024,7 +1026,7 @@ export default function ChartsPage() {
                         animate="center"
                         exit="exit"
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        className="mx-auto w-full max-w-6xl px-4 py-8 pb-24"
+                        className="mx-auto w-full max-w-6xl px-4 pb-24 pt-2"
                     >
                         <div className="space-y-10">
                             {activeTab === 'expense' && (
