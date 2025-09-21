@@ -17,6 +17,7 @@ export const BottomNavigation = () => {
         isDeleteModalOpen,
         isTransferModalOpen,
         isEditWalletModalOpen,
+        isGoalModalOpen,
     } = useApp();
 
     const navItems = [
@@ -27,7 +28,7 @@ export const BottomNavigation = () => {
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
     
-    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen;
+    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || isGoalModalOpen;
     
     // The parent layout now controls visibility, so we only need to check for modals here.
     const isVisible = !isModalOpen;
