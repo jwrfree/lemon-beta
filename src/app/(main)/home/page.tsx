@@ -99,7 +99,7 @@ export default function HomePage() {
                 </div>
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-semibold">Riwayat Transaksi</h2>
+                        <h2 className="text-lg font-semibold">5 transaksi terakhir</h2>
                         <Button variant="link" size="sm" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                     </div>
                    <TransactionList limit={5} />
@@ -108,4 +108,5 @@ export default function HomePage() {
         </div>
     );
 };
+
 
