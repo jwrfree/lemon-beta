@@ -12,12 +12,44 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { categories } from '@/lib/categories';
 
+// Define tools for the AI to use
+const listCategoriesTool = ai.defineTool(
+    {
+        name: 'listCategories',
+        description: 'List the available transaction categories and sub-categories.',
+        inputSchema: z.void(),
+        outputSchema: z.array(z.object({
+            name: z.string(),
+            subCategories: z.array(z.string()).optional(),
+        })),
+    },
+    async () => {
+        const expenseCats = categories.expense.map(c => ({ name: c.name, subCategories: c.subCategories }));
+        const incomeCats = categories.income.map(c => ({ name: c.name, subCategories: c.subCategories }));
+        // Add "Transfer" as a valid category for the AI to select
+        return [...expenseCats, ...incomeCats, { name: "Transfer", subCategories: [] }];
+    }
+);
+
+const listWalletsTool = ai.defineTool(
+    {
+        name: 'listWallets',
+        description: 'List the available wallets the user can choose from.',
+        inputSchema: z.void(),
+        outputSchema: z.array(z.string()),
+    },
+    async () => {
+        // In a real app, you would fetch this from the database for the current user.
+        // For this example, we'll use a static list passed in the input.
+        // This tool exists to demonstrate how the AI can fetch data it needs.
+        // The implementation is updated in the flow to use the dynamic data.
+        return [];
+    }
+);
+
+
 const TransactionExtractionInputSchema = z.object({
   text: z.string().describe('The user\'s raw text input about a transaction.'),
-  availableCategories: z.array(z.object({
-    name: z.string(),
-    subCategories: z.array(z.string()).optional(),
-  })).describe('List of available transaction categories and their subcategories for the user.'),
   availableWallets: z.array(z.string()).describe('List of available wallets for the user.'),
 });
 export type TransactionExtractionInput = z.infer<typeof TransactionExtractionInputSchema>;
@@ -43,22 +75,20 @@ const prompt = ai.definePrompt({
   name: 'extractTransactionPrompt',
   input: {schema: TransactionExtractionInputSchema},
   output: {schema: TransactionExtractionOutputSchema},
+  tools: [listCategoriesTool, listWalletsTool],
   system: `You are an expert financial assistant. Your task is to extract transaction details from the user's text input.
 The current date is ${new Date().toISOString().slice(0, 10)}.
 
 Analyze the provided text and fill in the following fields. The 'amount' and 'description' fields are mandatory.
 - amount: The monetary value of the transaction.
 - description: A clear and concise summary of what the transaction was for.
-- category: From the available categories, choose the one that best fits the transaction. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
+- category: From the available categories, choose the one that best fits the transaction. If you are unsure about the categories, use the 'listCategories' tool. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
 - subCategory: Based on the chosen category, select the most appropriate sub-category if the information is available in the text.
-- wallet: Identify the source wallet. If no wallet is mentioned, **your default answer MUST be "Tunai"**. For transfers, this is the 'from' wallet.
+- wallet: Identify the source wallet. If you need to see the available wallets, use the 'listWallets' tool. If no wallet is mentioned, **your default answer MUST be "Tunai"**. For transfers, this is the 'from' wallet.
 - sourceWallet: FOR TRANSFERS ONLY. The source wallet name.
 - destinationWallet: FOR TRANSFERS ONLY. The destination wallet name.
 - location: If a store, place, or merchant is mentioned, extract it.
 - date: The date of the transaction in YYYY-MM-DD format. If no date is mentioned (e.g., "kemarin", "2 hari lalu", "minggu lalu"), **use today's date: ${new Date().toISOString().slice(0, 10)}**.
-
-Available Categories and Sub-categories: {{{json availableCategories}}}
-Available Wallets: {{{json availableWallets}}}
 
 If the user mentions a specific item, use that as the primary description. For example, if the user says "beli bensin pertamax 150rb", the description should be "Beli bensin Pertamax".
 If the input is clearly a transfer between two wallets, you MUST fill out sourceWallet and destinationWallet.
@@ -73,12 +103,20 @@ const extractTransactionFlow = ai.defineFlow(
     inputSchema: TransactionExtractionInputSchema,
     outputSchema: TransactionExtractionOutputSchema,
   },
-  async input => {
-    // Add "Transfer" to available categories for the AI to consider
-    const allCategories = [...input.availableCategories, { name: "Transfer", subCategories: [] }];
-
-    const {output} = await prompt({...input, availableCategories: allCategories});
+  async (input) => {
+    // Dynamically provide the implementation for the listWallets tool
+    // This allows the tool's output to be specific to the user's data
+    const dynamicListWalletsTool = ai.defineTool(
+      {
+        name: 'listWallets',
+        description: 'List the available wallets the user can choose from.',
+        inputSchema: z.void(),
+        outputSchema: z.array(z.string()),
+      },
+      async () => input.availableWallets
+    );
+    
+    const {output} = await prompt(input, {tools: [listCategoriesTool, dynamicListWalletsTool]});
     return output!;
   }
 );
-

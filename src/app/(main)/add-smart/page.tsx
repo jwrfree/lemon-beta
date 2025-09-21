@@ -97,7 +97,7 @@ export default function SmartAddPage() {
 
 
     const availableCategoriesForAI = [...expenseCategories, ...incomeCategories].map(c => ({ name: c.name, subCategories: c.subCategories }));
-    const availableWallets = wallets.map(w => w.name);
+    const availableWalletsForAI = wallets.map(w => w.name);
 
     const resetFlow = (keepInput = false) => {
         setPageState('IDLE');
@@ -205,7 +205,7 @@ export default function SmartAddPage() {
 
         try {
             if (typeof input === 'string') {
-                const result = await extractTransaction({ text: input, availableCategories: availableCategoriesForAI, availableWallets });
+                const result = await extractTransaction({ text: input, availableWallets: availableWalletsForAI });
                 handleAISuccess(result);
             } else {
                 const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
@@ -520,11 +520,3 @@ export default function SmartAddPage() {
         </div>
     );
 }
-
-    
-
-    
-
-    
-
-    
