@@ -15,20 +15,20 @@ import { EditBudgetModal } from '@/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
 import { GoalForm } from '@/components/goal-form';
 
-const slideVariants = {
+const zoomVariants = {
     initial: {
-        x: '100%',
+        scale: 0.95,
         opacity: 0,
     },
     enter: {
-        x: 0,
+        scale: 1,
         opacity: 1,
-        transition: { type: 'spring', stiffness: 300, damping: 30 },
+        transition: { duration: 0.3, ease: [0.25, 1, 0.5, 1] },
     },
     exit: {
-        x: '-100%',
+        scale: 0.95,
         opacity: 0,
-        transition: { type: 'spring', stiffness: 300, damping: 30 },
+        transition: { duration: 0.2, ease: 'easeIn' },
     },
 };
 
@@ -85,7 +85,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
             <AnimatePresence mode="wait">
                 <motion.div
                     key={pathname}
-                    variants={slideVariants}
+                    variants={zoomVariants}
                     initial="initial"
                     animate="enter"
                     exit="exit"
