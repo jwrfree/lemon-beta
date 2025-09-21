@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import NextTopLoader from 'nextjs-toploader';
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeTransition } from "@/components/theme-transition";
 import { AppProvider } from "@/components/app-provider";
 import { UIProvider } from "@/components/ui-provider";
 
@@ -22,12 +23,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <ThemeTransition />
           <UIProvider>
             <AppProvider>
               <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
