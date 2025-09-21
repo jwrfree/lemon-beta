@@ -4,6 +4,17 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
@@ -129,10 +140,31 @@ export default function SettingsPage() {
                     
                      {/* Logout Button */}
                      <div className="rounded-lg bg-card overflow-hidden">
-                        <button onClick={handleSignOut} className="w-full flex items-center gap-4 px-4 py-4 hover:bg-destructive/10 text-left text-destructive">
-                            <LogOut className="h-6 w-6" strokeWidth={1.5}/>
-                            <span className="font-medium flex-1">Keluar</span>
-                        </button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <button className="w-full flex items-center gap-4 px-4 py-4 hover:bg-destructive/10 text-left text-destructive">
+                                    <LogOut className="h-6 w-6" strokeWidth={1.5}/>
+                                    <span className="font-medium flex-1">Keluar</span>
+                                </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Keluar dari akun?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Kamu akan keluar dari Lemon App pada perangkat ini.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={handleSignOut}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                        Keluar
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                     
                      <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v1.3.0</p>
