@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -157,7 +158,7 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type="email" id="signup-email" autoComplete="email" placeholder="email@example.com" className="pl-10 pr-12 text-base" {...field} />
+                                                <Input type="email" id="signup-email" autoComplete="email" placeholder="email@contoh.com" className="pl-10 pr-12 text-base" {...field} />
                                             </FormControl>
                                             {field.value && (
                                                 <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')} aria-label="Hapus email">
