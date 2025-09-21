@@ -2,13 +2,13 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, BellCheck } from 'lucide-react';
+import { ChevronLeft, MailCheck } from 'lucide-react';
 
 const AllCaughtUpIllustration = () => (
     <div className="relative w-40 h-40 flex items-center justify-center">
         <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse" />
         <div className="relative w-32 h-32 bg-primary/20 rounded-full flex items-center justify-center">
-            <BellCheck className="h-16 w-16 text-primary" strokeWidth={1} />
+            <MailCheck className="h-16 w-16 text-primary" strokeWidth={1} />
         </div>
     </div>
 );
@@ -21,6 +21,7 @@ export default function NotificationsPage() {
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+                     <span className="sr-only">Kembali</span>
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Notifikasi</h1>
             </header>
@@ -36,5 +37,3 @@ export default function NotificationsPage() {
         </div>
     );
 };
-
-    
