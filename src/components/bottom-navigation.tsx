@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, PieChart, Plus, Activity, User } from 'lucide-react';
+import { Home, PieChart, Plus, HandCoins, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/components/app-provider';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ export const BottomNavigation = () => {
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'statistik', href: '/charts', icon: PieChart, name: 'Statistik' },
         { id: 'add', href: '/add-smart', icon: Plus, name: 'Tambah', primary: true },
-        { id: 'aktivitas', href: '/transactions', icon: Activity, name: 'Aktivitas' },
+        { id: 'anggaran', href: '/budgeting', icon: HandCoins, name: 'Anggaran' },
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
     
@@ -44,7 +44,7 @@ export const BottomNavigation = () => {
                 >
                     <div className="w-full max-w-md mx-auto grid grid-cols-5 h-16 items-center bg-card/80 backdrop-blur-lg shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t md:rounded-b-lg md:rounded-t-none">
                         {navItems.map(item => {
-                             const isActive = pathname === item.href;
+                             const isActive = pathname.startsWith(item.href);
                              if (item.primary) {
                                  return (
                                      <div key={item.id} className="flex justify-center items-center">
