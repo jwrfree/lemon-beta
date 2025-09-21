@@ -3,7 +3,7 @@
 import { useApp } from '@/components/app-provider';
 import { TransactionListItem } from './transaction-list-item';
 import { formatRelativeDate } from '@/lib/utils';
-import { parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Button } from './ui/button';
 import { PlusCircle, ReceiptText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -25,7 +25,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
     }
     
     const groupedTransactions = (finalTransactions || []).reduce((acc, t) => {
-        const dateKey = parseISO(t.date).toISOString().split('T')[0];
+        const dateKey = format(parseISO(t.date), 'yyyy-MM-dd');
         if (!acc[dateKey]) {
             acc[dateKey] = [];
         }
