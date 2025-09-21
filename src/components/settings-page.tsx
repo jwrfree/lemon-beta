@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 
 export const SettingsPage = () => {
     const router = useRouter();
-    const { user, handleSignOut, isLoading } = useApp();
+    const { user, handleSignOut } = useApp();
     const { theme, setTheme } = useTheme();
 
     const managementItems = [
@@ -22,10 +22,6 @@ export const SettingsPage = () => {
         { id: 'assets_liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities' },
     ];
     
-    if (isLoading) {
-        return null;
-    }
-
     return (
         <div className="flex flex-col bg-muted overflow-y-auto">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
@@ -122,4 +118,5 @@ export const SettingsPage = () => {
         </div>
     );
 };
+
 

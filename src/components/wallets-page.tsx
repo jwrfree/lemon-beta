@@ -11,15 +11,11 @@ import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
 
 export const WalletsPage = ({ onAddWallet }: { onAddWallet: () => void }) => {
-  const { wallets, isLoading } = useApp();
+  const { wallets } = useApp();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeWallet = wallets.length > 0 ? wallets[activeIndex] : null;
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col bg-muted h-full">
