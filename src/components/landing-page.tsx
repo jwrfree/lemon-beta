@@ -24,7 +24,7 @@ const features = [
 
 export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | null) => void; }) => {
     return (
-        <div className="relative flex min-h-dvh flex-col overflow-hidden bg-gradient-to-b from-background via-primary/5 to-background">
+        <div className="relative flex min-h-dvh flex-col overflow-hidden bg-gradient-to-b from-background via-primary/5 to-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
             <div className="pointer-events-none absolute inset-0">
                 <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
                 <div className="absolute bottom-0 right-0 h-60 w-60 rounded-full bg-primary/10 blur-3xl" />
@@ -102,7 +102,7 @@ export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | n
                 initial={{ y: 60, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.3 }}
-                className="relative border-t border-primary/10 bg-background/80 px-6 py-6 backdrop-blur"
+                className="relative border-t border-primary/10 bg-background/80 px-6 py-6 pb-[env(safe-area-inset-bottom)] backdrop-blur"
             >
                 <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
                     <div>
