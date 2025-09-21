@@ -1,6 +1,6 @@
 
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,11 @@ export default function SettingsPage() {
     const router = useRouter();
     const { user, handleSignOut } = useApp();
     const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const managementItems = [
         { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: '/wallets' },
@@ -21,6 +26,46 @@ export default function SettingsPage() {
         { id: 'goals', name: 'Target Keuangan', icon: Target, page: '/goals' },
         { id: 'assets_liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities' },
     ];
+    
+    const renderThemeToggle = () => {
+        if (!mounted) {
+            return (
+                <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted h-[42px] w-[84px]">
+                    {/* Placeholder to prevent layout shift */}
+                </div>
+            );
+        }
+        return (
+             <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
+                {theme === 'light' && (
+                    <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 bg-background rounded-full shadow-sm" />
+                )}
+                 {theme === 'dark' && (
+                    <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
+                )}
+                <Button
+                    size="icon"
+                    variant='ghost'
+                    onClick={() => setTheme('light')}
+                    className={cn("rounded-full z-10 h-8 w-8", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
+                    aria-label="Set theme to light"
+                >
+                    <Sun className="h-5 w-5" />
+                    <span className="sr-only">Ganti ke tema terang</span>
+                </Button>
+                <Button
+                    size="icon"
+                    variant='ghost'
+                    onClick={() => setTheme('dark')}
+                    className={cn("rounded-full z-10 h-8 w-8", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
+                    aria-label="Set theme to dark"
+                >
+                    <Moon className="h-5 w-5" />
+                    <span className="sr-only">Ganti ke tema gelap</span>
+                </Button>
+            </div>
+        );
+    }
     
     return (
         <div className="flex flex-col bg-muted overflow-y-auto">
@@ -49,34 +94,7 @@ export default function SettingsPage() {
                         <div className="w-full flex items-center gap-4 px-4 py-3 text-left">
                             <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Tema Aplikasi</span>
-                            <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
-                                {theme === 'light' && (
-                                    <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 bg-background rounded-full shadow-sm" />
-                                )}
-                                 {theme === 'dark' && (
-                                    <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
-                                )}
-                                <Button
-                                    size="icon"
-                                    variant='ghost'
-                                    onClick={() => setTheme('light')}
-                                    className={cn("rounded-full z-10 h-7 w-7", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
-                                    aria-label="Set theme to light"
-                                >
-                                    <Sun className="h-5 w-5" />
-                                    <span className="sr-only">Ganti ke tema terang</span>
-                                </Button>
-                                <Button
-                                    size="icon"
-                                    variant='ghost'
-                                    onClick={() => setTheme('dark')}
-                                    className={cn("rounded-full z-10 h-7 w-7", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
-                                    aria-label="Set theme to dark"
-                                >
-                                    <Moon className="h-5 w-5" />
-                                    <span className="sr-only">Ganti ke tema gelap</span>
-                                </Button>
-                            </div>
+                            {renderThemeToggle()}
                         </div>
                         <Separator className="mx-4 w-auto"/>
                         <button onClick={() => router.push('/notifications')} className="w-full flex items-center gap-4 px-4 py-3 h-[58px] hover:bg-accent text-left">
