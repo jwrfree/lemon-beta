@@ -1,117 +1,88 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart3, ShieldCheck, Sparkles, Wallet } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
-const features = [
-    {
-        title: 'Satu pusat kendali keuangan',
-        description: 'Satukan semua dompet dan rekening untuk mendapatkan ringkasan real-time setiap hari.',
-        icon: Wallet,
-    },
-    {
-        title: 'Anggaran pintar nan adaptif',
-        description: 'Tetapkan batas pengeluaran dan pantau rekomendasi otomatis agar rencana tetap on track.',
-        icon: BarChart3,
-    },
-    {
-        title: 'Privasi dan keamanan terjamin',
-        description: 'Data personal terenkripsi dan hanya kamu yang memegang kendali penuh.',
-        icon: ShieldCheck,
-    },
-];
+const LemonIllustration = () => (
+    <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.2 }}
+        className="relative w-48 h-48 md:w-56 md:h-56"
+    >
+        <div className="absolute inset-0 bg-yellow-300/50 rounded-full blur-2xl" />
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="relative">
+            <motion.path
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+                fill="#FDE047"
+                d="M100,20C140,20 180,60 180,100C180,140 140,180 100,180C60,180 20,140 20,100C20,60 60,20 100,20Z"
+                transform="rotate(-30 100 100)"
+            />
+            <motion.path
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 10, delay: 1 }}
+                fill="#FBBF24"
+                d="M100,40 C120,40 140,60 140,80 C140,100 120,120 100,120 C80,120 60,100 60,80 C60,60 80,40 100,40Z"
+                opacity="0.2"
+            />
+            <motion.path
+                initial={{ y: -10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
+                fill="#84CC16"
+                d="M140,20 C150,30 150,50 140,60 C130,70 110,70 100,60"
+            />
+        </svg>
+    </motion.div>
+);
+
 
 export const LandingPage = ({ setAuthModal }: { setAuthModal: (modal: string | null) => void; }) => {
     return (
-        <div className="relative flex min-h-dvh flex-col overflow-hidden bg-gradient-to-b from-background via-primary/5 to-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-            <div className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-                <div className="absolute bottom-0 right-0 h-60 w-60 rounded-full bg-primary/10 blur-3xl" />
-            </div>
+        <div className="relative flex min-h-dvh flex-col overflow-hidden bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+            
+            <main className="flex-1 w-full flex flex-col justify-center items-center p-6 text-center">
+                <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6">
+                    <LemonIllustration />
 
-            <main className="flex-1 w-full">
-                <div className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col items-center gap-12 px-6 py-16 text-center lg:flex-row lg:items-start lg:justify-between lg:py-24 lg:text-left">
-                    <motion.section
-                        initial={{ y: 40, opacity: 0 }}
+                    <motion.div
+                        initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.6, ease: 'easeOut' }}
-                        className="flex max-w-xl flex-col items-center gap-6 lg:items-start"
+                        transition={{ duration: 0.5, ease: 'easeOut', delay: 0.4 }}
+                        className="space-y-3"
                     >
-                        <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary shadow-sm backdrop-blur">
-                            <Sparkles className="h-4 w-4" />
-                            Lebih fokus capai tujuan finansialmu
-                        </span>
-                        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                            Kelola keuanganmu dengan lembut namun tegas.
+                         <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                            Keuangan jadi lebih segar.
                         </h1>
-                        <p className="text-base text-muted-foreground sm:text-lg">
-                            Lemon membantu kamu mengenali pola pemasukan dan pengeluaran, menyusun anggaran yang realistis, serta mengambil keputusan finansial dengan percaya diri.
+                        <p className="text-base text-muted-foreground sm:text-lg max-w-sm mx-auto">
+                            Lemon membantumu melacak setiap rupiah dan mencapai tujuan finansial dengan mudah.
                         </p>
-                        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-                            <Button onClick={() => setAuthModal('signup')} className="h-12 px-6 text-base shadow-md">
-                                Daftar gratis
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-                            <Button variant="outline" onClick={() => setAuthModal('login')} className="h-12 px-6 text-base">
-                                Sudah punya akun?
-                            </Button>
-                        </div>
-                    </motion.section>
-
-                    <motion.section
-                        initial={{ y: 40, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
-                        className="relative w-full max-w-xl rounded-3xl border border-primary/20 bg-background/80 p-6 shadow-xl backdrop-blur"
-                    >
-                        <div className="mb-6 flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                                <Sparkles className="h-6 w-6" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-medium text-primary">Kenapa Lemon berbeda?</p>
-                                <p className="text-base text-muted-foreground">Didesain khusus untuk kebutuhan finansial generasi produktif.</p>
-                            </div>
-                        </div>
-
-                        <div className="grid gap-5 sm:grid-cols-2">
-                            {features.map(({ title, description, icon: Icon }) => (
-                                <motion.div
-                                    key={title}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4 }}
-                                    className="group flex flex-col gap-2 rounded-2xl border border-transparent bg-muted/20 p-4 text-left shadow-sm transition hover:border-primary/40 hover:bg-background"
-                                >
-                                    <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                            <Icon className="h-5 w-5" />
-                                        </div>
-                                        <span>{title}</span>
-                                    </div>
-                                    <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.section>
+                    </motion.div>
                 </div>
             </main>
 
             <motion.div
-                initial={{ y: 60, opacity: 0 }}
+                initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.3 }}
-                className="relative border-t border-primary/10 bg-background/80 px-6 py-6 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+                transition={{ type: 'spring', stiffness: 200, damping: 25, delay: 0.6 }}
+                className="w-full max-w-md mx-auto p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
             >
-                <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
-                    <div>
-                        <p className="text-sm font-semibold uppercase tracking-widest text-primary">Mulai sekarang</p>
-                        <p className="text-sm text-muted-foreground sm:text-base">Butuh waktu kurang dari satu menit untuk membuat akun dan mulai memantau cashflow.</p>
-                    </div>
-                    <Button onClick={() => setAuthModal('signup')} className="h-11 w-full px-6 sm:w-auto">
-                        Coba Lemon sekarang
+                <div className="space-y-3">
+                    <Button onClick={() => setAuthModal('signup')} className="w-full h-14 text-lg shadow-lg">
+                        Mulai
+                        <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
+                    <div className="text-center">
+                        <span className="text-sm text-muted-foreground">Sudah punya akun? </span>
+                        <Button variant="link" onClick={() => setAuthModal('login')} className="p-0 h-auto text-sm">
+                            Masuk di sini
+                        </Button>
+                    </div>
                 </div>
             </motion.div>
         </div>
