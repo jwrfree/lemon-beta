@@ -96,7 +96,6 @@ export default function SmartAddPage() {
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
 
 
-    const availableCategoriesForAI = [...expenseCategories, ...incomeCategories].map(c => ({ name: c.name, subCategories: c.subCategories }));
     const availableWalletsForAI = wallets.map(w => w.name);
 
     const resetFlow = (keepInput = false) => {
@@ -300,7 +299,11 @@ export default function SmartAddPage() {
 
     const handleCloseEdit = (updatedData: any | null) => {
         if (updatedData) {
-            setParsedData(updatedData);
+            // Merge the updated data with the existing parsedData
+            setParsedData((prevData: any) => ({
+                ...prevData,
+                ...updatedData,
+            }));
         }
         setPageState('CONFIRMING');
     }
