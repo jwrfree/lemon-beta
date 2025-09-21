@@ -955,7 +955,7 @@ export default function ChartsPage() {
 
     return (
         <div className="flex min-h-screen flex-col bg-muted/40">
-            <header className="sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="sticky top-0 z-30 border-b border-border/60 bg-background">
                 <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div className="flex items-center gap-3">

@@ -84,7 +84,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const showBottomNav = mainPagesForNav.includes(pathname);
 
     return (
-        <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
+        <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background pt-[env(safe-area-inset-top)] md:pt-0 md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
             <AnimatePresence initial={false}>
                 <motion.div
                     key={pathname}
