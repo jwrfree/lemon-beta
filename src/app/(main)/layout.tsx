@@ -14,6 +14,7 @@ import { CustomToast } from '@/components/custom-toast';
 import { GoalForm } from '@/components/goal-form';
 import { useUI } from '@/components/ui-provider';
 import { useApp } from '@/components/app-provider';
+import { cn } from '@/lib/utils';
 
 const zoomVariants = {
     initial: {
@@ -91,7 +92,10 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     initial="initial"
                     animate="enter"
                     exit="exit"
-                    className="flex-1 flex flex-col overflow-y-auto"
+                    className={cn(
+                        'flex-1 flex flex-col overflow-y-auto',
+                        showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))]'
+                    )}
                 >
                     {children}
                 </motion.div>
@@ -99,7 +103,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
             <CustomToast />
 
-             <AnimatePresence>
+            <AnimatePresence>
                 {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
                 {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
                 {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
