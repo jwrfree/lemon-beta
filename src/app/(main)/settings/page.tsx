@@ -49,7 +49,7 @@ export default function SettingsPage() {
                     </div>
 
                     {/* Preferences Card */}
-                    <div className="rounded-lg bg-background overflow-hidden">
+                    <div className="rounded-lg bg-card overflow-hidden">
                         <div className="w-full flex items-center gap-4 p-4 text-left">
                             <Moon className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Tema Aplikasi</span>
@@ -99,7 +99,7 @@ export default function SettingsPage() {
                     </div>
 
                     {/* Management Card */}
-                    <div className="rounded-lg bg-background overflow-hidden">
+                    <div className="rounded-lg bg-card overflow-hidden">
                         {managementItems.map((item, index) => (
                             <React.Fragment key={item.id}>
                                 <button onClick={() => router.push(item.page)} className="w-full flex items-center gap-4 p-4 hover:bg-accent text-left">
@@ -114,7 +114,7 @@ export default function SettingsPage() {
                     </div>
                     
                      {/* Logout Button */}
-                     <div className="rounded-lg bg-background overflow-hidden">
+                     <div className="rounded-lg bg-card overflow-hidden">
                         <button onClick={handleSignOut} className="w-full flex items-center gap-4 p-4 hover:bg-destructive/10 text-left text-destructive">
                             <LogOut className="h-6 w-6" strokeWidth={1.5}/>
                             <span className="font-medium flex-1">Keluar</span>
