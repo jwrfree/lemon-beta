@@ -37,7 +37,7 @@ export default function CategoriesPage() {
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Kelola Kategori</h1>
             </header>
-            <main className="flex-1 flex items-center justify-center p-8 text-center">
+            <main className="flex-1 flex justify-center p-8 text-center pt-16">
                 <div className="flex flex-col items-center">
                     <CategoryPlaceholderIllustration />
                     <h2 className="text-2xl font-bold mt-6">Kustomisasi Kategori Akan Segera Hadir</h2>

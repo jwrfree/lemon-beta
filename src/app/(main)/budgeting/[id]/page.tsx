@@ -50,10 +50,12 @@ export default function BudgetDetailPage() {
                     </Button>
                     <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
                 </header>
-                <main className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                     <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
-                     <h2 className="text-xl font-bold">Anggaran Tidak Ditemukan</h2>
-                     <p className="text-muted-foreground mt-2">Anggaran yang kamu cari tidak ada atau mungkin sudah dihapus.</p>
+                <main className="flex-1 flex flex-col justify-center text-center p-4 pt-16">
+                     <div className="flex flex-col items-center">
+                        <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
+                        <h2 className="text-xl font-bold">Anggaran Tidak Ditemukan</h2>
+                        <p className="text-muted-foreground mt-2">Anggaran yang kamu cari tidak ada atau mungkin sudah dihapus.</p>
+                    </div>
                 </main>
             </div>
         );
