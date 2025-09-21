@@ -1,9 +1,17 @@
 # Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
 
-runConfig:
+# The entrypoint for your backend. This is the command that starts your web server.
+entrypoint: npm run start
+
+# The runtime for your backend. 
+# Must be one of the supported runtimes: https://firebase.google.com/docs/app-hosting/supported-runtimes
+runtime: nodejs20
+
+# Settings for scaling your backend.
+scaling:
   # Recommended minimum settings for cost-efficiency and stability
   minInstances: 1
   maxInstances: 1
   cpu: 1
-  memoryMiB: 256
+  memory: 256MiB
