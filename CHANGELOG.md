@@ -2,6 +2,32 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 1.3.0] - November 2025
+
+This release introduces major performance optimizations, cost-saving AI enhancements, and the completion of core financial features.
+
+### ✨ New Features
+
+- **Full CRUD for Financial Goals**: Users can now create, read, update, and delete their financial targets. A target date has been added to make goals more specific and trackable.
+- **New "Health" Category**: Added "Kesehatan" as a primary expense category with relevant sub-categories like "Dokter & RS" and "Obat & Vitamin".
+
+### ⚡️ Performance & Optimizations
+
+- **AI Cost Reduction**: The "Catat Cepat" (Quick Add) AI flow has been completely refactored to use Genkit Tools instead of passing large data objects in prompts. This drastically reduces token usage and lowers operational costs.
+- **Page Flicker Fixed**: Resolved a major page flickering issue during navigation by centralizing the global `AppProvider` in the root layout, ensuring a stable and smooth user experience.
+- **Optimized Font Loading**: Improved initial page load times and prevented layout shift by optimizing the way custom fonts are loaded via CSS variables.
+- **Refactored Transactions Page**: Removed a redundant transaction history page and consolidated functionality into a single, more efficient page with an improved filtering UI.
+
+### 🎨 Enhancements & Bug Fixes
+
+- **New Zoom Transition**: Replaced the page slide animation with a more modern and subtle zoom-in/zoom-out effect for a smoother feel.
+- **Z-Index Fix**: Permanently fixed the bug where page content would scroll over sticky headers by applying a consistent z-index strategy across the app.
+- **UI & Form Fixes**:
+    - Removed shadows from all `Card` components for a cleaner, flatter design.
+    - Fixed a bug where the edit transaction form would not display the correct categories after changing the transaction type.
+    - Resolved a Next.js error by correcting the component export on the Settings page.
+    - Enhanced UI consistency by adding an underline effect to link-style buttons on hover.
+
 ## [Version 1.2.0] - October 2025
 
 This release focuses on significant UI/UX enhancements and the introduction of AI-powered features to make transaction logging faster and more intuitive.
