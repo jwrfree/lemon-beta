@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Search, X, ListFilter } from 'lucide-react';
+import { Search, X, ListFilter } from 'lucide-react';
 import { TransactionList } from '@/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useApp } from '@/components/app-provider';
@@ -28,8 +28,6 @@ const TransactionsPageContent = () => {
         const categoryFromURL = searchParams.get('category');
         if (categoryFromURL) {
             setSelectedCategories([categoryFromURL]);
-            // Logic to determine if it's expense or income could be added here if needed
-            // For now, defaulting to expense is a reasonable assumption for category filters
             const isExpense = expenseCategories.some(c => c.name === categoryFromURL);
             if (isExpense) {
               setActiveTab('expense');
@@ -47,7 +45,7 @@ const TransactionsPageContent = () => {
 
     const filteredTransactions = useMemo(() => {
         return transactions.filter(t => {
-            const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesType = activeTab === 'all' || t.type === activeTab;
             const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(t.category);
             const matchesWallet = selectedWallets.length === 0 || selectedWallets.includes(t.walletId);
@@ -78,7 +76,7 @@ const TransactionsPageContent = () => {
 
     const handleTabChange = (value: string) => {
       setActiveTab(value);
-      resetFilters();
+      // Don't reset filters when changing tabs
     };
     
     const activeFilterCount = selectedCategories.length + selectedWallets.length;
@@ -89,9 +87,6 @@ const TransactionsPageContent = () => {
     return (
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
             <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="shrink-0" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
                 <div className="relative w-full">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -103,7 +98,7 @@ const TransactionsPageContent = () => {
                 </div>
                  <Sheet>
                     <SheetTrigger asChild>
-                         <Button variant="ghost" size="icon" className="shrink-0 relative">
+                         <Button variant="outline" size="icon" className="shrink-0 relative">
                             <ListFilter className="h-5 w-5" />
                             {activeFilterCount > 0 && (
                                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
@@ -155,11 +150,11 @@ const TransactionsPageContent = () => {
                 </Tabs>
                 
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         {selectedCategories.map(category => (
                             <Badge key={category} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                 {category}
-                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-5 w-5 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
+                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
                                     <X className="h-3 w-3" />
                                 </button>
                             </Badge>
@@ -169,7 +164,7 @@ const TransactionsPageContent = () => {
                             return wallet && (
                                 <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                     {wallet.name}
-                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-5 w-5 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
+                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
                                         <X className="h-3 w-3" />
                                     </button>
                                 </Badge>
@@ -179,7 +174,7 @@ const TransactionsPageContent = () => {
                 )}
             </div>
 
-            <main className="space-y-2">
+            <main className="space-y-2 p-4">
                 <TransactionList transactions={filteredTransactions} />
             </main>
         </div>

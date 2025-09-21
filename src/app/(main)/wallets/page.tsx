@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Plus, PlusCircle, Wallet } from 'lucide-react';
+import { Plus, Wallet, PlusCircle } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
@@ -20,9 +20,6 @@ export default function WalletsPage() {
   return (
     <div className="flex flex-col bg-muted h-full">
       <header className="h-16 flex items-center relative px-4 shrink-0 bg-background z-20 border-b">
-        <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
-          <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-        </Button>
         <h1 className="text-xl font-bold text-center w-full">Dompet Kamu</h1>
         <Button variant="ghost" size="icon" className="absolute right-4" onClick={() => setIsWalletModalOpen(true)}>
           <Plus className="h-6 w-6" strokeWidth={1.75} />
@@ -65,4 +62,3 @@ export default function WalletsPage() {
     </div>
   );
 };
-
