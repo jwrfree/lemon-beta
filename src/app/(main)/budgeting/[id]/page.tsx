@@ -43,14 +43,14 @@ export default function BudgetDetailPage() {
 
     if (!budget) {
         return (
-             <div className="flex flex-col h-full bg-muted">
+             <div className="h-full bg-muted">
                 <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background z-20">
                     <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                         <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                     </Button>
                     <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
                 </header>
-                <main className="flex-1 flex flex-col justify-center text-center p-4 pt-16">
+                <main className="flex justify-center text-center p-4 pt-16">
                      <div className="flex flex-col items-center">
                         <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
                         <h2 className="text-xl font-bold">Anggaran Tidak Ditemukan</h2>
