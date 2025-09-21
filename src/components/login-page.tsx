@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -120,7 +121,7 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                                     type="email"
                                                     id="email"
                                                     autoComplete="email"
-                                                    placeholder="email@example.com"
+                                                    placeholder="email@contoh.com"
                                                     className="pl-10 pr-12 text-base"
                                                     {...field}
                                                 />
