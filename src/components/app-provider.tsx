@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { User, signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc, getDocs, where, Timestamp } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, addDoc, updateDoc, writeBatch, query, orderBy, deleteDoc, getDocs, where, Timestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { categories } from '@/lib/categories';
 import { useRouter as useNextRouter } from 'next/navigation';
@@ -432,7 +432,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const updateUserBiometricStatus = useCallback(async (isBiometricEnabled: boolean) => {
         if (!user) throw new Error("User not authenticated.");
         const userDocRef = doc(db, 'users', user.uid);
-        await updateDoc(userDocRef, { isBiometricEnabled });
+        await setDoc(userDocRef, { isBiometricEnabled }, { merge: true });
     }, [user]);
 
     const handleSignOut = async () => {

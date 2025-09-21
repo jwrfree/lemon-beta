@@ -1,6 +1,6 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase-admin';
 
 export default async function handler(
@@ -21,11 +21,11 @@ export default async function handler(
     const userDocRef = doc(db, 'users', userId);
     
     // Store the credential ID. We use the rawId as it's the URL-safe base64 string.
-    await updateDoc(userDocRef, {
+    await setDoc(userDocRef, {
         biometricCredentialId: credential.rawId,
         // You might want to store the full credential object for recovery,
         // but for basic auth, the ID is what's needed for `allowCredentials`.
-    });
+    }, { merge: true });
 
     res.status(200).json({ success: true });
   } catch (error: any) {

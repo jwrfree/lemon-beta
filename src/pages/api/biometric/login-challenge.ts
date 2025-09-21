@@ -1,6 +1,6 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase-admin';
 import { randomBytes } from 'crypto';
 
@@ -38,7 +38,7 @@ export default async function handler(
     const challenge = randomBytes(32);
 
     // Store challenge temporarily, e.g., in the user's document
-    await userDoc.ref.update({ loginChallenge: challenge });
+    await setDoc(userDoc.ref, { loginChallenge: challenge }, { merge: true });
 
     res.status(200).json({
       challenge: challenge,

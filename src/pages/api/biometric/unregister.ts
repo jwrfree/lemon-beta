@@ -1,6 +1,6 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { doc, updateDoc, FieldValue } from 'firebase/firestore';
+import { doc, setDoc, FieldValue } from 'firebase/firestore';
 import { db, admin } from '@/lib/firebase-admin';
 
 export default async function handler(
@@ -21,10 +21,10 @@ export default async function handler(
     const userDocRef = doc(db, 'users', userId);
     
     // Remove the biometric credential field from the user's document
-    await updateDoc(userDocRef, {
+    await setDoc(userDocRef, {
       biometricCredentialId: admin.firestore.FieldValue.delete(),
       isBiometricEnabled: false
-    });
+    }, { merge: true });
 
     res.status(200).json({ success: true });
   } catch (error: any) {
