@@ -28,7 +28,14 @@ export const BottomNavigation = () => {
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
     
-    const isModalOpen = isTxModalOpen || isWalletModalOpen || isBudgetModalOpen || isDeleteModalOpen || isTransferModalOpen || isEditWalletModalOpen || isGoalModalOpen;
+    const isModalOpen =
+        isTxModalOpen ||
+        isWalletModalOpen ||
+        isBudgetModalOpen ||
+        isDeleteModalOpen ||
+        isTransferModalOpen ||
+        isEditWalletModalOpen ||
+        isGoalModalOpen;
     
     // The parent layout now controls visibility, so we only need to check for modals here.
     const isVisible = !isModalOpen;
@@ -43,38 +50,46 @@ export const BottomNavigation = () => {
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     className="fixed bottom-0 left-0 right-0 z-40"
                 >
-                    <div className="w-full max-w-md mx-auto grid grid-cols-5 h-16 items-center bg-card/80 backdrop-blur-lg shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t md:rounded-b-lg md:rounded-t-none">
+                    <div
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card/80 backdrop-blur-lg shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t md:rounded-b-lg md:rounded-t-none"
+                        style={{
+                            paddingBottom: 'env(safe-area-inset-bottom)',
+                            minHeight: 'calc(4rem + env(safe-area-inset-bottom))',
+                        }}
+                    >
                         {navItems.map(item => {
-                             const isActive = pathname.startsWith(item.href);
-                             if (item.primary) {
-                                 return (
-                                     <div key={item.id} className="flex justify-center items-center">
-                                         <Link 
+                            const isActive = pathname.startsWith(item.href);
+
+                            if (item.primary) {
+                                return (
+                                    <div key={item.id} className="flex justify-center items-center">
+                                        <Link
                                             href={item.href}
                                             className={cn(
-                                                "flex items-center justify-center rounded-full h-14 w-14 bg-primary text-white shadow-lg -translate-y-4 hover:bg-primary/90 transition-colors",
+                                                'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-white shadow-lg -translate-y-4 hover:bg-primary/90 transition-colors'
                                             )}
                                             aria-label={item.name}
                                         >
                                             <item.icon className="h-8 w-8" />
                                             <span className="sr-only">{item.name}</span>
-                                         </Link>
-                                     </div>
-                                 )
-                             }
+                                        </Link>
+                                    </div>
+                                );
+                            }
+
                             return (
-                                <Link 
-                                    key={item.id} 
+                                <Link
+                                    key={item.id}
                                     href={item.href}
                                     className={cn(
-                                        "flex flex-col items-center justify-center h-full w-full rounded-none transition-colors text-muted-foreground hover:bg-accent",
-                                        isActive && "text-primary",
+                                        'flex flex-col items-center justify-center h-full w-full rounded-none transition-colors text-muted-foreground hover:bg-accent',
+                                        isActive && 'text-primary'
                                     )}
                                 >
                                     <item.icon className="h-6 w-6" />
-                                    <span className={cn("text-xs mt-1", isActive && "font-semibold")}>{item.name}</span>
+                                    <span className={cn('text-xs mt-1', isActive && 'font-semibold')}>{item.name}</span>
                                 </Link>
-                            )
+                            );
                         })}
                     </div>
                 </motion.div>
