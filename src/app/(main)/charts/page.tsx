@@ -977,21 +977,6 @@ export default function ChartsPage() {
                                 <CalendarDays className="h-4 w-4" />
                                 <span>{monthLabel}</span>
                             </div>
-                            <Badge
-                                variant="outline"
-                                className={cn(
-                                    'flex items-center gap-1 text-xs font-semibold',
-                                    netPositive
-                                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-                                        : 'border-destructive/60 bg-destructive/10 text-destructive'
-                                )}
-                            >
-                                <Scale className="h-3.5 w-3.5" />
-                                {netPositive ? 'Surplus' : 'Defisit'} {formatCurrency(netValue)}
-                            </Badge>
-                            <Badge variant="secondary" className="text-xs font-medium">
-                                {monthlySnapshot.count} transaksi dianalisis
-                            </Badge>
                         </div>
                     </div>
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
