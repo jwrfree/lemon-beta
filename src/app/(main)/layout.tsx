@@ -1,6 +1,6 @@
 
 'use client';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { TransactionForm } from '@/components/transaction-form';
@@ -8,7 +8,6 @@ import { useApp } from '@/components/app-provider';
 import { AddWalletModal } from '@/components/add-wallet-modal';
 import { AddBudgetModal } from '@/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
-import { useEffect } from 'react';
 import { AddTransferModal } from '@/components/add-transfer-modal';
 import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/components/edit-budget-modal';
@@ -34,10 +33,7 @@ const zoomVariants = {
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const router = useRouter();
     const { 
-        user,
-        isLoading,
         isTxModalOpen, 
         setIsTxModalOpen, 
         isWalletModalOpen,
@@ -63,10 +59,6 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         goalToEdit,
     } = useApp();
 
-    if (isLoading || !user) {
-        return null; 
-    }
-
     const handleCloseTxModal = () => {
         setIsTxModalOpen(false);
         setTransactionToEdit(null);
@@ -74,11 +66,10 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
     const handleCloseGoalModal = () => {
         setIsGoalModalOpen(false);
-    }
+    };
 
-    const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings'];
-    const showBottomNav = mainPagesForNav.includes(pathname) || pathname.startsWith('/budgeting') || pathname.startsWith('/wallets') || pathname.startsWith('/goals');
-
+    const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings', '/budgeting'];
+    const showBottomNav = mainPagesForNav.includes(pathname);
 
     return (
         <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
