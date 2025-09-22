@@ -39,10 +39,10 @@ import { AnimatedCounter } from '@/components/animated-counter';
 
 type TabValue = 'expense' | 'income' | 'net';
 
-const tabs: { value: TabValue; label: string; icon: React.ElementType }[] = [
-    { value: 'expense', label: 'Pengeluaran', icon: ArrowDownLeft },
-    { value: 'income', label: 'Pemasukan', icon: ArrowUpRight },
-    { value: 'net', label: 'Arus Kas', icon: Scale },
+const tabs: { value: TabValue; label: string }[] = [
+    { value: 'expense', label: 'Pengeluaran' },
+    { value: 'income', label: 'Pemasukan' },
+    { value: 'net', label: 'Arus Kas' },
 ];
 
 const PlaceholderContent = ({
@@ -420,12 +420,11 @@ export default function ChartsPage() {
             </header>
 
             <main className="flex-1 overflow-y-auto" {...handlers}>
-                <div className="p-4 bg-background border-b sticky top-16 z-10">
+                <div className="px-4 py-3 bg-background border-b sticky top-16 z-10">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3">
                             {tabs.map((tab) => (
-                                <TabsTrigger key={tab.value} value={tab.value} className="gap-2">
-                                    <tab.icon className="h-4 w-4" />
+                                <TabsTrigger key={tab.value} value={tab.value}>
                                     {tab.label}
                                 </TabsTrigger>
                             ))}
