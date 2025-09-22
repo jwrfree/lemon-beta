@@ -1,5 +1,5 @@
-
 'use client';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -12,29 +12,30 @@ import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
 import { GoalForm } from '@/components/goal-form';
+import { ReminderForm } from '@/components/reminder-form';
+import { DebtForm } from '@/components/debt-form';
+import { DebtPaymentForm } from '@/components/debt-payment-form';
 import { useUI } from '@/components/ui-provider';
 import { useApp } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
 
-const zoomVariants = {
+const pageVariants = {
     initial: {
-        scale: 0.95,
         opacity: 0,
     },
     enter: {
-        scale: 1,
         opacity: 1,
-        transition: { duration: 0.3, ease: [0.25, 1, 0.5, 1] },
+        transition: { duration: 0.24, ease: [0.25, 1, 0.5, 1] },
     },
     exit: {
-        scale: 0.95,
         opacity: 0,
-        transition: { duration: 0.2, ease: 'easeIn' },
+        transition: { duration: 0.18, ease: 'easeIn' },
     },
 };
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const containerRef = useRef<HTMLDivElement>(null);
     const { 
         isTxModalOpen, 
         setIsTxModalOpen, 
@@ -59,18 +60,49 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         setIsGoalModalOpen,
         goalToEdit,
         setGoalToEdit,
+        isReminderModalOpen,
+        setIsReminderModalOpen,
+        reminderToEdit,
+        setReminderToEdit,
+        isDebtModalOpen,
+        setIsDebtModalOpen,
+        debtToEdit,
+        setDebtToEdit,
+        isDebtPaymentModalOpen,
+        setIsDebtPaymentModalOpen,
+        debtForPayment,
+        setDebtForPayment,
     } = useUI();
 
     const { deleteTransaction } = useApp();
 
+    useEffect(() => {
+        containerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+    }, [pathname]);
+
     const handleCloseTxModal = () => {
         setIsTxModalOpen(false);
         setTransactionToEdit(null);
-    }
+    };
 
     const handleCloseGoalModal = () => {
         setIsGoalModalOpen(false);
         setGoalToEdit(null);
+    };
+
+    const handleCloseReminderModal = () => {
+        setIsReminderModalOpen(false);
+        setReminderToEdit(null);
+    };
+
+    const handleCloseDebtModal = () => {
+        setIsDebtModalOpen(false);
+        setDebtToEdit(null);
+    };
+
+    const handleCloseDebtPaymentModal = () => {
+        setIsDebtPaymentModalOpen(false);
+        setDebtForPayment(null);
     };
 
     const handleConfirmDelete = async () => {
@@ -88,10 +120,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
             <AnimatePresence initial={false}>
                 <motion.div
                     key={pathname}
-                    variants={zoomVariants}
+                    variants={pageVariants}
                     initial="initial"
                     animate="enter"
                     exit="exit"
+                    ref={containerRef}
                     className={cn(
                         'flex-1 flex flex-col overflow-y-auto',
                         showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))]'
@@ -111,6 +144,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
                 {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
                 {isGoalModalOpen && <GoalForm initialData={goalToEdit} onClose={handleCloseGoalModal} />}
+                {isReminderModalOpen && <ReminderForm initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
+                {isDebtModalOpen && <DebtForm initialData={debtToEdit} onClose={handleCloseDebtModal} />}
+                {isDebtPaymentModalOpen && debtForPayment && (
+                    <DebtPaymentForm debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
+                )}
                 {isDeleteModalOpen && transactionToDelete && (
                     <ConfirmDeleteModal
                         transaction={transactionToDelete}

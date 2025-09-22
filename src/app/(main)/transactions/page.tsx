@@ -9,13 +9,17 @@ import { Input } from '@/components/ui/input';
 import { useApp } from '@/components/app-provider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 
 const TransactionsPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, expenseCategories, incomeCategories, wallets } = useApp();
+    const { transactions, expenseCategories, incomeCategories, wallets, debts } = useApp();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
@@ -51,6 +55,7 @@ const TransactionsPageContent = () => {
     }, [activeTab, expenseCategories, incomeCategories]);
 
     const filteredTransactions = useMemo(() => {
+        if (activeTab === 'debt') return [];
         return transactions.filter(t => {
             const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesType = activeTab === 'all' || t.type === activeTab;
@@ -95,8 +100,10 @@ const TransactionsPageContent = () => {
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
             <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <div className="relative w-full">
+                    <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
+                        id="transaction-search"
                         placeholder="Cari transaksi..."
                         className="pl-10"
                         value={searchQuery}
@@ -105,13 +112,19 @@ const TransactionsPageContent = () => {
                 </div>
                  <Sheet>
                     <SheetTrigger asChild>
-                         <Button variant="outline" size="icon" className="shrink-0 relative">
+                         <Button
+                            variant="outline"
+                            size="icon"
+                            className="shrink-0 relative"
+                            aria-label="Buka filter transaksi"
+                         >
                             <ListFilter className="h-5 w-5" />
                             {activeFilterCount > 0 && (
                                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
                                     {activeFilterCount}
                                 </span>
                             )}
+                            <span className="sr-only">Buka filter transaksi</span>
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="bottom" className="rounded-t-2xl max-h-[80vh] flex flex-col">
@@ -149,10 +162,11 @@ const TransactionsPageContent = () => {
             
             <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="all">Semua</TabsTrigger>
                         <TabsTrigger value="expense">Pengeluaran</TabsTrigger>
                         <TabsTrigger value="income">Pemasukan</TabsTrigger>
+                        <TabsTrigger value="debt">Hutang</TabsTrigger>
                     </TabsList>
                 </Tabs>
                 
@@ -161,8 +175,13 @@ const TransactionsPageContent = () => {
                         {selectedCategories.map(category => (
                             <Badge key={category} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                 {category}
-                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
-                                    <X className="h-3 w-3" />
+                                <button
+                                    type="button"
+                                    onClick={() => handleCategoryToggle(category)}
+                                    className="ml-1 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/10 text-xs font-medium transition-colors hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                                    aria-label={`Hapus filter kategori ${category}`}
+                                >
+                                    <X className="h-4 w-4" />
                                 </button>
                             </Badge>
                         ))}
@@ -171,8 +190,13 @@ const TransactionsPageContent = () => {
                             return wallet && (
                                 <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                     {wallet.name}
-                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
-                                        <X className="h-3 w-3" />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleWalletToggle(walletId)}
+                                        className="ml-1 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/10 text-xs font-medium transition-colors hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                                        aria-label={`Hapus filter dompet ${wallet.name}`}
+                                    >
+                                        <X className="h-4 w-4" />
                                     </button>
                                 </Badge>
                             )
@@ -182,7 +206,43 @@ const TransactionsPageContent = () => {
             </div>
 
             <main className="space-y-2 p-4">
-                <TransactionList transactions={filteredTransactions} />
+                {activeTab === 'debt' ? (
+                    <div className="space-y-2">
+                        {debts.length === 0 ? (
+                            <Card className="p-4 text-sm text-muted-foreground">
+                                Belum ada catatan hutang/piutang.
+                            </Card>
+                        ) : (
+                            debts.map(debt => {
+                                const outstanding = debt.outstandingBalance ?? debt.principal ?? 0;
+                                const dueDate = debt.dueDate ? parseISO(debt.dueDate) : null;
+                                return (
+                                    <Card key={debt.id} className="p-4 space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-semibold">{debt.title}</p>
+                                                <p className="text-xs text-muted-foreground">{debt.counterparty}</p>
+                                            </div>
+                                            <span className="text-sm font-semibold">{formatCurrency(outstanding)}</span>
+                                        </div>
+                                        {dueDate && (
+                                            <p className="text-xs text-muted-foreground">
+                                                Jatuh tempo {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
+                                            </p>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <Button size="sm" variant="outline" onClick={() => router.push(`/debts/${debt.id}`)}>
+                                                Lihat Detail
+                                            </Button>
+                                        </div>
+                                    </Card>
+                                );
+                            })
+                        )}
+                    </div>
+                ) : (
+                    <TransactionList transactions={filteredTransactions} />
+                )}
             </main>
         </div>
     );

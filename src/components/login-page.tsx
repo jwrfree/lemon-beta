@@ -11,11 +11,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from './ui-provider';
 import { Separator } from '@/components/ui/separator';
 import { useBiometric } from '@/hooks/use-biometric';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import type { AuthModalView } from '@/types/auth';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -31,12 +33,20 @@ const formSchema = z.object({
     password: z.string().min(6, { message: "Password minimal 6 karakter." }),
 });
 
-export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
+export const LoginPage = ({
+    onClose,
+    setAuthModal,
+}: {
+    onClose: () => void;
+    setAuthModal: React.Dispatch<React.SetStateAction<AuthModalView>>;
+}) => {
+    const shouldReduceMotion = useReducedMotion();
     const [showPassword, setShowPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const { showToast } = useUI();
     const [biometricUser, setBiometricUser] = useState<string | null>(null);
     const { isBiometricSupported, signInWithBiometric } = useBiometric();
+    const [authError, setAuthError] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -55,37 +65,64 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
 
     const { formState: { isSubmitting } } = form;
 
+    const getFirebaseErrorCode = (error: unknown) => {
+        if (typeof error === 'object' && error !== null && 'code' in error) {
+            const { code } = error as { code?: unknown };
+            return typeof code === 'string' ? code : undefined;
+        }
+        return undefined;
+    };
+
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
+            setAuthError(null);
             await signInWithEmailAndPassword(auth, values.email, values.password);
             showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
-        } catch (error: any) {
-            showToast(error.code === 'auth/invalid-credential' ? 'Email atau password salah.' : 'Gagal masuk. Coba lagi ya.', 'error');
+        } catch (error: unknown) {
+            const code = getFirebaseErrorCode(error);
+            let message = 'Gagal masuk. Coba lagi ya.';
+            if (code === 'auth/invalid-credential' || code === 'auth/user-not-found') {
+                message = 'Email atau password salah.';
+            } else if (code === 'auth/too-many-requests') {
+                message = 'Terlalu banyak percobaan gagal. Coba lagi beberapa menit lagi.';
+            }
+            setAuthError(message);
+            showToast(message, 'error');
         }
     };
 
     const handleBiometricSignIn = async () => {
         if (!biometricUser) return;
         try {
+            setAuthError(null);
             await signInWithBiometric(biometricUser);
             showToast("Login dengan sidik jari berhasil!", "success");
             onClose();
-        } catch (error) {
-            showToast("Gagal masuk dengan sidik jari.", 'error');
+        } catch (error: unknown) {
+            const message = 'Gagal masuk dengan sidik jari.';
+            setAuthError(message);
+            showToast(message, 'error');
             console.error(error);
         }
-    }
+    };
 
     const handleGoogleSignIn = async () => {
         const provider = new GoogleAuthProvider();
         try {
             setIsGoogleLoading(true);
+            setAuthError(null);
             await signInWithPopup(auth, provider);
             showToast("Login dengan Google berhasil!", 'success');
             onClose();
-        } catch (error: any) {
-            showToast('Gagal masuk dengan Google. Coba lagi ya.', 'error');
+        } catch (error: unknown) {
+            const code = getFirebaseErrorCode(error);
+            let message = 'Gagal masuk dengan Google. Coba lagi ya.';
+            if (code === 'auth/popup-blocked') {
+                message = 'Popup login diblokir browser. Buka izin popup lalu coba lagi.';
+            }
+            setAuthError(message);
+            showToast(message, 'error');
         } finally {
             setIsGoogleLoading(false);
         }
@@ -99,17 +136,18 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
             onClick={onClose}
         >
             <motion.div
-                initial={{ y: "100%" }}
+                initial={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
                 animate={{ y: 0 }}
-                exit={{ y: "100%" }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
+                transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="login-heading"
@@ -198,12 +236,31 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
                                     </FormItem>
                                 )}
                             />
+                            <div className="flex justify-end text-sm">
+                                <Button
+                                    variant="link"
+                                    type="button"
+                                    className="p-0 h-auto text-sm"
+                                    onClick={() => {
+                                        setAuthError(null);
+                                        setAuthModal('forgot-password');
+                                    }}
+                                >
+                                    Lupa password?
+                                </Button>
+                            </div>
                             <Button type="submit" size="lg" className="w-full text-base h-12" disabled={isSubmitting}>
                                 {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? 'Memproses...' : 'Masuk'}
                             </Button>
                         </form>
                     </Form>
+
+                    {authError && (
+                        <Alert variant="destructive" className="mt-4" aria-live="assertive">
+                            <AlertDescription>{authError}</AlertDescription>
+                        </Alert>
+                    )}
 
                     <div className="mt-6 space-y-4">
                         <div className="relative">
@@ -243,7 +300,17 @@ export const LoginPage = ({ onClose, setAuthModal }: { onClose: () => void; setA
 
                     <p className="text-sm text-muted-foreground mt-6 text-center">
                         Belum punya akun?{' '}
-                        <Button variant="link" onClick={() => setAuthModal('signup')} className="p-0 h-auto" type="button">Daftar di sini</Button>
+                        <Button
+                            variant="link"
+                            onClick={() => {
+                                setAuthError(null);
+                                setAuthModal('signup');
+                            }}
+                            className="p-0 h-auto"
+                            type="button"
+                        >
+                            Daftar di sini
+                        </Button>
                     </p>
                 </div>
             </motion.div>

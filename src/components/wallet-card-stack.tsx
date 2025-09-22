@@ -49,7 +49,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon);
 
             return (
-              <motion.div
+              <motion.button
                 key={wallet.id}
                 drag={isActive ? "y" : false}
                 onDragEnd={onDragEnd}
@@ -57,7 +57,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.2}
                 onClick={() => !isActive && setActiveIndex(i)}
                 className={cn(
-                  "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg overflow-hidden",
+                  "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
                   isActive ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                 )}
                 style={{
@@ -79,11 +79,25 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   stiffness: 250,
                   damping: 25,
                 }}
+                type="button"
+                aria-pressed={isActive}
+                aria-label={isActive ? `${wallet.name}, dompet aktif` : `Pilih dompet ${wallet.name}`}
+                tabIndex={isActive ? 0 : -1}
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    paginate(1);
+                  }
+                  if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    paginate(-1);
+                  }
+                }}
               >
                   {/* Ornaments */}
                   <div className="absolute -top-1/4 -left-1/4 w-48 h-48 bg-white/10 rounded-full" />
                   <div className="absolute -bottom-1/4 -right-10 w-40 h-40 bg-white/5 rounded-full" />
-                  
+
                   <div className="relative p-5 flex flex-col h-full">
                       <div className="flex items-start justify-between">
                            <div className="flex items-center gap-3">
@@ -95,8 +109,15 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                                 </div>
                               )}
                           </div>
-                          <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 h-8 w-8 rounded-full" onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-white hover:bg-white/20 h-8 w-8 rounded-full"
+                            onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}
+                            aria-label={`Kelola dompet ${wallet.name}`}
+                          >
                               <MoreVertical className="h-5 w-5" />
+                              <span className="sr-only">Kelola dompet {wallet.name}</span>
                           </Button>
                       </div>
 
@@ -106,22 +127,28 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                           </p>
                       </div>
                   </div>
-              </motion.div>
+              </motion.button>
             );
           })}
         </AnimatePresence>
       </div>
       <div className="flex justify-center gap-2 mt-4">
-        {wallets.map((_, i) => (
+        {wallets.map((wallet, i) => (
           <button
-            key={i}
+            key={wallet.id ?? i}
+            type="button"
             onClick={() => setActiveIndex(i)}
-            className={cn(
-              'w-2 h-2 rounded-full transition-colors',
-              i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/30'
-            )}
-            aria-label={`Go to wallet ${i + 1}`}
-          />
+            className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-label={`Pilih dompet ${wallet.name}`}
+            aria-pressed={i === activeIndex}
+          >
+            <span
+              className={cn(
+                'h-2 w-2 rounded-full',
+                i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/30'
+              )}
+            />
+          </button>
         ))}
       </div>
     </div>

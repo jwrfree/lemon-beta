@@ -32,8 +32,15 @@ export default function CategoriesPage() {
     return (
         <div className="h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-4"
+                    onClick={() => router.back()}
+                    aria-label="Kembali"
+                >
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+                    <span className="sr-only">Kembali</span>
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Kelola Kategori</h1>
             </header>
@@ -49,8 +56,14 @@ export default function CategoriesPage() {
                         <div className="relative">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                             <Input name="email" type="email" placeholder="email@example.com" className="pl-10 pr-10" />
-                            <Button type="submit" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
+                            <Button
+                                type="submit"
+                                size="icon"
+                                className="absolute right-1 top-1/2 -translate-y-1/2"
+                                aria-label="Kirim email pemberitahuan"
+                            >
                                 <Send className="h-4 w-4" />
+                                <span className="sr-only">Kirim</span>
                             </Button>
                         </div>
                     </form>

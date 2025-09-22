@@ -50,12 +50,16 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 
 
     return (
-         <motion.div
+         <motion.button
+            type="button"
             onClick={() => router.push(`/budgeting/${budget.id}`)}
             whileTap={{ scale: 0.98 }}
-            className="cursor-pointer"
+            className={cn(
+                'w-full text-left rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/40'
+            )}
+            aria-label={`Buka detail anggaran ${budget.name}`}
         >
-            <Card className="p-4 flex flex-col gap-3">
+            <Card className="p-4 flex flex-col gap-3 h-full">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                          <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
@@ -78,7 +82,7 @@ const BudgetCard = ({ budget }: { budget: any }) => {
                     </div>
                 </div>
             </Card>
-        </motion.div>
+        </motion.button>
     );
 };
 
@@ -118,8 +122,15 @@ export default function BudgetingPage() {
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <h1 className="text-xl font-bold text-center w-full">Anggaran</h1>
-                <Button variant="ghost" size="icon" className="absolute right-4" onClick={() => setIsBudgetModalOpen(true)}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4"
+                    onClick={() => setIsBudgetModalOpen(true)}
+                    aria-label="Tambah anggaran"
+                >
                     <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
+                    <span className="sr-only">Tambah anggaran</span>
                 </Button>
             </header>
             <main className="flex-1 overflow-y-auto">

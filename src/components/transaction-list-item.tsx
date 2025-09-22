@@ -4,11 +4,12 @@ import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
 import { useApp } from '@/components/app-provider';
 import { cn, formatCurrency } from '@/lib/utils';
-import { categories, categoryDetails as getCategoryDetails } from '@/lib/categories';
+import { categoryDetails as getCategoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
 import { useUI } from './ui-provider';
+import { Button } from './ui/button';
 
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
@@ -56,7 +57,9 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 export const TransactionListItem = ({ transaction, hideDate = false }: { transaction: any; hideDate?: boolean }) => {
     const itemRef = useRef<HTMLDivElement>(null);
     const { openDeleteModal, openEditTransactionModal } = useUI();
-    
+
+    const description = transaction.description?.trim() ?? '';
+
     const deleteVibrated = useRef(false);
     const editVibrated = useRef(false);
     
@@ -195,6 +198,22 @@ export const TransactionListItem = ({ transaction, hideDate = false }: { transac
                 className="relative bg-card z-20"
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
+                <div className="flex flex-wrap justify-end gap-2 border-t border-border/60 px-3 pt-2 pb-3">
+                    <Button
+                        variant="outline"
+                        onClick={() => openEditTransactionModal(transaction)}
+                        aria-label={description ? `Edit transaksi ${description}` : 'Edit transaksi'}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        onClick={() => openDeleteModal(transaction)}
+                        aria-label={description ? `Hapus transaksi ${description}` : 'Hapus transaksi'}
+                    >
+                        Hapus
+                    </Button>
+                </div>
             </motion.div>
         </div>
     );

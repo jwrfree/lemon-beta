@@ -2,6 +2,55 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.0.0] - 22 September 2025
+
+**Status:** Ready to launch
+
+### 🔍 Experience Audit & Navigation
+- Menyelesaikan audit desain menyeluruh mencakup landing, autentikasi, dan alur utama aplikasi dengan dokumentasi heuristik baru.
+- Menambahkan skip link dan navigasi anchor pada landing sehingga pengguna dapat menjangkau section fitur, keamanan, dan CTA akhir tanpa menggulir jauh.
+- Memperbarui copy hero dan daftar manfaat agar proposisi nilai Lemon mudah dipahami dalam beberapa detik.
+
+### 🎨 Visual, Motion & Accessibility
+- Menstandarkan seluruh animasi ke durasi 0.28 s `ease-out` serta menambahkan dukungan `prefers-reduced-motion` di landing dan semua modal autentikasi.
+- Memperkuat hierarchy visual dengan grid 4/8 px, radius 16–32 px, dan fokus ring kontras tinggi untuk navigasi keyboard.
+- Menandai ilustrasi dekoratif sebagai `aria-hidden` dan memberikan outline fokus pada anchor nav untuk menjaga aksesibilitas.
+
+### 🔐 Authentication & Recovery
+- Memperbarui bottom sheet login, sign up, dan lupa password dengan overlay `backdrop-blur`, transisi konsisten, serta alert error inline yang mudah dibaca.
+- Menjaga tombol aksi alternatif (Google, biometrik) tetap tersedia sambil menyajikan status loading yang jelas bagi setiap metode.
+- Menambahkan pesan sukses permanen pada alur lupa password agar pengguna yakin email reset telah dikirim.
+
+### 📚 Documentation & Alignment
+- Menulis ulang **Design Audit** untuk memuat temuan heuristik, sistem desain, dan evaluasi alur lengkap menjelang rilis 2.0.0.
+- Memperbarui **Product Blueprint** dengan snapshot rilis, prinsip pengalaman terbaru, spesifikasi motion, serta roadmap prioritas.
+- Menyegarkan **README** dengan sorotan rilis, alur utama, komitmen desain & aksesibilitas, serta tautan dokumentasi penting.
+
+## [Version 1.5.0] - December 2025
+
+This release elevates the mobile experience with proactive guidance and complete visibility over financial obligations.
+
+### ✨ New Features
+
+- **Smart Reminders**: Create one-off or recurring reminders for bills, savings transfers, and follow-ups. Reminders can be linked to wallets, categories, or debts and sync with push notifications for quick completion.
+- **Comprehensive Debt & IOU Tracking**: Track money you owe and are owed with dedicated debt profiles, payment schedules, counterparty histories, and interest snapshots. Transactions logged with Catat Cepat now auto-suggest matching debts.
+
+### 🎨 Enhancements & UX Improvements
+
+- **Mobile Home Refresh**: Added an "Upcoming" module to spotlight due reminders and approaching debt payments alongside key balances.
+- **Reminder Center**: Introduced a unified calendar and list management view under the More tab for snoozing, completing, and reviewing reminder history.
+- **Debt Insights Widget**: The Insights tab now visualizes total owed vs. owed to you, overdue items, and payoff velocity.
+
+### 🧠 AI & Automation
+
+- **Predictive Suggestions**: Catat Cepat classifies reminder intent and proposes linking entries to existing debts when confidence is high.
+- **Weekly Digest**: A new AI-generated summary surfaces upcoming reminders, risky debts, and suggested actions every Monday.
+
+### 🛠 Technical
+
+- Added Firestore collections for reminders and debts with indexes optimized for due dates and statuses.
+- Scheduled Cloud Functions send push notifications, recalculate debt projections nightly, and roll up weekly reminder stats for Insights.
+
 ## [Version 1.4.0] - November 2025
 
 This release introduces a major new authentication feature and focuses heavily on UI consistency and bug fixes based on user feedback.

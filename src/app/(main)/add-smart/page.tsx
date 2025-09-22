@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ShieldAlert, ArrowRight, TrendingDown, ChevronLeft } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
@@ -67,6 +67,8 @@ const WelcomePlaceholder = () => (
 const SpeechRecognition =
   (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition));
 
+const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024; // 1MB
+
 export default function SmartAddPage() {
     const router = useRouter();
     const {
@@ -100,7 +102,15 @@ export default function SmartAddPage() {
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
 
 
-    const availableWalletsForAI = wallets.map(w => w.name);
+    const availableWalletsForAI = useMemo(() => wallets.map(w => w.name), [wallets]);
+    const availableCategoriesForAI = useMemo(
+        () => [
+            ...expenseCategories.map(({ name, subCategories }) => ({ name, subCategories: subCategories ?? [] })),
+            ...incomeCategories.map(({ name, subCategories }) => ({ name, subCategories: subCategories ?? [] })),
+            { name: 'Transfer', subCategories: [] as string[] },
+        ],
+        [expenseCategories, incomeCategories]
+    );
 
     const resetFlow = (keepInput = false) => {
         setPageState('IDLE');
@@ -208,7 +218,11 @@ export default function SmartAddPage() {
 
         try {
             if (typeof input === 'string') {
-                const result = await extractTransaction({ text: input, availableWallets: availableWalletsForAI });
+                const result = await extractTransaction({
+                    text: input,
+                    availableWallets: availableWalletsForAI,
+                    availableCategories: availableCategoriesForAI,
+                });
                 handleAISuccess(result);
             } else {
                 const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
@@ -271,16 +285,32 @@ export default function SmartAddPage() {
         }
     };
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputEl = e.target;
+        const file = inputEl.files?.[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (loadEvent) => {
-            const imageDataUrl = loadEvent.target?.result as string;
-            processInput({ type: 'image', dataUrl: imageDataUrl });
-        };
-        reader.readAsDataURL(file);
-        e.target.value = ''; // Reset file input
+        if (!file.type.startsWith('image/')) {
+            showToast('Format file tidak didukung. Pilih foto struk ya.', 'error');
+            inputEl.value = '';
+            return;
+        }
+
+        try {
+            const compressedDataUrl = await compressImageFile(file, { maxDimension: 1280, quality: 0.8 });
+            const compressedSize = getDataUrlSizeInBytes(compressedDataUrl);
+
+            if (compressedSize > MAX_COMPRESSED_IMAGE_BYTES) {
+                showToast('Ukuran gambar masih terlalu besar (>1 MB). Kecilkan lagi lalu coba unggah ya.', 'error');
+                return;
+            }
+
+            processInput({ type: 'image', dataUrl: compressedDataUrl });
+        } catch (error) {
+            console.error('Failed to compress image before processing:', error);
+            showToast('Oops! Gagal memproses gambar. Coba pilih struk lain ya.', 'error');
+        } finally {
+            inputEl.value = '';
+        }
     };
 
     const handleSave = async (andAddAnother = false) => {
