@@ -100,8 +100,10 @@ const TransactionsPageContent = () => {
         <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
             <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <div className="relative w-full">
+                    <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
+                        id="transaction-search"
                         placeholder="Cari transaksi..."
                         className="pl-10"
                         value={searchQuery}
@@ -110,13 +112,19 @@ const TransactionsPageContent = () => {
                 </div>
                  <Sheet>
                     <SheetTrigger asChild>
-                         <Button variant="outline" size="icon" className="shrink-0 relative">
+                         <Button
+                            variant="outline"
+                            size="icon"
+                            className="shrink-0 relative"
+                            aria-label="Buka filter transaksi"
+                         >
                             <ListFilter className="h-5 w-5" />
                             {activeFilterCount > 0 && (
                                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
                                     {activeFilterCount}
                                 </span>
                             )}
+                            <span className="sr-only">Buka filter transaksi</span>
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="bottom" className="rounded-t-2xl max-h-[80vh] flex flex-col">
@@ -167,8 +175,13 @@ const TransactionsPageContent = () => {
                         {selectedCategories.map(category => (
                             <Badge key={category} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                 {category}
-                                <button onClick={() => handleCategoryToggle(category)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
-                                    <X className="h-3 w-3" />
+                                <button
+                                    type="button"
+                                    onClick={() => handleCategoryToggle(category)}
+                                    className="ml-1 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/10 text-xs font-medium transition-colors hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                                    aria-label={`Hapus filter kategori ${category}`}
+                                >
+                                    <X className="h-4 w-4" />
                                 </button>
                             </Badge>
                         ))}
@@ -177,8 +190,13 @@ const TransactionsPageContent = () => {
                             return wallet && (
                                 <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
                                     {wallet.name}
-                                    <button onClick={() => handleWalletToggle(walletId)} className="flex-shrink-0 h-4 w-4 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center hover:bg-black/20 dark:hover:bg-white/20">
-                                        <X className="h-3 w-3" />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleWalletToggle(walletId)}
+                                        className="ml-1 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/10 text-xs font-medium transition-colors hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                                        aria-label={`Hapus filter dompet ${wallet.name}`}
+                                    >
+                                        <X className="h-4 w-4" />
                                     </button>
                                 </Badge>
                             )

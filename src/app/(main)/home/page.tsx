@@ -78,8 +78,14 @@ export default function HomePage() {
             <header className="h-16 px-4 flex items-center justify-between sticky top-0 bg-background z-20 border-b">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => router.push('/notifications')}>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => router.push('/notifications')}
+                        aria-label="Buka notifikasi"
+                    >
                         <Bell className="h-6 w-6" strokeWidth={1.75} />
+                        <span className="sr-only">Buka notifikasi</span>
                     </Button>
                 </div>
             </header>
