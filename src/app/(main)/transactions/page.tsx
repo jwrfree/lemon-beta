@@ -9,13 +9,17 @@ import { Input } from '@/components/ui/input';
 import { useApp } from '@/components/app-provider';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils';
+import { formatDistanceToNow, parseISO } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 
 const TransactionsPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, expenseCategories, incomeCategories, wallets } = useApp();
+    const { transactions, expenseCategories, incomeCategories, wallets, debts } = useApp();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
@@ -51,6 +55,7 @@ const TransactionsPageContent = () => {
     }, [activeTab, expenseCategories, incomeCategories]);
 
     const filteredTransactions = useMemo(() => {
+        if (activeTab === 'debt') return [];
         return transactions.filter(t => {
             const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesType = activeTab === 'all' || t.type === activeTab;
@@ -149,10 +154,11 @@ const TransactionsPageContent = () => {
             
             <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="all">Semua</TabsTrigger>
                         <TabsTrigger value="expense">Pengeluaran</TabsTrigger>
                         <TabsTrigger value="income">Pemasukan</TabsTrigger>
+                        <TabsTrigger value="debt">Hutang</TabsTrigger>
                     </TabsList>
                 </Tabs>
                 
@@ -182,7 +188,43 @@ const TransactionsPageContent = () => {
             </div>
 
             <main className="space-y-2 p-4">
-                <TransactionList transactions={filteredTransactions} />
+                {activeTab === 'debt' ? (
+                    <div className="space-y-2">
+                        {debts.length === 0 ? (
+                            <Card className="p-4 text-sm text-muted-foreground">
+                                Belum ada catatan hutang/piutang.
+                            </Card>
+                        ) : (
+                            debts.map(debt => {
+                                const outstanding = debt.outstandingBalance ?? debt.principal ?? 0;
+                                const dueDate = debt.dueDate ? parseISO(debt.dueDate) : null;
+                                return (
+                                    <Card key={debt.id} className="p-4 space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-semibold">{debt.title}</p>
+                                                <p className="text-xs text-muted-foreground">{debt.counterparty}</p>
+                                            </div>
+                                            <span className="text-sm font-semibold">{formatCurrency(outstanding)}</span>
+                                        </div>
+                                        {dueDate && (
+                                            <p className="text-xs text-muted-foreground">
+                                                Jatuh tempo {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
+                                            </p>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <Button size="sm" variant="outline" onClick={() => router.push(`/debts/${debt.id}`)}>
+                                                Lihat Detail
+                                            </Button>
+                                        </div>
+                                    </Card>
+                                );
+                            })
+                        )}
+                    </div>
+                ) : (
+                    <TransactionList transactions={filteredTransactions} />
+                )}
             </main>
         </div>
     );

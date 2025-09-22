@@ -1,5 +1,6 @@
 
 'use client';
+import { useMemo } from 'react';
 import { useApp } from '@/components/app-provider';
 import { TransactionListItem } from './transaction-list-item';
 import { formatRelativeDate } from '@/lib/utils';
@@ -7,33 +8,42 @@ import { format, parseISO } from 'date-fns';
 import { Button } from './ui/button';
 import { PlusCircle, ReceiptText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import type { Transaction } from '@/types/models';
 
-export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: { transactions?: any[], limit?: number, walletId?: string }) => {
+interface TransactionListProps {
+    transactions?: Transaction[];
+    limit?: number;
+    walletId?: string;
+}
+
+export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: TransactionListProps) => {
     const { transactions: allTransactions } = useApp();
     const router = useRouter();
 
-    let finalTransactions = transactionsToShow;
-
-    if (!finalTransactions) {
-      finalTransactions = walletId 
-        ? allTransactions.filter(t => t.walletId === walletId) 
-        : allTransactions;
-
-      if (limit) {
-        finalTransactions = finalTransactions.slice(0, limit);
-      }
-    }
-    
-    const groupedTransactions = (finalTransactions || []).reduce((acc, t) => {
-        const dateKey = format(parseISO(t.date), 'yyyy-MM-dd');
-        if (!acc[dateKey]) {
-            acc[dateKey] = [];
+    const finalTransactions = useMemo(() => {
+        if (transactionsToShow) {
+            return transactionsToShow;
         }
-        acc[dateKey].push(t);
-        return acc;
-    }, {} as Record<string, any[]>);
 
-    if (!finalTransactions || finalTransactions.length === 0) {
+        const baseTransactions = walletId
+            ? allTransactions.filter(transaction => transaction.walletId === walletId)
+            : allTransactions;
+
+        return limit ? baseTransactions.slice(0, limit) : baseTransactions;
+    }, [transactionsToShow, walletId, allTransactions, limit]);
+
+    const groupedTransactions = useMemo(() => {
+        return finalTransactions.reduce<Record<string, Transaction[]>>((acc, transaction) => {
+            const dateKey = format(parseISO(transaction.date), 'yyyy-MM-dd');
+            if (!acc[dateKey]) {
+                acc[dateKey] = [];
+            }
+            acc[dateKey].push(transaction);
+            return acc;
+        }, {});
+    }, [finalTransactions]);
+
+    if (finalTransactions.length === 0) {
         return (
             <div className="flex flex-col h-full items-center justify-center text-center p-8">
                 <div className="p-3 bg-primary/10 rounded-full mb-3">
@@ -57,8 +67,8 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                         {formatRelativeDate(parseISO(date))}
                     </h3>
                     <div className="space-y-2">
-                        {transactionsForDay.map((t) => (
-                           <TransactionListItem key={t.id} transaction={t} hideDate={true} />
+                        {transactionsForDay.map(transaction => (
+                            <TransactionListItem key={transaction.id} transaction={transaction} hideDate />
                         ))}
                     </div>
                 </div>
