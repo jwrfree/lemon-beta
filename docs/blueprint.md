@@ -1,100 +1,121 @@
 # Lemon Mobile Blueprint
 
-## 1. Product Vision
-Lemon is a mobile-first personal finance companion that helps digital workers and independent earners stay on top of their cash flow, budgets, savings goals, and financial obligations. The app prioritizes single-handed use with swift interactions, accessible typography, and contextual insights powered by AI.
+## 0. Release Snapshot – v2.0.0 (22 September 2025)
+- **Status:** Ready to Launch.
+- **Fokus rilis:** menuntaskan audit desain menyeluruh, memoles landing & modal autentikasi, memastikan setiap alur utama siap produksi, dan memperbarui dokumentasi agar seluruh tim selaras.
+- **Highlight baru:** navigasi anchor pada landing, dukungan `prefers-reduced-motion` di seluruh animasi, copy hero edukatif, serta penegasan jalur pemulihan akun yang jelas.
 
-## 2. Mobile Experience Principles
-- **Thumb-friendly layout**: Primary actions are anchored in the lower half of the screen within a 44–56 px touch target area.
-- **Glanceable hierarchy**: Key balances and budget health indicators appear above the fold with large numerals and color-coded chips.
-- **Adaptive elevation**: Cards use subtle borders and layered blurs instead of heavy shadows to maintain contrast in both light and dark modes.
-- **Predictable navigation**: A 5-tab bottom navigation bar surfaces Home, Transactions, Budgets, Insights, and More.
-- **Haptic feedback**: Important confirmations (transaction saved, reminder snoozed) trigger light haptics to reinforce actions.
+## 1. Product Vision
+Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku usaha mandiri. Tujuannya: membuat keputusan finansial terasa ringan, informatif, dan dapat diandalkan melalui pencatatan cepat, pengingat proaktif, serta insight yang bisa ditindaklanjuti. Setiap interaksi dirancang agar dapat dilakukan dengan satu tangan, mudah dipahami, dan konsisten di seluruh ekosistem.
+
+## 2. Experience Principles
+1. **Thumb-friendly layout:** tindakan utama berada di area 44–56 px pada paruh bawah layar, dilengkapi quick actions yang selalu terlihat.
+2. **Glanceable hierarchy:** saldo, cashflow, dan status budget selalu muncul di atas lipatan dengan tipografi besar dan kode warna.
+3. **Predictable navigation:** 5 tab bawah (Home, Transactions, Budgets, Insights, More) dipadukan dengan segmented control, breadcrumbs, dan anchor nav di permukaan web.
+4. **Contextual guidance:** copy microcopy menjelaskan dampak setiap aksi; snackbar/alert inline memberi arahan perbaikan.
+5. **Inclusive motion:** animasi 0.28 s ease-out dengan fallback instan untuk pengguna `prefers-reduced-motion` dan perangkat low-power.
+6. **Trust by default:** keamanan (biometrik, enkripsi) dan dokumentasi (FAQ, blueprint) selalu terlihat sehingga pengguna yakin untuk melanjutkan.
 
 ## 3. Information Architecture
-1. **Home**
-   - Wallet stack carousel with swipe gestures.
-   - Today’s highlights: net cash flow, reminders due, upcoming debt payments.
-   - Quick actions: Catat Cepat, Add Reminder, Log Debt/Payment.
-2. **Transactions**
-   - Sticky segmented controls (All, Income, Expense, Transfers, Debts).
-   - Infinite scroll grouped by relative date labels.
-   - Search and advanced filters tucked behind a floating sheet.
-3. **Budgets**
-   - Monthly overview with progress rings per category.
-   - Budget suggestions from AI with accept/dismiss cards.
-4. **Insights**
-   - AI-generated summaries, category distribution charts, and trend comparisons.
-   - Debt health widget (total owed vs. owed to you).
-5. **More**
-   - Profile, Security (biometrics), Reminders calendar view, Data import/export, Settings.
+1. **Landing & Onboarding**
+   - Hero ringkas dengan CTA primer & sekunder, nav anchor, dan skip link.
+   - Section fitur, keamanan, dan CTA akhir untuk mengkomunikasikan nilai dan bukti sosial.
+2. **Home**
+   - Wallet stack carousel + indikator saldo, quick actions (Catat, Reminder, Hutang, Scan).
+   - Highlight hari ini: net cashflow, pengingat terdekat, status hutang.
+3. **Transactions**
+   - Segmented control (All, Income, Expense, Transfers, Debts).
+   - Infinite scroll dengan group label (Today, Kemarin, dst) dan filter sheet lanjutan.
+4. **Budgets**
+   - Ringkasan bulanan, progress ring per kategori, rekomendasi AI, serta detail kategori dengan riwayat transaksi.
+5. **Insights**
+   - Insight mingguan AI, tren kategori, distribusi pengeluaran, widget Debt Health, highlight pengingat.
+6. **More**
+   - Profil, Security (biometrik), Reminders calendar, Data (impor/ekspor), Bantuan, Feedback, serta log perubahan.
 
 ## 4. Core Flow Designs
+### 4.0 Onboarding & Aktivasi
+- **Entry:** landing CTA "Buat akun gratis" / "Lihat dashboard" atau deep link referral.
+- **Langkah:** modal Sign Up (email/password, meter kekuatan), verifikasi email, optional biometric enrolment → sign in ulang → Home.
+- **Fallback:** lupa password bottom sheet, alert error inline, CTA kembali ke login.
+
 ### 4.1 Transaction Logging
-- **Entry**: Floating "Catat" button opens a bottom sheet with tabs for Manual and Catat Cepat (AI).
-- **Fields**: Amount keypad, type toggle, wallet, category > sub-category, date, notes, tags, optional location/store.
-- **Smart defaults**: Wallet defaults to last used per device; date defaults to today; AI suggestions pre-fill category & tags.
-- **Feedback**: Animated counter updates on the Home header, with undo snackbar and accessible toast.
+- Floating button "Catat" membuka bottom sheet Manual / Catat Cepat (AI).
+- Field: amount keypad, tipe, wallet, kategori + sub, tanggal, catatan, tag, lokasi opsional.
+- Smart defaults & suggestions: wallet terakhir, tanggal hari ini, auto-tag dari AI.
+- Feedback: counter saldo animasi, toast dengan tombol undo, update grafis real-time di Home.
 
 ### 4.2 Wallet Management
-- Card stack on Home with left/right swipe to focus a wallet.
-- Tapping a card opens wallet detail with transaction list, transfer button, and limits.
-- Wallet creation/edit uses stepper modal optimized for portrait orientation.
+- Swipe horizontal antar kartu; tapping membuka detail dengan riwayat dan tombol Transfer/Top Up.
+- Pembuatan/penyuntingan wallet memakai stepper modal (nama, tipe, target saldo, ikon/warna).
+- Peringatan limit/overdraft muncul sebagai badge merah dengan opsi membuat reminder otomatis.
 
-### 4.3 Smart Reminders (New)
-- **Use cases**: Bill due dates, savings transfers, subscription renewals, follow-up on pending reimbursements.
-- **Entry points**: Quick action on Home, "Reminders" list, or contextually when logging a transaction or debt.
-- **Reminder types**: One-time, recurring (daily/weekly/monthly/custom interval), payback countdown (linked to a debt).
-- **Form fields**: Title, link to wallet/category/debt, amount, due date, reminder schedule, notification channel (push, email), optional notes.
-- **Reminder center**: Calendar + list view with filters (All, Upcoming, Snoozed, Completed). Users can mark complete, snooze (custom intervals), or skip.
-- **Notifications**: Push notifications include quick actions (Mark paid, Snooze). Missed reminders escalate with summary digest in Insights tab.
+### 4.3 Smart Reminders
+- Use cases: tagihan, cicilan, tabungan, reimburse.
+- Entry: Quick action, tab Reminders, atau konversi dari transaksi/hutang.
+- Field: judul, link ke wallet/kategori/hutang, jumlah, tanggal jatuh tempo, frekuensi, kanal (push/email), catatan.
+- Reminder center: calendar + list (filter All, Upcoming, Snoozed, Completed) dengan aksi mark done, snooze (preset & custom), skip.
+- Automasi: pengingat gagal memicu digest email Senin pagi.
 
-### 4.4 Comprehensive Debt & IOU Tracking (New)
-- **Debt types**: Money you owe (Loans), money owed to you (IOUs), shared expenses (Split Bills).
-- **Creation flow**: Accessible from Transactions tab or Home quick action.
-  - Amount keypad with currency support.
-  - Counterparty selector (from contacts or manual entry) with avatar initials.
-  - Classification: personal, business, household.
-  - Start date, due date, interest rate, repayment frequency, collateral notes.
-  - Optional attachment (photo of agreement/receipt).
-- **Debt detail screen**:
-  - Summary card: outstanding balance, next payment, progress bar toward payoff.
-  - Timeline: chronological list of payments, adjustments, reminders.
-  - Actions: Log payment, add note, convert to recurring reminder, settle debt.
-- **Automation**: Payments logged via Catat Cepat auto-link to existing debts when the counterparty and amount match.
-- **Insights**: Debt health widget in Insights tab shows trends, interest projections, and risk alerts when payments are overdue.
+### 4.4 Comprehensive Debt & IOU Tracking
+- Jenis: Loans (utang), IOU (piutang), Split Bills.
+- Form: jumlah, counterparty (kontak / manual), klasifikasi (personal/bisnis/rumah tangga), tanggal mulai, jatuh tempo, bunga, frekuensi pembayaran, catatan, lampiran.
+- Detail: ringkasan saldo, pembayaran berikutnya, timeline interaktif, aksi log payment/settle/convert reminder.
+- Integrasi: Catat Cepat otomatis menyarankan matching debt bila pola sesuai.
 
-## 5. Interaction Specs
-- Bottom sheets have rounded 24 px corners, drag handle, and expand to 80% height on swipe-up.
-- Primary buttons use accent teal (#008080) with 16 px radius; secondary buttons use outline style.
-- Animations follow a 0.2 s ease-out curve, with 0.1 s stagger for list items.
-- Voice input is accessible via microphone icon near the amount field.
+### 4.5 Budgeting & Goals
+- Landing budgets: daftar kategori dengan ring progress (warna adaptif) dan status (on track, warning, overspent).
+- Detail: breakdown transaksi, rekomendasi AI, opsi adjust target & reset.
+- Goals: target nominal + tanggal, progress visual + reminder otomatis jelang tenggat.
 
-## 6. Data Model Considerations
-- **Reminders collection**
-  - `title`, `userId`, `type`, `targetType` (transaction, debt, standalone), `targetId`, `amount`, `dueDate`, `repeatRule`, `status`, `snoozeCount`, `channels`, `createdAt`, `updatedAt`.
-- **Debts collection**
-  - `userId`, `direction` (owed / owing), `counterparty`, `contactId`, `principal`, `outstandingBalance`, `interestRate`, `interestType`, `paymentFrequency`, `nextPaymentDate`, `endDate`, `status`, `notes`, `attachments`, `createdAt`, `updatedAt`.
-- **DebtPayments sub-collection**
-  - `amount`, `paymentDate`, `method`, `walletId`, `notes`, `createdBy`.
-- Index reminders by `userId + dueDate` for chronological queries and by `userId + status` for quick filters.
+### 4.6 Insights & Decision Support
+- Komponen: highlight minggu ini, tren kategori, perbandingan bulan-ke-bulan, prediksi cashflow, Debt Health index.
+- AI summary: bahasa natural, menyertakan CTA tindakan (mis. "turunkan pengeluaran langganan 15%"), dapat dibagikan ke email.
 
-## 7. AI & Automation Hooks
-- Catat Cepat output extended with classification tags: `reminderIntent` and `debtMatchScore`.
-- AI summarizer generates weekly digest summarizing top overspending categories, upcoming reminders, and at-risk debts.
-- Use Firebase Cloud Functions to schedule reminder push notifications and recalibrate debt projections nightly.
+### 4.7 Settings, Data & Support
+- Profil (nama, foto, preferensi bahasa), Security (biometrik, 2FA), Data (impor CSV, ekspor PDF/JSON), Bantuan (FAQ, live chat, changelog), Feedback (kirim saran, request fitur).
 
-## 8. Accessibility & Localization
-- Support Bahasa Indonesia as primary language with expandable strings for future locales.
-- Ensure text alternatives for icons, voice-over labels for gestures, and high-contrast color tokens for WCAG AA compliance.
-- Numbers and currency formatted according to user locale; due dates use relative phrasing ("Besok", "3 hari lagi").
+## 5. Interaction & Motion Specs
+- **Durasi & easing:** 0.28 s ease-out standar; overlay/modal 0.24 s; daftar animasi 0.28 s dengan delay 0.08 s per item.
+- **Reduced motion:** setiap komponen `motion.*` memeriksa `useReducedMotion` dan mematikan animasi ketika preferensi aktif.
+- **Haptics:** vibrasi ringan (iOS/Android) untuk aksi berhasil, peringatan, dan swipe to dismiss.
+- **Gestur:** swipe down menutup bottom sheet; drag handle tersedia visualnya; long-press pada transaksi membuka konteks menu.
 
-## 9. Success Metrics
-- Reminder completion rate ≥ 80% for active users.
-- 25% reduction in missed debt payments compared to pre-feature baseline.
-- Session-to-transaction conversion rate ≥ 60% on mobile within 4 taps.
+## 6. Visual System
+- **Warna:** Primary teal (#008080), secondary lemon (#FDE047), success (#047857), destructive (#DC2626). Token diekspos via CSS variable & Tailwind alias.
+- **Tipografi:** Satoshi/Inter, skala 12–40 px, berat 400/500/600/700. Heading ≤ 64 karakter, paragraf ≤ 90 karakter untuk keterbacaan.
+- **Spacing:** basis 4 px; layout section 24–48 px; card gap 24 px; form vertical rhythm 16 px.
+- **Radius & elevation:** Card radius 16 px, modal 24–32 px, bottom sheet `rounded-t-2xl`; shadow lembut + border semi transparan untuk depth.
+- **Ikon & ilustrasi:** lucide-react 24 px, stroke 1.5 px; ilustrasi hero menggunakan path animasi dengan fallback statis.
 
-## 10. Roadmap Notes
-- Phase 1: Implement reminders MVP with push notifications and link to debts/transactions.
-- Phase 2: Release debt tracking with payment timeline and integrations into Insights.
-- Phase 3: Introduce shared debts with invited contacts and collaborative reminders.
-- Phase 4: Explore predictive reminders based on historical spending and upcoming bills detected by AI.
+## 7. Data Model Considerations
+- **Reminders**: `title`, `userId`, `type`, `targetType`, `targetId`, `amount`, `dueDate`, `repeatRule`, `status`, `snoozeCount`, `channels`, `createdAt`, `updatedAt`.
+- **Debts**: `userId`, `direction`, `counterparty`, `contactId`, `principal`, `outstandingBalance`, `interestRate`, `interestType`, `paymentFrequency`, `nextPaymentDate`, `endDate`, `status`, `notes`, `attachments`, `createdAt`, `updatedAt`.
+- **DebtPayments**: `amount`, `paymentDate`, `method`, `walletId`, `notes`, `createdBy`.
+- **Budgets**: `categoryId`, `userId`, `targetAmount`, `spentAmount`, `status`, `aiRecommendations`, `updatedAt`.
+- Indeks: reminders (`userId + dueDate`, `userId + status`), debts (`userId + status`, `userId + nextPaymentDate`), budgets (`userId + categoryId`).
+
+## 8. AI & Automation Hooks
+- Catat Cepat menambahkan tag `reminderIntent` dan `debtMatchScore` untuk menghubungkan transaksi dengan automasi terkait.
+- AI summarizer menghasilkan digest mingguan (chat + email) tentang overspending, reminder berisiko, dan hutang kritis.
+- Cloud Functions menjadwalkan notifikasi, memperbarui proyeksi hutang, dan merangkum statistik budget harian.
+
+## 9. Accessibility & Localization
+- Bahasa utama Bahasa Indonesia; string disiapkan untuk lokal tambahan.
+- Skip link, anchor nav, dan fokus ring jelas di landing; seluruh tombol keyboard-friendly.
+- `aria-live` pada alert/feedback; ikon dekoratif menggunakan `aria-hidden`.
+- Format angka mengikuti locale; label tanggal menggunakan frasa natural ("Besok", "3 hari lagi").
+- Rencana: onboarding overlay dengan opsi bahasa Inggris, knowledge base berformat markdown.
+
+## 10. Success Metrics
+- Reminder completion rate ≥ 80% untuk pengguna aktif mingguan.
+- 25% penurunan pembayaran hutang terlambat dibanding baseline sebelum rilis fitur debt.
+- 60% konversi session-to-transaction di mobile dalam ≤ 4 tap.
+- NPS ≥ +30 untuk pengalaman onboarding & pencatatan transaksi.
+
+## 11. Roadmap Berikutnya
+1. **Onboarding overlay interaktif** (checklist 3 langkah + video singkat) pada Q4 2025.
+2. **Universal search & command palette** untuk transaksi, reminders, dan kontak.
+3. **Wallet carousel indicator & grouping** untuk pengguna dengan banyak akun.
+4. **Knowledge base & pusat bantuan** terintegrasi dengan status update real-time.
+5. **Kolaborasi hutang** (undang kontak, histori bersama) sebagai bagian fase 3 roadmap debt.
