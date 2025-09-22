@@ -10,6 +10,7 @@ import {
     ArrowUpRight,
     BarChart,
     Calendar,
+    ChartArea as ChartAreaIcon,
     ChevronLeft,
     ChevronRight,
     LoaderCircle,
@@ -18,14 +19,29 @@ import {
     TrendingDown,
     TrendingUp,
 } from 'lucide-react';
-import { format, getDaysInMonth, getQuarter, isSameMonth, parseISO, startOfMonth, subMonths } from 'date-fns';
+import {
+    eachDayOfInterval,
+    format,
+    getDaysInMonth,
+    getQuarter,
+    isSameMonth,
+    parseISO,
+    startOfDay,
+    startOfMonth,
+    subDays,
+    subMonths,
+} from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 import {
+    Area,
+    AreaChart as RechartsAreaChart,
     Bar,
     BarChart as RechartsBarChart,
     CartesianGrid,
     Cell,
+    ComposedChart,
+    Line,
     Pie,
     PieChart,
     ReferenceLine,
@@ -237,6 +253,235 @@ const compactCurrencyFormatter = new Intl.NumberFormat('id-ID', {
     notation: 'compact',
     maximumFractionDigits: 1,
 });
+
+const ExpenseShortTermTrend = () => {
+    const { transactions } = useApp();
+    const [range, setRange] = useState<'14' | '30'>('14');
+    const [chartType, setChartType] = useState<'area' | 'bar'>('area');
+
+    const { baseData, hasActivity } = useMemo(() => {
+        const endDate = startOfDay(new Date());
+        const startDate = subDays(endDate, 59);
+        const days = eachDayOfInterval({ start: startDate, end: endDate });
+
+        const totalsByDay = transactions.reduce((acc, transaction) => {
+            if (transaction.type !== 'expense') {
+                return acc;
+            }
+
+            const txDate = startOfDay(parseISO(transaction.date));
+            if (txDate < startDate || txDate > endDate) {
+                return acc;
+            }
+
+            const key = format(txDate, 'yyyy-MM-dd');
+            acc[key] = (acc[key] || 0) + transaction.amount;
+            return acc;
+        }, {} as Record<string, number>);
+
+        const data = days.map((date) => {
+            const key = format(date, 'yyyy-MM-dd');
+            return {
+                key,
+                date,
+                shortLabel: format(date, 'd MMM', { locale: dateFnsLocaleId }),
+                fullLabel: format(date, "EEEE, d MMMM yyyy", { locale: dateFnsLocaleId }),
+                total: totalsByDay[key] ?? 0,
+            };
+        });
+
+        const hasRecentActivity = data.slice(-30).some((item) => item.total > 0);
+
+        return { baseData: data, hasActivity: hasRecentActivity };
+    }, [transactions]);
+
+    const chartLength = range === '14' ? 14 : 30;
+
+    const filteredData = useMemo(() => baseData.slice(-chartLength), [baseData, chartLength]);
+    const previousWindow = useMemo(() => baseData.slice(-(chartLength * 2), -chartLength), [baseData, chartLength]);
+
+    const totalSpent = useMemo(() => filteredData.reduce((sum, item) => sum + item.total, 0), [filteredData]);
+    const previousTotal = useMemo(
+        () => previousWindow.reduce((sum, item) => sum + item.total, 0),
+        [previousWindow]
+    );
+
+    const delta = totalSpent - previousTotal;
+    const percentChange = previousTotal > 0 ? (delta / previousTotal) * 100 : null;
+    const average = filteredData.length > 0 ? totalSpent / filteredData.length : 0;
+    const peakDay = filteredData.reduce<null | (typeof filteredData)[number]>((best, item) => {
+        if (!best || item.total > best.total) {
+            return item;
+        }
+        return best;
+    }, null);
+
+    if (!hasActivity) {
+        return (
+            <PlaceholderContent
+                label="Tren Pengeluaran Harian"
+                icon={ChartAreaIcon}
+                text="Belum ada data pengeluaran dalam 30 hari terakhir. Catat transaksi untuk melihat grafik ini."
+            />
+        );
+    }
+
+    const gradientId = `expense-trend-${chartType}-${range}`;
+
+    const deltaLabel = percentChange === null
+        ? 'Tidak ada periode pembanding'
+        : `${delta >= 0 ? '+' : ''}${formatCurrency(delta)} (${percentChange >= 0 ? '+' : ''}${percentChange.toFixed(1)}%)`;
+
+    return (
+        <Card className="overflow-hidden">
+            <CardHeader className="space-y-4">
+                <div className="flex flex-col gap-1">
+                    <CardTitle>Tren Pengeluaran</CardTitle>
+                    <CardDescription>
+                        Pantau pengeluaran harian selama {chartLength} hari terakhir dan pilih tampilan chart favoritmu.
+                    </CardDescription>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex items-center rounded-full bg-muted/60 p-1">
+                        {['14', '30'].map((option) => (
+                            <button
+                                key={option}
+                                type="button"
+                                onClick={() => setRange(option as '14' | '30')}
+                                className={cn(
+                                    'rounded-full px-3 py-1 text-xs font-semibold transition',
+                                    range === option
+                                        ? 'bg-primary text-primary-foreground shadow-sm'
+                                        : 'text-muted-foreground hover:bg-muted'
+                                )}
+                            >
+                                {option}H
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex items-center rounded-full bg-muted/60 p-1">
+                        {[
+                            { value: 'area' as const, label: 'Area', icon: ChartAreaIcon },
+                            { value: 'bar' as const, label: 'Bar', icon: BarChart },
+                        ].map((option) => (
+                            <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => setChartType(option.value)}
+                                className={cn(
+                                    'flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold transition',
+                                    chartType === option.value
+                                        ? 'bg-primary text-primary-foreground shadow-sm'
+                                        : 'text-muted-foreground hover:bg-muted'
+                                )}
+                            >
+                                <option.icon className="h-3.5 w-3.5" />
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent className="space-y-5">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    <div className="rounded-xl border border-border/60 bg-background/80 p-3">
+                        <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Total periode ini</p>
+                        <p className="text-lg font-semibold text-foreground">{formatCurrency(totalSpent)}</p>
+                        <p className="text-[11px] text-muted-foreground">{deltaLabel}</p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-background/80 p-3">
+                        <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Rata-rata per hari</p>
+                        <p className="text-lg font-semibold text-foreground">{formatCurrency(average)}</p>
+                        <p className="text-[11px] text-muted-foreground">{chartLength} hari terakhir</p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-background/80 p-3">
+                        <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Pengeluaran tertinggi</p>
+                        {peakDay ? (
+                            <>
+                                <p className="text-lg font-semibold text-foreground">{formatCurrency(peakDay.total)}</p>
+                                <p className="text-[11px] text-muted-foreground">{peakDay.fullLabel}</p>
+                            </>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">Belum ada transaksi</p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="h-60 w-full">
+                    <ChartContainer
+                        config={{ total: { label: 'Pengeluaran', color: 'hsl(var(--chart-2))' } } as ChartConfig}
+                        className="h-full w-full"
+                    >
+                        {chartType === 'area' ? (
+                            <RechartsAreaChart data={filteredData} margin={{ left: 0, right: 0, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.9} />
+                                        <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+                                <XAxis dataKey="shortLabel" tickLine={false} axisLine={false} tickMargin={10} minTickGap={14} />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    width={72}
+                                    tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
+                                />
+                                <ChartTooltip
+                                    cursor={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1, opacity: 0.6 }}
+                                    content={
+                                        <ChartTooltipContent
+                                            formatter={(value) => formatCurrency(Number(value))}
+                                            labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}
+                                        />
+                                    }
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="total"
+                                    stroke="hsl(var(--chart-2))"
+                                    fill={`url(#${gradientId})`}
+                                    strokeWidth={2.5}
+                                    activeDot={{ r: 4, strokeWidth: 2, fill: 'hsl(var(--chart-2))' }}
+                                />
+                            </RechartsAreaChart>
+                        ) : (
+                            <RechartsBarChart data={filteredData} barCategoryGap={8}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
+                                <XAxis dataKey="shortLabel" tickLine={false} axisLine={false} tickMargin={10} minTickGap={14} />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    width={72}
+                                    tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
+                                />
+                                <ChartTooltip
+                                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.35 }}
+                                    content={
+                                        <ChartTooltipContent
+                                            formatter={(value) => formatCurrency(Number(value))}
+                                            labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}
+                                        />
+                                    }
+                                />
+                                <Bar dataKey="total" radius={[8, 8, 4, 4]}>
+                                    {filteredData.map((item) => (
+                                        <Cell
+                                            key={item.key}
+                                            fill="hsl(var(--chart-2))"
+                                            fillOpacity={peakDay?.key === item.key ? 1 : 0.6}
+                                        />
+                                    ))}
+                                </Bar>
+                            </RechartsBarChart>
+                        )}
+                    </ChartContainer>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
 
 const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
     const { transactions } = useApp();
@@ -690,6 +935,7 @@ const MonthlySummary = ({ type }: { type: TabValue }) => {
 const NetCashflowChart = () => {
     const { transactions } = useApp();
     const [selectedQuarter, setSelectedQuarter] = useState<'all' | string>('all');
+    const [selectedMonthKey, setSelectedMonthKey] = useState<string | null>(null);
 
     const { data, quarterOptions, rangeLabel, hasActivity } = useMemo(() => {
         const now = startOfMonth(new Date());
@@ -707,32 +953,81 @@ const NetCashflowChart = () => {
             };
         });
 
-        const totalsByMonth = transactions.reduce((acc, transaction) => {
-            const txDate = parseISO(transaction.date);
-            const key = format(txDate, 'yyyy-MM');
+        const totalsByMonth = transactions.reduce(
+            (acc, transaction) => {
+                const txDate = parseISO(transaction.date);
+                const key = format(txDate, 'yyyy-MM');
 
-            if (!acc[key]) {
-                acc[key] = { income: 0, expense: 0 };
-            }
+                if (!acc[key]) {
+                    acc[key] = {
+                        income: 0,
+                        expense: 0,
+                        breakdown: {
+                            income: {} as Record<string, number>,
+                            expense: {} as Record<string, number>,
+                        },
+                    };
+                }
 
-            if (transaction.type === 'income') {
-                acc[key].income += transaction.amount;
-            } else if (transaction.type === 'expense') {
-                acc[key].expense += transaction.amount;
-            }
+                const bucket = acc[key];
 
-            return acc;
-        }, {} as Record<string, { income: number; expense: number }>);
+                if (transaction.type === 'income') {
+                    bucket.income += transaction.amount;
+                    bucket.breakdown.income[transaction.category] =
+                        (bucket.breakdown.income[transaction.category] || 0) + transaction.amount;
+                } else if (transaction.type === 'expense') {
+                    bucket.expense += transaction.amount;
+                    bucket.breakdown.expense[transaction.category] =
+                        (bucket.breakdown.expense[transaction.category] || 0) + transaction.amount;
+                }
+
+                return acc;
+            },
+            {} as Record<
+                string,
+                {
+                    income: number;
+                    expense: number;
+                    breakdown: {
+                        income: Record<string, number>;
+                        expense: Record<string, number>;
+                    };
+                }
+            >
+        );
 
         const data = monthSequence.map((month) => {
-            const totals = totalsByMonth[month.key] ?? { income: 0, expense: 0 };
-            const net = totals.income - totals.expense;
+            const record = totalsByMonth[month.key];
+            const incomeTotal = record?.income ?? 0;
+            const expenseTotal = record?.expense ?? 0;
+
+            const incomeBreakdown = record
+                ? Object.entries(record.breakdown.income)
+                      .map(([category, value]) => ({
+                          category,
+                          value,
+                          percentage: incomeTotal > 0 ? (value / incomeTotal) * 100 : 0,
+                      }))
+                      .sort((a, b) => b.value - a.value)
+                : [];
+
+            const expenseBreakdown = record
+                ? Object.entries(record.breakdown.expense)
+                      .map(([category, value]) => ({
+                          category,
+                          value,
+                          percentage: expenseTotal > 0 ? (value / expenseTotal) * 100 : 0,
+                      }))
+                      .sort((a, b) => b.value - a.value)
+                : [];
 
             return {
                 ...month,
-                income: totals.income,
-                expense: totals.expense,
-                net,
+                income: incomeTotal,
+                expense: expenseTotal,
+                net: incomeTotal - expenseTotal,
+                incomeBreakdown,
+                expenseBreakdown,
             };
         });
 
@@ -778,6 +1073,28 @@ const NetCashflowChart = () => {
             setSelectedQuarter('all');
         }
     }, [quarterOptions, selectedQuarter]);
+
+    useEffect(() => {
+        if (filteredData.length === 0) {
+            if (selectedMonthKey !== null) {
+                setSelectedMonthKey(null);
+            }
+            return;
+        }
+
+        if (selectedMonthKey && filteredData.some((item) => item.key === selectedMonthKey)) {
+            return;
+        }
+
+        const fallback =
+            [...filteredData]
+                .reverse()
+                .find((item) => item.income > 0 || item.expense > 0) ?? filteredData[filteredData.length - 1];
+
+        if ((fallback?.key ?? null) !== selectedMonthKey) {
+            setSelectedMonthKey(fallback?.key ?? null);
+        }
+    }, [filteredData, selectedMonthKey]);
 
     if (!hasActivity) {
         return (
@@ -836,6 +1153,113 @@ const NetCashflowChart = () => {
 
     const quarterFilters = [{ value: 'all', label: 'Semua' }, ...quarterOptions];
 
+    const selectedMonthData = selectedMonthKey
+        ? filteredData.find((item) => item.key === selectedMonthKey) ?? null
+        : null;
+
+    const previousMonthData = selectedMonthKey
+        ? (() => {
+              const index = data.findIndex((item) => item.key === selectedMonthKey);
+              return index > 0 ? data[index - 1] : null;
+          })()
+        : null;
+
+    const legendItems = [
+        { key: 'income' as const, label: 'Pemasukan' },
+        { key: 'expense' as const, label: 'Pengeluaran' },
+        { key: 'net' as const, label: 'Arus Kas' },
+    ];
+
+    const formatDiffValue = (value: number) => {
+        if (value === 0) {
+            return 'Tetap';
+        }
+        const formatted = formatCurrency(Math.abs(value));
+        return value > 0 ? `+${formatted}` : `-${formatted}`;
+    };
+
+    const formatPercentValue = (value: number | null) => {
+        if (value === null || !Number.isFinite(value)) {
+            return '—';
+        }
+        if (value === 0) {
+            return '0%';
+        }
+        const absolute = Math.abs(value).toFixed(1);
+        return value > 0 ? `+${absolute}%` : `-${absolute}%`;
+    };
+
+    const getComparisonColor = (metric: 'income' | 'expense' | 'net', diff: number) => {
+        if (diff === 0) {
+            return 'text-muted-foreground';
+        }
+        if (metric === 'expense') {
+            return diff > 0 ? 'text-destructive' : 'text-emerald-600';
+        }
+        return diff >= 0 ? 'text-emerald-600' : 'text-destructive';
+    };
+
+    const renderBreakdown = (
+        items: { category: string; value: number; percentage: number }[],
+        emptyLabel: string,
+        color: string
+    ) => {
+        if (items.length === 0) {
+            return <p className="text-xs text-muted-foreground">{emptyLabel}</p>;
+        }
+
+        return (
+            <ul className="space-y-2">
+                {items.map((item) => (
+                    <li key={item.category} className="space-y-1">
+                        <div className="flex items-center justify-between gap-3 text-xs">
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-foreground">{item.category}</p>
+                                <p className="text-[11px] text-muted-foreground">{item.percentage.toFixed(1)}%</p>
+                            </div>
+                            <span className="text-sm font-semibold text-foreground">{formatCurrency(item.value)}</span>
+                        </div>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                                className="h-full rounded-full"
+                                style={{ width: `${Math.min(100, item.percentage)}%`, backgroundColor: color }}
+                            />
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        );
+    };
+
+    const comparisonMetrics: {
+        key: 'income' | 'expense' | 'net';
+        label: string;
+        current: number;
+        previous: number;
+    }[] =
+        selectedMonthData && previousMonthData
+            ? [
+                  {
+                      key: 'income',
+                      label: 'Pemasukan',
+                      current: selectedMonthData.income,
+                      previous: previousMonthData.income,
+                  },
+                  {
+                      key: 'expense',
+                      label: 'Pengeluaran',
+                      current: selectedMonthData.expense,
+                      previous: previousMonthData.expense,
+                  },
+                  {
+                      key: 'net',
+                      label: 'Arus Kas',
+                      current: selectedMonthData.net,
+                      previous: previousMonthData.net,
+                  },
+              ]
+            : [];
+
     return (
         <Card className="overflow-hidden">
             <CardHeader className="space-y-2">
@@ -846,7 +1270,8 @@ const NetCashflowChart = () => {
                     </Badge>
                 </div>
                 <CardDescription>
-                    Lihat perbandingan pemasukan dan pengeluaran setiap bulan serta filter cepat per triwulan.
+                    Lihat perbandingan pemasukan, pengeluaran, dan arus kas bersih setiap bulan serta filter cepat per
+                    triwulan.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
@@ -896,40 +1321,91 @@ const NetCashflowChart = () => {
                     </div>
                 )}
 
-                <div className="h-64 w-full">
-                    <ChartContainer
-                        config={{ net: { label: 'Arus kas', color: 'hsl(var(--primary))' } } as ChartConfig}
-                        className="h-full w-full"
-                    >
-                        <RechartsBarChart data={filteredData} barCategoryGap={18}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
-                            <XAxis dataKey="shortLabel" tickLine={false} axisLine={false} tickMargin={10} />
-                            <YAxis
-                                tickLine={false}
-                                axisLine={false}
-                                width={68}
-                                tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
-                            />
-                            <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="3 3" />
-                            <ChartTooltip
-                                cursor={{ fill: 'hsl(var(--muted))', opacity: 0.35 }}
-                                content={
-                                    <ChartTooltipContent
-                                        formatter={(value) => formatCurrency(Number(value))}
-                                        labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}
+                <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+                        <span>Ketuk batang atau garis pada chart untuk melihat rincian bulan.</span>
+                        <div className="flex items-center gap-3">
+                            {legendItems.map((item) => (
+                                <div key={item.key} className="flex items-center gap-1">
+                                    <span
+                                        className="h-2.5 w-2.5 rounded-full"
+                                        style={{ backgroundColor: `var(--color-${item.key})` }}
                                     />
-                                }
-                            />
-                            <Bar dataKey="net" radius={[8, 8, 4, 4]}>
-                                {filteredData.map((item) => (
-                                    <Cell
-                                        key={item.key}
-                                        fill={item.net >= 0 ? 'hsl(var(--chart-2))' : 'hsl(var(--destructive))'}
-                                    />
-                                ))}
-                            </Bar>
-                        </RechartsBarChart>
-                    </ChartContainer>
+                                    <span>{item.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="h-72 w-full">
+                        <ChartContainer
+                            config={
+                                {
+                                    income: { label: 'Pemasukan', color: 'hsl(var(--chart-1))' },
+                                    expense: { label: 'Pengeluaran', color: 'hsl(var(--destructive))' },
+                                    net: { label: 'Arus Kas', color: 'hsl(var(--chart-2))' },
+                                } as ChartConfig
+                            }
+                            className="h-full w-full"
+                        >
+                            <ComposedChart
+                                data={filteredData}
+                                barCategoryGap={18}
+                                onClick={(state) => {
+                                    const payload = state?.activePayload?.[0]?.payload as
+                                        | (typeof filteredData)[number]
+                                        | undefined;
+                                    if (payload?.key) {
+                                        setSelectedMonthKey(payload.key);
+                                    }
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
+                                <XAxis dataKey="shortLabel" tickLine={false} axisLine={false} tickMargin={10} />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    width={68}
+                                    tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
+                                />
+                                <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="3 3" />
+                                <ChartTooltip
+                                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.25 }}
+                                    content={
+                                        <ChartTooltipContent
+                                            formatter={(value) => formatCurrency(Number(value))}
+                                            labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}
+                                        />
+                                    }
+                                />
+                                <Bar dataKey="income" radius={[6, 6, 4, 4]} maxBarSize={26}>
+                                    {filteredData.map((item) => (
+                                        <Cell
+                                            key={`${item.key}-income`}
+                                            fill="var(--color-income)"
+                                            fillOpacity={selectedMonthKey === item.key ? 1 : 0.55}
+                                        />
+                                    ))}
+                                </Bar>
+                                <Bar dataKey="expense" radius={[6, 6, 4, 4]} maxBarSize={26}>
+                                    {filteredData.map((item) => (
+                                        <Cell
+                                            key={`${item.key}-expense`}
+                                            fill="var(--color-expense)"
+                                            fillOpacity={selectedMonthKey === item.key ? 1 : 0.55}
+                                        />
+                                    ))}
+                                </Bar>
+                                <Line
+                                    type="monotone"
+                                    dataKey="net"
+                                    stroke="var(--color-net)"
+                                    strokeWidth={2.5}
+                                    dot={false}
+                                    activeDot={{ r: 5, strokeWidth: 2, fill: 'var(--color-net)' }}
+                                />
+                            </ComposedChart>
+                        </ChartContainer>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -961,6 +1437,96 @@ const NetCashflowChart = () => {
                         <p className="text-base font-semibold text-foreground">{formatCurrency(filteredTotals.expense)}</p>
                     </div>
                 </div>
+
+                {selectedMonthData ? (
+                    <div className="space-y-4 rounded-2xl border border-border/60 bg-background/90 p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Detail bulan terpilih</p>
+                                <p className="text-base font-semibold text-foreground">{selectedMonthData.fullLabel}</p>
+                                <p className="text-xs text-muted-foreground">Ketuk chart di atas untuk mengganti fokus bulan.</p>
+                            </div>
+                            <div
+                                className={cn(
+                                    'rounded-full px-3 py-1 text-sm font-semibold',
+                                    selectedMonthData.net >= 0
+                                        ? 'bg-emerald-500/10 text-emerald-600'
+                                        : 'bg-destructive/10 text-destructive'
+                                )}
+                            >
+                                {formatCurrency(selectedMonthData.net)}
+                            </div>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            <div className="rounded-xl border border-border/60 bg-muted/40 p-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                        Pemasukan
+                                    </p>
+                                    <span className="text-sm font-semibold text-foreground">
+                                        {formatCurrency(selectedMonthData.income)}
+                                    </span>
+                                </div>
+                                <div className="mt-3 space-y-2">
+                                    {renderBreakdown(
+                                        selectedMonthData.incomeBreakdown,
+                                        'Belum ada pemasukan pada bulan ini.',
+                                        'hsl(var(--chart-1))'
+                                    )}
+                                </div>
+                            </div>
+                            <div className="rounded-xl border border-border/60 bg-muted/40 p-3">
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                        Pengeluaran
+                                    </p>
+                                    <span className="text-sm font-semibold text-foreground">
+                                        {formatCurrency(selectedMonthData.expense)}
+                                    </span>
+                                </div>
+                                <div className="mt-3 space-y-2">
+                                    {renderBreakdown(
+                                        selectedMonthData.expenseBreakdown,
+                                        'Belum ada pengeluaran pada bulan ini.',
+                                        'hsl(var(--destructive))'
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl border border-border/60 bg-background/80 p-3">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                Perbandingan vs {previousMonthData ? previousMonthData.fullLabel : 'periode sebelumnya'}
+                            </p>
+                            {comparisonMetrics.length > 0 ? (
+                                <div className="mt-2 space-y-2">
+                                    {comparisonMetrics.map((metric) => {
+                                        const diff = metric.current - metric.previous;
+                                        const percent = metric.previous !== 0 ? (diff / metric.previous) * 100 : null;
+                                        return (
+                                            <div key={metric.key} className="flex items-start justify-between gap-3 text-sm">
+                                                <span className="text-muted-foreground">{metric.label}</span>
+                                                <div className="text-right">
+                                                    <p className="font-semibold text-foreground">
+                                                        {formatCurrency(metric.current)}
+                                                    </p>
+                                                    <p className={cn('text-xs', getComparisonColor(metric.key, diff))}>
+                                                        {formatDiffValue(diff)} · {formatPercentValue(percent)}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                    Belum ada data periode sebelumnya untuk dibandingkan.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                ) : null}
             </CardContent>
         </Card>
     );
@@ -1028,7 +1594,7 @@ export default function ChartsPage() {
             </header>
 
             <main className="flex-1 overflow-y-auto" {...handlers}>
-                <div className="sticky top-16 z-10 border-b bg-background/95 px-4 py-3 backdrop-blur">
+                <div className="sticky top-0 z-10 border-b bg-background/95 px-4 py-3 backdrop-blur">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 rounded-full bg-muted/80 p-1">
                             {tabs.map((tab) => (
@@ -1076,6 +1642,15 @@ export default function ChartsPage() {
                                     </div>
                                 ) : (
                                     <>
+                                        {activeTab === 'expense' ? (
+                                            <div className="space-y-3">
+                                                <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                                    Tren pengeluaran harian
+                                                </h2>
+                                                <ExpenseShortTermTrend />
+                                            </div>
+                                        ) : null}
+
                                         <div className="space-y-3">
                                             <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                                                 Tren bulanan
