@@ -528,20 +528,28 @@ export default function SmartAddPage() {
                                                 }}
                                                 disabled={pageState !== 'IDLE'}
                                             />
-                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                                                {pageState === 'ANALYZING' ? (
-                                                    <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
-                                                ) : (
-                                                    <>
-                                                        <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                                        <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>
-                                                        {inputValue && (
-                                                            <Button size="icon" variant="ghost" onClick={() => processInput(inputValue)}>
-                                                                <Send className="h-5 w-5" />
-                                                            </Button>
-                                                        )}
-                                                    </>
-                                                )}
+                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center h-full">
+                                                <AnimatePresence>
+                                                    {pageState === 'ANALYZING' ? (
+                                                        <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
+                                                    ) : (
+                                                        <motion.div 
+                                                            key="actions"
+                                                            initial={{ opacity: 0, scale: 0.8 }}
+                                                            animate={{ opacity: 1, scale: 1 }}
+                                                            exit={{ opacity: 0, scale: 0.8 }}
+                                                            className="flex items-center"
+                                                        >
+                                                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                                                            {!inputValue && <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>}
+                                                            {inputValue && (
+                                                                <Button size="icon" variant="default" className="rounded-full" onClick={() => processInput(inputValue)}>
+                                                                    <Send className="h-5 w-5" />
+                                                                </Button>
+                                                            )}
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
                                             </div>
                                         </div>
                                     </motion.div>
@@ -553,4 +561,5 @@ export default function SmartAddPage() {
             </div>
         </div>
     );
-}
+
+    
