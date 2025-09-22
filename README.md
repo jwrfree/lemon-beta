@@ -1,6 +1,6 @@
 # Lemon - Personal Finance Tracker
 
-Lemon is a modern and intuitive personal finance management application designed to help you take control of your money with ease. Built with Next.js and Firebase, Lemon provides a seamless experience for tracking your income, expenses, and financial goals.
+Lemon is a modern and intuitive personal finance management application designed to help you take control of your money with ease. Built with Next.js and Firebase, Lemon provides a seamless experience for tracking your income, expenses, and financial goals—especially on mobile, where fast interactions and clear visual hierarchy keep your finances within thumb’s reach.
 
 ## ✨ Key Features
 
@@ -9,6 +9,8 @@ Lemon is a modern and intuitive personal finance management application designed
 - **Detailed Categorization**: Organize transactions with main categories and sub-categories for deeper insights.
 - **Wallet Management**: Create and manage multiple wallets (e.g., E-Wallet, Bank, Cash) with a beautiful, animated card stack UI.
 - **Interactive Budgeting**: Set monthly budgets for specific categories with an intuitive slider and track your spending with color-coded progress bars.
+- **Smart Reminders**: Schedule recurring or one-off reminders for bills, savings milestones, and follow-ups so nothing slips through the cracks.
+- **Comprehensive Debt & IOU Tracking**: Monitor debts you owe and are owed with payment schedules, interest snapshots, and per-contact histories.
 - **Authentication**: Secure user authentication powered by Firebase.
 - **Responsive Design**: A mobile-first design that works beautifully on all devices.
 

@@ -15,7 +15,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { ChevronLeft, Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, Fingerprint } from 'lucide-react';
+import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, BellRing, HandCoins } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -64,6 +64,8 @@ export default function SettingsPage() {
         { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: '/wallets' },
         { id: 'categories', name: 'Kelola Kategori', icon: Wrench, page: '/categories' },
         { id: 'goals', name: 'Target Keuangan', icon: Target, page: '/goals' },
+        { id: 'reminders', name: 'Pengingat', icon: BellRing, page: '/reminders' },
+        { id: 'debts', name: 'Hutang & Piutang', icon: HandCoins, page: '/debts' },
         { id: 'assets_liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities' },
     ];
     
@@ -76,16 +78,16 @@ export default function SettingsPage() {
             );
         }
         return (
-             <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
+            <div className="relative flex items-center gap-1 p-1 rounded-full bg-muted">
                 {theme === 'light' && (
                     <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 bg-background rounded-full shadow-sm" />
                 )}
-                 {theme === 'dark' && (
+                {theme === 'dark' && (
                     <motion.div layoutId="theme-bg" className="absolute inset-0 h-full w-1/2 left-1/2 bg-background rounded-full shadow-sm" />
                 )}
                 <Button
                     size="icon"
-                    variant='ghost'
+                    variant="ghost"
                     onClick={() => setTheme('light')}
                     className={cn("rounded-full z-10 h-8 w-8", theme === 'light' ? 'text-primary' : 'text-muted-foreground')}
                     aria-label="Ganti ke tema terang"
@@ -95,7 +97,7 @@ export default function SettingsPage() {
                 </Button>
                 <Button
                     size="icon"
-                    variant='ghost'
+                    variant="ghost"
                     onClick={() => setTheme('dark')}
                     className={cn("rounded-full z-10 h-8 w-8", theme === 'dark' ? 'text-primary' : 'text-muted-foreground')}
                     aria-label="Ganti ke tema gelap"
@@ -105,7 +107,7 @@ export default function SettingsPage() {
                 </Button>
             </div>
         );
-    }
+    };
     
     return (
         <div className="bg-muted overflow-y-auto">

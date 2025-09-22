@@ -18,6 +18,9 @@ export const BottomNavigation = () => {
         isTransferModalOpen,
         isEditWalletModalOpen,
         isGoalModalOpen,
+        isReminderModalOpen,
+        isDebtModalOpen,
+        isDebtPaymentModalOpen,
     } = useUI();
 
     const navItems = [
@@ -35,7 +38,10 @@ export const BottomNavigation = () => {
         isDeleteModalOpen ||
         isTransferModalOpen ||
         isEditWalletModalOpen ||
-        isGoalModalOpen;
+        isGoalModalOpen ||
+        isReminderModalOpen ||
+        isDebtModalOpen ||
+        isDebtPaymentModalOpen;
     
     // The parent layout now controls visibility, so we only need to check for modals here.
     const isVisible = !isModalOpen;

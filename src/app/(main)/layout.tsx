@@ -1,4 +1,3 @@
-
 'use client';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
@@ -13,6 +12,9 @@ import { EditWalletModal } from '@/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
 import { GoalForm } from '@/components/goal-form';
+import { ReminderForm } from '@/components/reminder-form';
+import { DebtForm } from '@/components/debt-form';
+import { DebtPaymentForm } from '@/components/debt-payment-form';
 import { useUI } from '@/components/ui-provider';
 import { useApp } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
@@ -61,6 +63,18 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         setIsGoalModalOpen,
         goalToEdit,
         setGoalToEdit,
+        isReminderModalOpen,
+        setIsReminderModalOpen,
+        reminderToEdit,
+        setReminderToEdit,
+        isDebtModalOpen,
+        setIsDebtModalOpen,
+        debtToEdit,
+        setDebtToEdit,
+        isDebtPaymentModalOpen,
+        setIsDebtPaymentModalOpen,
+        debtForPayment,
+        setDebtForPayment,
     } = useUI();
 
     const { deleteTransaction } = useApp();
@@ -72,11 +86,26 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const handleCloseTxModal = () => {
         setIsTxModalOpen(false);
         setTransactionToEdit(null);
-    }
+    };
 
     const handleCloseGoalModal = () => {
         setIsGoalModalOpen(false);
         setGoalToEdit(null);
+    };
+
+    const handleCloseReminderModal = () => {
+        setIsReminderModalOpen(false);
+        setReminderToEdit(null);
+    };
+
+    const handleCloseDebtModal = () => {
+        setIsDebtModalOpen(false);
+        setDebtToEdit(null);
+    };
+
+    const handleCloseDebtPaymentModal = () => {
+        setIsDebtPaymentModalOpen(false);
+        setDebtForPayment(null);
     };
 
     const handleConfirmDelete = async () => {
@@ -118,6 +147,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
                 {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
                 {isGoalModalOpen && <GoalForm initialData={goalToEdit} onClose={handleCloseGoalModal} />}
+                {isReminderModalOpen && <ReminderForm initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
+                {isDebtModalOpen && <DebtForm initialData={debtToEdit} onClose={handleCloseDebtModal} />}
+                {isDebtPaymentModalOpen && debtForPayment && (
+                    <DebtPaymentForm debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
+                )}
                 {isDeleteModalOpen && transactionToDelete && (
                     <ConfirmDeleteModal
                         transaction={transactionToDelete}

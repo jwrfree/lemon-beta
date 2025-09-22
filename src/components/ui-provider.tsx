@@ -1,7 +1,7 @@
-
 'use client';
 
-import React, { useState, createContext, useContext, useCallback } from 'react';
+import React, { useState, createContext, useContext } from 'react';
+import type { Transaction, Wallet, Budget, Goal, Reminder, Debt } from '@/types/models';
 
 interface PreFilledTransfer {
     fromWalletId: string;
@@ -19,9 +19,9 @@ interface ToastState {
 interface UIContextType {
     isTxModalOpen: boolean;
     setIsTxModalOpen: (isOpen: boolean) => void;
-    transactionToEdit: any | null;
-    setTransactionToEdit: (transaction: any | null) => void;
-    openEditTransactionModal: (transaction: any) => void;
+    transactionToEdit: Transaction | null;
+    setTransactionToEdit: (transaction: Transaction | null) => void;
+    openEditTransactionModal: (transaction: Transaction) => void;
 
     isWalletModalOpen: boolean;
     setIsWalletModalOpen: (isOpen: boolean) => void;
@@ -29,26 +29,44 @@ interface UIContextType {
     setIsBudgetModalOpen: (isOpen: boolean) => void;
     isEditBudgetModalOpen: boolean;
     setIsEditBudgetModalOpen: (isOpen: boolean) => void;
-    budgetToEdit: any | null;
-    openEditBudgetModal: (budget: any) => void;
+    budgetToEdit: Budget | null;
+    openEditBudgetModal: (budget: Budget) => void;
     isTransferModalOpen: boolean;
     setIsTransferModalOpen: (isOpen: boolean) => void;
     preFilledTransfer: PreFilledTransfer | null;
     setPreFilledTransfer: (transfer: PreFilledTransfer | null) => void;
     isDeleteModalOpen: boolean;
-    transactionToDelete: any | null;
-    openDeleteModal: (transaction: any) => void;
+    transactionToDelete: Transaction | null;
+    openDeleteModal: (transaction: Transaction) => void;
     closeDeleteModal: () => void;
     isEditWalletModalOpen: boolean;
     setIsEditWalletModalOpen: (isOpen: boolean) => void;
-    walletToEdit: any | null;
-    openEditWalletModal: (wallet: any) => void;
+    walletToEdit: Wallet | null;
+    openEditWalletModal: (wallet: Wallet) => void;
 
     isGoalModalOpen: boolean;
     setIsGoalModalOpen: (isOpen: boolean) => void;
-    goalToEdit: any | null;
-    setGoalToEdit: (goal: any | null) => void;
-    openEditGoalModal: (goal: any) => void;
+    goalToEdit: Goal | null;
+    setGoalToEdit: (goal: Goal | null) => void;
+    openEditGoalModal: (goal: Goal) => void;
+
+    isReminderModalOpen: boolean;
+    setIsReminderModalOpen: (isOpen: boolean) => void;
+    reminderToEdit: Reminder | null;
+    setReminderToEdit: (reminder: Reminder | null) => void;
+    openEditReminderModal: (reminder: Reminder) => void;
+
+    isDebtModalOpen: boolean;
+    setIsDebtModalOpen: (isOpen: boolean) => void;
+    debtToEdit: Debt | null;
+    setDebtToEdit: (debt: Debt | null) => void;
+    openEditDebtModal: (debt: Debt) => void;
+
+    isDebtPaymentModalOpen: boolean;
+    setIsDebtPaymentModalOpen: (isOpen: boolean) => void;
+    debtForPayment: Debt | null;
+    setDebtForPayment: (debt: Debt | null) => void;
+    openDebtPaymentModal: (debt: Debt) => void;
 
     toastState: ToastState;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
@@ -67,22 +85,28 @@ export const useUI = () => {
 
 export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
-    const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
+    const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
     const [isEditBudgetModalOpen, setIsEditBudgetModalOpen] = useState(false);
-    const [budgetToEdit, setBudgetToEdit] = useState<any | null>(null);
+    const [budgetToEdit, setBudgetToEdit] = useState<Budget | null>(null);
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [transactionToDelete, setTransactionToDelete] = useState<any | null>(null);
+    const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
     const [isEditWalletModalOpen, setIsEditWalletModalOpen] = useState(false);
-    const [walletToEdit, setWalletToEdit] = useState<any | null>(null);
+    const [walletToEdit, setWalletToEdit] = useState<Wallet | null>(null);
     const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
     const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
-    const [goalToEdit, setGoalToEdit] = useState<any | null>(null);
+    const [goalToEdit, setGoalToEdit] = useState<Goal | null>(null);
+    const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+    const [reminderToEdit, setReminderToEdit] = useState<Reminder | null>(null);
+    const [isDebtModalOpen, setIsDebtModalOpen] = useState(false);
+    const [debtToEdit, setDebtToEdit] = useState<Debt | null>(null);
+    const [isDebtPaymentModalOpen, setIsDebtPaymentModalOpen] = useState(false);
+    const [debtForPayment, setDebtForPayment] = useState<Debt | null>(null);
 
     const [toastState, setToastState] = useState<ToastState>({ show: false, message: '', type: 'info' });
-    
+
     const showToast = (message: string, type: 'success' | 'error' | 'info') => {
         setToastState({ show: true, message, type });
     };
@@ -91,7 +115,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setToastState(prev => ({ ...prev, show: false }));
     };
     
-    const openDeleteModal = (transaction: any) => {
+    const openDeleteModal = (transaction: Transaction) => {
         setTransactionToDelete(transaction);
         setIsDeleteModalOpen(true);
     };
@@ -101,17 +125,17 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setTransactionToDelete(null);
     };
 
-    const openEditWalletModal = (wallet: any) => {
+    const openEditWalletModal = (wallet: Wallet) => {
         setWalletToEdit(wallet);
         setIsEditWalletModalOpen(true);
     };
-    
-    const openEditBudgetModal = (budget: any) => {
+
+    const openEditBudgetModal = (budget: Budget) => {
         setBudgetToEdit(budget);
         setIsEditBudgetModalOpen(true);
     };
 
-    const openEditTransactionModal = (transaction: any) => {
+    const openEditTransactionModal = (transaction: Transaction) => {
         if (transaction.category === 'Transfer') {
             showToast("Mengedit transaksi transfer belum didukung.", 'error');
             return;
@@ -120,9 +144,24 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen(true);
     };
 
-    const openEditGoalModal = (goal: any) => {
+    const openEditGoalModal = (goal: Goal) => {
         setGoalToEdit(goal);
         setIsGoalModalOpen(true);
+    };
+
+    const openEditReminderModal = (reminder: Reminder) => {
+        setReminderToEdit(reminder);
+        setIsReminderModalOpen(true);
+    };
+
+    const openEditDebtModal = (debt: Debt) => {
+        setDebtToEdit(debt);
+        setIsDebtModalOpen(true);
+    };
+
+    const openDebtPaymentModal = (debt: Debt) => {
+        setDebtForPayment(debt);
+        setIsDebtPaymentModalOpen(true);
     };
 
     const contextValue = {
@@ -156,6 +195,21 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         goalToEdit,
         setGoalToEdit,
         openEditGoalModal,
+        isReminderModalOpen,
+        setIsReminderModalOpen,
+        reminderToEdit,
+        setReminderToEdit,
+        openEditReminderModal,
+        isDebtModalOpen,
+        setIsDebtModalOpen,
+        debtToEdit,
+        setDebtToEdit,
+        openEditDebtModal,
+        isDebtPaymentModalOpen,
+        setIsDebtPaymentModalOpen,
+        debtForPayment,
+        setDebtForPayment,
+        openDebtPaymentModal,
         toastState,
         showToast,
         hideToast,

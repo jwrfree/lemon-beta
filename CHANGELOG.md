@@ -2,6 +2,31 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 1.5.0] - December 2025
+
+This release elevates the mobile experience with proactive guidance and complete visibility over financial obligations.
+
+### ✨ New Features
+
+- **Smart Reminders**: Create one-off or recurring reminders for bills, savings transfers, and follow-ups. Reminders can be linked to wallets, categories, or debts and sync with push notifications for quick completion.
+- **Comprehensive Debt & IOU Tracking**: Track money you owe and are owed with dedicated debt profiles, payment schedules, counterparty histories, and interest snapshots. Transactions logged with Catat Cepat now auto-suggest matching debts.
+
+### 🎨 Enhancements & UX Improvements
+
+- **Mobile Home Refresh**: Added an "Upcoming" module to spotlight due reminders and approaching debt payments alongside key balances.
+- **Reminder Center**: Introduced a unified calendar and list management view under the More tab for snoozing, completing, and reviewing reminder history.
+- **Debt Insights Widget**: The Insights tab now visualizes total owed vs. owed to you, overdue items, and payoff velocity.
+
+### 🧠 AI & Automation
+
+- **Predictive Suggestions**: Catat Cepat classifies reminder intent and proposes linking entries to existing debts when confidence is high.
+- **Weekly Digest**: A new AI-generated summary surfaces upcoming reminders, risky debts, and suggested actions every Monday.
+
+### 🛠 Technical
+
+- Added Firestore collections for reminders and debts with indexes optimized for due dates and statuses.
+- Scheduled Cloud Functions send push notifications, recalculate debt projections nightly, and roll up weekly reminder stats for Insights.
+
 ## [Version 1.4.0] - November 2025
 
 This release introduces a major new authentication feature and focuses heavily on UI consistency and bug fixes based on user feedback.
