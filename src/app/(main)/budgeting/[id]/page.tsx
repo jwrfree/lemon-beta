@@ -19,7 +19,7 @@ export default function BudgetDetailPage() {
     const { budgets, transactions } = useApp();
     const { openEditBudgetModal } = useUI();
 
-    const budgetId = params.id as string;
+    const budgetId = Array.isArray(params.id) ? params.id[0] : params.id;
     const budget = useMemo(() => budgets.find(b => b.id === budgetId), [budgets, budgetId]);
 
     const budgetDetails = useMemo(() => {
