@@ -94,7 +94,7 @@ const CategoryAnalysis = ({ type, className }: { type: 'expense' | 'income'; cla
                     name,
                     value,
                     icon: details.icon,
-                    fill: `var(--${details.color.match(/text-([\w-]+)/)?.[1]})`, // Simplified color extraction
+                    fill: `hsl(var(--${details.color.match(/text-([\w-]+)/)?.[1] || 'primary'}))`,
                     percentage: total > 0 ? (value / total) * 100 : 0,
                 };
             })
