@@ -1,8 +1,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, query, where, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase-admin';
-import { randomBytes } from 'crypto';
+import { generateAuthenticationOptions } from '@simplewebauthn/server';
+
+const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,33 +13,50 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Email is required' }, { status: 400 });
     }
 
-    const usersRef = collection(db, 'users');
-    const q = query(usersRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
+    const usersSnapshot = await db
+      .collection('users')
+      .where('email', '==', email)
+      .limit(1)
+      .get();
 
-    if (querySnapshot.empty) {
+    if (usersSnapshot.empty) {
       return NextResponse.json({ message: 'User not found.' }, { status: 404 });
     }
 
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
+    const userDoc = usersSnapshot.docs[0];
+    const userData = userDoc.data() ?? {};
 
-    if (!userData.biometricCredentialId) {
-        return NextResponse.json({ message: 'Biometric login not enabled for this user.' }, { status: 400 });
+    if (!userData.biometricCredentialId || !userData.biometricCredentialPublicKey) {
+      return NextResponse.json(
+        { message: 'Biometric login not enabled for this user.' },
+        { status: 400 },
+      );
     }
 
-    // Generate a random challenge
-    const challenge = randomBytes(32);
-
-    // Store challenge temporarily, e.g., in the user's document
-    await setDoc(userDoc.ref, { loginChallenge: Buffer.from(challenge).toJSON() }, { merge: true });
-
-    return NextResponse.json({
-      challenge: Buffer.from(challenge).toJSON().data,
-      credentialIds: [userData.biometricCredentialId],
+    const options = await generateAuthenticationOptions({
+      rpID: RP_ID,
+      userVerification: 'required',
+      allowCredentials: [
+        {
+          id: userData.biometricCredentialId,
+          transports: ['internal'],
+        },
+      ],
     });
 
+    await userDoc.ref.set(
+      {
+        loginChallenge: options.challenge,
+      },
+      { merge: true },
+    );
+
+    return NextResponse.json(options);
   } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    console.error('Error generating login challenge:', error);
+    return NextResponse.json(
+      { message: error.message || 'Failed to prepare biometric login.' },
+      { status: 500 },
+    );
   }
 }
