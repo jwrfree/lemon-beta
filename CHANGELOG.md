@@ -2,6 +2,30 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.0.0] - 22 September 2025
+
+**Status:** Ready to launch
+
+### 🔍 Experience Audit & Navigation
+- Menyelesaikan audit desain menyeluruh mencakup landing, autentikasi, dan alur utama aplikasi dengan dokumentasi heuristik baru.
+- Menambahkan skip link dan navigasi anchor pada landing sehingga pengguna dapat menjangkau section fitur, keamanan, dan CTA akhir tanpa menggulir jauh.
+- Memperbarui copy hero dan daftar manfaat agar proposisi nilai Lemon mudah dipahami dalam beberapa detik.
+
+### 🎨 Visual, Motion & Accessibility
+- Menstandarkan seluruh animasi ke durasi 0.28 s `ease-out` serta menambahkan dukungan `prefers-reduced-motion` di landing dan semua modal autentikasi.
+- Memperkuat hierarchy visual dengan grid 4/8 px, radius 16–32 px, dan fokus ring kontras tinggi untuk navigasi keyboard.
+- Menandai ilustrasi dekoratif sebagai `aria-hidden` dan memberikan outline fokus pada anchor nav untuk menjaga aksesibilitas.
+
+### 🔐 Authentication & Recovery
+- Memperbarui bottom sheet login, sign up, dan lupa password dengan overlay `backdrop-blur`, transisi konsisten, serta alert error inline yang mudah dibaca.
+- Menjaga tombol aksi alternatif (Google, biometrik) tetap tersedia sambil menyajikan status loading yang jelas bagi setiap metode.
+- Menambahkan pesan sukses permanen pada alur lupa password agar pengguna yakin email reset telah dikirim.
+
+### 📚 Documentation & Alignment
+- Menulis ulang **Design Audit** untuk memuat temuan heuristik, sistem desain, dan evaluasi alur lengkap menjelang rilis 2.0.0.
+- Memperbarui **Product Blueprint** dengan snapshot rilis, prinsip pengalaman terbaru, spesifikasi motion, serta roadmap prioritas.
+- Menyegarkan **README** dengan sorotan rilis, alur utama, komitmen desain & aksesibilitas, serta tautan dokumentasi penting.
+
 ## [Version 1.5.0] - December 2025
 
 This release elevates the mobile experience with proactive guidance and complete visibility over financial obligations.

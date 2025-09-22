@@ -11,12 +11,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from './ui-provider';
 import { cn } from '@/lib/utils';
 import { Separator } from './ui/separator';
-
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import type { AuthModalView } from '@/types/auth';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -63,11 +64,19 @@ const evaluatePasswordStrength = (value: string) => {
     };
 };
 
-export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; setAuthModal: (modal: string | null) => void; }) => {
+export const SignUpPage = ({
+    onClose,
+    setAuthModal,
+}: {
+    onClose: () => void;
+    setAuthModal: React.Dispatch<React.SetStateAction<AuthModalView>>;
+}) => {
+    const shouldReduceMotion = useReducedMotion();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const { showToast } = useUI();
+    const [authError, setAuthError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -80,17 +89,30 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
     const passwordValue = form.watch('password');
     const passwordStrength = useMemo(() => evaluatePasswordStrength(passwordValue), [passwordValue]);
 
+    const getFirebaseErrorCode = (error: unknown) => {
+        if (typeof error === 'object' && error !== null && 'code' in error) {
+            const { code } = error as { code?: unknown };
+            return typeof code === 'string' ? code : undefined;
+        }
+        return undefined;
+    };
+
     const handleSignUp = async (values: z.infer<typeof formSchema>) => {
         try {
+            setAuthError(null);
             await createUserWithEmailAndPassword(auth, values.email, values.password);
             showToast("Akun berhasil dibuat! Silakan masuk.", 'success');
             setAuthModal('login');
-        } catch (error: any) {
-            if (error.code === 'auth/email-already-in-use') {
-                showToast("Email ini sudah terdaftar.", 'error');
-            } else {
-                showToast("Gagal membuat akun. Coba lagi ya.", 'error');
+        } catch (error: unknown) {
+            const code = getFirebaseErrorCode(error);
+            let message = 'Gagal membuat akun. Coba lagi ya.';
+            if (code === 'auth/email-already-in-use') {
+                message = 'Email ini sudah terdaftar.';
+            } else if (code === 'auth/weak-password') {
+                message = 'Password terlalu lemah. Gunakan kombinasi huruf, angka, atau simbol.';
             }
+            setAuthError(message);
+            showToast(message, 'error');
         }
     };
     
@@ -98,11 +120,18 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
         const provider = new GoogleAuthProvider();
         try {
             setIsGoogleLoading(true);
+            setAuthError(null);
             await signInWithPopup(auth, provider);
             showToast("Pendaftaran dengan Google berhasil!", 'success');
             onClose();
-        } catch (error: any) {
-            showToast('Gagal mendaftar dengan Google. Coba lagi ya.', 'error');
+        } catch (error: unknown) {
+            const code = getFirebaseErrorCode(error);
+            let message = 'Gagal mendaftar dengan Google. Coba lagi ya.';
+            if (code === 'auth/popup-blocked') {
+                message = 'Popup login diblokir browser. Izinkan popup lalu coba lagi.';
+            }
+            setAuthError(message);
+            showToast(message, 'error');
         } finally {
             setIsGoogleLoading(false);
         }
@@ -116,17 +145,18 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center"
+            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
             onClick={onClose}
         >
             <motion.div
-                initial={{ y: "100%" }}
+                initial={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
                 animate={{ y: 0 }}
-                exit={{ y: "100%" }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
+                transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="signup-heading"
@@ -186,7 +216,12 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                                         {passwordStrength && (
                                             <div className="mt-2 space-y-1" aria-live="polite">
                                                 <div className="h-1.5 w-full rounded-full bg-muted">
-                                                    <motion.div className={cn('h-full rounded-full', passwordStrength.color)} initial={{ width: 0 }} animate={{ width: passwordStrength.width }} transition={{ duration: 0.3 }} />
+                                                    <motion.div
+                                                        className={cn('h-full rounded-full', passwordStrength.color)}
+                                                        initial={shouldReduceMotion ? { width: passwordStrength.width } : { width: 0 }}
+                                                        animate={{ width: passwordStrength.width }}
+                                                        transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.3, ease: 'easeOut' }}
+                                                    />
                                                 </div>
                                                 <p className="text-xs text-muted-foreground">{passwordStrength.label}</p>
                                             </div>
@@ -220,7 +255,13 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
                             </Button>
                         </form>
                     </Form>
-                    
+
+                    {authError && (
+                        <Alert variant="destructive" className="mt-4" aria-live="assertive">
+                            <AlertDescription>{authError}</AlertDescription>
+                        </Alert>
+                    )}
+
                     <div className="mt-6 space-y-4">
                         <div className="relative">
                             <Separator className="bg-border" />
@@ -245,7 +286,17 @@ export const SignUpPage = ({ onClose, setAuthModal }: { onClose: () => void; set
 
                     <p className="text-sm text-muted-foreground mt-6 text-center">
                         Sudah punya akun?{' '}
-                        <Button variant="link" type="button" onClick={() => setAuthModal('login')} className="p-0 h-auto">Masuk di sini</Button>
+                        <Button
+                            variant="link"
+                            type="button"
+                            onClick={() => {
+                                setAuthError(null);
+                                setAuthModal('login');
+                            }}
+                            className="p-0 h-auto"
+                        >
+                            Masuk di sini
+                        </Button>
                     </p>
                 </div>
             </motion.div>
