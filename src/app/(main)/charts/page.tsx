@@ -8,23 +8,24 @@ import { useSwipeable } from 'react-swipeable';
 import {
     ArrowDownLeft,
     ArrowUpRight,
-    Briefcase,
     ChevronLeft,
     LoaderCircle,
-    ReceiptText,
     Scale,
-    Tags,
     TrendingDown,
+    TrendingUp,
+    BarChart,
 } from 'lucide-react';
 import {
     isSameMonth,
     parseISO,
     startOfMonth,
-    format
+    format,
+    eachDayOfInterval,
+    endOfMonth
 } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart as RechartsBarChart, Pie, PieChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,7 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
+import { Cell } from 'recharts';
 
 type TabValue = 'expense' | 'income' | 'net';
 
@@ -68,7 +70,7 @@ const PlaceholderContent = ({
 );
 
 
-const CategoryAnalysis = ({ type, className }: { type: 'expense' | 'income'; className?: string }) => {
+const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
     const { transactions } = useApp();
     const router = useRouter();
 
@@ -79,6 +81,10 @@ const CategoryAnalysis = ({ type, className }: { type: 'expense' | 'income'; cla
     const { chartData, chartConfig, total } = useMemo(() => {
         const now = new Date();
         const monthlyTransactions = transactions.filter((t) => t.type === type && isSameMonth(parseISO(t.date), now));
+
+        if (monthlyTransactions.length === 0) {
+            return { chartData: [], chartConfig: {}, total: 0 };
+        }
 
         const total = monthlyTransactions.reduce((sum, t) => sum + t.amount, 0);
 
@@ -117,9 +123,9 @@ const CategoryAnalysis = ({ type, className }: { type: 'expense' | 'income'; cla
     if (chartData.length === 0) {
         return (
             <PlaceholderContent
-                label={`Analisis ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
-                icon={type === 'expense' ? TrendingDown : ArrowUpRight}
-                text={`Data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'}-mu bulan ini belum cukup untuk dianalisis.`}
+                label={`Distribusi ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+                icon={type === 'expense' ? TrendingDown : TrendingUp}
+                text={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini untuk dianalisis.`}
             />
         );
     }
@@ -135,7 +141,7 @@ const CategoryAnalysis = ({ type, className }: { type: 'expense' | 'income'; cla
                         <PieChart>
                             <ChartTooltip
                                 cursor={false}
-                                content={<ChartTooltipContent formatter={(value, name) => `${name}: ${formatCurrency(Number(value))}`} hideLabel />}
+                                content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} hideLabel />}
                             />
                             <Pie data={chartData} dataKey="value" nameKey="name" innerRadius="60%" strokeWidth={2}>
                                 {chartData.map((entry) => (
@@ -165,14 +171,91 @@ const CategoryAnalysis = ({ type, className }: { type: 'expense' | 'income'; cla
     );
 };
 
+const DailyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
+    const { transactions } = useApp();
+
+    const chartData = useMemo(() => {
+        const now = new Date();
+        const start = startOfMonth(now);
+        const end = endOfMonth(now);
+        const daysInMonth = eachDayOfInterval({ start, end });
+
+        const monthlyTransactions = transactions.filter(t => t.type === type && isSameMonth(parseISO(t.date), now));
+
+        if (monthlyTransactions.length === 0) {
+            return [];
+        }
+
+        const dataByDay = daysInMonth.map(day => {
+            const dayKey = format(day, 'yyyy-MM-dd');
+            const transactionsForDay = monthlyTransactions.filter(t => format(parseISO(t.date), 'yyyy-MM-dd') === dayKey);
+            const total = transactionsForDay.reduce((sum, t) => sum + t.amount, 0);
+            return {
+                date: format(day, 'dd'),
+                total,
+            };
+        });
+
+        return dataByDay;
+    }, [transactions, type]);
+    
+    if (chartData.length === 0) {
+        return (
+            <PlaceholderContent
+                label={`Tren ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'} Harian`}
+                icon={BarChart}
+                text={`Grafik tren akan muncul di sini setelah ada transaksi ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini.`}
+            />
+        );
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Tren Harian</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="h-48 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart data={chartData}>
+                             <XAxis
+                                dataKey="date"
+                                stroke="#888888"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                            />
+                            <YAxis
+                                stroke="#888888"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={(value) => `${formatCurrency(Number(value) / 1000)}k`}
+                            />
+                            <Tooltip
+                                contentStyle={{
+                                    backgroundColor: "hsl(var(--background))",
+                                    borderColor: "hsl(var(--border))",
+                                    borderRadius: "var(--radius)",
+                                }}
+                                labelStyle={{ color: "hsl(var(--foreground))" }}
+                                formatter={(value) => [formatCurrency(Number(value)), 'Total']}
+                            />
+                            <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </RechartsBarChart>
+                    </ResponsiveContainer>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
 
 const MonthlySummary = ({ type }: { type: TabValue }) => {
     const { transactions } = useApp();
 
     const summary = useMemo(() => {
         const now = new Date();
-        const start = startOfMonth(now);
-
         const monthlyTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), now));
         
         const income = monthlyTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
@@ -272,14 +355,17 @@ export default function ChartsPage() {
         enter: (direction: number) => ({
             x: direction > 0 ? '100%' : '-100%',
             opacity: 0,
+            position: 'absolute',
         }),
         center: {
             x: 0,
             opacity: 1,
+            position: 'relative',
         },
         exit: (direction: number) => ({
             x: direction < 0 ? '100%' : '-100%',
             opacity: 0,
+            position: 'absolute',
         }),
     };
     
@@ -310,31 +396,37 @@ export default function ChartsPage() {
                         <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
                     </div>
                 ) : (
-                    <AnimatePresence initial={false} custom={direction}>
-                        <motion.div
-                            key={activeTab}
-                            custom={direction}
-                            variants={slideVariants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                            className="p-4 space-y-4"
-                        >
-                            <h2 className="text-lg font-semibold">Ringkasan Bulan Ini</h2>
-                             <MonthlySummary type={activeTab} />
-                            
-                             {activeTab !== 'net' && (
-                                <>
-                                    <h2 className="text-lg font-semibold pt-4">Analisis Kategori</h2>
-                                    <CategoryAnalysis type={activeTab} />
-                                </>
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
+                    <div className="relative">
+                        <AnimatePresence initial={false} custom={direction}>
+                            <motion.div
+                                key={activeTab}
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                className="p-4 space-y-4 w-full"
+                            >
+                                <h2 className="text-lg font-semibold">Ringkasan Bulan Ini</h2>
+                                <MonthlySummary type={activeTab} />
+                                
+                                {activeTab !== 'net' && (
+                                    <>
+                                        <h2 className="text-lg font-semibold pt-4">Tren Harian</h2>
+                                        <DailyTrendChart type={activeTab} />
+
+                                        <h2 className="text-lg font-semibold pt-4">Distribusi Kategori</h2>
+                                        <CategoryAnalysis type={activeTab} />
+                                    </>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
                 )}
             </main>
         </div>
     );
 }
 
+    
