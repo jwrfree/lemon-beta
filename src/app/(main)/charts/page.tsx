@@ -35,6 +35,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Cell } from 'recharts';
+import { AnimatedCounter } from '@/components/animated-counter';
 
 type TabValue = 'expense' | 'income' | 'net';
 
@@ -262,58 +263,98 @@ const MonthlySummary = ({ type }: { type: TabValue }) => {
         const expense = monthlyTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
         const net = income - expense;
 
-        if (type === 'expense') {
-            const biggestCat = monthlyTransactions.filter(t => t.type === 'expense').reduce((acc, t) => {
-                acc[t.category] = (acc[t.category] || 0) + t.amount;
-                return acc;
-            }, {} as Record<string, number>);
+        let title, value, valueColor, insightLabel, topCategory, topTransaction;
+
+        if (type === 'expense' || type === 'income') {
+            const relevantTransactions = monthlyTransactions.filter(t => t.type === type);
             
-            const topCategory = Object.entries(biggestCat).sort((a,b) => b[1] - a[1])[0];
-            return {
-                title: 'Total Pengeluaran',
-                value: expense,
-                valueColor: 'text-destructive',
-                insightLabel: 'Kategori Terbesar',
-                insightValue: topCategory ? `${topCategory[0]} (${formatCurrency(topCategory[1])})` : '-',
+            if(relevantTransactions.length > 0) {
+                const categoryMap = relevantTransactions.reduce((acc, t) => {
+                    acc[t.category] = (acc[t.category] || 0) + t.amount;
+                    return acc;
+                }, {} as Record<string, number>);
+                
+                topCategory = Object.entries(categoryMap).sort((a,b) => b[1] - a[1])[0];
+                topTransaction = [...relevantTransactions].sort((a,b) => b.amount - a.amount)[0];
             }
         }
-        if (type === 'income') {
-             const biggestCat = monthlyTransactions.filter(t => t.type === 'income').reduce((acc, t) => {
-                acc[t.category] = (acc[t.category] || 0) + t.amount;
-                return acc;
-            }, {} as Record<string, number>);
-            const topCategory = Object.entries(biggestCat).sort((a,b) => b[1] - a[1])[0];
-             return {
-                title: 'Total Pemasukan',
-                value: income,
-                valueColor: 'text-green-600',
-                insightLabel: 'Sumber Terbesar',
-                insightValue: topCategory ? `${topCategory[0]} (${formatCurrency(topCategory[1])})` : '-',
-            }
+
+        if (type === 'expense') {
+            title = 'Total Pengeluaran';
+            value = expense;
+            valueColor = 'text-destructive';
+            insightLabel = 'Kategori Terbesar';
+        } else if (type === 'income') {
+            title = 'Total Pemasukan';
+            value = income;
+            valueColor = 'text-green-600';
+            insightLabel = 'Sumber Terbesar';
+        } else { // net
+            title = 'Arus Kas Bersih';
+            value = net;
+            valueColor = net >= 0 ? 'text-green-600' : 'text-destructive';
         }
-        // net
-        return {
-            title: 'Arus Kas Bersih',
-            value: net,
-            valueColor: net >= 0 ? 'text-green-600' : 'text-destructive',
-            insightLabel: 'Pemasukan vs Pengeluaran',
-            insightValue: `${formatCurrency(income)} vs ${formatCurrency(expense)}`,
-        }
+        
+        return { title, value, valueColor, insightLabel, topCategory, topTransaction, netDetails: { income, expense } };
 
     }, [transactions, type]);
 
+    const router = useRouter();
+    const handleTxClick = (txId: string) => {
+        // This is a simplification. A real app might open a detail modal.
+        router.push('/transactions');
+    }
+
+    if (type !== 'net' && summary.value === 0) {
+         return (
+            <PlaceholderContent
+                label={`Ringkasan ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+                icon={type === 'expense' ? TrendingDown : TrendingUp}
+                text={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini.`}
+            />
+        );
+    }
+
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-base font-medium text-muted-foreground">{summary.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className={cn("text-3xl font-bold", summary.valueColor)}>{formatCurrency(summary.value)}</p>
-                <div className="mt-2 text-xs text-muted-foreground">
-                    <span className='font-medium'>{summary.insightLabel}:</span> {summary.insightValue}
-                </div>
-            </CardContent>
-        </Card>
+        <div className='space-y-4'>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-base font-medium text-muted-foreground">{summary.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <AnimatedCounter value={summary.value} className={cn("text-3xl font-bold", summary.valueColor)} />
+                     {type === 'net' && (
+                        <div className="mt-2 text-xs text-muted-foreground">
+                             <span className='font-medium text-green-600'>Pemasukan:</span> {formatCurrency(summary.netDetails.income)} vs <span className='font-medium text-destructive'>Pengeluaran:</span> {formatCurrency(summary.netDetails.expense)}
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            {summary.topCategory && (
+                <Card>
+                    <CardHeader className='pb-2'>
+                        <CardTitle className='text-sm font-medium text-muted-foreground'>{summary.insightLabel}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         <p className="font-semibold text-lg">{summary.topCategory[0]}</p>
+                         <p className="text-muted-foreground">{formatCurrency(summary.topCategory[1])}</p>
+                    </CardContent>
+                </Card>
+            )}
+
+            {summary.topTransaction && (
+                 <Card className='cursor-pointer hover:bg-muted' onClick={() => handleTxClick(summary.topTransaction.id)}>
+                    <CardHeader className='pb-2'>
+                        <CardTitle className='text-sm font-medium text-muted-foreground'>Transaksi Terbesar</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                         <p className="font-semibold text-lg">{summary.topTransaction.description}</p>
+                         <p className="text-muted-foreground">{formatCurrency(summary.topTransaction.amount)}</p>
+                    </CardContent>
+                </Card>
+            )}
+        </div>
     )
 }
 

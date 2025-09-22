@@ -10,20 +10,21 @@ import { cn } from '@/lib/utils';
 interface AnimatedCounterProps {
   value: number;
   className?: string;
+  duration?: number;
 }
 
-export const AnimatedCounter = ({ value, className }: AnimatedCounterProps) => {
+export const AnimatedCounter = ({ value, className, duration = 0.8 }: AnimatedCounterProps) => {
   const count = useMotionValue(value);
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const display = useTransform(rounded, (latest) => formatCurrency(latest));
 
   useEffect(() => {
     const controls = animate(count, value, {
-      duration: 0.8,
+      duration: duration,
       ease: 'easeOut',
     });
     return controls.stop;
-  }, [value, count]);
+  }, [value, count, duration]);
 
   return <motion.p className={cn(className)}>{display}</motion.p>;
 };
