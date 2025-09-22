@@ -2,6 +2,28 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 1.4.0] - November 2025
+
+This release introduces a major new authentication feature and focuses heavily on UI consistency and bug fixes based on user feedback.
+
+### ✨ New Features
+
+- **Biometric Login**: Users can now enable and use fingerprint or Face ID to log in securely and quickly. An option to manage this feature has been added to the Settings page.
+
+### 🎨 Enhancements & Bug Fixes
+
+- **Complete Statistics Page Redesign**: The "Statistics" page has been completely overhauled to match the app's consistent design language. This includes standardizing the header, tabs, and card components.
+- **Restored Statistics Insights**: All key data insights on the Statistics page—including monthly summaries, daily trends, category distribution, largest category, and largest transaction—have been restored and integrated into the new, consistent design.
+- **Biometric Authentication Fixes**:
+    - Resolved a `Permissions-Policy` error that blocked WebAuthn API in the development environment by updating Next.js headers.
+    - Fixed a race condition (`No document to update` error) for new users enabling biometrics by using a more robust Firestore write method.
+- **Animation Standardization**: Replaced `spring` animations for drawers and modals with a uniform `ease-out` transition of 0.2 seconds for a more consistent feel.
+- **Hydration Error Fixes**: Resolved React hydration errors on the Statistics and Budget Detail pages, ensuring a stable rendering experience.
+
+### 🐞 Known Bugs
+
+- **Deleting Transfers**: The application currently does not support the deletion of "Transfer" type transactions from the transaction history. Attempting to do so will show an error message.
+
 ## [Version 1.3.0] - November 2025
 
 This release introduces major performance optimizations, cost-saving AI enhancements, and the completion of core financial features.
