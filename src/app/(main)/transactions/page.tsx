@@ -97,7 +97,7 @@ const TransactionsPageContent = () => {
     const displayedWallets = showAllWallets ? wallets : wallets.slice(0, 8);
 
     return (
-        <div className="flex flex-col h-full bg-muted overflow-y-auto pb-16">
+        <>
             <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <div className="relative w-full">
                     <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
@@ -244,7 +244,7 @@ const TransactionsPageContent = () => {
                     <TransactionList transactions={filteredTransactions} />
                 )}
             </main>
-        </div>
+        </>
     );
 }
 

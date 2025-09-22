@@ -1585,7 +1585,7 @@ export default function ChartsPage() {
     } as const;
     
     return (
-        <div className="flex min-h-screen flex-col bg-muted">
+        <>
             <header className="sticky top-0 z-20 flex h-16 items-center justify-center border-b bg-background/95 px-4 shadow-sm backdrop-blur">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
@@ -1593,8 +1593,8 @@ export default function ChartsPage() {
                 <h1 className="text-xl font-semibold tracking-tight">Statistik</h1>
             </header>
 
-            <main className="flex-1 overflow-y-auto" {...handlers}>
-                <div className="sticky top-0 z-10 border-b bg-background/95 px-4 py-3 backdrop-blur">
+            <main className="flex-1" {...handlers}>
+                <div className="sticky top-16 z-10 border-b bg-background/95 p-4 backdrop-blur">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 rounded-full bg-muted/80 p-1">
                             {tabs.map((tab) => (
@@ -1614,7 +1614,7 @@ export default function ChartsPage() {
                         <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
                     </div>
                 ) : (
-                    <div className="relative">
+                    <div className="relative overflow-hidden">
                         <AnimatePresence initial={false} custom={direction}>
                             <motion.div
                                 key={activeTab}
@@ -1624,7 +1624,7 @@ export default function ChartsPage() {
                                 animate="center"
                                 exit="exit"
                                 transition={{ duration: 0.25, ease: 'easeOut' }}
-                                className="w-full space-y-6 p-4 pb-16"
+                                className="w-full space-y-6 p-4"
                             >
                                 <div className="space-y-3">
                                     <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
@@ -1671,7 +1671,7 @@ export default function ChartsPage() {
                     </div>
                 )}
             </main>
-        </div>
+        </>
     );
 }
 
