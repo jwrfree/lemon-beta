@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
@@ -12,6 +12,7 @@ import {
     CalendarDays,
     ChevronLeft,
     ChevronRight,
+    LoaderCircle,
     ReceiptText,
     Scale,
     Tags,
@@ -886,6 +887,11 @@ export default function ChartsPage() {
     const { transactions } = useApp();
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const handleTabChange = (value: string) => {
         const newIndex = tabs.findIndex((tab) => tab.value === value);
@@ -979,97 +985,105 @@ export default function ChartsPage() {
                             </div>
                         </div>
                     </div>
-                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 gap-1 rounded-full border border-border/60 bg-muted/40 p-1 text-muted-foreground">
-                            {tabs.map((tab) => (
-                                <TabsTrigger
-                                    key={tab.value}
-                                    value={tab.value}
-                                    className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                                >
-                                    <tab.icon className="h-4 w-4" />
-                                    {tab.label}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                    </Tabs>
+                    {isClient && (
+                         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                            <TabsList className="grid w-full grid-cols-3 gap-1 rounded-full border border-border/60 bg-muted/40 p-1 text-muted-foreground">
+                                {tabs.map((tab) => (
+                                    <TabsTrigger
+                                        key={tab.value}
+                                        value={tab.value}
+                                        className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                                    >
+                                        <tab.icon className="h-4 w-4" />
+                                        {tab.label}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </Tabs>
+                    )}
                 </div>
             </header>
             <main className="flex-1 overflow-y-auto" {...handlers}>
-                <AnimatePresence initial={false} custom={direction}>
-                    <motion.div
-                        key={activeTab}
-                        custom={direction}
-                        variants={slideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        className="mx-auto w-full max-w-6xl px-4 py-8 pb-24"
-                    >
-                        <div className="space-y-10">
-                            {activeTab === 'expense' && (
-                                <>
+                {!isClient ? (
+                    <div className="flex h-full w-full items-center justify-center p-8">
+                        <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                ) : (
+                    <AnimatePresence initial={false} custom={direction}>
+                        <motion.div
+                            key={activeTab}
+                            custom={direction}
+                            variants={slideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            className="mx-auto w-full max-w-6xl px-4 py-8 pb-24"
+                        >
+                            <div className="space-y-10">
+                                {activeTab === 'expense' && (
+                                    <>
+                                        <section className="space-y-4">
+                                            <SectionHeader
+                                                eyebrow="Ringkasan"
+                                                title="Gambaran Pengeluaran"
+                                                description="Pantau total pengeluaran dan insight penting di bulan berjalan."
+                                            />
+                                            <div className="grid gap-4 lg:grid-cols-3">
+                                                <ExpenseSummaryCard className="lg:col-span-1" />
+                                                <TrendChart type="expense" className="lg:col-span-2" />
+                                            </div>
+                                        </section>
+                                        <section className="space-y-4">
+                                            <SectionHeader
+                                                eyebrow="Kategori"
+                                                title="Distribusi Pengeluaran"
+                                                description="Lihat kategori mana yang paling menyerap anggaranmu agar bisa melakukan penyesuaian tepat."
+                                            />
+                                            <CategoryAnalysis type="expense" />
+                                        </section>
+                                    </>
+                                )}
+                                {activeTab === 'income' && (
+                                    <>
+                                        <section className="space-y-4">
+                                            <SectionHeader
+                                                eyebrow="Ringkasan"
+                                                title="Gambaran Pemasukan"
+                                                description="Ketahui sumber pemasukan utama dan transaksi bernilai terbesar bulan ini."
+                                            />
+                                            <div className="grid gap-4 lg:grid-cols-3">
+                                                <IncomeSummaryCard className="lg:col-span-1" />
+                                                <TrendChart type="income" className="lg:col-span-2" />
+                                            </div>
+                                        </section>
+                                        <section className="space-y-4">
+                                            <SectionHeader
+                                                eyebrow="Kategori"
+                                                title="Distribusi Pemasukan"
+                                                description="Pelajari kontribusi tiap sumber pemasukan untuk merencanakan strategi keuangan."
+                                            />
+                                            <CategoryAnalysis type="income" />
+                                        </section>
+                                    </>
+                                )}
+                                {activeTab === 'net' && (
                                     <section className="space-y-4">
                                         <SectionHeader
                                             eyebrow="Ringkasan"
-                                            title="Gambaran Pengeluaran"
-                                            description="Pantau total pengeluaran dan insight penting di bulan berjalan."
+                                            title="Arus Kas Bulan Ini"
+                                            description="Bandingkan pemasukan dan pengeluaran untuk memastikan cashflow tetap sehat."
                                         />
                                         <div className="grid gap-4 lg:grid-cols-3">
-                                            <ExpenseSummaryCard className="lg:col-span-1" />
-                                            <TrendChart type="expense" className="lg:col-span-2" />
+                                            <NetIncomeSummaryCard className="lg:col-span-1" />
+                                            <TrendChart type="net" className="lg:col-span-2" />
                                         </div>
                                     </section>
-                                    <section className="space-y-4">
-                                        <SectionHeader
-                                            eyebrow="Kategori"
-                                            title="Distribusi Pengeluaran"
-                                            description="Lihat kategori mana yang paling menyerap anggaranmu agar bisa melakukan penyesuaian tepat."
-                                        />
-                                        <CategoryAnalysis type="expense" />
-                                    </section>
-                                </>
-                            )}
-                            {activeTab === 'income' && (
-                                <>
-                                    <section className="space-y-4">
-                                        <SectionHeader
-                                            eyebrow="Ringkasan"
-                                            title="Gambaran Pemasukan"
-                                            description="Ketahui sumber pemasukan utama dan transaksi bernilai terbesar bulan ini."
-                                        />
-                                        <div className="grid gap-4 lg:grid-cols-3">
-                                            <IncomeSummaryCard className="lg:col-span-1" />
-                                            <TrendChart type="income" className="lg:col-span-2" />
-                                        </div>
-                                    </section>
-                                    <section className="space-y-4">
-                                        <SectionHeader
-                                            eyebrow="Kategori"
-                                            title="Distribusi Pemasukan"
-                                            description="Pelajari kontribusi tiap sumber pemasukan untuk merencanakan strategi keuangan."
-                                        />
-                                        <CategoryAnalysis type="income" />
-                                    </section>
-                                </>
-                            )}
-                            {activeTab === 'net' && (
-                                <section className="space-y-4">
-                                    <SectionHeader
-                                        eyebrow="Ringkasan"
-                                        title="Arus Kas Bulan Ini"
-                                        description="Bandingkan pemasukan dan pengeluaran untuk memastikan cashflow tetap sehat."
-                                    />
-                                    <div className="grid gap-4 lg:grid-cols-3">
-                                        <NetIncomeSummaryCard className="lg:col-span-1" />
-                                        <TrendChart type="net" className="lg:col-span-2" />
-                                    </div>
-                                </section>
-                            )}
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
+                                )}
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                )}
             </main>
         </div>
     );
