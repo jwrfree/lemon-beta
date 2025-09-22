@@ -19,20 +19,17 @@ import { useUI } from '@/components/ui-provider';
 import { useApp } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
 
-const zoomVariants = {
+const pageVariants = {
     initial: {
-        scale: 0.95,
         opacity: 0,
     },
     enter: {
-        scale: 1,
         opacity: 1,
-        transition: { duration: 0.3, ease: [0.25, 1, 0.5, 1] },
+        transition: { duration: 0.24, ease: [0.25, 1, 0.5, 1] },
     },
     exit: {
-        scale: 0.95,
         opacity: 0,
-        transition: { duration: 0.2, ease: 'easeIn' },
+        transition: { duration: 0.18, ease: 'easeIn' },
     },
 };
 
@@ -123,7 +120,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
             <AnimatePresence initial={false}>
                 <motion.div
                     key={pathname}
-                    variants={zoomVariants}
+                    variants={pageVariants}
                     initial="initial"
                     animate="enter"
                     exit="exit"
