@@ -71,7 +71,7 @@ export const useBiometric = () => {
 
       // 2. Use challenge to get assertion from authenticator
       const assertion = await getCredential({
-        challenge: new Uint8Array(challenge.data),
+        challenge: new Uint8Array(challenge),
         allowCredentials: credentialIds.map((id: string) => ({
             type: 'public-key',
             id: Buffer.from(id, 'base64'),

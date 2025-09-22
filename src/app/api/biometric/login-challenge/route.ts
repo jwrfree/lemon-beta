@@ -1,22 +1,15 @@
 
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { collection, query, where, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase-admin';
 import { randomBytes } from 'crypto';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const { email } = req.body;
+    const { email } = await req.json();
 
     if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
+      return NextResponse.json({ message: 'Email is required' }, { status: 400 });
     }
 
     const usersRef = collection(db, 'users');
@@ -24,28 +17,28 @@ export default async function handler(
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      return res.status(404).json({ message: 'User not found.' });
+      return NextResponse.json({ message: 'User not found.' }, { status: 404 });
     }
 
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
 
     if (!userData.biometricCredentialId) {
-        return res.status(400).json({ message: 'Biometric login not enabled for this user.' });
+        return NextResponse.json({ message: 'Biometric login not enabled for this user.' }, { status: 400 });
     }
 
     // Generate a random challenge
     const challenge = randomBytes(32);
 
     // Store challenge temporarily, e.g., in the user's document
-    await setDoc(userDoc.ref, { loginChallenge: challenge }, { merge: true });
+    await setDoc(userDoc.ref, { loginChallenge: Buffer.from(challenge).toJSON() }, { merge: true });
 
-    res.status(200).json({
-      challenge: challenge,
+    return NextResponse.json({
+      challenge: Buffer.from(challenge).toJSON().data,
       credentialIds: [userData.biometricCredentialId],
     });
 
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
