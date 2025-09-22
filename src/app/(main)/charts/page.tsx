@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -968,8 +969,7 @@ export default function ChartsPage() {
                                 <ChevronLeft className="h-4 w-4" />
                             </Button>
                             <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Analisis</p>
-                                <h1 className="text-2xl font-bold leading-tight md:text-3xl">Wawasan Keuangan</h1>
+                                <h1 className="text-2xl font-bold leading-tight md:text-3xl">Statistik</h1>
                             </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
