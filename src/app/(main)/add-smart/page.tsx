@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
@@ -100,7 +100,15 @@ export default function SmartAddPage() {
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
 
 
-    const availableWalletsForAI = wallets.map(w => w.name);
+    const availableWalletsForAI = useMemo(() => wallets.map(w => w.name), [wallets]);
+    const availableCategoriesForAI = useMemo(
+        () => [
+            ...expenseCategories.map(({ name, subCategories }) => ({ name, subCategories: subCategories ?? [] })),
+            ...incomeCategories.map(({ name, subCategories }) => ({ name, subCategories: subCategories ?? [] })),
+            { name: 'Transfer', subCategories: [] as string[] },
+        ],
+        [expenseCategories, incomeCategories]
+    );
 
     const resetFlow = (keepInput = false) => {
         setPageState('IDLE');
@@ -208,7 +216,11 @@ export default function SmartAddPage() {
 
         try {
             if (typeof input === 'string') {
-                const result = await extractTransaction({ text: input, availableWallets: availableWalletsForAI });
+                const result = await extractTransaction({
+                    text: input,
+                    availableWallets: availableWalletsForAI,
+                    availableCategories: availableCategoriesForAI,
+                });
                 handleAISuccess(result);
             } else {
                 const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
