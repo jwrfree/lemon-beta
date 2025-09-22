@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo } from 'react';
@@ -74,7 +75,7 @@ export default function HomePage() {
     }, [debts]);
 
     return (
-        <div className="overflow-y-auto pb-16 bg-muted">
+        <>
             <header className="h-16 px-4 flex items-center justify-between sticky top-0 bg-background z-20 border-b">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
@@ -245,6 +246,6 @@ export default function HomePage() {
                     <TransactionList limit={5} />
                 </div>
             </main>
-        </div>
+        </>
     );
 }
