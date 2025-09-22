@@ -94,8 +94,15 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         <>
             <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
                 <h2 className="text-xl font-bold">{title}</h2>
-                <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onClose}
+                    className="bg-muted rounded-full"
+                    aria-label="Tutup formulir"
+                >
                     <X className="h-5 w-5" />
+                    <span className="sr-only">Tutup formulir</span>
                 </Button>
             </div>
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">

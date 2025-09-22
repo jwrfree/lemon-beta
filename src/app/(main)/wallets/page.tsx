@@ -23,8 +23,15 @@ export default function WalletsPage() {
     <div className="flex flex-col bg-muted h-full">
       <header className="h-16 flex items-center relative px-4 shrink-0 bg-background z-20 border-b">
         <h1 className="text-xl font-bold text-center w-full">Dompet Kamu</h1>
-        <Button variant="ghost" size="icon" className="absolute right-4" onClick={() => setIsWalletModalOpen(true)}>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute right-4"
+          onClick={() => setIsWalletModalOpen(true)}
+          aria-label="Tambah dompet"
+        >
           <Plus className="h-6 w-6" strokeWidth={1.75} />
+          <span className="sr-only">Tambah dompet</span>
         </Button>
       </header>
       

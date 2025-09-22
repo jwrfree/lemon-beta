@@ -43,12 +43,26 @@ export default function AssetsLiabilitiesPage() {
     return (
         <div className="h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-4"
+                    onClick={() => router.back()}
+                    aria-label="Kembali"
+                >
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+                    <span className="sr-only">Kembali</span>
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Aset & Liabilitas</h1>
-                <Button variant="ghost" size="icon" className="absolute right-4" onClick={() => handleOpenForm()}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4"
+                    onClick={() => handleOpenForm()}
+                    aria-label="Tambah entri baru"
+                >
                     <Plus className="h-6 w-6" strokeWidth={1.75} />
+                    <span className="sr-only">Tambah entri baru</span>
                 </Button>
             </header>
             <main className="flex-1 overflow-y-auto p-4 space-y-6 pb-20">
@@ -78,8 +92,15 @@ export default function AssetsLiabilitiesPage() {
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <CardTitle className="text-lg font-semibold flex items-center gap-2"><TrendingUp className="h-5 w-5 text-green-500" /> Aset</CardTitle>
-                                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleOpenForm({ type: 'asset' })}>
+                                 <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={() => handleOpenForm({ type: 'asset' })}
+                                    aria-label="Tambah aset"
+                                >
                                     <Plus className="h-5 w-5" />
+                                    <span className="sr-only">Tambah aset</span>
                                 </Button>
                             </CardHeader>
                             <CardContent>
@@ -91,8 +112,15 @@ export default function AssetsLiabilitiesPage() {
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <CardTitle className="text-lg font-semibold flex items-center gap-2"><MinusCircle className="h-5 w-5 text-destructive" /> Liabilitas</CardTitle>
-                                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleOpenForm({ type: 'liability' })}>
+                                 <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8"
+                                    onClick={() => handleOpenForm({ type: 'liability' })}
+                                    aria-label="Tambah liabilitas"
+                                >
                                     <Plus className="h-5 w-5" />
+                                    <span className="sr-only">Tambah liabilitas</span>
                                 </Button>
                             </CardHeader>
                             <CardContent>
