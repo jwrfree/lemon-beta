@@ -474,7 +474,7 @@ export default function SmartAddPage() {
                             </div>
                         </main>
 
-                        <footer className="p-2 border-t bg-background">
+                        <footer className="p-4 border-t bg-background">
                              <AnimatePresence mode="wait">
                                 {pageState === 'CONFIRMING' ? (
                                      <motion.div
@@ -503,9 +503,9 @@ export default function SmartAddPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20}}
                                     >
-                                        <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card">
+                                        <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card h-14">
                                             <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
-                                            <Button size="icon" variant="ghost" className="h-10 w-10 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
+                                            <Button size="icon" variant="ghost" className="h-11 w-11 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
                                             <Textarea
                                                 placeholder="Ketik atau rekam suara..."
                                                 className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0"
@@ -534,10 +534,10 @@ export default function SmartAddPage() {
                                                             className="flex items-center"
                                                         >
                                                             {!inputValue && (
-                                                                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full bg-muted" onClick={() => { setIsVoiceInputMode(true); toggleListening();}}><Mic className="h-5 w-5" /></Button>
+                                                                <Button size="icon" variant="ghost" className="h-11 w-11 rounded-full bg-muted" onClick={() => { setIsVoiceInputMode(true); toggleListening();}}><Mic className="h-5 w-5" /></Button>
                                                             )}
                                                             {inputValue && (
-                                                                <Button size="icon" variant="default" className="h-10 w-10 rounded-full" onClick={() => processInput(inputValue)}>
+                                                                <Button size="icon" variant="default" className="h-11 w-11 rounded-full" onClick={() => processInput(inputValue)}>
                                                                     <Send className="h-5 w-5" />
                                                                 </Button>
                                                             )}
@@ -555,3 +555,5 @@ export default function SmartAddPage() {
             </div>
         </div>
     );
+
+    
