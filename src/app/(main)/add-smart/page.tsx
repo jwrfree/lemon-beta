@@ -503,12 +503,14 @@ export default function SmartAddPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20}}
                                     >
-                                        <div className="relative">
+                                        <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card">
                                             <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
+                                            <Button size="icon" variant="ghost" className="h-10 w-10 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
                                             <Textarea
                                                 placeholder="Ketik atau rekam suara..."
-                                                className="pr-24 min-h-[48px] max-h-48"
+                                                className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0"
                                                 minRows={1}
+                                                maxRows={5}
                                                 value={inputValue}
                                                 onChange={(e) => setInputValue(e.target.value)}
                                                 onKeyDown={(e) => {
@@ -519,10 +521,10 @@ export default function SmartAddPage() {
                                                 }}
                                                 disabled={pageState !== 'IDLE'}
                                             />
-                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center h-full">
+                                            <div className="flex items-center">
                                                 <AnimatePresence>
                                                     {pageState === 'ANALYZING' ? (
-                                                        <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground" />
+                                                        <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground mx-3" />
                                                     ) : (
                                                         <motion.div 
                                                             key="actions"
@@ -531,10 +533,11 @@ export default function SmartAddPage() {
                                                             exit={{ opacity: 0, scale: 0.8 }}
                                                             className="flex items-center"
                                                         >
-                                                            <Button size="icon" variant="ghost" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                                            {!inputValue && <Button size="icon" variant="ghost" onClick={() => { setIsVoiceInputMode(true); toggleListening();}} className={cn(isListening && 'text-red-500')}><Mic className="h-5 w-5" /></Button>}
+                                                            {!inputValue && (
+                                                                <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full bg-muted" onClick={() => { setIsVoiceInputMode(true); toggleListening();}}><Mic className="h-5 w-5" /></Button>
+                                                            )}
                                                             {inputValue && (
-                                                                <Button size="icon" variant="default" className="rounded-full" onClick={() => processInput(inputValue)}>
+                                                                <Button size="icon" variant="default" className="h-10 w-10 rounded-full" onClick={() => processInput(inputValue)}>
                                                                     <Send className="h-5 w-5" />
                                                                 </Button>
                                                             )}
@@ -552,5 +555,3 @@ export default function SmartAddPage() {
             </div>
         </div>
     );
-
-    
