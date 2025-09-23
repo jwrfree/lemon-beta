@@ -196,24 +196,10 @@ export const TransactionListItem = ({ transaction, hideDate = false }: { transac
                 onDragEnd={onDragEnd}
                 style={{ x }}
                 className="relative bg-card z-20"
+                whileTap={{ scale: 0.98 }}
+                onTap={() => openEditTransactionModal(transaction)}
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
-                <div className="flex flex-wrap justify-end gap-2 border-t border-border/60 px-3 pt-2 pb-3">
-                    <Button
-                        variant="outline"
-                        onClick={() => openEditTransactionModal(transaction)}
-                        aria-label={description ? `Edit transaksi ${description}` : 'Edit transaksi'}
-                    >
-                        Edit
-                    </Button>
-                    <Button
-                        variant="destructive"
-                        onClick={() => openDeleteModal(transaction)}
-                        aria-label={description ? `Hapus transaksi ${description}` : 'Hapus transaksi'}
-                    >
-                        Hapus
-                    </Button>
-                </div>
             </motion.div>
         </div>
     );
