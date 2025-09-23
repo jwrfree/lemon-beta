@@ -103,15 +103,7 @@ export default function SmartAddPage() {
 
 
     const availableWalletsForAI = useMemo(() => wallets.map(w => w.name), [wallets]);
-    const availableCategoriesForAI = useMemo(
-        () => [
-            ...expenseCategories.map(({ name, subCategories }) => ({ name, subCategories: subCategories ?? [] })),
-            ...incomeCategories.map(({ name, subCategories }) => ({ name, subCategories: subCategories ?? [] })),
-            { name: 'Transfer', subCategories: [] as string[] },
-        ],
-        [expenseCategories, incomeCategories]
-    );
-
+    
     const resetFlow = (keepInput = false) => {
         setPageState('IDLE');
         setParsedData(null);
@@ -221,7 +213,6 @@ export default function SmartAddPage() {
                 const result = await extractTransaction({
                     text: input,
                     availableWallets: availableWalletsForAI,
-                    availableCategories: availableCategoriesForAI,
                 });
                 handleAISuccess(result);
             } else {

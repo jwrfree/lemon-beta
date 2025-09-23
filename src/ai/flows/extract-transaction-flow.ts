@@ -14,10 +14,6 @@ import {z} from 'genkit';
 
 const TransactionExtractionInputSchema = z.object({
   text: z.string().describe('The user\'s raw text input about a transaction.'),
-  availableCategories: z.array(z.object({
-    name: z.string(),
-    subCategories: z.array(z.string()).optional(),
-  })).describe('List of available categories and their sub-categories for the user.'),
   availableWallets: z.array(z.string()).describe('List of available wallets for the user.'),
 });
 export type TransactionExtractionInput = z.infer<typeof TransactionExtractionInputSchema>;
@@ -32,10 +28,6 @@ const TransactionExtractionOutputSchema = z.object({
   destinationWallet: z.string().optional().describe('For transfers only. The name of the wallet where the money is going TO.'),
   location: z.string().optional().describe('The store or location where the transaction occurred, if mentioned.'),
   date: z.string().optional().describe('The transaction date in YYYY-MM-DD format. If not mentioned, use today\'s date.'),
-  availableCategories: z.array(z.object({
-    name: z.string(),
-    subCategories: z.array(z.string()).optional(),
-  })).optional().describe('Echo of the provided categories for reference.'),
 });
 export type TransactionExtractionOutput = z.infer<typeof TransactionExtractionOutputSchema>;
 
@@ -50,16 +42,13 @@ const prompt = ai.definePrompt({
   system: `You are an expert financial assistant. Your task is to extract transaction details from the user's text input.
 The current date is ${new Date().toISOString().slice(0, 10)}.
 
-Here are the available categories (with their sub-categories):
-{{{json availableCategories}}}
-
 Here are the available wallets:
 {{{json availableWallets}}}
 
 Analyze the provided text and fill in the following fields. The 'amount' and 'description' fields are mandatory.
 - amount: The monetary value of the transaction.
 - description: A clear and concise summary of what the transaction was for.
-- category: From the available categories above, choose the one that best fits the transaction. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
+- category: From the user's text, infer a general category. Use common Indonesian category names like 'Makanan', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', etc. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
 - subCategory: Based on the chosen category, select the most appropriate sub-category if the information is available in the text.
 - wallet: Identify the source wallet using the available wallets above. If no wallet is mentioned, **your default answer MUST be "Tunai"**. For transfers, this is the 'from' wallet.
 - sourceWallet: FOR TRANSFERS ONLY. The source wallet name.
