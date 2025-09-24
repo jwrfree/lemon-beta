@@ -301,58 +301,72 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
 
     const title = isEditMode ? 'Edit Transaksi' : 'Tambah Transaksi';
 
-    return (
-        <>
-            {isModal ? (
+    if (isModal) {
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
+                onClick={() => onClose()}
+            >
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
-                    onClick={() => onClose()}
+                    initial={{ y: "100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "100%" }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-full"
+                    onClick={(e) => e.stopPropagation()}
+                    {...handlers}
                 >
-                    <motion.div
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-full"
-                        onClick={(e) => e.stopPropagation()}
-                        {...handlers}
-                    >
-                        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
-                            <h2 className="text-xl font-bold">{title}</h2>
-                            <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-full">
-                                <X className="h-5 w-5" />
-                                <span className="sr-only">Tutup</span>
-                            </Button>
-                        </div>
-                        {formContent}
-                        <div className="p-4 border-t sticky bottom-0 bg-background z-10">
-                            <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
-                                {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
-                            </Button>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            ) : (
-                 <div className="absolute inset-0 z-30 flex flex-col h-full bg-background">
-                     <header className="h-16 flex items-center relative px-4 shrink-0 border-b">
-                         <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => onClose()}>
-                            <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                            <span className="sr-only">Kembali</span>
+                    <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
+                        <h2 className="text-xl font-bold">{title}</h2>
+                        <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-full">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Tutup</span>
                         </Button>
-                        <h1 className="text-xl font-bold text-center w-full">{title}</h1>
-                    </header>
+                    </div>
                     {formContent}
                     <div className="p-4 border-t sticky bottom-0 bg-background z-10">
                         <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
                             {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
                         </Button>
                     </div>
+                </motion.div>
+                 <AnimatePresence>
+                    {isSubCategorySheetOpen && selectedCategoryForSub && (
+                        <SubCategorySheet
+                            category={selectedCategoryForSub}
+                            selectedValue={subCategory}
+                            onSelect={handleSubCategorySelect}
+                            onClose={() => setIsSubCategorySheetOpen(false)}
+                        />
+                    )}
+                </AnimatePresence>
+            </>
+        );
+    }
+
+    return (
+        <>
+            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background">
+                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => onClose()}>
+                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
+                    <span className="sr-only">Kembali</span>
+                </Button>
+                <h1 className="text-xl font-bold text-center w-full">{title}</h1>
+            </header>
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 overflow-y-auto">
+                    {formContent}
                 </div>
-            )}
-            <AnimatePresence>
+                <div className="p-4 border-t bg-background z-10">
+                    <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
+                    </Button>
+                </div>
+            </div>
+             <AnimatePresence>
                 {isSubCategorySheetOpen && selectedCategoryForSub && (
                     <SubCategorySheet
                         category={selectedCategoryForSub}
