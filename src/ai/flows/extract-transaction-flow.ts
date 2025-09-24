@@ -14,7 +14,6 @@ import {z} from 'genkit';
 
 const TransactionExtractionInputSchema = z.object({
   text: z.string().describe('The user\'s raw text input about a transaction.'),
-  availableWallets: z.array(z.string()).describe('List of available wallets for the user.'),
 });
 export type TransactionExtractionInput = z.infer<typeof TransactionExtractionInputSchema>;
 
@@ -35,22 +34,19 @@ export async function extractTransaction(input: TransactionExtractionInput): Pro
   return extractTransactionFlow(input);
 }
 
-const prompt = ai.definePrompt({
+export const extractTransactionPrompt = ai.definePrompt({
   name: 'extractTransactionPrompt',
   input: {schema: TransactionExtractionInputSchema},
   output: {schema: TransactionExtractionOutputSchema},
   system: `You are an expert financial assistant. Your task is to extract transaction details from the user's text input.
 The current date is ${new Date().toISOString().slice(0, 10)}.
 
-Here are the available wallets:
-{{{json availableWallets}}}
-
 Analyze the provided text and fill in the following fields. The 'amount' and 'description' fields are mandatory.
 - amount: The monetary value of the transaction.
 - description: A clear and concise summary of what the transaction was for.
 - category: From the user's text, infer a general category. Use common Indonesian category names like 'Makanan', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', etc. If the user is moving money between their wallets (e.g., "pindah dana", "transfer dari A ke B"), the category MUST be "Transfer".
 - subCategory: Based on the chosen category, select the most appropriate sub-category if the information is available in the text.
-- wallet: Identify the source wallet using the available wallets above. If no wallet is mentioned, **your default answer MUST be "Tunai"**. For transfers, this is the 'from' wallet.
+- wallet: Identify the source wallet if mentioned. If no wallet is mentioned, **your default answer MUST be "Tunai"**. For transfers, this is the 'from' wallet.
 - sourceWallet: FOR TRANSFERS ONLY. The source wallet name.
 - destinationWallet: FOR TRANSFERS ONLY. The destination wallet name.
 - location: If a store, place, or merchant is mentioned, extract it.
@@ -70,7 +66,7 @@ const extractTransactionFlow = ai.defineFlow(
     outputSchema: TransactionExtractionOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
+    const {output} = await extractTransactionPrompt(input);
     return output!;
   }
 );

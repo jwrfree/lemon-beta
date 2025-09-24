@@ -8,9 +8,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { extractTransaction, TransactionExtractionInput } from './extract-transaction-flow';
+import { extractTransaction, TransactionExtractionInput, extractTransactionPrompt } from './extract-transaction-flow';
 
-const prompt = ai.lookupPrompt('extractTransactionPrompt');
 
 export const countTransactionTokens = ai.defineFlow(
   {
@@ -23,8 +22,8 @@ export const countTransactionTokens = ai.defineFlow(
   },
   async (text) => {
     // 1. Calculate input tokens
-    const inputData: TransactionExtractionInput = { text, availableWallets: [] }; // availableWallets is empty as per our optimization
-    const { totalTokens: inputTokens } = await prompt.countTokens({
+    const inputData: TransactionExtractionInput = { text };
+    const { totalTokens: inputTokens } = await extractTransactionPrompt.countTokens({
       input: inputData,
     });
 
