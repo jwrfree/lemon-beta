@@ -7,7 +7,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import { extractTransaction, TransactionExtractionInput, extractTransactionPrompt } from './extract-transaction-flow';
 
 
