@@ -1585,7 +1585,7 @@ export default function ChartsPage() {
     } as const;
     
     return (
-        <>
+        <div className="flex flex-col h-full">
             <header className="sticky top-0 z-20 flex h-16 items-center justify-center border-b bg-background/95 px-4 shadow-sm backdrop-blur">
                 <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
@@ -1593,7 +1593,7 @@ export default function ChartsPage() {
                 <h1 className="text-xl font-semibold tracking-tight">Statistik</h1>
             </header>
 
-            <main className="flex-1" {...handlers}>
+            <main className="flex-1 overflow-y-auto" {...handlers}>
                 <div className="sticky top-16 z-10 border-b bg-background/95 p-4 backdrop-blur">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 rounded-full bg-muted/80 p-1">
@@ -1671,7 +1671,7 @@ export default function ChartsPage() {
                     </div>
                 )}
             </main>
-        </>
+        </div>
     );
 }
 

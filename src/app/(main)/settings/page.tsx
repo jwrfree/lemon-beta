@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, 'useState', 'useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
@@ -110,11 +110,11 @@ export default function SettingsPage() {
     };
     
     return (
-        <>
+        <div className="flex flex-col h-full">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
             </header>
-            <main className="flex-1">
+            <main className="flex-1 overflow-y-auto">
                 <div className="p-4 space-y-4">
                     {/* User Profile Section */}
                     <div className="flex items-center gap-4">
@@ -226,6 +226,6 @@ export default function SettingsPage() {
                      <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v1.3.0</p>
                 </div>
             </main>
-        </>
+        </div>
     );
 };
