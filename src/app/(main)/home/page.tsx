@@ -1,12 +1,12 @@
 
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
-import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock } from 'lucide-react';
+import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock, Sparkles, PlusCircle } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/components/transaction-list';
@@ -15,6 +15,44 @@ import { differenceInCalendarDays, formatDistanceToNow, isSameMonth, parseISO } 
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AnimatedCounter } from '@/components/animated-counter';
 import type { Reminder, Debt } from '@/types/models';
+import { Input } from '@/components/ui/input';
+
+const QuickAddWidget = () => {
+    const { setIsTxModalOpen } = useUI();
+    const router = useRouter();
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-lg font-semibold">Catat Cepat</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                    Langsung catat transaksi manual di sini atau gunakan bantuan AI untuk input kompleks.
+                </p>
+                <div className="flex gap-2">
+                    <Button
+                        onClick={() => setIsTxModalOpen(true)}
+                        className="flex-1"
+                        variant="default"
+                    >
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Input Manual
+                    </Button>
+                    <Button
+                        onClick={() => router.push('/add-smart')}
+                        variant="outline"
+                        className="flex-1"
+                    >
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Pakai AI
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};
+
 
 export default function HomePage() {
     const { wallets, transactions, reminders, debts } = useApp();
@@ -75,7 +113,7 @@ export default function HomePage() {
     }, [debts]);
 
     return (
-        <>
+        <div className="bg-muted">
             <header className="h-16 px-4 flex items-center justify-between sticky top-0 bg-background z-20 border-b">
                 <h1 className="text-2xl font-bold text-primary">Lemon</h1>
                 <div className="flex items-center gap-2">
@@ -119,6 +157,8 @@ export default function HomePage() {
                         </div>
                     </CardContent>
                 </Card>
+
+                <QuickAddWidget />
 
                 <div className="grid grid-cols-2 gap-3">
                     <Button
@@ -246,6 +286,8 @@ export default function HomePage() {
                     <TransactionList limit={5} />
                 </div>
             </main>
-        </>
+        </div>
     );
 }
+
+    
