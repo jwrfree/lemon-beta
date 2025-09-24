@@ -303,35 +303,37 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
 
     if (isModal) {
         return (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
-                onClick={() => onClose()}
-            >
+            <>
                 <motion.div
-                    initial={{ y: "100%" }}
-                    animate={{ y: 0 }}
-                    exit={{ y: "100%" }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-full"
-                    onClick={(e) => e.stopPropagation()}
-                    {...handlers}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
+                    onClick={() => onClose()}
                 >
-                    <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
-                        <h2 className="text-xl font-bold">{title}</h2>
-                        <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-full">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Tutup</span>
-                        </Button>
-                    </div>
-                    {formContent}
-                    <div className="p-4 border-t sticky bottom-0 bg-background z-10">
-                        <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
-                            {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
-                        </Button>
-                    </div>
+                    <motion.div
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-full"
+                        onClick={(e) => e.stopPropagation()}
+                        {...handlers}
+                    >
+                        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
+                            <h2 className="text-xl font-bold">{title}</h2>
+                            <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-full">
+                                <X className="h-5 w-5" />
+                                <span className="sr-only">Tutup</span>
+                            </Button>
+                        </div>
+                        {formContent}
+                        <div className="p-4 border-t sticky bottom-0 bg-background z-10">
+                            <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
+                                {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
+                            </Button>
+                        </div>
+                    </motion.div>
                 </motion.div>
                  <AnimatePresence>
                     {isSubCategorySheetOpen && selectedCategoryForSub && (
