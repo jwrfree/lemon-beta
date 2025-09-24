@@ -15,7 +15,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, BellRing, HandCoins } from 'lucide-react';
+import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, BellRing, HandCoins, Calculator } from 'lucide-react';
 import { useApp } from '@/components/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -182,6 +182,16 @@ export default function SettingsPage() {
                                  {index < managementItems.length - 1 && <Separator className="mx-4 w-auto"/>}
                             </React.Fragment>
                         ))}
+                    </div>
+
+                    {/* Tools Card */}
+                     <div className="rounded-lg bg-card overflow-hidden">
+                        <button onClick={() => router.push('/token-calculator')} className="w-full flex items-center gap-4 px-4 py-4 hover:bg-accent text-left">
+                            <Calculator className="h-6 w-6 text-muted-foreground" strokeWidth={1.5}/>
+                            <span className="font-medium flex-1">Kalkulator Token AI</span>
+                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                            <span className="sr-only">Buka Kalkulator Token AI</span>
+                        </button>
                     </div>
                     
                      {/* Logout Button */}
