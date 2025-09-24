@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebase-admin';
 import { generateRegistrationOptions } from '@simplewebauthn/server';
@@ -19,11 +20,8 @@ export async function POST(req: NextRequest) {
     const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
 
-    if (!userDoc.exists) {
-      return NextResponse.json({ message: 'User not found.' }, { status: 404 });
-    }
-
-    const userData = userDoc.data() ?? {};
+    // Although get() is called, we will use set({merge: true}) which can handle both creation and update.
+    const userData = userDoc.exists() ? userDoc.data() ?? {} : {};
 
     const options = await generateRegistrationOptions({
       rpID: RP_ID,
@@ -48,6 +46,7 @@ export async function POST(req: NextRequest) {
         : [],
     });
 
+    // Use set with merge to handle both new and existing users, preventing race conditions.
     await userRef.set(
       {
         registrationChallenge: options.challenge,

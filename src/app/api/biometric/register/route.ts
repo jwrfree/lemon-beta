@@ -61,6 +61,7 @@ export async function POST(req: NextRequest) {
     const { credentialID, credentialPublicKey, counter } =
       verification.registrationInfo;
 
+    // Use set with merge to robustly handle user document updates.
     await userRef.set(
       {
         biometricCredentialId: credentialID,
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
         biometricCounter: counter,
         isBiometricEnabled: true,
         registrationChallenge: admin.firestore.FieldValue.delete(),
-        email: email ?? userData.email,
+        email: email ?? userData.email, // Ensure email is persisted
       },
       { merge: true },
     );
