@@ -23,7 +23,8 @@ export const countTransactionTokens = ai.defineFlow(
   async (text) => {
     // 1. Calculate input tokens
     const inputData: TransactionExtractionInput = { text };
-    const { totalTokens: inputTokens } = await extractTransactionPrompt.countTokens({
+    const { totalTokens: inputTokens } = await ai.countTokens({
+      prompt: extractTransactionPrompt,
       input: inputData,
     });
 
