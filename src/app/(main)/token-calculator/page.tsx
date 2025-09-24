@@ -38,7 +38,7 @@ export default function TokenCalculatorPage() {
     };
 
     return (
-        <div className="h-full bg-muted">
+        <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button
                     variant="ghost"
