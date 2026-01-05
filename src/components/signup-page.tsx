@@ -185,7 +185,7 @@ export const SignUpPage = ({
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type="email" id="signup-email" autoComplete="email" placeholder="email@contoh.com" className="pl-10 pr-12 text-base h-12" {...field} />
+                                                <Input type="email" id="signup-email" autoComplete="email" placeholder="email@contoh.com" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
                                             {field.value && (
                                                 <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')} aria-label="Hapus email">
@@ -206,7 +206,7 @@ export const SignUpPage = ({
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showPassword ? "text" : "password"} id="signup-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12 text-base h-12" {...field} />
+                                                <Input type={showPassword ? "text" : "password"} id="signup-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-pressed={showPassword} aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}>
                                                 {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
@@ -239,7 +239,7 @@ export const SignUpPage = ({
                                         <div className="relative">
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <FormControl>
-                                                <Input type={showConfirmPassword ? "text" : "password"} id="signup-confirm-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12 text-base h-12" {...field} />
+                                                <Input type={showConfirmPassword ? "text" : "password"} id="signup-confirm-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
                                             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-pressed={showConfirmPassword} aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi password' : 'Tampilkan konfirmasi password'}>
                                                 {showConfirmPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}

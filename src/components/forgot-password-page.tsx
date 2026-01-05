@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState } from 'react';
@@ -136,7 +137,8 @@ export const ForgotPasswordPage = ({
                                                     id="forgot-password-email"
                                                     autoComplete="email"
                                                     placeholder="email@contoh.com"
-                                                    className="pl-10 pr-12 text-base h-12"
+                                                    className="pl-10 pr-12"
+                                                    size="lg"
                                                     {...field}
                                                 />
                                             </FormControl>

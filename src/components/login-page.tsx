@@ -182,7 +182,8 @@ export const LoginPage = ({
                                                     id="email"
                                                     autoComplete="email"
                                                     placeholder="email@contoh.com"
-                                                    className="pl-10 pr-12 text-base h-12"
+                                                    className="pl-10 pr-12"
+                                                    size="lg"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -217,7 +218,8 @@ export const LoginPage = ({
                                                     id="password"
                                                     autoComplete="current-password"
                                                     placeholder="********"
-                                                    className="pl-10 pr-12 text-base h-12"
+                                                    className="pl-10 pr-12"
+                                                    size="lg"
                                                     {...field}
                                                 />
                                             </FormControl>

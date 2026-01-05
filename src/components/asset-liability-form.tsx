@@ -135,7 +135,8 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                         onChange={handleAmountChange}
                         required
                         inputMode="numeric"
-                        className="text-2xl h-14 font-bold"
+                        size="lg"
+                        className="text-2xl font-bold"
                     />
                 </div>
 
