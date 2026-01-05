@@ -1,7 +1,7 @@
 
 'use client';
 import { useMemo } from 'react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { TransactionListItem } from './transaction-list-item';
 import { formatRelativeDate } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
@@ -17,7 +17,7 @@ interface TransactionListProps {
 }
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId }: TransactionListProps) => {
-    const { transactions: allTransactions } = useApp();
+    const { transactions: allTransactions } = useData();
     const router = useRouter();
 
     const finalTransactions = useMemo(() => {

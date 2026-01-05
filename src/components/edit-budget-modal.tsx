@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Trash2 } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,7 +17,7 @@ import { useUI } from './ui-provider';
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const EditBudgetModal = ({ budget, onClose }: { budget: any, onClose: () => void }) => {
-  const { updateBudget, deleteBudget, expenseCategories } = useApp();
+  const { updateBudget, deleteBudget, expenseCategories } = useData();
   const { showToast } = useUI();
 
   const [budgetName, setBudgetName] = useState(budget.name);

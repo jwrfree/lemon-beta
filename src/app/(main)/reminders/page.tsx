@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { format, formatDistanceToNow, isBefore, parseISO, addDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -39,7 +39,7 @@ const getReminderStatus = (reminder: Reminder) => {
 
 export default function RemindersPage() {
     const router = useRouter();
-    const { reminders, debts, markReminderComplete, snoozeReminder, deleteReminder } = useApp();
+    const { reminders, debts, markReminderComplete, snoozeReminder, deleteReminder } = useData();
     const { setIsReminderModalOpen, setReminderToEdit, showToast } = useUI();
 
     const [activeTab, setActiveTab] = useState('upcoming');

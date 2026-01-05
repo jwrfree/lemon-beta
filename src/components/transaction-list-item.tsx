@@ -2,7 +2,7 @@
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails as getCategoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
@@ -13,7 +13,7 @@ import { Button } from './ui/button';
 
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
-    const { wallets } = useApp();
+    const { wallets } = useData();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
     const categoryDetails = getCategoryDetails(transaction.category);

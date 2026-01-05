@@ -5,14 +5,14 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Plus, Wallet, PlusCircle } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { WalletCardStack } from '@/components/wallet-card-stack';
 import { TransactionList } from '@/components/transaction-list';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
 
 export default function WalletsPage() {
-  const { wallets } = useApp();
+  const { wallets } = useData();
   const { setIsWalletModalOpen } = useUI();
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);

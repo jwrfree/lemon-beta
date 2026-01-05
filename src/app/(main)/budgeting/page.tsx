@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, HandCoins } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
@@ -15,7 +15,7 @@ import { Pie, PieChart } from "recharts"
 import { useUI } from '@/components/ui-provider';
 
 const BudgetCard = ({ budget }: { budget: any }) => {
-    const { transactions } = useApp();
+    const { transactions } = useData();
     const router = useRouter();
 
     const spent = useMemo(() => {
@@ -88,7 +88,7 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 
 export default function BudgetingPage() {
     const router = useRouter();
-    const { budgets, transactions } = useApp();
+    const { budgets, transactions } = useData();
     const { setIsBudgetModalOpen } = useUI();
 
     const overview = useMemo(() => {

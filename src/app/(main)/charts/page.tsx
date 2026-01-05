@@ -49,7 +49,7 @@ import {
     YAxis,
 } from 'recharts';
 
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -101,7 +101,7 @@ const PlaceholderContent = ({
 
 
 const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
-    const { transactions } = useApp();
+    const { transactions } = useData();
     const router = useRouter();
 
     const handleCategoryClick = (category: string) => {
@@ -255,7 +255,7 @@ const compactCurrencyFormatter = new Intl.NumberFormat('id-ID', {
 });
 
 const ExpenseShortTermTrend = () => {
-    const { transactions } = useApp();
+    const { transactions } = useData();
     const [range, setRange] = useState<'14' | '30'>('14');
     const [chartType, setChartType] = useState<'area' | 'bar'>('area');
 
@@ -484,7 +484,7 @@ const ExpenseShortTermTrend = () => {
 };
 
 const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
-    const { transactions } = useApp();
+    const { transactions } = useData();
 
     const { data, rangeLabel, highestMonth, totalYear, average } = useMemo(() => {
         const now = startOfMonth(new Date());
@@ -626,7 +626,7 @@ const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
 
 
 const MonthlySummary = ({ type }: { type: TabValue }) => {
-    const { transactions } = useApp();
+    const { transactions } = useData();
 
     const summary = useMemo(() => {
         const now = new Date();
@@ -933,7 +933,7 @@ const MonthlySummary = ({ type }: { type: TabValue }) => {
 
 
 const NetCashflowChart = () => {
-    const { transactions } = useApp();
+    const { transactions } = useData();
     const [selectedQuarter, setSelectedQuarter] = useState<'all' | string>('all');
     const [selectedMonthKey, setSelectedMonthKey] = useState<string | null>(null);
 

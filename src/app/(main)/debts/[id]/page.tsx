@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency } from '@/lib/utils';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
@@ -40,7 +40,7 @@ export default function DebtDetailPage() {
     const router = useRouter();
     const params = useParams<{ id: string }>();
     const debtId = params?.id;
-    const { debts, deleteDebt, markDebtSettled, deleteDebtPayment } = useApp();
+    const { debts, deleteDebt, markDebtSettled, deleteDebtPayment } = useData();
     const { setDebtToEdit, setIsDebtModalOpen, setDebtForPayment, setIsDebtPaymentModalOpen, showToast } = useUI();
 
     const debt = debts.find((item: Debt) => item.id === debtId);

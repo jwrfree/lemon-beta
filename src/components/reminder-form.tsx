@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Trash2, CalendarClock } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,7 +49,7 @@ const reminderTypes = [
 ];
 
 export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps) => {
-    const { addReminder, updateReminder, deleteReminder, debts } = useApp();
+    const { addReminder, updateReminder, deleteReminder, debts } = useData();
     const { showToast } = useUI();
     const isEditMode = !!initialData;
 

@@ -3,7 +3,7 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Paperclip, Camera, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ShieldAlert, ArrowRight, TrendingDown, ChevronLeft } from 'lucide-react';
@@ -78,7 +78,7 @@ export default function SmartAddPage() {
         transactions,
         expenseCategories,
         incomeCategories,
-    } = useApp();
+    } = useData();
 
     const {
         setIsTransferModalOpen,

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency } from '@/lib/utils';
 import { formatDistanceToNow, parseISO } from 'date-fns';
@@ -34,7 +34,7 @@ const getDebtStatusBadge = (debt: Debt) => {
 
 export default function DebtsPage() {
     const router = useRouter();
-    const { debts, markDebtSettled } = useApp();
+    const { debts, markDebtSettled } = useData();
     const { setIsDebtModalOpen, setDebtToEdit, setIsDebtPaymentModalOpen, setDebtForPayment } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
 

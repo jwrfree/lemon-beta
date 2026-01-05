@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { ScrollArea } from './ui/scroll-area';
 import { Slider } from './ui/slider';
 import { useUI } from './ui-provider';
@@ -17,7 +17,7 @@ import { useUI } from './ui-provider';
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
-  const { addBudget, expenseCategories } = useApp();
+  const { addBudget, expenseCategories } = useData();
   const { showToast } = useUI();
   const [step, setStep] = useState(1);
   const [budgetName, setBudgetName] = useState('');

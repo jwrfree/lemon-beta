@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -16,7 +16,7 @@ import { useUI } from '@/components/ui-provider';
 export default function BudgetDetailPage() {
     const router = useRouter();
     const params = useParams();
-    const { budgets, transactions } = useApp();
+    const { budgets, transactions } = useData();
     const { openEditBudgetModal } = useUI();
 
     const budgetId = Array.isArray(params.id) ? params.id[0] : params.id;

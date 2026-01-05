@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Trash2, CalendarClock } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,7 +53,7 @@ const frequencyOptions = [
 ];
 
 export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
-    const { addDebt, updateDebt, deleteDebt } = useApp();
+    const { addDebt, updateDebt, deleteDebt } = useData();
     const { showToast } = useUI();
     const isEditMode = !!initialData;
 

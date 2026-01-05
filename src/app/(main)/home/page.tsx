@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock, Sparkles, PlusCircle } from 'lucide-react';
@@ -55,7 +55,7 @@ const QuickAddWidget = () => {
 
 
 export default function HomePage() {
-    const { wallets, transactions, reminders, debts } = useApp();
+    const { wallets, transactions, reminders, debts } = useData();
     const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit } = useUI();
     const router = useRouter();
 

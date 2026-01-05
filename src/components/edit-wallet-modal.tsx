@@ -8,13 +8,13 @@ import { X, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { Switch } from './ui/switch';
 import { useUI } from './ui-provider';
 
 export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () => void }) => {
-  const { updateWallet, deleteWallet } = useApp();
+  const { updateWallet, deleteWallet } = useData();
   const { showToast } = useUI();
   const [walletName, setWalletName] = useState(wallet.name);
   const [isDefault, setIsDefault] = useState(wallet.isDefault || false);

@@ -1,9 +1,10 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, CalendarClock } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +24,7 @@ interface DebtPaymentFormProps {
 }
 
 export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
-    const { wallets, logDebtPayment } = useApp();
+    const { wallets, logDebtPayment } = useData();
     const { showToast } = useUI();
 
     const defaultWallet = wallets.find(wallet => wallet.isDefault) || wallets[0];

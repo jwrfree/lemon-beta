@@ -14,11 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { useApp } from '@/components/app-provider';
+import { useData } from '@/hooks/use-data';
 import { useUI } from './ui-provider';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
-  const { addTransfer, wallets } = useApp();
+  const { addTransfer, wallets } = useData();
   const { preFilledTransfer, setPreFilledTransfer, showToast } = useUI();
   
   const [fromWalletId, setFromWalletId] = useState(preFilledTransfer?.fromWalletId || '');
