@@ -1,7 +1,8 @@
+
 'use client';
 
 import React, { useState, createContext, useContext } from 'react';
-import type { Transaction, Wallet, Budget, Goal, Reminder, Debt } from '@/types/models';
+import type { Transaction, Wallet, Budget, Reminder, Debt } from '@/types/models';
 
 interface PreFilledTransfer {
     fromWalletId: string;
@@ -46,9 +47,9 @@ interface UIContextType {
 
     isGoalModalOpen: boolean;
     setIsGoalModalOpen: (isOpen: boolean) => void;
-    goalToEdit: Goal | null;
-    setGoalToEdit: (goal: Goal | null) => void;
-    openEditGoalModal: (goal: Goal) => void;
+    goalToEdit: any | null;
+    setGoalToEdit: (goal: any | null) => void;
+    openEditGoalModal: (goal: any) => void;
 
     isReminderModalOpen: boolean;
     setIsReminderModalOpen: (isOpen: boolean) => void;
@@ -97,7 +98,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [walletToEdit, setWalletToEdit] = useState<Wallet | null>(null);
     const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
     const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
-    const [goalToEdit, setGoalToEdit] = useState<Goal | null>(null);
+    const [goalToEdit, setGoalToEdit] = useState<any | null>(null);
     const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
     const [reminderToEdit, setReminderToEdit] = useState<Reminder | null>(null);
     const [isDebtModalOpen, setIsDebtModalOpen] = useState(false);
@@ -144,7 +145,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen(true);
     };
 
-    const openEditGoalModal = (goal: Goal) => {
+    const openEditGoalModal = (goal: any) => {
         setGoalToEdit(goal);
         setIsGoalModalOpen(true);
     };

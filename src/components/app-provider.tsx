@@ -37,7 +37,6 @@ import type {
     Budget,
     BudgetInput,
     Goal,
-    GoalInput,
     Transaction,
     TransactionInput,
     TransactionUpdate,
@@ -58,7 +57,6 @@ interface AppContextType {
     wallets: Wallet[];
     transactions: Transaction[];
     budgets: Budget[];
-    goals: Goal[];
     reminders: Reminder[];
     debts: Debt[];
     expenseCategories: typeof categories.expense;
@@ -73,9 +71,6 @@ interface AppContextType {
     addBudget: (budgetData: BudgetInput) => Promise<void>;
     updateBudget: (budgetId: string, budgetData: Partial<Budget>) => Promise<void>;
     deleteBudget: (budgetId: string) => Promise<void>;
-    addGoal: (goalData: GoalInput) => Promise<void>;
-    updateGoal: (goalId: string, goalData: Partial<Goal>) => Promise<void>;
-    deleteGoal: (goalId: string) => Promise<void>;
     addReminder: (reminderData: ReminderInput) => Promise<void>;
     updateReminder: (reminderId: string, reminderData: ReminderInput) => Promise<void>;
     deleteReminder: (reminderId: string) => Promise<void>;
@@ -117,7 +112,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [budgets, setBudgets] = useState<Budget[]>([]);
-    const [goals, setGoals] = useState<Goal[]>([]);
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [debts, setDebts] = useState<Debt[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -141,7 +135,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setWallets([]);
             setTransactions([]);
             setBudgets([]);
-            setGoals([]);
             setUserData(null);
             setIsLoading(false);
             return;
@@ -219,13 +212,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 orderByField: 'createdAt',
                 orderDirection: 'desc',
                 logName: 'budgets',
-            }),
-            subscribeToCollection<Goal>({
-                setter: setGoals,
-                ref: getCollectionRef('goals'),
-                orderByField: 'targetDate',
-                orderDirection: 'asc',
-                logName: 'goals',
             }),
             subscribeToCollection<Reminder>({
                 setter: setReminders,
@@ -476,42 +462,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
         
         ui.showToast("Transaksi berhasil dihapus!", 'success');
-    }, [user, getCollectionRef, ui]);
-
-    const addGoal = useCallback(async (goalData: GoalInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const goalsCollection = getCollectionRef('goals');
-        if (!goalsCollection) return;
-
-        await addDoc(goalsCollection, {
-            ...goalData,
-            createdAt: new Date().toISOString(),
-            userId: user.uid,
-        });
-        ui.showToast("Target berhasil dibuat!", 'success');
-        ui.setIsGoalModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const updateGoal = useCallback(async (goalId: string, goalData: Partial<Goal>) => {
-        if (!user) throw new Error("User not authenticated.");
-        const goalsCollection = getCollectionRef('goals');
-        if (!goalsCollection) return;
-
-        const goalRef = doc(goalsCollection, goalId);
-        await updateDoc(goalRef, goalData);
-        ui.showToast("Target berhasil diperbarui!", 'success');
-        ui.setIsGoalModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const deleteGoal = useCallback(async (goalId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const goalsCollection = getCollectionRef('goals');
-        if (!goalsCollection) return;
-
-        const goalRef = doc(goalsCollection, goalId);
-        await deleteDoc(goalRef);
-        ui.showToast("Target berhasil dihapus.", 'success');
-        ui.setIsGoalModalOpen(false);
     }, [user, getCollectionRef, ui]);
 
     const addReminder = useCallback(async (reminderData: ReminderInput) => {
@@ -829,13 +779,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    const contextValue: AppContextType = {
+    const contextValue: Omit<AppContextType, 'goals' | 'addGoal' | 'updateGoal' | 'deleteGoal'> & { goals: Goal[] } = {
         user,
         userData,
         wallets,
         transactions,
         budgets,
-        goals,
+        goals: [],
         reminders,
         debts,
         expenseCategories: categories.expense,
@@ -850,9 +800,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         addBudget,
         updateBudget,
         deleteBudget,
-        addGoal,
-        updateGoal,
-        deleteGoal,
         addReminder,
         updateReminder,
         deleteReminder,
@@ -870,7 +817,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AppContext.Provider value={contextValue}>
+        <AppContext.Provider value={contextValue as AppContextType}>
             {children}
         </AppContext.Provider>
     );

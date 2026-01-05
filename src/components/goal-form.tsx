@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Trash2, Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, CalendarIcon } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +14,7 @@ import { Calendar } from './ui/calendar';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from './ui-provider';
+import { useGoals } from '@/hooks/use-goals';
 
 
 const goalIcons = [
@@ -34,7 +34,7 @@ interface GoalFormProps {
 }
 
 export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
-    const { addGoal, updateGoal, deleteGoal } = useApp();
+    const { addGoal, updateGoal, deleteGoal } = useGoals();
     const { showToast } = useUI();
     const isEditMode = !!initialData;
 

@@ -4,13 +4,13 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Rocket } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
 import { GoalList } from '@/components/goal-list';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
+import { useGoals } from '@/hooks/use-goals';
 
 export default function GoalsPage() {
-    const { goals } = useApp();
+    const { goals } = useGoals();
     const { setIsGoalModalOpen } = useUI();
 
     return (

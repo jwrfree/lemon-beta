@@ -98,7 +98,7 @@ export interface Liability extends BaseRecord {
     icon?: string | null;
     targetAmount: number;
     currentAmount: number;
-    targetDate?: string | null;
+    targetDate?: string;
     notes?: string | null;
   }
 
