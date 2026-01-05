@@ -2,12 +2,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeTransition } from "@/components/theme-transition";
 import { AppProvider } from "@/components/app-provider";
 import { UIProvider } from "@/components/ui-provider";
 import { ServiceWorkerProvider } from "@/components/service-worker-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
@@ -50,7 +50,7 @@ export default function RootLayout({
           <UIProvider>
             <AppProvider>
               <ServiceWorkerProvider />
-              <NextTopLoader color="hsl(var(--primary))" showSpinner={false} />
+              <Toaster />
               {children}
             </AppProvider>
           </UIProvider>
