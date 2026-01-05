@@ -31,7 +31,9 @@ export async function POST(req: NextRequest) {
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {
-      return NextResponse.json({ message: 'User not found.' }, { status: 404 });
+      // This case should be rare due to the set({merge: true}) in the options route,
+      // but it's a good safeguard.
+      return NextResponse.json({ message: 'User document does not exist.' }, { status: 404 });
     }
 
     const userData = userDoc.data() ?? {};

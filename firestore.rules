@@ -8,12 +8,15 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Allow the server to read user documents for authentication purposes (e.g., biometric login)
+    // Allow a server process (that is not authenticated) to read a user document
+    // ONLY for the purpose of biometric login. Deny listing or writing.
     match /users/{userId} {
-      allow get: if true;
+      allow get: if request.auth == null;
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Allow users to read, create, update, and delete their own data
+    // Allow logged-in users to read, create, update, and delete their own data
+    // in their own sub-collections.
     match /users/{userId}/{collection}/{docId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
