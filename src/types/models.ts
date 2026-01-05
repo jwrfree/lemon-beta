@@ -1,3 +1,4 @@
+
 export interface BaseRecord {
   id: string;
   userId?: string;
@@ -83,15 +84,13 @@ export interface Wallet extends BaseRecord {
 export interface Asset extends BaseRecord {
   name: string;
   value: number;
-  type?: string;
-  category?: string;
+  categoryKey: string;
 }
 
 export interface Liability extends BaseRecord {
   name: string;
   value: number;
-  type?: string;
-  category?: string;
+  categoryKey: string;
 }
 
   export interface Goal extends BaseRecord {
@@ -147,6 +146,6 @@ export type TransactionUpdate = TransactionInput;
 export type WalletInput = Omit<Wallet, 'id'>;
 export type BudgetInput = Omit<Budget, 'id'>;
 export type GoalInput = Omit<Goal, 'id'>;
-export type AssetPayload = Omit<Asset, 'id'>;
-export type LiabilityPayload = Omit<Liability, 'id'>;
+export type AssetPayload = Omit<Asset, 'id' | 'createdAt' | 'updatedAt'>;
+export type LiabilityPayload = Omit<Liability, 'id' | 'createdAt' | 'updatedAt'>;
 export type AssetLiabilityInput = (AssetPayload & { type: 'asset' }) | (LiabilityPayload & { type: 'liability' });

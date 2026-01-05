@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
@@ -35,9 +36,6 @@ import type {
     WalletInput,
     Budget,
     BudgetInput,
-    Asset,
-    Liability,
-    AssetLiabilityInput,
     Goal,
     GoalInput,
     Transaction,
@@ -60,8 +58,6 @@ interface AppContextType {
     wallets: Wallet[];
     transactions: Transaction[];
     budgets: Budget[];
-    assets: Asset[];
-    liabilities: Liability[];
     goals: Goal[];
     reminders: Reminder[];
     debts: Debt[];
@@ -77,9 +73,6 @@ interface AppContextType {
     addBudget: (budgetData: BudgetInput) => Promise<void>;
     updateBudget: (budgetId: string, budgetData: Partial<Budget>) => Promise<void>;
     deleteBudget: (budgetId: string) => Promise<void>;
-    addAssetLiability: (data: AssetLiabilityInput) => Promise<void>;
-    updateAssetLiability: (id: string, type: 'asset' | 'liability', data: Partial<Asset> | Partial<Liability>) => Promise<void>;
-    deleteAssetLiability: (id: string, type: 'asset' | 'liability') => Promise<void>;
     addGoal: (goalData: GoalInput) => Promise<void>;
     updateGoal: (goalId: string, goalData: Partial<Goal>) => Promise<void>;
     deleteGoal: (goalId: string) => Promise<void>;
@@ -124,8 +117,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [budgets, setBudgets] = useState<Budget[]>([]);
-    const [assets, setAssets] = useState<Asset[]>([]);
-    const [liabilities, setLiabilities] = useState<Liability[]>([]);
     const [goals, setGoals] = useState<Goal[]>([]);
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [debts, setDebts] = useState<Debt[]>([]);
@@ -150,8 +141,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setWallets([]);
             setTransactions([]);
             setBudgets([]);
-            setAssets([]);
-            setLiabilities([]);
             setGoals([]);
             setUserData(null);
             setIsLoading(false);
@@ -230,20 +219,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 orderByField: 'createdAt',
                 orderDirection: 'desc',
                 logName: 'budgets',
-            }),
-            subscribeToCollection<Asset>({
-                setter: setAssets,
-                ref: getCollectionRef('assets'),
-                orderByField: 'createdAt',
-                orderDirection: 'desc',
-                logName: 'assets',
-            }),
-            subscribeToCollection<Liability>({
-                setter: setLiabilities,
-                ref: getCollectionRef('liabilities'),
-                orderByField: 'createdAt',
-                orderDirection: 'desc',
-                logName: 'liabilities',
             }),
             subscribeToCollection<Goal>({
                 setter: setGoals,
@@ -476,41 +451,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         ui.setIsEditBudgetModalOpen(false);
         router.back();
     }, [user, getCollectionRef, ui, router]);
-
-    const addAssetLiability = useCallback(async (data: AssetLiabilityInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const { type, ...itemData } = data;
-        const collection = type === 'asset' ? getCollectionRef('assets') : getCollectionRef('liabilities');
-        if (!collection) return;
-
-        await addDoc(collection, {
-            ...itemData,
-            createdAt: new Date().toISOString(),
-            userId: user.uid
-        });
-
-        ui.showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
-    }, [user, getCollectionRef, ui]);
-
-    const updateAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability', data: Partial<Asset> | Partial<Liability>) => {
-        if (!user) throw new Error("User not authenticated.");
-        const collection = type === 'asset' ? getCollectionRef('assets') : getCollectionRef('liabilities');
-        if (!collection) return;
-
-        const docRef = doc(collection, id);
-        await updateDoc(docRef, data);
-        ui.showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
-    }, [user, getCollectionRef, ui]);
-
-    const deleteAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability') => {
-        if (!user) throw new Error("User not authenticated.");
-        const collection = type === 'asset' ? getCollectionRef('assets') : getCollectionRef('liabilities');
-        if (!collection) return;
-        
-        const docRef = doc(collection, id);
-        await deleteDoc(docRef);
-        ui.showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
-    }, [user, getCollectionRef, ui]);
 
     const deleteTransaction = useCallback(async (transaction: Transaction) => {
         if (!user || !transaction) return;
@@ -895,8 +835,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         wallets,
         transactions,
         budgets,
-        assets,
-        liabilities,
         goals,
         reminders,
         debts,
@@ -912,9 +850,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         addBudget,
         updateBudget,
         deleteBudget,
-        addAssetLiability,
-        updateAssetLiability,
-        deleteAssetLiability,
         addGoal,
         updateGoal,
         deleteGoal,

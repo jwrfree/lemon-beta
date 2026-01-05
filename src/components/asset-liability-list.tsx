@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useApp } from '@/components/app-provider';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { Button } from './ui/button';
@@ -16,7 +16,7 @@ interface AssetLiabilityListProps {
 }
 
 export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListProps) => {
-    const { deleteAssetLiability } = useApp();
+    const { deleteAssetLiability } = useAssetsLiabilities();
 
     if (items.length === 0) {
         const message = type === 'asset' ? "Aset yang kamu miliki akan muncul di sini." : "Daftar utang atau cicilanmu akan muncul di sini.";

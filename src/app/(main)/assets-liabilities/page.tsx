@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronLeft, Plus, Landmark, TrendingUp, MinusCircle, PlusCircle } from 'lucide-react';
-import { useApp } from '@/components/app-provider';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 import { formatCurrency } from '@/lib/utils';
 import { AssetLiabilityList } from '@/components/asset-liability-list';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,7 +15,7 @@ import { AnimatedCounter } from '@/components/animated-counter';
 
 export default function AssetsLiabilitiesPage() {
     const router = useRouter();
-    const { assets, liabilities } = useApp();
+    const { assets, liabilities } = useAssetsLiabilities();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formInitialData, setFormInitialData] = useState<any | null>(null);
 

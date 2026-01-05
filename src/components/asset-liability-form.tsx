@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useApp } from '@/components/app-provider';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,7 +30,7 @@ const liabilityCategories = [
 ];
 
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
-    const { addAssetLiability, updateAssetLiability } = useApp();
+    const { addAssetLiability, updateAssetLiability } = useAssetsLiabilities();
     const { showToast } = useUI();
     
     const isEditMode = !!initialData?.id;
