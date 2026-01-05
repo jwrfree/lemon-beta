@@ -30,7 +30,7 @@ export default function CategoriesPage() {
     };
     
     return (
-        <div className="h-full bg-muted">
+        <div className="h-full bg-muted flex flex-col">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
                 <Button
                     variant="ghost"
@@ -59,7 +59,7 @@ export default function CategoriesPage() {
                             <Button
                                 type="submit"
                                 size="icon"
-                                className="absolute right-1 top-1/2 -translate-y-1/2"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9"
                                 aria-label="Kirim email pemberitahuan"
                             >
                                 <Send className="h-4 w-4" />

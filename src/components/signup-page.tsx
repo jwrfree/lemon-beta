@@ -188,7 +188,7 @@ export const SignUpPage = ({
                                                 <Input type="email" id="signup-email" autoComplete="email" placeholder="email@contoh.com" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
                                             {field.value && (
-                                                <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7" onClick={() => form.setValue('email', '')} aria-label="Hapus email">
+                                                <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9" onClick={() => form.setValue('email', '')} aria-label="Hapus email">
                                                     <X className="h-4 w-4" />
                                                 </Button>
                                             )}
