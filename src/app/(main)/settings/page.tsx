@@ -23,6 +23,7 @@ import { motion } from 'framer-motion';
 import { useBiometric } from '@/hooks/use-biometric';
 import { Switch } from '@/components/ui/switch';
 import { useUI } from '@/components/ui-provider';
+import { PageHeader } from '@/components/page-header';
 
 export default function SettingsPage() {
     const router = useRouter();
@@ -111,9 +112,7 @@ export default function SettingsPage() {
     
     return (
         <div className="flex flex-col h-full">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <h1 className="text-xl font-bold text-center w-full">Pengaturan</h1>
-            </header>
+            <PageHeader title="Pengaturan" />
             <main className="flex-1 overflow-y-auto">
                 <div className="p-4 space-y-4">
                     {/* User Profile Section */}
