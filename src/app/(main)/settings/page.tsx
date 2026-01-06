@@ -67,7 +67,7 @@ export default function SettingsPage() {
         { id: 'goals', name: 'Target Keuangan', icon: Target, page: '/goals' },
         { id: 'reminders', name: 'Pengingat', icon: BellRing, page: '/reminders' },
         { id: 'debts', name: 'Hutang & Piutang', icon: HandCoins, page: '/debts' },
-        { id: 'assets_liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities' },
+        { id: 'assets-liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities' },
     ];
     
     const renderThemeToggle = () => {

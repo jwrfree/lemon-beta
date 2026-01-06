@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { format, formatDistanceToNow, isBefore, parseISO, addDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -16,6 +15,7 @@ import { CalendarClock, Clock, Clock3, Check, ChevronLeft, Plus, BellRing } from
 import { formatCurrency } from '@/lib/utils';
 import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/hooks/use-reminders';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 const statusLabels: Record<string, string> = {
     all: 'Semua',
@@ -41,7 +41,7 @@ const getReminderStatus = (reminder: Reminder) => {
 
 export default function RemindersPage() {
     const router = useRouter();
-    const { debts } = useData();
+    const { debts } = useAssetsLiabilities();
     const { reminders, markReminderComplete, snoozeReminder, deleteReminder } = useReminders();
     const { setIsReminderModalOpen, setReminderToEdit, showToast } = useUI();
 

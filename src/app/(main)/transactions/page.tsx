@@ -15,11 +15,13 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 const TransactionsPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, expenseCategories, incomeCategories, wallets, debts } = useData();
+    const { transactions, expenseCategories, incomeCategories, wallets } = useData();
+    const { debts } = useAssetsLiabilities();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');

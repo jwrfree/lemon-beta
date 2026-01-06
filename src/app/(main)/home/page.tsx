@@ -17,6 +17,7 @@ import { AnimatedCounter } from '@/components/animated-counter';
 import type { Reminder, Debt } from '@/types/models';
 import { Input } from '@/components/ui/input';
 import { useReminders } from '@/hooks/use-reminders';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 const QuickAddWidget = () => {
     const { setIsTxModalOpen } = useUI();
@@ -56,7 +57,8 @@ const QuickAddWidget = () => {
 
 
 export default function HomePage() {
-    const { wallets, transactions, debts } = useData();
+    const { wallets, transactions } = useData();
+    const { debts } = useAssetsLiabilities();
     const { reminders } = useReminders();
     const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit } = useUI();
     const router = useRouter();

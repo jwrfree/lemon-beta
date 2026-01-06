@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency } from '@/lib/utils';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
@@ -14,6 +13,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { ChevronLeft, CalendarClock, Trash2 } from 'lucide-react';
 import type { Debt, DebtPayment } from '@/types/models';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 const PaymentItem = ({ payment, direction }: { payment: DebtPayment; direction: string }) => {
     const paymentDate = payment.paymentDate ? parseISO(payment.paymentDate) : null;
@@ -40,7 +40,7 @@ export default function DebtDetailPage() {
     const router = useRouter();
     const params = useParams<{ id: string }>();
     const debtId = params?.id;
-    const { debts, deleteDebt, markDebtSettled, deleteDebtPayment } = useData();
+    const { debts, deleteDebt, markDebtSettled, deleteDebtPayment } = useAssetsLiabilities();
     const { setDebtToEdit, setIsDebtModalOpen, setDebtForPayment, setIsDebtPaymentModalOpen, showToast } = useUI();
 
     const debt = debts.find((item: Debt) => item.id === debtId);

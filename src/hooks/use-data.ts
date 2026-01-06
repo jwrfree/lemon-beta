@@ -25,12 +25,6 @@ import { useUI } from '@/components/ui-provider';
 import { db } from '@/lib/firebase';
 import { categories } from '@/lib/categories';
 import type {
-    Reminder,
-    ReminderInput,
-    Debt,
-    DebtInput,
-    DebtPayment,
-    DebtPaymentInput,
     Wallet,
     WalletInput,
     Budget,
@@ -49,15 +43,6 @@ interface TransferPayload {
     description: string;
 }
 
-const normalizeDateInput = (value: string | Date | null | undefined): string | null => {
-    if (!value) return null;
-    if (typeof value === 'string') {
-        return value;
-    }
-    return value.toISOString();
-};
-
-
 export const useData = () => {
     const { user } = useApp();
     const router = useNextRouter();
@@ -67,7 +52,6 @@ export const useData = () => {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [budgets, setBudgets] = useState<Budget[]>([]);
-    const [debts, setDebts] = useState<Debt[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const getCollectionRef = useCallback((collectionName: string) => {
@@ -80,7 +64,6 @@ export const useData = () => {
             setWallets([]);
             setTransactions([]);
             setBudgets([]);
-            setDebts([]);
             setIsLoading(false);
             return;
         }
@@ -145,13 +128,6 @@ export const useData = () => {
                 orderByField: 'createdAt',
                 orderDirection: 'desc',
                 logName: 'budgets',
-            }),
-            subscribeToCollection<Debt>({
-                setter: setDebts,
-                ref: getCollectionRef('debts'),
-                orderByField: 'createdAt',
-                orderDirection: 'desc',
-                logName: 'debts',
             }),
         ].filter((unsubscribe): unsubscribe is () => void => Boolean(unsubscribe));
 
@@ -389,207 +365,11 @@ export const useData = () => {
         router.back();
     }, [user, getCollectionRef, ui, router]);
 
-    const addDebt = useCallback(async (debtData: DebtInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const debtsCollection = getCollectionRef('debts');
-        if (!debtsCollection) return;
-
-        const nowIso = new Date().toISOString();
-        const payload: DebtInput = {
-            ...debtData,
-            direction: debtData.direction || 'owed',
-            category: debtData.category || 'personal',
-            principal: debtData.principal ?? 0,
-            outstandingBalance: debtData.outstandingBalance ?? debtData.principal ?? 0,
-            interestRate: debtData.interestRate ?? null,
-            paymentFrequency: debtData.paymentFrequency || 'monthly',
-            customInterval: debtData.customInterval || null,
-            startDate: normalizeDateInput(debtData.startDate),
-            dueDate: normalizeDateInput(debtData.dueDate),
-            nextPaymentDate: normalizeDateInput(debtData.nextPaymentDate),
-            notes: debtData.notes || '',
-            status: debtData.status || 'active',
-            payments: debtData.payments || [],
-        };
-
-        await addDoc(debtsCollection, {
-            ...payload,
-            createdAt: nowIso,
-            updatedAt: nowIso,
-            userId: user.uid,
-        });
-        ui.showToast("Catatan hutang/piutang dibuat!", 'success');
-        ui.setDebtToEdit(null);
-        ui.setIsDebtModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const updateDebt = useCallback(async (debtId: string, debtData: DebtInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const debtsCollection = getCollectionRef('debts');
-        if (!debtsCollection) return;
-
-        const debtRef = doc(debtsCollection, debtId);
-        const payload: DebtInput = {
-            ...debtData,
-            outstandingBalance: debtData.outstandingBalance ?? debtData.principal ?? 0,
-            startDate: normalizeDateInput(debtData.startDate),
-            dueDate: normalizeDateInput(debtData.dueDate),
-            nextPaymentDate: normalizeDateInput(debtData.nextPaymentDate),
-        };
-
-        await updateDoc(debtRef, {
-            ...payload,
-            updatedAt: new Date().toISOString(),
-        });
-        ui.showToast("Catatan hutang/piutang diperbarui.", 'success');
-        ui.setDebtToEdit(null);
-        ui.setIsDebtModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const deleteDebt = useCallback(async (debtId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const debtsCollection = getCollectionRef('debts');
-        if (!debtsCollection) return;
-
-        const debtRef = doc(debtsCollection, debtId);
-        await deleteDoc(debtRef);
-        ui.showToast("Catatan hutang/piutang dihapus.", 'info');
-        ui.setDebtToEdit(null);
-        ui.setIsDebtModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const markDebtSettled = useCallback(async (debtId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const debtsCollection = getCollectionRef('debts');
-        if (!debtsCollection) return;
-
-        const debtRef = doc(debtsCollection, debtId);
-        await updateDoc(debtRef, {
-            status: 'settled',
-            outstandingBalance: 0,
-            updatedAt: new Date().toISOString(),
-        });
-        ui.showToast("Hutang/piutang ditandai lunas.", 'success');
-    }, [user, getCollectionRef, ui]);
-
-    const logDebtPayment = useCallback(async (debtId: string, paymentData: DebtPaymentInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const debtsCollection = getCollectionRef('debts');
-        if (!debtsCollection) return;
-
-        const debtRef = doc(debtsCollection, debtId);
-        const debtSnapshot = await getDoc(debtRef);
-        if (!debtSnapshot.exists()) {
-            throw new Error('Debt not found.');
-        }
-
-        const debtData = debtSnapshot.data() as Omit<Debt, 'id'>;
-        const debt: Debt = { id: debtSnapshot.id, ...debtData } as Debt;
-        const paymentId = typeof globalThis !== 'undefined' && globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function'
-            ? globalThis.crypto.randomUUID()
-            : `${Date.now()}`;
-
-        const paymentRecord: DebtPayment = {
-            id: paymentId,
-            amount: paymentData.amount,
-            paymentDate: paymentData.paymentDate,
-            walletId: paymentData.walletId || null,
-            method: paymentData.method || 'manual',
-            notes: paymentData.notes || '',
-            createdAt: new Date().toISOString(),
-        };
-
-        const existingPayments: DebtPayment[] = Array.isArray(debt.payments) ? (debt.payments as DebtPayment[]) : [];
-        const updatedPayments = [...existingPayments, paymentRecord];
-        const baseOutstanding = typeof debt.outstandingBalance === 'number' ? debt.outstandingBalance : (debt.principal || 0);
-        const newOutstanding = Math.max(0, baseOutstanding - paymentData.amount);
-
-        const updates: Partial<Debt> = {
-            payments: updatedPayments,
-            outstandingBalance: newOutstanding,
-            updatedAt: new Date().toISOString(),
-        };
-
-        if (paymentData.nextPaymentDate) {
-            updates.nextPaymentDate = paymentData.nextPaymentDate;
-        }
-
-        if (newOutstanding <= 0) {
-            updates.status = 'settled';
-        }
-
-        await updateDoc(debtRef, updates);
-
-        if (paymentData.walletId) {
-            const walletCollection = getCollectionRef('wallets');
-            const transactionCollection = getCollectionRef('transactions');
-            if (walletCollection && transactionCollection) {
-                const walletRef = doc(walletCollection, paymentData.walletId);
-                const walletSnapshot = await getDoc(walletRef);
-                if (walletSnapshot.exists()) {
-                    const walletDocData = walletSnapshot.data() as WalletInput;
-                    const isOwed = debt.direction === 'owed';
-                    const walletBalance = typeof walletDocData.balance === 'number' ? walletDocData.balance : 0;
-                    const newBalance = isOwed ? walletBalance - paymentData.amount : walletBalance + paymentData.amount;
-                    await updateDoc(walletRef, { balance: newBalance });
-                }
-
-                await addDoc(transactionCollection, {
-                    type: debt.direction === 'owed' ? 'expense' : 'income',
-                    amount: paymentData.amount,
-                    category: debt.direction === 'owed' ? 'Bayar Hutang' : 'Terima Piutang',
-                    walletId: paymentData.walletId,
-                    description: paymentData.notes
-                        ? `${debt.direction === 'owed' ? 'Pembayaran' : 'Penerimaan'} ${debt.title}: ${paymentData.notes}`
-                        : `${debt.direction === 'owed' ? 'Pembayaran' : 'Penerimaan'} ${debt.title}`,
-                    date: paymentData.paymentDate,
-                    linkedDebtId: debtId,
-                    userId: user.uid,
-                });
-            }
-        }
-
-        ui.showToast("Pembayaran berhasil dicatat!", 'success');
-        ui.setDebtForPayment(null);
-        ui.setIsDebtPaymentModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const deleteDebtPayment = useCallback(async (debtId: string, paymentId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const debtsCollection = getCollectionRef('debts');
-        if (!debtsCollection) return;
-
-        const debtRef = doc(debtsCollection, debtId);
-        const debtSnapshot = await getDoc(debtRef);
-        if (!debtSnapshot.exists()) {
-            throw new Error('Debt not found.');
-        }
-
-        const debtData = debtSnapshot.data() as Omit<Debt, 'id'>;
-        const debt: Debt = { id: debtSnapshot.id, ...debtData } as Debt;
-        const payments: DebtPayment[] = Array.isArray(debt.payments) ? (debt.payments as DebtPayment[]) : [];
-        const paymentToRemove = payments.find(payment => payment.id === paymentId);
-        const remainingPayments = payments.filter(payment => payment.id !== paymentId);
-        const amountToAdjust = paymentToRemove?.amount || 0;
-        const baseOutstanding = typeof debt.outstandingBalance === 'number' ? debt.outstandingBalance : (debt.principal || 0);
-        const newOutstanding = baseOutstanding + amountToAdjust;
-
-        await updateDoc(debtRef, {
-            payments: remainingPayments,
-            outstandingBalance: newOutstanding,
-            status: 'active',
-            updatedAt: new Date().toISOString(),
-        });
-
-        ui.showToast("Pencatatan pembayaran dihapus.", 'info');
-    }, [user, getCollectionRef, ui]);
-
     return {
         wallets,
         transactions,
         budgets,
         reminders,
-        debts,
         expenseCategories: categories.expense,
         incomeCategories: categories.income,
         isLoading,
@@ -603,11 +383,5 @@ export const useData = () => {
         addBudget,
         updateBudget,
         deleteBudget,
-        addDebt,
-        updateDebt,
-        deleteDebt,
-        markDebtSettled,
-        logDebtPayment,
-        deleteDebtPayment,
     };
 };

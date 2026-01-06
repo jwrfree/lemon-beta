@@ -4,7 +4,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Trash2, CalendarClock } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +29,7 @@ import {
 import { cn } from '@/lib/utils';
 import type { Reminder, ReminderInput, ReminderChannel, Debt, ReminderRepeatRule } from '@/types/models';
 import { useReminders } from '@/hooks/use-reminders';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 interface ReminderFormProps {
     onClose: () => void;
@@ -51,7 +51,7 @@ const reminderTypes = [
 ];
 
 export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps) => {
-    const { debts } = useData();
+    const { debts } = useAssetsLiabilities();
     const { addReminder, updateReminder, deleteReminder } = useReminders();
     const { showToast } = useUI();
     const isEditMode = !!initialData;

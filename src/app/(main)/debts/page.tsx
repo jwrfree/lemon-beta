@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency } from '@/lib/utils';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { HandCoins, ArrowUpRight, ArrowDownRight, Plus, ChevronLeft, CalendarClock } from 'lucide-react';
 import type { Debt } from '@/types/models';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
@@ -34,7 +34,7 @@ const getDebtStatusBadge = (debt: Debt) => {
 
 export default function DebtsPage() {
     const router = useRouter();
-    const { debts, markDebtSettled } = useData();
+    const { debts, markDebtSettled } = useAssetsLiabilities();
     const { setIsDebtModalOpen, setDebtToEdit, setIsDebtPaymentModalOpen, setDebtForPayment } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
 
