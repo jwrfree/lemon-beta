@@ -16,6 +16,8 @@ import { useSwipeable } from 'react-swipeable';
 import { useUI } from './ui-provider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { AuthModalView } from '@/types/auth';
+import { cn } from '@/lib/utils';
+
 
 const formSchema = z.object({
     email: z.string().email({ message: 'Format email tidak valid.' }),
@@ -24,9 +26,11 @@ const formSchema = z.object({
 export const ForgotPasswordPage = ({
     onClose,
     setAuthModal,
+    isPage = false,
 }: {
     onClose: () => void;
     setAuthModal: React.Dispatch<React.SetStateAction<AuthModalView>>;
+    isPage?: boolean;
 }) => {
     const shouldReduceMotion = useReducedMotion();
     const { showToast } = useUI();
@@ -75,36 +79,45 @@ export const ForgotPasswordPage = ({
         preventScrollOnSwipe: true,
         trackMouse: true,
     });
+    
+    const Wrapper = isPage ? 'div' : motion.div;
+    const MotionWrapper = motion.div;
+    
+    const pageProps = isPage ? {} : {
+        initial: shouldReduceMotion ? { opacity: 1 } : { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: shouldReduceMotion ? { opacity: 1 } : { opacity: 0 },
+        transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' },
+        className: "fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm",
+        onClick: onClose,
+    };
+    
+    const contentProps = isPage ? { className: "w-full max-w-md" } : {
+        initial: shouldReduceMotion ? { y: 0 } : { y: '100%' },
+        animate: { y: 0 },
+        exit: shouldReduceMotion ? { y: 0 } : { y: '100%' },
+        transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' },
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-labelledby": "forgot-password-heading",
+        className: "w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit",
+        onClick: (e: React.MouseEvent) => e.stopPropagation(),
+        ...handlers
+    };
 
     return (
-        <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
-            onClick={onClose}
-        >
-            <motion.div
-                initial={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
-                animate={{ y: 0 }}
-                exit={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
-                transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="forgot-password-heading"
-                className="w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit"
-                onClick={event => event.stopPropagation()}
-                {...handlers}
-            >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
+        <Wrapper {...pageProps}>
+            <MotionWrapper {...contentProps}>
+                <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
                     <h2 id="forgot-password-heading" className="text-xl font-bold">
                         Lupa Password
                     </h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
-                        <X className="h-5 w-5" />
-                        <span className="sr-only">Tutup</span>
-                    </Button>
+                    {!isPage && (
+                        <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Tutup</span>
+                        </Button>
+                    )}
                 </div>
 
                 <div className="p-5 pb-6 overflow-y-auto">
@@ -188,7 +201,7 @@ export const ForgotPasswordPage = ({
                         </Button>
                     </p>
                 </div>
-            </motion.div>
-        </motion.div>
+            </MotionWrapper>
+        </Wrapper>
     );
 };

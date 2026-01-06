@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { useBiometric } from '@/hooks/use-biometric';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { AuthModalView } from '@/types/auth';
+import { cn } from '@/lib/utils';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -36,9 +37,11 @@ const formSchema = z.object({
 export const LoginPage = ({
     onClose,
     setAuthModal,
+    isPage = false,
 }: {
     onClose: () => void;
     setAuthModal: React.Dispatch<React.SetStateAction<AuthModalView>>;
+    isPage?: boolean;
 }) => {
     const shouldReduceMotion = useReducedMotion();
     const [showPassword, setShowPassword] = useState(false);
@@ -133,34 +136,44 @@ export const LoginPage = ({
         preventScrollOnSwipe: true,
         trackMouse: true,
     });
+    
+    const Wrapper = isPage ? 'div' : motion.div;
+    const MotionWrapper = motion.div;
+    
+    const pageProps = isPage ? {} : {
+        initial: shouldReduceMotion ? { opacity: 1 } : { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: shouldReduceMotion ? { opacity: 1 } : { opacity: 0 },
+        transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' },
+        className: "fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm",
+        onClick: onClose,
+    };
+    
+    const contentProps = isPage ? { className: "w-full max-w-md" } : {
+        initial: shouldReduceMotion ? { y: 0 } : { y: '100%' },
+        animate: { y: 0 },
+        exit: shouldReduceMotion ? { y: 0 } : { y: '100%' },
+        transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' },
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-labelledby": "login-heading",
+        className: "w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit",
+        onClick: (e: React.MouseEvent) => e.stopPropagation(),
+        ...handlers
+    };
+
 
     return (
-        <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm"
-            onClick={onClose}
-        >
-            <motion.div
-                initial={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
-                animate={{ y: 0 }}
-                exit={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
-                transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' }}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="login-heading"
-                className="w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit"
-                onClick={(e) => e.stopPropagation()}
-                {...handlers}
-            >
-                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
+        <Wrapper {...pageProps}>
+            <MotionWrapper {...contentProps}>
+                 <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
                     <h2 id="login-heading" className="text-xl font-bold">Selamat Datang Kembali!</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
-                        <X className="h-5 w-5" />
-                        <span className="sr-only">Tutup</span>
-                    </Button>
+                    {!isPage && (
+                        <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Tutup</span>
+                        </Button>
+                    )}
                 </div>
 
 
@@ -315,7 +328,7 @@ export const LoginPage = ({
                         </Button>
                     </p>
                 </div>
-            </motion.div>
-        </motion.div>
+            </MotionWrapper>
+        </Wrapper>
     );
 };

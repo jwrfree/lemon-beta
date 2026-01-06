@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { LandingPage } from '@/components/landing-page';
 import { LoginPage } from '@/components/login-page';
 import { SignUpPage } from '@/components/signup-page';
 import { ForgotPasswordPage } from '@/components/forgot-password-page';
@@ -12,8 +11,8 @@ import { useRouter } from 'next/navigation';
 import type { AuthModalView } from '@/types/auth';
 
 export default function WelcomePage() {
-    const [authModal, setAuthModal] = useState<AuthModalView>(null);
-    const closeModal = () => setAuthModal(null);
+    // Default view is now 'login', not null. Modals are now full pages.
+    const [authView, setAuthView] = useState<AuthModalView>('login');
     const { user, isLoading } = useApp();
     const router = useRouter();
 
@@ -23,23 +22,22 @@ export default function WelcomePage() {
         }
     }, [user, isLoading, router]);
 
-    // If already logged in, the useEffect will handle the redirect.
-    // We render the landing page immediately to avoid a loading screen.
-    if (user) {
-        return null; // Or a minimal loader if you prefer, but this avoids showing landing then redirecting.
+    // Render nothing while checking for user, to prevent flicker
+    if (isLoading || user) {
+        return null;
     }
 
+    // Since landing page is removed, we show the login page by default.
+    // The other auth pages are shown conditionally.
     return (
-        <>
-            <LandingPage setAuthModal={setAuthModal} />
-
-            <AnimatePresence>
-                {authModal === 'login' && <LoginPage onClose={closeModal} setAuthModal={setAuthModal} />}
-                {authModal === 'signup' && <SignUpPage onClose={closeModal} setAuthModal={setAuthModal} />}
-                {authModal === 'forgot-password' && (
-                    <ForgotPasswordPage onClose={closeModal} setAuthModal={setAuthModal} />
+        <div className="w-full h-dvh flex items-center justify-center p-4">
+             <AnimatePresence mode="wait">
+                {authView === 'login' && <LoginPage onClose={() => {}} setAuthModal={setAuthView} isPage />}
+                {authView === 'signup' && <SignUpPage onClose={() => setAuthView('login')} setAuthModal={setAuthView} isPage />}
+                {authView === 'forgot-password' && (
+                    <ForgotPasswordPage onClose={() => setAuthView('login')} setAuthModal={setAuthView} isPage />
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 }
