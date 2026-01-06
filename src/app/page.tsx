@@ -16,13 +16,6 @@ export default function WelcomePage() {
     const { user, isLoading } = useApp();
     const router = useRouter();
 
-    useEffect(() => {
-        if (!isLoading && user) {
-            router.replace('/home');
-        }
-    }, [user, isLoading, router]);
-
-    // Render nothing while checking for user, to prevent flicker
     if (isLoading || user) {
         return null;
     }

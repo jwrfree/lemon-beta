@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
@@ -43,6 +44,7 @@ export const LoginPage = ({
     setAuthModal: React.Dispatch<React.SetStateAction<AuthModalView>>;
     isPage?: boolean;
 }) => {
+    const router = useRouter();
     const shouldReduceMotion = useReducedMotion();
     const [showPassword, setShowPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -82,6 +84,7 @@ export const LoginPage = ({
             await signInWithEmailAndPassword(auth, values.email, values.password);
             showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
+            router.push('/home');
         } catch (error: unknown) {
             const code = getFirebaseErrorCode(error);
             let message = 'Gagal masuk. Coba lagi ya.';
@@ -102,6 +105,7 @@ export const LoginPage = ({
             await signInWithBiometric(biometricUser);
             showToast("Login dengan sidik jari berhasil!", "success");
             onClose();
+            router.push('/home');
         } catch (error: unknown) {
             const message = 'Gagal masuk dengan sidik jari.';
             setAuthError(message);
@@ -118,6 +122,7 @@ export const LoginPage = ({
             await signInWithPopup(auth, provider);
             showToast("Login dengan Google berhasil!", 'success');
             onClose();
+            router.push('/home');
         } catch (error: unknown) {
             const code = getFirebaseErrorCode(error);
             let message = 'Gagal masuk dengan Google. Coba lagi ya.';
