@@ -17,6 +17,7 @@ import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { cn, formatCurrency } from '@/lib/utils';
 import type { Debt, DebtPaymentInput } from '@/types/models';
+import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
 
 interface DebtPaymentFormProps {
     onClose: () => void;
@@ -24,7 +25,8 @@ interface DebtPaymentFormProps {
 }
 
 export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
-    const { wallets, logDebtPayment } = useData();
+    const { wallets } = useData();
+    const { logDebtPayment } = useAssetsLiabilities();
     const { showToast } = useUI();
 
     const defaultWallet = wallets.find(wallet => wallet.isDefault) || wallets[0];

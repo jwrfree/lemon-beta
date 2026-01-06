@@ -16,9 +16,11 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { useData } from '@/hooks/use-data';
 import { useUI } from './ui-provider';
+import { useApp } from '../app-provider';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
-  const { addTransfer, wallets } = useData();
+  const { addTransfer } = useApp();
+  const { wallets } = useData();
   const { preFilledTransfer, setPreFilledTransfer, showToast } = useUI();
   
   const [fromWalletId, setFromWalletId] = useState(preFilledTransfer?.fromWalletId || '');

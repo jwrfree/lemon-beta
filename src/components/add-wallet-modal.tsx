@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { useData } from '@/hooks/use-data';
+import { useApp } from '@/components/app-provider';
 import { useUI } from './ui-provider';
 
 const popularWallets: Record<string, string[]> = {
@@ -25,7 +25,7 @@ const walletCategories = [
 ];
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet } = useData();
+  const { addWallet } = useApp();
   const { showToast } = useUI();
   const [step, setStep] = useState(1);
   const [walletName, setWalletName] = useState('');

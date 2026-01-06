@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useApp } from '@/components/app-provider';
 import { useData } from '@/hooks/use-data';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -26,7 +27,8 @@ interface TransactionFormProps {
 }
 
 export const TransactionForm = ({ onClose, isModal = true, initialData = null }: TransactionFormProps) => {
-    const { addTransaction, updateTransaction, wallets, expenseCategories, incomeCategories } = useData();
+    const { addTransaction, updateTransaction } = useApp();
+    const { wallets, expenseCategories, incomeCategories } = useData();
     const { setIsTransferModalOpen, showToast } = useUI();
     
     const isEditMode = !!initialData;
