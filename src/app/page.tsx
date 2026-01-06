@@ -9,15 +9,26 @@ import { ForgotPasswordPage } from '@/components/forgot-password-page';
 import { useApp } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 import type { AuthModalView } from '@/types/auth';
+import { LoaderCircle } from 'lucide-react';
 
 export default function WelcomePage() {
-    // Default view is now 'login', not null. Modals are now full pages.
     const [authView, setAuthView] = useState<AuthModalView>('login');
     const { user, isLoading } = useApp();
     const router = useRouter();
 
+    useEffect(() => {
+        if (!isLoading && user) {
+            router.replace('/home');
+        }
+    }, [user, isLoading, router]);
+
+
     if (isLoading || user) {
-        return null;
+        return (
+             <div className="w-full h-dvh flex items-center justify-center p-4">
+                <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
     }
 
     // Since landing page is removed, we show the login page by default.
