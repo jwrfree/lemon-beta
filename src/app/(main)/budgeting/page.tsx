@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, HandCoins } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
+import { useBudgets } from '@/hooks/use-budgets';
 import { categoryDetails } from '@/lib/categories';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
@@ -88,7 +89,8 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 
 export default function BudgetingPage() {
     const router = useRouter();
-    const { budgets, transactions } = useData();
+    const { transactions } = useData();
+    const { budgets } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();
 
     const overview = useMemo(() => {

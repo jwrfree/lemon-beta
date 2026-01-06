@@ -19,7 +19,6 @@ import {
     type DocumentData,
     type OrderByDirection,
 } from 'firebase/firestore';
-import { useRouter as useNextRouter } from 'next/navigation';
 import { useApp } from '@/components/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { db } from '@/lib/firebase';
@@ -27,13 +26,10 @@ import { categories } from '@/lib/categories';
 import type {
     Wallet,
     WalletInput,
-    Budget,
-    BudgetInput,
     Transaction,
     TransactionInput,
     TransactionUpdate,
 } from '@/types/models';
-import { useReminders } from './use-reminders';
 
 interface TransferPayload {
     fromWalletId: string;
@@ -45,13 +41,10 @@ interface TransferPayload {
 
 export const useData = () => {
     const { user } = useApp();
-    const router = useNextRouter();
     const ui = useUI();
-    const { reminders } = useReminders();
 
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [budgets, setBudgets] = useState<Budget[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const getCollectionRef = useCallback((collectionName: string) => {
@@ -63,7 +56,6 @@ export const useData = () => {
         if (!user) {
             setWallets([]);
             setTransactions([]);
-            setBudgets([]);
             setIsLoading(false);
             return;
         }
@@ -121,13 +113,6 @@ export const useData = () => {
                 orderByField: 'date',
                 orderDirection: 'desc',
                 logName: 'transactions',
-            }),
-            subscribeToCollection<Budget>({
-                setter: setBudgets,
-                ref: getCollectionRef('budgets'),
-                orderByField: 'createdAt',
-                orderDirection: 'desc',
-                logName: 'budgets',
             }),
         ].filter((unsubscribe): unsubscribe is () => void => Boolean(unsubscribe));
 
@@ -333,43 +318,9 @@ export const useData = () => {
         ui.setIsEditWalletModalOpen(false);
     }, [user, getCollectionRef, transactions, ui]);
 
-    const addBudget = useCallback(async (budgetData: BudgetInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const budgetCollection = getCollectionRef('budgets');
-        if (!budgetCollection) return;
-        await addDoc(budgetCollection, { ...budgetData, spent: 0, createdAt: new Date().toISOString(), userId: user.uid });
-        ui.showToast("Anggaran berhasil dibuat!", 'success');
-        ui.setIsBudgetModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const updateBudget = useCallback(async (budgetId: string, budgetData: Partial<Budget>) => {
-        if (!user) throw new Error("User not authenticated.");
-        const budgetCollection = getCollectionRef('budgets');
-        if (!budgetCollection) return;
-
-        const budgetRef = doc(budgetCollection, budgetId);
-        await updateDoc(budgetRef, budgetData);
-        ui.showToast("Anggaran berhasil diperbarui!", 'success');
-        ui.setIsEditBudgetModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const deleteBudget = useCallback(async (budgetId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const budgetCollection = getCollectionRef('budgets');
-        if (!budgetCollection) return;
-        
-        const budgetRef = doc(budgetCollection, budgetId);
-        await deleteDoc(budgetRef);
-        ui.showToast("Anggaran berhasil dihapus.", 'success');
-        ui.setIsEditBudgetModalOpen(false);
-        router.back();
-    }, [user, getCollectionRef, ui, router]);
-
     return {
         wallets,
         transactions,
-        budgets,
-        reminders,
         expenseCategories: categories.expense,
         incomeCategories: categories.income,
         isLoading,
@@ -380,8 +331,5 @@ export const useData = () => {
         addWallet,
         updateWallet,
         deleteWallet,
-        addBudget,
-        updateBudget,
-        deleteBudget,
     };
 };
