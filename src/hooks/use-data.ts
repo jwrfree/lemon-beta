@@ -39,6 +39,7 @@ import type {
     TransactionInput,
     TransactionUpdate,
 } from '@/types/models';
+import { useReminders } from './use-reminders';
 
 interface TransferPayload {
     fromWalletId: string;
@@ -61,11 +62,11 @@ export const useData = () => {
     const { user } = useApp();
     const router = useNextRouter();
     const ui = useUI();
+    const { reminders } = useReminders();
 
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [budgets, setBudgets] = useState<Budget[]>([]);
-    const [reminders, setReminders] = useState<Reminder[]>([]);
     const [debts, setDebts] = useState<Debt[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -79,7 +80,6 @@ export const useData = () => {
             setWallets([]);
             setTransactions([]);
             setBudgets([]);
-            setReminders([]);
             setDebts([]);
             setIsLoading(false);
             return;
@@ -145,13 +145,6 @@ export const useData = () => {
                 orderByField: 'createdAt',
                 orderDirection: 'desc',
                 logName: 'budgets',
-            }),
-            subscribeToCollection<Reminder>({
-                setter: setReminders,
-                ref: getCollectionRef('reminders'),
-                orderByField: 'dueDate',
-                orderDirection: 'asc',
-                logName: 'reminders',
             }),
             subscribeToCollection<Debt>({
                 setter: setDebts,
@@ -396,105 +389,6 @@ export const useData = () => {
         router.back();
     }, [user, getCollectionRef, ui, router]);
 
-    const addReminder = useCallback(async (reminderData: ReminderInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const remindersCollection = getCollectionRef('reminders');
-        if (!remindersCollection) return;
-
-        const nowIso = new Date().toISOString();
-        const dueDateValue = normalizeDateInput(reminderData.dueDate);
-        const payload: ReminderInput = {
-            ...reminderData,
-            type: reminderData.type || 'one_time',
-            targetType: reminderData.targetType || null,
-            targetId: reminderData.targetId ?? null,
-            amount: reminderData.amount ?? 0,
-            dueDate: dueDateValue,
-            repeatRule: reminderData.repeatRule || null,
-            status: reminderData.status || 'upcoming',
-            snoozeCount: reminderData.snoozeCount ?? 0,
-            channels: reminderData.channels?.length ? reminderData.channels : ['push'],
-            notes: reminderData.notes || '',
-        };
-
-        await addDoc(remindersCollection, {
-            ...payload,
-            createdAt: nowIso,
-            updatedAt: nowIso,
-            userId: user.uid,
-        });
-        ui.showToast("Pengingat berhasil dibuat!", 'success');
-        ui.setReminderToEdit(null);
-        ui.setIsReminderModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const updateReminder = useCallback(async (reminderId: string, reminderData: ReminderInput) => {
-        if (!user) throw new Error("User not authenticated.");
-        const remindersCollection = getCollectionRef('reminders');
-        if (!remindersCollection) return;
-
-        const reminderRef = doc(remindersCollection, reminderId);
-        const dueDateValue = normalizeDateInput(reminderData.dueDate);
-
-        const payload: ReminderInput = {
-            ...reminderData,
-            dueDate: dueDateValue,
-            amount: reminderData.amount ?? 0,
-            channels: reminderData.channels?.length ? reminderData.channels : ['push'],
-            targetId: reminderData.targetId ?? null,
-            targetType: reminderData.targetType ?? null,
-        };
-
-        await updateDoc(reminderRef, {
-            ...payload,
-            updatedAt: new Date().toISOString(),
-        });
-        ui.showToast("Pengingat diperbarui.", 'success');
-        ui.setReminderToEdit(null);
-        ui.setIsReminderModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const deleteReminder = useCallback(async (reminderId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const remindersCollection = getCollectionRef('reminders');
-        if (!remindersCollection) return;
-
-        const reminderRef = doc(remindersCollection, reminderId);
-        await deleteDoc(reminderRef);
-        ui.showToast("Pengingat dihapus.", 'info');
-        ui.setReminderToEdit(null);
-        ui.setIsReminderModalOpen(false);
-    }, [user, getCollectionRef, ui]);
-
-    const markReminderComplete = useCallback(async (reminderId: string) => {
-        if (!user) throw new Error("User not authenticated.");
-        const remindersCollection = getCollectionRef('reminders');
-        if (!remindersCollection) return;
-
-        const reminderRef = doc(remindersCollection, reminderId);
-        await updateDoc(reminderRef, {
-            status: 'completed',
-            completedAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        });
-        ui.showToast("Pengingat ditandai selesai.", 'success');
-    }, [user, getCollectionRef, ui]);
-
-    const snoozeReminder = useCallback(async (reminderId: string, nextDueDate: string, currentCount: number = 0) => {
-        if (!user) throw new Error("User not authenticated.");
-        const remindersCollection = getCollectionRef('reminders');
-        if (!remindersCollection) return;
-
-        const reminderRef = doc(remindersCollection, reminderId);
-        await updateDoc(reminderRef, {
-            dueDate: nextDueDate,
-            status: 'snoozed',
-            snoozeCount: currentCount + 1,
-            updatedAt: new Date().toISOString(),
-        });
-        ui.showToast("Pengingat ditunda.", 'info');
-    }, [user, getCollectionRef, ui]);
-
     const addDebt = useCallback(async (debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");
         const debtsCollection = getCollectionRef('debts');
@@ -709,11 +603,6 @@ export const useData = () => {
         addBudget,
         updateBudget,
         deleteBudget,
-        addReminder,
-        updateReminder,
-        deleteReminder,
-        markReminderComplete,
-        snoozeReminder,
         addDebt,
         updateDebt,
         deleteDebt,

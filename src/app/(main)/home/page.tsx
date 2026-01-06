@@ -16,6 +16,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AnimatedCounter } from '@/components/animated-counter';
 import type { Reminder, Debt } from '@/types/models';
 import { Input } from '@/components/ui/input';
+import { useReminders } from '@/hooks/use-reminders';
 
 const QuickAddWidget = () => {
     const { setIsTxModalOpen } = useUI();
@@ -55,7 +56,8 @@ const QuickAddWidget = () => {
 
 
 export default function HomePage() {
-    const { wallets, transactions, reminders, debts } = useData();
+    const { wallets, transactions, debts } = useData();
+    const { reminders } = useReminders();
     const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit } = useUI();
     const router = useRouter();
 
@@ -289,5 +291,3 @@ export default function HomePage() {
         </div>
     );
 }
-
-    

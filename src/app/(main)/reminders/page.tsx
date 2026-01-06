@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -14,6 +15,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { CalendarClock, Clock, Clock3, Check, ChevronLeft, Plus, BellRing } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import type { Reminder, Debt } from '@/types/models';
+import { useReminders } from '@/hooks/use-reminders';
 
 const statusLabels: Record<string, string> = {
     all: 'Semua',
@@ -39,7 +41,8 @@ const getReminderStatus = (reminder: Reminder) => {
 
 export default function RemindersPage() {
     const router = useRouter();
-    const { reminders, debts, markReminderComplete, snoozeReminder, deleteReminder } = useData();
+    const { debts } = useData();
+    const { reminders, markReminderComplete, snoozeReminder, deleteReminder } = useReminders();
     const { setIsReminderModalOpen, setReminderToEdit, showToast } = useUI();
 
     const [activeTab, setActiveTab] = useState('upcoming');

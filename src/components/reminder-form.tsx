@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -28,6 +29,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import type { Reminder, ReminderInput, ReminderChannel, Debt, ReminderRepeatRule } from '@/types/models';
+import { useReminders } from '@/hooks/use-reminders';
 
 interface ReminderFormProps {
     onClose: () => void;
@@ -49,7 +51,8 @@ const reminderTypes = [
 ];
 
 export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps) => {
-    const { addReminder, updateReminder, deleteReminder, debts } = useData();
+    const { debts } = useData();
+    const { addReminder, updateReminder, deleteReminder } = useReminders();
     const { showToast } = useUI();
     const isEditMode = !!initialData;
 
