@@ -12,7 +12,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { HandCoins, ArrowUpRight, ArrowDownRight, Plus, ChevronLeft, CalendarClock } from 'lucide-react';
 import type { Debt } from '@/types/models';
-import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
+import { useDebts } from '@/features/debts/hooks/use-debts';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
@@ -34,7 +34,7 @@ const getDebtStatusBadge = (debt: Debt) => {
 
 export default function DebtsPage() {
     const router = useRouter();
-    const { debts, markDebtSettled } = useAssetsLiabilities();
+    const { debts, markDebtSettled } = useDebts();
     const { setIsDebtModalOpen, setDebtToEdit, setIsDebtPaymentModalOpen, setDebtForPayment } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
 

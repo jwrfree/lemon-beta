@@ -37,6 +37,13 @@ export const metadata: Metadata = {
   category: "finance",
 };
 
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#2563eb" },
+    { media: "(prefers-color-scheme: dark)", color: "#1e3a8a" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

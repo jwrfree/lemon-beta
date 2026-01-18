@@ -54,21 +54,19 @@ self.addEventListener("fetch", (event) => {
 
   if (requestUrl.pathname.startsWith("/_next/") || requestUrl.pathname.startsWith("/api/pwa-icon")) {
     event.respondWith(
-      caches.match(event.request).then((cached) => {
-        if (cached) {
-          return cached;
-        }
-
-        return fetch(event.request)
-          .then((response) => {
-            if (response && response.status === 200) {
-              const copy = response.clone();
-              caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
-            }
-            return response;
-          })
-          .catch(() => caches.match(OFFLINE_URL));
-      }),
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(async () => {
+           const cached = await caches.match(event.request);
+           if (cached) return cached;
+           return caches.match(OFFLINE_URL);
+        })
     );
     return;
   }

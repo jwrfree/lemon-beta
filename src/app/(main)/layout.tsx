@@ -1,21 +1,21 @@
-
 'use client';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
-import { TransactionForm } from '@/components/transaction-form';
-import { AddWalletModal } from '@/components/add-wallet-modal';
-import { AddBudgetModal } from '@/components/add-budget-modal';
-import { ConfirmDeleteModal } from '@/components/confirm-delete-modal';
-import { AddTransferModal } from '@/components/add-transfer-modal';
-import { EditWalletModal } from '@/components/edit-wallet-modal';
-import { EditBudgetModal } from '@/components/edit-budget-modal';
+import { Sidebar } from '@/components/sidebar';
+import { TransactionForm } from '@/features/transactions/components/transaction-form';
+import { AddWalletModal } from '@/features/wallets/components/add-wallet-modal';
+import { AddBudgetModal } from '@/features/budgets/components/add-budget-modal';
+import { ConfirmDeleteModal } from '@/features/transactions/components/confirm-delete-modal';
+import { AddTransferModal } from '@/features/transactions/components/add-transfer-modal';
+import { EditWalletModal } from '@/features/wallets/components/edit-wallet-modal';
+import { EditBudgetModal } from '@/features/budgets/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
-import { GoalForm } from '@/components/goal-form';
-import { ReminderForm } from '@/components/reminder-form';
-import { DebtForm } from '@/components/debt-form';
-import { DebtPaymentForm } from '@/components/debt-payment-form';
+import { GoalForm } from '@/features/goals/components/goal-form';
+import { ReminderForm } from '@/features/reminders/components/reminder-form';
+import { DebtForm } from '@/features/debts/components/debt-form';
+import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { useUI } from '@/components/ui-provider';
 import { useApp } from '@/components/app-provider';
 import { cn } from '@/lib/utils';
@@ -117,49 +117,54 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const showBottomNav = mainPagesForNav.includes(pathname);
 
     return (
-        <div className="w-full max-w-md h-dvh md:h-auto md:min-h-[700px] bg-background pt-[env(safe-area-inset-top)] md:pt-0 md:rounded-lg md:shadow-2xl relative flex flex-col overflow-hidden">
-            <AnimatePresence initial={false}>
-                <motion.div
-                    key={pathname}
-                    variants={pageVariants}
-                    initial="initial"
-                    animate="enter"
-                    exit="exit"
-                    ref={containerRef}
-                    className={cn(
-                        'flex-1 flex flex-col overflow-y-auto h-full',
-                        showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))]'
+        <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">
+            <Sidebar />
+            <div className="flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden">
+                <AnimatePresence initial={false} mode="wait">
+                    <motion.div
+                        key={pathname}
+                        variants={pageVariants}
+                        initial="initial"
+                        animate="enter"
+                        exit="exit"
+                        ref={containerRef}
+                        className={cn(
+                            'flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth',
+                            showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0'
+                        )}
+                    >
+                        {children}
+                    </motion.div>
+                </AnimatePresence>
+
+                <CustomToast />
+
+                <AnimatePresence>
+                    {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
+                    {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
+                    {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
+                    {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
+                    {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
+                    {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
+                    {isGoalModalOpen && <GoalForm initialData={goalToEdit} onClose={handleCloseGoalModal} />}
+                    {isReminderModalOpen && <ReminderForm initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
+                    {isDebtModalOpen && <DebtForm initialData={debtToEdit} onClose={handleCloseDebtModal} />}
+                    {isDebtPaymentModalOpen && debtForPayment && (
+                        <DebtPaymentForm debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
                     )}
-                >
-                    {children}
-                </motion.div>
-            </AnimatePresence>
-
-            <CustomToast />
-
-            <AnimatePresence>
-                {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
-                {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
-                {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
-                {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
-                {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
-                {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
-                {isGoalModalOpen && <GoalForm initialData={goalToEdit} onClose={handleCloseGoalModal} />}
-                {isReminderModalOpen && <ReminderForm initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
-                {isDebtModalOpen && <DebtForm initialData={debtToEdit} onClose={handleCloseDebtModal} />}
-                {isDebtPaymentModalOpen && debtForPayment && (
-                    <DebtPaymentForm debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
-                )}
-                {isDeleteModalOpen && transactionToDelete && (
-                    <ConfirmDeleteModal
-                        transaction={transactionToDelete}
-                        onClose={closeDeleteModal}
-                        onConfirm={handleConfirmDelete}
-                    />
-                )}
-            </AnimatePresence>
-            
-            {showBottomNav && <BottomNavigation />}
+                    {isDeleteModalOpen && transactionToDelete && (
+                        <ConfirmDeleteModal
+                            transaction={transactionToDelete}
+                            onClose={closeDeleteModal}
+                            onConfirm={handleConfirmDelete}
+                        />
+                    )}
+                </AnimatePresence>
+                
+                <div className="md:hidden">
+                    {showBottomNav && <BottomNavigation />}
+                </div>
+            </div>
         </div>
     );
 };

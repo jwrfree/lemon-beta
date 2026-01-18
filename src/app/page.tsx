@@ -3,9 +3,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { LoginPage } from '@/components/login-page';
-import { SignUpPage } from '@/components/signup-page';
-import { ForgotPasswordPage } from '@/components/forgot-password-page';
+import { LoginPage } from '@/features/auth/components/login-page';
+import { SignUpPage } from '@/features/auth/components/signup-page';
+import { ForgotPasswordPage } from '@/features/auth/components/forgot-password-page';
 import { useApp } from '@/components/app-provider';
 import { useRouter } from 'next/navigation';
 import type { AuthModalView } from '@/types/auth';

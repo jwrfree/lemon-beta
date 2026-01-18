@@ -43,7 +43,6 @@ export const BottomNavigation = () => {
         isDebtModalOpen ||
         isDebtPaymentModalOpen;
     
-    // The parent layout now controls visibility, so we only need to check for modals here.
     const isVisible = !isModalOpen;
 
     return (
@@ -57,7 +56,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-0 left-0 right-0 z-40"
                 >
                     <div
-                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card/80 backdrop-blur-lg shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t md:rounded-b-lg md:rounded-t-none"
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card/90 backdrop-blur-xl shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none"
                         style={{
                             paddingBottom: 'env(safe-area-inset-bottom)',
                             minHeight: 'calc(4rem + env(safe-area-inset-bottom))',
@@ -68,17 +67,19 @@ export const BottomNavigation = () => {
 
                             if (item.primary) {
                                 return (
-                                    <div key={item.id} className="flex justify-center items-center">
-                                        <Link
-                                            href={item.href}
-                                            className={cn(
-                                                'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-white shadow-lg -translate-y-4 hover:bg-primary/90 transition-colors'
-                                            )}
-                                            aria-label={item.name}
-                                        >
-                                            <item.icon className="h-8 w-8" />
-                                            <span className="sr-only">{item.name}</span>
-                                        </Link>
+                                    <div key={item.id} className="flex justify-center items-center relative">
+                                        <div className="absolute -top-6 bg-background rounded-full p-1.5 shadow-sm">
+                                           <Link
+                                               href={item.href}
+                                               className={cn(
+                                                   'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 transition-transform active:scale-95'
+                                               )}
+                                               aria-label={item.name}
+                                           >
+                                               <item.icon className="h-7 w-7" />
+                                               <span className="sr-only">{item.name}</span>
+                                           </Link>
+                                        </div>
                                     </div>
                                 );
                             }
@@ -88,12 +89,19 @@ export const BottomNavigation = () => {
                                     key={item.id}
                                     href={item.href}
                                     className={cn(
-                                        'flex flex-col items-center justify-center h-full w-full rounded-none transition-colors text-muted-foreground hover:bg-accent',
-                                        isActive && 'text-primary'
+                                        'flex flex-col items-center justify-center h-full w-full rounded-none transition-all active:scale-95 group relative',
+                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                                     )}
                                 >
-                                    <item.icon className="h-6 w-6" />
-                                    <span className={cn('text-xs mt-1', isActive && 'font-semibold')}>{item.name}</span>
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="nav-pill"
+                                            className="absolute top-1 w-8 h-1 bg-primary rounded-full opacity-80"
+                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        />
+                                    )}
+                                    <item.icon className={cn("h-6 w-6 mb-1 transition-transform", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
+                                    <span className={cn('text-[10px] font-medium transition-colors', isActive ? 'font-bold' : '')}>{item.name}</span>
                                 </Link>
                             );
                         })}

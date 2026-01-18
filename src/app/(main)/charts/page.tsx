@@ -1594,7 +1594,7 @@ export default function ChartsPage() {
             </header>
 
             <main className="flex-1 overflow-y-auto" {...handlers}>
-                <div className="sticky top-16 z-10 border-b bg-background/95 p-4 backdrop-blur">
+                <div className="sticky top-0 z-10 border-b bg-background/95 p-4 backdrop-blur">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="grid w-full grid-cols-3 rounded-full bg-muted/80 p-1">
                             {tabs.map((tab) => (

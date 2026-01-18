@@ -13,9 +13,10 @@ import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import Image from 'next/image';
-import { TransactionForm } from '@/components/transaction-form';
+import { TransactionForm } from '@/features/transactions/components/transaction-form';
 import { startOfMonth, parseISO } from 'date-fns';
 import { useUI } from '@/components/ui-provider';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 
 type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING';
 
@@ -74,11 +75,12 @@ export default function SmartAddPage() {
     const {
         addTransaction,
         wallets,
-        budgets,
         transactions,
         expenseCategories,
         incomeCategories,
     } = useData();
+
+    const { budgets } = useBudgets();
 
     const {
         setIsTransferModalOpen,

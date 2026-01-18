@@ -4,11 +4,11 @@
 import React, { useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
-import { useBudgets } from '@/hooks/use-budgets';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { TransactionList } from '@/components/transaction-list';
+import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { cn, formatCurrency } from '@/lib/utils';
 import { ChevronLeft, AlertTriangle, Pencil } from 'lucide-react';
 import { startOfMonth, parseISO } from 'date-fns';

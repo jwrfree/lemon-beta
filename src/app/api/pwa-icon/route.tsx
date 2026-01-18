@@ -21,8 +21,6 @@ function parseSizeParam(value: string | null): number {
   return Math.min(Math.max(parsed, MIN_SIZE), MAX_SIZE);
 }
 
-export const runtime = "edge";
-
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const dimension = parseSizeParam(searchParams.get("size"));

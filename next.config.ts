@@ -1,65 +1,40 @@
-
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
-// @ts-check
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-import type {NextConfig} from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  async headers() {
+  reactStrictMode: true,
+  headers: async () => {
     return [
       {
-        source: '/:path*',
+        source: '/(.*)',
         headers: [
           {
-            key: 'Permissions-Policy',
-            value: 'publickey-credentials-get=*, publickey-credentials-create=*',
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
           },
-        ],
-      },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          }
+        ]
+      }
     ];
-  },
-  devIndicators: {
-    allowedDevOrigins: [
-        "https://9000-firebase-studio-1757997036082.cluster-nle52mxuvfhlkrzyrq6g2cwb52.cloudworkstations.dev",
-        "https://6000-firebase-studio-1757997036082.cluster-nle52mxuvfhlkrzyrq6g2cwb52.cloudworkstations.dev",
-        "https://lemonbudget.vercel.app",
-    ],
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-},
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-  },
+  }
 };
 
 export default nextConfig;

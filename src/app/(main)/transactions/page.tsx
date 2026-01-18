@@ -1,10 +1,9 @@
-
 'use client';
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Search, X, ListFilter } from 'lucide-react';
-import { TransactionList } from '@/components/transaction-list';
+import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useData } from '@/hooks/use-data';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,13 +14,13 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
-import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
+import { useDebts } from '@/features/debts/hooks/use-debts';
 
 const TransactionsPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { transactions, expenseCategories, incomeCategories, wallets } = useData();
-    const { debts } = useAssetsLiabilities();
+    const { debts } = useDebts();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
@@ -99,8 +98,8 @@ const TransactionsPageContent = () => {
     const displayedWallets = showAllWallets ? wallets : wallets.slice(0, 8);
 
     return (
-        <>
-            <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
+        <div className="flex flex-col h-full overflow-hidden">
+            <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background z-20">
                 <div className="relative w-full">
                     <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -149,7 +148,7 @@ const TransactionsPageContent = () => {
                                 <Label className="text-sm font-medium">Dompet</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {displayedWallets.map(w => (
-                                        <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
+151→                                        <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
                                     ))}
                                     {wallets.length > 8 && !showAllWallets && (
                                         <Button variant="link" size="sm" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
@@ -162,7 +161,7 @@ const TransactionsPageContent = () => {
                 </Sheet>
             </header>
             
-            <div className="p-4 flex flex-col gap-3 bg-background border-b sticky top-16 z-10">
+            <div className="p-4 flex flex-col gap-3 bg-background border-b z-10 shrink-0">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="all">Semua</TabsTrigger>
@@ -207,7 +206,7 @@ const TransactionsPageContent = () => {
                 )}
             </div>
 
-            <main className="space-y-2 p-4">
+            <main className="flex-1 overflow-y-auto p-4 space-y-2">
                 {activeTab === 'debt' ? (
                     <div className="space-y-2">
                         {debts.length === 0 ? (
@@ -246,7 +245,7 @@ const TransactionsPageContent = () => {
                     <TransactionList transactions={filteredTransactions} />
                 )}
             </main>
-        </>
+        </div>
     );
 }
 

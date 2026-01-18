@@ -40,7 +40,7 @@ export default function DebtDetailPage() {
     const router = useRouter();
     const params = useParams<{ id: string }>();
     const debtId = params?.id;
-    const { debts, deleteDebt, markDebtSettled, deleteDebtPayment } = useAssetsLiabilities();
+    const { debts, deleteDebt, markDebtSettled, deleteDebtPayment } = useDebts();
     const { setDebtToEdit, setIsDebtModalOpen, setDebtForPayment, setIsDebtPaymentModalOpen, showToast } = useUI();
 
     const debt = debts.find((item: Debt) => item.id === debtId);

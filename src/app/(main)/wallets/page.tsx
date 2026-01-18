@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Plus, Wallet, PlusCircle } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
-import { WalletCardStack } from '@/components/wallet-card-stack';
-import { TransactionList } from '@/components/transaction-list';
+import { WalletCardStack } from '@/features/wallets/components/wallet-card-stack';
+import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
 

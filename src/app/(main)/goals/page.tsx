@@ -4,10 +4,10 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Rocket } from 'lucide-react';
-import { GoalList } from '@/components/goal-list';
+import { GoalList } from '@/features/goals/components/goal-list';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
-import { useGoals } from '@/hooks/use-goals';
+import { useGoals } from '@/features/goals/hooks/use-goals';
 
 export default function GoalsPage() {
     const { goals } = useGoals();
