@@ -115,7 +115,7 @@ export function AIInsightCard({ transactions, wallets }: AIInsightCardProps) {
                             animate={{ opacity: 1, y: 0 }} 
                             className="text-sm leading-relaxed font-medium text-foreground/90"
                         >
-                            "{insight}"
+                            &quot;{insight}&quot;
                         </motion.div>
                     )}
                 </AnimatePresence>

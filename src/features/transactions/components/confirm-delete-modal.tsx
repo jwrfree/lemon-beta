@@ -8,10 +8,8 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
-import { useApp } from '@/components/app-provider';
 
 export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { transaction: any, onClose: () => void, onConfirm: () => Promise<void> }) => {
-    const { deleteTransaction } = useApp();
     const handlers = useSwipeable({
         onSwipedDown: onClose,
         preventScrollOnSwipe: true,
@@ -21,11 +19,6 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
     const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-destructive' : 'text-green-600 dark:text-green-500';
-
-    const handleConfirm = async () => {
-        await deleteTransaction(transaction);
-        onClose();
-    };
 
     return (
         <motion.div

@@ -1,10 +1,12 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.0.0** · Ready to launch · 22 September 2025
+> **v2.1.0** · Released · January 2026
 
-Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis mayor v2.0.0 memadukan audit desain menyeluruh, pengalaman onboarding yang lebih jelas, serta pemolesan motion agar setiap interaksi terasa mulus, konsisten, dan berwawasan.
+Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis v2.1.0 memperkenalkan fitur pelacakan kekayaan bersih (Net Worth) yang komprehensif serta alat bantu estimasi biaya AI bagi developer.
 
-## ✨ Sorotan Utama v2.0.0
+## ✨ Sorotan Utama v2.1.0
+- **Tracking Kekayaan Bersih:** Monitor aset (investasi, properti) & liabilitas (hutang, cicilan) dalam satu dashboard untuk melihat Net Worth secara real-time.
+- **Kalkulator Token AI:** Alat bantu developer untuk estimasi biaya token DeepSeek V3 dan runway budget API.
 - **Landing yang terstruktur & edukatif:** navigasi anchor, skip link, copy hero baru, serta CTA ganda (daftar & masuk) membuat pengguna cepat memahami nilai produk.
 - **Autentikasi kaya kendali:** bottom sheet login/sign-up/forgot-password dengan pesan error inline, dukungan biometrik, dan `prefers-reduced-motion` untuk menjaga kenyamanan.
 - **Ekosistem fitur lengkap:** pencatatan transaksi manual & AI, manajemen dompet, budgeting progresif, pengingat pintar, tracking hutang/piutang, dan insight AI.

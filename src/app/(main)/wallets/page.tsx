@@ -14,7 +14,6 @@ import { PageHeader } from '@/components/page-header';
 export default function WalletsPage() {
   const { wallets } = useData();
   const { setIsWalletModalOpen } = useUI();
-  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const activeWallet = wallets.length > 0 ? wallets[activeIndex] : null;

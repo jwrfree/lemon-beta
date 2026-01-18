@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Rocket } from 'lucide-react';
 import { GoalList } from '@/features/goals/components/goal-list';

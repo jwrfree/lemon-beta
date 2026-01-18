@@ -88,7 +88,6 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 };
 
 export default function BudgetingPage() {
-    const router = useRouter();
     const { transactions } = useData();
     const { budgets } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();

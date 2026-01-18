@@ -13,7 +13,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { ChevronLeft, CalendarClock, Trash2 } from 'lucide-react';
 import type { Debt, DebtPayment } from '@/types/models';
-import { useAssetsLiabilities } from '@/hooks/use-assets-liabilities';
+import { useDebts } from '@/features/debts/hooks/use-debts';
 
 const PaymentItem = ({ payment, direction }: { payment: DebtPayment; direction: string }) => {
     const paymentDate = payment.paymentDate ? parseISO(payment.paymentDate) : null;

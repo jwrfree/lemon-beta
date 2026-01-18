@@ -60,11 +60,11 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     try {
         await addBudget({
             name: budgetName,
-            amount: targetAmount,
+            targetAmount: targetAmount,
             period: 'monthly', // Default to monthly for now
-            category: selectedCategories[0], // MVP supports single category or we need to update schema
+            categories: [selectedCategories[0]], // MVP supports single category or we need to update schema
         });
-    } catch(e) {
+    } catch {
         // error handled by provider
     } finally {
         setIsSubmitting(false);
@@ -88,7 +88,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     }),
   };
 
-  const [direction, setDirection] = useState(1);
+  const [direction] = useState(1);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm" onClick={onClose}>
@@ -164,7 +164,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                     )}
                     {step === 3 && (
                          <div className="space-y-3">
-                            <p className="text-sm text-muted-foreground">Pilih satu atau lebih kategori yang masuk dalam anggaran '{budgetName}'.</p>
+                            <p className="text-sm text-muted-foreground">Pilih satu atau lebih kategori yang masuk dalam anggaran &apos;{budgetName}&apos;.</p>
                             <ScrollArea className="h-64">
                                 <div className="grid grid-cols-4 gap-2 pr-4">
                                 {expenseCategories.map(cat => (

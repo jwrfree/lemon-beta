@@ -75,7 +75,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Fetch user profile from 'profiles' table (assuming it exists) or just use user metadata
         const fetchProfile = async () => {
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)

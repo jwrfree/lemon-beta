@@ -58,7 +58,6 @@ const QuickAddWidget = () => {
     );
 };
 
-import { Skeleton } from '@/components/ui/skeleton';
 
 const HomeSkeleton = () => (
     <div className="bg-muted min-h-screen animate-pulse p-4">

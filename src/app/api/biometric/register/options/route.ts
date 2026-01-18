@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const userDoc = await userRef.get();
 
     // Although get() is called, we will use set({merge: true}) which can handle both creation and update.
-    const userData = userDoc.exists() ? userDoc.data() ?? {} : {};
+    const userData = userDoc.exists ? userDoc.data() ?? {} : {};
 
     const options = await generateRegistrationOptions({
       rpID: RP_ID,

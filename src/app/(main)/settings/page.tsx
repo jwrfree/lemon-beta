@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
     AlertDialog,
@@ -42,12 +43,12 @@ export default function SettingsPage() {
 
         try {
             if (enabled) {
-                await registerBiometric(user.email, user.uid);
+                await registerBiometric(user.email, user.id);
                 await updateUserBiometricStatus(true);
                 localStorage.setItem('lemon_biometric_user', user.email);
                 showToast("Login sidik jari diaktifkan.", 'success');
             } else {
-                await unregisterBiometric(user.uid);
+                await unregisterBiometric(user.id);
                 await updateUserBiometricStatus(false);
                 localStorage.removeItem('lemon_biometric_user');
                 showToast("Login sidik jari dinonaktifkan.", 'info');
@@ -117,15 +118,21 @@ export default function SettingsPage() {
                 <div className="p-4 space-y-4">
                     {/* User Profile Section */}
                     <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                            {user?.photoURL ? (
-                                <img src={user.photoURL} alt="User Avatar" className="w-full h-full rounded-full" />
+                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center relative overflow-hidden">
+                            {userData?.photoURL ? (
+                                <Image 
+                                    src={userData.photoURL} 
+                                    alt="User Avatar" 
+                                    width={64} 
+                                    height={64} 
+                                    className="object-cover"
+                                />
                             ) : (
                                 <UserCircle className="w-10 h-10 text-primary" strokeWidth={1.5} />
                             )}
                         </div>
                         <div>
-                            <p className="text-lg font-semibold">{user?.displayName || 'Pengguna Lemon'}</p>
+                            <p className="text-lg font-semibold">{userData?.displayName || 'Pengguna Lemon'}</p>
                             <p className="text-sm text-muted-foreground">{user?.email}</p>
                         </div>
                     </div>
@@ -222,7 +229,7 @@ export default function SettingsPage() {
                         </AlertDialog>
                     </div>
                     
-                     <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v1.3.0</p>
+                     <p className="text-xs text-muted-foreground text-center !mt-6">Lemon App v2.1.0</p>
                 </div>
             </main>
         </div>

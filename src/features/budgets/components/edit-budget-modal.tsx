@@ -52,10 +52,10 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: any, onClose: () 
     try {
         await updateBudget(budget.id, {
             name: budgetName,
-            amount: targetAmount,
-            category: selectedCategories[0],
+            targetAmount: targetAmount,
+            categories: [selectedCategories[0]],
         });
-    } catch(e) {
+    } catch {
         // error handled by provider
     } finally {
         setIsSubmitting(false);
@@ -162,7 +162,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: any, onClose: () 
                 <AlertDialogHeader>
                   <AlertDialogTitle>Yakin mau menghapus anggaran ini?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Tindakan ini tidak dapat dibatalkan dan akan menghapus anggaran '{budget.name}' secara permanen.
+                    Tindakan ini tidak dapat dibatalkan dan akan menghapus anggaran &apos;{budget.name}&apos; secara permanen.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

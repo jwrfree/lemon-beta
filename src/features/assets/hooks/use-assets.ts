@@ -36,7 +36,7 @@ export const useAssets = () => {
                     name: a.name,
                     value: a.value,
                     notes: a.notes,
-                    category: a.category,
+                    categoryKey: a.category,
                     userId: a.user_id,
                     createdAt: a.created_at,
                     updatedAt: a.updated_at
@@ -57,7 +57,7 @@ export const useAssets = () => {
                     name: l.name,
                     value: l.value,
                     notes: l.notes,
-                    category: l.category,
+                    categoryKey: l.category,
                     userId: l.user_id,
                     createdAt: l.created_at,
                     updatedAt: l.updated_at
@@ -80,7 +80,7 @@ export const useAssets = () => {
             name: itemData.name,
             value: itemData.value,
             notes: itemData.notes,
-            category: itemData.category,
+            category: itemData.categoryKey,
             user_id: user.id
         });
 
@@ -107,7 +107,7 @@ export const useAssets = () => {
                 name: a.name,
                 value: a.value,
                 notes: a.notes,
-                category: a.category,
+                categoryKey: a.category,
                 userId: a.user_id,
                 createdAt: a.created_at,
                 updatedAt: a.updated_at
@@ -119,7 +119,7 @@ export const useAssets = () => {
                 name: l.name,
                 value: l.value,
                 notes: l.notes,
-                category: l.category,
+                categoryKey: l.category,
                 userId: l.user_id,
                 createdAt: l.created_at,
                 updatedAt: l.updated_at
@@ -152,7 +152,7 @@ export const useAssets = () => {
                 name: a.name,
                 value: a.value,
                 notes: a.notes,
-                category: a.category,
+                categoryKey: a.category,
                 userId: a.user_id,
                 createdAt: a.created_at,
                 updatedAt: a.updated_at
@@ -164,7 +164,7 @@ export const useAssets = () => {
                 name: l.name,
                 value: l.value,
                 notes: l.notes,
-                category: l.category,
+                categoryKey: l.category,
                 userId: l.user_id,
                 createdAt: l.created_at,
                 updatedAt: l.updated_at

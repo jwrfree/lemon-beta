@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { cn, formatCurrency } from '@/lib/utils';
-import { format, isSameMonth, parseISO, startOfMonth, subMonths, getDaysInMonth, startOfDay, subDays, eachDayOfInterval } from 'date-fns';
+import { format, isSameMonth, parseISO, startOfMonth, subMonths, subDays, eachDayOfInterval } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { 
     ArrowUpRight, 
@@ -16,27 +16,21 @@ import {
     Wallet, 
     TrendingUp, 
     TrendingDown, 
-    MoreHorizontal, 
     Plus, 
     Search,
-    Download,
     Calendar,
     ArrowRight
 } from 'lucide-react';
 import {
-    Area,
-    AreaChart,
     Bar,
     BarChart,
     CartesianGrid,
-    Cell,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
 } from 'recharts';
 import { categoryDetails } from '@/lib/categories';
-import { Badge } from '@/components/ui/badge';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, onClick }: any) => (
@@ -93,7 +87,7 @@ export const DesktopDashboard = () => {
     const [chartRange, setChartRange] = useState<'30' | '90'>('30');
 
     // Stats Calculation
-    const now = new Date();
+    const now = useMemo(() => new Date(), []);
     const currentMonth = startOfMonth(now);
     const lastMonth = subMonths(currentMonth, 1);
 
@@ -138,7 +132,7 @@ export const DesktopDashboard = () => {
                 expense: dayTx.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0),
             };
         });
-    }, [transactions, chartRange]);
+    }, [transactions, chartRange, now]);
 
     const recentTransactions = transactions.slice(0, 5);
 
@@ -272,11 +266,11 @@ export const DesktopDashboard = () => {
                     <CardContent>
                         <div className="space-y-4">
                             {wallets.slice(0, 4).map(wallet => {
-                                const { Icon, color } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
+                                const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                                 return (
                                     <div key={wallet.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => router.push('/wallets')}>
                                         <div className="flex items-center gap-3">
-                                            <div className={cn("p-2 rounded-full bg-primary/10", color)}>
+                                            <div className={cn("p-2 rounded-full bg-primary/10", textColor.replace('text-white', 'text-primary'))}>
                                                 <Icon className="h-5 w-5" />
                                             </div>
                                             <div>

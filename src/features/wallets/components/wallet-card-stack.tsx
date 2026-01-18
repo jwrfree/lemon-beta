@@ -42,7 +42,6 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
         <AnimatePresence initial={false}>
           {wallets.map((wallet, i) => {
             const isActive = i === activeIndex;
-            const isPrevious = i === (activeIndex - 1 + wallets.length) % wallets.length;
             const isNext = i === (activeIndex + 1) % wallets.length;
 
             const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon);

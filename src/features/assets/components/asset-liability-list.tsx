@@ -1,7 +1,7 @@
 'use client';
 
 import { useAssets } from '../hooks/use-assets';
-import { cn, formatCurrency } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { Button } from '@/components/ui/button';
 import { MoreVertical } from 'lucide-react';

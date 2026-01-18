@@ -97,7 +97,7 @@ export const LoginPage = ({
 
             if (error) throw error;
             // Note: Redirects automatically, so toast might not be seen immediately
-        } catch (error: any) {
+        } catch {
             let message = 'Gagal masuk dengan Google. Coba lagi ya.';
             setAuthError(message);
             showToast(message, 'error');
@@ -129,7 +129,7 @@ export const LoginPage = ({
         exit: shouldReduceMotion ? { y: 0 } : { y: '100%' },
         transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' },
         role: "dialog",
-        "aria-modal": "true",
+        "aria-modal": true,
         "aria-labelledby": "login-heading",
         className: "w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit",
         onClick: (e: React.MouseEvent) => e.stopPropagation(),

@@ -148,7 +148,7 @@ const TransactionsPageContent = () => {
                                 <Label className="text-sm font-medium">Dompet</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {displayedWallets.map(w => (
-151→                                        <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
+                                        <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
                                     ))}
                                     {wallets.length > 8 && !showAllWallets && (
                                         <Button variant="link" size="sm" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>

@@ -1,6 +1,6 @@
 
 'use client';
-import { Wallet, Banknote, Landmark, Smartphone, CircleDollarSign, TrendingUp, Home, Building } from 'lucide-react';
+import { Wallet, Landmark, Smartphone, CircleDollarSign, TrendingUp, Home, Building } from 'lucide-react';
 
 interface Gradient {
     from: string;

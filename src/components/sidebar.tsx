@@ -5,7 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, PieChart, Plus, HandCoins, User, LogOut, Settings, Wallet, Bell } from 'lucide-react';
+import { Home, PieChart, Plus, HandCoins, LogOut, Settings, Wallet, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';

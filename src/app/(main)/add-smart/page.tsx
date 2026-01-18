@@ -59,14 +59,14 @@ const WelcomePlaceholder = () => (
         </div>
         <h2 className="text-lg font-semibold text-foreground">Catat Cepat dengan AI</h2>
         <p className="mt-1 max-w-xs">
-            Ketik transaksi seperti "beli kopi 25rb", rekam suara, atau pindai struk untuk memulai.
+            Ketik transaksi seperti &quot;beli kopi 25rb&quot;, rekam suara, atau pindai struk untuk memulai.
         </p>
     </div>
 );
 
 
 const SpeechRecognition =
-  (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition));
+  (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024; // 1MB
 
@@ -243,7 +243,7 @@ export default function SmartAddPage() {
         recognition.continuous = true;
         recognition.lang = 'id-ID';
         recognition.interimResults = false;
-        recognition.onresult = (event) => {
+        recognition.onresult = (event: any) => {
             let transcript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) transcript += event.results[i][0].transcript + ' ';
@@ -251,7 +251,7 @@ export default function SmartAddPage() {
             finalTranscriptRef.current += transcript;
             setInputValue(finalTranscriptRef.current);
         };
-        recognition.onerror = (event) => {
+        recognition.onerror = (event: any) => {
             showToast("Oops! Terjadi error pada input suara.", 'error');
             setIsListening(false);
         };
@@ -455,7 +455,7 @@ export default function SmartAddPage() {
                                                         <div className="flex items-center text-sm">
                                                             <TrendingDown className="h-5 w-5 text-primary mr-3" />
                                                             <div className="flex flex-col">
-                                                                    <span className="text-muted-foreground">Sisa budget '{insightData.budget.name}'</span>
+                                                                    <span className="text-muted-foreground">Sisa budget &apos;{insightData.budget.name}&apos;</span>
                                                                     <div className="flex items-center gap-2">
                                                                     <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.budget.currentRemaining)}</span>
                                                                     <ArrowRight className="h-3 w-3 text-muted-foreground" />

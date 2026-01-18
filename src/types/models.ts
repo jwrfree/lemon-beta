@@ -20,6 +20,7 @@ export interface ReminderRepeatRule {
 export interface Reminder extends BaseRecord {
   title: string;
   type: ReminderType;
+  category?: string;
   targetType?: 'debt' | 'standalone' | null;
   targetId?: string | null;
   amount?: number | null;
@@ -68,6 +69,8 @@ export interface Wallet extends BaseRecord {
   name: string;
   balance: number;
   icon?: string | null;
+  color?: string | null;
+  type?: string | null;
   isDefault?: boolean;
 }
 
@@ -85,12 +88,14 @@ export interface Asset extends BaseRecord {
   name: string;
   value: number;
   categoryKey: string;
+  notes?: string;
 }
 
 export interface Liability extends BaseRecord {
   name: string;
   value: number;
   categoryKey: string;
+  notes?: string;
 }
 
   export interface Goal extends BaseRecord {

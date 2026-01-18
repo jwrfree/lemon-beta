@@ -41,6 +41,7 @@ export const useDebts = () => {
                  const mappedDebts = debtsData.map((d: any) => ({
                     id: d.id,
                     title: d.title,
+                    counterparty: d.counterparty,
                     principal: d.principal,
                     outstandingBalance: d.outstanding_balance,
                     status: d.status,
@@ -71,6 +72,7 @@ export const useDebts = () => {
         
         const { error } = await supabase.from('debts').insert({
             title: debtData.title,
+            counterparty: debtData.counterparty,
             principal: debtData.principal ?? 0,
             outstanding_balance: debtData.outstandingBalance ?? debtData.principal ?? 0,
             direction: debtData.direction || 'owed',
@@ -102,6 +104,7 @@ export const useDebts = () => {
         if (data) setDebts(data.map((d: any) => ({
             id: d.id,
             title: d.title,
+            counterparty: d.counterparty,
             principal: d.principal,
             outstandingBalance: d.outstanding_balance,
             status: d.status,
@@ -127,6 +130,7 @@ export const useDebts = () => {
 
         const { error } = await supabase.from('debts').update({
             title: debtData.title,
+            counterparty: debtData.counterparty,
             principal: debtData.principal,
             outstanding_balance: debtData.outstandingBalance,
             start_date: normalizeDateInput(debtData.startDate),
@@ -150,6 +154,7 @@ export const useDebts = () => {
         if (data) setDebts(data.map((d: any) => ({
             id: d.id,
             title: d.title,
+            counterparty: d.counterparty,
             principal: d.principal,
             outstandingBalance: d.outstanding_balance,
             status: d.status,
@@ -283,6 +288,7 @@ export const useDebts = () => {
         if (data) setDebts(data.map((d: any) => ({
             id: d.id,
             title: d.title,
+            counterparty: d.counterparty,
             principal: d.principal,
             outstandingBalance: d.outstanding_balance,
             status: d.status,

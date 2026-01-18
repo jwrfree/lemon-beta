@@ -125,7 +125,7 @@ export const SignUpPage = ({
 
             if (error) throw error;
             // Note: Redirects automatically
-        } catch (error: any) {
+        } catch {
             let message = 'Gagal mendaftar dengan Google. Coba lagi ya.';
             setAuthError(message);
             showToast(message, 'error');
@@ -157,7 +157,7 @@ export const SignUpPage = ({
         exit: shouldReduceMotion ? { y: 0 } : { y: '100%' },
         transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.24, ease: 'easeOut' },
         role: "dialog",
-        "aria-modal": "true",
+        "aria-modal": true,
         "aria-labelledby": "signup-heading",
         className: "w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit",
         onClick: (e: React.MouseEvent) => e.stopPropagation(),

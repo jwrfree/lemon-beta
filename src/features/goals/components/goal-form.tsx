@@ -195,7 +195,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                                 <AlertDialogHeader>
                                 <AlertDialogTitle>Yakin mau menghapus target ini?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Tindakan ini tidak dapat dibatalkan dan akan menghapus target '{initialData.name}' secara permanen.
+                                    Tindakan ini tidak dapat dibatalkan dan akan menghapus target &apos;{initialData.name}&apos; secara permanen.
                                 </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>

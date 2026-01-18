@@ -38,7 +38,6 @@ export const useGoals = () => {
                     currentAmount: g.current_amount,
                     targetDate: g.target_date,
                     icon: g.icon,
-                    color: g.color,
                     userId: g.user_id,
                     createdAt: g.created_at
                 }));
@@ -59,7 +58,6 @@ export const useGoals = () => {
             current_amount: goalData.currentAmount || 0,
             target_date: goalData.targetDate,
             icon: goalData.icon,
-            color: goalData.color,
             user_id: user.id
         });
 
@@ -87,7 +85,6 @@ export const useGoals = () => {
         if (goalData.currentAmount !== undefined) dbPayload.current_amount = goalData.currentAmount;
         if (goalData.targetDate) dbPayload.target_date = goalData.targetDate;
         if (goalData.icon) dbPayload.icon = goalData.icon;
-        if (goalData.color) dbPayload.color = goalData.color;
 
         const { error } = await supabase.from('goals').update(dbPayload).eq('id', goalId);
 

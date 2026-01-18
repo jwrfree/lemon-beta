@@ -2,6 +2,23 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.1.0] - January 2026
+
+This release introduces comprehensive net worth tracking and developer tools for AI cost estimation.
+
+### ✨ New Features
+
+- **Assets & Liabilities Tracker**: Monitor your complete financial health by tracking assets (investments, cash, property) and liabilities (loans, credit cards).
+    - **Net Worth Dashboard**: Real-time calculation of your total net worth.
+    - **Visual Breakdown**: Categorized view of all your assets and liabilities.
+- **AI Token Calculator**: A developer-focused tool to estimate token usage and costs for the DeepSeek V3 model.
+    - **Cost Estimation**: Calculate input/output costs in IDR based on real-time rates.
+    - **Runway Calculator**: Estimate how long your API budget will last based on daily transaction volume.
+
+### 🎨 Enhancements
+
+- **Settings Integration**: Added access points for Token Calculator and Assets management in the Settings/More menu.
+
 ## [Version 2.0.0] - 22 September 2025
 
 **Status:** Ready to launch
