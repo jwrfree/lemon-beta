@@ -72,7 +72,7 @@ export const ExpenseShortTermTrend = () => {
                                 type="button"
                                 onClick={() => setRange(option as '14' | '30')}
                                 className={cn(
-                                    'rounded-full px-3 py-1 text-[10px] font-black uppercase transition',
+                                    'rounded-full px-3 py-1 text-[11px] font-bold uppercase transition',
                                     range === option
                                         ? 'bg-primary text-primary-foreground shadow-sm'
                                         : 'text-muted-foreground hover:bg-muted'
@@ -92,7 +92,7 @@ export const ExpenseShortTermTrend = () => {
                                 type="button"
                                 onClick={() => setChartType(option.value)}
                                 className={cn(
-                                    'flex items-center gap-1 rounded-full px-3 py-1 text-[10px] font-black uppercase transition',
+                                    'flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold uppercase transition',
                                     chartType === option.value
                                         ? 'bg-primary text-primary-foreground shadow-sm'
                                         : 'text-muted-foreground hover:bg-muted'
@@ -108,23 +108,23 @@ export const ExpenseShortTermTrend = () => {
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     <div className="rounded-2xl border-none bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>
-                        <p className="text-lg font-black text-foreground">{formatCurrency(totalSpent)}</p>
-                        <p className={cn("text-[10px] font-bold uppercase mt-1", delta > 0 ? "text-rose-500" : "text-emerald-600")}>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>
+                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(totalSpent)}</p>
+                        <p className={cn("text-[11px] font-bold uppercase mt-1", delta > 0 ? "text-destructive" : "text-success")}>
                             {percentChange ? (percentChange > 0 ? '+' : '') + percentChange.toFixed(1) + '%' : '—'}
                         </p>
                     </div>
                     <div className="rounded-2xl border-none bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
-                        <p className="text-lg font-black text-foreground">{formatCurrency(average)}</p>
-                        <p className="text-[10px] font-medium text-muted-foreground mt-1">PER HARI</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
+                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(average)}</p>
+                        <p className="text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-wider">PER HARI</p>
                     </div>
                     <div className="rounded-2xl border-none bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
                         {peakDay ? (
                             <>
-                                <p className="text-lg font-black text-foreground">{formatCurrency(peakDay.total)}</p>
-                                <p className="text-[10px] font-medium text-muted-foreground mt-1 uppercase">{peakDay.shortLabel}</p>
+                                <p className="text-lg font-extrabold text-foreground">{formatCurrency(peakDay.total)}</p>
+                                <p className="text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-wider">{peakDay.shortLabel}</p>
                             </>
                         ) : (
                             <p className="text-sm text-muted-foreground">None</p>

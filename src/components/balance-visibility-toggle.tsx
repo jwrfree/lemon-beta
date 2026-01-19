@@ -30,9 +30,9 @@ export const BalanceVisibilityToggle: React.FC<BalanceVisibilityToggleProps> = (
       aria-label={isBalanceVisible ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
     >
       {isBalanceVisible ? (
-        <Eye className="h-4 w-4" />
+        <Eye className="h-6 w-6" />
       ) : (
-        <EyeOff className="h-4 w-4" />
+        <EyeOff className="h-6 w-6" />
       )}
       {showLabel && (
         <span className="text-sm">

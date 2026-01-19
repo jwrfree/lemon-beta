@@ -2,6 +2,31 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Unreleased] - January 2026
+
+### ✨ New Features
+
+- **Enhanced Mobile Homepage**: Complete redesign with modern glassmorphism design
+  - **Glassmorphism Cards**: All main cards now feature backdrop blur effects with semi-transparent backgrounds
+  - **Gradient Text Effects**: Total balance display with beautiful gradient text effects for premium visual appeal
+  - **Pull-to-Refresh Functionality**: Native mobile gesture implementation with smooth animated refresh indicator
+  - **Horizontal Wallet Carousel**: Enhanced wallet section with horizontal scrollable format showing up to 5 wallets
+  - **Micro-interactions & Animations**: Smooth animations using Framer Motion with spring physics
+  - **Enhanced Visual Elements**: Improved debt summary, reminders, and overall visual hierarchy
+
+- **Floating Action Button (FAB) Enhancements**: 
+  - **Optimal Positioning**: Raised FAB position for better thumb reachability
+  - **Visual Improvements**: Enhanced shadow effects, ring outlines, and gradient overlays
+  - **Hover Animations**: Scale effects and shimmer animations for better interactivity
+  - **Responsive Design**: Adaptive positioning based on screen height
+
+### 🎨 Enhancements
+
+- **Modern Aesthetics**: Implementation of glassmorphism design trend with subtle shadows and depth effects
+- **User Experience**: Intuitive pull-to-refresh gesture and smooth touch interactions
+- **Performance Optimized**: Efficient animations and optimized build size
+- **Accessibility**: Proper ARIA labels and semantic HTML structure
+
 ## [Version 2.1.0] - January 2026
 
 This release introduces comprehensive net worth tracking and developer tools for AI cost estimation.

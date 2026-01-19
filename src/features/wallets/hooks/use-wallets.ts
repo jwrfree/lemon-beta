@@ -3,6 +3,17 @@ import { useApp } from '@/providers/app-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Wallet } from '@/types/models';
 
+const mapWalletFromDb = (w: any): Wallet => ({
+    id: w.id,
+    name: w.name,
+    balance: w.balance,
+    icon: w.icon,
+    color: w.color,
+    isDefault: w.is_default,
+    userId: w.user_id,
+    createdAt: w.created_at
+});
+
 export const useWallets = () => {
     const app = useApp();
     const { user } = app;
@@ -10,35 +21,26 @@ export const useWallets = () => {
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
 
+    const fetchWallets = useCallback(async () => {
+        if (!user) return;
+        const { data: walletsData } = await supabase
+            .from('wallets')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false });
+
+        if (walletsData) {
+            setWallets(walletsData.map(mapWalletFromDb));
+        }
+        setIsLoading(false);
+    }, [user, supabase]);
+
     useEffect(() => {
         if (!user) {
             setWallets([]);
             setIsLoading(false);
             return;
         }
-
-        const fetchWallets = async () => {
-            const { data: walletsData } = await supabase
-                .from('wallets')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false });
-
-            if (walletsData) {
-                const mappedWallets = walletsData.map((w: any) => ({
-                    id: w.id,
-                    name: w.name,
-                    balance: w.balance,
-                    icon: w.icon,
-                    color: w.color,
-                    isDefault: w.is_default,
-                    userId: w.user_id,
-                    createdAt: w.created_at
-                }));
-                setWallets(mappedWallets);
-            }
-            setIsLoading(false);
-        };
 
         fetchWallets();
         
@@ -60,7 +62,7 @@ export const useWallets = () => {
             supabase.removeChannel(channel);
         };
 
-    }, [user, supabase]);
+    }, [user, supabase, fetchWallets]);
 
     return {
         ...app,

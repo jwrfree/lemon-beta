@@ -85,9 +85,9 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                                             </div>
                                             <div>
                                                 <div className="font-bold text-foreground text-sm leading-tight group-hover:text-primary transition-colors">{t.description}</div>
-                                                {t.location && (
+                                                {(t as any).location && (
                                                     <div className="flex items-center text-[10px] font-medium text-muted-foreground mt-1 uppercase tracking-wider">
-                                                        <MapPin className="h-2.5 w-2.5 mr-1" /> {t.location}
+                                                        <MapPin className="h-2.5 w-2.5 mr-1" /> {(t as any).location}
                                                     </div>
                                                 )}
                                             </div>
@@ -108,8 +108,8 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                                         {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                     </td>
                                     <td className={cn(
-                                        "p-4 text-right font-black text-sm",
-                                        isExpense ? "text-rose-500" : "text-emerald-600 dark:text-emerald-500"
+                                        "p-4 text-right font-extrabold text-sm",
+                                        isExpense ? "text-destructive" : "text-success"
                                     )}>
                                         <span className="opacity-70 mr-0.5">{isExpense ? '-' : '+'}</span>
                                         {formatCurrency(t.amount)}

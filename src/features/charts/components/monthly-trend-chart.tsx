@@ -77,12 +77,12 @@ export const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Setahun</p>
-                        <p className="text-lg font-black text-foreground">{formatCurrency(totalYear)}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Setahun</p>
+                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(totalYear)}</p>
                     </div>
                     <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
-                        <p className="text-lg font-black text-foreground">{formatCurrency(average)}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
+                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(average)}</p>
                     </div>
                 </div>
             </CardContent>

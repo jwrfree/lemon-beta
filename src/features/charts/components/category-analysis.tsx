@@ -69,7 +69,7 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
                     <CardDescription className="text-sm font-medium text-foreground">
                         {`Top 5 ${sectionLabel.toLowerCase()} kamu.`}
                     </CardDescription>
-                    <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-black">
+                    <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-extrabold">
                         {formatCurrency(total)}
                     </Badge>
                 </div>
@@ -91,21 +91,22 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex flex-1 items-center gap-3">
                                         <div
-                                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-110"
+                                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl"
                                             style={{
-                                                background: `linear-gradient(135deg, ${item.fill}, hsl(var(--primary)))`,
+                                                background: `linear-gradient(135deg, ${item.fill} 0%, ${item.fill}dd 50%, ${item.fill}aa 100%)`,
+                                                boxShadow: `0 4px 12px ${item.fill}33`,
                                             }}
                                         >
                                             {IconComponent ? <IconComponent className="h-5 w-5" /> : null}
                                         </div>
                                         <div className="min-w-0">
                                             <p className="truncate text-sm font-bold">{item.name}</p>
-                                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70">
                                                 {item.percentage.toFixed(1)}% TOTAL
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="text-sm font-black">{formatCurrency(item.value)}</div>
+                                    <div className="text-sm font-bold">{formatCurrency(item.value)}</div>
                                 </div>
                                 <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-muted/50">
                                     <div

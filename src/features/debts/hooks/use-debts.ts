@@ -59,7 +59,25 @@ export const useDebts = () => {
             return;
         }
         fetchDebts();
-    }, [user, fetchDebts]);
+
+        const channel = supabase
+            .channel('debts-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'debts',
+                    filter: `user_id=eq.${user.id}`,
+                },
+                () => fetchDebts()
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user, fetchDebts, supabase]);
 
     const addDebt = useCallback(async (debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");

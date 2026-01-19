@@ -179,17 +179,17 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                         </Badge>
                         <Badge
                             className={cn(
-                                'border-none bg-white/20 text-white backdrop-blur font-black text-[10px] uppercase tracking-tighter px-3',
-                                summary.type === 'net' && summary.isPositive && 'bg-emerald-400/40',
-                                summary.type === 'net' && !summary.isPositive && 'bg-rose-400/40'
+                                'border-none bg-white/20 text-white backdrop-blur font-bold text-[11px] uppercase tracking-wider px-3',
+                                summary.type === 'net' && summary.isPositive && 'bg-success/40',
+                                summary.type === 'net' && !summary.isPositive && 'bg-destructive/40'
                             )}
                         >
                             {summary.badgeLabel}
                         </Badge>
                     </div>
                     <div className="space-y-1">
-                        <CardTitle className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">{summary.title}</CardTitle>
-                        <div className="text-4xl md:text-5xl font-black tracking-tighter text-white">
+                        <CardTitle className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70">{summary.title}</CardTitle>
+                        <div className="text-4xl md:text-5xl font-extrabold tracking-tighter text-white">
                             <AnimatedCounter value={summary.value} />
                         </div>
                     </div>
@@ -197,7 +197,7 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                 </CardHeader>
                 <CardContent className="space-y-6 pb-8 pt-0 relative z-10">
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-white/60">
+                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-white/60">
                             <span>Laju Hari</span>
                             <span>
                                 {summary.daysElapsed} / {summary.daysInMonth} Hari
@@ -214,14 +214,14 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                         {summary.type === 'net' ? (
                             <>
                                 <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Pemasukan</p>
-                                    <p className="text-base font-black text-white">
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 mb-1">Pemasukan</p>
+                                    <p className="text-base font-extrabold text-white">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
                                 <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Pengeluaran</p>
-                                    <p className="text-base font-black text-white">
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 mb-1">Pengeluaran</p>
+                                    <p className="text-base font-extrabold text-white">
                                         {formatCurrency(summary.netDetails.expense)}
                                     </p>
                                 </div>
@@ -229,14 +229,14 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                         ) : (
                             <>
                                 <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Per Hari</p>
-                                    <p className="text-base font-black text-white">
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 mb-1">Per Hari</p>
+                                    <p className="text-base font-extrabold text-white">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
                                 <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Per Transaksi</p>
-                                    <p className="text-base font-black text-white">
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 mb-1">Per Transaksi</p>
+                                    <p className="text-base font-extrabold text-white">
                                         {formatCurrency(summary.averagePerTransaction)}
                                     </p>
                                 </div>
@@ -255,16 +255,16 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                             ) : null}
                         </div>
                         <div className="space-y-0.5">
-                            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kategori Terbesar</CardTitle>
-                            <p className="text-lg font-black tracking-tight">{summary.topCategory.name}</p>
+                            <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Kategori Terbesar</CardTitle>
+                            <p className="text-lg font-extrabold tracking-tight">{summary.topCategory.name}</p>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-end justify-between">
-                            <p className="text-2xl font-black text-primary">
+                            <p className="text-2xl font-extrabold text-primary">
                                 {formatCurrency(summary.topCategory.value)}
                             </p>
-                            <Badge variant="outline" className="font-black text-[10px] border-primary/20 text-primary">
+                            <Badge variant="outline" className="font-bold text-[11px] border-primary/20 text-primary">
                                 {summary.topCategory.percentage.toFixed(1)}% TOTAL
                             </Badge>
                         </div>
@@ -279,7 +279,7 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                 >
                     <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
                         <div className="space-y-0.5">
-                            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Transaksi Termahal</CardTitle>
+                            <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Transaksi Termahal</CardTitle>
                             <p className="text-base font-bold tracking-tight group-hover:text-primary transition-colors">
                                 {summary.topTransaction.description || 'Tanpa deskripsi'}
                             </p>
@@ -291,14 +291,14 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                     <CardContent>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="bg-muted/50 text-[10px] font-bold uppercase border-none">
+                                <Badge variant="secondary" className="bg-muted/50 text-[11px] font-bold uppercase border-none">
                                     {summary.topTransaction.category}
                                 </Badge>
-                                <span className="text-[10px] font-medium text-muted-foreground">
+                                <span className="text-[11px] font-medium text-muted-foreground">
                                     {summary.topTransaction.date ? format(parseISO(summary.topTransaction.date), 'd MMM') : ''}
                                 </span>
                             </div>
-                            <span className="font-black text-foreground">
+                            <span className="font-extrabold text-foreground">
                                 {formatCurrency(summary.topTransaction.amount)}
                             </span>
                         </div>
@@ -312,7 +312,7 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                         <Sparkles className="h-5 w-5" />
                     </div>
                     <div className="space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Insight Lemon AI</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-primary/70">Insight Lemon AI</p>
                         <p className="text-sm font-medium leading-relaxed text-foreground/80">{summary.tipCopy}</p>
                     </div>
                 </CardContent>

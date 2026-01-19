@@ -14,7 +14,7 @@ export const getMonthlyTransactions = (transactions: Transaction[], type: 'expen
 };
 
 /**
- * Group transactions by category for Pie Chart
+ * Group transactions by category for Pie Chart with diverse colors
  */
 export const groupTransactionsByCategory = (transactions: Transaction[], type: 'expense' | 'income') => {
     const total = transactions.reduce((sum, t) => sum + t.amount, 0);
@@ -24,6 +24,47 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
         categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
     });
 
+    // Define diverse color schemes for different categories
+    const categoryColors = {
+        // Food & Dining
+        'Makanan': 'hsl(var(--yellow-500))',
+        'Minuman': 'hsl(var(--yellow-600))',
+        
+        // Shopping & Retail
+        'Belanja': 'hsl(var(--blue-500))',
+        'Fashion': 'hsl(var(--purple-500))',
+        'Elektronik': 'hsl(var(--cyan-500))',
+        'Hobi': 'hsl(var(--pink-500))',
+        
+        // Transportation
+        'Transportasi': 'hsl(var(--indigo-500))',
+        'Bensin': 'hsl(var(--indigo-600))',
+        
+        // Bills & Utilities
+        'Tagihan': 'hsl(var(--orange-500))',
+        'Listrik': 'hsl(var(--orange-600))',
+        'Internet': 'hsl(var(--teal-500))',
+        
+        // Entertainment
+        'Hiburan': 'hsl(var(--pink-600))',
+        'Game': 'hsl(var(--purple-600))',
+        
+        // Health & Wellness
+        'Kesehatan': 'hsl(var(--green-500))',
+        'Olahraga': 'hsl(var(--green-600))',
+        
+        // Education & Work
+        'Pendidikan': 'hsl(var(--teal-600))',
+        'Kantor': 'hsl(var(--gray-500))',
+        
+        // Finance
+        'Investasi': 'hsl(var(--emerald-500))',
+        'Asuransi': 'hsl(var(--emerald-600))',
+        
+        // Default fallback
+        'default': 'hsl(var(--primary))'
+    };
+
     const chartData = Object.entries(categoryMap)
         .map(([name, value]) => {
             const details = categoryDetails(name);
@@ -31,7 +72,7 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
                 name,
                 value,
                 icon: details.icon,
-                fill: `hsl(var(--${details.color.match(/text-([\w-]+)/)?.[1] || 'primary'}))`,
+                fill: categoryColors[name as keyof typeof categoryColors] || categoryColors.default,
                 percentage: total > 0 ? (value / total) * 100 : 0,
             };
         })

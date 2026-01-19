@@ -39,27 +39,27 @@ const DashboardChart = dynamic(() => import('./dashboard-chart'), {
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, href }: any) => {
     const Content = (
-        <Card className="hover:shadow-md transition-all duration-300 h-full border-none bg-card/50 backdrop-blur-sm group">
+        <Card className="hover:shadow-md transition-all duration-300 h-full border-none bg-card/50 backdrop-blur-sm group rounded-3xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-                <CardTitle className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">{title}</CardTitle>
-                <div className={cn("p-1.5 rounded-lg bg-muted group-hover:scale-110 transition-transform", color.replace('text-', 'bg-').replace('500', '500/10'))}>
+                <CardTitle className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{title}</CardTitle>
+                <div className={cn("p-1.5 rounded-xl bg-muted group-hover:scale-110 transition-transform", color.replace('text-', 'bg-').replace('500', '500/10'))}>
                     <Icon className={cn("h-3.5 w-3.5", color)} />
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold tracking-tight">
+                <div className="text-2xl font-extrabold tracking-tight">
                     <AnimatedCounter value={value} />
                 </div>
                 {trend && (
                     <div className="flex items-center gap-1.5 mt-2">
                         <div className={cn(
-                            "flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold",
-                            trend === 'up' ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"
+                            "flex items-center px-1.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider",
+                            trend === 'up' ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"
                         )}>
                             {trend === 'up' ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
                             {trendValue}
                         </div>
-                        <span className="text-[10px] text-muted-foreground font-medium">vs bulan lalu</span>
+                        <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">vs bulan lalu</span>
                     </div>
                 )}
             </CardContent>
@@ -196,15 +196,14 @@ export const DesktopDashboard = () => {
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                         <Wallet className="h-32 w-32 rotate-12" />
                     </div>
-                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-primary-foreground/80 uppercase tracking-wider">Total Saldo Tersedia</CardTitle>
-                        <BalanceVisibilityToggle variant="ghost" size="sm" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20" />
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-[11px] font-bold text-primary-foreground/80 uppercase tracking-[0.2em]">Total Saldo Tersedia</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-4xl md:text-5xl font-extrabold tracking-tight">
                             <AnimatedCounter value={totalBalance} />
                         </div>
-                        <p className="text-xs text-primary-foreground/60 mt-4 flex items-center gap-2">
+                        <p className="text-[10px] font-medium text-primary-foreground/60 mt-4 flex items-center gap-2 uppercase tracking-wider">
                             <Sparkles className="h-3 w-3" /> Terakhir diperbarui baru saja
                         </p>
                     </CardContent>
@@ -216,7 +215,7 @@ export const DesktopDashboard = () => {
                     icon={ArrowUpRight} 
                     trend={incomeTrend.direction} 
                     trendValue={incomeTrend.value}
-                    color="text-emerald-500"
+                    color="text-success"
                     href="/transactions?type=income"
                 />
                 <StatCard 
@@ -225,25 +224,25 @@ export const DesktopDashboard = () => {
                     icon={ArrowDownLeft} 
                     trend={expenseTrend.direction} 
                     trendValue={expenseTrend.value}
-                    color="text-rose-500"
+                    color="text-destructive"
                     href="/transactions?type=expense"
                 />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
                 {/* Main Chart */}
-                <Card className="col-span-4 border-none shadow-sm bg-card/50 backdrop-blur-sm">
+                <Card className="col-span-4 border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
                     <CardHeader className="pb-4">
                         <div className="flex items-center justify-between">
                             <div>
                                 <CardTitle className="text-lg font-bold">Arus Kas</CardTitle>
-                                <CardDescription className="text-xs">Pergerakan harian 30 hari terakhir</CardDescription>
+                                <CardDescription className="text-xs font-medium">Pergerakan harian 30 hari terakhir</CardDescription>
                             </div>
-                            <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
+                            <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl">
                                 <Button 
                                     variant={chartRange === '30' ? 'secondary' : 'ghost'} 
                                     size="sm" 
-                                    className="h-7 text-[10px] font-bold uppercase"
+                                    className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
                                     onClick={() => setChartRange('30')}
                                 >
                                     30 Hari
@@ -251,7 +250,7 @@ export const DesktopDashboard = () => {
                                 <Button 
                                     variant={chartRange === '90' ? 'secondary' : 'ghost'} 
                                     size="sm" 
-                                    className="h-7 text-[10px] font-bold uppercase"
+                                    className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
                                     onClick={() => setChartRange('90')}
                                 >
                                     3 Bulan
@@ -265,10 +264,10 @@ export const DesktopDashboard = () => {
                 </Card>
 
                 {/* Wallets Overview */}
-                <Card className="col-span-3 border-none shadow-sm bg-card/50 backdrop-blur-sm">
+                <Card className="col-span-3 border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
                     <CardHeader>
                         <CardTitle className="text-lg font-bold">Dompet</CardTitle>
-                        <CardDescription className="text-xs">
+                        <CardDescription className="text-xs font-medium">
                             {wallets.length} dompet aktif digunakan
                         </CardDescription>
                     </CardHeader>
@@ -280,7 +279,7 @@ export const DesktopDashboard = () => {
                                     <Link 
                                         href="/wallets"
                                         key={wallet.id} 
-                                        className="flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 transition-all group border border-transparent hover:border-primary/10"
+                                        className="flex items-center justify-between p-3 rounded-2xl hover:bg-primary/5 transition-all group border border-transparent hover:border-primary/10"
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={cn("p-2.5 rounded-xl bg-primary/10", textColor.replace('text-white', 'text-primary'))}>
@@ -288,16 +287,16 @@ export const DesktopDashboard = () => {
                                             </div>
                                             <div>
                                                 <p className="font-bold text-sm text-foreground">{wallet.name}</p>
-                                                <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">{wallet.type || 'Personal'}</p>
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{wallet.type || 'Personal'}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-bold text-sm">{formatCurrency(wallet.balance)}</p>
+                                            <p className="font-extrabold text-sm">{formatCurrency(wallet.balance)}</p>
                                         </div>
                                     </Link>
                                 )
                             })}
-                            <Button variant="ghost" className="w-full text-xs font-bold text-primary hover:bg-primary/5 mt-2" onClick={() => router.push('/wallets')}>
+                            <Button variant="ghost" className="w-full text-xs font-bold text-primary hover:bg-primary/5 mt-2 rounded-xl" onClick={() => router.push('/wallets')}>
                                 Lihat Semua Dompet <ArrowRight className="ml-2 h-3 w-3" />
                             </Button>
                         </div>

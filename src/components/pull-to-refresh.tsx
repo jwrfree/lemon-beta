@@ -66,16 +66,20 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd);
+    const handleTouchStartCallback = handleTouchStart;
+    const handleTouchMoveCallback = handleTouchMove;
+    const handleTouchEndCallback = handleTouchEnd;
+
+    container.addEventListener('touchstart', handleTouchStartCallback, { passive: true });
+    container.addEventListener('touchmove', handleTouchMoveCallback, { passive: false });
+    container.addEventListener('touchend', handleTouchEndCallback);
 
     return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchstart', handleTouchStartCallback);
+      container.removeEventListener('touchmove', handleTouchMoveCallback);
+      container.removeEventListener('touchend', handleTouchEndCallback);
     };
-  }, [pullDistance, isRefreshing]);
+  }, []); // Empty dependency array since we want this to run only once
 
   const refreshProgress = Math.min(pullDistance / PULL_THRESHOLD, 1);
 

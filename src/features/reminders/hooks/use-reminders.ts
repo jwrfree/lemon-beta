@@ -55,7 +55,25 @@ export const useReminders = () => {
             return;
         }
         fetchReminders();
-    }, [user, fetchReminders]);
+
+        const channel = supabase
+            .channel('reminders-changes')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'reminders',
+                    filter: `user_id=eq.${user.id}`,
+                },
+                () => fetchReminders()
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user, fetchReminders, supabase]);
 
     const addReminder = useCallback(async (reminderData: ReminderInput) => {
         if (!user) throw new Error("User not authenticated.");

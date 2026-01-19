@@ -20,7 +20,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
     const { icon: CategoryIcon, color, bgColor } = categoryDetails;
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-500';
+    const amountColor = isExpense ? 'text-destructive' : 'text-success';
 
     return (
         <div className="flex items-center gap-4 p-3.5">
@@ -29,7 +29,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
             </div>
             <div className="flex-1 overflow-hidden">
                 <div className="font-bold text-foreground text-sm leading-tight mb-0.5">{transaction.description}</div>
-                 <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
+                 <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     <span>{transaction.subCategory || transaction.category}</span>
                     {transaction.location && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
                     {transaction.location && <span className="truncate">{transaction.location}</span>}
@@ -43,8 +43,11 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
                     )}
                 </div>
             </div>
-            <div className={cn("text-sm font-black tracking-tight", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}>
-                <span>
+            <div 
+                className={cn("text-sm font-extrabold tracking-tight", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
+                aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
+            >
+                <span aria-hidden="true">
                     {isExpense ? '- ' : '+ '}
                     {isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
                 </span>

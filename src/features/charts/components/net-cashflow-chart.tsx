@@ -147,9 +147,9 @@ export const NetCashflowChart = () => {
                         <div className="flex items-center justify-between gap-3 text-xs">
                             <div className="flex-1">
                                 <p className="text-sm font-bold text-foreground">{item.category}</p>
-                                <p className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60">{item.percentage.toFixed(1)}%</p>
+                                <p className="text-[11px] font-bold uppercase tracking-tighter text-muted-foreground/60">{item.percentage.toFixed(1)}%</p>
                             </div>
-                            <span className="text-sm font-black text-foreground">{formatCurrency(item.value)}</span>
+                            <span className="text-sm font-bold text-foreground">{formatCurrency(item.value)}</span>
                         </div>
                         <div className="h-1 w-full overflow-hidden rounded-full bg-muted/50">
                             <div
@@ -166,12 +166,12 @@ export const NetCashflowChart = () => {
     return (
         <Card className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
+                <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
                 <div className="flex items-center justify-between gap-3">
                     <CardDescription className="text-sm font-medium text-foreground">
                         Filter triwulan atau pilih bulan.
                     </CardDescription>
-                    <Badge variant="outline" className="border-border text-[10px] font-bold uppercase tracking-tighter">
+                    <Badge variant="outline" className="border-border text-[11px] font-bold uppercase tracking-tighter">
                         {rangeLabel}
                     </Badge>
                 </div>
@@ -184,7 +184,7 @@ export const NetCashflowChart = () => {
                             type="button"
                             onClick={() => setSelectedQuarter(option.value)}
                             className={cn(
-                                'rounded-full border border-transparent px-3 py-1.5 text-[10px] font-black uppercase transition',
+                                'rounded-full border border-transparent px-3 py-1.5 text-[11px] font-bold uppercase transition',
                                 selectedQuarter === option.value
                                     ? 'bg-primary text-primary-foreground shadow-sm'
                                     : 'bg-muted/60 text-muted-foreground hover:bg-muted'
@@ -196,7 +196,7 @@ export const NetCashflowChart = () => {
                 </div>
 
                 <div className="space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
+                    <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
                         <span>Ketuk grafik untuk rincian</span>
                         <div className="flex items-center gap-3">
                             {legendItems.map((item) => (
@@ -221,19 +221,19 @@ export const NetCashflowChart = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                     <div className="col-span-2 rounded-2xl bg-background/40 p-4 shadow-inner border-l-4 border-primary">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Net</p>
-                        <p className={cn('text-xl font-black', filteredTotals.net >= 0 ? 'text-emerald-600' : 'text-rose-500')}>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Net</p>
+                        <p className={cn('text-xl font-extrabold', filteredTotals.net >= 0 ? 'text-success' : 'text-destructive')}>
                             {formatCurrency(filteredTotals.net)}
                         </p>
-                        <p className="text-[10px] font-bold text-muted-foreground/70 mt-1 uppercase tracking-tighter">{summaryFootnote}</p>
+                        <p className="text-[11px] font-bold text-muted-foreground/70 mt-1 uppercase tracking-tighter">{summaryFootnote}</p>
                     </div>
                     <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Pemasukan</p>
-                        <p className="text-base font-black text-foreground">{formatCurrency(filteredTotals.income)}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Pemasukan</p>
+                        <p className="text-base font-extrabold text-foreground">{formatCurrency(filteredTotals.income)}</p>
                     </div>
                     <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Pengeluaran</p>
-                        <p className="text-base font-black text-foreground">{formatCurrency(filteredTotals.expense)}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Pengeluaran</p>
+                        <p className="text-base font-extrabold text-foreground">{formatCurrency(filteredTotals.expense)}</p>
                     </div>
                 </div>
 
@@ -245,15 +245,15 @@ export const NetCashflowChart = () => {
                     >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="space-y-0.5">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Fokus Bulan</p>
-                                <p className="text-lg font-black text-foreground tracking-tight">{selectedMonthData.fullLabel}</p>
+                                <p className="text-[11px] font-bold uppercase tracking-widest text-primary/70">Fokus Bulan</p>
+                                <p className="text-lg font-extrabold text-foreground tracking-tight">{selectedMonthData.fullLabel}</p>
                             </div>
                             <Badge
                                 className={cn(
-                                    'rounded-full px-3 py-1 text-xs font-black shadow-sm border-none',
+                                    'rounded-full px-3 py-1 text-xs font-bold shadow-sm border-none',
                                     selectedMonthData.net >= 0
-                                        ? 'bg-emerald-500 text-white'
-                                        : 'bg-rose-500 text-white'
+                                        ? 'bg-success text-white'
+                                        : 'bg-destructive text-white'
                                 )}
                             >
                                 {formatCurrency(selectedMonthData.net)}
@@ -263,15 +263,15 @@ export const NetCashflowChart = () => {
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600/70">Pemasukan</p>
-                                    <span className="text-sm font-black text-foreground">{formatCurrency(selectedMonthData.income)}</span>
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-success/70">Pemasukan</p>
+                                    <span className="text-sm font-bold text-foreground">{formatCurrency(selectedMonthData.income)}</span>
                                 </div>
-                                {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'hsl(var(--chart-1))')}
+                                {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'hsl(var(--success))')}
                             </div>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-rose-600/70">Pengeluaran</p>
-                                    <span className="text-sm font-black text-foreground">{formatCurrency(selectedMonthData.expense)}</span>
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-destructive/70">Pengeluaran</p>
+                                    <span className="text-sm font-bold text-foreground">{formatCurrency(selectedMonthData.expense)}</span>
                                 </div>
                                 {renderBreakdown(selectedMonthData.expenseBreakdown, 'Kosong', 'hsl(var(--destructive))')}
                             </div>

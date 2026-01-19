@@ -21,6 +21,14 @@
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+    
+    /* Semantic Success/Income - Optimized for Contrast (emerald-700 equivalent) */
+    --success: 161 94% 30%;
+    --success-foreground: 161 94% 95%;
+    
+    /* Overlays */
+    --overlay: 222.2 84% 4.9% / 0.5;
+    
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
@@ -77,6 +85,14 @@
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
+    
+    /* Semantic Success/Income - Optimized for Dark Mode (emerald-400 equivalent) */
+    --success: 158 64% 52%;
+    --success-foreground: 158 64% 5%;
+    
+    /* Overlays */
+    --overlay: 0 0% 0% / 0.7;
+    
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 217 91% 60%;
