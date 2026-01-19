@@ -32,7 +32,6 @@ export const useTransactions = () => {
             .order('date', { ascending: false });
 
         if (error) {
-            console.error("Error fetching transactions:", error);
             setIsLoading(false);
             return;
         }

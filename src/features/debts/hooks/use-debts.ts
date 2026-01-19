@@ -47,7 +47,6 @@ export const useDebts = () => {
             .order('created_at', { ascending: false });
 
         if (error) {
-            console.error("Error fetching debts:", error);
             setIsLoading(false);
             return;
         }
@@ -108,7 +107,6 @@ export const useDebts = () => {
         });
 
         if (error) {
-            console.error("Error adding debt:", error);
             showToast("Gagal membuat catatan hutang/piutang.", 'error');
             return;
         }
@@ -190,7 +188,6 @@ export const useDebts = () => {
         });
 
         if (error) {
-             console.error("Error logging debt payment:", error);
              showToast("Gagal mencatat pembayaran.", 'error');
              return;
         }
@@ -206,7 +203,6 @@ export const useDebts = () => {
         
         const { data: debt, error: fetchError } = await supabase.from('debts').select('*').eq('id', debtId).single();
         if (fetchError || !debt) {
-            console.error("Error fetching debt for payment deletion:", fetchError);
             showToast("Gagal mengambil data hutang.", 'error');
             return;
         }
@@ -228,7 +224,6 @@ export const useDebts = () => {
         }).eq('id', debtId);
 
         if (updateError) {
-            console.error("Error updating debt after payment deletion:", updateError);
             showToast("Gagal menghapus pembayaran.", 'error');
             return;
         }

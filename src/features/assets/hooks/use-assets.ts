@@ -53,7 +53,7 @@ export const useAssets = () => {
                 .order('created_at', { ascending: false });
 
             if (assetsError) {
-                console.error("Error fetching assets:", assetsError);
+                // Silently fail or handle error
             } else if (assetsData) {
                 setAssets(assetsData.map(mapAssetFromDb));
             }
@@ -66,7 +66,7 @@ export const useAssets = () => {
                 .order('created_at', { ascending: false });
 
             if (liabilitiesError) {
-                console.error("Error fetching liabilities:", liabilitiesError);
+                // Silently fail or handle error
             } else if (liabilitiesData) {
                 setLiabilities(liabilitiesData.map(mapLiabilityFromDb));
             }
@@ -91,7 +91,6 @@ export const useAssets = () => {
         });
 
         if (error) {
-             console.error(`Error adding ${type}:`, error);
              showToast(`Gagal menambahkan ${type === 'asset' ? 'aset' : 'liabilitas'}.`, 'error');
              return;
         }
@@ -109,14 +108,14 @@ export const useAssets = () => {
             // Re-fetch is safer
             const { data, error } = await supabase.from('assets').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
             if (error) {
-                console.error("Error refetching assets:", error);
+                // Silently fail or handle error
             } else if (data) {
                 setAssets(data.map(mapAssetFromDb));
             }
         } else {
              const { data, error } = await supabase.from('liabilities').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
              if (error) {
-                console.error("Error refetching liabilities:", error);
+                // Silently fail or handle error
              } else if (data) {
                 setLiabilities(data.map(mapLiabilityFromDb));
              }
@@ -144,14 +143,14 @@ export const useAssets = () => {
         if (type === 'asset') {
              const { data, error } = await supabase.from('assets').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
             if (error) {
-                console.error("Error refetching assets after update:", error);
+                // Silently fail or handle error
             } else if (data) {
                 setAssets(data.map(mapAssetFromDb));
             }
         } else {
              const { data, error } = await supabase.from('liabilities').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
              if (error) {
-                console.error("Error refetching liabilities after update:", error);
+                // Silently fail or handle error
              } else if (data) {
                 setLiabilities(data.map(mapLiabilityFromDb));
              }

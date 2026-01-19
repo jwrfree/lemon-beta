@@ -8,6 +8,7 @@ import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
+import { useUI } from '@/components/ui-provider';
 import type { Transaction } from '@/types/models';
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Transaction; hideDate?: boolean }) => {

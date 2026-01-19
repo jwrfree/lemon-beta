@@ -30,7 +30,6 @@ export const useWallets = () => {
             .order('created_at', { ascending: false });
 
         if (error) {
-            console.error("Error fetching wallets:", error);
             setIsLoading(false);
             return;
         }
