@@ -2,12 +2,13 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { categoryDetails, Category } from '@/lib/categories';
+import { Category } from '@/lib/categories';
+import { getCategoryIcon } from '@/lib/category-utils';
 
 interface CategoryGridProps {
-    categories: Category[];
+    categories: any[];
     selectedCategory: string;
-    onCategorySelect: (cat: Category) => void;
+    onCategorySelect: (cat: any) => void;
 }
 
 export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }: CategoryGridProps) => {
@@ -15,7 +16,10 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
         <div className="grid grid-cols-4 gap-2">
             {categories.map((cat) => {
                 const isSelected = selectedCategory === cat.name;
-                const { icon: CategoryIcon, color, bgColor } = categoryDetails(cat.name);
+                const CategoryIcon = getCategoryIcon(cat.icon);
+                const color = cat.color || 'text-gray-600';
+                const bgColor = cat.bg_color || 'bg-gray-100';
+                
                 return (
                     <button
                         type="button"

@@ -111,8 +111,10 @@ export interface Transaction extends BaseRecord {
   type: TransactionType;
   amount: number;
   category: string;
+  subCategory?: string;
   walletId: string;
   description: string;
+  location?: string;
   date: string;
   linkedDebtId?: string | null;
 }
@@ -140,9 +142,11 @@ export interface TransactionRow {
   id: string;
   amount: number;
   category: string;
+  sub_category?: string | null;
   date: string;
   description: string;
   type: TransactionType;
+  location?: string | null;
   wallet_id: string;
   user_id: string;
   created_at: string;

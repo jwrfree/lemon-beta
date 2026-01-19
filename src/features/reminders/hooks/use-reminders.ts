@@ -18,7 +18,7 @@ const mapReminderFromDb = (r: ReminderRow): Reminder => ({
     status: r.status,
     repeatRule: r.repeat_rule,
     snoozeCount: r.snooze_count,
-    completedAt: r.completed_at,
+    completedAt: r.completed_at ?? undefined,
     channels: r.channels || ['push'],
     targetId: r.target_id,
     targetType: r.target_type,

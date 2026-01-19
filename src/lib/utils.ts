@@ -1,7 +1,7 @@
 
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { format, isToday, isYesterday } from 'date-fns';
+import { format, isToday, isYesterday, getDaysInMonth } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 
@@ -82,4 +82,8 @@ export function normalizeDateInput(value: string | Date | null | undefined): str
     if (!value) return null;
     if (typeof value === 'string') return value;
     return value.toISOString();
+}
+
+export function daysInMonth(date: Date) {
+    return getDaysInMonth(date);
 }

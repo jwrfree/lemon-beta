@@ -7,18 +7,17 @@ import { categoryDetails as getCategoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
-import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { useUI } from '@/components/ui-provider';
+import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import type { Transaction } from '@/types/models';
+import { useTransactions } from '../hooks/use-transactions';
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Transaction; hideDate?: boolean }) => {
-    const { wallets } = useData();
+    const { wallets, getCategoryVisuals } = useData();
     const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
-    const categoryDetails = getCategoryDetails(transaction.category);
-      
-    const { icon: CategoryIcon, color, bgColor } = categoryDetails;
+    const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(transaction.category);
 
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-destructive' : 'text-success';

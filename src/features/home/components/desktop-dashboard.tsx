@@ -169,9 +169,10 @@ export const DesktopDashboard = () => {
     const recentTransactions = transactions.slice(0, 5);
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto w-full">
+        <div className="w-full">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="sticky top-0 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 max-w-7xl mx-auto">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                     <p className="text-muted-foreground">
@@ -189,6 +190,8 @@ export const DesktopDashboard = () => {
                     </Button>
                 </div>
             </div>
+            </div>
+            <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
             {/* Stats Cards */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -362,6 +365,7 @@ export const DesktopDashboard = () => {
                     </div>
                 </CardContent>
             </Card>
+            </div>
         </div>
     );
 };

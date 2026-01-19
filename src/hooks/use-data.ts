@@ -7,9 +7,7 @@ export const useData = () => {
 
     return {
         ...walletsData, // Contains app mutations and wallets
-        transactions: transactionsData.transactions,
-        expenseCategories: transactionsData.expenseCategories,
-        incomeCategories: transactionsData.incomeCategories,
+        ...transactionsData, // Contains transactions and getCategoryVisuals
         isLoading: walletsData.isLoading || transactionsData.isLoading,
     };
 };

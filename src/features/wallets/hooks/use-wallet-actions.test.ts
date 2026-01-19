@@ -102,7 +102,7 @@ describe('useWalletActions', () => {
       const { result } = renderHook(() => useWalletActions(mockUser));
 
       await act(async () => {
-        await result.current.addWallet({ name: 'Test', color: 'red', icon: 'test' });
+        await result.current.addWallet({ name: 'Test', balance: 0, color: 'red', icon: 'test' });
       });
 
       expect(mockShowToast).toHaveBeenCalledWith("Gagal membuat dompet.", 'error');

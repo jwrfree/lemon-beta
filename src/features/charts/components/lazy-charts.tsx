@@ -139,39 +139,54 @@ export const ExpenseTrendChart = ({
 );
 
 // 3. Monthly Trend Chart
-export const MonthlyBarChart = ({ data, gradientId, sectionLabel }: { data: any[], gradientId: string, sectionLabel: string }) => (
-    <ChartContainer
-        config={{ total: { label: sectionLabel, color: 'hsl(var(--primary))' } } as any}
-        className="h-full w-full"
-    >
-        <RechartsBarChart data={data} barCategoryGap={12}>
-            <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.95} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
-            <XAxis dataKey="shortLabel" tickLine={false} axisLine={false} tickMargin={10} />
-            <YAxis
-                tickLine={false}
-                axisLine={false}
-                width={68}
-                tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
-            />
-            <ChartTooltip
-                cursor={{ fill: 'hsl(var(--muted))', opacity: 0.35 }}
-                content={
-                    <ChartTooltipContent
-                        formatter={(value) => formatCurrency(Number(value))}
-                        labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}
-                    />
-                }
-            />
-            <Bar dataKey="total" fill={`url(#${gradientId})`} radius={[8, 8, 4, 4]} />
-        </RechartsBarChart>
-    </ChartContainer>
-);
+export const MonthlyBarChart = ({ data, gradientId: propsGradientId, sectionLabel }: { data: any[], gradientId: string, sectionLabel: string }) => {
+    const id = React.useId();
+    const gradientId = propsGradientId || `gradient-${id.replace(/:/g, '')}`;
+    
+    return (
+        <ChartContainer
+            config={{ total: { label: sectionLabel, color: 'hsl(var(--primary))' } } as any}
+            className="h-full w-full"
+        >
+            <RechartsBarChart data={data} barCategoryGap={12} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                    <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="var(--color-total)" stopOpacity={0.95} />
+                        <stop offset="100%" stopColor="var(--color-total)" stopOpacity={0.3} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
+                <XAxis 
+                    dataKey="shortLabel" 
+                    tickLine={false} 
+                    axisLine={false} 
+                    tickMargin={10} 
+                />
+                <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    width={68}
+                    tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
+                />
+                <ChartTooltip
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.35 }}
+                    content={
+                        <ChartTooltipContent
+                            formatter={(value) => formatCurrency(Number(value))}
+                            labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}
+                        />
+                    }
+                />
+                <Bar 
+                    dataKey="total" 
+                    fill={`url(#${gradientId})`} 
+                    radius={[6, 6, 4, 4]}
+                    strokeWidth={0}
+                />
+            </RechartsBarChart>
+        </ChartContainer>
+    );
+};
 
 // 4. Net Cashflow Composed Chart
 export const NetCashflowComposedChart = ({ 

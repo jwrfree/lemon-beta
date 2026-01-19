@@ -1,6 +1,5 @@
 'use client';
 import React, { useMemo } from 'react';
-import { useData } from '@/hooks/use-data';
 import { TransactionListItem } from './transaction-list-item';
 import { cn, formatCurrency, formatRelativeDate } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
@@ -10,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
-import { categoryDetails } from '@/lib/categories';
+import { useData } from '@/hooks/use-data';
 
 interface TransactionListProps {
     transactions?: Transaction[];
@@ -22,7 +21,7 @@ interface TransactionListProps {
 }
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId, hasMore, loadMore, isLoading }: TransactionListProps) => {
-    const { transactions: allTransactions, wallets } = useData();
+    const { transactions: allTransactions, wallets, getCategoryVisuals } = useData();
     const router = useRouter();
 
     const finalTransactions = useMemo(() => {
@@ -71,7 +70,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     </thead>
                     <tbody className="divide-y divide-border/40 bg-card/30">
                         {finalTransactions.map((t) => {
-                            const cat = categoryDetails(t.category);
+                            const cat = getCategoryVisuals(t.category);
                             const CatIcon = cat.icon;
                             const wallet = wallets.find(w => w.id === t.walletId);
                             const isExpense = t.type === 'expense';
@@ -85,9 +84,9 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                                             </div>
                                             <div>
                                                 <div className="font-bold text-foreground text-sm leading-tight group-hover:text-primary transition-colors">{t.description}</div>
-                                                {(t as any).location && (
+                                                {t.location && (
                                                     <div className="flex items-center text-[10px] font-medium text-muted-foreground mt-1 uppercase tracking-wider">
-                                                        <MapPin className="h-2.5 w-2.5 mr-1" /> {(t as any).location}
+                                                        <MapPin className="h-2.5 w-2.5 mr-1" /> {t.location}
                                                     </div>
                                                 )}
                                             </div>
