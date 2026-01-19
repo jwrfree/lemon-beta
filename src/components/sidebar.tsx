@@ -5,11 +5,12 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, PieChart, Plus, HandCoins, LogOut, Settings, Wallet, Bell } from 'lucide-react';
+import { Home, PieChart, Plus, HandCoins, LogOut, Settings, Wallet, Bell, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
+import { BalanceVisibilityToggle } from './balance-visibility-toggle';
 
 export const Sidebar = () => {
     const pathname = usePathname();
@@ -73,7 +74,12 @@ export const Sidebar = () => {
                 })}
             </nav>
 
-            <div className="mt-auto border-t pt-4">
+            <div className="mt-auto border-t pt-4 space-y-1">
+                <BalanceVisibilityToggle 
+                    variant="ghost" 
+                    className="w-full justify-start gap-3 text-muted-foreground" 
+                    showLabel 
+                />
                 <Button 
                     variant="ghost" 
                     className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10"

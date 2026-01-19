@@ -8,9 +8,11 @@ import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
 import { useUI } from '@/components/ui-provider';
+import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 
 const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
     const { wallets } = useData();
+    const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
     const categoryDetails = getCategoryDetails(transaction.category);
@@ -18,32 +20,33 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
     const { icon: CategoryIcon, color, bgColor } = categoryDetails;
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-destructive' : 'text-green-600 dark:text-green-500';
+    const amountColor = isExpense ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-500';
 
     return (
-        <div className="flex items-center gap-3 p-3">
-            <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
+        <div className="flex items-center gap-4 p-3.5">
+            <div className={cn("flex-shrink-0 p-2.5 rounded-xl shadow-sm", bgColor)}>
                  <CategoryIcon className={cn("h-5 w-5", color)} />
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-medium truncate">{transaction.description}</div>
-                 <div className="text-sm text-muted-foreground flex items-center gap-1.5 flex-wrap">
-                    <span className="truncate">{transaction.subCategory || transaction.category}</span>
-                    {transaction.location && <span>&bull;</span>}
+                <div className="font-bold text-foreground text-sm leading-tight mb-0.5">{transaction.description}</div>
+                 <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
+                    <span>{transaction.subCategory || transaction.category}</span>
+                    {transaction.location && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
                     {transaction.location && <span className="truncate">{transaction.location}</span>}
-                    {wallet && <span>&bull;</span>}
-                    {wallet && <span className="truncate">{wallet?.name || '...'}</span>}
+                    {wallet && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
+                    {wallet && <span>{wallet?.name || '...'}</span>}
                     {!hideDate && (
                         <>
-                            <span>&bull;</span>
+                            <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
                             <span>{format(parseISO(transaction.date), 'EEE, d MMM', { locale: dateFnsLocaleId })}</span>
                         </>
                     )}
                 </div>
             </div>
-            <div className={cn("text-sm font-semibold text-right", amountColor)}>
+            <div className={cn("text-sm font-black tracking-tight", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}>
                 <span>
-                    {isExpense ? '- ' : '+ '}{formatCurrency(transaction.amount)}
+                    {isExpense ? '- ' : '+ '}
+                    {isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
                 </span>
             </div>
         </div>

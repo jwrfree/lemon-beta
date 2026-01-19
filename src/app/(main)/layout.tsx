@@ -17,7 +17,7 @@ import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { cn } from '@/lib/utils';
 
 const pageVariants = {
@@ -120,22 +120,17 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">
             <Sidebar />
             <div className="flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden">
-                <AnimatePresence initial={false} mode="wait">
-                    <motion.div
-                        key={pathname}
-                        variants={pageVariants}
-                        initial="initial"
-                        animate="enter"
-                        exit="exit"
-                        ref={containerRef}
-                        className={cn(
-                            'flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth',
-                            showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0'
-                        )}
-                    >
+                <div 
+                    ref={containerRef}
+                    className={cn(
+                        'flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth',
+                        showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0'
+                    )}
+                >
+                    <div className="flex-1 flex flex-col min-h-full">
                         {children}
-                    </motion.div>
-                </AnimatePresence>
+                    </div>
+                </div>
 
                 <CustomToast />
 

@@ -56,7 +56,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-0 left-0 right-0 z-40"
                 >
                     <div
-                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card/90 backdrop-blur-xl shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none"
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card/90 backdrop-blur-xl shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none bottom-nav-container"
                         style={{
                             paddingBottom: 'env(safe-area-inset-bottom)',
                             minHeight: 'calc(4rem + env(safe-area-inset-bottom))',
@@ -68,16 +68,17 @@ export const BottomNavigation = () => {
                             if (item.primary) {
                                 return (
                                     <div key={item.id} className="flex justify-center items-center relative">
-                                        <div className="absolute -top-6 bg-background rounded-full p-1.5 shadow-sm">
+                                        <div className="absolute -top-7 bg-background rounded-full p-1.5 shadow-lg ring-2 ring-background/50 fab-position">
                                            <Link
                                                href={item.href}
                                                className={cn(
-                                                   'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 transition-transform active:scale-95'
+                                                   'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
                                                )}
                                                aria-label={item.name}
                                            >
-                                               <item.icon className="h-7 w-7" />
+                                               <item.icon className="h-7 w-7 relative z-10" />
                                                <span className="sr-only">{item.name}</span>
+                                               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
                                            </Link>
                                         </div>
                                     </div>

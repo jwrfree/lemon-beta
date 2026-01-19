@@ -15,24 +15,31 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 import { useDebts } from '@/features/debts/hooks/use-debts';
+import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
 
 const TransactionsPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, expenseCategories, incomeCategories, wallets } = useData();
+    const { expenseCategories, incomeCategories, wallets } = useData();
     const { debts } = useDebts();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    
+    // Optimize: Initialize state from URL params directly to avoid double fetch
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+        const categoryFromURL = searchParams.get('category');
+        return categoryFromURL ? [categoryFromURL] : [];
+    });
+    
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllWallets, setShowAllWallets] = useState(false);
 
+    // Sync activeTab with initial selected category if present
     useEffect(() => {
         const categoryFromURL = searchParams.get('category');
         if (categoryFromURL) {
-            setSelectedCategories([categoryFromURL]);
             const isExpense = expenseCategories.some(c => c.name === categoryFromURL);
             if (isExpense) {
               setActiveTab('expense');
@@ -42,6 +49,19 @@ const TransactionsPageContent = () => {
             }
         }
     }, [searchParams, expenseCategories, incomeCategories]);
+
+    // Use server-side pagination hook
+    const { 
+        transactions: filteredTransactions, 
+        isLoading, 
+        loadMore, 
+        hasMore 
+    } = usePaginatedTransactions({
+        searchQuery,
+        type: activeTab,
+        category: selectedCategories,
+        walletId: selectedWallets
+    });
 
     const categoriesForFilter = useMemo(() => {
         if (activeTab === 'expense') {
@@ -54,17 +74,6 @@ const TransactionsPageContent = () => {
 
         return [...expenseCategories, ...incomeCategories].sort((a, b) => a.name.localeCompare(b.name));
     }, [activeTab, expenseCategories, incomeCategories]);
-
-    const filteredTransactions = useMemo(() => {
-        if (activeTab === 'debt') return [];
-        return transactions.filter(t => {
-            const matchesSearch = t.description.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesType = activeTab === 'all' || t.type === activeTab;
-            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(t.category);
-            const matchesWallet = selectedWallets.length === 0 || selectedWallets.includes(t.walletId);
-            return matchesSearch && matchesType && matchesCategory && matchesWallet;
-        });
-    }, [transactions, searchQuery, activeTab, selectedCategories, selectedWallets]);
     
     const handleCategoryToggle = (categoryName: string) => {
         setSelectedCategories(prev =>
@@ -242,7 +251,12 @@ const TransactionsPageContent = () => {
                         )}
                     </div>
                 ) : (
-                    <TransactionList transactions={filteredTransactions} />
+                    <TransactionList 
+                        transactions={filteredTransactions} 
+                        loadMore={loadMore} 
+                        hasMore={hasMore}
+                        isLoading={isLoading}
+                    />
                 )}
             </main>
         </div>

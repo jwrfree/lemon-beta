@@ -1,18 +1,31 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
+import { normalizeDateInput } from '@/lib/utils';
 import type { Reminder, ReminderInput } from '@/types/models';
 
-const normalizeDateInput = (value: string | Date | null | undefined): string | null => {
-    if (!value) return null;
-    if (typeof value === 'string') {
-        return value;
-    }
-    return value.toISOString();
-};
+const mapReminderFromDb = (r: any): Reminder => ({
+    id: r.id,
+    title: r.title,
+    amount: r.amount,
+    dueDate: r.due_date,
+    type: r.type,
+    category: r.category,
+    notes: r.notes,
+    status: r.status,
+    repeatRule: r.repeat_rule,
+    snoozeCount: r.snooze_count,
+    completedAt: r.completed_at,
+    channels: r.channels || ['push'],
+    targetId: r.target_id,
+    targetType: r.target_type,
+    userId: r.user_id,
+    createdAt: r.created_at,
+    updatedAt: r.updated_at
+});
 
 export const useReminders = () => {
     const { user } = useApp();
@@ -21,53 +34,33 @@ export const useReminders = () => {
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
 
+    const fetchReminders = useCallback(async () => {
+        if (!user) return;
+        const { data } = await supabase
+            .from('reminders')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('due_date', { ascending: true });
+        
+        if (data) {
+            setReminders(data.map(mapReminderFromDb));
+        }
+        setIsLoading(false);
+    }, [user, supabase]);
+
     useEffect(() => {
         if (!user) {
             setReminders([]);
             setIsLoading(false);
             return;
         }
-
-        const fetchReminders = async () => {
-             const { data } = await supabase
-                .from('reminders')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('due_date', { ascending: true });
-            
-            if (data) {
-                const mappedReminders = data.map((r: any) => ({
-                    id: r.id,
-                    title: r.title,
-                    amount: r.amount,
-                    dueDate: r.due_date,
-                    type: r.type,
-                    category: r.category,
-                    notes: r.notes,
-                    status: r.status,
-                    repeatRule: r.repeat_rule,
-                    snoozeCount: r.snooze_count,
-                    completedAt: r.completed_at,
-                    channels: r.channels || ['push'],
-                    targetId: r.target_id,
-                    targetType: r.target_type,
-                    userId: r.user_id,
-                    createdAt: r.created_at,
-                    updatedAt: r.updated_at
-                }));
-                setReminders(mappedReminders);
-            }
-            setIsLoading(false);
-        };
-
         fetchReminders();
-    }, [user, supabase, ui]);
+    }, [user, fetchReminders]);
 
     const addReminder = useCallback(async (reminderData: ReminderInput) => {
         if (!user) throw new Error("User not authenticated.");
         
         const dueDateValue = normalizeDateInput(reminderData.dueDate);
-        
         const { error } = await supabase.from('reminders').insert({
             title: reminderData.title,
             amount: reminderData.amount ?? 0,
@@ -93,36 +86,13 @@ export const useReminders = () => {
         ui.showToast("Pengingat berhasil dibuat!", 'success');
         ui.setReminderToEdit(null);
         ui.setIsReminderModalOpen(false);
-        
-        // Refresh
-        const { data } = await supabase.from('reminders').select('*').eq('user_id', user.id).order('due_date', { ascending: true });
-        if (data) setReminders(data.map((r: any) => ({
-            id: r.id,
-            title: r.title,
-            amount: r.amount,
-            dueDate: r.due_date,
-            type: r.type,
-            category: r.category,
-            notes: r.notes,
-            status: r.status,
-            repeatRule: r.repeat_rule,
-            snoozeCount: r.snooze_count,
-            completedAt: r.completed_at,
-            channels: r.channels || ['push'],
-            targetId: r.target_id,
-            targetType: r.target_type,
-            userId: r.user_id,
-            createdAt: r.created_at,
-            updatedAt: r.updated_at
-        })));
-
-    }, [user, supabase, ui]);
+        fetchReminders();
+    }, [user, supabase, ui, fetchReminders]);
 
     const updateReminder = useCallback(async (reminderId: string, reminderData: ReminderInput) => {
         if (!user) throw new Error("User not authenticated.");
         
         const dueDateValue = normalizeDateInput(reminderData.dueDate);
-
         const { error } = await supabase.from('reminders').update({
             title: reminderData.title,
             amount: reminderData.amount ?? 0,
@@ -145,36 +115,12 @@ export const useReminders = () => {
         ui.showToast("Pengingat diperbarui.", 'success');
         ui.setReminderToEdit(null);
         ui.setIsReminderModalOpen(false);
-        
-        // Refresh
-        const { data } = await supabase.from('reminders').select('*').eq('user_id', user.id).order('due_date', { ascending: true });
-        if (data) setReminders(data.map((r: any) => ({
-            id: r.id,
-            title: r.title,
-            amount: r.amount,
-            dueDate: r.due_date,
-            type: r.type,
-            category: r.category,
-            notes: r.notes,
-            status: r.status,
-            repeatRule: r.repeat_rule,
-            snoozeCount: r.snooze_count,
-            completedAt: r.completed_at,
-            channels: r.channels || ['push'],
-            targetId: r.target_id,
-            targetType: r.target_type,
-            userId: r.user_id,
-            createdAt: r.created_at,
-            updatedAt: r.updated_at
-        })));
-
-    }, [user, supabase, ui]);
+        fetchReminders();
+    }, [user, supabase, ui, fetchReminders]);
 
     const deleteReminder = useCallback(async (reminderId: string) => {
         if (!user) throw new Error("User not authenticated.");
-        
         const { error } = await supabase.from('reminders').delete().eq('id', reminderId);
-        
         if (error) {
              ui.showToast("Gagal menghapus pengingat.", 'error');
              return;
@@ -183,16 +129,15 @@ export const useReminders = () => {
         ui.showToast("Pengingat dihapus.", 'info');
         ui.setReminderToEdit(null);
         ui.setIsReminderModalOpen(false);
-        
         setReminders(prev => prev.filter(r => r.id !== reminderId));
     }, [user, supabase, ui]);
 
     const markReminderComplete = useCallback(async (reminderId: string) => {
         if (!user) throw new Error("User not authenticated.");
-        
+        const now = new Date().toISOString();
         const { error } = await supabase.from('reminders').update({
             status: 'completed',
-            completed_at: new Date().toISOString(),
+            completed_at: now,
         }).eq('id', reminderId);
 
         if (error) {
@@ -201,13 +146,11 @@ export const useReminders = () => {
         }
 
         ui.showToast("Pengingat ditandai selesai.", 'success');
-        
-        setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: 'completed', completedAt: new Date().toISOString() } : r));
+        setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: 'completed', completedAt: now } : r));
     }, [user, supabase, ui]);
 
     const snoozeReminder = useCallback(async (reminderId: string, nextDueDate: string, currentCount: number = 0) => {
         if (!user) throw new Error("User not authenticated.");
-        
         const { error } = await supabase.from('reminders').update({
             due_date: nextDueDate,
             status: 'snoozed',
@@ -220,7 +163,6 @@ export const useReminders = () => {
         }
 
         ui.showToast("Pengingat ditunda.", 'info');
-        
         setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: 'snoozed', dueDate: nextDueDate, snoozeCount: currentCount + 1 } : r));
     }, [user, supabase, ui]);
 

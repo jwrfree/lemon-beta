@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Budget, BudgetInput } from '@/types/models';

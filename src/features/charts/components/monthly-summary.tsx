@@ -1,0 +1,322 @@
+'use client';
+
+import React, { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { format, parseISO, isSameMonth, getDaysInMonth } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight } from 'lucide-react';
+import { useData } from '@/hooks/use-data';
+import { AnimatedCounter } from '@/components/animated-counter';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress as UIProgress } from '@/components/ui/progress';
+import { cn, formatCurrency } from '@/lib/utils';
+import { categoryDetails } from '@/lib/categories';
+import { PlaceholderContent } from './placeholder-content';
+
+type TabValue = 'expense' | 'income' | 'net';
+
+export const MonthlySummary = ({ type }: { type: TabValue }) => {
+    const { transactions } = useData();
+    const router = useRouter();
+
+    const summary = useMemo(() => {
+        const now = new Date();
+        const monthLabel = format(now, 'MMMM yyyy', { locale: dateFnsLocaleId });
+        const daysInMonth = getDaysInMonth(now);
+        const daysElapsed = now.getDate();
+        const monthProgress = (daysElapsed / daysInMonth) * 100;
+
+        const monthlyTransactions = transactions.filter((t) => isSameMonth(parseISO(t.date), now));
+        const incomeTransactions = monthlyTransactions.filter((t) => t.type === 'income');
+        const expenseTransactions = monthlyTransactions.filter((t) => t.type === 'expense');
+
+        const income = incomeTransactions.reduce((sum, t) => sum + t.amount, 0);
+        const expense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);
+        const net = income - expense;
+
+        const baseSummary = {
+            monthLabel,
+            monthProgress,
+            daysElapsed,
+            daysInMonth,
+            netDetails: { income, expense, net },
+            averagePerDay: 0,
+            averagePerTransaction: 0,
+            topCategory: null as null | {
+                name: string;
+                value: number;
+                percentage: number;
+                icon: React.ElementType;
+                color: string;
+                bgColor: string;
+            },
+            topTransaction: null as null | any,
+            tipCopy: '',
+            badgeLabel: '',
+            heroDescription: '',
+            heroGradient: '',
+            icon: Scale as React.ElementType,
+            title: '',
+            value: 0,
+            isPositive: true,
+            type,
+        };
+
+        if (type === 'expense' || type === 'income') {
+            const relevantTransactions = type === 'expense' ? expenseTransactions : incomeTransactions;
+            const value = type === 'expense' ? expense : income;
+            const transactionCount = relevantTransactions.length;
+
+            const categoryTotals = relevantTransactions.reduce((acc, transaction) => {
+                acc[transaction.category] = (acc[transaction.category] || 0) + transaction.amount;
+                return acc;
+            }, {} as Record<string, number>);
+
+            let topCategory = null as (typeof baseSummary)['topCategory'];
+            const sortedCategories = Object.entries(categoryTotals);
+            if (sortedCategories.length > 0) {
+                const [name, categoryValue] = sortedCategories.sort((a, b) => (b[1] as number) - (a[1] as number))[0];
+                const details = categoryDetails(name as string);
+                topCategory = {
+                    name: name as string,
+                    value: categoryValue as number,
+                    percentage: value > 0 ? ((categoryValue as number) / value) * 100 : 0,
+                    icon: details.icon,
+                    color: details.color,
+                    bgColor: details.bgColor,
+                };
+            }
+
+            const topTransaction = transactionCount
+                ? [...relevantTransactions].sort((a, b) => b.amount - a.amount)[0]
+                : null;
+
+            const averagePerTransaction = transactionCount > 0 ? value / transactionCount : 0;
+            const averagePerDay = daysElapsed > 0 ? value / daysElapsed : 0;
+
+            const heroGradient =
+                type === 'expense'
+                    ? 'bg-gradient-to-br from-rose-500 via-orange-500 to-amber-400'
+                    : 'bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500';
+
+            const heroDescription =
+                type === 'expense'
+                    ? 'Fokus pada kategori terbesar agar anggaran tetap aman.'
+                    : 'Kenali sumber pemasukan utama bulan ini.';
+
+            const tipCopy =
+                type === 'expense'
+                    ? 'Pertimbangkan untuk menyiapkan batas pengeluaran pada kategori terbesar agar tidak melampaui budget.'
+                    : 'Salurkan pemasukan tambahan ke tabungan otomatis atau tujuan finansialmu.';
+
+            return {
+                ...baseSummary,
+                title: type === 'expense' ? 'Total Pengeluaran' : 'Total Pemasukan',
+                value,
+                icon: type === 'expense' ? ArrowDownLeft : ArrowUpRight,
+                heroGradient,
+                heroDescription,
+                tipCopy,
+                topCategory,
+                topTransaction,
+                averagePerDay,
+                averagePerTransaction,
+                badgeLabel: transactionCount > 0 ? `${transactionCount} transaksi` : 'Belum ada transaksi',
+                isPositive: type === 'income',
+            };
+        }
+
+        const tipCopy =
+            net >= 0
+                ? 'Pindahkan surplus ke tabungan otomatis agar uangmu langsung bekerja.'
+                : 'Tinjau ulang kategori terbesar dan pertimbangkan penyesuaian budget bulan depan.';
+
+        return {
+            ...baseSummary,
+            title: 'Arus Kas Bersih',
+            value: net,
+            icon: Scale,
+            heroGradient:
+                net >= 0
+                    ? 'bg-gradient-to-br from-emerald-500 via-teal-500 to-sky-500'
+                    : 'bg-gradient-to-br from-rose-500 via-orange-500 to-amber-400',
+            heroDescription: 'Selisih antara pemasukan dan pengeluaran bulan ini.',
+            badgeLabel: net >= 0 ? 'Surplus' : 'Defisit',
+            tipCopy,
+            isPositive: net >= 0,
+        };
+    }, [transactions, type]);
+
+    const handleTxClick = (txId: string) => {
+        router.push('/transactions');
+    };
+
+    if (type !== 'net' && summary.value === 0) {
+        return (
+            <PlaceholderContent
+                label={`Ringkasan ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+                icon={type === 'expense' ? ArrowDownLeft : ArrowUpRight}
+                text={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini.`}
+            />
+        );
+    }
+
+    const Icon = summary.icon as React.ElementType;
+    const TopCategoryIcon = summary.topCategory?.icon as React.ElementType | undefined;
+
+    return (
+        <section className="space-y-6">
+            <Card className={cn('relative overflow-hidden border-none text-white shadow-xl', summary.heroGradient)}>
+                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                    <Icon className="h-40 w-40 rotate-12" />
+                </div>
+                <CardHeader className="space-y-6 relative z-10">
+                    <div className="flex items-center justify-between gap-3">
+                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/15 text-white backdrop-blur px-3 py-1 font-bold text-[10px] uppercase tracking-wider">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {summary.monthLabel}
+                        </Badge>
+                        <Badge
+                            className={cn(
+                                'border-none bg-white/20 text-white backdrop-blur font-black text-[10px] uppercase tracking-tighter px-3',
+                                summary.type === 'net' && summary.isPositive && 'bg-emerald-400/40',
+                                summary.type === 'net' && !summary.isPositive && 'bg-rose-400/40'
+                            )}
+                        >
+                            {summary.badgeLabel}
+                        </Badge>
+                    </div>
+                    <div className="space-y-1">
+                        <CardTitle className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">{summary.title}</CardTitle>
+                        <div className="text-4xl md:text-5xl font-black tracking-tighter text-white">
+                            <AnimatedCounter value={summary.value} />
+                        </div>
+                    </div>
+                    <p className="text-sm font-medium leading-relaxed text-white/90 max-w-[280px]">{summary.heroDescription}</p>
+                </CardHeader>
+                <CardContent className="space-y-6 pb-8 pt-0 relative z-10">
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-white/60">
+                            <span>Laju Hari</span>
+                            <span>
+                                {summary.daysElapsed} / {summary.daysInMonth} Hari
+                            </span>
+                        </div>
+                        <UIProgress
+                            value={summary.monthProgress}
+                            className="h-1.5 bg-white/20 border-none"
+                            indicatorClassName="bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+                        />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                        {summary.type === 'net' ? (
+                            <>
+                                <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Pemasukan</p>
+                                    <p className="text-base font-black text-white">
+                                        {formatCurrency(summary.netDetails.income)}
+                                    </p>
+                                </div>
+                                <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Pengeluaran</p>
+                                    <p className="text-base font-black text-white">
+                                        {formatCurrency(summary.netDetails.expense)}
+                                    </p>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Per Hari</p>
+                                    <p className="text-base font-black text-white">
+                                        {formatCurrency(summary.averagePerDay)}
+                                    </p>
+                                </div>
+                                <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1">Per Transaksi</p>
+                                    <p className="text-base font-black text-white">
+                                        {formatCurrency(summary.averagePerTransaction)}
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {summary.type !== 'net' && summary.topCategory ? (
+                <Card className="rounded-3xl border-none bg-card/50 backdrop-blur-sm shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                    <CardHeader className="flex flex-row items-center gap-4 pb-4">
+                        <div className={cn('rounded-2xl p-3 shadow-inner group-hover:scale-110 transition-transform duration-500', summary.topCategory.bgColor)}>
+                            {TopCategoryIcon ? (
+                                <TopCategoryIcon className={cn('h-6 w-6', summary.topCategory.color)} />
+                            ) : null}
+                        </div>
+                        <div className="space-y-0.5">
+                            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kategori Terbesar</CardTitle>
+                            <p className="text-lg font-black tracking-tight">{summary.topCategory.name}</p>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-end justify-between">
+                            <p className="text-2xl font-black text-primary">
+                                {formatCurrency(summary.topCategory.value)}
+                            </p>
+                            <Badge variant="outline" className="font-black text-[10px] border-primary/20 text-primary">
+                                {summary.topCategory.percentage.toFixed(1)}% TOTAL
+                            </Badge>
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : null}
+
+            {summary.topTransaction ? (
+                <Card
+                    className="rounded-3xl border-none bg-card/50 backdrop-blur-sm shadow-sm transition-all hover:shadow-md hover:bg-background cursor-pointer group"
+                    onClick={() => handleTxClick(summary.topTransaction.id)}
+                >
+                    <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
+                        <div className="space-y-0.5">
+                            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Transaksi Termahal</CardTitle>
+                            <p className="text-base font-bold tracking-tight group-hover:text-primary transition-colors">
+                                {summary.topTransaction.description || 'Tanpa deskripsi'}
+                            </p>
+                        </div>
+                        <div className="p-2 rounded-full bg-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                            <ArrowRight className="h-4 w-4 text-primary" />
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-muted/50 text-[10px] font-bold uppercase border-none">
+                                    {summary.topTransaction.category}
+                                </Badge>
+                                <span className="text-[10px] font-medium text-muted-foreground">
+                                    {summary.topTransaction.date ? format(parseISO(summary.topTransaction.date), 'd MMM') : ''}
+                                </span>
+                            </div>
+                            <span className="font-black text-foreground">
+                                {formatCurrency(summary.topTransaction.amount)}
+                            </span>
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : null}
+
+            <Card className="rounded-3xl border-2 border-dashed border-primary/20 bg-primary/5 shadow-none">
+                <CardContent className="flex items-start gap-4 p-5">
+                    <div className="rounded-2xl bg-primary/10 p-3 text-primary shadow-sm">
+                        <Sparkles className="h-5 w-5" />
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Insight Lemon AI</p>
+                        <p className="text-sm font-medium leading-relaxed text-foreground/80">{summary.tipCopy}</p>
+                    </div>
+                </CardContent>
+            </Card>
+        </section>
+    );
+};

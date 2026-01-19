@@ -10,6 +10,7 @@ import { WalletCardStack } from '@/features/wallets/components/wallet-card-stack
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
+import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 
 export default function WalletsPage() {
   const { wallets } = useData();
@@ -27,6 +28,7 @@ export default function WalletsPage() {
           label: 'Tambah dompet',
           onClick: () => setIsWalletModalOpen(true),
         }}
+        extraActions={<BalanceVisibilityToggle variant="ghost" size="icon" />}
       />
       
       {wallets.length === 0 ? (

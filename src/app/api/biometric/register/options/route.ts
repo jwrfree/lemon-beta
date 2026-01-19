@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase-admin';
+import { createClient } from '@/lib/supabase/server';
 import { generateRegistrationOptions } from '@simplewebauthn/server';
 
 const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
@@ -17,11 +17,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const userRef = db.collection('users').doc(userId);
-    const userDoc = await userRef.get();
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    // Although get() is called, we will use set({merge: true}) which can handle both creation and update.
-    const userData = userDoc.exists ? userDoc.data() ?? {} : {};
+    if (!user) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (user.id !== userId) {
+        return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
 
     const options = await generateRegistrationOptions({
       rpID: RP_ID,
@@ -36,23 +47,20 @@ export async function POST(req: NextRequest) {
         userVerification: 'required',
       },
       supportedAlgorithmIDs: [-7, -257],
-      excludeCredentials: userData.biometricCredentialId
+      excludeCredentials: profile?.biometric_credential_id
         ? [
             {
-              id: userData.biometricCredentialId,
+              id: profile.biometric_credential_id,
               transports: ['internal'],
             },
           ]
         : [],
     });
 
-    // Use set with merge to handle both new and existing users, preventing race conditions.
-    await userRef.set(
-      {
-        registrationChallenge: options.challenge,
-      },
-      { merge: true },
-    );
+    await supabase.from('profiles').upsert({
+        id: userId,
+        login_challenge: options.challenge
+    });
 
     return NextResponse.json(options);
   } catch (error: any) {

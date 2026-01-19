@@ -13,12 +13,14 @@ interface PageHeaderProps {
     label: string;
     onClick: () => void;
   };
+  extraActions?: React.ReactNode;
 }
 
 export const PageHeader = ({
   title,
   showBackButton = true,
   actionButton,
+  extraActions,
 }: PageHeaderProps) => {
   const router = useRouter();
 
@@ -36,7 +38,22 @@ export const PageHeader = ({
         </Button>
       )}
       <h1 className="text-xl font-bold text-center w-full">{title}</h1>
-      {actionButton && (
+      {extraActions && (
+        <div className="absolute right-4 flex items-center gap-2">
+          {extraActions}
+          {actionButton && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={actionButton.onClick}
+              aria-label={actionButton.label}
+            >
+              <actionButton.icon className="h-6 w-6" strokeWidth={1.75} />
+            </Button>
+          )}
+        </div>
+      )}
+      {!extraActions && actionButton && (
         <Button
           variant="ghost"
           size="icon"

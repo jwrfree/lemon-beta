@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
+import { useApp } from '@/providers/app-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
@@ -17,89 +19,104 @@ import {
     TrendingUp, 
     TrendingDown, 
     Plus, 
-    Search,
+    Search, 
     Calendar,
-    ArrowRight
+    ArrowRight,
+    Sparkles
 } from 'lucide-react';
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
 import { categoryDetails } from '@/lib/categories';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
+import { QuickAddWidget } from './quick-add-widget';
+import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 
-const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, onClick }: any) => (
-    <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-            <Icon className={cn("h-4 w-4", color)} />
-        </CardHeader>
-        <CardContent>
-            <div className="text-2xl font-bold">
-                <AnimatedCounter value={value} />
-            </div>
-            {trend && (
-                <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                    {trend === 'up' ? <TrendingUp className="h-3 w-3 text-emerald-500 mr-1" /> : <TrendingDown className="h-3 w-3 text-rose-500 mr-1" />}
-                    <span className={trend === 'up' ? "text-emerald-500" : "text-rose-500"}>{trendValue}</span>
-                    <span className="ml-1">dari bulan lalu</span>
-                </p>
-            )}
-        </CardContent>
-    </Card>
-);
+import Link from 'next/link';
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="rounded-lg border bg-background p-2 shadow-sm">
-                <div className="text-[10px] uppercase text-muted-foreground mb-1">{label}</div>
-                <div className="grid grid-cols-2 gap-2">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] uppercase text-muted-foreground">Pemasukan</span>
-                        <span className="font-bold text-emerald-500">
-                            {formatCurrency(payload[0].value)}
-                        </span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-[10px] uppercase text-muted-foreground">Pengeluaran</span>
-                        <span className="font-bold text-rose-500">
-                            {formatCurrency(payload[1].value)}
-                        </span>
-                    </div>
+// Dynamically import DashboardChart to reduce initial bundle size
+const DashboardChart = dynamic(() => import('./dashboard-chart'), { 
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse rounded-lg" />
+});
+
+const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, href }: any) => {
+    const Content = (
+        <Card className="hover:shadow-md transition-all duration-300 h-full border-none bg-card/50 backdrop-blur-sm group">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+                <CardTitle className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">{title}</CardTitle>
+                <div className={cn("p-1.5 rounded-lg bg-muted group-hover:scale-110 transition-transform", color.replace('text-', 'bg-').replace('500', '500/10'))}>
+                    <Icon className={cn("h-3.5 w-3.5", color)} />
                 </div>
-            </div>
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold tracking-tight">
+                    <AnimatedCounter value={value} />
+                </div>
+                {trend && (
+                    <div className="flex items-center gap-1.5 mt-2">
+                        <div className={cn(
+                            "flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold",
+                            trend === 'up' ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600"
+                        )}>
+                            {trend === 'up' ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
+                            {trendValue}
+                        </div>
+                        <span className="text-[10px] text-muted-foreground font-medium">vs bulan lalu</span>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+
+    if (href) {
+        return (
+            <Link href={href} className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl">
+                {Content}
+            </Link>
         );
     }
-    return null;
+
+    return Content;
 };
 
 export const DesktopDashboard = () => {
     const { wallets, transactions } = useData();
     const { setIsTxModalOpen } = useUI();
+    const { userData } = useApp();
     const router = useRouter();
 
     const [chartRange, setChartRange] = useState<'30' | '90'>('30');
+
+    const timeBasedGreeting = useMemo(() => {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Selamat Pagi';
+        if (hour < 15) return 'Selamat Siang';
+        if (hour < 18) return 'Selamat Sore';
+        return 'Selamat Malam';
+    }, []);
+
+    const userDisplayName = useMemo(() => {
+        if (!userData?.displayName) return '';
+        // Get first name only for cleaner UI
+        return userData.displayName.split(' ')[0];
+    }, [userData]);
 
     // Stats Calculation
     const now = useMemo(() => new Date(), []);
     const currentMonth = startOfMonth(now);
     const lastMonth = subMonths(currentMonth, 1);
 
-    const getMonthStats = (date: Date) => {
-        const monthTx = transactions.filter(t => isSameMonth(parseISO(t.date), date));
+    const currentStats = useMemo(() => {
+        const monthTx = transactions.filter(t => isSameMonth(parseISO(t.date), currentMonth));
         const income = monthTx.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
         const expense = monthTx.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
         return { income, expense, net: income - expense };
-    };
+    }, [transactions, currentMonth]);
 
-    const currentStats = getMonthStats(currentMonth);
-    const lastStats = getMonthStats(lastMonth);
+    const lastStats = useMemo(() => {
+        const monthTx = transactions.filter(t => isSameMonth(parseISO(t.date), lastMonth));
+        const income = monthTx.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+        const expense = monthTx.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
+        return { income, expense, net: income - expense };
+    }, [transactions, lastMonth]);
 
     const calculateTrend = (current: number, previous: number) => {
         if (previous === 0) return { direction: 'up', value: '0%' };
@@ -123,13 +140,28 @@ export const DesktopDashboard = () => {
             end: now
         });
 
+        // Optimization: Create a lookup map for O(1) access
+        const txMap: Record<string, { income: number; expense: number }> = {};
+
+        transactions.forEach(t => {
+            const dateKey = t.date.split('T')[0]; // Extract YYYY-MM-DD
+            if (!txMap[dateKey]) {
+                txMap[dateKey] = { income: 0, expense: 0 };
+            }
+            if (t.type === 'income') {
+                txMap[dateKey].income += t.amount;
+            } else {
+                txMap[dateKey].expense += t.amount;
+            }
+        });
+
         return days.map(day => {
             const dateStr = format(day, 'yyyy-MM-dd');
-            const dayTx = transactions.filter(t => t.date.startsWith(dateStr));
+            const data = txMap[dateStr] || { income: 0, expense: 0 };
             return {
                 date: format(day, 'd MMM', { locale: dateFnsLocaleId }),
-                income: dayTx.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0),
-                expense: dayTx.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0),
+                income: data.income,
+                expense: data.expense,
             };
         });
     }, [transactions, chartRange, now]);
@@ -142,7 +174,9 @@ export const DesktopDashboard = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                    <p className="text-muted-foreground">Ringkasan keuangan dan aktivitas terbaru kamu.</p>
+                    <p className="text-muted-foreground">
+                        {timeBasedGreeting}, {userDisplayName}. Ringkasan keuangan dan aktivitas terbaru kamu.
+                    </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => router.push('/transactions')}>
@@ -157,59 +191,59 @@ export const DesktopDashboard = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="md:col-span-2 border-none shadow-sm bg-primary text-primary-foreground overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                        <Wallet className="h-32 w-32 rotate-12" />
+                    </div>
+                    <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                        <CardTitle className="text-sm font-medium text-primary-foreground/80 uppercase tracking-wider">Total Saldo Tersedia</CardTitle>
+                        <BalanceVisibilityToggle variant="ghost" size="sm" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-4xl md:text-5xl font-extrabold tracking-tight">
+                            <AnimatedCounter value={totalBalance} />
+                        </div>
+                        <p className="text-xs text-primary-foreground/60 mt-4 flex items-center gap-2">
+                            <Sparkles className="h-3 w-3" /> Terakhir diperbarui baru saja
+                        </p>
+                    </CardContent>
+                </Card>
+
                 <StatCard 
-                    title="Total Saldo" 
-                    value={totalBalance} 
-                    icon={Wallet} 
-                    color="text-primary" 
-                    onClick={() => router.push('/wallets')}
-                />
-                <StatCard 
-                    title="Pemasukan Bulan Ini" 
+                    title="Pemasukan" 
                     value={currentStats.income} 
                     icon={ArrowUpRight} 
                     trend={incomeTrend.direction} 
                     trendValue={incomeTrend.value}
                     color="text-emerald-500"
-                    onClick={() => router.push('/charts?tab=income')}
+                    href="/transactions?type=income"
                 />
                 <StatCard 
-                    title="Pengeluaran Bulan Ini" 
+                    title="Pengeluaran" 
                     value={currentStats.expense} 
                     icon={ArrowDownLeft} 
                     trend={expenseTrend.direction} 
                     trendValue={expenseTrend.value}
                     color="text-rose-500"
-                    onClick={() => router.push('/charts?tab=expense')}
+                    href="/transactions?type=expense"
                 />
-                <Card className="bg-primary text-primary-foreground">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-primary-foreground/80">Sisa Anggaran</CardTitle>
-                        <Calendar className="h-4 w-4 text-primary-foreground/80" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            {formatCurrency(currentStats.net)}
-                        </div>
-                        <p className="text-xs text-primary-foreground/70 mt-1">
-                           Arus kas bersih bulan ini
-                        </p>
-                    </CardContent>
-                </Card>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
                 {/* Main Chart */}
-                <Card className="col-span-4">
-                    <CardHeader>
+                <Card className="col-span-4 border-none shadow-sm bg-card/50 backdrop-blur-sm">
+                    <CardHeader className="pb-4">
                         <div className="flex items-center justify-between">
-                            <CardTitle>Arus Kas</CardTitle>
+                            <div>
+                                <CardTitle className="text-lg font-bold">Arus Kas</CardTitle>
+                                <CardDescription className="text-xs">Pergerakan harian 30 hari terakhir</CardDescription>
+                            </div>
                             <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg">
                                 <Button 
                                     variant={chartRange === '30' ? 'secondary' : 'ghost'} 
                                     size="sm" 
-                                    className="h-7 text-xs"
+                                    className="h-7 text-[10px] font-bold uppercase"
                                     onClick={() => setChartRange('30')}
                                 >
                                     30 Hari
@@ -217,75 +251,54 @@ export const DesktopDashboard = () => {
                                 <Button 
                                     variant={chartRange === '90' ? 'secondary' : 'ghost'} 
                                     size="sm" 
-                                    className="h-7 text-xs"
+                                    className="h-7 text-[10px] font-bold uppercase"
                                     onClick={() => setChartRange('90')}
                                 >
                                     3 Bulan
                                 </Button>
                             </div>
                         </div>
-                        <CardDescription>Perbandingan pemasukan dan pengeluaran harian.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <div className="h-[300px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                                    <XAxis 
-                                        dataKey="date" 
-                                        stroke="#888888" 
-                                        fontSize={12} 
-                                        tickLine={false} 
-                                        axisLine={false} 
-                                        minTickGap={30}
-                                    />
-                                    <YAxis 
-                                        stroke="#888888" 
-                                        fontSize={12} 
-                                        tickLine={false} 
-                                        axisLine={false}
-                                        tickFormatter={(value) => `Rp${(value / 1000000).toFixed(0)}jt`}
-                                    />
-                                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                                    <Bar dataKey="income" fill="#10b981" radius={[4, 4, 0, 0]} stackId="a" maxBarSize={40} />
-                                    <Bar dataKey="expense" fill="#f43f5e" radius={[4, 4, 0, 0]} stackId="a" maxBarSize={40} />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <DashboardChart data={chartData} />
                     </CardContent>
                 </Card>
 
                 {/* Wallets Overview */}
-                <Card className="col-span-3">
+                <Card className="col-span-3 border-none shadow-sm bg-card/50 backdrop-blur-sm">
                     <CardHeader>
-                        <CardTitle>Dompet Saya</CardTitle>
-                        <CardDescription>
-                            {wallets.length} dompet aktif
+                        <CardTitle className="text-lg font-bold">Dompet</CardTitle>
+                        <CardDescription className="text-xs">
+                            {wallets.length} dompet aktif digunakan
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {wallets.slice(0, 4).map(wallet => {
                                 const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                                 return (
-                                    <div key={wallet.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => router.push('/wallets')}>
+                                    <Link 
+                                        href="/wallets"
+                                        key={wallet.id} 
+                                        className="flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 transition-all group border border-transparent hover:border-primary/10"
+                                    >
                                         <div className="flex items-center gap-3">
-                                            <div className={cn("p-2 rounded-full bg-primary/10", textColor.replace('text-white', 'text-primary'))}>
+                                            <div className={cn("p-2.5 rounded-xl bg-primary/10", textColor.replace('text-white', 'text-primary'))}>
                                                 <Icon className="h-5 w-5" />
                                             </div>
                                             <div>
-                                                <p className="font-medium text-sm">{wallet.name}</p>
-                                                <p className="text-xs text-muted-foreground capitalize">{wallet.type}</p>
+                                                <p className="font-bold text-sm text-foreground">{wallet.name}</p>
+                                                <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">{wallet.type || 'Personal'}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
                                             <p className="font-bold text-sm">{formatCurrency(wallet.balance)}</p>
                                         </div>
-                                    </div>
+                                    </Link>
                                 )
                             })}
-                            <Button variant="ghost" className="w-full text-xs text-muted-foreground" onClick={() => router.push('/wallets')}>
-                                Lihat Semua Dompet <ArrowRight className="ml-1 h-3 w-3" />
+                            <Button variant="ghost" className="w-full text-xs font-bold text-primary hover:bg-primary/5 mt-2" onClick={() => router.push('/wallets')}>
+                                Lihat Semua Dompet <ArrowRight className="ml-2 h-3 w-3" />
                             </Button>
                         </div>
                     </CardContent>
@@ -338,7 +351,7 @@ export const DesktopDashboard = () => {
                                             <td className="p-3 text-muted-foreground">{wallet?.name}</td>
                                             <td className={cn(
                                                 "p-3 pr-4 text-right font-semibold",
-                                                t.type === 'expense' ? 'text-rose-500' : 'text-emerald-500'
+                                                t.type === 'expense' ? 'text-red-500' : 'text-green-500'
                                             )}>
                                                 {t.type === 'expense' ? '-' : '+'}{formatCurrency(t.amount)}
                                             </td>

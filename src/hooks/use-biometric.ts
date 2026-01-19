@@ -7,15 +7,15 @@ import {
   createCredential,
   getCredential,
 } from '@/lib/webauthn';
-import { signInWithCustomToken } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
 import type {
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/types';
+import { useRouter } from 'next/navigation';
 
 export const useBiometric = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const checkSupport = async () => {
@@ -103,10 +103,14 @@ export const useBiometric = () => {
 
       if (!verificationRes.ok) throw new Error('Verification failed.');
 
-      const { customToken } = await verificationRes.json();
+      const { redirectUrl } = await verificationRes.json();
       
-      // 4. Sign in with Firebase custom token
-      await signInWithCustomToken(auth, customToken);
+      // 4. Redirect to Supabase Magic Link to verify session
+      if (redirectUrl) {
+          window.location.href = redirectUrl;
+      } else {
+          throw new Error('No redirect URL provided.');
+      }
       
       return true;
     } catch (error) {

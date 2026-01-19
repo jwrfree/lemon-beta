@@ -77,3 +77,9 @@ export function getDataUrlSizeInBytes(dataUrl: string): number {
     const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
     return Math.max(0, Math.ceil((base64.length * 3) / 4) - padding);
 }
+
+export function normalizeDateInput(value: string | Date | null | undefined): string | null {
+    if (!value) return null;
+    if (typeof value === 'string') return value;
+    return value.toISOString();
+}

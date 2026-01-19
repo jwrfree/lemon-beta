@@ -1,0 +1,90 @@
+/* Enhanced FAB Styles */
+
+.fab-enhanced {
+  position: relative;
+  overflow: hidden;
+}
+
+.fab-enhanced::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.fab-enhanced:hover::before {
+  opacity: 1;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+.fab-glow {
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    0 0 40px rgba(59, 130, 246, 0.2),
+    0 0 60px rgba(59, 130, 246, 0.1);
+}
+
+.fab-glow:hover {
+  box-shadow: 
+    0 0 30px rgba(59, 130, 246, 0.4),
+    0 0 60px rgba(59, 130, 246, 0.3),
+    0 0 90px rgba(59, 130, 246, 0.2);
+}
+
+/* Bottom navigation enhancements */
+.bottom-nav-container {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .bottom-nav-container {
+  background: rgba(31, 41, 55, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Safe area adjustments */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav-safe {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* FAB positioning for different screen sizes */
+@media (max-height: 700px) {
+  .fab-position {
+    top: -1.75rem; /* -7 */
+  }
+}
+
+@media (min-height: 701px) and (max-height: 800px) {
+  .fab-position {
+    top: -1.875rem; /* -7.5 */
+  }
+}
+
+@media (min-height: 801px) {
+  .fab-position {
+    top: -2rem; /* -8 */
+  }
+}

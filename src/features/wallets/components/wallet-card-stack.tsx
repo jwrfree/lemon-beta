@@ -7,6 +7,7 @@ import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
+import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 
 interface WalletCardStackProps {
   wallets: any[];
@@ -21,6 +22,7 @@ const swipePower = (offset: number, velocity: number) => {
 
 export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: WalletCardStackProps) => {
   const { openEditWalletModal } = useUI();
+  const { isBalanceVisible } = useBalanceVisibility();
   
   const paginate = (newDirection: number) => {
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);
@@ -120,8 +122,8 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                       </div>
 
                       <div className="flex-1 flex items-end">
-                          <p className={cn("text-3xl font-bold", textColor)} style={{textShadow: '1px 1px 3px rgba(0,0,0,0.3)'}}>
-                              {formatCurrency(wallet.balance)}
+                          <p className={cn("text-3xl font-bold", textColor, !isBalanceVisible && 'blur-sm transition-all duration-300')} style={{textShadow: '1px 1px 3px rgba(0,0,0,0.3)'}}>
+                              {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
                           </p>
                       </div>
                   </div>

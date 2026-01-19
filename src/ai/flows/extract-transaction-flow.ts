@@ -1,63 +1,167 @@
 'use server';
 
 import OpenAI from "openai";
+import { z } from "zod";
 
 const openai = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
   baseURL: "https://api.deepseek.com",
 });
 
-export type TransactionExtractionInput = {
-  text: string;
-};
+// Define flexible output schema with defaults to prevent validation crashes
+const ExtractionSchema = z.object({
+  amount: z.union([z.number(), z.string()]).transform((val) => {
+    if (typeof val === 'number') return val;
+    if (!val) return 0;
+    
+    // Handle Indonesian formatting: "10.000" or "10rb" or "10k"
+    let cleaned = val.toLowerCase().replace(/\s/g, '');
+    
+    // Handle thousand multiplier
+    if (cleaned.includes('rb') || cleaned.includes('k')) {
+        const numPart = parseFloat(cleaned.replace('rb', '').replace('k', '').replace(',', '.'));
+        return isNaN(numPart) ? 0 : numPart * 1000;
+    }
+    
+    // Handle million multiplier
+    if (cleaned.includes('jt')) {
+        const numPart = parseFloat(cleaned.replace('jt', '').replace(',', '.'));
+        return isNaN(numPart) ? 0 : numPart * 1000000;
+    }
+    
+    // Default: strip non-digits except first dot/comma for decimal
+    const numericOnly = cleaned.replace(/[^\d]/g, '');
+    const num = parseInt(numericOnly, 10);
+    return isNaN(num) ? 0 : num;
+  }).default(0),
+  description: z.string().nullable().transform(v => v || "Transaksi Baru"),
+  category: z.string().nullable().transform(v => v || "Lain-lain"),
+  subCategory: z.string().optional().nullable(),
+  wallet: z.string().nullable().transform(v => v || "Tunai"),
+  sourceWallet: z.string().optional().nullable(),
+  destinationWallet: z.string().optional().nullable(),
+  location: z.string().optional().nullable(),
+  date: z.string().nullable().transform(v => v || new Date().toISOString().slice(0, 10)),
+  type: z.enum(['income', 'expense']).nullable().transform(v => v || 'expense')
+});
 
-export type TransactionExtractionOutput = {
-  amount: number;
-  description: string;
-  category: string;
-  subCategory?: string;
-  wallet?: string;
-  sourceWallet?: string;
-  destinationWallet?: string;
-  location?: string;
-  date?: string;
-};
+export type TransactionExtractionOutput = z.infer<typeof ExtractionSchema>;
 
-export async function extractTransaction(input: TransactionExtractionInput): Promise<TransactionExtractionOutput> {
+/**
+ * Helper to extract JSON from a string that might contain markdown or extra text
+ */
+function parseRawAiResponse(text: string): any {
+    try {
+        // 1. Try to find JSON block first (most reliable)
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+            return JSON.parse(jsonMatch[0]);
+        }
+        // 2. Fallback to direct parse
+        return JSON.parse(text);
+    } catch (e) {
+        console.error("JSON Parse Error:", e, "Text:", text);
+        return {}; // Return empty to let Zod fill defaults
+    }
+}
+
+export async function extractTransaction(text: string): Promise<TransactionExtractionOutput> {
   const currentDate = new Date().toISOString().slice(0, 10);
-  const prompt = `You are an expert financial assistant. Your task is to extract transaction details from the user's text input.
-The current date is ${currentDate}.
+  const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  
+  const systemPrompt = `## INSTRUKSI PARSING TRANSAKSI LEMON AI ##
+Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap makna implisit!
+Tanggal hari ini: ${currentDate}
+Jam sekarang: ${currentTime}
 
-Analyze the provided text and fill in the following fields in strict JSON format.
-- amount: (number) The monetary value of the transaction.
-- description: (string) A clear and concise summary of what the transaction was for.
-- category: (string) Infer a general category (e.g., 'Makanan', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan', 'Transfer').
-- subCategory: (string, optional) Based on the chosen category.
-- wallet: (string, optional) Source wallet name. Default to "Tunai" if not mentioned.
-- sourceWallet: (string, optional) For transfers only: source wallet name.
-- destinationWallet: (string, optional) For transfers only: destination wallet name.
-- location: (string, optional) Store or location name.
-- date: (string) Transaction date in YYYY-MM-DD format. Default to today (${currentDate}) if not found.
+### ATURAN DETEKSI OTOMATIS:
+1. **DETEKSI JENIS & TIPE:**
+   - **Expense**: beli, bayar, jajan, keluar, makan, isi pulsa.
+   - **Income**: gaji, dapat, terima, bonus, cashback, refund, masuk.
+   - **Transfer**: pindah, kirim, tf, dari [A] ke [B], mutasi.
 
-User Input: "${input.text}"
+2. **DETEKSI NOMINAL (MANDATORY):**
+   - 'rb'/'ribu'/'k' = x1000, 'jt'/'juta' = x1000000.
 
-Return ONLY valid JSON. No markdown formatting.`;
+3. **DETEKSI KATEGORI:**
+   - Sesuaikan dengan tipe. Jika Transfer, kategori HARUS 'Transfer'.
+   - Pemasukan: 'Gaji', 'Bonus', 'Investasi', 'Lain-lain'.
+   - Pengeluaran: 'Makanan', 'Transportasi', 'Belanja', 'Tagihan', 'Hiburan', 'Kesehatan'.
+
+4. **LOGIKA TRANSFER (KHUSUS):**
+   - Jika mendeteksi transfer:
+     - 'sourceWallet': Dompet asal (dari ...).
+     - 'destinationWallet': Dompet tujuan (ke ...).
+     - 'type': 'expense' (sebagai trigger sistem).
+
+5. **DETEKSI SUMBER DANA (NON-TRANSFER):**
+   - 'pakai', 'via', 'dari' -> masukkan ke field 'wallet'.
+   - Default: 'Tunai'.
+
+6. **DETEKSI WAKTU:**
+   - 'kemarin' -> ${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}
+   - Default: ${currentDate}
+
+### OUTPUT JSON FLAT:
+{"type":"income|expense","category":"...","description":"...","amount":number,"date":"YYYY-MM-DD","wallet":"...","sourceWallet":"...","destinationWallet":"..."}
+
+Langsung parse tanpa tanya balik!`;
 
   try {
     const completion = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: "You are a helpful assistant that outputs JSON." },
-        { role: "user", content: prompt }
-      ],
       model: "deepseek-chat",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `Input: "${text}"` }
+      ],
+      temperature: 0, 
       response_format: { type: "json_object" },
     });
 
     const responseText = completion.choices[0].message.content || "{}";
-    const cleanJson = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    return JSON.parse(cleanJson) as TransactionExtractionOutput;
-  } catch (error) {
-    console.error("DeepSeek API Error:", error);
-    throw new Error("Gagal memproses teks dengan AI.");
+    console.log("Raw AI Response:", responseText);
+    
+    let parsed = parseRawAiResponse(responseText);
+    
+    // Auto-unwrap common nested keys
+    const wrapperKeys = ['transaction', 'transaksi', 'data'];
+    for (const key of wrapperKeys) {
+        if (parsed[key] && typeof parsed[key] === 'object') {
+            parsed = parsed[key];
+            break;
+        }
+    }
+
+    // Validate with Zod
+    const result = ExtractionSchema.safeParse(parsed);
+    
+    if (!result.success) {
+        console.error("Zod Validation Failed (Using Fallbacks):", result.error.format());
+        // Return defaults using Zod itself
+        return ExtractionSchema.parse({}); 
+    }
+
+    // Ensure amount is actually greater than 0 for better UX, even if AI failed
+    if (result.data.amount === 0) {
+        // Simple manual scan for numbers if AI missed it
+        const match = text.match(/(\d+)/);
+        if (match) {
+            let val = parseInt(match[1]);
+            if (text.toLowerCase().includes('rb') || text.toLowerCase().includes('k')) val *= 1000;
+            result.data.amount = val;
+        }
+    }
+
+    return result.data;
+  } catch (error: any) {
+    console.error("AI Extraction Error:", error);
+    return {
+        amount: 0,
+        description: text,
+        category: "Lain-lain",
+        wallet: "Tunai",
+        date: currentDate,
+        type: "expense"
+    };
   }
 }

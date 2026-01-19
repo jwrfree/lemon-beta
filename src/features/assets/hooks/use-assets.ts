@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Asset, Liability, AssetLiabilityInput } from '@/types/models';

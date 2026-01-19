@@ -15,7 +15,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
   const { addTransfer } = useApp();

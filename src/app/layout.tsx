@@ -1,12 +1,14 @@
-
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./mobile-home-enhancements.css";
+import "./fab-enhancements.css";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeTransition } from "@/components/theme-transition";
-import { AppProvider } from "@/components/app-provider";
+import { AppProvider } from "@/providers/app-provider";
 import { UIProvider } from "@/components/ui-provider";
 import { ServiceWorkerProvider } from "@/components/service-worker-provider";
+import { BalanceVisibilityProvider } from "@/providers/balance-visibility-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -56,9 +58,11 @@ export default function RootLayout({
           <ThemeTransition />
           <UIProvider>
             <AppProvider>
-              <ServiceWorkerProvider />
-              <Toaster />
-              {children}
+              <BalanceVisibilityProvider>
+                <ServiceWorkerProvider />
+                <Toaster />
+                {children}
+              </BalanceVisibilityProvider>
             </AppProvider>
           </UIProvider>
         </ThemeProvider>

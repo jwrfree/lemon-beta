@@ -167,6 +167,7 @@ export default function BudgetingPage() {
                                                 nameKey="name"
                                                 innerRadius={30}
                                                 strokeWidth={2}
+                                                cornerRadius={4}
                                             />
                                         </PieChart>
                                     </ChartContainer>

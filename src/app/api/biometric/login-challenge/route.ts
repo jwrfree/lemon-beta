@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase-admin';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { generateAuthenticationOptions } from '@simplewebauthn/server';
 
 const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
@@ -13,20 +13,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Email is required' }, { status: 400 });
     }
 
-    const usersSnapshot = await db
-      .collection('users')
-      .where('email', '==', email)
-      .limit(1)
-      .get();
+    const supabase = createAdminClient();
 
-    if (usersSnapshot.empty) {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error || !profile) {
       return NextResponse.json({ message: 'User not found.' }, { status: 404 });
     }
 
-    const userDoc = usersSnapshot.docs[0];
-    const userData = userDoc.data() ?? {};
-
-    if (!userData.biometricCredentialId || !userData.biometricCredentialPublicKey) {
+    if (!profile.biometric_credential_id || !profile.biometric_credential_public_key) {
       return NextResponse.json(
         { message: 'Biometric login not enabled for this user.' },
         { status: 400 },
@@ -38,18 +37,15 @@ export async function POST(req: NextRequest) {
       userVerification: 'required',
       allowCredentials: [
         {
-          id: userData.biometricCredentialId,
+          id: profile.biometric_credential_id,
           transports: ['internal'],
         },
       ],
     });
 
-    await userDoc.ref.set(
-      {
-        loginChallenge: options.challenge,
-      },
-      { merge: true },
-    );
+    await supabase.from('profiles').update({
+        login_challenge: options.challenge
+    }).eq('id', profile.id);
 
     return NextResponse.json(options);
   } catch (error: any) {

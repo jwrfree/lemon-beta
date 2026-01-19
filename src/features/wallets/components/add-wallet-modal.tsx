@@ -7,7 +7,7 @@ import { X, Wallet, Landmark, Smartphone, ArrowLeft, CircleDollarSign } from 'lu
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 
 const popularWallets: Record<string, string[]> = {

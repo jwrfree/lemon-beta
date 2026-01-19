@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, X, LoaderCircle } from 'lucide-react';
@@ -35,6 +34,7 @@ export const ForgotPasswordPage = ({
     const { showToast } = useUI();
     const [authError, setAuthError] = useState<string | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
+    const supabase = createClient();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -46,26 +46,22 @@ export const ForgotPasswordPage = ({
         formState: { isSubmitting },
     } = form;
 
-    const getFirebaseErrorCode = (error: unknown) => {
-        if (typeof error === 'object' && error !== null && 'code' in error) {
-            const { code } = error as { code?: unknown };
-            return typeof code === 'string' ? code : undefined;
-        }
-        return undefined;
-    };
-
     const handleReset = async (values: z.infer<typeof formSchema>) => {
         try {
             setAuthError(null);
-            await sendPasswordResetEmail(auth, values.email);
+            const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+                redirectTo: `${window.location.origin}/settings`,
+            });
+            
+            if (error) throw error;
+
             setIsSuccess(true);
             showToast('Kami telah mengirim email untuk mengatur ulang password.', 'success');
-        } catch (error: unknown) {
-            const code = getFirebaseErrorCode(error);
+        } catch (error: any) {
             let message = 'Gagal mengirim tautan reset password. Coba lagi ya.';
-            if (code === 'auth/user-not-found') {
+            if (error.message?.includes('User not found')) {
                 message = 'Email belum terdaftar di Lemon.';
-            } else if (code === 'auth/too-many-requests') {
+            } else if (error.status === 429) {
                 message = 'Terlalu banyak permintaan. Coba beberapa menit lagi.';
             }
             setAuthError(message);

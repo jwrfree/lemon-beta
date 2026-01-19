@@ -2,18 +2,33 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
+import { normalizeDateInput } from '@/lib/utils';
 import type { Debt, DebtInput, DebtPayment, DebtPaymentInput } from '@/types/models';
 
-const normalizeDateInput = (value: string | Date | null | undefined): string | null => {
-    if (!value) return null;
-    if (typeof value === 'string') {
-        return value;
-    }
-    return value.toISOString();
-};
+const mapDebtFromDb = (d: any): Debt => ({
+    id: d.id,
+    title: d.title,
+    counterparty: d.counterparty,
+    principal: d.principal,
+    outstandingBalance: d.outstanding_balance,
+    status: d.status,
+    dueDate: d.due_date,
+    startDate: d.start_date,
+    notes: d.notes,
+    direction: d.direction,
+    category: d.category,
+    interestRate: d.interest_rate,
+    paymentFrequency: d.payment_frequency,
+    customInterval: d.custom_interval,
+    nextPaymentDate: d.next_payment_date,
+    payments: d.payments || [],
+    userId: d.user_id,
+    createdAt: d.created_at,
+    updatedAt: d.updated_at
+});
 
 export const useDebts = () => {
     const { user } = useApp();
@@ -23,49 +38,28 @@ export const useDebts = () => {
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
 
+    const fetchDebts = useCallback(async () => {
+        if (!user) return;
+        const { data: debtsData } = await supabase
+            .from('debts')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false });
+
+        if (debtsData) {
+            setDebts(debtsData.map(mapDebtFromDb));
+        }
+        setIsLoading(false);
+    }, [user, supabase]);
+
     useEffect(() => {
         if (!user) {
             setDebts([]);
             setIsLoading(false);
             return;
         }
-
-        const fetchDebts = async () => {
-            const { data: debtsData } = await supabase
-                .from('debts')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false });
-
-            if (debtsData) {
-                 const mappedDebts = debtsData.map((d: any) => ({
-                    id: d.id,
-                    title: d.title,
-                    counterparty: d.counterparty,
-                    principal: d.principal,
-                    outstandingBalance: d.outstanding_balance,
-                    status: d.status,
-                    dueDate: d.due_date,
-                    startDate: d.start_date,
-                    notes: d.notes,
-                    direction: d.direction,
-                    category: d.category,
-                    interestRate: d.interest_rate,
-                    paymentFrequency: d.payment_frequency,
-                    customInterval: d.custom_interval,
-                    nextPaymentDate: d.next_payment_date,
-                    payments: d.payments || [],
-                    userId: d.user_id,
-                    createdAt: d.created_at,
-                    updatedAt: d.updated_at
-                }));
-                setDebts(mappedDebts);
-            }
-            setIsLoading(false);
-        };
-
         fetchDebts();
-    }, [user, supabase]);
+    }, [user, fetchDebts]);
 
     const addDebt = useCallback(async (debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");
@@ -98,32 +92,8 @@ export const useDebts = () => {
         showToast("Catatan hutang/piutang dibuat!", 'success');
         setDebtToEdit(null);
         setIsDebtModalOpen(false);
-        
-        // Refresh
-        const { data } = await supabase.from('debts').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-        if (data) setDebts(data.map((d: any) => ({
-            id: d.id,
-            title: d.title,
-            counterparty: d.counterparty,
-            principal: d.principal,
-            outstandingBalance: d.outstanding_balance,
-            status: d.status,
-            dueDate: d.due_date,
-            startDate: d.start_date,
-            notes: d.notes,
-            direction: d.direction,
-            category: d.category,
-            interestRate: d.interest_rate,
-            paymentFrequency: d.payment_frequency,
-            customInterval: d.custom_interval,
-            nextPaymentDate: d.next_payment_date,
-            payments: d.payments || [],
-            userId: d.user_id,
-            createdAt: d.created_at,
-            updatedAt: d.updated_at
-        })));
-
-    }, [user, supabase, showToast, setIsDebtModalOpen, setDebtToEdit]);
+        fetchDebts();
+    }, [user, supabase, showToast, setIsDebtModalOpen, setDebtToEdit, fetchDebts]);
 
     const updateDebt = useCallback(async (debtId: string, debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");
@@ -148,32 +118,8 @@ export const useDebts = () => {
         showToast("Catatan hutang/piutang diperbarui.", 'success');
         setDebtToEdit(null);
         setIsDebtModalOpen(false);
-        
-        // Refresh
-        const { data } = await supabase.from('debts').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-        if (data) setDebts(data.map((d: any) => ({
-            id: d.id,
-            title: d.title,
-            counterparty: d.counterparty,
-            principal: d.principal,
-            outstandingBalance: d.outstanding_balance,
-            status: d.status,
-            dueDate: d.due_date,
-            startDate: d.start_date,
-            notes: d.notes,
-            direction: d.direction,
-            category: d.category,
-            interestRate: d.interest_rate,
-            paymentFrequency: d.payment_frequency,
-            customInterval: d.custom_interval,
-            nextPaymentDate: d.next_payment_date,
-            payments: d.payments || [],
-            userId: d.user_id,
-            createdAt: d.created_at,
-            updatedAt: d.updated_at
-        })));
-
-    }, [user, supabase, showToast, setIsDebtModalOpen, setDebtToEdit]);
+        fetchDebts();
+    }, [user, supabase, showToast, setIsDebtModalOpen, setDebtToEdit, fetchDebts]);
 
     const deleteDebt = useCallback(async (debtId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -187,17 +133,8 @@ export const useDebts = () => {
         showToast("Catatan hutang/piutang dihapus.", 'info');
         setDebtToEdit(null);
         setIsDebtModalOpen(false);
-        router.back(); // Usually called from detail page, but safe if on list page? Might want to check path.
-        // Actually, if on list page, router.back() might go to previous page which is not intended.
-        // But the original code had it. I'll keep it but maybe we should only do it if we are on detail page.
-        // For now, I'll remove router.back() here and let the component handle navigation if needed, 
-        // OR just keep it if it was working for the user. 
-        // The original code was: `router.back();`
-        // I will keep it for now but note it might be an issue on list page.
-        
         setDebts(prev => prev.filter(d => d.id !== debtId));
-
-    }, [user, supabase, showToast, setIsDebtModalOpen, setDebtToEdit, router]);
+    }, [user, supabase, showToast, setIsDebtModalOpen, setDebtToEdit]);
 
     const markDebtSettled = useCallback(async (debtId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -213,101 +150,32 @@ export const useDebts = () => {
         }
 
         showToast("Hutang/piutang ditandai lunas.", 'success');
-        
         setDebts(prev => prev.map(d => d.id === debtId ? { ...d, status: 'settled', outstandingBalance: 0 } : d));
     }, [user, supabase, showToast]);
 
     const logDebtPayment = useCallback(async (debtId: string, paymentData: DebtPaymentInput) => {
         if (!user) throw new Error("User not authenticated.");
         
-        // 1. Fetch current debt
-        const { data: debt, error: fetchError } = await supabase.from('debts').select('*').eq('id', debtId).single();
-        if (fetchError || !debt) {
-             showToast("Debt not found", 'error');
-             return;
-        }
+        const { error } = await supabase.rpc('pay_debt_v1', {
+            p_debt_id: debtId,
+            p_payment_amount: paymentData.amount,
+            p_payment_date: paymentData.paymentDate,
+            p_wallet_id: paymentData.walletId || null,
+            p_notes: paymentData.notes || '',
+            p_user_id: user.id
+        });
 
-        const paymentId = crypto.randomUUID();
-        const paymentRecord: DebtPayment = {
-            id: paymentId,
-            amount: paymentData.amount,
-            paymentDate: paymentData.paymentDate,
-            walletId: paymentData.walletId || null,
-            method: paymentData.method || 'manual',
-            notes: paymentData.notes || '',
-            createdAt: new Date().toISOString(),
-        };
-
-        const existingPayments = debt.payments || [];
-        const updatedPayments = [...existingPayments, paymentRecord];
-        const newOutstanding = Math.max(0, (debt.outstanding_balance || 0) - paymentData.amount);
-        const newStatus = newOutstanding <= 0 ? 'settled' : debt.status;
-
-        // 2. Update Debt
-        const { error: updateError } = await supabase.from('debts').update({
-            payments: updatedPayments,
-            outstanding_balance: newOutstanding,
-            status: newStatus,
-            next_payment_date: paymentData.nextPaymentDate || debt.next_payment_date
-        }).eq('id', debtId);
-
-        if (updateError) {
+        if (error) {
+             console.error("Error logging debt payment:", error);
              showToast("Gagal mencatat pembayaran.", 'error');
              return;
-        }
-
-        // 3. Update Wallet & Create Transaction if walletId provided
-        if (paymentData.walletId) {
-             const { data: wallet } = await supabase.from('wallets').select('balance').eq('id', paymentData.walletId).single();
-             if (wallet) {
-                 const isOwed = debt.direction === 'owed';
-                 const newBalance = isOwed ? wallet.balance - paymentData.amount : wallet.balance + paymentData.amount;
-                 
-                 await supabase.from('wallets').update({ balance: newBalance }).eq('id', paymentData.walletId);
-                 
-                 await supabase.from('transactions').insert({
-                    type: isOwed ? 'expense' : 'income',
-                    amount: paymentData.amount,
-                    category: isOwed ? 'Bayar Hutang' : 'Terima Piutang',
-                    wallet_id: paymentData.walletId,
-                    description: paymentData.notes
-                        ? `${isOwed ? 'Pembayaran' : 'Penerimaan'} ${debt.title}: ${paymentData.notes}`
-                        : `${isOwed ? 'Pembayaran' : 'Penerimaan'} ${debt.title}`,
-                    date: paymentData.paymentDate,
-                    user_id: user.id,
-                 });
-             }
         }
 
         showToast("Pembayaran berhasil dicatat!", 'success');
         setDebtForPayment(null);
         setIsDebtPaymentModalOpen(false);
-
-        // Refresh debts
-        const { data } = await supabase.from('debts').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-        if (data) setDebts(data.map((d: any) => ({
-            id: d.id,
-            title: d.title,
-            counterparty: d.counterparty,
-            principal: d.principal,
-            outstandingBalance: d.outstanding_balance,
-            status: d.status,
-            dueDate: d.due_date,
-            startDate: d.start_date,
-            notes: d.notes,
-            direction: d.direction,
-            category: d.category,
-            interestRate: d.interest_rate,
-            paymentFrequency: d.payment_frequency,
-            customInterval: d.custom_interval,
-            nextPaymentDate: d.next_payment_date,
-            payments: d.payments || [],
-            userId: d.user_id,
-            createdAt: d.created_at,
-            updatedAt: d.updated_at
-        })));
-
-    }, [user, supabase, showToast, setDebtForPayment, setIsDebtPaymentModalOpen]);
+        fetchDebts();
+    }, [user, supabase, showToast, setDebtForPayment, setIsDebtPaymentModalOpen, fetchDebts]);
 
     const deleteDebtPayment = useCallback(async (debtId: string, paymentId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -334,20 +202,7 @@ export const useDebts = () => {
         }
 
         showToast("Pencatatan pembayaran dihapus.", 'info');
-
-        // Refresh debts
-        setDebts(prev => prev.map(d => {
-            if (d.id === debtId) {
-                return {
-                    ...d,
-                    payments: remainingPayments,
-                    outstandingBalance: newOutstanding,
-                    status: 'active'
-                };
-            }
-            return d;
-        }));
-
+        setDebts(prev => prev.map(d => d.id === debtId ? { ...d, payments: remainingPayments, outstandingBalance: newOutstanding, status: 'active' } : d));
     }, [user, supabase, showToast]);
 
     return {

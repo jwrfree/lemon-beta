@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { LoginPage } from '@/features/auth/components/login-page';
 import { SignUpPage } from '@/features/auth/components/signup-page';
 import { ForgotPasswordPage } from '@/features/auth/components/forgot-password-page';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { useRouter } from 'next/navigation';
 import type { AuthModalView } from '@/types/auth';
 import { LoaderCircle } from 'lucide-react';

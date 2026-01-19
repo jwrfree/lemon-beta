@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useApp } from '@/components/app-provider';
+import { useApp } from '@/providers/app-provider';
 import { createClient } from '@/lib/supabase/client';
 import { categories } from '@/lib/categories';
 import type { Transaction } from '@/types/models';

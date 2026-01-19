@@ -24,9 +24,10 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { cn } from '@/lib/utils';
+import { cn, normalizeDateInput } from '@/lib/utils';
 import type { Debt, DebtInput, PaymentFrequency } from '@/types/models';
 import { useDebts } from '../hooks/use-debts';
+import { useCurrencyInput } from '@/hooks/use-currency-input';
 
 interface DebtFormProps {
     onClose: () => void;
@@ -61,15 +62,10 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
     const [direction, setDirection] = useState<Debt['direction']>(initialData?.direction || 'owed');
     const [counterparty, setCounterparty] = useState(initialData?.counterparty || '');
     const [category, setCategory] = useState(initialData?.category || 'personal');
-    const [principal, setPrincipal] = useState(() => {
-        if (!initialData?.principal) return '';
-        return new Intl.NumberFormat('id-ID').format(initialData.principal);
-    });
-    const [outstanding, setOutstanding] = useState(() => {
-        if (!initialData?.outstandingBalance && !initialData?.principal) return '';
-        const value = initialData?.outstandingBalance ?? initialData?.principal ?? 0;
-        return value ? new Intl.NumberFormat('id-ID').format(value) : '';
-    });
+    
+    const principalInput = useCurrencyInput(initialData?.principal || '');
+    const outstandingInput = useCurrencyInput(initialData?.outstandingBalance ?? initialData?.principal ?? '');
+
     const [interestRate, setInterestRate] = useState(
         typeof initialData?.interestRate === 'number' ? String(initialData.interestRate) : ''
     );
@@ -107,25 +103,15 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
         return format(nextPaymentDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
     }, [nextPaymentDate]);
 
-    const handleCurrencyChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const rawValue = e.target.value.replace(/[^0-9]/g, '');
-        const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-        setter(formattedValue);
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const principalValue = parseInt(principal.replace(/[^0-9]/g, '')) || 0;
+        const principalValue = principalInput.getRawValue();
         if (!title || !counterparty || principalValue <= 0) {
             showToast('Nama hutang/piutang, pihak terkait, dan nominal utama wajib diisi.', 'error');
             return;
         }
 
-        const outstandingValue = outstanding
-            ? parseInt(outstanding.replace(/[^0-9]/g, '')) || principalValue
-            : principalValue;
+        const outstandingValue = outstandingInput.getRawValue() || principalValue;
 
         const payload: DebtInput = {
             title,
@@ -138,9 +124,9 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
             paymentFrequency,
             customInterval:
                 paymentFrequency === 'custom' ? parseInt(customInterval || '0') || null : null,
-            startDate: startDate ? startDate.toISOString() : null,
-            dueDate: dueDate ? dueDate.toISOString() : null,
-            nextPaymentDate: nextPaymentDate ? nextPaymentDate.toISOString() : null,
+            startDate: normalizeDateInput(startDate),
+            dueDate: normalizeDateInput(dueDate),
+            nextPaymentDate: normalizeDateInput(nextPaymentDate),
             notes,
             status: initialData?.status || 'active',
             payments: initialData?.payments || [],
@@ -247,8 +233,8 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                             <Label>Nominal Awal</Label>
                             <Input
                                 placeholder="Rp 0"
-                                value={principal}
-                                onChange={handleCurrencyChange(setPrincipal)}
+                                value={principalInput.formattedValue}
+                                onChange={principalInput.onChange}
                                 inputMode="numeric"
                                 required
                             />
@@ -257,8 +243,8 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                             <Label>Sisa Saat Ini</Label>
                             <Input
                                 placeholder="Rp 0"
-                                value={outstanding}
-                                onChange={handleCurrencyChange(setOutstanding)}
+                                value={outstandingInput.formattedValue}
+                                onChange={outstandingInput.onChange}
                                 inputMode="numeric"
                             />
                         </div>

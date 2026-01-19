@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
-import { db, admin } from '@/lib/firebase-admin';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { verifyAuthenticationResponse } from '@simplewebauthn/server';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 
@@ -25,24 +25,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const usersSnapshot = await db
-      .collection('users')
-      .where('email', '==', email)
-      .limit(1)
-      .get();
+    const supabase = createAdminClient();
 
-    if (usersSnapshot.empty) {
+    // Fetch user profile from Supabase
+    // We assume email is unique in profiles or we match auth.users
+    // Better to query profiles table. 
+    // BUT profiles might not have email indexed unique if not careful? 
+    // Let's assume we maintain email in profiles.
+    
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+    if (profileError || !profile) {
       return NextResponse.json({ message: 'User not found.' }, { status: 404 });
     }
 
-    const userDoc = usersSnapshot.docs[0];
-    const userData = userDoc.data() ?? {};
-    const userId = userDoc.id;
-
     if (
-      !userData.biometricCredentialId ||
-      !userData.biometricCredentialPublicKey ||
-      !userData.loginChallenge
+      !profile.biometric_credential_id ||
+      !profile.biometric_credential_public_key ||
+      !profile.login_challenge
     ) {
       return NextResponse.json(
         { message: 'Biometric login not set up or no challenge found.' },
@@ -52,15 +56,15 @@ export async function POST(req: NextRequest) {
 
     const verification = await verifyAuthenticationResponse({
       response: assertion as AuthenticationResponseJSON,
-      expectedChallenge: userData.loginChallenge,
+      expectedChallenge: profile.login_challenge,
       expectedOrigin: ORIGIN,
       expectedRPID: RP_ID,
       authenticator: {
-        credentialID: userData.biometricCredentialId,
+        credentialID: profile.biometric_credential_id,
         credentialPublicKey: base64UrlToBuffer(
-          userData.biometricCredentialPublicKey,
+          profile.biometric_credential_public_key,
         ),
-        counter: userData.biometricCounter || 0,
+        counter: profile.biometric_counter || 0,
         transports: ['internal'],
       },
       requireUserVerification: true,
@@ -75,18 +79,25 @@ export async function POST(req: NextRequest) {
 
     const { newCounter } = verification.authenticationInfo;
 
-    await userDoc.ref.set(
-      {
-        loginChallenge: admin.firestore.FieldValue.delete(),
-        biometricCounter: newCounter,
-        isBiometricEnabled: true,
-      },
-      { merge: true },
-    );
+    // Update profile
+    await supabase.from('profiles').update({
+        login_challenge: null,
+        biometric_counter: newCounter,
+        is_biometric_enabled: true
+    }).eq('id', profile.id);
 
-    const customToken = await admin.auth().createCustomToken(userId);
+    // Generate Session via Magic Link
+    // We generate a link and send it back to the client to "auto-click" or redirect
+    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+        type: 'magiclink',
+        email: email,
+    });
 
-    return NextResponse.json({ success: true, customToken });
+    if (linkError || !linkData.properties?.action_link) {
+        throw new Error('Failed to generate session link.');
+    }
+
+    return NextResponse.json({ success: true, redirectUrl: linkData.properties.action_link });
   } catch (error: any) {
     console.error('Biometric verification error:', error);
     return NextResponse.json(
