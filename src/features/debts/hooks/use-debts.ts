@@ -6,9 +6,9 @@ import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import { normalizeDateInput } from '@/lib/utils';
-import type { Debt, DebtInput, DebtPayment, DebtPaymentInput } from '@/types/models';
+import type { Debt, DebtInput, DebtPayment, DebtPaymentInput, DebtRow } from '@/types/models';
 
-const mapDebtFromDb = (d: any): Debt => ({
+const mapDebtFromDb = (d: DebtRow): Debt => ({
     id: d.id,
     title: d.title,
     counterparty: d.counterparty,
@@ -40,11 +40,17 @@ export const useDebts = () => {
 
     const fetchDebts = useCallback(async () => {
         if (!user) return;
-        const { data: debtsData } = await supabase
+        const { data: debtsData, error } = await supabase
             .from('debts')
             .select('*')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error("Error fetching debts:", error);
+            setIsLoading(false);
+            return;
+        }
 
         if (debtsData) {
             setDebts(debtsData.map(mapDebtFromDb));
@@ -198,23 +204,31 @@ export const useDebts = () => {
     const deleteDebtPayment = useCallback(async (debtId: string, paymentId: string) => {
         if (!user) throw new Error("User not authenticated.");
         
-        const { data: debt } = await supabase.from('debts').select('*').eq('id', debtId).single();
-        if (!debt) return;
+        const { data: debt, error: fetchError } = await supabase.from('debts').select('*').eq('id', debtId).single();
+        if (fetchError || !debt) {
+            console.error("Error fetching debt for payment deletion:", fetchError);
+            showToast("Gagal mengambil data hutang.", 'error');
+            return;
+        }
 
         const payments = (debt.payments || []) as DebtPayment[];
         const paymentToRemove = payments.find(p => p.id === paymentId);
-        if (!paymentToRemove) return;
+        if (!paymentToRemove) {
+            showToast("Pembayaran tidak ditemukan.", 'error');
+            return;
+        }
 
         const remainingPayments = payments.filter(p => p.id !== paymentId);
         const newOutstanding = (debt.outstanding_balance || 0) + paymentToRemove.amount;
 
-        const { error } = await supabase.from('debts').update({
+        const { error: updateError } = await supabase.from('debts').update({
             payments: remainingPayments,
             outstanding_balance: newOutstanding,
             status: 'active'
         }).eq('id', debtId);
 
-        if (error) {
+        if (updateError) {
+            console.error("Error updating debt after payment deletion:", updateError);
             showToast("Gagal menghapus pembayaran.", 'error');
             return;
         }

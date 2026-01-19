@@ -3,7 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateAuthenticationOptions } from '@simplewebauthn/server';
 
-const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
+import { config } from '@/lib/config';
+
+const RP_ID = config.auth.rpId;
 
 export async function POST(req: NextRequest) {
   try {

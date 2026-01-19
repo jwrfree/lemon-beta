@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Wallet } from '@/types/models';
+import type { Wallet, WalletRow } from '@/types/models';
 
-const mapWalletFromDb = (w: any): Wallet => ({
+const mapWalletFromDb = (w: WalletRow): Wallet => ({
     id: w.id,
     name: w.name,
     balance: w.balance,
@@ -23,11 +23,17 @@ export const useWallets = () => {
 
     const fetchWallets = useCallback(async () => {
         if (!user) return;
-        const { data: walletsData } = await supabase
+        const { data: walletsData, error } = await supabase
             .from('wallets')
             .select('*')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error("Error fetching wallets:", error);
+            setIsLoading(false);
+            return;
+        }
 
         if (walletsData) {
             setWallets(walletsData.map(mapWalletFromDb));

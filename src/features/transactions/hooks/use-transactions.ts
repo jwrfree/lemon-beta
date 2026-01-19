@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { createClient } from '@/lib/supabase/client';
 import { categories } from '@/lib/categories';
-import type { Transaction } from '@/types/models';
+import type { Transaction, TransactionRow } from '@/types/models';
 
-const mapTransactionFromDb = (t: any): Transaction => ({
+const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
     id: t.id,
     amount: t.amount,
     category: t.category,
@@ -14,8 +14,7 @@ const mapTransactionFromDb = (t: any): Transaction => ({
     walletId: t.wallet_id,
     userId: t.user_id,
     createdAt: t.created_at,
-    updatedAt: t.updated_at,
-    location: t.location
+    updatedAt: t.updated_at
 });
 
 export const useTransactions = () => {
@@ -26,11 +25,17 @@ export const useTransactions = () => {
 
     const fetchTransactions = useCallback(async () => {
         if (!user) return;
-        const { data: txData } = await supabase
+        const { data: txData, error } = await supabase
             .from('transactions')
             .select('*')
             .eq('user_id', user.id)
             .order('date', { ascending: false });
+
+        if (error) {
+            console.error("Error fetching transactions:", error);
+            setIsLoading(false);
+            return;
+        }
 
         if (txData) {
             setTransactions(txData.map(mapTransactionFromDb));

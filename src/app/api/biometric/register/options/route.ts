@@ -3,8 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateRegistrationOptions } from '@simplewebauthn/server';
 
-const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
-const RP_NAME = process.env.NEXT_PUBLIC_RP_NAME || 'Lemon App';
+import { config } from '@/lib/config';
+
+const RP_ID = config.auth.rpId;
+const RP_NAME = config.auth.rpName;
 
 export async function POST(req: NextRequest) {
   try {

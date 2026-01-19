@@ -4,8 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 import { verifyRegistrationResponse } from '@simplewebauthn/server';
 import type { RegistrationResponseJSON } from '@simplewebauthn/types';
 
-const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
-const ORIGIN = process.env.NEXT_PUBLIC_ORIGIN || 'http://localhost:3000';
+import { config } from '@/lib/config';
+
+const RP_ID = config.auth.rpId;
+const ORIGIN = config.auth.origin;
 
 function bufferToBase64Url(buffer: Uint8Array | ArrayBuffer): string {
   const byteArray = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);

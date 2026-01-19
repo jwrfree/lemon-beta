@@ -5,9 +5,9 @@ import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import { normalizeDateInput } from '@/lib/utils';
-import type { Reminder, ReminderInput } from '@/types/models';
+import type { Reminder, ReminderInput, ReminderRow } from '@/types/models';
 
-const mapReminderFromDb = (r: any): Reminder => ({
+const mapReminderFromDb = (r: ReminderRow): Reminder => ({
     id: r.id,
     title: r.title,
     amount: r.amount,
@@ -36,17 +36,24 @@ export const useReminders = () => {
 
     const fetchReminders = useCallback(async () => {
         if (!user) return;
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from('reminders')
             .select('*')
             .eq('user_id', user.id)
             .order('due_date', { ascending: true });
         
+        if (error) {
+            console.error("Error fetching reminders:", error);
+            ui.showToast("Gagal memuat pengingat.", 'error');
+            setIsLoading(false);
+            return;
+        }
+
         if (data) {
             setReminders(data.map(mapReminderFromDb));
         }
         setIsLoading(false);
-    }, [user, supabase]);
+    }, [user, supabase, ui]);
 
     useEffect(() => {
         if (!user) {

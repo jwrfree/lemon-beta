@@ -2,9 +2,11 @@
 
 import OpenAI from "openai";
 
+import { config } from "@/lib/config";
+
 const openai = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY,
-  baseURL: "https://api.deepseek.com",
+  apiKey: config.ai.deepseek.apiKey,
+  baseURL: config.ai.deepseek.baseURL,
 });
 
 export type FinancialData = {

@@ -5,7 +5,18 @@ import { useRouter as useNextRouter } from 'next/navigation';
 import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Budget, BudgetInput } from '@/types/models';
+import type { Budget, BudgetInput, BudgetRow } from '@/types/models';
+
+const mapBudgetFromDb = (b: BudgetRow): Budget => ({
+    id: b.id,
+    name: b.name,
+    targetAmount: b.amount,
+    spent: b.spent,
+    categories: b.category ? [b.category] : [],
+    period: b.period,
+    userId: b.user_id,
+    createdAt: b.created_at
+});
 
 export const useBudgets = () => {
     const { user } = useApp();
@@ -33,17 +44,7 @@ export const useBudgets = () => {
                 console.error("Error fetching budgets:", error);
                 showToast("Gagal memuat anggaran.", 'error');
             } else if (data) {
-                 const mappedBudgets = data.map((b: any) => ({
-                    id: b.id,
-                    name: b.name,
-                    targetAmount: b.amount,
-                    spent: b.spent,
-                    categories: b.category ? [b.category] : [],
-                    period: b.period,
-                    userId: b.user_id,
-                    createdAt: b.created_at
-                }));
-                setBudgets(mappedBudgets);
+                setBudgets(data.map(mapBudgetFromDb));
             }
             setIsLoading(false);
         };

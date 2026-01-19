@@ -124,6 +124,117 @@ export interface UserProfile extends BaseRecord {
   photoURL?: string;
 }
 
+// Database Row Types (Raw from Supabase)
+export interface WalletRow {
+  id: string;
+  name: string;
+  balance: number;
+  icon: string | null;
+  color: string | null;
+  is_default: boolean;
+  user_id: string;
+  created_at: string;
+}
+
+export interface TransactionRow {
+  id: string;
+  amount: number;
+  category: string;
+  date: string;
+  description: string;
+  type: TransactionType;
+  wallet_id: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DebtRow {
+  id: string;
+  title: string;
+  counterparty: string;
+  principal: number;
+  outstanding_balance: number;
+  status: DebtStatus;
+  due_date: string | null;
+  start_date: string | null;
+  notes: string;
+  direction: DebtDirection;
+  category: string;
+  interest_rate: number | null;
+  payment_frequency: PaymentFrequency;
+  custom_interval: number | null;
+  next_payment_date: string | null;
+  payments: DebtPayment[];
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AssetRow {
+  id: string;
+  name: string;
+  value: number;
+  notes: string | null;
+  category: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LiabilityRow {
+  id: string;
+  name: string;
+  value: number;
+  notes: string | null;
+  category: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BudgetRow {
+  id: string;
+  name: string;
+  amount: number;
+  spent: number;
+  category: string;
+  period: string;
+  user_id: string;
+  created_at: string;
+}
+
+export interface GoalRow {
+  id: string;
+  name: string;
+  target_amount: number;
+  current_amount: number;
+  target_date: string;
+  icon: string | null;
+  user_id: string;
+  created_at: string;
+}
+
+export interface ReminderRow {
+  id: string;
+  title: string;
+  amount: number;
+  due_date: string | null;
+  type: ReminderType;
+  category: string;
+  notes: string;
+  status: ReminderStatus;
+  repeat_rule: ReminderRepeatRule | null;
+  snooze_count: number;
+  completed_at: string | null;
+  channels: ReminderChannel[];
+  target_id: string | null;
+  target_type: 'debt' | 'standalone' | null;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export type ReminderInput = Omit<Reminder, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'> & {
   dueDate?: string | Date | null;
   channels?: ReminderChannel[];

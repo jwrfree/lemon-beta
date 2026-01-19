@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { useData } from '@/hooks/use-data';
 import { format, parseISO } from 'date-fns';
@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight, ChevronLeft } from 'lucide-react';
+import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight, ChevronLeft, Sparkles, Loader2 } from 'lucide-react';
 import { categoryDetails, Category } from '@/lib/categories';
 import { SubCategorySheet } from './sub-category-sheet';
 import { useUI } from '@/components/ui-provider';
@@ -24,11 +24,13 @@ import { transactionSchema, TransactionFormValues } from '../schemas/transaction
 import { z } from 'zod';
 import { TransactionTypeSelector } from './transaction-type-selector';
 import { CategoryGrid } from './category-grid';
+import type { Transaction } from '@/types/models';
+import { suggestCategory } from '@/ai/flows/suggest-category-flow';
 
 interface TransactionFormProps {
   onClose: (data?: any) => void;
   isModal?: boolean;
-  initialData?: any | null;
+  initialData?: Transaction | null;
 }
 
 export const TransactionForm = ({ onClose, isModal = true, initialData = null }: TransactionFormProps) => {
@@ -41,6 +43,8 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
 
     const [isSubCategorySheetOpen, setIsSubCategorySheetOpen] = useState(false);
     const [selectedCategoryForSub, setSelectedCategoryForSub] = useState<Category | null>(null);
+    const [isSuggesting, setIsSuggesting] = useState(false);
+    const lastSuggestedRef = useRef<string>('');
 
     const form = useForm<z.input<typeof transactionSchema>>({
         resolver: zodResolver(transactionSchema) as any,
@@ -60,8 +64,35 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     const type = watch('type');
     const category = watch('category');
     const subCategory = watch('subCategory');
+    const description = watch('description');
 
     const categories = type === 'expense' ? expenseCategories : incomeCategories;
+
+    // AI Predictive Category
+    useEffect(() => {
+        if (isEditMode || !description || description.length < 3 || description === lastSuggestedRef.current) return;
+
+        const timer = setTimeout(async () => {
+            setIsSuggesting(true);
+            try {
+                const result = await suggestCategory(description, type);
+                if (result && result.confidence > 0.7) {
+                    const matchedCategory = categories.find(c => c.name.toLowerCase() === result.category.toLowerCase());
+                    if (matchedCategory && category !== matchedCategory.name) {
+                        setValue('category', matchedCategory.name, { shouldValidate: true });
+                        lastSuggestedRef.current = description;
+                        // Optional: show a small toast or visual indicator that AI helped
+                    }
+                }
+            } catch (error) {
+                console.error("Suggestion error", error);
+            } finally {
+                setIsSuggesting(false);
+            }
+        }, 800);
+
+        return () => clearTimeout(timer);
+    }, [description, type, category, categories, setValue, isEditMode]);
 
     const handleTypeChange = (newType: string) => {
         if (newType === 'transfer') {
@@ -196,7 +227,32 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="category-button" className={cn(errors.category && "text-destructive")}>Kategori</Label>
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="category-button" className={cn(errors.category && "text-destructive")}>Kategori</Label>
+                    <AnimatePresence>
+                        {isSuggesting && (
+                            <motion.div 
+                                initial={{ opacity: 0, x: 5 }} 
+                                animate={{ opacity: 1, x: 0 }} 
+                                exit={{ opacity: 0 }}
+                                className="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-full"
+                            >
+                                <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                                AI berpikir...
+                            </motion.div>
+                        )}
+                        {!isSuggesting && lastSuggestedRef.current && lastSuggestedRef.current === description && (
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.8 }} 
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100"
+                            >
+                                <Sparkles className="h-2.5 w-2.5 fill-amber-600" />
+                                Disarankan AI
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
                 <button
                     id="category-button"
                     type="button"

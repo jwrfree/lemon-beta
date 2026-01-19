@@ -4,8 +4,10 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { verifyAuthenticationResponse } from '@simplewebauthn/server';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 
-const RP_ID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';
-const ORIGIN = process.env.NEXT_PUBLIC_ORIGIN || 'http://localhost:3000';
+import { config } from '@/lib/config';
+
+const RP_ID = config.auth.rpId;
+const ORIGIN = config.auth.origin;
 
 function base64UrlToBuffer(base64urlString: string): Buffer {
   const base64 = base64urlString.replace(/-/g, '+').replace(/_/g, '/');

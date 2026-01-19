@@ -7,10 +7,10 @@ import { categoryDetails as getCategoryDetails } from '@/lib/categories';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Trash2, Pencil } from 'lucide-react';
-import { useUI } from '@/components/ui-provider';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
+import type { Transaction } from '@/types/models';
 
-const TransactionListItemContent = ({ transaction, hideDate }: { transaction: any; hideDate?: boolean }) => {
+const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Transaction; hideDate?: boolean }) => {
     const { wallets } = useData();
     const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
@@ -57,7 +57,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: an
 };
 
 
-export const TransactionListItem = ({ transaction, hideDate = false }: { transaction: any; hideDate?: boolean }) => {
+export const TransactionListItem = ({ transaction, hideDate = false }: { transaction: Transaction; hideDate?: boolean }) => {
     const itemRef = useRef<HTMLDivElement>(null);
     const { openDeleteModal, openEditTransactionModal } = useUI();
 

@@ -1,23 +1,35 @@
 -- 1. ENABLE ROW LEVEL SECURITY (RLS)
--- Pastikan semua tabel data user terisolasi
 ALTER TABLE wallets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE budgets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE debts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE goals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE reminders ENABLE ROW LEVEL SECURITY;
 
--- Policy contoh untuk Wallets (Ulangi pola ini untuk tabel lain jika belum ada)
-CREATE POLICY "Users can only see their own wallets" ON wallets
-  FOR SELECT USING (auth.uid() = user_id);
+-- UNIVERSAL POLICY PATTERN
+-- Wallets
+CREATE POLICY "Users can manage their own wallets" ON wallets
+  FOR ALL USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can insert their own wallets" ON wallets
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+-- Transactions
+CREATE POLICY "Users can manage their own transactions" ON transactions
+  FOR ALL USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can update their own wallets" ON wallets
-  FOR UPDATE USING (auth.uid() = user_id);
+-- Budgets
+CREATE POLICY "Users can manage their own budgets" ON budgets
+  FOR ALL USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can delete their own wallets" ON wallets
-  FOR DELETE USING (auth.uid() = user_id);
+-- Debts
+CREATE POLICY "Users can manage their own debts" ON debts
+  FOR ALL USING (auth.uid() = user_id);
+
+-- Goals
+CREATE POLICY "Users can manage their own goals" ON goals
+  FOR ALL USING (auth.uid() = user_id);
+
+-- Reminders
+CREATE POLICY "Users can manage their own reminders" ON reminders
+  FOR ALL USING (auth.uid() = user_id);
 
 -- 2. AUDIT LOGS TABLE
 CREATE TABLE IF NOT EXISTS audit_logs (

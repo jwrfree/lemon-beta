@@ -4,7 +4,29 @@ import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Asset, Liability, AssetLiabilityInput } from '@/types/models';
+import type { Asset, Liability, AssetLiabilityInput, AssetRow, LiabilityRow } from '@/types/models';
+
+const mapAssetFromDb = (a: AssetRow): Asset => ({
+    id: a.id,
+    name: a.name,
+    value: a.value,
+    notes: a.notes || undefined,
+    categoryKey: a.category,
+    userId: a.user_id,
+    createdAt: a.created_at,
+    updatedAt: a.updated_at
+});
+
+const mapLiabilityFromDb = (l: LiabilityRow): Liability => ({
+    id: l.id,
+    name: l.name,
+    value: l.value,
+    notes: l.notes || undefined,
+    categoryKey: l.category,
+    userId: l.user_id,
+    createdAt: l.created_at,
+    updatedAt: l.updated_at
+});
 
 export const useAssets = () => {
     const { user } = useApp();
@@ -24,45 +46,29 @@ export const useAssets = () => {
 
         const fetchData = async () => {
             // Fetch Assets
-            const { data: assetsData } = await supabase
+            const { data: assetsData, error: assetsError } = await supabase
                 .from('assets')
                 .select('*')
                 .eq('user_id', user.id)
                 .order('created_at', { ascending: false });
 
-            if (assetsData) {
-                 const mappedAssets = assetsData.map((a: any) => ({
-                    id: a.id,
-                    name: a.name,
-                    value: a.value,
-                    notes: a.notes,
-                    categoryKey: a.category,
-                    userId: a.user_id,
-                    createdAt: a.created_at,
-                    updatedAt: a.updated_at
-                }));
-                setAssets(mappedAssets);
+            if (assetsError) {
+                console.error("Error fetching assets:", assetsError);
+            } else if (assetsData) {
+                setAssets(assetsData.map(mapAssetFromDb));
             }
 
             // Fetch Liabilities
-            const { data: liabilitiesData } = await supabase
+            const { data: liabilitiesData, error: liabilitiesError } = await supabase
                 .from('liabilities')
                 .select('*')
                 .eq('user_id', user.id)
                 .order('created_at', { ascending: false });
 
-            if (liabilitiesData) {
-                const mappedLiabilities = liabilitiesData.map((l: any) => ({
-                    id: l.id,
-                    name: l.name,
-                    value: l.value,
-                    notes: l.notes,
-                    categoryKey: l.category,
-                    userId: l.user_id,
-                    createdAt: l.created_at,
-                    updatedAt: l.updated_at
-                }));
-                setLiabilities(mappedLiabilities);
+            if (liabilitiesError) {
+                console.error("Error fetching liabilities:", liabilitiesError);
+            } else if (liabilitiesData) {
+                setLiabilities(liabilitiesData.map(mapLiabilityFromDb));
             }
 
             setIsLoading(false);
@@ -101,29 +107,19 @@ export const useAssets = () => {
         // Simple state update for immediate feedback (approximate)
         if (type === 'asset') {
             // Re-fetch is safer
-            const { data } = await supabase.from('assets').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-            if (data) setAssets(data.map((a: any) => ({
-                id: a.id,
-                name: a.name,
-                value: a.value,
-                notes: a.notes,
-                categoryKey: a.category,
-                userId: a.user_id,
-                createdAt: a.created_at,
-                updatedAt: a.updated_at
-            })));
+            const { data, error } = await supabase.from('assets').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+            if (error) {
+                console.error("Error refetching assets:", error);
+            } else if (data) {
+                setAssets(data.map(mapAssetFromDb));
+            }
         } else {
-             const { data } = await supabase.from('liabilities').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-             if (data) setLiabilities(data.map((l: any) => ({
-                id: l.id,
-                name: l.name,
-                value: l.value,
-                notes: l.notes,
-                categoryKey: l.category,
-                userId: l.user_id,
-                createdAt: l.created_at,
-                updatedAt: l.updated_at
-             })));
+             const { data, error } = await supabase.from('liabilities').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+             if (error) {
+                console.error("Error refetching liabilities:", error);
+             } else if (data) {
+                setLiabilities(data.map(mapLiabilityFromDb));
+             }
         }
 
     }, [user, supabase, showToast]);
@@ -146,29 +142,19 @@ export const useAssets = () => {
 
         // Refresh state
         if (type === 'asset') {
-             const { data } = await supabase.from('assets').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-            if (data) setAssets(data.map((a: any) => ({
-                id: a.id,
-                name: a.name,
-                value: a.value,
-                notes: a.notes,
-                categoryKey: a.category,
-                userId: a.user_id,
-                createdAt: a.created_at,
-                updatedAt: a.updated_at
-            })));
+             const { data, error } = await supabase.from('assets').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+            if (error) {
+                console.error("Error refetching assets after update:", error);
+            } else if (data) {
+                setAssets(data.map(mapAssetFromDb));
+            }
         } else {
-             const { data } = await supabase.from('liabilities').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-             if (data) setLiabilities(data.map((l: any) => ({
-                id: l.id,
-                name: l.name,
-                value: l.value,
-                notes: l.notes,
-                categoryKey: l.category,
-                userId: l.user_id,
-                createdAt: l.created_at,
-                updatedAt: l.updated_at
-             })));
+             const { data, error } = await supabase.from('liabilities').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+             if (error) {
+                console.error("Error refetching liabilities after update:", error);
+             } else if (data) {
+                setLiabilities(data.map(mapLiabilityFromDb));
+             }
         }
 
     }, [user, supabase, showToast]);

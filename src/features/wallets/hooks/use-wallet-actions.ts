@@ -34,7 +34,12 @@ export const useWalletActions = (user: User | null) => {
 
         if (walletData.isDefault === true) {
             // Unset other defaults
-            await supabase.from('wallets').update({ is_default: false }).eq('user_id', user.id);
+            const { error: unsetError } = await supabase.from('wallets').update({ is_default: false }).eq('user_id', user.id);
+            if (unsetError) {
+                console.error("Error unsetting other default wallets:", unsetError);
+                ui.showToast("Gagal mengubah dompet utama.", 'error');
+                return;
+            }
         }
         
         const updateData: any = { ...walletData };
@@ -56,7 +61,13 @@ export const useWalletActions = (user: User | null) => {
         if (!user) throw new Error("User not authenticated.");
         
         // Check transactions
-        const { count } = await supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('wallet_id', walletId);
+        const { count, error: countError } = await supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('wallet_id', walletId);
+
+        if (countError) {
+            console.error("Error checking transactions before wallet deletion:", countError);
+            ui.showToast("Gagal memeriksa riwayat transaksi.", 'error');
+            return;
+        }
 
         if (count && count > 0) {
             ui.showToast("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');

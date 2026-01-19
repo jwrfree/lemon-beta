@@ -4,7 +4,18 @@ import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Goal, GoalInput } from '@/types/models';
+import type { Goal, GoalInput, GoalRow } from '@/types/models';
+
+const mapGoalFromDb = (g: GoalRow): Goal => ({
+    id: g.id,
+    name: g.name,
+    targetAmount: g.target_amount,
+    currentAmount: g.current_amount,
+    targetDate: g.target_date,
+    icon: g.icon,
+    userId: g.user_id,
+    createdAt: g.created_at
+});
 
 export const useGoals = () => {
     const { user } = useApp();
@@ -31,17 +42,7 @@ export const useGoals = () => {
                 console.error("Error fetching goals:", error);
                 showToast("Gagal memuat target keuangan.", 'error');
             } else if (data) {
-                const mappedGoals = data.map((g: any) => ({
-                    id: g.id,
-                    name: g.name,
-                    targetAmount: g.target_amount,
-                    currentAmount: g.current_amount,
-                    targetDate: g.target_date,
-                    icon: g.icon,
-                    userId: g.user_id,
-                    createdAt: g.created_at
-                }));
-                setGoals(mappedGoals);
+                setGoals(data.map(mapGoalFromDb));
             }
             setIsLoading(false);
         };

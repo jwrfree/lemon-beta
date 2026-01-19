@@ -46,9 +46,8 @@ export const QuickAddWidget = () => {
                 amount: parsedData.amount,
                 description: parsedData.description,
                 category: parsedData.category,
-                subCategory: parsedData.subCategory || '',
                 walletId: wallet?.id || '',
-                date: new Date(parsedData.date),
+                date: new Date(parsedData.date).toISOString(),
                 type: parsedData.type as 'income' | 'expense'
             });
 
