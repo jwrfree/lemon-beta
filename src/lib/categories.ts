@@ -1,5 +1,5 @@
 
-import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft, ReceiptText, ShieldCheck, Sparkles, HandCoins } from 'lucide-react';
+import { Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, Wrench, Briefcase, Gift, PiggyBank, Handshake, LucideIcon, ArrowRightLeft, ReceiptText, ShieldCheck, Sparkles, HandCoins, Heart, Baby } from 'lucide-react';
 
 export interface Category {
   id: string;
@@ -94,9 +94,25 @@ export const categories: Categories = {
       id: 'cat-e-12', 
       name: 'Perawatan Diri', 
       icon: Sparkles, 
-      color: 'text-pink-600 dark:text-pink-500', 
-      bgColor: 'bg-pink-100 dark:bg-pink-900/50',
+      color: 'text-fuchsia-600 dark:text-fuchsia-500', 
+      bgColor: 'bg-fuchsia-100 dark:bg-fuchsia-900/50',
       subCategories: ['Skincare', 'Potong Rambut', 'Perawatan Tubuh', 'Makeup']
+    },
+    {
+      id: 'cat-e-14',
+      name: 'Keluarga',
+      icon: Baby,
+      color: 'text-violet-600 dark:text-violet-500',
+      bgColor: 'bg-violet-100 dark:bg-violet-900/50',
+      subCategories: ['Perlengkapan Anak', 'Uang Saku', 'Dukungan Orang Tua', 'Mainan']
+    },
+    {
+      id: 'cat-e-15',
+      name: 'Donasi & Sosial',
+      icon: Heart,
+      color: 'text-rose-500 dark:text-rose-400',
+      bgColor: 'bg-rose-100 dark:bg-rose-900/50',
+      subCategories: ['Zakat', 'Sedekah', 'Sumbangan', 'Kondangan']
     },
     {
       id: 'cat-e-11',
@@ -120,7 +136,7 @@ export const categories: Categories = {
       icon: Wrench,
       color: 'text-stone-600 dark:text-stone-500', 
       bgColor: 'bg-stone-100 dark:bg-stone-900/50',
-      subCategories: ['Anak', 'Hewan Peliharaan', 'Donasi/Sedekah', 'Pajak', 'Biaya Admin Bank', 'Kebutuhan Kerja']
+      subCategories: ['Hewan Peliharaan', 'Pajak', 'Biaya Admin Bank', 'Kebutuhan Kerja', 'Lainnya']
     },
   ],
   income: [

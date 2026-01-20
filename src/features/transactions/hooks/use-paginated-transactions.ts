@@ -27,30 +27,10 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
     // Debounce search query to avoid rapid fetching
     const debouncedSearchQuery = useDebounce(filters.searchQuery, 500);
 
-    // Reset and fetch when filters change
-    useEffect(() => {
-        if (!user) return;
-        
-        setPage(0);
-        setHasMore(true);
-        setTransactions([]); // Clear current list to show loading state or empty state correctly
-        fetchTransactions(0, true);
-        
-        // Cleanup function to abort request on unmount or dependency change
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        };
-    }, [
-        user, 
-        debouncedSearchQuery, 
-        filters.type, 
-        JSON.stringify(filters.category), 
-        JSON.stringify(filters.walletId)
-    ]);
+    const categoriesJson = JSON.stringify(filters.category);
+    const walletsJson = JSON.stringify(filters.walletId);
 
-    const fetchTransactions = async (pageIndex: number, isReset: boolean = false) => {
+    const fetchTransactions = useCallback(async (pageIndex: number, isReset: boolean = false) => {
         if (!user) return;
         
         // Abort previous request if exists
@@ -149,7 +129,25 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
                 }
             }
         }
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, debouncedSearchQuery, filters.type, categoriesJson, walletsJson, supabase]);
+
+    // Reset and fetch when filters change
+    useEffect(() => {
+        if (!user) return;
+        
+        setPage(0);
+        setHasMore(true);
+        setTransactions([]); // Clear current list to show loading state or empty state correctly
+        fetchTransactions(0, true);
+        
+        // Cleanup function to abort request on unmount or dependency change
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, [user, fetchTransactions]);
 
     const loadMore = useCallback(() => {
         if (!isLoading && hasMore) {
@@ -157,7 +155,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
             setPage(nextPage);
             fetchTransactions(nextPage);
         }
-    }, [isLoading, hasMore, page]);
+    }, [isLoading, hasMore, page, fetchTransactions]);
 
     return {
         transactions,

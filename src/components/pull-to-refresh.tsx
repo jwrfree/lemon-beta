@@ -23,66 +23,62 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
 
   const PULL_THRESHOLD = 80;
   const MAX_PULL = 120;
-  const isAtTop = () => {
-    if (!containerRef.current) return true;
-    return containerRef.current.scrollTop <= 0;
-  };
-
-  const handleTouchStart = (e: TouchEvent) => {
-    if (!isAtTop()) return;
-    startY.current = e.touches[0].clientY;
-    isPulling.current = true;
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isPulling.current || isRefreshing) return;
-
-    const currentY = e.touches[0].clientY;
-    const distance = currentY - startY.current;
-
-    if (distance > 0 && isAtTop()) {
-      e.preventDefault();
-      const pullAmount = Math.min(distance * 0.5, MAX_PULL);
-      setPullDistance(pullAmount);
-    }
-  };
-
-  const handleTouchEnd = async () => {
-    if (!isPulling.current || isRefreshing) return;
-
-    isPulling.current = false;
-
-    if (pullDistance >= PULL_THRESHOLD) {
-      setIsRefreshing(true);
-      try {
-        await onRefresh();
-      } finally {
-        setIsRefreshing(false);
-        setPullDistance(0);
-      }
-    } else {
-      setPullDistance(0);
-    }
-  };
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleTouchStartCallback = handleTouchStart;
-    const handleTouchMoveCallback = handleTouchMove;
-    const handleTouchEndCallback = handleTouchEnd;
+    const isAtTop = () => {
+      if (!containerRef.current) return true;
+      return containerRef.current.scrollTop <= 0;
+    };
 
-    container.addEventListener('touchstart', handleTouchStartCallback, { passive: true });
-    container.addEventListener('touchmove', handleTouchMoveCallback, { passive: false });
-    container.addEventListener('touchend', handleTouchEndCallback);
+    const handleTouchStart = (e: TouchEvent) => {
+      if (!isAtTop()) return;
+      startY.current = e.touches[0].clientY;
+      isPulling.current = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isPulling.current || isRefreshing) return;
+
+      const currentY = e.touches[0].clientY;
+      const distance = currentY - startY.current;
+
+      if (distance > 0 && isAtTop()) {
+        e.preventDefault();
+        const pullAmount = Math.min(distance * 0.5, MAX_PULL);
+        setPullDistance(pullAmount);
+      }
+    };
+
+    const handleTouchEnd = async () => {
+      if (!isPulling.current || isRefreshing) return;
+
+      isPulling.current = false;
+
+      if (pullDistance >= PULL_THRESHOLD) {
+        setIsRefreshing(true);
+        try {
+          await onRefresh();
+        } finally {
+          setIsRefreshing(false);
+          setPullDistance(0);
+        }
+      } else {
+        setPullDistance(0);
+      }
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd);
 
     return () => {
-      container.removeEventListener('touchstart', handleTouchStartCallback);
-      container.removeEventListener('touchmove', handleTouchMoveCallback);
-      container.removeEventListener('touchend', handleTouchEndCallback);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
     };
-  }, []); // Empty dependency array since we want this to run only once
+  }, [onRefresh, pullDistance, isRefreshing]);
 
   const refreshProgress = Math.min(pullDistance / PULL_THRESHOLD, 1);
 

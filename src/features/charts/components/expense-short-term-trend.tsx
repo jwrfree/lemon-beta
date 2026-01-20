@@ -60,9 +60,6 @@ export const ExpenseShortTermTrend = () => {
             <CardHeader className="space-y-4">
                 <div className="flex flex-col gap-1">
                     <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tren Pengeluaran</CardTitle>
-                    <CardDescription className="text-sm font-medium text-foreground">
-                        Analisis harian {chartLength} hari terakhir.
-                    </CardDescription>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <div className="flex items-center rounded-full bg-muted/60 p-1">

@@ -80,7 +80,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   damping: 25,
                 }}
                 role="button"
-                aria-pressed={isActive ? "true" : "false"}
+                aria-pressed={isActive}
                 aria-label={isActive ? `${wallet.name}, dompet aktif` : `Pilih dompet ${wallet.name}`}
                 tabIndex={isActive ? 0 : -1}
                 onKeyDown={(event) => {
@@ -140,7 +140,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             onClick={() => setActiveIndex(i)}
             className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label={`Pilih dompet ${wallet.name}`}
-            aria-pressed={i === activeIndex ? "true" : "false"}
+            aria-pressed={i === activeIndex}
           >
             <span
               className={cn(

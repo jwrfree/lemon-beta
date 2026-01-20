@@ -51,19 +51,12 @@ export const DashboardChart = ({ data }: DashboardChartProps) => {
                 <BarChart data={data} barCategoryGap={2}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                     <XAxis 
-                        dataKey="date" 
+                        dataKey="label" 
                         stroke="hsl(var(--muted-foreground))" 
                         fontSize={12} 
                         tickLine={false} 
                         axisLine={false} 
                         minTickGap={30}
-                        tickFormatter={(value) => {
-                            try {
-                                return format(parseISO(value), 'd MMM', { locale: dateFnsLocaleId });
-                            } catch (e) {
-                                return value;
-                            }
-                        }}
                     />
                     <YAxis 
                         stroke="hsl(var(--muted-foreground))" 
@@ -73,8 +66,22 @@ export const DashboardChart = ({ data }: DashboardChartProps) => {
                         tickFormatter={(value) => `Rp${(value / 1000000).toFixed(0)}jt`}
                     />
                     <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                    <Bar dataKey="income" fill="hsl(var(--green-500))" radius={[4, 4, 0, 0]} stackId="a" maxBarSize={52} className="fill-green-500" />
-                    <Bar dataKey="expense" fill="hsl(var(--red-500))" radius={[4, 4, 0, 0]} stackId="a" maxBarSize={52} className="fill-red-500" />
+                    <Bar 
+                        dataKey="income" 
+                        fill="hsl(var(--green-500))" 
+                        radius={[4, 4, 0, 0]} 
+                        maxBarSize={52} 
+                        className="fill-green-500" 
+                        isAnimationActive={false}
+                    />
+                    <Bar 
+                        dataKey="expense" 
+                        fill="hsl(var(--red-500))" 
+                        radius={[4, 4, 0, 0]} 
+                        maxBarSize={52} 
+                        className="fill-red-500" 
+                        isAnimationActive={false}
+                    />
                 </BarChart>
             </ResponsiveContainer>
         </div>

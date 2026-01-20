@@ -1,5 +1,7 @@
 import type {Config} from 'tailwindcss';
 
+import animate from 'tailwindcss-animate';
+
 const colorSafelist = [
   'yellow', 'blue', 'purple', 'cyan', 'orange', 'pink', 'green', 'indigo', 'red', 'teal', 'stone'
 ].flatMap((color) => [
@@ -112,5 +114,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [animate],
 } satisfies Config;

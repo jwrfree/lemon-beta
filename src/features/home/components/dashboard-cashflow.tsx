@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { format, eachDayOfInterval, subDays, differenceInCalendarDays, startOfDay, startOfMonth } from 'date-fns';
+import { format, eachDayOfInterval, subDays, differenceInCalendarDays, startOfDay, startOfMonth, subMonths, eachMonthOfInterval, endOfMonth, isSameMonth, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,35 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
     }, [chartRange, now]);
 
     const chartData = useMemo(() => {
+        // Handle monthly aggregation for '90' days (3 months) view
+        if (chartRange === '90') {
+            const months = eachMonthOfInterval({
+                start: subMonths(now, 2), // Current month + 2 previous months
+                end: now
+            });
+
+            return months.map(month => {
+                const monthStr = format(month, 'MMM', { locale: dateFnsLocaleId });
+                const monthTx = transactions.filter(t => isSameMonth(parseISO(t.date), month));
+                
+                const income = monthTx
+                    .filter(t => t.type === 'income')
+                    .reduce((acc, t) => acc + t.amount, 0);
+                    
+                const expense = monthTx
+                    .filter(t => t.type === 'expense')
+                    .reduce((acc, t) => acc + t.amount, 0);
+
+                return {
+                    label: monthStr,
+                    date: format(month, 'yyyy-MM'), // Keep for uniqueness if needed
+                    income,
+                    expense
+                };
+            });
+        }
+
+        // Daily aggregation for 'month' and '30' days view
         const days = eachDayOfInterval({
             start: subDays(now, chartRangeDays),
             end: now
@@ -61,7 +90,7 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
                 expense: data.expense,
             };
         });
-    }, [transactions, chartRangeDays, now]);
+    }, [transactions, chartRange, chartRangeDays, now]);
 
     return (
         <Card className="col-span-4 border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">

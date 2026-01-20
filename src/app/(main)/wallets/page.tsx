@@ -16,14 +16,12 @@ export default function WalletsPage() {
   const { setIsWalletModalOpen } = useUI();
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const activeWallet = wallets.length > 0 ? wallets[activeIndex] : null;
+  // Derive the effectively active index (clamped to range)
+  const safeActiveIndex = wallets.length > 0 
+    ? Math.min(activeIndex, wallets.length - 1) 
+    : 0;
 
-  // Clamp active index when wallet list changes
-  useEffect(() => {
-    if (activeIndex > wallets.length - 1) {
-      setActiveIndex(wallets.length > 0 ? wallets.length - 1 : 0);
-    }
-  }, [wallets, activeIndex]);
+  const activeWallet = wallets.length > 0 ? wallets[safeActiveIndex] : null;
 
   return (
     <div className="flex flex-col bg-muted h-full">
@@ -58,7 +56,7 @@ export default function WalletsPage() {
               <div className="h-64 pt-4 flex-shrink-0 bg-muted">
                  <WalletCardStack 
                     wallets={wallets} 
-                    activeIndex={activeIndex} 
+                    activeIndex={safeActiveIndex} 
                     setActiveIndex={setActiveIndex} 
                 />
               </div>
@@ -104,7 +102,7 @@ export default function WalletsPage() {
           ) : (
             <DesktopWalletView 
               wallets={wallets} 
-              activeIndex={activeIndex} 
+              activeIndex={safeActiveIndex} 
               setActiveIndex={setActiveIndex} 
             />
           )}

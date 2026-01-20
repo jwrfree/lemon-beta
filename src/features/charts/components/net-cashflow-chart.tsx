@@ -127,9 +127,9 @@ export const NetCashflowChart = () => {
         : null;
 
     const legendItems = [
-        { key: 'income' as const, label: 'Pemasukan' },
-        { key: 'expense' as const, label: 'Pengeluaran' },
-        { key: 'net' as const, label: 'Arus Kas' },
+        { key: 'income' as const, label: 'Pemasukan', colorClass: 'bg-[var(--color-income)]' },
+        { key: 'expense' as const, label: 'Pengeluaran', colorClass: 'bg-[var(--color-expense)]' },
+        { key: 'net' as const, label: 'Arus Kas', colorClass: 'bg-[var(--color-net)]' },
     ];
 
     const renderBreakdown = (
@@ -200,11 +200,7 @@ export const NetCashflowChart = () => {
                         <div className="flex items-center gap-3">
                             {legendItems.map((item) => (
                                 <div key={item.key} className="flex items-center gap-1.5">
-                                    <span
-                                        className="h-2 w-2 rounded-full"
-                                        // Tailwind doesn't support dynamic arbitrary values with template literals at build time
-                                        style={{ backgroundColor: `var(--color-${item.key})` }}
-                                    />
+                                    <span className={cn("h-2 w-2 rounded-full", item.colorClass)} />
                                     <span>{item.label}</span>
                                 </div>
                             ))}
@@ -220,20 +216,22 @@ export const NetCashflowChart = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                    <div className="col-span-2 rounded-2xl bg-background/40 p-4 shadow-inner border-l-4 border-primary">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Net</p>
-                        <p className={cn('text-xl font-extrabold', filteredTotals.net >= 0 ? 'text-success' : 'text-destructive')}>
-                            {formatCurrency(filteredTotals.net)}
-                        </p>
-                        <p className="text-[11px] font-bold text-muted-foreground/70 mt-1 uppercase tracking-tighter">{summaryFootnote}</p>
+                    <div className="col-span-2 rounded-3xl bg-primary/[0.03] border border-primary/10 p-6">
+                        <div className="flex flex-col gap-1">
+                            <p className="text-xs font-bold uppercase tracking-widest text-primary/70">Total Net</p>
+                            <p className={cn('text-3xl font-black tracking-tight', filteredTotals.net >= 0 ? 'text-success' : 'text-destructive')}>
+                                {formatCurrency(filteredTotals.net)}
+                            </p>
+                            <p className="text-[11px] font-bold text-muted-foreground/60 mt-1 uppercase tracking-tight">{summaryFootnote}</p>
+                        </div>
                     </div>
-                    <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
+                    <div className="rounded-3xl bg-muted/30 p-5 border border-border/50">
                         <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Pemasukan</p>
-                        <p className="text-base font-extrabold text-foreground">{formatCurrency(filteredTotals.income)}</p>
+                        <p className="text-xl font-extrabold text-foreground tracking-tight">{formatCurrency(filteredTotals.income)}</p>
                     </div>
-                    <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
+                    <div className="rounded-3xl bg-muted/30 p-5 border border-border/50">
                         <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Pengeluaran</p>
-                        <p className="text-base font-extrabold text-foreground">{formatCurrency(filteredTotals.expense)}</p>
+                        <p className="text-xl font-extrabold text-foreground tracking-tight">{formatCurrency(filteredTotals.expense)}</p>
                     </div>
                 </div>
 
@@ -241,12 +239,12 @@ export const NetCashflowChart = () => {
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="space-y-4 rounded-3xl bg-primary/[0.03] border border-primary/10 p-5"
+                        className="space-y-6 rounded-3xl bg-primary/[0.03] border border-primary/10 p-4 md:p-6"
                     >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="space-y-0.5">
-                                <p className="text-[11px] font-bold uppercase tracking-widest text-primary/70">Fokus Bulan</p>
-                                <p className="text-lg font-extrabold text-foreground tracking-tight">{selectedMonthData.fullLabel}</p>
+                                <p className="text-xs font-bold uppercase tracking-widest text-primary/70">Fokus Bulan</p>
+                                <p className="text-xl font-extrabold text-foreground tracking-tight">{selectedMonthData.fullLabel}</p>
                             </div>
                             <Badge
                                 className={cn(
@@ -260,7 +258,7 @@ export const NetCashflowChart = () => {
                             </Badge>
                         </div>
 
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
                                     <p className="text-[11px] font-bold uppercase tracking-widest text-success/70">Pemasukan</p>

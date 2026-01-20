@@ -23,17 +23,14 @@ interface BalanceVisibilityProviderProps {
 }
 
 export const BalanceVisibilityProvider: React.FC<BalanceVisibilityProviderProps> = ({ children }) => {
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
-
-  // Load preference from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('balanceVisibility');
-    if (saved !== null) {
-      setIsBalanceVisible(JSON.parse(saved));
+  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('balanceVisibility');
+      return saved !== null ? JSON.parse(saved) : true;
     }
-  }, []);
+    return true;
+  });
 
-  // Save preference to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('balanceVisibility', JSON.stringify(isBalanceVisible));
   }, [isBalanceVisible]);

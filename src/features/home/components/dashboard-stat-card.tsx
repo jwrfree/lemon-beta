@@ -21,7 +21,7 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, h
         <Card className="hover:shadow-md transition-all duration-300 h-full border-none bg-card/50 backdrop-blur-sm group rounded-3xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
                 <CardTitle className="text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground">{title}</CardTitle>
-                <div className={cn("p-1.5 rounded-xl bg-muted group-hover:scale-110 transition-transform", color.replace('text-', 'bg-').replace('500', '500/10'))}>
+                <div className={cn("p-1.5 rounded-xl bg-muted group-hover:scale-110 transition-transform", color.replace('text-', 'bg-') + '/10')}>
                     <Icon className={cn("h-3.5 w-3.5", color)} />
                 </div>
             </CardHeader>
