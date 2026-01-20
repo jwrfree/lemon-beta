@@ -215,7 +215,7 @@ export default function SettingsPage() {
 
                         {/* RIGHT COLUMN: DATA MANAGEMENT GRID */}
                         <div className="md:col-span-2 space-y-3">
-                            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground px-1">Manajemen Data</h3>
+                            <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground px-1">Manajemen Data</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {managementItems.map((item) => (
                                     <motion.button

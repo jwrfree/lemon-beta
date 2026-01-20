@@ -94,7 +94,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full p-3 shadow-lg"
+              className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-md rounded-full p-3 shadow-lg"
               style={{ 
                 transform: `translateY(${Math.max(pullDistance - 40, 0)}px) scale(${0.8 + refreshProgress * 0.4})`,
                 rotate: isRefreshing ? 360 : refreshProgress * 180

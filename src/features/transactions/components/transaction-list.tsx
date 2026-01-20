@@ -129,7 +129,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                     return acc;
                 }, {})).map(([date, transactionsForDay]) => (
                     <div key={date}>
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 px-2">
+                        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2 px-2">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
                         <div className="space-y-2">

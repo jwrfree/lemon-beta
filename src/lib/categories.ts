@@ -118,8 +118,8 @@ export const categories: Categories = {
       id: 'cat-e-9',
       name: 'Lain-lain',
       icon: Wrench,
-      color: 'text-gray-600 dark:text-gray-500', 
-      bgColor: 'bg-gray-100 dark:bg-gray-900/50',
+      color: 'text-stone-600 dark:text-stone-500', 
+      bgColor: 'bg-stone-100 dark:bg-stone-900/50',
       subCategories: ['Anak', 'Hewan Peliharaan', 'Donasi/Sedekah', 'Pajak', 'Biaya Admin Bank', 'Kebutuhan Kerja']
     },
   ],
@@ -160,8 +160,8 @@ export const categories: Categories = {
       id: 'cat-i-4',
       name: 'Lain-lain',
       icon: Handshake,
-      color: 'text-gray-600 dark:text-gray-500',
-      bgColor: 'bg-gray-100 dark:bg-gray-900/50',
+      color: 'text-stone-600 dark:text-stone-500',
+      bgColor: 'bg-stone-100 dark:bg-stone-900/50',
       subCategories: ['Hadiah Uang', 'Penjualan Barang']
     },
     {
@@ -178,8 +178,8 @@ export const categories: Categories = {
       id: 'cat-t-1', 
       name: 'Transfer', 
       icon: ArrowRightLeft, 
-      color: 'text-slate-600 dark:text-slate-500', 
-      bgColor: 'bg-slate-100 dark:bg-slate-900/50'
+      color: 'text-stone-600 dark:text-stone-500', 
+      bgColor: 'bg-stone-100 dark:bg-stone-900/50'
     },
   ]
 };
@@ -189,8 +189,8 @@ const defaultCategory: Category = {
   id: 'default', 
   name: 'Lain-lain', 
   icon: Wrench, 
-  color: 'text-gray-600 dark:text-gray-500', 
-  bgColor: 'bg-gray-100 dark:bg-gray-900/50',
+  color: 'text-stone-600 dark:text-stone-500', 
+  bgColor: 'bg-stone-100 dark:bg-stone-900/50',
 };
 
 export const categoryDetails = (name: string): Category => {

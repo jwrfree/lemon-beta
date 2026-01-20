@@ -5,8 +5,8 @@
 
 @layer base {
   :root {
-    --background: 220 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 28 14% 96%;
+    --foreground: 24 10% 10%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
@@ -62,29 +62,27 @@
     --red-600: 0 84% 56%;
     --teal-500: 168 76% 42%;
     --teal-600: 170 81% 37%;
-    --gray-500: 220 9% 46%;
-    --gray-600: 220 9% 40%;
-    --slate-500: 220 13% 47%;
-    --slate-600: 220 14% 40%;
+    --stone-500: 27 9% 52%;
+    --stone-600: 26 8% 41%;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 94%;
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 94%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 94%;
+    --background: 24 10% 10%;
+    --foreground: 30 14% 97%;
+    --card: 24 10% 10%;
+    --card-foreground: 30 14% 97%;
+    --popover: 24 10% 10%;
+    --popover-foreground: 30 14% 97%;
     --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 60%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --primary-foreground: 30 14% 97%;
+    --secondary: 24 6% 21%;
+    --secondary-foreground: 30 14% 97%;
+    --muted: 24 6% 21%;
+    --muted-foreground: 28 10% 68%;
+    --accent: 24 6% 21%;
+    --accent-foreground: 30 14% 97%;
     --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 30 14% 97%;
     
     /* Semantic Success/Income - Optimized for Dark Mode (emerald-400 equivalent) */
     --success: 158 64% 52%;
@@ -93,8 +91,8 @@
     /* Overlays */
     --overlay: 0 0% 0% / 0.7;
     
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --border: 24 6% 21%;
+    --input: 24 6% 21%;
     --ring: 217 91% 60%;
 
     /* Chart Colors */
@@ -125,8 +123,8 @@
     --red-600: 0 84% 56%;
     --teal-500: 168 76% 42%;
     --teal-600: 170 81% 37%;
-    --gray-500: 220 9% 46%;
-    --gray-600: 220 9% 40%;
+    --stone-500: 27 9% 52%;
+    --stone-600: 26 8% 41%;
     --slate-500: 220 13% 47%;
     --slate-600: 220 14% 40%;
   }

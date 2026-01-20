@@ -19,7 +19,7 @@ export const PlaceholderContent = ({
                 <Icon className="h-8 w-8" strokeWidth={1.5} />
             </div>
             <div className="space-y-2">
-                <h3 className="text-lg font-semibold">{label}</h3>
+                <h3 className="text-lg font-medium">{label}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                     {text ||
                         `Data untuk analisis ${label.toLowerCase()} akan muncul di sini setelah Anda mencatat transaksi.`}

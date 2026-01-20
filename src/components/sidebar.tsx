@@ -1,11 +1,11 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, PieChart, Plus, HandCoins, LogOut, Settings, Wallet, Bell, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, PieChart, Plus, HandCoins, LogOut, Settings, Wallet, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
@@ -15,8 +15,7 @@ import { BalanceVisibilityToggle } from './balance-visibility-toggle';
 export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useApp();
-    const { setIsTxModalOpen } = useUI();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const { setIsTxModalOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
 
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
@@ -28,79 +27,130 @@ export const Sidebar = () => {
     ];
 
     return (
-        <div className={`hidden md:flex flex-col ${isCollapsed ? 'w-16' : 'w-64'} h-full border-r bg-card/50 backdrop-blur-sm p-4 gap-4 sticky top-0 transition-all duration-300`}>
-            <div className="flex items-center justify-between px-3 py-4">
-                <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : ''}`}>
-                    <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                        <span className="text-primary-foreground font-bold text-lg">L</span>
+        <div
+            className={cn(
+                'hidden md:flex flex-col h-full fixed top-0 left-0 z-50 border-r transition-all duration-300 backdrop-blur-xl',
+                'bg-gradient-to-b from-primary/10 via-card/70 to-background',
+                isSidebarCollapsed ? 'w-16 px-2 py-4 gap-3' : 'w-64 p-4 gap-4'
+            )}
+        >
+            <div className={cn('flex items-center justify-between', isSidebarCollapsed ? 'px-1' : 'px-3 py-4')}>
+                <div className={cn('flex items-center gap-3', isSidebarCollapsed && 'justify-center')}>
+                    <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-md shadow-primary/30 flex items-center justify-center">
+                        <span className="text-primary-foreground font-semibold text-lg tracking-tight">L</span>
                     </div>
-                    {!isCollapsed && <h1 className="text-xl font-bold tracking-tight">Lemon</h1>}
+                    {!isSidebarCollapsed && (
+                        <div className="leading-tight">
+                            <p className="text-base font-semibold tracking-tight">Lemon</p>
+                            <p className="text-xs text-muted-foreground uppercase tracking-[0.18em]">Beta</p>
+                        </div>
+                    )}
                 </div>
+            </div>
+
+            <div className="space-y-2">
+                <p className={cn('text-[11px] uppercase tracking-[0.24em] text-muted-foreground px-1', isSidebarCollapsed && 'sr-only')}>
+                    Aksi Cepat
+                </p>
                 <Button
-                    variant="ghost"
+                    onClick={() => setIsTxModalOpen(true)}
+                    className={cn(
+                        'shadow-lg shadow-primary/20 active:scale-95 transition-all bg-gradient-to-r from-primary to-primary/80 text-primary-foreground',
+                        isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-xl'
+                    )}
                     size="lg"
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="h-11 w-11 p-0 hover:bg-muted rounded-lg focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                    aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 >
-                    {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+                    <Plus className="h-5 w-5" />
+                    {!isSidebarCollapsed && "Catat Transaksi"}
                 </Button>
             </div>
 
-            <Button 
-                onClick={() => setIsTxModalOpen(true)} 
-                className={`${isCollapsed ? 'w-11 h-11 p-0 justify-center' : 'w-full gap-2'} shadow-lg hover:shadow-primary/20 transition-all active:scale-95`} 
-                size={isCollapsed ? "lg" : "lg"}
-            >
-                <Plus className="h-5 w-5" />
-                {!isCollapsed && "Catat Transaksi"}
-            </Button>
-
-            <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar">
+            <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar" aria-label="Navigasi utama">
+                <p className={cn('text-[11px] uppercase tracking-[0.24em] text-muted-foreground px-1', isSidebarCollapsed && 'sr-only')}>
+                    Jelajah
+                </p>
                 {navItems.map((item) => {
                     const isActive = pathname.startsWith(item.href);
                     return (
                         <Link
                             key={item.id}
                             href={item.href}
+                            aria-current={isActive ? 'page' : undefined}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group relative min-h-11",
-                                isCollapsed ? 'justify-center px-2' : 'px-3',
-                                isActive 
-                                    ? "bg-primary/10 text-primary" 
-                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all relative overflow-hidden min-h-11',
+                                isSidebarCollapsed ? 'justify-center px-0' : 'px-3',
+                                isActive
+                                    ? 'text-primary-foreground bg-gradient-to-r from-primary to-primary/80 shadow-md shadow-primary/20 ring-1 ring-primary/20'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                             )}
                         >
-                            {isActive && !isCollapsed && (
-                                <motion.div
-                                    layoutId="sidebar-active"
-                                    className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                />
+                            <motion.span
+                                layoutId="sidebar-active"
+                                className={cn(
+                                    'absolute left-2 h-6 w-1 rounded-full bg-primary/80',
+                                    !isActive && 'opacity-0'
+                                )}
+                                initial={false}
+                                animate={{ opacity: isActive && !isSidebarCollapsed ? 1 : 0 }}
+                                transition={{ type: 'spring', stiffness: 220, damping: 24 }}
+                            />
+                            <span
+                                className={cn(
+                                    'flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
+                                    isActive
+                                        ? 'bg-white/20 text-primary-foreground'
+                                        : 'bg-muted/70 text-muted-foreground group-hover:text-foreground'
+                                )}
+                            >
+                                <item.icon className="h-5 w-5" />
+                            </span>
+                            {!isSidebarCollapsed && (
+                                <span className="truncate">{item.name}</span>
                             )}
-                            <item.icon className={cn("h-6 w-6", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
-                            {!isCollapsed && item.name}
                         </Link>
                     );
                 })}
             </nav>
 
-            <div className="mt-auto border-t pt-4 space-y-1">
-                <BalanceVisibilityToggle 
-                    variant="ghost" 
-                    className={`${isCollapsed ? 'w-11 h-11 p-0 justify-center' : 'w-full justify-start gap-3'} text-muted-foreground`} 
-                    showLabel={!isCollapsed}
-                />
-                <Button 
-                    variant="ghost" 
-                    className={`${isCollapsed ? 'w-11 h-11 p-0 justify-center' : 'w-full justify-start gap-3'} text-muted-foreground hover:text-destructive hover:bg-destructive/10`}
+            <div className="mt-auto border-t pt-4 space-y-3">
+                <div
+                    className={cn(
+                        'flex items-center',
+                        isSidebarCollapsed ? 'flex-col gap-2' : 'gap-2'
+                    )}
+                >
+                    <BalanceVisibilityToggle
+                        variant="ghost"
+                        className={cn(
+                            'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-xl',
+                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'flex-1 justify-start gap-3'
+                        )}
+                        showLabel={!isSidebarCollapsed}
+                    />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                        className={cn(
+                            'h-10 w-10 p-0 rounded-lg hover:bg-primary/10 focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                            isSidebarCollapsed ? 'w-11 h-11 rounded-full' : ''
+                        )}
+                        aria-label={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
+                    >
+                        {isSidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+                    </Button>
+                </div>
+                <Button
+                    variant="ghost"
+                    className={cn(
+                        'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl',
+                        isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3'
+                    )}
                     onClick={handleSignOut}
-                    size={isCollapsed ? "lg" : "default"}
+                    size={isSidebarCollapsed ? "lg" : "default"}
                 >
                     <LogOut className="h-6 w-6" />
-                    {!isCollapsed && "Keluar"}
+                    {!isSidebarCollapsed && "Keluar"}
                 </Button>
             </div>
         </div>

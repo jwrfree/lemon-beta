@@ -47,8 +47,7 @@ const colorOptions = [
     { name: 'Indigo', color: 'text-indigo-600', bg: 'bg-indigo-100' },
     { name: 'Red', color: 'text-red-600', bg: 'bg-red-100' },
     { name: 'Teal', color: 'text-teal-600', bg: 'bg-teal-100' },
-    { name: 'Gray', color: 'text-gray-600', bg: 'bg-gray-100' },
-    { name: 'Slate', color: 'text-slate-600', bg: 'bg-slate-100' },
+    { name: 'Stone', color: 'text-stone-600', bg: 'bg-stone-100' },
 ];
 
 interface CategoryFormProps {
@@ -61,8 +60,8 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
     const [name, setName] = useState(initialData?.name || '');
     const [type, setType] = useState<'expense' | 'income'>(initialData?.type || 'expense');
     const [selectedIcon, setSelectedIcon] = useState(initialData?.icon || 'Wrench');
-    const [selectedColor, setSelectedColor] = useState(initialData?.color || 'text-gray-600');
-    const [selectedBg, setSelectedBg] = useState(initialData?.bg_color || 'bg-gray-100');
+    const [selectedColor, setSelectedColor] = useState(initialData?.color || 'text-stone-600');
+    const [selectedBg, setSelectedBg] = useState(initialData?.bg_color || 'bg-stone-100');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {

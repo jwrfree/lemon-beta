@@ -1,7 +1,7 @@
 import type {Config} from 'tailwindcss';
 
 const colorSafelist = [
-  'yellow', 'blue', 'purple', 'cyan', 'orange', 'pink', 'green', 'indigo', 'red', 'teal', 'gray', 'slate'
+  'yellow', 'blue', 'purple', 'cyan', 'orange', 'pink', 'green', 'indigo', 'red', 'teal', 'stone'
 ].flatMap((color) => [
   `text-${color}-600`, `dark:text-${color}-500`,
   `bg-${color}-100`, `dark:bg-${color}-900/50`,
@@ -77,8 +77,7 @@ export default {
         indigo: { '500': 'hsl(var(--indigo-500))', '600': 'hsl(var(--indigo-600))' },
         red: { '500': 'hsl(var(--red-500))', '600': 'hsl(var(--red-600))' },
         teal: { '500': 'hsl(var(--teal-500))', '600': 'hsl(var(--teal-600))' },
-        gray: { '500': 'hsl(var(--gray-500))', '600': 'hsl(var(--gray-600))' },
-        slate: { '500': 'hsl(var(--slate-500))', '600': 'hsl(var(--slate-600))' },
+        stone: { '500': 'hsl(var(--stone-500))', '600': 'hsl(var(--stone-600))' },
       },
       borderRadius: {
         lg: 'var(--radius)',

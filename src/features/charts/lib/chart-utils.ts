@@ -55,7 +55,7 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
         
         // Education & Work
         'Pendidikan': 'hsl(var(--teal-600))',
-        'Kantor': 'hsl(var(--gray-500))',
+        'Kantor': 'hsl(var(--stone-500))',
         
         // Finance
         'Investasi': 'hsl(var(--emerald-500))',

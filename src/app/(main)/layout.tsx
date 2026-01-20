@@ -73,6 +73,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         setIsDebtPaymentModalOpen,
         debtForPayment,
         setDebtForPayment,
+        isSidebarCollapsed,
     } = useUI();
 
     const { deleteTransaction } = useApp();
@@ -119,7 +120,10 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     return (
         <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">
             <Sidebar />
-            <div className="flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden">
+            <div className={cn(
+                "flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden transition-all duration-300",
+                isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
+            )}>
                 <div 
                     ref={containerRef}
                     className={cn(

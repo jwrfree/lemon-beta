@@ -85,7 +85,7 @@ export default function ChartsPage() {
             </header>
 
             <main className="flex-1 overflow-y-auto" {...handlers}>
-                <div className="sticky top-0 z-20 border-b bg-background/95 p-4 backdrop-blur">
+                <div className="sticky top-0 z-20 border-b bg-background/95 p-4 md:py-2 backdrop-blur">
                     <div className="max-w-6xl mx-auto w-full">
                         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                             <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 rounded-full bg-muted/80 p-1">

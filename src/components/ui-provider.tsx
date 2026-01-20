@@ -69,6 +69,9 @@ interface UIContextType {
     setDebtForPayment: (debt: Debt | null) => void;
     openDebtPaymentModal: (debt: Debt) => void;
 
+    isSidebarCollapsed: boolean;
+    setIsSidebarCollapsed: (isCollapsed: boolean) => void;
+
     toastState: ToastState;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
     hideToast: () => void;
@@ -105,8 +108,13 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [debtToEdit, setDebtToEdit] = useState<Debt | null>(null);
     const [isDebtPaymentModalOpen, setIsDebtPaymentModalOpen] = useState(false);
     const [debtForPayment, setDebtForPayment] = useState<Debt | null>(null);
-
-    const [toastState, setToastState] = useState<ToastState>({ show: false, message: '', type: 'info' });
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    
+    const [toastState, setToastState] = useState<ToastState>({
+        show: false,
+        message: '',
+        type: 'info'
+    });
 
     const showToast = (message: string, type: 'success' | 'error' | 'info') => {
         setToastState({ show: true, message, type });
@@ -211,6 +219,8 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         debtForPayment,
         setDebtForPayment,
         openDebtPaymentModal,
+        isSidebarCollapsed,
+        setIsSidebarCollapsed,
         toastState,
         showToast,
         hideToast,

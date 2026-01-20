@@ -68,7 +68,7 @@ const BudgetCard = ({ budget }: { budget: any }) => {
                                 <CategoryIcon className={cn("h-5 w-5", color)} />
                             </div>
                             <div>
-                                <h3 className="font-bold text-sm tracking-tight">{budget.name}</h3>
+                                <h3 className="font-medium text-sm tracking-tight">{budget.name}</h3>
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{budget.categories.length} Kategori</p>
                             </div>
                         </div>

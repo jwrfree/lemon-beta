@@ -162,7 +162,7 @@ export default function HomePage() {
                         </motion.div>
                     </motion.header>
                     <main className="flex-1 p-4 space-y-6">
-                    <Card className="backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/5">
+                    <Card className="backdrop-blur-md bg-white/80 dark:bg-stone-900/80 border-white/20 dark:border-stone-700/30 shadow-lg shadow-primary/5">
                         <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
@@ -257,7 +257,7 @@ export default function HomePage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.1 * index }}
                                         >
-                                            <Card className="flex-shrink-0 w-48 backdrop-blur-md bg-white/60 dark:bg-gray-800/60 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/10 interactive-element">
+                                            <Card className="flex-shrink-0 w-48 backdrop-blur-md bg-white/60 dark:bg-stone-800/60 border-white/20 dark:border-stone-700/30 shadow-lg shadow-primary/10 interactive-element">
                                                 <CardContent className="p-4">
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <Icon className={cn('h-6 w-6 text-muted-foreground')} />
@@ -318,7 +318,7 @@ export default function HomePage() {
                                 Lihat Semua
                             </Button>
                         </div>
-                        <Card className="p-4 space-y-3 backdrop-blur-md bg-white/60 dark:bg-gray-800/60 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/10">
+                        <Card className="p-4 space-y-3 backdrop-blur-md bg-white/60 dark:bg-stone-800/60 border-white/20 dark:border-stone-700/30 shadow-lg shadow-primary/10">
                             <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
                                     <p className="text-muted-foreground text-xs mb-1">Saya Berhutang</p>
