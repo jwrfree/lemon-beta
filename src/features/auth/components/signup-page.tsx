@@ -168,7 +168,7 @@ export const SignUpPage = ({
         <Wrapper {...pageProps}>
             <MotionWrapper {...contentProps}>
                 <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
-                    <h2 id="signup-heading" className="text-xl font-bold">Buat Akun Baru</h2>
+                    <h2 id="signup-heading" className="text-xl font-semibold">Buat Akun Baru</h2>
                     {!isPage && (
                         <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
                             <X className="h-5 w-5" />
@@ -246,7 +246,7 @@ export const SignUpPage = ({
                                             <FormControl>
                                                 <Input type={showConfirmPassword ? "text" : "password"} id="signup-confirm-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
-                                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-pressed={showConfirmPassword} aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi password' : 'Tampilkan konfirmasi password'}>
+                                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi password' : 'Tampilkan konfirmasi password'}>
                                                 {showConfirmPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
                                             </button>
                                         </div>

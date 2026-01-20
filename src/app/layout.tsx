@@ -18,10 +18,6 @@ export const metadata: Metadata = {
   description: "Take control of your finances with Lemon.",
   applicationName: "Lemon",
   manifest: "/manifest.webmanifest",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#2563eb" },
-    { media: "(prefers-color-scheme: dark)", color: "#1e3a8a" },
-  ],
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

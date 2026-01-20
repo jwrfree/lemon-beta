@@ -24,8 +24,15 @@ import { QuickAddWidget } from '@/features/home/components/quick-add-widget';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PullToRefresh } from '@/components/pull-to-refresh';
+import { config } from '@/lib/config';
 
 export default function HomePage() {
+    const homeUi = config.ui?.home;
+    const walletPreviewLimit = homeUi?.walletPreviewLimit ?? 5;
+    const remindersPastDays = homeUi?.upcomingRemindersPastDays ?? 1;
+    const remindersForwardDays = homeUi?.upcomingRemindersForwardDays ?? 7;
+    const recentTransactionsLimit = homeUi?.recentTransactionsLimit ?? 5;
+
     const { wallets, transactions, isLoading: isDataLoading } = useData();
     const { debts, isLoading: isDebtLoading } = useDebts();
     const { reminders, isLoading: isReminderLoading } = useReminders();
@@ -55,7 +62,7 @@ export default function HomePage() {
                 if (reminder.status === 'completed' || !reminder.dueDate) return false;
                 const due = parseISO(reminder.dueDate);
                 const days = differenceInCalendarDays(due, nowDate);
-                return days >= -1 && days <= 7;
+                return days >= -remindersPastDays && days <= remindersForwardDays;
             })
             .sort((a, b) => {
                 const aDue = a.dueDate ? new Date(a.dueDate).getTime() : Number.MAX_SAFE_INTEGER;
@@ -63,7 +70,7 @@ export default function HomePage() {
                 return aDue - bDue;
             })
             .slice(0, 3);
-    }, [reminders]);
+    }, [reminders, remindersPastDays, remindersForwardDays]);
 
     const debtSummary = useMemo(() => {
         let owed = 0;
@@ -248,7 +255,7 @@ export default function HomePage() {
                             <div className="text-muted-foreground text-sm">Kamu belum punya dompet.</div>
                         ) : (
                             <div className="flex gap-3 overflow-x-auto pb-2 wallet-scroll-container">
-                                {wallets.slice(0, 5).map((wallet, index) => {
+                                {wallets.slice(0, walletPreviewLimit).map((wallet, index) => {
                                     const { Icon } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                                     return (
                                         <motion.div
@@ -346,7 +353,7 @@ export default function HomePage() {
                                 Lihat Semua
                             </Button>
                         </div>
-                        <TransactionList limit={5} />
+                        <TransactionList limit={recentTransactionsLimit} />
                     </div>
                     </main>
                 </PullToRefresh>

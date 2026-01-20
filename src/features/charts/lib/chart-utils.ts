@@ -25,54 +25,27 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
     });
 
     // Define diverse color schemes for different categories
-    const categoryColors = {
-        // Food & Dining
-        'Makanan': 'hsl(var(--yellow-500))',
-        'Minuman': 'hsl(var(--yellow-600))',
-        
-        // Shopping & Retail
-        'Belanja': 'hsl(var(--blue-500))',
-        'Fashion': 'hsl(var(--purple-500))',
-        'Elektronik': 'hsl(var(--cyan-500))',
-        'Hobi': 'hsl(var(--pink-500))',
-        
-        // Transportation
-        'Transportasi': 'hsl(var(--indigo-500))',
-        'Bensin': 'hsl(var(--indigo-600))',
-        
-        // Bills & Utilities
-        'Tagihan': 'hsl(var(--orange-500))',
-        'Listrik': 'hsl(var(--orange-600))',
-        'Internet': 'hsl(var(--teal-500))',
-        
-        // Entertainment
-        'Hiburan': 'hsl(var(--pink-600))',
-        'Game': 'hsl(var(--purple-600))',
-        
-        // Health & Wellness
-        'Kesehatan': 'hsl(var(--green-500))',
-        'Olahraga': 'hsl(var(--green-600))',
-        
-        // Education & Work
-        'Pendidikan': 'hsl(var(--teal-600))',
-        'Kantor': 'hsl(var(--stone-500))',
-        
-        // Finance
-        'Investasi': 'hsl(var(--emerald-500))',
-        'Asuransi': 'hsl(var(--emerald-600))',
-        
-        // Default fallback
-        'default': 'hsl(var(--primary))'
+    const getCategoryColor = (name: string, colorClass: string) => {
+        // Extract color name from class like 'text-yellow-600'
+        const match = colorClass.match(/text-([a-z]+)-/);
+        if (match && match[1]) {
+            return `hsl(var(--${match[1]}-500))`;
+        }
+        return 'hsl(var(--primary))';
     };
 
     const chartData = Object.entries(categoryMap)
         .map(([name, value]) => {
             const details = categoryDetails(name);
+            const fill = getCategoryColor(name, details.color);
+            
             return {
                 name,
                 value,
                 icon: details.icon,
-                fill: categoryColors[name as keyof typeof categoryColors] || categoryColors.default,
+                fill,
+                categoryColor: details.color,
+                categoryBgColor: details.bgColor,
                 percentage: total > 0 ? (value / total) * 100 : 0,
             };
         })

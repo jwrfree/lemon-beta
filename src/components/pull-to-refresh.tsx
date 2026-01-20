@@ -23,12 +23,15 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
 
   const PULL_THRESHOLD = 80;
   const MAX_PULL = 120;
+  const isAtTop = () => {
+    if (!containerRef.current) return true;
+    return containerRef.current.scrollTop <= 0;
+  };
 
   const handleTouchStart = (e: TouchEvent) => {
-    if (window.scrollY === 0) {
-      startY.current = e.touches[0].clientY;
-      isPulling.current = true;
-    }
+    if (!isAtTop()) return;
+    startY.current = e.touches[0].clientY;
+    isPulling.current = true;
   };
 
   const handleTouchMove = (e: TouchEvent) => {
@@ -37,7 +40,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     const currentY = e.touches[0].clientY;
     const distance = currentY - startY.current;
 
-    if (distance > 0 && window.scrollY === 0) {
+    if (distance > 0 && isAtTop()) {
       e.preventDefault();
       const pullAmount = Math.min(distance * 0.5, MAX_PULL);
       setPullDistance(pullAmount);

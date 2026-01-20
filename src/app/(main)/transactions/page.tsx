@@ -6,10 +6,9 @@ import { Search, X, ListFilter } from 'lucide-react';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useData } from '@/hooks/use-data';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -170,15 +169,28 @@ const TransactionsPageContent = () => {
                 </Sheet>
             </header>
             
-            <div className="p-4 flex flex-col gap-3 bg-background border-b z-10 shrink-0">
-                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="all">Semua</TabsTrigger>
-                        <TabsTrigger value="expense">Pengeluaran</TabsTrigger>
-                        <TabsTrigger value="income">Pemasukan</TabsTrigger>
-                        <TabsTrigger value="debt">Hutang</TabsTrigger>
-                    </TabsList>
-                </Tabs>
+            <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
+                <div className="w-full">
+                    <div className="grid w-full grid-cols-4 h-10 items-center justify-center rounded-md bg-stone-100 dark:bg-stone-800 p-1 text-muted-foreground">
+                        {[
+                            { value: 'all', label: 'Semua' },
+                            { value: 'expense', label: 'Pengeluaran' },
+                            { value: 'income', label: 'Pemasukan' },
+                            { value: 'debt', label: 'Hutang' }
+                        ].map((tab) => (
+                            <button
+                                key={tab.value}
+                                onClick={() => handleTabChange(tab.value)}
+                                className={cn(
+                                    "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                    activeTab === tab.value ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
+                                )}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
                 
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap items-center gap-2">

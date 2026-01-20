@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUI } from '@/components/ui-provider';
+import { cn } from '@/lib/utils';
 
 interface AssetLiabilityFormProps {
   onClose: () => void;
@@ -106,12 +106,28 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             </div>
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {!isEditMode && (
-                    <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="asset">Aset</TabsTrigger>
-                            <TabsTrigger value="liability">Liabilitas</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
+                    <div className="grid w-full grid-cols-2 h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
+                        <button
+                            type="button"
+                            onClick={() => handleTypeChange('asset')}
+                            className={cn(
+                                "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                type === 'asset' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
+                            )}
+                        >
+                            Aset
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleTypeChange('liability')}
+                            className={cn(
+                                "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                type === 'liability' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
+                            )}
+                        >
+                            Liabilitas
+                        </button>
+                    </div>
                 )}
 
                 <div className="space-y-2">

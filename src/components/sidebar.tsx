@@ -115,29 +115,37 @@ export const Sidebar = () => {
             <div className="mt-auto border-t pt-4 space-y-3">
                 <div
                     className={cn(
-                        'flex items-center',
-                        isSidebarCollapsed ? 'flex-col gap-2' : 'gap-2'
+                        'flex flex-col items-center rounded-xl bg-accent/60',
+                        isSidebarCollapsed ? 'gap-2 p-2' : 'gap-2 p-3'
                     )}
                 >
                     <BalanceVisibilityToggle
                         variant="ghost"
                         className={cn(
                             'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-xl',
-                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'flex-1 justify-start gap-3'
+                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3'
                         )}
                         showLabel={!isSidebarCollapsed}
                     />
                     <Button
                         variant="ghost"
-                        size="icon"
+                        size={isSidebarCollapsed ? 'icon' : 'default'}
                         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                         className={cn(
-                            'h-10 w-10 p-0 rounded-lg hover:bg-primary/10 focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                            isSidebarCollapsed ? 'w-11 h-11 rounded-full' : ''
+                            'rounded-lg hover:bg-primary/10 focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                            isSidebarCollapsed ? 'w-11 h-11 p-0 rounded-full' : 'w-full justify-start gap-2 px-3'
                         )}
                         aria-label={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
+                        title={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
                     >
-                        {isSidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+                        {isSidebarCollapsed ? (
+                            <ChevronRight className="h-5 w-5" />
+                        ) : (
+                            <>
+                                <ChevronLeft className="h-5 w-5" />
+                                <span className="text-sm font-medium">Ciutkan</span>
+                            </>
+                        )}
                     </Button>
                 </div>
                 <Button

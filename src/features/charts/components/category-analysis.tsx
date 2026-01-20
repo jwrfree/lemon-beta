@@ -7,7 +7,7 @@ import { useData } from '@/hooks/use-data';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig } from '@/components/ui/chart';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { groupTransactionsByCategory, getMonthlyTransactions } from '../lib/chart-utils';
 import { PlaceholderContent } from './placeholder-content';
@@ -91,11 +91,11 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex flex-1 items-center gap-3">
                                         <div
-                                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl"
-                                            style={{
-                                                background: `linear-gradient(135deg, ${item.fill} 0%, ${item.fill}dd 50%, ${item.fill}aa 100%)`,
-                                                boxShadow: `0 4px 12px ${item.fill}33`,
-                                            }}
+                                            className={cn(
+                                                "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm transition-all duration-300 group-hover:scale-110",
+                                                item.categoryBgColor,
+                                                item.categoryColor
+                                            )}
                                         >
                                             {IconComponent ? <IconComponent className="h-5 w-5" /> : null}
                                         </div>

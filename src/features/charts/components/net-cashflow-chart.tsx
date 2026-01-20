@@ -196,8 +196,7 @@ export const NetCashflowChart = () => {
                 </div>
 
                 <div className="space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
-                        <span>Ketuk grafik untuk rincian</span>
+                    <div className="flex flex-wrap items-center justify-end gap-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
                         <div className="flex items-center gap-3">
                             {legendItems.map((item) => (
                                 <div key={item.key} className="flex items-center gap-1.5">

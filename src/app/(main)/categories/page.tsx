@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
 import { Input } from '@/components/ui/input';
@@ -90,18 +89,31 @@ export default function CategoriesPage() {
 
             <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full space-y-6">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="w-full md:w-auto">
-                        <TabsList className="grid grid-cols-2 w-full md:w-[300px] rounded-xl">
-                            <TabsTrigger value="expense" className="rounded-lg font-bold text-xs uppercase tracking-wider">Pengeluaran</TabsTrigger>
-                            <TabsTrigger value="income" className="rounded-lg font-bold text-xs uppercase tracking-wider">Pemasukan</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
+                    <div className="w-full md:w-auto">
+                        <div className="grid grid-cols-2 w-full md:w-[300px] h-10 items-center justify-center rounded-xl bg-stone-100 dark:bg-stone-800 p-1 text-muted-foreground">
+                            {[
+                                { value: 'expense', label: 'Pengeluaran' },
+                                { value: 'income', label: 'Pemasukan' }
+                            ].map((tab) => (
+                                <button
+                                    key={tab.value}
+                                    onClick={() => setActiveTab(tab.value as 'expense' | 'income')}
+                                    className={cn(
+                                        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                        activeTab === tab.value ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
+                                    )}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
                     <div className="relative w-full md:w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input 
                             placeholder="Cari kategori..." 
-                            className="pl-9 rounded-xl bg-background border-none shadow-sm h-11 font-medium"
+                            className="pl-9 rounded-xl bg-background shadow-sm h-11 font-medium"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />

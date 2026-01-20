@@ -124,7 +124,7 @@ export const ExpenseTrendChart = ({
                         />
                     }
                 />
-                <Bar dataKey="total" radius={[8, 8, 4, 4]}>
+                <Bar dataKey="total" radius={[8, 8, 4, 4]} maxBarSize={52}>
                     {filteredData.map((item) => (
                         <Cell
                             key={item.key}
@@ -182,6 +182,7 @@ export const MonthlyBarChart = ({ data, gradientId: propsGradientId, sectionLabe
                     fill={`url(#${gradientId})`} 
                     radius={[6, 6, 4, 4]}
                     strokeWidth={0}
+                    maxBarSize={52}
                 />
             </RechartsBarChart>
         </ChartContainer>
@@ -236,7 +237,7 @@ export const NetCashflowComposedChart = ({
                     />
                 }
             />
-            <Bar dataKey="income" radius={[6, 6, 4, 4]} maxBarSize={26}>
+            <Bar dataKey="income" radius={[6, 6, 4, 4]} maxBarSize={36}>
                 {filteredData.map((item) => (
                     <Cell
                         key={`${item.key}-income`}
@@ -245,7 +246,7 @@ export const NetCashflowComposedChart = ({
                     />
                 ))}
             </Bar>
-            <Bar dataKey="expense" radius={[6, 6, 4, 4]} maxBarSize={26}>
+            <Bar dataKey="expense" radius={[6, 6, 4, 4]} maxBarSize={36}>
                 {filteredData.map((item) => (
                     <Cell
                         key={`${item.key}-expense`}

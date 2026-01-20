@@ -7,15 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
-import { format, formatDistanceToNow, isBefore, parseISO, addDays } from 'date-fns';
+import { format, formatDistanceToNow, isBefore, parseISO, addDays, isSameDay, startOfDay, differenceInCalendarDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarClock, Clock, Clock3, Check, ChevronLeft, Plus, BellRing } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { CalendarClock, Clock, Clock3, Check, ChevronLeft, Plus, BellRing, EllipsisVertical, Filter, Calendar } from 'lucide-react';
+import { formatCurrency, cn } from '@/lib/utils';
 import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const statusLabels: Record<string, string> = {
     all: 'Semua',
@@ -47,6 +47,7 @@ export default function RemindersPage() {
 
     const [activeTab, setActiveTab] = useState('upcoming');
     const [search, setSearch] = useState('');
+    const [range, setRange] = useState<'week' | '30'>('week');
 
     const sortedReminders = useMemo<Reminder[]>(() => {
         return [...reminders].sort((a, b) => {
@@ -57,13 +58,33 @@ export default function RemindersPage() {
     }, [reminders]);
 
     const filteredReminders = useMemo(() => {
+        const now = startOfDay(new Date());
+        const forwardDays = range === 'week' ? 7 : 30;
+
         return sortedReminders.filter((reminder: Reminder) => {
             const status = getReminderStatus(reminder);
             const matchesStatus = activeTab === 'all' || status === activeTab;
             const matchesSearch = reminder.title.toLowerCase().includes(search.toLowerCase());
-            return matchesStatus && matchesSearch;
+            const withinRange = reminder.dueDate
+                ? (() => {
+                    const diff = differenceInCalendarDays(parseISO(reminder.dueDate), now);
+                    return diff >= -1 && diff <= forwardDays;
+                  })()
+                : true;
+            return matchesStatus && matchesSearch && withinRange;
         });
-    }, [sortedReminders, activeTab, search]);
+    }, [sortedReminders, activeTab, search, range]);
+
+    const groupedByDate = useMemo(() => {
+        const groups: Record<string, Reminder[]> = {};
+        filteredReminders.forEach(reminder => {
+            const key = reminder.dueDate ? startOfDay(parseISO(reminder.dueDate)).toISOString() : 'no-date';
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(reminder);
+        });
+        return Object.entries(groups)
+            .sort(([a], [b]) => (a === 'no-date' ? 1 : b === 'no-date' ? -1 : new Date(a).getTime() - new Date(b).getTime()));
+    }, [filteredReminders]);
 
     const handleComplete = async (reminder: Reminder) => {
         try {
@@ -112,169 +133,436 @@ export default function RemindersPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
-                    <ChevronLeft className="h-5 w-5" />
-                    <span className="sr-only">Kembali</span>
-                </Button>
-                <h1 className="text-xl font-bold flex-1 text-center pr-10">Pengingat</h1>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                        setReminderToEdit(null);
-                        setIsReminderModalOpen(true);
-                    }}
-                    className="shrink-0"
-                >
-                    <Plus className="h-6 w-6" />
-                    <span className="sr-only">Tambah Pengingat</span>
-                </Button>
+            <header className="sticky top-0 z-20 border-b bg-background">
+                {/* Mobile header */}
+                <div className="md:hidden flex h-16 items-center gap-2 px-4">
+                    <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
+                        <ChevronLeft className="h-5 w-5" />
+                        <span className="sr-only">Kembali</span>
+                    </Button>
+                    <div className="flex-1 flex items-center justify-center gap-2">
+                        <h1 className="text-lg font-semibold">Pengingat</h1>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                            setReminderToEdit(null);
+                            setIsReminderModalOpen(true);
+                        }}
+                        className="shrink-0"
+                        aria-label="Tambah pengingat"
+                    >
+                        <Plus className="h-6 w-6" />
+                    </Button>
+                </div>
+                {/* Desktop header */}
+                <div className="hidden md:flex h-16 items-center justify-between px-6">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-xl font-semibold">Pengingat</h1>
+                        <Badge className="bg-destructive/10 text-destructive">
+                            Terlambat: {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
+                        </Badge>
+                        <Badge className="bg-primary/10 text-primary">
+                            Segera: {reminders.filter(r => {
+                                if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
+                                const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
+                                return diff >= 0 && diff <= 7;
+                            }).length}
+                        </Badge>
+                    </div>
+                    <Button
+                        onClick={() => {
+                            setReminderToEdit(null);
+                            setIsReminderModalOpen(true);
+                        }}
+                    >
+                        Tambah Pengingat
+                    </Button>
+                </div>
             </header>
             <main className="flex-1 overflow-y-auto">
-                <div className="p-4 space-y-6">
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                                <BellRing className="h-5 w-5 text-primary" />
-                                Ringkasan Pengingat
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <p className="text-muted-foreground">Total</p>
-                                <p className="text-lg font-semibold">{reminders.length}</p>
-                            </div>
-                            <div>
-                                <p className="text-muted-foreground">Jatuh tempo minggu ini</p>
-                                <p className="text-lg font-semibold">
-                                    {
-                                        reminders.filter(reminder => {
-                                            if (!reminder.dueDate) return false;
-                                            const due = parseISO(reminder.dueDate);
-                                            const now = new Date();
-                                            const diff = Math.abs(due.getTime() - now.getTime());
-                                            const sevenDays = 7 * 24 * 60 * 60 * 1000;
-                                            return diff <= sevenDays && getReminderStatus(reminder) !== 'completed';
-                                        }).length
-                                    }
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <div className="space-y-3">
-                        <Input
-                            placeholder="Cari pengingat..."
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                        />
-                        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                            <TabsList className="grid w-full grid-cols-5">
+                <div className="p-4 md:p-6 grid md:grid-cols-[2fr_1fr] gap-4 md:gap-6 pb-24 md:pb-6">
+                    <div className="space-y-4">
+                        {/* Mobile chip filters */}
+                        <div className="md:hidden space-y-3">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar px-1">
                                 {Object.entries(statusLabels).map(([key, label]) => (
-                                    <TabsTrigger key={key} value={key} className="text-xs">
+                                    <button
+                                        key={key}
+                                        onClick={() => setActiveTab(key)}
+                                        className={cn(
+                                            "inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium border",
+                                            activeTab === key ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border"
+                                        )}
+                                    >
                                         {label}
-                                    </TabsTrigger>
+                                    </button>
                                 ))}
-                            </TabsList>
-                        </Tabs>
-                    </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="grid w-full grid-cols-2 h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
+                                    <button
+                                        onClick={() => setRange('week')}
+                                        className={cn(
+                                            "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                            range === 'week' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
+                                        )}
+                                    >
+                                        Minggu ini
+                                    </button>
+                                    <button
+                                        onClick={() => setRange('30')}
+                                        className={cn(
+                                            "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                            range === '30' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
+                                        )}
+                                    >
+                                        30 hari
+                                    </button>
+                                </div>
+                                <Button
+                                    size="icon"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setReminderToEdit(null);
+                                        setIsReminderModalOpen(true);
+                                    }}
+                                    aria-label="Tambah pengingat"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <Input
+                                placeholder="Cari pengingat..."
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                            />
+                        </div>
 
-                    <div className="space-y-3">
-                        {filteredReminders.length === 0 ? (
-                            <Card className="p-6 text-center text-sm text-muted-foreground">
-                                Belum ada pengingat pada kategori ini.
-                            </Card>
-                        ) : (
-                            filteredReminders.map(reminder => {
-                                const status = getReminderStatus(reminder);
-                                const dueDate = reminder.dueDate ? parseISO(reminder.dueDate) : null;
-                                const linkedDebt: Debt | undefined = reminder.targetType === 'debt'
-                                    ? debts.find((debt: Debt) => debt.id === reminder.targetId)
-                                    : undefined;
+                        {/* Mobile simple list */}
+                        <div className="md:hidden space-y-3">
+                            {groupedByDate.length === 0 ? (
+                                <Card className="p-6 text-center text-sm text-muted-foreground">
+                                    Belum ada pengingat pada filter ini. <br />
+                                    <Button className="mt-3" size="sm" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
+                                        Buat Pengingat
+                                    </Button>
+                                </Card>
+                            ) : (
+                                groupedByDate.map(([dateKey, items]) => {
+                                    const isNoDate = dateKey === 'no-date';
+                                    const dateLabel = isNoDate
+                                        ? 'Tanpa tanggal'
+                                        : isSameDay(parseISO(dateKey), startOfDay(new Date()))
+                                            ? 'Hari ini'
+                                            : isSameDay(parseISO(dateKey), addDays(startOfDay(new Date()), 1))
+                                                ? 'Besok'
+                                                : format(parseISO(dateKey), 'EEEE, d MMM', { locale: dateFnsLocaleId });
+                                    return (
+                                        <div key={dateKey} className="space-y-2">
+                                            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground px-1">{dateLabel}</p>
+                                            {items.map(reminder => {
+                                                const status = getReminderStatus(reminder);
+                                                const dueDate = reminder.dueDate ? parseISO(reminder.dueDate) : null;
+                                                const linkedDebt: Debt | undefined = reminder.targetType === 'debt'
+                                                    ? debts.find((debt: Debt) => debt.id === reminder.targetId)
+                                                    : undefined;
+                                                return (
+                                                    <Card key={reminder.id} className="p-4">
+                                                        <div className="flex items-start gap-3">
+                                                            <div className={cn(
+                                                                "p-2 rounded-full",
+                                                                status === 'overdue' ? 'bg-destructive/10 text-destructive' :
+                                                                status === 'completed' ? 'bg-stone-200 text-stone-700' :
+                                                                status === 'snoozed' ? 'bg-amber-100 text-amber-700' :
+                                                                'bg-primary/10 text-primary'
+                                                            )}>
+                                                                <Clock className="h-5 w-5" />
+                                                            </div>
+                                                            <div className="flex-1 space-y-2">
+                                                                <div className="flex items-center justify-between gap-2">
+                                                                    <h2 className="font-semibold text-base">{reminder.title}</h2>
+                                                                    {renderStatusBadge(status)}
+                                                                </div>
+                                                                {dueDate && (
+                                                                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                        <CalendarClock className="h-4 w-4" />
+                                                                        {format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
+                                                                    </p>
+                                                                )}
+                                                                {linkedDebt && (
+                                                                    <p className="text-xs text-muted-foreground">
+                                                                        Terkait: {linkedDebt.title} ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
+                                                                    </p>
+                                                                )}
+                                                                {reminder.amount ? (
+                                                                    <p className="text-sm font-medium">{formatCurrency(reminder.amount)}</p>
+                                                                ) : null}
+                                                                {reminder.notes && (
+                                                                    <p className="text-xs text-muted-foreground">{reminder.notes}</p>
+                                                                )}
+                                                                <div className="flex items-center gap-2 pt-1">
+                                                                    {status !== 'completed' && (
+                                                                        <Button size="sm" variant="secondary" className="gap-1" onClick={() => handleComplete(reminder)}>
+                                                                            <Check className="h-4 w-4" /> Selesai
+                                                                        </Button>
+                                                                    )}
+                                                                    <DropdownMenu>
+                                                                        <DropdownMenuTrigger asChild>
+                                                                            <Button size="sm" variant="outline" className="px-2">
+                                                                                <EllipsisVertical className="h-4 w-4" />
+                                                                            </Button>
+                                                                        </DropdownMenuTrigger>
+                                                                        <DropdownMenuContent align="end">
+                                                                            {status !== 'completed' && dueDate && (
+                                                                                <>
+                                                                                    <DropdownMenuItem onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>
+                                                                                    <DropdownMenuItem onClick={() => handleSnooze(reminder, 3)}>Tunda 3 hari</DropdownMenuItem>
+                                                                                </>
+                                                                            )}
+                                                                            <DropdownMenuItem onClick={() => { setReminderToEdit(reminder); setIsReminderModalOpen(true); }}>
+                                                                                Edit
+                                                                            </DropdownMenuItem>
+                                                                            <DropdownMenuItem onClick={() => handleDelete(reminder)} className="text-destructive">
+                                                                                Hapus
+                                                                            </DropdownMenuItem>
+                                                                        </DropdownMenuContent>
+                                                                    </DropdownMenu>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Card>
+                                                );
+                                            })}
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
 
-                                return (
-                                    <Card key={reminder.id} className="p-4">
-                                        <div className="flex items-start gap-3">
-                                            <div className="p-2 rounded-full bg-primary/10">
-                                                <Clock className="h-5 w-5 text-primary" />
+                        {/* Desktop timeline */}
+                        <div className="hidden md:block space-y-4">
+                            {groupedByDate.length === 0 ? (
+                                <Card className="p-6 text-center text-sm text-muted-foreground">
+                                    Belum ada pengingat pada filter ini. <br />
+                                    <Button className="mt-3" size="sm" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
+                                        Buat Pengingat
+                                    </Button>
+                                </Card>
+                            ) : (
+                                groupedByDate.map(([dateKey, items]) => {
+                                    const isNoDate = dateKey === 'no-date';
+                                    const dateLabel = isNoDate
+                                        ? 'Tanpa tanggal'
+                                        : isSameDay(parseISO(dateKey), startOfDay(new Date()))
+                                            ? 'Hari ini'
+                                            : isSameDay(parseISO(dateKey), addDays(startOfDay(new Date()), 1))
+                                                ? 'Besok'
+                                                : format(parseISO(dateKey), 'EEEE, d MMM', { locale: dateFnsLocaleId });
+
+                                    return (
+                                        <div key={dateKey} className="relative pl-6">
+                                            <div className="absolute left-0 top-2 bottom-2 w-px bg-border" />
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <div className="h-2 w-2 rounded-full bg-primary" />
+                                                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{dateLabel}</p>
                                             </div>
-                                            <div className="flex-1 space-y-2">
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center justify-between gap-2">
-                                                        <h2 className="font-semibold text-base">{reminder.title}</h2>
-                                                        {renderStatusBadge(status)}
-                                                    </div>
-                                                    {dueDate && (
-                                                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                                            <CalendarClock className="h-4 w-4" />
-                                                            {format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
-                                                            <span>&bull;</span>
-                                                            {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
-                                                        </p>
-                                                    )}
-                                                    {linkedDebt && (
-                                                        <p className="text-xs text-muted-foreground">
-                                                            Terkait: {linkedDebt.title} ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
-                                                        </p>
-                                                    )}
-                                                    {reminder.amount ? (
-                                                        <p className="text-sm font-medium">{formatCurrency(reminder.amount)}</p>
-                                                    ) : null}
-                                                    {reminder.notes && (
-                                                        <p className="text-xs text-muted-foreground">{reminder.notes}</p>
-                                                    )}
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {status !== 'completed' && (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="secondary"
-                                                            className="gap-1"
-                                                            onClick={() => handleComplete(reminder)}
-                                                        >
-                                                            <Check className="h-4 w-4" /> Selesai
-                                                        </Button>
-                                                    )}
-                                                    {status !== 'completed' && dueDate && (
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="gap-1"
-                                                            onClick={() => handleSnooze(reminder)}
-                                                        >
-                                                            <Clock3 className="h-4 w-4" /> Tunda 1 hari
-                                                        </Button>
-                                                    )}
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="gap-1"
-                                                        onClick={() => {
-                                                            setReminderToEdit(reminder);
-                                                            setIsReminderModalOpen(true);
-                                                        }}
-                                                    >
-                                                        <Clock className="h-4 w-4" /> Edit
-                                                    </Button>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        className="text-destructive"
-                                                        onClick={() => handleDelete(reminder)}
-                                                    >
-                                                        Hapus
-                                                    </Button>
-                                                </div>
+                                            <div className="space-y-3">
+                                                {items.map(reminder => {
+                                                    const status = getReminderStatus(reminder);
+                                                    const dueDate = reminder.dueDate ? parseISO(reminder.dueDate) : null;
+                                                    const linkedDebt: Debt | undefined = reminder.targetType === 'debt'
+                                                        ? debts.find((debt: Debt) => debt.id === reminder.targetId)
+                                                        : undefined;
+                                                    return (
+                                                        <Card key={reminder.id} className="p-4 border-border/60">
+                                                            <div className="flex items-start gap-3">
+                                                                <div className={cn(
+                                                                    "p-2 rounded-full",
+                                                                    status === 'overdue' ? 'bg-destructive/10 text-destructive' :
+                                                                    status === 'completed' ? 'bg-stone-200 text-stone-700' :
+                                                                    status === 'snoozed' ? 'bg-amber-100 text-amber-700' :
+                                                                    'bg-primary/10 text-primary'
+                                                                )}>
+                                                                    <Clock className="h-5 w-5" />
+                                                                </div>
+                                                                <div className="flex-1 space-y-2">
+                                                                    <div className="flex flex-col gap-1">
+                                                                        <div className="flex items-center justify-between gap-2">
+                                                                            <h2 className="font-semibold text-base">{reminder.title}</h2>
+                                                                            {renderStatusBadge(status)}
+                                                                        </div>
+                                                                        {dueDate && (
+                                                                            <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                                                                <CalendarClock className="h-4 w-4" />
+                                                                                {format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
+                                                                                <span>&bull;</span>
+                                                                                {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
+                                                                            </p>
+                                                                        )}
+                                                                        {linkedDebt && (
+                                                                            <p className="text-xs text-muted-foreground">
+                                                                                Terkait: {linkedDebt.title} ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
+                                                                            </p>
+                                                                        )}
+                                                                        {reminder.amount ? (
+                                                                            <p className="text-sm font-medium">{formatCurrency(reminder.amount)}</p>
+                                                                        ) : null}
+                                                                        {reminder.notes && (
+                                                                            <p className="text-xs text-muted-foreground">{reminder.notes}</p>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-2">
+                                                                        {status !== 'completed' && (
+                                                                            <Button
+                                                                                size="sm"
+                                                                                variant="secondary"
+                                                                                className="gap-1"
+                                                                                onClick={() => handleComplete(reminder)}
+                                                                            >
+                                                                                <Check className="h-4 w-4" /> Selesai
+                                                                            </Button>
+                                                                        )}
+                                                                        <DropdownMenu>
+                                                                            <DropdownMenuTrigger asChild>
+                                                                                <Button size="sm" variant="outline" className="px-2">
+                                                                                    <EllipsisVertical className="h-4 w-4" />
+                                                                                </Button>
+                                                                            </DropdownMenuTrigger>
+                                                                            <DropdownMenuContent align="end">
+                                                                                {status !== 'completed' && dueDate && (
+                                                                                    <>
+                                                                                        <DropdownMenuItem onClick={() => handleSnooze(reminder, 1)}>
+                                                                                            Tunda 1 hari
+                                                                                        </DropdownMenuItem>
+                                                                                        <DropdownMenuItem onClick={() => handleSnooze(reminder, 3)}>
+                                                                                            Tunda 3 hari
+                                                                                        </DropdownMenuItem>
+                                                                                    </>
+                                                                                )}
+                                                                                <DropdownMenuItem onClick={() => {
+                                                                                    setReminderToEdit(reminder);
+                                                                                    setIsReminderModalOpen(true);
+                                                                                }}>
+                                                                                    Edit
+                                                                                </DropdownMenuItem>
+                                                                                <DropdownMenuItem onClick={() => handleDelete(reminder)} className="text-destructive">
+                                                                                    Hapus
+                                                                                </DropdownMenuItem>
+                                                                            </DropdownMenuContent>
+                                                                        </DropdownMenu>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </Card>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
-                                    </Card>
-                                );
-                            })
-                        )}
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Desktop sidebar filters */}
+                    <div className="hidden md:flex flex-col gap-4 sticky top-20 h-fit">
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                                    <Filter className="h-4 w-4 text-primary" /> Filter & Ringkasan
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <Input
+                                    placeholder="Cari pengingat..."
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                />
+                                <div className="flex flex-wrap gap-2">
+                                    {Object.entries(statusLabels).map(([key, label]) => (
+                                        <Button
+                                            key={key}
+                                            variant={activeTab === key ? "secondary" : "outline"}
+                                            size="sm"
+                                            onClick={() => setActiveTab(key)}
+                                        >
+                                            {label}
+                                        </Button>
+                                    ))}
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                        <Calendar className="h-4 w-4" /> Rentang waktu
+                                    </p>
+                                    <div className="grid grid-cols-2 p-1 bg-muted rounded-lg">
+                                        <button
+                                            onClick={() => setRange('week')}
+                                            className={cn(
+                                                "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                                range === 'week' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:bg-muted-foreground/10"
+                                            )}
+                                        >
+                                            Minggu ini
+                                        </button>
+                                        <button
+                                            onClick={() => setRange('30')}
+                                            className={cn(
+                                                "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                                range === '30' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:bg-muted-foreground/10"
+                                            )}
+                                        >
+                                            30 hari
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                    <div className="rounded-xl bg-destructive/10 text-destructive p-3">
+                                        <p className="text-xs text-destructive/80">Terlambat</p>
+                                        <p className="text-lg font-semibold">
+                                            {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
+                                        </p>
+                                    </div>
+                                    <div className="rounded-xl bg-primary/10 text-primary p-3">
+                                        <p className="text-xs text-primary/80">Segera</p>
+                                        <p className="text-lg font-semibold">
+                                            {reminders.filter(r => {
+                                                if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
+                                                const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
+                                                return diff >= 0 && diff <= 7;
+                                            }).length}
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-semibold">Aksi Cepat</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                                <Button className="w-full" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
+                                    Buat Pengingat
+                                </Button>
+                                <Button variant="outline" className="w-full" onClick={() => setActiveTab('overdue')}>
+                                    Lihat yang Terlambat
+                                </Button>
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </main>
+
+            {/* Mobile bottom bar */}
+            <div className="md:hidden sticky bottom-0 inset-x-0 bg-background/95 border-t p-3 flex items-center justify-between gap-2 pb-[max(0px,env(safe-area-inset-bottom))]">
+                <Button variant="outline" className="flex-1" onClick={() => setActiveTab('overdue')}>
+                    Terlambat
+                </Button>
+                <Button className="flex-1" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
+                    Tambah
+                </Button>
+            </div>
         </div>
     );
 }

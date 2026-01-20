@@ -1,24 +1,76 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, parseISO, isSameMonth, getDaysInMonth } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress as UIProgress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { PlaceholderContent } from './placeholder-content';
+import { generateFinancialInsight, FinancialData } from '@/ai/flows/generate-insight-flow';
 
 type TabValue = 'expense' | 'income' | 'net';
 
 export const MonthlySummary = ({ type }: { type: TabValue }) => {
-    const { transactions } = useData();
+    const { transactions, wallets } = useData();
     const router = useRouter();
+    const [aiInsight, setAiInsight] = useState<string | null>(null);
+    const [isAiLoading, setIsAiLoading] = useState(false);
+
+    const handleGenerateInsight = async () => {
+        setIsAiLoading(true);
+        try {
+            const now = new Date();
+            const currentMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), now));
+            
+            const monthlyIncome = currentMonthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((acc, t) => acc + t.amount, 0);
+
+            const monthlyExpense = currentMonthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((acc, t) => acc + t.amount, 0);
+
+            const totalBalance = wallets.reduce((acc, w) => acc + w.balance, 0);
+
+            // Calculate top categories
+            const categoryMap = new Map<string, number>();
+            currentMonthTransactions
+                .filter(t => t.type === 'expense')
+                .forEach(t => {
+                    const current = categoryMap.get(t.category) || 0;
+                    categoryMap.set(t.category, current + t.amount);
+                });
+            
+            const topExpenseCategories = Array.from(categoryMap.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([category, amount]) => ({ category, amount }));
+
+            const data: FinancialData = {
+                monthlyIncome,
+                monthlyExpense,
+                totalBalance,
+                topExpenseCategories,
+                recentTransactionsCount: currentMonthTransactions.length
+            };
+
+            const focus = type === 'expense' ? 'expense' : type === 'income' ? 'income' : 'net';
+            const result = await generateFinancialInsight(data, focus);
+            setAiInsight(result);
+        } catch (error) {
+            console.error("Failed to generate insight:", error);
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
 
     const summary = useMemo(() => {
         const now = new Date();
@@ -311,9 +363,31 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                     <div className="rounded-2xl bg-primary/10 p-3 text-primary shadow-sm">
                         <Sparkles className="h-5 w-5" />
                     </div>
-                    <div className="space-y-1">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-primary/70">Insight Lemon AI</p>
-                        <p className="text-sm font-medium leading-relaxed text-foreground/80">{summary.tipCopy}</p>
+                    <div className="space-y-1 flex-1">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[11px] font-bold uppercase tracking-widest text-primary/70">Insight Lemon AI</p>
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={handleGenerateInsight} 
+                                disabled={isAiLoading} 
+                                className="h-6 w-6 -mr-2 text-primary/60 hover:text-primary hover:bg-primary/10"
+                            >
+                                <RefreshCw className={cn("h-3.5 w-3.5", isAiLoading && "animate-spin")} />
+                            </Button>
+                        </div>
+                        <p className="text-sm font-medium leading-relaxed text-foreground/80">
+                            {isAiLoading ? "Sedang menganalisis keuanganmu..." : (aiInsight || summary.tipCopy)}
+                        </p>
+                        {!aiInsight && !isAiLoading && (
+                            <Button 
+                                variant="link" 
+                                onClick={handleGenerateInsight} 
+                                className="h-auto p-0 text-xs text-primary mt-1 font-semibold"
+                            >
+                                Analisis dengan AI ✨
+                            </Button>
+                        )}
                     </div>
                 </CardContent>
             </Card>

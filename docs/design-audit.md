@@ -27,7 +27,6 @@
 
 ## Sistem Desain & Konsistensi
 ### Palet Warna & Kontras
-- Skema utama: **Teal 600 (#008080)** sebagai warna aksen, **Kuning Lemon (#FDE047)** sebagai highlight, serta neutral abu `background`/`muted` yang menjaga keterbacaan.
 - Skema utama: **Teal 600 (#0D9488)** sebagai warna aksen modern, **Kuning Lemon (#FDE047)** sebagai highlight background, serta **Slate** sebagai neutral yang harmonis.
 - Semua teks utama memenuhi kontras AA (≥ 4.5:1). Komponen `Alert` destruktif & sukses menggunakan varian warna aksesibel (#DC2626 & #047857).
 - Token warna disusun per status (informasi, keberhasilan, peringatan) dan sudah dipetakan di Tailwind config untuk meminimalisir deviasi.

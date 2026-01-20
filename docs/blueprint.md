@@ -82,7 +82,12 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
 - **Gestur:** swipe down menutup bottom sheet; drag handle tersedia visualnya; long-press pada transaksi membuka konteks menu.
 
 ## 6. Visual System
-- **Warna:** Primary teal (#008080), secondary lemon (#FDE047), success (#047857), destructive (#DC2626). Token diekspos via CSS variable & Tailwind alias.
+- **Warna:**
+  - **Primary:** Teal 600 (#0D9488) untuk light mode; Teal 400 (#2DD4BF) untuk dark mode.
+  - **Secondary:** Lemon (#FDE047) untuk background; Yellow 600 (#CA8A04) untuk teks/ikon (kontras tinggi).
+  - **Functional:** Success (#059669), Destructive (#DC2626), Warning (#D97706).
+  - **Neutral:** Slate (Cool Gray) agar harmonis dengan Teal.
+  - Token diekspos via CSS variable & Tailwind alias.
 - **Tipografi:** Satoshi/Inter, skala 12–40 px, berat 400/500/600/700. Heading ≤ 64 karakter, paragraf ≤ 90 karakter untuk keterbacaan.
 - **Spacing:** basis 4 px; layout section 24–48 px; card gap 24 px; form vertical rhythm 16 px.
 - **Radius & elevation:** Card radius 16 px, modal 24–32 px, bottom sheet `rounded-t-2xl`; shadow lembut + border semi transparan untuk depth.

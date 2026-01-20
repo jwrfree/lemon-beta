@@ -64,6 +64,8 @@
     --teal-600: 170 81% 37%;
     --stone-500: 27 9% 52%;
     --stone-600: 26 8% 41%;
+    --slate-500: 27 9% 52%;
+    --slate-600: 26 8% 41%;
   }
 
   .dark {
@@ -125,8 +127,8 @@
     --teal-600: 170 81% 37%;
     --stone-500: 27 9% 52%;
     --stone-600: 26 8% 41%;
-    --slate-500: 220 13% 47%;
-    --slate-600: 220 14% 40%;
+    --slate-500: 27 9% 52%;
+    --slate-600: 26 8% 41%;
   }
 }
 
@@ -174,27 +176,8 @@
 }
 
 @layer components {
-  .bg-background {
-    @apply bg-white/80 dark:bg-slate-950/60 backdrop-blur-xl;
-  }
-  .bg-card {
-    @apply bg-white/60 dark:bg-gray-900/40 backdrop-blur-md;
-    @apply border border-white/30 dark:border-white/10;
-  }
-  .bg-muted {
-    @apply bg-white/70 dark:bg-slate-950/50 backdrop-blur-lg;
-  }
-   .bg-popover {
-    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg;
-    @apply border border-white/30 dark:border-white/20;
-   }
-   .border-b {
-    @apply border-white/20 dark:border-white/10;
-   }
-   .border-t {
-    @apply border-white/20 dark:border-white/10;
-   }
-   .sr-only {
+  /* Screen reader helper */
+  .sr-only {
     position: absolute;
     width: 1px;
     height: 1px;

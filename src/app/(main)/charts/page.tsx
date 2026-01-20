@@ -6,7 +6,7 @@ import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 // Extracted Components
 import { MonthlySummary } from '@/features/charts/components/monthly-summary';
@@ -87,19 +87,22 @@ export default function ChartsPage() {
             <main className="flex-1 overflow-y-auto" {...handlers}>
                 <div className="sticky top-0 z-20 border-b bg-background/95 p-4 md:py-2 backdrop-blur">
                     <div className="max-w-6xl mx-auto w-full">
-                        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 rounded-full bg-muted/80 p-1">
+                        <div className="w-full">
+                            <div className="grid w-full max-w-md mx-auto grid-cols-3 h-10 items-center justify-center rounded-full bg-muted/80 p-1">
                                 {tabs.map((tab) => (
-                                    <TabsTrigger
+                                    <button
                                         key={tab.value}
-                                        value={tab.value}
-                                        className="rounded-full text-sm font-semibold capitalize data-[state=active]:shadow-sm"
+                                        onClick={() => handleTabChange(tab.value)}
+                                        className={cn(
+                                            "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold capitalize ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+                                            activeTab === tab.value ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
+                                        )}
                                     >
                                         {tab.label}
-                                    </TabsTrigger>
+                                    </button>
                                 ))}
-                            </TabsList>
-                        </Tabs>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

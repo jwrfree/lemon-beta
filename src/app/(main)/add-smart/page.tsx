@@ -167,9 +167,9 @@ export default function SmartAddPage() {
                             ) : (
                                 <motion.div key="idle-input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                                     <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card h-14">
-                                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
-                                        <Button size="icon" variant="ghost" className="h-11 w-11 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()}><Paperclip className="h-5 w-5" /></Button>
-                                        <Textarea placeholder="Ketik atau rekam suara..." className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0" minRows={1} maxRows={5} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processInput(inputValue); } }} disabled={pageState !== 'IDLE'} />
+                                        <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" aria-label="Upload receipt image" />
+                                        <Button size="icon" variant="ghost" className="h-11 w-11 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()} aria-label="Attach file"><Paperclip className="h-5 w-5" /></Button>
+                                        <Textarea placeholder="Ketik atau rekam suara..." className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0" minRows={1} maxRows={5} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processInput(inputValue); } }} disabled={pageState !== 'IDLE'} aria-label="Transaction description input" />
                                         <div className="flex items-center">
                                             <AnimatePresence>
                                                 {pageState === 'ANALYZING' ? <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground mx-3" /> : (
