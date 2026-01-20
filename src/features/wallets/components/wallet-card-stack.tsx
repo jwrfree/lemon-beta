@@ -80,7 +80,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   damping: 25,
                 }}
                 role="button"
-                aria-pressed={isActive}
+                aria-pressed={isActive ? "true" : "false"}
                 aria-label={isActive ? `${wallet.name}, dompet aktif` : `Pilih dompet ${wallet.name}`}
                 tabIndex={isActive ? 0 : -1}
                 onKeyDown={(event) => {
@@ -102,7 +102,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                       <div className="flex items-start justify-between">
                            <div className="flex items-center gap-3">
                               <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
-                              <p className="font-semibold text-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.2)'}}>{wallet.name}</p>
+                              <p className="font-semibold text-lg drop-shadow-md">{wallet.name}</p>
                               {wallet.isDefault && (
                                 <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">
                                     Utama
@@ -122,7 +122,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                       </div>
 
                       <div className="flex-1 flex items-end">
-                          <p className={cn("text-3xl font-bold", textColor, !isBalanceVisible && 'blur-sm transition-all duration-300')} style={{textShadow: '1px 1px 3px rgba(0,0,0,0.3)'}}>
+                          <p className={cn("text-3xl font-bold drop-shadow-lg", textColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}>
                               {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
                           </p>
                       </div>
@@ -140,7 +140,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             onClick={() => setActiveIndex(i)}
             className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label={`Pilih dompet ${wallet.name}`}
-            aria-pressed={i === activeIndex}
+            aria-pressed={i === activeIndex ? "true" : "false"}
           >
             <span
               className={cn(

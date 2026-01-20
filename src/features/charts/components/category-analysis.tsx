@@ -7,6 +7,7 @@ import { useData } from '@/hooks/use-data';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig } from '@/components/ui/chart';
+import { Progress } from '@/components/ui/progress';
 import { formatCurrency, cn } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { groupTransactionsByCategory, getMonthlyTransactions } from '../lib/chart-utils';
@@ -108,15 +109,11 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
                                     </div>
                                     <div className="text-sm font-bold">{formatCurrency(item.value)}</div>
                                 </div>
-                                <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-muted/50">
-                                    <div
-                                        className="h-full rounded-full transition-all duration-1000"
-                                        style={{
-                                            width: `${Math.min(100, item.percentage)}%`,
-                                            background: item.fill,
-                                        }}
-                                    />
-                                </div>
+                                <Progress
+                                    value={item.percentage}
+                                    className="mt-3 h-1 bg-muted/50"
+                                    indicatorClassName={item.categoryColor.replace(/text-/g, 'bg-')}
+                                />
                             </button>
                         );
                     })}

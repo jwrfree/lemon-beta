@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { CATEGORY_ICONS, CATEGORY_COLORS } from '../constants';
+import { CATEGORY_ICONS, CATEGORY_COLORS } from '@/features/transactions/constants';
 
 interface CategoryFormProps {
     initialData?: any;
@@ -99,6 +99,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                                         key={opt.name}
                                         type="button"
                                         onClick={() => setSelectedIcon(opt.name)}
+                                        aria-label={`Pilih ikon ${opt.name}`}
                                         className={cn(
                                             "p-3 rounded-xl transition-all border-2",
                                             isSelected ? "border-primary bg-primary/10" : "border-transparent bg-muted/50 hover:bg-muted"
@@ -115,7 +116,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                         <Label>Warna Tema</Label>
                         <div className="grid grid-cols-6 gap-2">
                             {CATEGORY_COLORS.map((opt) => {
-                                const isSelected = selectedColor === opt.color;
+                                const isSelected = selectedColor === opt.color || (selectedColor && opt.color.startsWith(selectedColor));
                                 return (
                                     <button
                                         key={opt.name}

@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
 
-const TransactionsPageContent = () => {
+function TransactionsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { expenseCategories, incomeCategories, wallets } = useData();

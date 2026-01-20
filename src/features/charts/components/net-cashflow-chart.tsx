@@ -6,6 +6,7 @@ import { Calendar, Scale } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getNetCashflowData } from '../lib/chart-utils';
 import { PlaceholderContent } from './placeholder-content';
@@ -134,7 +135,7 @@ export const NetCashflowChart = () => {
     const renderBreakdown = (
         items: { category: string; value: number; percentage: number }[],
         emptyLabel: string,
-        color: string
+        indicatorColorClass: string
     ) => {
         if (items.length === 0) {
             return <p className="text-xs text-muted-foreground">{emptyLabel}</p>;
@@ -151,12 +152,11 @@ export const NetCashflowChart = () => {
                             </div>
                             <span className="text-sm font-bold text-foreground">{formatCurrency(item.value)}</span>
                         </div>
-                        <div className="h-1 w-full overflow-hidden rounded-full bg-muted/50">
-                            <div
-                                className="h-full rounded-full transition-all duration-700"
-                                style={{ width: `${Math.min(100, item.percentage)}%`, backgroundColor: color }}
-                            />
-                        </div>
+                        <Progress 
+                            value={item.percentage} 
+                            className="h-1 bg-muted/50" 
+                            indicatorClassName={indicatorColorClass}
+                        />
                     </li>
                 ))}
             </ul>
@@ -202,6 +202,7 @@ export const NetCashflowChart = () => {
                                 <div key={item.key} className="flex items-center gap-1.5">
                                     <span
                                         className="h-2 w-2 rounded-full"
+                                        // Tailwind doesn't support dynamic arbitrary values with template literals at build time
                                         style={{ backgroundColor: `var(--color-${item.key})` }}
                                     />
                                     <span>{item.label}</span>
@@ -265,14 +266,14 @@ export const NetCashflowChart = () => {
                                     <p className="text-[11px] font-bold uppercase tracking-widest text-success/70">Pemasukan</p>
                                     <span className="text-sm font-bold text-foreground">{formatCurrency(selectedMonthData.income)}</span>
                                 </div>
-                                {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'hsl(var(--success))')}
+                                {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'bg-success')}
                             </div>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
                                     <p className="text-[11px] font-bold uppercase tracking-widest text-destructive/70">Pengeluaran</p>
                                     <span className="text-sm font-bold text-foreground">{formatCurrency(selectedMonthData.expense)}</span>
                                 </div>
-                                {renderBreakdown(selectedMonthData.expenseBreakdown, 'Kosong', 'hsl(var(--destructive))')}
+                                {renderBreakdown(selectedMonthData.expenseBreakdown, 'Kosong', 'bg-destructive')}
                             </div>
                         </div>
                     </motion.div>

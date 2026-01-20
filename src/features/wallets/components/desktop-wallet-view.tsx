@@ -124,26 +124,24 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                         </div>
                         <div className="flex-1 overflow-y-auto p-3 space-y-3">
                             {filteredWallets.map((wallet, index) => {
-                                const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon);
+                                const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon || undefined);
                                 const isActive = wallets.indexOf(wallet) === activeIndex;
 
                                 return (
                                     <div
                                         key={wallet.id}
-                                        role="button"
-                                        tabIndex={0}
-                                        onClick={() => setActiveIndex(wallets.indexOf(wallet))}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                setActiveIndex(wallets.indexOf(wallet));
-                                            }
-                                        }}
                                         className={cn(
-                                            "w-full text-left rounded-xl border bg-card p-3 transition-all hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer",
+                                            "w-full text-left rounded-xl border bg-card p-3 transition-all hover:shadow-sm relative group",
                                             isActive ? "border-primary ring-1 ring-primary/30" : "border-border"
                                         )}
                                     >
-                                        <div className="flex items-center justify-between gap-2">
+                                        <button
+                                            type="button"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-0"
+                                            onClick={() => setActiveIndex(wallets.indexOf(wallet))}
+                                            aria-label={`Pilih dompet ${wallet.name}`}
+                                        />
+                                        <div className="flex items-center justify-between gap-2 relative z-10 pointer-events-none">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn("p-2 rounded-lg bg-muted", textColor.replace('text-', 'text-muted-'))}>
                                                     <Icon className="h-5 w-5" />
@@ -155,17 +153,19 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                     </p>
                                                 </div>
                                             </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-8 w-8"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    openEditWalletModal(wallet);
-                                                }}
-                                            >
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
+                                            <div className="pointer-events-auto">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        openEditWalletModal(wallet);
+                                                    }}
+                                                >
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 );

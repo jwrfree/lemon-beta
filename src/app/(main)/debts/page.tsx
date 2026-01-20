@@ -12,6 +12,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { HandCoins, ArrowUpRight, ArrowDownRight, Plus, ChevronLeft, CalendarClock } from 'lucide-react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
+import { Progress } from '@/components/ui/progress';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
@@ -159,12 +160,7 @@ export default function DebtsPage() {
                                             </div>
                                         </div>
 
-                                        <div className="w-full bg-muted rounded-full h-2">
-                                            <div
-                                                className="h-2 rounded-full bg-primary"
-                                                style={{ width: `${progress}%` }}
-                                            />
-                                        </div>
+                                        <Progress value={progress} className="h-2" />
                                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                                             <span>Terlunasi {progress}%</span>
                                             {dueDate && (

@@ -27,15 +27,17 @@ export const CATEGORY_ICONS = [
 ] as const;
 
 export const CATEGORY_COLORS = [
-    { name: 'Yellow', color: 'text-yellow-600', bg: 'bg-yellow-100' },
-    { name: 'Blue', color: 'text-blue-600', bg: 'bg-blue-100' },
-    { name: 'Purple', color: 'text-purple-600', bg: 'bg-purple-100' },
-    { name: 'Cyan', color: 'text-cyan-600', bg: 'bg-cyan-100' },
-    { name: 'Orange', color: 'text-orange-600', bg: 'bg-orange-100' },
-    { name: 'Pink', color: 'text-pink-600', bg: 'bg-pink-100' },
-    { name: 'Green', color: 'text-green-600', bg: 'bg-green-100' },
-    { name: 'Indigo', color: 'text-indigo-600', bg: 'bg-indigo-100' },
-    { name: 'Red', color: 'text-red-600', bg: 'bg-red-100' },
-    { name: 'Teal', color: 'text-teal-600', bg: 'bg-teal-100' },
-    { name: 'Stone', color: 'text-stone-600', bg: 'bg-stone-100' },
+    { name: 'Yellow', color: 'text-yellow-600 dark:text-yellow-500', bg: 'bg-yellow-100 dark:bg-yellow-900/50' },
+    { name: 'Blue', color: 'text-blue-600 dark:text-blue-500', bg: 'bg-blue-100 dark:bg-blue-900/50' },
+    { name: 'Purple', color: 'text-purple-600 dark:text-purple-500', bg: 'bg-purple-100 dark:bg-purple-900/50' },
+    { name: 'Cyan', color: 'text-cyan-600 dark:text-cyan-500', bg: 'bg-cyan-100 dark:bg-cyan-900/50' },
+    { name: 'Orange', color: 'text-orange-600 dark:text-orange-500', bg: 'bg-orange-100 dark:bg-orange-900/50' },
+    { name: 'Pink', color: 'text-pink-600 dark:text-pink-500', bg: 'bg-pink-100 dark:bg-pink-900/50' },
+    { name: 'Green', color: 'text-green-600 dark:text-green-500', bg: 'bg-green-100 dark:bg-green-900/50' },
+    { name: 'Emerald', color: 'text-emerald-600 dark:text-emerald-500', bg: 'bg-emerald-100 dark:bg-emerald-900/50' },
+    { name: 'Teal', color: 'text-teal-600 dark:text-teal-500', bg: 'bg-teal-100 dark:bg-teal-900/50' },
+    { name: 'Indigo', color: 'text-indigo-600 dark:text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/50' },
+    { name: 'Red', color: 'text-red-600 dark:text-red-500', bg: 'bg-red-100 dark:bg-red-900/50' },
+    { name: 'Rose', color: 'text-rose-600 dark:text-rose-500', bg: 'bg-rose-100 dark:bg-rose-900/50' },
+    { name: 'Stone', color: 'text-stone-600 dark:text-stone-500', bg: 'bg-stone-100 dark:bg-stone-900/50' },
 ] as const;

@@ -42,7 +42,6 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
                 abortControllerRef.current.abort();
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         user, 
         debouncedSearchQuery, 

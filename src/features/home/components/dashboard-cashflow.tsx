@@ -1,0 +1,107 @@
+
+'use client';
+
+import React, { useMemo } from 'react';
+import dynamic from 'next/dynamic';
+import { format, eachDayOfInterval, subDays, differenceInCalendarDays, startOfDay, startOfMonth } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import type { Transaction } from '@/types/models';
+
+// Dynamically import DashboardChart to reduce initial bundle size
+const DashboardChart = dynamic(() => import('./dashboard-chart'), { 
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse rounded-lg" />
+});
+
+interface DashboardCashflowProps {
+    transactions: Transaction[];
+    chartRange: '30' | '90' | 'month';
+    setChartRange: (range: '30' | '90' | 'month') => void;
+}
+
+export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: DashboardCashflowProps) => {
+    const now = useMemo(() => new Date(), []);
+
+    const chartRangeDays = useMemo(() => {
+        if (chartRange === '90') return 89;
+        if (chartRange === 'month') return differenceInCalendarDays(now, startOfDay(startOfMonth(now)));
+        return 29;
+    }, [chartRange, now]);
+
+    const chartData = useMemo(() => {
+        const days = eachDayOfInterval({
+            start: subDays(now, chartRangeDays),
+            end: now
+        });
+
+        // Optimization: Create a lookup map for O(1) access
+        const txMap: Record<string, { income: number; expense: number }> = {};
+
+        transactions.forEach(t => {
+            const dateKey = t.date.split('T')[0]; // Extract YYYY-MM-DD
+            if (!txMap[dateKey]) {
+                txMap[dateKey] = { income: 0, expense: 0 };
+            }
+            if (t.type === 'income') {
+                txMap[dateKey].income += t.amount;
+            } else {
+                txMap[dateKey].expense += t.amount;
+            }
+        });
+
+        return days.map(day => {
+            const dateStr = format(day, 'yyyy-MM-dd');
+            const data = txMap[dateStr] || { income: 0, expense: 0 };
+            return {
+                label: format(day, 'd MMM', { locale: dateFnsLocaleId }),
+                date: dateStr,
+                income: data.income,
+                expense: data.expense,
+            };
+        });
+    }, [transactions, chartRangeDays, now]);
+
+    return (
+        <Card className="col-span-4 border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
+            <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle className="text-lg font-bold">Arus Kas</CardTitle>
+                        <CardDescription className="text-xs font-medium">Pergerakan harian rentang terpilih</CardDescription>
+                    </div>
+                    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl">
+                        <Button 
+                            variant={chartRange === 'month' ? 'default' : 'ghost'} 
+                            size="sm" 
+                            className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
+                            onClick={() => setChartRange('month')}
+                        >
+                            Bulan Ini
+                        </Button>
+                        <Button 
+                            variant={chartRange === '30' ? 'default' : 'ghost'} 
+                            size="sm" 
+                            className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
+                            onClick={() => setChartRange('30')}
+                        >
+                            30 Hari
+                        </Button>
+                        <Button 
+                            variant={chartRange === '90' ? 'default' : 'ghost'} 
+                            size="sm" 
+                            className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
+                            onClick={() => setChartRange('90')}
+                        >
+                            3 Bulan
+                        </Button>
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent className="pl-2">
+                <DashboardChart data={chartData} />
+            </CardContent>
+        </Card>
+    );
+};
