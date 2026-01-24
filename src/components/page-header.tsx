@@ -30,7 +30,7 @@ export const PageHeader = ({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-4"
+          className="absolute left-4 md:hidden"
           onClick={() => router.back()}
           aria-label="Kembali"
         >

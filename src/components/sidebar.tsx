@@ -4,71 +4,62 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, PieChart, Plus, HandCoins, Settings, Wallet, Bell, ChevronLeft, ChevronRight, Landmark, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
 import { useApp } from '@/providers/app-provider';
 import { BalanceVisibilityToggle } from './balance-visibility-toggle';
+import { SIDEBAR_NAV_ITEMS, SIDEBAR_CONFIG } from '@/lib/sidebar-config';
 
 export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useApp();
     const { setIsTxModalOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
 
-    const navItems = [
-        { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
-        { id: 'statistik', href: '/charts', icon: PieChart, name: 'Statistik' },
-        { id: 'anggaran', href: '/budgeting', icon: HandCoins, name: 'Anggaran' },
-        { id: 'dompet', href: '/wallets', icon: Wallet, name: 'Dompet' },
-        { id: 'assets-liabilities', href: '/assets-liabilities', icon: Landmark, name: 'Aset & Liabilitas' },
-        { id: 'pengingat', href: '/reminders', icon: Bell, name: 'Pengingat' },
-        { id: 'profil', href: '/settings', icon: Settings, name: 'Pengaturan' },
-    ];
-
     return (
-        <div
+        <aside
             className={cn(
-                'hidden md:flex flex-col h-full fixed top-0 left-0 z-50 border-r transition-all duration-300',
+                'hidden md:flex flex-col h-full fixed top-0 left-0 z-50 border-r transition-all duration-300 ease-in-out',
                 'bg-card',
-                isSidebarCollapsed ? 'w-16 px-2 py-4 gap-3' : 'w-64 p-4 gap-4'
+                isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-2 py-4 gap-3') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 gap-4')
             )}
         >
             <div className={cn('flex items-center', isSidebarCollapsed ? 'justify-center px-1' : 'px-3 py-4')}>
-                <div className="h-9 w-9 rounded-xl bg-primary shadow-sm flex items-center justify-center">
-                    <div className="text-primary-foreground font-bold text-lg">L</div>
+                <div className="h-9 w-9 rounded-xl bg-primary shadow-sm flex items-center justify-center shrink-0">
+                    <div className="text-primary-foreground font-bold text-lg leading-none">L</div>
                 </div>
                 {!isSidebarCollapsed && (
-                    <div className="ml-3 leading-tight">
-                        <p className="text-base font-semibold tracking-tight">Lemon</p>
-                        <p className="text-xs text-muted-foreground font-medium">Beta</p>
+                    <div className="ml-3 leading-tight overflow-hidden">
+                        <p className="text-base font-semibold tracking-tight truncate">{SIDEBAR_CONFIG.appName}</p>
+                        <p className="text-xs text-muted-foreground font-medium truncate">{SIDEBAR_CONFIG.appVersion}</p>
                     </div>
                 )}
             </div>
 
             <div className="space-y-2">
-                <p className={cn('text-[10px] font-medium text-muted-foreground px-1 mb-2', isSidebarCollapsed && 'sr-only')}>
+                <p className={cn('text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 px-1 mb-2', isSidebarCollapsed && 'sr-only')}>
                     Aksi Cepat
                 </p>
                 <Button
                     onClick={() => setIsTxModalOpen(true)}
                     className={cn(
-                        'shadow-sm active:scale-95 transition-all bg-primary text-primary-foreground',
+                        'shadow-sm active:scale-95 transition-all bg-primary text-primary-foreground hover:bg-primary/90',
                         isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-xl'
                     )}
-                    size="lg"
+                    size={isSidebarCollapsed ? "icon" : "lg"}
                 >
                     <Plus className="h-5 w-5" />
-                    {!isSidebarCollapsed && "Catat Transaksi"}
+                    {!isSidebarCollapsed && <span className="truncate">Catat Transaksi</span>}
                 </Button>
             </div>
 
             <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar" aria-label="Navigasi utama">
-                <p className={cn('text-[10px] font-medium text-muted-foreground px-1 mb-2', isSidebarCollapsed && 'sr-only')}>
+                <p className={cn('text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 px-1 mb-2', isSidebarCollapsed && 'sr-only')}>
                     Menu Utama
                 </p>
-                {navItems.map((item) => {
-                    const isActive = pathname.startsWith(item.href);
+                {SIDEBAR_NAV_ITEMS.map((item) => {
+                    const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
                     return (
                         <Link
                             key={item.id}
@@ -78,14 +69,14 @@ export const Sidebar = () => {
                                 'group flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all relative overflow-hidden',
                                 isSidebarCollapsed ? 'justify-center px-0' : 'px-3',
                                 isActive
-                                    ? 'text-primary bg-primary/10 dark:bg-primary/20 dark:text-primary'
-                                    : 'text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10'
+                                    ? 'text-primary bg-primary/10 dark:bg-primary/20'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                             )}
                         >
                             <motion.span
                                 layoutId="sidebar-active"
                                 className={cn(
-                                    'absolute left-2 h-6 w-1 rounded-full bg-primary',
+                                    'absolute left-0 h-6 w-1 rounded-r-full bg-primary',
                                     !isActive && 'opacity-0'
                                 )}
                                 initial={false}
@@ -94,16 +85,16 @@ export const Sidebar = () => {
                             />
                             <span
                                 className={cn(
-                                    'flex h-9 w-9 items-center justify-center rounded-lg transition-colors',
+                                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors',
                                     isActive
-                                        ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
-                                        : 'bg-muted/70 text-muted-foreground group-hover:text-foreground'
+                                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                                        : 'bg-muted/70 text-muted-foreground group-hover:bg-muted group-hover:text-foreground'
                                 )}
                             >
                                 <item.icon className="h-5 w-5" />
                             </span>
                             {!isSidebarCollapsed && (
-                                <span className="truncate">{item.name}</span>
+                                <span className="truncate flex-1">{item.name}</span>
                             )}
                         </Link>
                     );
@@ -113,15 +104,15 @@ export const Sidebar = () => {
             <div className="mt-auto border-t pt-4 space-y-3">
                 <div
                     className={cn(
-                        'flex flex-col items-center rounded-xl bg-accent/60',
-                        isSidebarCollapsed ? 'gap-2 p-2' : 'gap-2 p-3'
+                        'flex flex-col items-center rounded-2xl bg-muted/30 border border-muted-foreground/5',
+                        isSidebarCollapsed ? 'p-1.5' : 'p-2'
                     )}
                 >
                     <BalanceVisibilityToggle
                         variant="ghost"
                         className={cn(
-                            'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-xl',
-                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3'
+                            'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-xl transition-colors',
+                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3 px-3'
                         )}
                         showLabel={!isSidebarCollapsed}
                     />
@@ -130,18 +121,17 @@ export const Sidebar = () => {
                         size={isSidebarCollapsed ? 'icon' : 'default'}
                         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                         className={cn(
-                            'rounded-lg hover:bg-primary/10 focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                            isSidebarCollapsed ? 'w-11 h-11 p-0 rounded-full' : 'w-full justify-start gap-2 px-3'
+                            'rounded-xl hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary transition-colors',
+                            isSidebarCollapsed ? 'w-11 h-11 p-0 rounded-full' : 'w-full justify-start gap-3 px-3'
                         )}
                         aria-label={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
-                        title={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
                     >
                         {isSidebarCollapsed ? (
                             <ChevronRight className="h-5 w-5" />
                         ) : (
                             <>
                                 <ChevronLeft className="h-5 w-5" />
-                                <span className="text-sm font-medium">Ciutkan</span>
+                                <span className="text-sm font-medium">Ciutkan Sidebar</span>
                             </>
                         )}
                     </Button>
@@ -150,17 +140,17 @@ export const Sidebar = () => {
                      <Button
                         variant="ghost"
                         className={cn(
-                            'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl w-full',
-                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'justify-start gap-3'
+                            'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl w-full transition-all',
+                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'justify-start gap-3 px-3'
                         )}
                         onClick={handleSignOut}
-                        size={isSidebarCollapsed ? "lg" : "default"}
+                        size={isSidebarCollapsed ? "icon" : "default"}
                     >
-                        <LogOut className="h-6 w-6" />
-                        {!isSidebarCollapsed && "Keluar"}
+                        <LogOut className={cn("shrink-0", isSidebarCollapsed ? "h-6 w-6" : "h-5 w-5")} />
+                        {!isSidebarCollapsed && <span className="text-sm font-medium">Keluar</span>}
                     </Button> 
                 </div>
             </div>
-        </div>
+        </aside>
     );
 };

@@ -64,7 +64,7 @@ export default function DebtsPage() {
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
+                <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 md:hidden">
                     <ChevronLeft className="h-5 w-5" />
                     <span className="sr-only">Kembali</span>
                 </Button>

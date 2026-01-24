@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState, useEffect } from 'react';
@@ -5,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useGoals } from '@/features/goals/hooks/use-goals';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -21,11 +24,17 @@ import { DashboardAlerts } from './dashboard-alerts';
 import { DashboardCashflow } from './dashboard-cashflow';
 import { DashboardWallets } from './dashboard-wallets';
 import { DashboardRecentTransactions } from './dashboard-recent-transactions';
+import { DashboardExpensePie } from './dashboard-expense-pie';
+import { DashboardBudgetStatus } from './dashboard-budget-status';
+import { DashboardGoals } from './dashboard-goals';
+import { DashboardQuickActions } from './dashboard-quick-actions';
 
 export const DesktopDashboard = () => {
     const { wallets, transactions } = useData();
     const { reminders } = useReminders();
     const { debts } = useDebts();
+    const { budgets } = useBudgets();
+    const { goals } = useGoals();
     const { setIsTxModalOpen } = useUI();
     const router = useRouter();
 
@@ -171,12 +180,10 @@ export const DesktopDashboard = () => {
                             size="icon"
                             className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
                             onClick={() => router.push('/transactions')}
+                            aria-label="Cari transaksi"
+                            title="Cari transaksi"
                         >
                             <Search className="h-4 w-4" />
-                        </Button>
-                        <Button onClick={() => setIsTxModalOpen(true)} className="rounded-md shadow-sm">
-                            <Plus className="mr-2 h-4 w-4" />
-                            Transaksi Baru
                         </Button>
                     </div>
                 }
@@ -196,11 +203,19 @@ export const DesktopDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     {/* Main Content Area */}
                     <div className="lg:col-span-8 space-y-6">
-                        <DashboardCashflow 
-                            transactions={filteredTransactions}
-                            chartRange={chartRange}
-                            setChartRange={setChartRange}
-                        />
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                            <div className="md:col-span-3">
+                                <DashboardCashflow 
+                                    transactions={filteredTransactions}
+                                    chartRange={chartRange}
+                                    setChartRange={setChartRange}
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <DashboardExpensePie transactions={filteredTransactions} />
+                            </div>
+                        </div>
+                        
                         <DashboardRecentTransactions 
                             transactions={recentTransactions} 
                             wallets={wallets}
@@ -210,6 +225,9 @@ export const DesktopDashboard = () => {
                     {/* Sidebar / Widgets Area */}
                     <div className="lg:col-span-4 space-y-6">
                         <DashboardWallets wallets={visibleWallets} />
+                        <DashboardQuickActions />
+                        <DashboardBudgetStatus budgets={budgets} />
+                        <DashboardGoals goals={goals} />
                         <DashboardAlerts 
                             reminderSummary={reminderSummary}
                             debtSummary={debtSummary}

@@ -47,7 +47,7 @@ export default function BudgetDetailPage() {
         return (
              <div className="h-full bg-muted">
                 <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background z-20">
-                    <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
+                    <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => router.back()}>
                         <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                     </Button>
                     <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
@@ -72,7 +72,7 @@ export default function BudgetDetailPage() {
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
+                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => router.back()}>
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>

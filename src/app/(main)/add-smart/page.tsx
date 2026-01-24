@@ -107,7 +107,7 @@ export default function SmartAddPage() {
     return (
         <div className="flex flex-col h-full bg-muted">
             <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
+                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
                     {pageState === 'IDLE' ? <ChevronLeft className="h-6 w-6" strokeWidth={1.75} /> : <X className="h-6 w-6" strokeWidth={1.75} />}
                 </Button>
                 <h1 className="text-xl font-bold text-center w-full">Catat Cepat</h1>
@@ -160,9 +160,39 @@ export default function SmartAddPage() {
                     <footer className="p-4 border-t bg-background">
                         <AnimatePresence mode="wait">
                             {pageState === 'CONFIRMING' ? (
-                                <motion.div key="confirming-actions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="flex flex-col gap-2">
-                                    <div className="flex gap-2"><Button className="flex-1" size="lg" onClick={() => handleConfirmSave(false)}><Check className="mr-2 h-5 w-5" /> Iya, simpan</Button><Button variant="outline" size="lg" onClick={() => setPageState('EDITING')}><Pencil className="h-5 w-5" /></Button></div>
-                                    <Button variant="ghost" size="sm" className="w-full" onClick={() => handleConfirmSave(true)}><Save className="mr-2 h-4 w-4" /> Simpan & catat lagi</Button>
+                                <motion.div 
+                                    key="confirming-actions" 
+                                    initial={{ opacity: 0, y: 20 }} 
+                                    animate={{ opacity: 1, y: 0 }} 
+                                    exit={{ opacity: 0, y: -20 }} 
+                                    className="flex flex-col gap-3"
+                                >
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <Button 
+                                            variant="outline" 
+                                            className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary" 
+                                            onClick={() => setPageState('EDITING')}
+                                        >
+                                            <Pencil className="mr-2 h-4 w-4" />
+                                            Koreksi
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary" 
+                                            onClick={() => handleConfirmSave(true)}
+                                        >
+                                            <Save className="mr-2 h-4 w-4" />
+                                            Simpan & Lagi
+                                        </Button>
+                                    </div>
+                                    <Button 
+                                        className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
+                                        size="lg" 
+                                        onClick={() => handleConfirmSave(false)}
+                                    >
+                                        <Check className="mr-2 h-6 w-6" />
+                                        Iya, Simpan Sekarang
+                                    </Button>
                                 </motion.div>
                             ) : (
                                 <motion.div key="idle-input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
