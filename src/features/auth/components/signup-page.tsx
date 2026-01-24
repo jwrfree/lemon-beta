@@ -213,9 +213,9 @@ export const SignUpPage = ({
                                             <FormControl>
                                                 <Input type={showPassword ? "text" : "password"} id="signup-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
-                                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}>
-                                                {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                                            </button>
+                                            <Button type="button" variant="ghost" size="icon" onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground" aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}>
+                                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                            </Button>
                                         </div>
                                         <FormDescription>Gunakan minimal 8 karakter dengan kombinasi huruf besar, kecil, dan angka.</FormDescription>
                                         {passwordStrength && (
@@ -246,9 +246,9 @@ export const SignUpPage = ({
                                             <FormControl>
                                                 <Input type={showConfirmPassword ? "text" : "password"} id="signup-confirm-password" autoComplete="new-password" placeholder="********" className="pl-10 pr-12" size="lg" {...field} />
                                             </FormControl>
-                                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi password' : 'Tampilkan konfirmasi password'}>
-                                                {showConfirmPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                                            </button>
+                                            <Button type="button" variant="ghost" size="icon" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground" aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi password' : 'Tampilkan konfirmasi password'}>
+                                                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                            </Button>
                                         </div>
                                         <FormMessage />
                                     </FormItem>

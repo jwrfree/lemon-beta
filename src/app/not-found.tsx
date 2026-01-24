@@ -10,7 +10,7 @@ export default function NotFound() {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-16 text-center">
-            <span className="flex h-20 w-20 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
+            <span className="flex h-20 w-20 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
                 <SearchX aria-hidden className="h-10 w-10" strokeWidth={1.5} />
             </span>
             <div className="max-w-xl space-y-3">

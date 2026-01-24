@@ -25,6 +25,7 @@ import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle'
 import { motion, AnimatePresence } from 'framer-motion';
 import { PullToRefresh } from '@/components/pull-to-refresh';
 import { config } from '@/lib/config';
+import { PageHeader } from '@/components/page-header';
 
 export default function HomePage() {
     const homeUi = config.ui?.home;
@@ -126,36 +127,12 @@ export default function HomePage() {
                     // Simple refresh simulation
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }}>
-                    <motion.header 
-                        className="h-16 px-4 flex items-center justify-between sticky top-0 bg-background/95 backdrop-blur-lg z-20 border-b shrink-0"
-                        initial={{ y: -100 }}
-                        animate={{ y: 0 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    >
-                        <motion.div 
-                            className="flex flex-col justify-center"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 }}
-                        >
-                            <h1 className="text-lg font-bold text-primary flex items-center gap-1">
-                                Lemon <span className="text-xs font-normal text-muted-foreground px-1.5 py-0.5 rounded-full bg-primary/10">Beta</span>
-                            </h1>
-                            <p className="text-xs text-muted-foreground">
-                                {timeBasedGreeting}{userDisplayName ? `, ${userDisplayName}` : ''}
-                            </p>
-                        </motion.div>
-                        <motion.div 
-                            className="flex items-center gap-2"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2 }}
-                        >
-                            <BalanceVisibilityToggle />
-                            <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                            >
+                    <PageHeader
+                        title="Dashboard"
+                        showBackButton={false}
+                        extraActions={
+                            <div className="flex items-center gap-2">
+                                <BalanceVisibilityToggle />
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -165,18 +142,18 @@ export default function HomePage() {
                                     <Bell className="h-6 w-6" strokeWidth={1.75} />
                                     <span className="sr-only">Buka notifikasi</span>
                                 </Button>
-                            </motion.div>
-                        </motion.div>
-                    </motion.header>
-                    <main className="flex-1 p-4 space-y-6">
-                    <Card className="backdrop-blur-md bg-white/80 dark:bg-stone-900/80 border-white/20 dark:border-stone-700/30 shadow-lg shadow-primary/5">
+                            </div>
+                        }
+                    />
+                    <main className="flex-1 p-4 space-y-4">
+                    <Card className="backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/5">
                         <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
                                 <BalanceVisibilityToggle variant="ghost" size="icon" />
                             </div>
                         </CardHeader>
-                        <CardContent className="pt-4">
+                        <CardContent>
                             <motion.div
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
@@ -191,8 +168,8 @@ export default function HomePage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.4 }}
                                 >
-                                    <div className="p-1.5 bg-green-100 dark:bg-green-900/50 rounded-full">
-                                        <ArrowUpRight className="h-4 w-4 text-green-600 dark:text-green-500" />
+                                    <div className="p-1.5 bg-teal-100 dark:bg-teal-900/50 rounded-full">
+                                        <ArrowUpRight className="h-4 w-4 text-teal-600 dark:text-teal-500" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Pemasukan</p>
@@ -205,8 +182,8 @@ export default function HomePage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.5 }}
                                 >
-                                    <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
-                                        <ArrowDownLeft className="h-4 w-4 text-destructive" />
+                                    <div className="p-1.5 bg-primary/10 rounded-full">
+                                        <ArrowDownLeft className="h-4 w-4 text-foreground" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Pengeluaran</p>
@@ -264,7 +241,7 @@ export default function HomePage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.1 * index }}
                                         >
-                                            <Card className="flex-shrink-0 w-48 backdrop-blur-md bg-white/60 dark:bg-stone-800/60 border-white/20 dark:border-stone-700/30 shadow-lg shadow-primary/10 interactive-element">
+                                            <Card className="flex-shrink-0 w-48 backdrop-blur-md bg-white/60 dark:bg-gray-800/60 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/10 interactive-element">
                                                 <CardContent className="p-4">
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <Icon className={cn('h-6 w-6 text-muted-foreground')} />
@@ -325,7 +302,7 @@ export default function HomePage() {
                                 Lihat Semua
                             </Button>
                         </div>
-                        <Card className="p-4 space-y-3 backdrop-blur-md bg-white/60 dark:bg-stone-800/60 border-white/20 dark:border-stone-700/30 shadow-lg shadow-primary/10">
+                        <Card className="p-4 space-y-3 backdrop-blur-md bg-white/60 dark:bg-gray-800/60 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/10">
                             <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
                                     <p className="text-muted-foreground text-xs mb-1">Saya Berhutang</p>

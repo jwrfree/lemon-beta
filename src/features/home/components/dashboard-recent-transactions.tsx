@@ -20,18 +20,18 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     const router = useRouter();
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="shadow-sm border-none rounded-lg">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle>Transaksi Terakhir</CardTitle>
-                    <CardDescription>5 transaksi terbaru yang kamu lakukan.</CardDescription>
+                    <CardTitle className="text-lg font-bold tracking-tight">Transaksi Terakhir</CardTitle>
+                    <CardDescription className="text-xs">5 transaksi terbaru yang kamu lakukan.</CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => router.push('/transactions')}>
+                <Button variant="ghost" size="sm" onClick={() => router.push('/transactions')} className="text-primary hover:bg-primary/5">
                     Lihat Semua
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="rounded-md border">
+                <div className="overflow-hidden rounded-lg">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-muted/50 text-muted-foreground font-medium">
                             <tr>
@@ -59,7 +59,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                     <tr key={t.id} className="border-t hover:bg-muted/30 transition-colors">
                                         <td className="p-3 pl-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={cn("p-2 rounded-full", categoryData.bgColor)}>
+                                                <div className={cn("p-2 rounded-md", categoryData.bgColor)}>
                                                     <CategoryIcon className={cn("h-4 w-4", categoryData.color)} />
                                                 </div>
                                                 <div>
@@ -79,8 +79,8 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                         <td className="p-3 text-muted-foreground">
                                             {wallet?.name || '-'}
                                         </td>
-                                        <td className="p-3 pr-4 text-right font-bold">
-                                            <span className={t.type === 'income' ? 'text-success' : 'text-destructive'}>
+                                        <td className="p-3 pr-4 text-right font-medium">
+                                            <span className={cn(t.type === 'income' ? 'text-teal-600' : 'text-destructive', 'tabular-nums')}>
                                                 {t.type === 'income' ? '+' : '-'} {formatCurrency(t.amount)}
                                             </span>
                                         </td>

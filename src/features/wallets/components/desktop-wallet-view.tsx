@@ -81,26 +81,25 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         <div className="flex h-full min-h-[calc(100vh-160px)] gap-6 p-6 max-w-6xl lg:max-w-7xl mx-auto w-full">
             <div className="flex-1 flex flex-col gap-4">
                 {/* Summary Bar */}
-                <div className="rounded-2xl border bg-card p-4 flex items-center justify-between shadow-sm">
+                <div className="rounded-lg bg-card p-4 flex items-center justify-between shadow-sm">
                     <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Total Saldo</p>
-                        <p className={cn("text-3xl font-bold", !isBalanceVisible && "blur-sm")}>
+                        <p className="text-xs font-medium tracking-tight text-muted-foreground">Total Saldo</p>
+                        <p className={cn("text-3xl font-bold tracking-tight", !isBalanceVisible && "blur-sm")}>
                             {isBalanceVisible ? formatCurrency(totalBalance) : "Rp ••••••"}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">{wallets.length} dompet aktif</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <BalanceVisibilityToggle variant="ghost" size="icon" />
-                        <Button onClick={() => setIsWalletModalOpen(true)}>
+                        <Button onClick={() => setIsWalletModalOpen(true)} className="rounded-md">
                             <Plus className="h-4 w-4 mr-2" />
                             Tambah Dompet
                         </Button>
                     </div>
                 </div>
-
                 <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-4 h-full">
                     {/* Left Side: Wallet List */}
-                    <div className="rounded-2xl border bg-background shadow-sm flex flex-col min-h-[400px] max-h-[calc(100vh-220px)]">
+                    <div className="rounded-lg bg-background shadow-sm flex flex-col min-h-[400px] max-h-[calc(100vh-220px)]">
                         <div className="p-4 border-b space-y-3">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-base font-semibold">Dompet Saya</h2>
@@ -131,8 +130,8 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     <div
                                         key={wallet.id}
                                         className={cn(
-                                            "w-full text-left rounded-xl border bg-card p-3 transition-all hover:shadow-sm relative group",
-                                            isActive ? "border-primary ring-1 ring-primary/30" : "border-border"
+                                            "w-full text-left rounded-lg bg-card p-3 transition-all hover:shadow-sm relative group",
+                                            isActive ? "border border-primary ring-1 ring-primary/30" : "border-none"
                                         )}
                                     >
                                         <button
@@ -143,7 +142,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         />
                                         <div className="flex items-center justify-between gap-2 relative z-10 pointer-events-none">
                                             <div className="flex items-center gap-3">
-                                                <div className={cn("p-2 rounded-lg bg-muted", textColor.replace('text-', 'text-muted-'))}>
+                                                <div className={cn("p-2 rounded-md bg-muted", textColor.replace('text-', 'text-muted-'))}>
                                                     <Icon className="h-5 w-5" />
                                                 </div>
                                                 <div>
@@ -174,7 +173,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     </div>
 
                     {/* Right Side: Transactions */}
-                    <div className="flex-1 flex flex-col bg-card rounded-2xl border shadow-sm overflow-hidden min-h-[400px] max-h-[calc(100vh-220px)]">
+                    <div className="flex-1 flex flex-col bg-card rounded-lg shadow-sm overflow-hidden min-h-[400px] max-h-[calc(100vh-220px)]">
                         {activeWallet ? (
                             <Tabs value={panelTab} onValueChange={(v: any) => setPanelTab(v)} className="flex flex-col h-full">
                                 <div className="p-6 border-b bg-muted/30 flex flex-col gap-3 sticky top-0 z-10">
@@ -204,11 +203,11 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 </TabsContent>
                                 <TabsContent value="analytics" className="flex-1 overflow-y-auto p-6">
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="p-4 rounded-xl border bg-muted/40">
+                                        <div className="p-4 rounded-lg bg-muted/40">
                                             <p className="text-xs text-muted-foreground">Pemasukan 30 hari</p>
                                             <p className="text-lg font-semibold">{formatCurrency(analytics.income30)}</p>
                                         </div>
-                                        <div className="p-4 rounded-xl border bg-muted/40">
+                                        <div className="p-4 rounded-lg bg-muted/40">
                                             <p className="text-xs text-muted-foreground">Pengeluaran 30 hari</p>
                                             <p className="text-lg font-semibold text-destructive">{formatCurrency(analytics.expense30)}</p>
                                         </div>

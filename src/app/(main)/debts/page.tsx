@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn } from '@/lib/utils';
 import { formatDistanceToNow, parseISO } from 'date-fns';
@@ -107,20 +108,15 @@ export default function DebtsPage() {
                     </Card>
 
                     <div className="w-full">
-                        <div className="grid w-full grid-cols-4 h-10 items-center justify-center rounded-md bg-stone-100 dark:bg-stone-800 p-1 text-muted-foreground">
-                            {Object.entries(filterLabels).map(([key, label]) => (
-                                <button
-                                    key={key}
-                                    onClick={() => setActiveFilter(key)}
-                                    className={cn(
-                                        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                        activeFilter === key ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
-                                    )}
-                                >
-                                    {label}
-                                </button>
-                            ))}
-                        </div>
+                        <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
+                            <TabsList className="grid w-full grid-cols-4">
+                                {Object.entries(filterLabels).map(([key, label]) => (
+                                    <TabsTrigger key={key} value={key} className="text-xs px-1">
+                                        {label}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </Tabs>
                     </div>
 
                     <div className="space-y-3">
@@ -140,7 +136,7 @@ export default function DebtsPage() {
                                     <Card key={debt.id} className="p-4 space-y-3">
                                         <div className="flex items-start justify-between gap-3">
                                             <div>
-                                                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                                                <p className="text-xs font-medium text-muted-foreground">
                                                     {debt.direction === 'owed' ? 'Saya berhutang' : 'Orang lain berhutang'}
                                                 </p>
                                                 <h2 className="text-lg font-semibold">{debt.title}</h2>

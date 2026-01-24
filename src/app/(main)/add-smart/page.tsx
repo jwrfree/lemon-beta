@@ -19,7 +19,7 @@ const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant.
 
 const WelcomePlaceholder = () => (
     <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500">
-        <div className="p-3 bg-primary/10 rounded-full mb-4"><Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} /></div>
+        <div className="p-3 bg-primary/10 rounded-lg mb-4"><Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} /></div>
         <h2 className="text-lg font-semibold text-foreground">Catat Cepat dengan AI</h2>
         <p className="mt-1 max-w-xs">Ketik transaksi seperti &quot;beli kopi 25rb&quot;, rekam suara, atau pindai struk untuk memulai.</p>
     </div>

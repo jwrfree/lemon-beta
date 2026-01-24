@@ -130,11 +130,11 @@ export default function TokenCalculatorPage() {
                                 <CardContent className="space-y-6">
                                     <div className="grid grid-cols-2 gap-4 text-center">
                                         <div className="p-4 bg-muted rounded-lg">
-                                            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Input Token</p>
+                                            <p className="text-xs font-medium text-muted-foreground mb-1">Input Token</p>
                                             <p className="text-2xl font-bold">{result.input}</p>
                                         </div>
                                         <div className="p-4 bg-muted rounded-lg">
-                                            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Output Token</p>
+                                            <p className="text-xs font-medium text-muted-foreground mb-1">Output Token</p>
                                             <p className="text-2xl font-bold">{result.output}</p>
                                         </div>
                                     </div>
@@ -198,10 +198,10 @@ export default function TokenCalculatorPage() {
 
                                     {runway && (
                                         <div className="grid grid-cols-2 gap-4 text-center">
-                                             <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg flex flex-col justify-center items-center">
-                                                <Coins className="h-6 w-6 text-green-600 mb-2" />
-                                                <p className="text-xs text-green-700 uppercase tracking-wider mb-1">Total Transaksi</p>
-                                                <p className="text-2xl font-bold text-green-700">{runway.totalTransactions.toLocaleString()}</p>
+                                             <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg flex flex-col justify-center items-center">
+                                                <Coins className="h-6 w-6 text-teal-600 mb-2" />
+                                                <p className="text-xs text-teal-700 uppercase tracking-wider mb-1">Total Transaksi</p>
+                                                <p className="text-2xl font-bold text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
                                             </div>
                                             <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg flex flex-col justify-center items-center">
                                                 <Calendar className="h-6 w-6 text-blue-600 mb-2" />

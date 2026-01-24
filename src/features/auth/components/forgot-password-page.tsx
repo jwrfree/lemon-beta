@@ -95,7 +95,7 @@ export const ForgotPasswordPage = ({
         role: "dialog",
         "aria-modal": true,
         "aria-labelledby": "forgot-password-heading",
-        className: "w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit",
+        className: "w-full max-w-md bg-background rounded-t-xl shadow-2xl flex flex-col h-fit",
         onClick: (e: React.MouseEvent) => e.stopPropagation(),
         ...handlers
     };

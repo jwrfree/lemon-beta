@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { BarChart, ChartArea as ChartAreaIcon } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getDailyTrendData } from '../lib/chart-utils';
 import { PlaceholderContent } from './placeholder-content';
@@ -11,7 +12,7 @@ import dynamic from 'next/dynamic';
 
 const ExpenseTrendChart = dynamic(() => import('./lazy-charts').then(mod => mod.ExpenseTrendChart), {
     ssr: false,
-    loading: () => <div className="h-60 w-full animate-pulse rounded-lg bg-muted" />
+    loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
 });
 
 export const ExpenseShortTermTrend = () => {
@@ -56,67 +57,59 @@ export const ExpenseShortTermTrend = () => {
     const gradientId = `expense-trend-${chartType}-${range}`;
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
+        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-xl">
             <CardHeader className="space-y-4">
                 <div className="flex flex-col gap-1">
-                    <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tren Pengeluaran</CardTitle>
+                    <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Tren Pengeluaran</CardTitle>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex items-center rounded-full bg-muted/60 p-1">
-                        {['14', '30'].map((option) => (
-                            <button
-                                key={option}
-                                type="button"
-                                onClick={() => setRange(option as '14' | '30')}
-                                className={cn(
-                                    'rounded-full px-3 py-1 text-[11px] font-bold uppercase transition',
-                                    range === option
-                                        ? 'bg-primary text-primary-foreground shadow-sm'
-                                        : 'text-muted-foreground hover:bg-muted'
-                                )}
-                            >
-                                {option} Hari
-                            </button>
-                        ))}
-                    </div>
-                    <div className="flex items-center rounded-full bg-muted/60 p-1">
-                        {[
-                            { value: 'area' as const, label: 'Area', icon: ChartAreaIcon },
-                            { value: 'bar' as const, label: 'Bar', icon: BarChart },
-                        ].map((option) => (
-                            <button
-                                key={option.value}
-                                type="button"
-                                onClick={() => setChartType(option.value)}
-                                className={cn(
-                                    'flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold uppercase transition',
-                                    chartType === option.value
-                                        ? 'bg-primary text-primary-foreground shadow-sm'
-                                        : 'text-muted-foreground hover:bg-muted'
-                                )}
-                            >
-                                <option.icon className="h-3 w-3" />
-                                {option.label}
-                            </button>
-                        ))}
-                    </div>
+                    <Tabs value={range} onValueChange={(v) => setRange(v as '14' | '30')}>
+                        <TabsList className="rounded-full bg-muted/60 p-1 h-auto">
+                            {['14', '30'].map((option) => (
+                                <TabsTrigger 
+                                    key={option} 
+                                    value={option}
+                                    className="rounded-full px-3 py-1 text-[11px] font-medium"
+                                >
+                                    {option} Hari
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
+                    <Tabs value={chartType} onValueChange={(v) => setChartType(v as 'area' | 'bar')}>
+                        <TabsList className="rounded-full bg-muted/60 p-1 h-auto">
+                            {[
+                                { value: 'area' as const, label: 'Area', icon: ChartAreaIcon },
+                                { value: 'bar' as const, label: 'Bar', icon: BarChart },
+                            ].map((option) => (
+                                <TabsTrigger
+                                    key={option.value}
+                                    value={option.value}
+                                    className="flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium"
+                                >
+                                    <option.icon className="h-3 w-3" />
+                                    {option.label}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div className="rounded-2xl border-none bg-background/40 p-4 shadow-inner">
+                    <div className="rounded-lg bg-muted/50 p-4 border-none">
                         <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>
                         <p className="text-lg font-extrabold text-foreground">{formatCurrency(totalSpent)}</p>
-                        <p className={cn("text-[11px] font-bold uppercase mt-1", delta > 0 ? "text-destructive" : "text-success")}>
+                        <p className={cn("text-[11px] font-bold uppercase mt-1", delta > 0 ? "text-destructive" : "text-teal-600")}>
                             {percentChange ? (percentChange > 0 ? '+' : '') + percentChange.toFixed(1) + '%' : '—'}
                         </p>
                     </div>
-                    <div className="rounded-2xl border-none bg-background/40 p-4 shadow-inner">
+                    <div className="rounded-lg bg-muted/50 p-4 border-none">
                         <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
                         <p className="text-lg font-extrabold text-foreground">{formatCurrency(average)}</p>
                         <p className="text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-wider">PER HARI</p>
                     </div>
-                    <div className="rounded-2xl border-none bg-background/40 p-4 shadow-inner">
+                    <div className="rounded-lg bg-muted/50 p-4 border-none">
                         <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
                         {peakDay ? (
                             <>

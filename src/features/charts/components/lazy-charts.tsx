@@ -139,13 +139,23 @@ export const ExpenseTrendChart = ({
 );
 
 // 3. Monthly Trend Chart
-export const MonthlyBarChart = ({ data, gradientId: propsGradientId, sectionLabel }: { data: any[], gradientId: string, sectionLabel: string }) => {
+export const MonthlyBarChart = ({ 
+    data, 
+    gradientId: propsGradientId, 
+    sectionLabel,
+    color 
+}: { 
+    data: any[], 
+    gradientId: string, 
+    sectionLabel: string,
+    color?: string 
+}) => {
     const id = React.useId();
     const gradientId = propsGradientId || `gradient-${id.replace(/:/g, '')}`;
     
     return (
         <ChartContainer
-            config={{ total: { label: sectionLabel, color: 'hsl(var(--primary))' } } as any}
+            config={{ total: { label: sectionLabel, color: color || 'hsl(var(--primary))' } } as any}
             className="h-full w-full"
         >
             <RechartsBarChart data={data} barCategoryGap={12} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -202,7 +212,7 @@ export const NetCashflowComposedChart = ({
     <ChartContainer
         config={
             {
-                income: { label: 'Pemasukan', color: 'hsl(var(--chart-1))' },
+                income: { label: 'Pemasukan', color: 'var(--color-teal-600)' },
                 expense: { label: 'Pengeluaran', color: 'hsl(var(--destructive))' },
                 net: { label: 'Arus Kas', color: 'hsl(var(--chart-2))' },
             } as any

@@ -5,6 +5,7 @@ import { useAssets } from '../hooks/use-assets';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUI } from '@/components/ui-provider';
@@ -90,14 +91,14 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     const categories = type === 'asset' ? assetCategories : liabilityCategories;
 
     return (
-        <>
-            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
+        <div className="w-full h-full md:h-auto flex flex-col bg-background md:rounded-xl overflow-hidden">
+            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10">
                 <h2 className="text-xl font-bold">{title}</h2>
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={onClose}
-                    className="bg-muted rounded-full"
+                    className="bg-muted rounded-full hover:bg-muted/80"
                     aria-label="Tutup formulir"
                 >
                     <X className="h-5 w-5" />
@@ -106,28 +107,12 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             </div>
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {!isEditMode && (
-                    <div className="grid w-full grid-cols-2 h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
-                        <button
-                            type="button"
-                            onClick={() => handleTypeChange('asset')}
-                            className={cn(
-                                "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                type === 'asset' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
-                            )}
-                        >
-                            Aset
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleTypeChange('liability')}
-                            className={cn(
-                                "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                type === 'liability' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
-                            )}
-                        >
-                            Liabilitas
-                        </button>
-                    </div>
+                    <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 bg-muted p-1 rounded-lg">
+                            <TabsTrigger value="asset" className="rounded-md">Aset</TabsTrigger>
+                            <TabsTrigger value="liability" className="rounded-md">Liabilitas</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                 )}
 
                 <div className="space-y-2">
@@ -138,6 +123,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
+                        className="rounded-lg"
                     />
                 </div>
 
@@ -151,17 +137,17 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                         required
                         inputMode="numeric"
                         size="lg"
-                        className="text-2xl font-bold"
+                        className="text-2xl font-bold rounded-lg"
                     />
                 </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="categoryKey">Kategori</Label>
                     <Select onValueChange={setCategoryKey} value={categoryKey}>
-                        <SelectTrigger id="categoryKey">
+                        <SelectTrigger id="categoryKey" className="rounded-lg">
                             <SelectValue placeholder="Pilih kategori" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="rounded-lg">
                             {categories.map((cat) => (
                                 <SelectItem key={cat.key} value={cat.key}>
                                     {cat.label}
@@ -173,10 +159,10 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
 
             </form>
             <div className="p-4 border-t sticky bottom-0 bg-background z-10">
-                <Button type="submit" onClick={handleSubmit} className="w-full" disabled={isSubmitting}>
+                <Button type="submit" onClick={handleSubmit} className="w-full rounded-lg" size="lg" disabled={isSubmitting}>
                     {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : ''}`}
                 </Button>
             </div>
-        </>
+        </div>
     );
 };

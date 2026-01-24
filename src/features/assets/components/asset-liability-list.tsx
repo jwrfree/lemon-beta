@@ -23,23 +23,25 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
     }
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-1">
             {items.map(item => {
                 const { Icon } = getWalletVisuals(item.name, item.categoryKey);
                 return (
-                    <div key={item.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted">
-                        <div className="p-2 bg-muted rounded-md">
+                    <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
+                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors shadow-sm">
                             <Icon className="h-5 w-5 text-muted-foreground" />
                         </div>
                         <div className="flex-1">
-                            <p className="font-medium">{item.name}</p>
+                            <p className="font-semibold text-sm">{item.name}</p>
+                            <p className="text-xs text-muted-foreground capitalize">{item.categoryKey.replace('-', ' ')}</p>
                         </div>
-                        <p className="font-semibold">{formatCurrency(item.value)}</p>
+                        <p className="font-bold tabular-nums text-sm">{formatCurrency(item.value)}</p>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                     aria-label={`Buka menu untuk ${item.name}`}
                                 >
                                     <MoreVertical className="h-4 w-4" />

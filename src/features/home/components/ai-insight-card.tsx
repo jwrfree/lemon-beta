@@ -66,7 +66,7 @@ export function AIInsightCard({ transactions, wallets }: AIInsightCardProps) {
     };
 
     return (
-        <Card className="border-none shadow-sm bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10">
+        <Card className="border-none shadow-sm bg-card">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2 text-violet-700 dark:text-violet-400">
                     <Lightbulb className="h-4 w-4" />

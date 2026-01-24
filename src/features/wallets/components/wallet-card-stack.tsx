@@ -57,7 +57,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.2}
                 onClick={() => !isActive && setActiveIndex(i)}
                 className={cn(
-                  "absolute w-[90%] max-w-sm h-48 rounded-2xl text-white shadow-lg overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
+                  "absolute w-[90%] max-w-sm h-48 rounded-xl text-white shadow-lg overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
                   isActive ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                 )}
                 style={{
@@ -104,7 +104,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                               <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
                               <p className="font-semibold text-lg drop-shadow-md">{wallet.name}</p>
                               {wallet.isDefault && (
-                                <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full">
+                                <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-md">
                                     Utama
                                 </div>
                               )}
@@ -112,7 +112,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="text-white hover:bg-white/20 h-8 w-8 rounded-full relative z-10"
+                            className="text-white hover:bg-white/20 h-8 w-8 rounded-md relative z-10"
                             onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}
                             aria-label={`Kelola dompet ${wallet.name}`}
                           >
@@ -138,13 +138,13 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             key={wallet.id ?? i}
             type="button"
             onClick={() => setActiveIndex(i)}
-            className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label={`Pilih dompet ${wallet.name}`}
-            aria-pressed={i === activeIndex}
+            aria-pressed={i === activeIndex ? "true" : "false"}
           >
             <span
               className={cn(
-                'h-2 w-2 rounded-full',
+                'h-2 w-2 rounded-sm',
                 i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/30'
               )}
             />

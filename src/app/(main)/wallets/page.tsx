@@ -60,7 +60,7 @@ export default function WalletsPage() {
                     setActiveIndex={setActiveIndex} 
                 />
               </div>
-              <div className="flex-1 bg-background rounded-t-2xl overflow-y-auto px-4 pb-[max(16px,env(safe-area-inset-bottom))] -mt-4 z-10 pt-4">
+              <div className="flex-1 bg-background rounded-t-xl overflow-y-auto px-4 pb-[max(16px,env(safe-area-inset-bottom))] -mt-4 z-10 pt-4">
                  <h2 className="text-lg font-semibold mb-2 mt-4 sticky top-0 bg-background py-2">Riwayat Transaksi</h2>
                  {activeWallet ? (
                     <TransactionList walletId={activeWallet.id} />
@@ -87,7 +87,7 @@ export default function WalletsPage() {
         <div className="flex-1 overflow-hidden">
           {wallets.length === 0 ? (
             <main className="flex h-full items-center justify-center p-4">
-              <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto p-8 bg-card rounded-2xl shadow-sm border">
+              <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto p-8 bg-card rounded-lg shadow-sm border">
                 <div className="p-4 bg-primary/10 rounded-full mb-4">
                   <Wallet className="h-12 w-12 text-primary" strokeWidth={1.5} />
                 </div>

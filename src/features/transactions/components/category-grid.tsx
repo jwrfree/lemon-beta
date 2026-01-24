@@ -17,8 +17,8 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
             {categories.map((cat) => {
                 const isSelected = selectedCategory === cat.name;
                 const CategoryIcon = getCategoryIcon(cat.icon);
-                const color = cat.color || 'text-stone-600';
-                const bgColor = cat.bg_color || 'bg-stone-100';
+                const color = cat.color || 'text-gray-600';
+                const bgColor = cat.bg_color || 'bg-gray-100';
                 
                 return (
                     <button

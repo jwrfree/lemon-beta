@@ -2,53 +2,70 @@
 
 import React from 'react';
 import {
-    Bar,
-    BarChart,
+    Area,
+    AreaChart,
     CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
     XAxis,
     YAxis,
 } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { formatCurrency } from '@/lib/utils';
-import { format, parseISO } from 'date-fns';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
 
 interface DashboardChartProps {
     data: any[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-        const displayLabel = payload[0]?.payload?.label || label;
-        return (
-            <div className="rounded-lg border bg-background p-2 shadow-sm">
-                <div className="text-[10px] uppercase text-muted-foreground mb-1">{displayLabel}</div>
-                <div className="grid grid-cols-2 gap-2">
-                    <div className="flex flex-col">
-                        <span className="text-[10px] uppercase text-muted-foreground">Pemasukan</span>
-                        <span className="font-bold text-green-500">
-                            {formatCurrency(payload[0].value)}
-                        </span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-[10px] uppercase text-muted-foreground">Pengeluaran</span>
-                        <span className="font-bold text-red-500">
-                            {formatCurrency(payload[1].value)}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-    return null;
-};
+const chartConfig = {
+    income: {
+        label: "Pemasukan",
+        color: "var(--color-teal-600)",
+    },
+    expense: {
+        label: "Pengeluaran",
+        color: "var(--destructive)",
+    },
+} satisfies ChartConfig;
 
 export const DashboardChart = ({ data }: DashboardChartProps) => {
     return (
         <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data} barCategoryGap={2}>
+            <ChartContainer config={chartConfig} className="h-full w-full">
+                <AreaChart
+                    accessibilityLayer
+                    data={data}
+                    margin={{
+                        left: 0,
+                        right: 0,
+                        top: 10,
+                        bottom: 0,
+                    }}
+                >
+                    <defs>
+                        <linearGradient id="fillIncome" x1="0" y1="0" x2="0" y2="1">
+                            <stop
+                                offset="5%"
+                                stopColor="var(--color-income)"
+                                stopOpacity={0.8}
+                            />
+                            <stop
+                                offset="95%"
+                                stopColor="var(--color-income)"
+                                stopOpacity={0.1}
+                            />
+                        </linearGradient>
+                        <linearGradient id="fillExpense" x1="0" y1="0" x2="0" y2="1">
+                            <stop
+                                offset="5%"
+                                stopColor="var(--color-expense)"
+                                stopOpacity={0.8}
+                            />
+                            <stop
+                                offset="95%"
+                                stopColor="var(--color-expense)"
+                                stopOpacity={0.1}
+                            />
+                        </linearGradient>
+                    </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                     <XAxis 
                         dataKey="label" 
@@ -65,25 +82,28 @@ export const DashboardChart = ({ data }: DashboardChartProps) => {
                         axisLine={false}
                         tickFormatter={(value) => `Rp${(value / 1000000).toFixed(0)}jt`}
                     />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                    <Bar 
-                        dataKey="income" 
-                        fill="hsl(var(--green-500))" 
-                        radius={[4, 4, 0, 0]} 
-                        maxBarSize={52} 
-                        className="fill-green-500" 
-                        isAnimationActive={false}
+                    <ChartTooltip 
+                        cursor={false}
+                        content={<ChartTooltipContent indicator="dot" />}
                     />
-                    <Bar 
-                        dataKey="expense" 
-                        fill="hsl(var(--red-500))" 
-                        radius={[4, 4, 0, 0]} 
-                        maxBarSize={52} 
-                        className="fill-red-500" 
-                        isAnimationActive={false}
+                    <Area
+                        dataKey="expense"
+                        type="monotone"
+                        fill="url(#fillExpense)"
+                        fillOpacity={0.4}
+                        stroke="var(--color-expense)"
+                        stackId="a"
                     />
-                </BarChart>
-            </ResponsiveContainer>
+                    <Area
+                        dataKey="income"
+                        type="monotone"
+                        fill="url(#fillIncome)"
+                        fillOpacity={0.4}
+                        stroke="var(--color-income)"
+                        stackId="b"
+                    />
+                </AreaChart>
+            </ChartContainer>
         </div>
     );
 };

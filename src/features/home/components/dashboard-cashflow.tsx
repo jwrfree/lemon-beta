@@ -7,6 +7,7 @@ import { format, eachDayOfInterval, subDays, differenceInCalendarDays, startOfDa
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { Transaction } from '@/types/models';
 
 // Dynamically import DashboardChart to reduce initial bundle size
@@ -25,14 +26,14 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
     const now = useMemo(() => new Date(), []);
 
     const chartRangeDays = useMemo(() => {
-        if (chartRange === '90') return 89;
-        if (chartRange === 'month') return differenceInCalendarDays(now, startOfDay(startOfMonth(now)));
+        if ((chartRange as string) === '90') return 89;
+        if ((chartRange as string) === 'month') return differenceInCalendarDays(now, startOfDay(startOfMonth(now)));
         return 29;
     }, [chartRange, now]);
 
     const chartData = useMemo(() => {
         // Handle monthly aggregation for '90' days (3 months) view
-        if (chartRange === '90') {
+        if ((chartRange as string) === '90') {
             const months = eachMonthOfInterval({
                 start: subMonths(now, 2), // Current month + 2 previous months
                 end: now
@@ -93,42 +94,25 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
     }, [transactions, chartRange, chartRangeDays, now]);
 
     return (
-        <Card className="col-span-4 border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
+        <Card className="border-none shadow-sm bg-card rounded-lg">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-lg font-bold">Arus Kas</CardTitle>
-                        <CardDescription className="text-xs font-medium">Pergerakan harian rentang terpilih</CardDescription>
+                        <CardTitle className="text-sm font-semibold">Arus Kas</CardTitle>
+                        <CardDescription className="text-xs">
+                            Pemasukan vs Pengeluaran
+                        </CardDescription>
                     </div>
-                    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl">
-                        <Button 
-                            variant={chartRange === 'month' ? 'default' : 'ghost'} 
-                            size="sm" 
-                            className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
-                            onClick={() => setChartRange('month')}
-                        >
-                            Bulan Ini
-                        </Button>
-                        <Button 
-                            variant={chartRange === '30' ? 'default' : 'ghost'} 
-                            size="sm" 
-                            className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
-                            onClick={() => setChartRange('30')}
-                        >
-                            30 Hari
-                        </Button>
-                        <Button 
-                            variant={chartRange === '90' ? 'default' : 'ghost'} 
-                            size="sm" 
-                            className="h-7 text-[10px] font-bold uppercase tracking-wider rounded-lg"
-                            onClick={() => setChartRange('90')}
-                        >
-                            3 Bulan
-                        </Button>
-                    </div>
+                    <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as any)} className="w-[200px]">
+                        <TabsList className="grid w-full grid-cols-3 h-7">
+                            <TabsTrigger value="month" className="text-[10px]">Bulan Ini</TabsTrigger>
+                            <TabsTrigger value="30" className="text-[10px]">30 Hari</TabsTrigger>
+                            <TabsTrigger value="90" className="text-[10px]">3 Bulan</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                 </div>
             </CardHeader>
-            <CardContent className="pl-2">
+            <CardContent>
                 <DashboardChart data={chartData} />
             </CardContent>
         </Card>

@@ -10,6 +10,7 @@ import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar } from 
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
 import { useData } from '@/hooks/use-data';
+import { DesktopTransactionTable } from './desktop-transaction-table';
 
 interface TransactionListProps {
     transactions?: Transaction[];
@@ -57,67 +58,8 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
     return (
         <div className="space-y-6">
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-hidden rounded-xl border bg-card shadow-sm">
-                <table className="w-full text-sm text-left">
-                    <thead className="bg-muted/50 text-muted-foreground font-medium border-b">
-                        <tr>
-                            <th className="p-4">Deskripsi</th>
-                            <th className="p-4">Kategori</th>
-                            <th className="p-4">Dompet</th>
-                            <th className="p-4">Tanggal</th>
-                            <th className="p-4 text-right">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/40 bg-card/30">
-                        {finalTransactions.map((t) => {
-                            const cat = getCategoryVisuals(t.category);
-                            const CatIcon = cat.icon;
-                            const wallet = wallets.find(w => w.id === t.walletId);
-                            const isExpense = t.type === 'expense';
-
-                            return (
-                                <tr key={t.id} className="hover:bg-primary/[0.02] transition-colors group cursor-pointer" onClick={() => router.push('/transactions')}>
-                                    <td className="p-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className={cn("p-2.5 rounded-xl shadow-sm", cat.bgColor)}>
-                                                <CatIcon className={cn("h-4.5 w-4.5", cat.color)} />
-                                            </div>
-                                            <div>
-                                                <div className="font-bold text-foreground text-sm leading-tight group-hover:text-primary transition-colors">{t.description}</div>
-                                                {t.location && (
-                                                    <div className="flex items-center text-[10px] font-medium text-muted-foreground mt-1 uppercase tracking-wider">
-                                                        <MapPin className="h-2.5 w-2.5 mr-1" /> {t.location}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="p-4">
-                                        <Badge variant="secondary" className="font-bold text-[10px] uppercase tracking-tighter bg-muted/50 text-muted-foreground border-none px-2 py-0">
-                                            {t.category}
-                                        </Badge>
-                                    </td>
-                                    <td className="p-4 text-xs font-medium text-muted-foreground/80">
-                                        <div className="flex items-center">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-primary/40 mr-2" />
-                                            {wallet?.name || 'Tunai'}
-                                        </div>
-                                    </td>
-                                    <td className="p-4 text-xs font-medium text-muted-foreground/60 whitespace-nowrap">
-                                        {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
-                                    </td>
-                                    <td className={cn(
-                                        "p-4 text-right font-extrabold text-sm",
-                                        isExpense ? "text-destructive" : "text-success"
-                                    )}>
-                                        <span className="opacity-70 mr-0.5">{isExpense ? '-' : '+'}</span>
-                                        {formatCurrency(t.amount)}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+            <div className="hidden md:block">
+                <DesktopTransactionTable transactions={finalTransactions} wallets={wallets} />
             </div>
 
             {/* Mobile List View (Grouped) */}

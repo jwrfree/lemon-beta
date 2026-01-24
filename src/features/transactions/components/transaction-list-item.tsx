@@ -20,7 +20,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Tr
     const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(transaction.category);
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-destructive' : 'text-success';
+    const amountColor = isExpense ? 'text-foreground' : 'text-teal-600';
 
     return (
         <div className="flex items-center gap-4 p-3.5">
@@ -28,8 +28,8 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Tr
                  <CategoryIcon className={cn("h-5 w-5", color)} />
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-bold text-foreground text-sm leading-tight mb-0.5">{transaction.description}</div>
-                 <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
+                <div className="font-medium text-foreground text-sm leading-tight mb-0.5">{transaction.description}</div>
+                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     <span>{transaction.subCategory || transaction.category}</span>
                     {transaction.location && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
                     {transaction.location && <span className="truncate">{transaction.location}</span>}
@@ -44,7 +44,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Tr
                 </div>
             </div>
             <div 
-                className={cn("text-sm font-extrabold tracking-tight", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
+                className={cn("text-sm font-semibold tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
                 aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
             >
                 <span aria-hidden="true">
@@ -168,7 +168,7 @@ export const TransactionListItem = ({ transaction, hideDate = false }: { transac
                 className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
             >
                 <motion.div
-                    className="absolute right-6 h-10 w-10 bg-red-800/80 rounded-full z-0"
+                    className="absolute right-6 h-10 w-10 bg-pink-800/80 rounded-full z-0"
                     animate={deleteRippleControls}
                     initial={{ scale: 0, opacity: 0 }}
                 />
@@ -177,19 +177,19 @@ export const TransactionListItem = ({ transaction, hideDate = false }: { transac
                 </motion.div>
             </motion.div>
              {/* Edit Action BG */}
-             <motion.div
-                style={{ opacity: editOpacity }}
-                className="absolute inset-y-0 left-0 flex items-center justify-start bg-blue-600 text-white pl-6 w-full"
-            >
-                <motion.div
-                    className="absolute left-6 h-10 w-10 bg-blue-800/80 rounded-full z-0"
-                    animate={editRippleControls}
-                    initial={{ scale: 0, opacity: 0 }}
-                />
-                <motion.div animate={editIconControls} className="relative z-10">
-                    <Pencil className="h-6 w-6 text-white" />
-                </motion.div>
-            </motion.div>
+            <motion.div
+               style={{ opacity: editOpacity }}
+               className="absolute inset-y-0 left-0 flex items-center justify-start bg-primary text-primary-foreground pl-6 w-full"
+           >
+               <motion.div
+                   className="absolute left-6 h-10 w-10 bg-primary-foreground/20 rounded-full z-0"
+                   animate={editRippleControls}
+                   initial={{ scale: 0, opacity: 0 }}
+               />
+               <motion.div animate={editIconControls} className="relative z-10">
+                   <Pencil className="h-6 w-6 text-primary-foreground" />
+               </motion.div>
+           </motion.div>
             
             <motion.div
                 drag="x"

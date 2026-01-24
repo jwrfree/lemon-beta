@@ -235,7 +235,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                                 initial={{ opacity: 0, x: 5 }} 
                                 animate={{ opacity: 1, x: 0 }} 
                                 exit={{ opacity: 0 }}
-                                className="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-full"
+                                className="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-md"
                             >
                                 <Loader2 className="h-2.5 w-2.5 animate-spin" />
                                 AI berpikir...
@@ -245,7 +245,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.8 }} 
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100"
+                                className="flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100"
                             >
                                 <Sparkles className="h-2.5 w-2.5 fill-amber-600" />
                                 Disarankan AI
@@ -253,10 +253,11 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         )}
                     </AnimatePresence>
                 </div>
-                <button
+                <Button
                     id="category-button"
                     type="button"
-                    className={cn("flex w-full items-center justify-between rounded-md border p-3 bg-background", errors.category && "border-destructive")}
+                    variant="outline"
+                    className={cn("flex w-full items-center justify-between rounded-md p-3 h-auto", errors.category && "border-destructive")}
                     onClick={() => {
                         const catObj = categories.find(c => c.name === category);
                         if (catObj) handleCategorySelect(catObj);
@@ -271,7 +272,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         <span className="text-muted-foreground">Pilih Kategori</span>
                     )}
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </button>
+                </Button>
                 <CategoryGrid categories={categories} selectedCategory={category} onCategorySelect={handleCategorySelect} />
                 {errors.category && <p className="text-sm font-medium text-destructive">{errors.category.message as string}</p>}
             </div>
@@ -319,19 +320,19 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         animate={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }}
                         exit={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="w-full max-w-md bg-background rounded-t-2xl md:rounded-2xl shadow-xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh] border border-border/50"
+                        className="w-full max-w-md bg-background rounded-t-xl md:rounded-lg shadow-xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh] border border-border/50"
                         onClick={(e) => e.stopPropagation()}
                         {...handlers}
                     >
-                        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl md:rounded-2xl z-10">
+                        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl md:rounded-t-lg z-10">
                             <h2 className="text-xl font-bold">{title}</h2>
-                            <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-full">
+                            <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-md">
                                 <X className="h-5 w-5" />
                                 <span className="sr-only">Tutup</span>
                             </Button>
                         </div>
                         {formContent}
-                        <div className="p-4 border-t sticky bottom-0 bg-background md:rounded-b-2xl z-10">
+                        <div className="p-4 border-t sticky bottom-0 bg-background md:rounded-b-lg z-10">
                             <Button type="submit" onClick={handleSubmit(onSubmit as any, onInvalid)} className="w-full" size="lg" disabled={isSubmitting}>
                                 {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
                             </Button>

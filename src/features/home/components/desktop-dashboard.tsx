@@ -1,28 +1,22 @@
-
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/providers/app-provider';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-    ArrowUpRight, 
-    ArrowDownLeft, 
-    Wallet, 
-    TrendingUp, 
     Plus, 
     Search, 
     RefreshCw
 } from 'lucide-react';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays } from 'date-fns';
 
-import { DashboardHero } from './dashboard-hero';
-import { StatCard } from './dashboard-stat-card';
+import { PageHeader } from '@/components/page-header';
+import { FinanceOverview } from './finance-overview';
 import { DashboardAlerts } from './dashboard-alerts';
 import { DashboardCashflow } from './dashboard-cashflow';
 import { DashboardWallets } from './dashboard-wallets';
@@ -33,20 +27,17 @@ export const DesktopDashboard = () => {
     const { reminders } = useReminders();
     const { debts } = useDebts();
     const { setIsTxModalOpen } = useUI();
-    const { userData } = useApp();
     const router = useRouter();
+
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const [chartRange, setChartRange] = useState<'30' | '90' | 'month'>('month');
     const [selectedWalletId, setSelectedWalletId] = useState<string>('all');
     const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
-
-    const timeBasedGreeting = useMemo(() => {
-        const hour = new Date().getHours();
-        if (hour < 12) return 'Selamat Pagi';
-        if (hour < 15) return 'Selamat Siang';
-        if (hour < 18) return 'Selamat Sore';
-        return 'Selamat Malam';
-    }, []);
 
     // Stats Calculation
     const now = useMemo(() => new Date(), []);
@@ -92,6 +83,7 @@ export const DesktopDashboard = () => {
 
     const incomeTrend = calculateTrend(currentStats.income, lastStats.income);
     const expenseTrend = calculateTrend(currentStats.expense, lastStats.expense);
+    const netTrend = calculateTrend(currentStats.net, lastStats.net);
 
     const totalBalance = visibleWallets.reduce((acc, w) => acc + w.balance, 0);
     const nowDate = useMemo(() => new Date(), []);
@@ -137,22 +129,21 @@ export const DesktopDashboard = () => {
 
     const recentTransactions = filteredTransactions.slice(0, 5);
 
+    if (!mounted) return null;
+
     return (
-        <div className="w-full">
-            {/* Header */}
-            <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 border-b shadow-sm">
-                <div className="flex h-16 items-center justify-between gap-3 px-4 max-w-6xl mx-auto">
-                    <div className="flex flex-col">
-                        <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
-                        <p className="text-xs text-muted-foreground">{timeBasedGreeting}, {userData?.displayName || 'User'}</p>
-                    </div>
+        <div className="w-full h-full flex flex-col">
+            <PageHeader
+                title="Dashboard"
+                showBackButton={false}
+                extraActions={
                     <div className="flex items-center gap-2">
                         <div className="hidden lg:block">
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="w-52" aria-label="Filter dompet">
+                                <SelectTrigger className="w-52 h-10 rounded-md bg-background shadow-sm" aria-label="Filter dompet">
                                     <SelectValue placeholder="Semua dompet" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="rounded-md bg-background shadow-lg">
                                     <SelectItem value="all">Semua dompet</SelectItem>
                                     {wallets.map(wallet => (
                                         <SelectItem key={wallet.id} value={wallet.id}>
@@ -165,6 +156,7 @@ export const DesktopDashboard = () => {
                         <Button
                             variant="ghost"
                             size="icon"
+                            className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
                             onClick={() => {
                                 router.refresh();
                                 setLastRefreshed(new Date());
@@ -174,94 +166,56 @@ export const DesktopDashboard = () => {
                         >
                             <RefreshCw className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" onClick={() => router.push('/transactions')}>
-                            <Search className="mr-2 h-4 w-4" />
-                            Cari Transaksi
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
+                            onClick={() => router.push('/transactions')}
+                        >
+                            <Search className="h-4 w-4" />
                         </Button>
-                        <Button onClick={() => setIsTxModalOpen(true)}>
+                        <Button onClick={() => setIsTxModalOpen(true)} className="rounded-md shadow-sm">
                             <Plus className="mr-2 h-4 w-4" />
                             Transaksi Baru
                         </Button>
                     </div>
-                </div>
-            </div>
+                }
+            />
 
-            <div className="p-5 space-y-6 max-w-6xl mx-auto">
-                <DashboardHero 
+            <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+                <FinanceOverview 
                     totalBalance={totalBalance}
-                    selectedWalletId={selectedWalletId}
-                    visibleWallets={visibleWallets}
-                    lastRefreshed={lastRefreshed}
+                    income={currentStats.income}
+                    expense={currentStats.expense}
+                    net={currentStats.net}
                     incomeTrend={incomeTrend}
                     expenseTrend={expenseTrend}
-                    chartRange={chartRange}
-                    setChartRange={setChartRange}
+                    netTrend={netTrend}
                 />
 
-                {/* Section heading */}
-                <div className="flex items-center justify-between text-xs text-muted-foreground uppercase tracking-[0.25em] px-1">
-                    <span>Ringkasan</span>
-                    <span className="px-2 py-1 rounded-full bg-muted/60 border border-border">
-                        Rentang: {chartRange === '30' ? '30 hari' : chartRange === '90' ? '3 bulan' : 'Bulan ini'}
-                    </span>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    {/* Main Content Area */}
+                    <div className="lg:col-span-8 space-y-6">
+                        <DashboardCashflow 
+                            transactions={filteredTransactions}
+                            chartRange={chartRange}
+                            setChartRange={setChartRange}
+                        />
+                        <DashboardRecentTransactions 
+                            transactions={recentTransactions} 
+                            wallets={wallets}
+                        />
+                    </div>
+
+                    {/* Sidebar / Widgets Area */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <DashboardWallets wallets={visibleWallets} />
+                        <DashboardAlerts 
+                            reminderSummary={reminderSummary}
+                            debtSummary={debtSummary}
+                        />
+                    </div>
                 </div>
-
-                {/* Stats Cards */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                    <StatCard 
-                        title="Pemasukan" 
-                        value={currentStats.income} 
-                        icon={ArrowUpRight} 
-                        trend={incomeTrend.direction} 
-                        trendValue={incomeTrend.value}
-                        color="text-success"
-                        href="/transactions?type=income"
-                    />
-                    <StatCard 
-                        title="Pengeluaran" 
-                        value={currentStats.expense} 
-                        icon={ArrowDownLeft} 
-                        trend={expenseTrend.direction} 
-                        trendValue={expenseTrend.value}
-                        color="text-destructive"
-                        href="/transactions?type=expense"
-                    />
-                    <StatCard 
-                        title="Net (Bersih)" 
-                        value={currentStats.net} 
-                        icon={TrendingUp} 
-                        trend={currentStats.net >= lastStats.net ? 'up' : 'down'} 
-                        trendValue={calculateTrend(currentStats.net, lastStats.net).value}
-                        color={currentStats.net >= 0 ? "text-success" : "text-destructive"}
-                        href="/charts"
-                    />
-                    <StatCard 
-                        title="Dompet Aktif" 
-                        value={visibleWallets.length} 
-                        icon={Wallet} 
-                        color="text-primary"
-                        href="/wallets"
-                    />
-                </div>
-
-                <DashboardAlerts 
-                    reminderSummary={reminderSummary}
-                    debtSummary={debtSummary}
-                />
-
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-                    <DashboardCashflow 
-                        transactions={filteredTransactions}
-                        chartRange={chartRange}
-                        setChartRange={setChartRange}
-                    />
-                    <DashboardWallets wallets={visibleWallets} />
-                </div>
-
-                <DashboardRecentTransactions 
-                    transactions={recentTransactions} 
-                    wallets={wallets}
-                />
             </div>
         </div>
     );

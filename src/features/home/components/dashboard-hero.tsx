@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Shield, Sparkles, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
+import { Shield, Clock, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,39 +33,39 @@ export const DashboardHero = ({
 }: DashboardHeroProps) => {
     return (
         <div className="grid gap-4 lg:grid-cols-3 items-stretch">
-            <Card className="col-span-2 border-none shadow-sm bg-primary text-primary-foreground overflow-hidden relative rounded-3xl">
-                <div className="absolute top-0 right-0 p-6 opacity-10">
-                    <Shield className="h-20 w-20 rotate-12" />
+            <Card className="col-span-2 border-none shadow-sm bg-primary text-primary-foreground overflow-hidden relative rounded-lg">
+                <div className="absolute top-0 right-0 p-6 opacity-5">
+                    <Shield className="h-32 w-32" />
                 </div>
                 <CardHeader className="pb-2 flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="text-[11px] font-bold text-primary-foreground/80 uppercase tracking-[0.18em]">Saldo Total</CardTitle>
-                        <div className="text-3xl font-extrabold tracking-tight">
+                        <CardTitle className="text-xs font-medium text-primary-foreground/80 tracking-tight">Saldo Total</CardTitle>
+                        <div className="text-3xl font-bold tracking-tight">
                             <AnimatedCounter value={totalBalance} />
                         </div>
                     </div>
                     <div className="flex flex-col items-end gap-1 text-xs">
-                        <span className="px-2 py-1 rounded-full bg-primary-foreground/15 text-primary-foreground/90 border border-primary-foreground/20">
+                        <span className="px-2 py-1 rounded-md bg-primary-foreground/15 text-primary-foreground/90 border border-primary-foreground/20">
                             {selectedWalletId === 'all' ? 'Semua dompet' : (visibleWallets[0]?.name || 'Dompet')}
                         </span>
                         <span className="text-primary-foreground/70 flex items-center gap-1">
-                            <Sparkles className="h-3.5 w-3.5" /> Diperbarui {format(lastRefreshed, 'HH:mm')}
+                            <Clock className="h-3.5 w-3.5" /> Diperbarui {format(lastRefreshed, 'HH:mm')}
                         </span>
                     </div>
                 </CardHeader>
                 <CardContent className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wide",
-                            incomeTrend.direction === 'flat' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-success/20 text-success'
+                            "flex items-center px-2 py-1 rounded-md text-[11px] font-medium tracking-tight",
+                            incomeTrend.direction === 'flat' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-teal-600/20 text-teal-600'
                         )}>
                             {incomeTrend.direction === 'up' && <TrendingUp className="h-3.5 w-3.5 mr-1" />}
                             {incomeTrend.direction === 'down' && <TrendingDown className="h-3.5 w-3.5 mr-1" />}
                             {incomeTrend.value} vs bulan lalu
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded-lg text-[11px] font-semibold uppercase tracking-wide",
-                            expenseTrend.direction === 'flat' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-destructive/15 text-destructive'
+                            "flex items-center px-2 py-1 rounded-md text-[11px] font-medium tracking-tight",
+                            expenseTrend.direction === 'flat' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-foreground/10 text-foreground'
                         )}>
                             {expenseTrend.direction === 'up' && <TrendingUp className="h-3.5 w-3.5 mr-1" />}
                             {expenseTrend.direction === 'down' && <TrendingDown className="h-3.5 w-3.5 mr-1" />}
@@ -79,7 +79,7 @@ export const DashboardHero = ({
                     </Button>
                 </CardContent>
             </Card>
-            <Card className="border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
+            <Card className="border-none shadow-sm bg-card rounded-lg">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-semibold">Rentang Data</CardTitle>
                     <CardDescription className="text-xs">Atur cakupan statistik & grafik</CardDescription>

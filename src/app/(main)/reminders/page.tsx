@@ -5,6 +5,7 @@ import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useUI } from '@/components/ui-provider';
@@ -186,41 +187,26 @@ export default function RemindersPage() {
                     <div className="space-y-4">
                         {/* Mobile chip filters */}
                         <div className="md:hidden space-y-3">
-                            <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar px-1">
-                                {Object.entries(statusLabels).map(([key, label]) => (
-                                    <button
-                                        key={key}
-                                        onClick={() => setActiveTab(key)}
-                                        className={cn(
-                                            "inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-medium border",
-                                            activeTab === key ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border"
-                                        )}
-                                    >
-                                        {label}
-                                    </button>
-                                ))}
-                            </div>
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                                <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-full overflow-x-auto">
+                                    {Object.entries(statusLabels).map(([key, label]) => (
+                                        <TabsTrigger 
+                                            key={key} 
+                                            value={key} 
+                                            className="rounded-full border bg-background data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-7 text-xs px-3"
+                                        >
+                                            {label}
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
+                            </Tabs>
                             <div className="flex items-center gap-2">
-                                <div className="grid w-full grid-cols-2 h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
-                                    <button
-                                        onClick={() => setRange('week')}
-                                        className={cn(
-                                            "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                            range === 'week' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
-                                        )}
-                                    >
-                                        Minggu ini
-                                    </button>
-                                    <button
-                                        onClick={() => setRange('30')}
-                                        className={cn(
-                                            "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                            range === '30' ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50"
-                                        )}
-                                    >
-                                        30 hari
-                                    </button>
-                                </div>
+                                <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
+                                    <TabsList className="grid w-full grid-cols-2 h-9 bg-muted p-1 rounded-lg">
+                                        <TabsTrigger value="week" className="rounded-md text-xs">Minggu ini</TabsTrigger>
+                                        <TabsTrigger value="30" className="rounded-md text-xs">30 hari</TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
                                 <Button
                                     size="icon"
                                     variant="outline"
@@ -261,7 +247,7 @@ export default function RemindersPage() {
                                                 : format(parseISO(dateKey), 'EEEE, d MMM', { locale: dateFnsLocaleId });
                                     return (
                                         <div key={dateKey} className="space-y-2">
-                                            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground px-1">{dateLabel}</p>
+                                            <h2 className="text-sm font-medium tracking-tight text-muted-foreground px-1">{dateLabel}</h2>
                                             {items.map(reminder => {
                                                 const status = getReminderStatus(reminder);
                                                 const dueDate = reminder.dueDate ? parseISO(reminder.dueDate) : null;
@@ -274,7 +260,7 @@ export default function RemindersPage() {
                                                             <div className={cn(
                                                                 "p-2 rounded-full",
                                                                 status === 'overdue' ? 'bg-destructive/10 text-destructive' :
-                                                                status === 'completed' ? 'bg-stone-200 text-stone-700' :
+                                                                status === 'completed' ? 'bg-gray-200 text-gray-700' :
                                                                 status === 'snoozed' ? 'bg-amber-100 text-amber-700' :
                                                                 'bg-primary/10 text-primary'
                                                             )}>
@@ -366,7 +352,7 @@ export default function RemindersPage() {
                                             <div className="absolute left-0 top-2 bottom-2 w-px bg-border" />
                                             <div className="flex items-center gap-2 mb-2">
                                                 <div className="h-2 w-2 rounded-full bg-primary" />
-                                                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{dateLabel}</p>
+                                                <h2 className="text-sm font-medium tracking-tight text-muted-foreground">{dateLabel}</h2>
                                             </div>
                                             <div className="space-y-3">
                                                 {items.map(reminder => {
@@ -381,7 +367,7 @@ export default function RemindersPage() {
                                                                 <div className={cn(
                                                                     "p-2 rounded-full",
                                                                     status === 'overdue' ? 'bg-destructive/10 text-destructive' :
-                                                                    status === 'completed' ? 'bg-stone-200 text-stone-700' :
+                                                                    status === 'completed' ? 'bg-gray-200 text-gray-700' :
                                                                     status === 'snoozed' ? 'bg-amber-100 text-amber-700' :
                                                                     'bg-primary/10 text-primary'
                                                                 )}>
@@ -496,25 +482,13 @@ export default function RemindersPage() {
                                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                                         <Calendar className="h-4 w-4" /> Rentang waktu
                                     </p>
-                                    <div className="grid grid-cols-2 p-1 bg-muted rounded-lg">
-                                        <button
-                                            onClick={() => setRange('week')}
-                                            className={cn(
-                                                "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                                range === 'week' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:bg-muted-foreground/10"
-                                            )}
-                                        >
-                                            Minggu ini
-                                        </button>
-                                        <button
-                                            onClick={() => setRange('30')}
-                                            className={cn(
-                                                "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                                range === '30' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:bg-muted-foreground/10"
-                                            )}
-                                        >
-                                            30 hari
-                                        </button>
+                                    <div className="w-full">
+                                        <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
+                                            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-lg">
+                                                <TabsTrigger value="week" className="rounded-md text-xs">Minggu ini</TabsTrigger>
+                                                <TabsTrigger value="30" className="rounded-md text-xs">30 hari</TabsTrigger>
+                                            </TabsList>
+                                        </Tabs>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-sm">

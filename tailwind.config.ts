@@ -3,9 +3,10 @@ import type {Config} from 'tailwindcss';
 import animate from 'tailwindcss-animate';
 
 const colorSafelist = [
-  'yellow', 'blue', 'purple', 'cyan', 'orange', 'pink', 'green', 'indigo', 'red', 'teal', 'stone'
+  'yellow', 'blue', 'purple', 'cyan', 'orange', 'pink', 'green', 'indigo', 'red', 'teal', 'rose', 'fuchsia', 'violet'
 ].flatMap((color) => [
   `text-${color}-600`, `dark:text-${color}-500`,
+  `text-${color}-500`, `dark:text-${color}-400`,
   `bg-${color}-100`, `dark:bg-${color}-900/50`,
 ]);
 
@@ -21,65 +22,89 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "sans-serif"],
+        sans: ["var(--font-geist-sans)", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "monospace"],
       },
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
         success: {
-          DEFAULT: 'hsl(var(--success))',
-          foreground: 'hsl(var(--success-foreground))',
+          DEFAULT: 'hsl(var(--success))', // Kept as HSL
+          foreground: 'hsl(var(--success-foreground))', // Kept as HSL
         },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
+        
+        // Custom Gray Palette (OKLCH)
+        gray: {
+          '50': 'var(--color-gray-50)',
+          '100': 'var(--color-gray-100)',
+          '200': 'var(--color-gray-200)',
+          '300': 'var(--color-gray-300)',
+          '400': 'var(--color-gray-400)',
+          '500': 'var(--color-gray-500)',
+          '600': 'var(--color-gray-600)',
+          '700': 'var(--color-gray-700)',
+          '800': 'var(--color-gray-800)',
+          '900': 'var(--color-gray-900)',
+          '950': 'var(--color-gray-950)',
+        },
+
         chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
+          '1': 'var(--chart-1)',
+          '2': 'var(--chart-2)',
+          '3': 'var(--chart-3)',
+          '4': 'var(--chart-4)',
+          '5': 'var(--chart-5)',
         },
         // Adding HSL vars for category colors to be accessible by JS
-        yellow: { '500': 'hsl(var(--yellow-500))', '600': 'hsl(var(--yellow-600))' },
-        blue: { '500': 'hsl(var(--blue-500))', '600': 'hsl(var(--blue-600))' },
-        purple: { '500': 'hsl(var(--purple-500))', '600': 'hsl(var(--purple-600))' },
-        cyan: { '500': 'hsl(var(--cyan-500))', '600': 'hsl(var(--cyan-600))' },
-        orange: { '500': 'hsl(var(--orange-500))', '600': 'hsl(var(--orange-600))' },
-        pink: { '500': 'hsl(var(--pink-500))', '600': 'hsl(var(--pink-600))' },
-        green: { '500': 'hsl(var(--green-500))', '600': 'hsl(var(--green-600))' },
-        indigo: { '500': 'hsl(var(--indigo-500))', '600': 'hsl(var(--indigo-600))' },
-        red: { '500': 'hsl(var(--red-500))', '600': 'hsl(var(--red-600))' },
-        teal: { '500': 'hsl(var(--teal-500))', '600': 'hsl(var(--teal-600))' },
-        stone: { '500': 'hsl(var(--stone-500))', '600': 'hsl(var(--stone-600))' },
+        yellow: { '100': 'hsl(var(--yellow-100))', '500': 'hsl(var(--yellow-500))', '600': 'hsl(var(--yellow-600))', '900': 'hsl(var(--yellow-900))' },
+        blue: { '100': 'hsl(var(--blue-100))', '500': 'hsl(var(--blue-500))', '600': 'hsl(var(--blue-600))', '900': 'hsl(var(--blue-900))' },
+        purple: { '100': 'hsl(var(--purple-100))', '500': 'hsl(var(--purple-500))', '600': 'hsl(var(--purple-600))', '900': 'hsl(var(--purple-900))' },
+        cyan: { '100': 'hsl(var(--cyan-100))', '500': 'hsl(var(--cyan-500))', '600': 'hsl(var(--cyan-600))', '900': 'hsl(var(--cyan-900))' },
+        orange: { '100': 'hsl(var(--orange-100))', '500': 'hsl(var(--orange-500))', '600': 'hsl(var(--orange-600))', '900': 'hsl(var(--orange-900))' },
+        pink: { '100': 'hsl(var(--pink-100))', '500': 'hsl(var(--pink-500))', '600': 'hsl(var(--pink-600))', '900': 'hsl(var(--pink-900))' },
+        rose: { '100': 'hsl(var(--rose-100))', '500': 'hsl(var(--rose-500))', '600': 'hsl(var(--rose-600))', '900': 'hsl(var(--rose-900))' },
+        fuchsia: { '100': 'hsl(var(--fuchsia-100))', '500': 'hsl(var(--fuchsia-500))', '600': 'hsl(var(--fuchsia-600))', '900': 'hsl(var(--fuchsia-900))' },
+        violet: { '100': 'hsl(var(--violet-100))', '500': 'hsl(var(--violet-500))', '600': 'hsl(var(--violet-600))', '900': 'hsl(var(--violet-900))' },
+        green: { '100': 'hsl(var(--green-100))', '500': 'hsl(var(--green-500))', '600': 'hsl(var(--green-600))', '900': 'hsl(var(--green-900))' },
+        indigo: { '100': 'hsl(var(--indigo-100))', '500': 'hsl(var(--indigo-500))', '600': 'hsl(var(--indigo-600))', '900': 'hsl(var(--indigo-900))' },
+        red: { '100': 'hsl(var(--red-100))', '500': 'hsl(var(--red-500))', '600': 'hsl(var(--red-600))', '900': 'hsl(var(--red-900))' },
+        teal: {
+          '100': 'hsl(var(--teal-100))',
+          '500': 'hsl(var(--teal-500))',
+          '600': 'hsl(var(--teal-600))',
+          '900': 'hsl(var(--teal-900))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

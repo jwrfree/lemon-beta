@@ -35,12 +35,25 @@ export async function middleware(request: NextRequest) {
     data: { user }, 
   } = await supabase.auth.getUser()
 
-  // Protected Routes Pattern
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/home') || 
-                           request.nextUrl.pathname.startsWith('/wallets') ||
-                           request.nextUrl.pathname.startsWith('/transactions') ||
-                           request.nextUrl.pathname.startsWith('/budgeting') ||
-                           request.nextUrl.pathname.startsWith('/settings');
+  // Protected Routes Pattern - All routes under (main) group should be protected
+  const protectedPaths = [
+    '/home',
+    '/charts',
+    '/transactions',
+    '/budgeting',
+    '/settings',
+    '/wallets',
+    '/add-smart',
+    '/assets-liabilities',
+    '/categories',
+    '/debts',
+    '/goals',
+    '/notifications',
+    '/reminders',
+    '/token-calculator'
+  ];
+
+  const isProtectedRoute = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));
 
   const isAuthRoute = request.nextUrl.pathname === '/' || 
                       request.nextUrl.pathname.startsWith('/login') || 

@@ -210,14 +210,16 @@ export const LoginPage = ({
                                                     {...field}
                                                 />
                                             </FormControl>
-                                            <button
+                                            <Button
                                                 type="button"
+                                                variant="ghost"
+                                                size="icon"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
                                                 aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
                                             >
-                                                {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
-                                            </button>
+                                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                            </Button>
                                         </div>
                                         <FormDescription>Minimal 6 karakter kombinasi huruf dan angka.</FormDescription>
                                         <FormMessage />

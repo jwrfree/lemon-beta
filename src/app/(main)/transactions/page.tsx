@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, X, ListFilter } from 'lucide-react';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Input } from '@/components/ui/input';
@@ -136,7 +137,7 @@ function TransactionsPageContent() {
                             <span className="sr-only">Buka filter transaksi</span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="bottom" className="rounded-t-2xl max-h-[80vh] flex flex-col">
+                    <SheetContent side="bottom" className="rounded-t-xl max-h-[80vh] flex flex-col">
                         <SheetHeader className="text-left">
                             <SheetTitle>Filter Transaksi</SheetTitle>
                         </SheetHeader>
@@ -171,25 +172,24 @@ function TransactionsPageContent() {
             
             <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
                 <div className="w-full">
-                    <div className="grid w-full grid-cols-4 h-10 items-center justify-center rounded-md bg-stone-100 dark:bg-stone-800 p-1 text-muted-foreground">
-                        {[
-                            { value: 'all', label: 'Semua' },
-                            { value: 'expense', label: 'Pengeluaran' },
-                            { value: 'income', label: 'Pemasukan' },
-                            { value: 'debt', label: 'Hutang' }
-                        ].map((tab) => (
-                            <button
-                                key={tab.value}
-                                onClick={() => handleTabChange(tab.value)}
-                                className={cn(
-                                    "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                    activeTab === tab.value ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
-                                )}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
-                    </div>
+                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                        <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-gray-800 h-10 p-1 rounded-md">
+                            {[
+                                { value: 'all', label: 'Semua' },
+                                { value: 'expense', label: 'Pengeluaran' },
+                                { value: 'income', label: 'Pemasukan' },
+                                { value: 'debt', label: 'Hutang' }
+                            ].map((tab) => (
+                                <TabsTrigger 
+                                    key={tab.value} 
+                                    value={tab.value} 
+                                    className="rounded-sm text-xs md:text-sm"
+                                >
+                                    {tab.label}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
                 </div>
                 
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (

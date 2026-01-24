@@ -18,7 +18,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
     
     const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-destructive' : 'text-green-600 dark:text-green-500';
+    const amountColor = isExpense ? 'text-destructive' : 'text-teal-600 dark:text-teal-500';
 
     return (
         <motion.div

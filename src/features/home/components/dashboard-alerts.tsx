@@ -27,8 +27,8 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
     const router = useRouter();
 
     return (
-        <div className="grid gap-4 md:grid-cols-2">
-            <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm rounded-3xl">
+        <div className="grid gap-4">
+            <Card className="border-none shadow-sm bg-card rounded-lg">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -42,15 +42,15 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 </CardHeader>
                 <CardContent className="space-y-2">
                     <div className="flex items-center gap-3">
-                        <div className="rounded-xl bg-destructive/10 text-destructive px-3 py-2 text-sm font-semibold">
+                        <div className="rounded-md bg-destructive/10 text-destructive px-3 py-2 text-sm font-semibold">
                             Overdue: {reminderSummary.overdueCount}
                         </div>
-                        <div className="rounded-xl bg-primary/10 text-primary px-3 py-2 text-sm font-semibold">
+                        <div className="rounded-md bg-primary/10 text-primary px-3 py-2 text-sm font-semibold">
                             Segera: {reminderSummary.upcomingCount}
                         </div>
                     </div>
                     {reminderSummary.nextReminder ? (
-                        <div className="rounded-2xl border border-border p-3">
+                        <div className="rounded-md border border-border p-3">
                             <p className="text-sm font-semibold">{reminderSummary.nextReminder.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Calendar className="h-3.5 w-3.5" />
@@ -63,7 +63,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm bg-card/60 backdrop-blur-sm rounded-3xl">
+            <Card className="border-none shadow-sm bg-card rounded-lg">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -77,8 +77,8 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 </CardHeader>
                 <CardContent className="space-y-2">
                     {debtSummary.nextDueDebt ? (
-                        <div className="rounded-2xl border border-border p-3">
-                            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground mb-1">Jatuh Tempo</p>
+                        <div className="rounded-md border border-border p-3">
+                            <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Jatuh Tempo</p>
                             <p className="text-sm font-semibold">{debtSummary.nextDueDebt.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Calendar className="h-3.5 w-3.5" />
@@ -89,8 +89,8 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                         <p className="text-sm text-muted-foreground">Tidak ada jatuh tempo.</p>
                     )}
                     {debtSummary.largestDebt && (
-                        <div className="rounded-2xl border border-border p-3">
-                            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground mb-1">Outstanding Terbesar</p>
+                        <div className="rounded-md border border-border p-3">
+                            <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Outstanding Terbesar</p>
                             <p className="text-sm font-semibold">{debtSummary.largestDebt.title}</p>
                             <p className="text-xs text-muted-foreground">{debtSummary.largestDebt.counterparty}</p>
                             <p className="text-sm font-bold mt-1">{formatCurrency(debtSummary.largestDebt.outstandingBalance ?? debtSummary.largestDebt.principal ?? 0)}</p>

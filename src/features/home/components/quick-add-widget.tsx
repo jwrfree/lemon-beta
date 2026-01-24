@@ -60,7 +60,7 @@ export const QuickAddWidget = () => {
     };
 
     return (
-        <Card className="border-none shadow-sm bg-gradient-to-br from-card to-secondary/5 border border-primary/10 overflow-hidden">
+        <Card className="border-none shadow-sm bg-gradient-to-br from-card to-secondary/5 overflow-hidden">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
                     <Sparkles className="h-4 w-4 text-amber-500" />
@@ -69,7 +69,7 @@ export const QuickAddWidget = () => {
                 <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-7 px-2 text-[10px] uppercase tracking-wider font-bold text-muted-foreground"
+                    className="h-7 px-2 text-[10px] font-medium tracking-wide text-muted-foreground"
                     onClick={() => setIsTxModalOpen(true)}
                 >
                     Manual <PlusCircle className="ml-1 h-3 w-3" />
@@ -109,7 +109,7 @@ export const QuickAddWidget = () => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-primary/5 rounded-xl p-3 border border-primary/10"
+                            className="bg-primary/5 rounded-xl p-3"
                         >
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex flex-col">

@@ -12,7 +12,7 @@ import dynamic from 'next/dynamic';
 
 const MonthlyBarChart = dynamic(() => import('./lazy-charts').then(mod => mod.MonthlyBarChart), {
     ssr: false,
-    loading: () => <div className="h-60 w-full animate-pulse rounded-lg bg-muted" />
+    loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
 });
 
 export const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
@@ -55,17 +55,17 @@ export const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
     const sectionLabel = type === 'expense' ? 'pengeluaran' : 'pemasukan';
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
-            <CardHeader className="space-y-1">
-                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tren Tahunan</CardTitle>
-                <div className="flex items-center justify-between gap-3">
-                    <CardDescription className="text-sm font-medium text-foreground">
+        <Card className="shadow-sm border-none rounded-lg">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="space-y-1">
+                    <CardTitle className="text-lg font-bold tracking-tight">Tren Tahunan</CardTitle>
+                    <CardDescription className="text-xs">
                         {`Visualisasi ${sectionLabel} 12 bulan.`}
                     </CardDescription>
-                    <Badge variant="outline" className="border-border text-[10px] font-bold uppercase tracking-tighter">
-                        {rangeLabel}
-                    </Badge>
                 </div>
+                <Badge variant="outline" className="border-border text-[10px] font-medium">
+                    {rangeLabel}
+                </Badge>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="h-64 w-full pt-4">
@@ -73,16 +73,17 @@ export const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
                         data={data}
                         gradientId={gradientId}
                         sectionLabel={sectionLabel}
+                        color="var(--color-teal-600)"
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Setahun</p>
-                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(totalYear)}</p>
+                    <div className="rounded-lg bg-muted/50 p-4 border-none">
+                        <p className="text-[11px] font-medium text-muted-foreground mb-1">Total Setahun</p>
+                        <p className="text-lg font-bold text-foreground tabular-nums">{formatCurrency(totalYear)}</p>
                     </div>
-                    <div className="rounded-2xl bg-background/40 p-4 shadow-inner">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
-                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(average)}</p>
+                    <div className="rounded-lg bg-muted/50 p-4 border-none">
+                        <p className="text-[11px] font-medium text-muted-foreground mb-1">Rata-rata</p>
+                        <p className="text-lg font-bold text-foreground tabular-nums">{formatCurrency(average)}</p>
                     </div>
                 </div>
             </CardContent>

@@ -4,132 +4,485 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 28 14% 96%;
-    --foreground: 24 10% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 25% 45%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    
-    /* Semantic Success/Income - Optimized for Contrast (emerald-700 equivalent) */
-    --success: 161 94% 30%;
-    --success-foreground: 161 94% 95%;
-    
-    /* Overlays */
-    --overlay: 222.2 84% 4.9% / 0.5;
-    
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.8rem;
-    
-    /* Chart Colors */
-    --chart-1: 217 91% 60%;
-    --chart-2: 217 80% 70%;
-    --chart-3: 217 70% 80%;
-    --chart-4: 217 60% 90%;
-    --chart-5: 217 50% 95%;
 
-    /* Category Colors */
-    --yellow-500: 48 96% 51%;
-    --yellow-600: 45 94% 47%;
-    --blue-500: 217 91% 60%;
-    --blue-600: 221 83% 53%;
-    --purple-500: 262 84% 60%;
-    --purple-600: 263 70% 50%;
-    --cyan-500: 187 82% 57%;
-    --cyan-600: 192 94% 40%;
-    --orange-500: 25 95% 53%;
-    --orange-600: 24 94% 48%;
-    --pink-500: 336 82% 57%;
-    --pink-600: 334 81% 50%;
-    --green-500: 142 71% 45%;
-    --green-600: 142 80% 35%;
-    --indigo-500: 231 77% 61%;
-    --indigo-600: 232 68% 52%;
-    --red-500: 0 72% 51%;
-    --red-600: 0 84% 56%;
-    --teal-500: 168 76% 42%;
-    --teal-600: 170 81% 37%;
-    --stone-500: 27 9% 52%;
-    --stone-600: 26 8% 41%;
-    --slate-500: 27 9% 52%;
-    --slate-600: 26 8% 41%;
-  }
+  :root {
+
+    /* Primitive Grays */
+
+    --color-gray-50: oklch(0.985 0.002 247.839);
+
+    --color-gray-100: oklch(0.967 0.003 264.542);
+
+    --color-gray-200: oklch(0.928 0.006 264.531);
+
+    --color-gray-300: oklch(0.872 0.01 258.338);
+
+    --color-gray-400: oklch(0.707 0.022 261.325);
+
+    --color-gray-500: oklch(0.551 0.027 264.364);
+
+    --color-gray-600: oklch(0.446 0.03 256.802);
+
+    --color-gray-700: oklch(0.373 0.034 259.733);
+
+    --color-gray-800: oklch(0.278 0.033 256.848);
+
+    --color-gray-900: oklch(0.21 0.034 264.665);
+
+    --color-gray-950: oklch(0.13 0.028 261.692);
+
+    /* Primitive Teals */
+    --color-teal-50: oklch(0.984 0.014 180.72);
+    --color-teal-100: oklch(0.953 0.051 180.801);
+    --color-teal-200: oklch(0.91 0.096 180.426);
+    --color-teal-300: oklch(0.855 0.138 181.071);
+    --color-teal-400: oklch(0.777 0.152 181.912);
+    --color-teal-500: oklch(0.704 0.14 182.503);
+    --color-teal-600: oklch(0.6 0.118 184.704);
+    --color-teal-700: oklch(0.511 0.096 186.391);
+    --color-teal-800: oklch(0.437 0.078 188.216);
+    --color-teal-900: oklch(0.386 0.063 188.416);
+    --color-teal-950: oklch(0.277 0.046 192.524);
+
+    /* Primitive Pinks (Used for Destructive) */
+    --color-pink-50: oklch(0.971 0.013 342.342);
+    --color-pink-100: oklch(0.948 0.028 342.258);
+    --color-pink-200: oklch(0.899 0.061 343.231);
+    --color-pink-300: oklch(0.823 0.12 346.018);
+    --color-pink-400: oklch(0.718 0.202 349.761);
+    --color-pink-500: oklch(0.627 0.265 353.402);
+    --color-pink-600: oklch(0.531 0.201 3.566);
+    --color-pink-700: oklch(0.447 0.16 4.211);
+    --color-pink-800: oklch(0.385 0.128 5.404);
+    --color-pink-900: oklch(0.321 0.106 8.766);
+    --color-pink-950: oklch(0.202 0.088 8.657);
+
+
+
+            /* Semantic Tokens (Light Mode) */
+
+
+
+            --background: var(--color-gray-50);
+
+
+
+            --foreground: var(--color-gray-950);
+
+
+
+            
+
+
+
+            --card: oklch(1 0 0); /* Pure white for cards to pop against gray-50 bg */
+
+
+
+            --card-foreground: var(--color-gray-950);
+
+
+
+            
+
+            --popover: oklch(1 0 0);
+
+
+
+            --popover-foreground: var(--color-gray-950);
+
+
+
+            
+
+
+
+            --primary: var(--color-gray-900);
+
+
+
+            --primary-foreground: var(--color-gray-50);
+
+
+
+            
+
+
+
+            --secondary: var(--color-gray-100);
+
+
+
+            --secondary-foreground: var(--color-gray-900);
+
+
+
+            
+
+
+
+            --muted: var(--color-gray-100);
+
+
+
+            --muted-foreground: var(--color-gray-500);
+
+
+
+            
+
+
+
+            --accent: var(--color-gray-100);
+
+
+
+            --accent-foreground: var(--color-gray-900);
+
+    
+
+    --destructive: 341 82% 52%;
+    --destructive-foreground: 341 100% 96%;
+
+
+
+    --border: var(--color-gray-200);
+
+    --input: var(--color-gray-200);
+
+    --ring: var(--color-gray-950);
+
+    
+
+    --radius: 0.75rem;
+
+
+
+    /* Chart Colors (Mapped to Grays) */
+
+    --chart-1: var(--color-gray-900);
+
+    --chart-2: var(--color-gray-700);
+
+    --chart-3: var(--color-gray-500);
+
+    --chart-4: var(--color-gray-300);
+
+    --chart-5: var(--color-gray-100);
+
+
+
+        --yellow-100: 48 96% 89%;
+
+
+
+        --yellow-500: 48 96% 51%;
+
+
+
+        --yellow-600: 45 94% 47%;
+
+
+
+        --yellow-900: 45 94% 20%;
+
+
+
+    
+
+
+
+        --blue-100: 217 91% 91%;
+
+
+
+        --blue-500: 217 91% 60%;
+
+
+
+        --blue-600: 221 83% 53%;
+
+
+
+        --blue-900: 221 83% 20%;
+
+
+
+    
+
+
+
+        --purple-100: 262 84% 91%;
+
+
+
+        --purple-500: 262 84% 60%;
+
+
+
+        --purple-600: 263 70% 50%;
+
+
+
+        --purple-900: 263 70% 20%;
+
+
+
+    
+
+
+
+        --cyan-100: 187 82% 91%;
+
+
+
+        --cyan-500: 187 82% 57%;
+
+
+
+        --cyan-600: 192 94% 40%;
+
+
+
+        --cyan-900: 192 94% 15%;
+
+
+
+    
+
+
+
+        --orange-100: 25 95% 91%;
+
+
+
+        --orange-500: 25 95% 53%;
+
+
+
+        --orange-600: 24 94% 48%;
+
+
+
+        --orange-900: 24 94% 15%;
+
+
+
+    
+
+
+
+        --pink-100: 327 73% 91%;
+
+
+
+        --pink-500: 327 73% 58%;
+
+
+
+        --pink-600: 327 73% 47%;
+
+
+
+        --pink-900: 327 73% 15%;
+
+
+
+    
+
+
+
+        --rose-100: 341 82% 91%;
+
+
+
+        --rose-500: 341 82% 59%;
+
+
+
+        --rose-600: 341 82% 52%;
+
+
+
+        --rose-900: 341 82% 15%;
+
+
+
+    
+
+
+
+        --fuchsia-100: 292 91% 91%;
+
+
+
+        --fuchsia-500: 292 91% 65%;
+
+
+
+        --fuchsia-600: 292 91% 50%;
+
+
+
+        --fuchsia-900: 292 91% 15%;
+
+
+
+    
+
+
+
+        --violet-100: 258 90% 91%;
+
+
+
+        --violet-500: 258 90% 66%;
+
+
+
+        --violet-600: 258 90% 59%;
+
+
+
+        --violet-900: 258 90% 15%;
+
+
+
+    
+
+
+
+        --green-100: 142 71% 91%;
+
+
+
+        --green-500: 142 71% 45%;
+
+
+
+        --green-600: 142 80% 35%;
+
+
+
+        --green-900: 142 80% 15%;
+
+
+
+    
+
+
+
+        --indigo-100: 231 77% 91%;
+
+
+
+        --indigo-500: 231 77% 61%;
+
+
+
+        --indigo-600: 232 68% 52%;
+
+
+
+        --indigo-900: 232 68% 15%;
+
+
+
+    
+
+
+
+        --red-100: 0 84% 91%;
+
+
+
+        --red-500: 0 72% 51%;
+
+
+
+        --red-600: 0 84% 56%;
+
+
+
+        --red-900: 0 84% 15%;
+
+
+
+    
+
+
+
+        --teal-100: 168 76% 91%;
+
+
+
+        --teal-500: 168 76% 42%;
+
+
+
+        --teal-600: 170 81% 37%;
+
+
+
+        --teal-900: 170 81% 15%;
+
+
+
+      }
+
+
 
   .dark {
-    --background: 24 10% 10%;
-    --foreground: 30 14% 97%;
-    --card: 24 10% 10%;
-    --card-foreground: 30 14% 97%;
-    --popover: 24 10% 10%;
-    --popover-foreground: 30 14% 97%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 30 14% 97%;
-    --secondary: 24 6% 21%;
-    --secondary-foreground: 30 14% 97%;
-    --muted: 24 6% 21%;
-    --muted-foreground: 28 10% 68%;
-    --accent: 24 6% 21%;
-    --accent-foreground: 30 14% 97%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 30 14% 97%;
-    
-    /* Semantic Success/Income - Optimized for Dark Mode (emerald-400 equivalent) */
-    --success: 158 64% 52%;
-    --success-foreground: 158 64% 5%;
-    
-    /* Overlays */
-    --overlay: 0 0% 0% / 0.7;
-    
-    --border: 24 6% 21%;
-    --input: 24 6% 21%;
-    --ring: 217 91% 60%;
 
-    /* Chart Colors */
-    --chart-1: 217 91% 60%;
-    --chart-2: 217 80% 70%;
-    --chart-3: 217 70% 80%;
-    --chart-4: 217 60% 90%;
-    --chart-5: 217 50% 95%;
+    /* Semantic Tokens (Dark Mode) */
 
-    /* Category Colors */
-    --yellow-500: 48 96% 51%;
-    --yellow-600: 45 94% 47%;
-    --blue-500: 217 91% 60%;
-    --blue-600: 221 83% 53%;
-    --purple-500: 262 84% 60%;
-    --purple-600: 263 70% 50%;
-    --cyan-500: 187 82% 57%;
-    --cyan-600: 192 94% 40%;
-    --orange-500: 25 95% 53%;
-    --orange-600: 24 94% 48%;
-    --pink-500: 336 82% 57%;
-    --pink-600: 334 81% 50%;
-    --green-500: 142 71% 45%;
-    --green-600: 142 80% 35%;
-    --indigo-500: 231 77% 61%;
-    --indigo-600: 232 68% 52%;
-    --red-500: 0 72% 51%;
-    --red-600: 0 84% 56%;
-    --teal-500: 168 76% 42%;
-    --teal-600: 170 81% 37%;
-    --stone-500: 27 9% 52%;
-    --stone-600: 26 8% 41%;
-    --slate-500: 27 9% 52%;
-    --slate-600: 26 8% 41%;
+    --background: var(--color-gray-950);
+
+    --foreground: var(--color-gray-50);
+
+    
+
+    --card: var(--color-gray-900);
+
+    --card-foreground: var(--color-gray-50);
+
+    
+
+    --popover: var(--color-gray-900);
+
+    --popover-foreground: var(--color-gray-50);
+
+    
+
+    --primary: var(--color-teal-500);
+    --primary-foreground: oklch(1 0 0);
+
+    --secondary: var(--color-gray-800);
+    --secondary-foreground: var(--color-teal-50);
+
+    --muted: var(--color-gray-800);
+    --muted-foreground: var(--color-gray-400);
+
+    --accent: var(--color-gray-800);
+    --accent-foreground: var(--color-teal-50);
+
+        --destructive: 341 82% 59%;
+
+        --destructive-foreground: 341 100% 96%;
+
+    --border: var(--color-gray-800);
+    --input: var(--color-gray-800);
+    --ring: var(--color-teal-500);
+
+    /* Chart Colors (Dark) */
+    --chart-1: var(--color-teal-500);
+    --chart-2: var(--color-teal-700);
+    --chart-3: var(--color-gray-500);
+    --chart-4: var(--color-gray-700);
+    --chart-5: var(--color-gray-900);
+
   }
+
 }
 
 @layer base {
@@ -138,24 +491,9 @@
   }
   * {
     @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
-  
-  html.theme-transition :where(*, *::before, *::after) {
-    transition-property: background-color, border-color, color, fill, stroke, opacity,
-      box-shadow, filter;
-    transition-duration: 350ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Mobile Enhancements */
-  * {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
   }
-
   body {
     @apply bg-background text-foreground font-sans antialiased;
     overflow-x: hidden;
@@ -165,6 +503,17 @@
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans tracking-tight;
+  }
+  
+  html.theme-transition :where(*, *::before, *::after) {
+    transition-property: background-color, border-color, color, fill, stroke, opacity,
+      box-shadow, filter;
+    transition-duration: 350ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {

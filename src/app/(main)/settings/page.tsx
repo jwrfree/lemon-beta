@@ -74,7 +74,7 @@ export default function SettingsPage() {
     const renderThemeToggle = () => {
         if (!mounted) return <div className="h-10 w-20 bg-muted rounded-full animate-pulse" />;
         return (
-            <div className="flex items-center gap-1 p-1 rounded-full bg-muted/50 border border-border/50">
+            <div className="flex items-center gap-1 p-1 rounded-full bg-muted/50">
                 <Button
                     size="sm"
                     variant={theme === 'light' ? 'default' : 'ghost'}
@@ -104,10 +104,10 @@ export default function SettingsPage() {
                     
                     {/* TOP SECTION: PROFILE & THEME */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Card className="md:col-span-2 border-none shadow-sm overflow-hidden bg-gradient-to-br from-primary/5 via-background to-background">
+                        <Card className="md:col-span-2 border-none shadow-sm overflow-hidden bg-card">
                             <CardContent className="p-6">
                                 <div className="flex flex-col sm:flex-row items-center gap-6">
-                                    <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center relative overflow-hidden shadow-inner rotate-3 hover:rotate-0 transition-transform duration-300">
+                                    <div className="w-24 h-24 bg-primary/10 rounded-lg flex items-center justify-center relative overflow-hidden shadow-inner transition-transform duration-300">
                                         {userData?.photoURL ? (
                                             <Image src={userData.photoURL} alt="Avatar" width={96} height={96} className="object-cover" />
                                         ) : (
@@ -126,9 +126,9 @@ export default function SettingsPage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-none shadow-sm flex flex-col justify-center bg-card/50 backdrop-blur-sm">
+                        <Card className="border-none shadow-sm flex flex-col justify-center bg-card">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Tampilan</CardTitle>
+                                <CardTitle className="text-sm font-medium text-muted-foreground">Tampilan</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center justify-between gap-4">
@@ -145,7 +145,7 @@ export default function SettingsPage() {
                         <div className="space-y-6">
                             <section className="space-y-3">
                                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground px-1">Keamanan</h3>
-                                <Card className="border-none shadow-sm bg-card/50 backdrop-blur-sm overflow-hidden">
+                                <Card className="border-none shadow-sm bg-card overflow-hidden">
                                     <CardContent className="p-0">
                                         {isBiometricSupported ? (
                                             <div className="flex items-center gap-4 p-4">
@@ -171,8 +171,8 @@ export default function SettingsPage() {
                             </section>
 
                             <section className="space-y-3">
-                                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground px-1">Alat Bantu</h3>
-                                <Card className="border-none shadow-sm bg-card/50 backdrop-blur-sm overflow-hidden group">
+                                <h3 className="text-sm font-medium tracking-tight text-muted-foreground px-1">Alat Bantu</h3>
+                                <Card className="border-none shadow-sm bg-card overflow-hidden group">
                                     <button 
                                         onClick={() => router.push('/token-calculator')} 
                                         className="w-full flex items-center gap-4 p-4 hover:bg-primary/5 transition-colors text-left"
@@ -192,7 +192,7 @@ export default function SettingsPage() {
                             <section className="pt-4">
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl py-6 border border-destructive/20 bg-destructive/5">
+                                        <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg py-6 bg-destructive/5">
                                             <LogOut className="h-5 w-5" />
                                             <span className="font-bold">Keluar dari Akun</span>
                                         </Button>
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                                         key={item.id}
                                         whileHover={{ y: -4 }}
                                         onClick={() => router.push(item.page)}
-                                        className="flex items-start gap-4 p-5 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left group"
+                                        className="flex items-start gap-4 p-5 rounded-2xl bg-card shadow-sm hover:shadow-md transition-all text-left group"
                                     >
                                         <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                                             <item.icon className="h-6 w-6" strokeWidth={1.5} />

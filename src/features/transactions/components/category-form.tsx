@@ -20,8 +20,8 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
     const [name, setName] = useState(initialData?.name || '');
     const [type, setType] = useState<'expense' | 'income'>(initialData?.type || 'expense');
     const [selectedIcon, setSelectedIcon] = useState(initialData?.icon || 'Wrench');
-    const [selectedColor, setSelectedColor] = useState(initialData?.color || 'text-stone-600');
-    const [selectedBg, setSelectedBg] = useState(initialData?.bg_color || 'bg-stone-100');
+    const [selectedColor, setSelectedColor] = useState(initialData?.color || 'text-gray-600');
+    const [selectedBg, setSelectedBg] = useState(initialData?.bg_color || 'bg-gray-100');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -53,7 +53,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 initial={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                 animate={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }}
                 exit={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
-                className="w-full max-w-md bg-background rounded-t-3xl md:rounded-3xl shadow-xl flex flex-col max-h-[90vh] overflow-hidden"
+                className="w-full max-w-md bg-background rounded-t-xl md:rounded-xl shadow-xl flex flex-col max-h-[90vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-6 border-b flex items-center justify-between bg-background">

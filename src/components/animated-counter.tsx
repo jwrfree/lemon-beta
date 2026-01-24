@@ -42,7 +42,7 @@ export const AnimatedCounter = ({ value, className, duration = 0.8 }: AnimatedCo
 
   return (
     <motion.p 
-      className={cn(className, !isBalanceVisible && 'blur-sm transition-all duration-300')}
+      className={cn("tabular-nums", className, !isBalanceVisible && 'blur-sm transition-all duration-300')}
     >
       {display}
     </motion.p>

@@ -37,7 +37,7 @@ export const CATEGORY_COLORS = [
     { name: 'Emerald', color: 'text-emerald-600 dark:text-emerald-500', bg: 'bg-emerald-100 dark:bg-emerald-900/50' },
     { name: 'Teal', color: 'text-teal-600 dark:text-teal-500', bg: 'bg-teal-100 dark:bg-teal-900/50' },
     { name: 'Indigo', color: 'text-indigo-600 dark:text-indigo-500', bg: 'bg-indigo-100 dark:bg-indigo-900/50' },
-    { name: 'Red', color: 'text-red-600 dark:text-red-500', bg: 'bg-red-100 dark:bg-red-900/50' },
-    { name: 'Rose', color: 'text-rose-600 dark:text-rose-500', bg: 'bg-rose-100 dark:bg-rose-900/50' },
-    { name: 'Stone', color: 'text-stone-600 dark:text-stone-500', bg: 'bg-stone-100 dark:bg-stone-900/50' },
+    { name: 'Red', color: 'text-pink-600 dark:text-pink-500', bg: 'bg-pink-100 dark:bg-pink-900/50' },
+    { name: 'Rose', color: 'text-pink-600 dark:text-pink-500', bg: 'bg-pink-100 dark:bg-pink-900/50' },
+    { name: 'Gray', color: 'text-gray-600 dark:text-gray-500', bg: 'bg-gray-100 dark:bg-gray-900/50' },
 ] as const;

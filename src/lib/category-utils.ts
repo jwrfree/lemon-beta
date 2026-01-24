@@ -27,8 +27,8 @@ export const resolveCategoryVisuals = (categoryName: string, allCategories: any[
         return {
             name: found.name,
             icon: getCategoryIcon(found.icon),
-            color: found.color || 'text-stone-600',
-            bgColor: found.bg_color || 'bg-stone-100'
+            color: found.color || 'text-gray-600',
+            bgColor: found.bg_color || 'bg-gray-100'
         };
     }
 
@@ -36,7 +36,7 @@ export const resolveCategoryVisuals = (categoryName: string, allCategories: any[
     return {
         name: categoryName,
         icon: Wrench,
-        color: 'text-stone-600',
-        bgColor: 'bg-stone-100'
+        color: 'text-gray-600',
+        bgColor: 'bg-gray-100'
     };
 };

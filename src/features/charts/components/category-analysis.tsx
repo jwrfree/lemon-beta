@@ -63,17 +63,17 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
     const sectionLabel = type === 'expense' ? 'Pengeluaran' : 'Pemasukan';
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
-            <CardHeader className="space-y-1">
-                <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Distribusi per Kategori</CardTitle>
-                <div className="flex items-center justify-between gap-3">
-                    <CardDescription className="text-sm font-medium text-foreground">
+        <Card className="shadow-sm border-none rounded-lg">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="space-y-1">
+                    <CardTitle className="text-lg font-bold tracking-tight">Distribusi per Kategori</CardTitle>
+                    <CardDescription className="text-xs">
                         {`Top 5 ${sectionLabel.toLowerCase()} kamu.`}
                     </CardDescription>
-                    <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-extrabold">
-                        {formatCurrency(total)}
-                    </Badge>
                 </div>
+                <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-bold tabular-nums">
+                    {formatCurrency(total)}
+                </Badge>
             </CardHeader>
             <CardContent className="space-y-8">
                 <div className="flex flex-col items-center gap-4">
@@ -86,14 +86,14 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
                             <button
                                 key={item.name}
                                 type="button"
-                                className="group w-full rounded-2xl border-none bg-background/40 p-3 text-left transition hover:bg-background/80 active:scale-[0.98]"
+                                className="group w-full rounded-lg border-none bg-background/40 p-3 text-left transition hover:bg-background/80 active:scale-[0.98]"
                                 onClick={() => handleCategoryClick(item.name)}
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex flex-1 items-center gap-3">
                                         <div
                                             className={cn(
-                                                "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm transition-all duration-300 group-hover:scale-110",
+                                                "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg shadow-sm transition-all duration-300 group-hover:scale-110",
                                                 item.categoryBgColor,
                                                 item.categoryColor
                                             )}

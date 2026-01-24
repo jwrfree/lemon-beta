@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
     ChevronLeft, Plus, Pencil, Trash2, 
     Utensils, ShoppingCart, Car, Phone, 
@@ -90,23 +91,12 @@ export default function CategoriesPage() {
             <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full space-y-6">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div className="w-full md:w-auto">
-                        <div className="grid grid-cols-2 w-full md:w-[300px] h-10 items-center justify-center rounded-xl bg-stone-100 dark:bg-stone-800 p-1 text-muted-foreground">
-                            {[
-                                { value: 'expense', label: 'Pengeluaran' },
-                                { value: 'income', label: 'Pemasukan' }
-                            ].map((tab) => (
-                                <button
-                                    key={tab.value}
-                                    onClick={() => setActiveTab(tab.value as 'expense' | 'income')}
-                                    className={cn(
-                                        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                        activeTab === tab.value ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
-                                    )}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </div>
+                        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'expense' | 'income')} className="w-full md:w-[300px]">
+                            <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800 h-10 p-1 rounded-lg">
+                                <TabsTrigger value="expense" className="rounded-lg text-xs font-medium">Pengeluaran</TabsTrigger>
+                                <TabsTrigger value="income" className="rounded-lg text-xs font-medium">Pemasukan</TabsTrigger>
+                            </TabsList>
+                        </Tabs>
                     </div>
 
                     <div className="relative w-full md:w-64">
@@ -134,7 +124,7 @@ export default function CategoriesPage() {
                         filteredCategories.map((cat) => {
                             const IconComp = iconMap[cat.icon] || Wrench;
                             return (
-                                <Card key={cat.id} className="border-none shadow-sm hover:shadow-md transition-all group rounded-3xl overflow-hidden bg-card/50 backdrop-blur-sm border border-white/20">
+                                <Card key={cat.id} className="border-none shadow-sm hover:shadow-md transition-all group rounded-3xl overflow-hidden bg-card border border-white/20">
                                     <CardContent className="p-4 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <div className={cn("p-3.5 rounded-2xl shadow-inner", cat.bg_color)}>

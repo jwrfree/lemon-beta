@@ -14,7 +14,7 @@ import dynamic from 'next/dynamic';
 
 const NetCashflowComposedChart = dynamic(() => import('./lazy-charts').then(mod => mod.NetCashflowComposedChart), {
     ssr: false,
-    loading: () => <div className="h-72 w-full animate-pulse rounded-lg bg-muted" />
+    loading: () => <div className="h-72 w-full animate-pulse rounded-md bg-muted" />,
 });
 
 const romanQuarters = ['I', 'II', 'III', 'IV'] as const;
@@ -147,10 +147,10 @@ export const NetCashflowChart = () => {
                     <li key={item.category} className="space-y-1">
                         <div className="flex items-center justify-between gap-3 text-xs">
                             <div className="flex-1">
-                                <p className="text-sm font-bold text-foreground">{item.category}</p>
-                                <p className="text-[11px] font-bold uppercase tracking-tighter text-muted-foreground/60">{item.percentage.toFixed(1)}%</p>
+                                <p className="text-sm font-medium text-foreground">{item.category}</p>
+                                <p className="text-[11px] font-medium text-muted-foreground/60">{item.percentage.toFixed(1)}%</p>
                             </div>
-                            <span className="text-sm font-bold text-foreground">{formatCurrency(item.value)}</span>
+                            <span className="text-sm font-medium text-foreground tabular-nums">{formatCurrency(item.value)}</span>
                         </div>
                         <Progress 
                             value={item.percentage} 
@@ -164,14 +164,14 @@ export const NetCashflowChart = () => {
     };
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card/50 backdrop-blur-sm rounded-3xl">
+        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-3xl">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
+                <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
                 <div className="flex items-center justify-between gap-3">
                     <CardDescription className="text-sm font-medium text-foreground">
                         Filter triwulan atau pilih bulan.
                     </CardDescription>
-                    <Badge variant="outline" className="border-border text-[11px] font-bold uppercase tracking-tighter">
+                    <Badge variant="outline" className="border-border text-[10px] font-medium">
                         {rangeLabel}
                     </Badge>
                 </div>
@@ -184,7 +184,7 @@ export const NetCashflowChart = () => {
                             type="button"
                             onClick={() => setSelectedQuarter(option.value)}
                             className={cn(
-                                'rounded-full border border-transparent px-3 py-1.5 text-[11px] font-bold uppercase transition',
+                                'rounded-full border border-transparent px-3 py-1.5 text-[11px] font-medium transition',
                                 selectedQuarter === option.value
                                     ? 'bg-primary text-primary-foreground shadow-sm'
                                     : 'bg-muted/60 text-muted-foreground hover:bg-muted'
@@ -196,7 +196,7 @@ export const NetCashflowChart = () => {
                 </div>
 
                 <div className="space-y-3">
-                    <div className="flex flex-wrap items-center justify-end gap-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 px-1">
+                    <div className="flex flex-wrap items-center justify-end gap-3 text-[11px] font-medium text-muted-foreground/60 px-1">
                         <div className="flex items-center gap-3">
                             {legendItems.map((item) => (
                                 <div key={item.key} className="flex items-center gap-1.5">
@@ -219,7 +219,7 @@ export const NetCashflowChart = () => {
                     <div className="col-span-2 rounded-3xl bg-primary/[0.03] border border-primary/10 p-6">
                         <div className="flex flex-col gap-1">
                             <p className="text-xs font-bold uppercase tracking-widest text-primary/70">Total Net</p>
-                            <p className={cn('text-3xl font-black tracking-tight', filteredTotals.net >= 0 ? 'text-success' : 'text-destructive')}>
+                            <p className={cn('text-3xl font-black tracking-tight', filteredTotals.net >= 0 ? 'text-teal-600' : 'text-destructive')}>
                                 {formatCurrency(filteredTotals.net)}
                             </p>
                             <p className="text-[11px] font-bold text-muted-foreground/60 mt-1 uppercase tracking-tight">{summaryFootnote}</p>
@@ -250,7 +250,7 @@ export const NetCashflowChart = () => {
                                 className={cn(
                                     'rounded-full px-3 py-1 text-xs font-bold shadow-sm border-none',
                                     selectedMonthData.net >= 0
-                                        ? 'bg-success text-white'
+                                        ? 'bg-teal-600 text-white'
                                         : 'bg-destructive text-white'
                                 )}
                             >
@@ -261,10 +261,10 @@ export const NetCashflowChart = () => {
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
-                                    <p className="text-[11px] font-bold uppercase tracking-widest text-success/70">Pemasukan</p>
+                                    <p className="text-[11px] font-bold uppercase tracking-widest text-teal-600/70">Pemasukan</p>
                                     <span className="text-sm font-bold text-foreground">{formatCurrency(selectedMonthData.income)}</span>
                                 </div>
-                                {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'bg-success')}
+                                {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'bg-teal-600')}
                             </div>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">

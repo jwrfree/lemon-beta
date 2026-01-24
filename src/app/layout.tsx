@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./mobile-home-enhancements.css";
 import "./fab-enhancements.css";
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeTransition } from "@/components/theme-transition";
 import { AppProvider } from "@/providers/app-provider";
@@ -10,8 +11,6 @@ import { UIProvider } from "@/components/ui-provider";
 import { ServiceWorkerProvider } from "@/components/service-worker-provider";
 import { BalanceVisibilityProvider } from "@/providers/balance-visibility-provider";
 import { Toaster } from "@/components/ui/sonner";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Lemon - Personal Finance Tracker",
@@ -48,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ThemeTransition />

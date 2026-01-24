@@ -15,6 +15,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Pie, PieChart } from "recharts"
 import { useUI } from '@/components/ui-provider';
 import { startOfMonth, parseISO } from 'date-fns';
+import { PageHeader } from '@/components/page-header';
 
 const BudgetCard = ({ budget }: { budget: any }) => {
     const { transactions, getCategoryVisuals } = useData();
@@ -44,7 +45,7 @@ const BudgetCard = ({ budget }: { budget: any }) => {
     if (progress > 80 && progress <= 100) {
         progressBarColor = 'bg-yellow-500';
     } else if (progress > 100) {
-        progressBarColor = 'bg-destructive';
+        progressBarColor = 'bg-foreground';
     }
     
     const firstCategory = budget.categories[0];
@@ -56,15 +57,15 @@ const BudgetCard = ({ budget }: { budget: any }) => {
             onClick={() => router.push(`/budgeting/${budget.id}`)}
             whileHover={{ y: -4 }}
             className={cn(
-                'w-full text-left rounded-3xl group transition-all focus-visible:outline-none'
+                'w-full text-left rounded-xl group transition-all focus-visible:outline-none'
             )}
             aria-label={`Buka detail anggaran ${budget.name}`}
         >
-            <Card className="border-none shadow-sm hover:shadow-md transition-all rounded-3xl overflow-hidden bg-card/50 backdrop-blur-sm h-full">
+            <Card className="border-none shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden bg-card h-full">
                 <CardContent className="p-5 flex flex-col justify-between h-full gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                             <div className={cn("flex-shrink-0 p-2.5 rounded-2xl shadow-inner", bgColor)}>
+                             <div className={cn("flex-shrink-0 p-2.5 rounded-lg shadow-inner", bgColor)}>
                                 <CategoryIcon className={cn("h-5 w-5", color)} />
                             </div>
                             <div>
@@ -88,16 +89,16 @@ const BudgetCard = ({ budget }: { budget: any }) => {
                         </div>
                          <div className="flex justify-between items-end">
                             <div>
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Sisa</p>
+                                <p className="text-[11px] font-medium text-muted-foreground mb-0.5">Sisa</p>
                                 <p className={cn(
-                                    "text-sm font-extrabold tracking-tight",
-                                    remaining < 0 ? "text-destructive" : "text-success"
+                                    "text-sm font-bold tracking-tight tabular-nums",
+                                    remaining < 0 ? "text-destructive" : "text-teal-600"
                                 )}>
                                     {remaining < 0 ? `-${formatCurrency(Math.abs(remaining))}` : formatCurrency(remaining)}
                                 </p>
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Target</p>
+                                <p className="text-[11px] font-medium text-muted-foreground mb-0.5">Target</p>
                                 <p className="text-sm font-bold text-foreground/80">{formatCurrency(budget.targetAmount)}</p>
                             </div>
                         </div>
@@ -142,28 +143,23 @@ export default function BudgetingPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted/30">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-30 backdrop-blur-lg bg-opacity-80">
-                <h1 className="text-xl font-bold text-center w-full">Manajemen Anggaran</h1>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-4 text-primary hover:bg-primary/10 rounded-xl"
-                    onClick={() => setIsBudgetModalOpen(true)}
-                    aria-label="Tambah anggaran"
-                >
-                    <PlusCircle className="h-6 w-6" strokeWidth={1.75} />
-                    <span className="sr-only">Tambah anggaran</span>
-                </Button>
-            </header>
+            <PageHeader
+                title="Manajemen Anggaran"
+                actionButton={{
+                    icon: PlusCircle,
+                    label: 'Tambah anggaran',
+                    onClick: () => setIsBudgetModalOpen(true),
+                }}
+            />
             <main className="flex-1 overflow-y-auto">
                 {budgets.length === 0 ? (
                     <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500">
-                        <div className="p-4 bg-primary/10 rounded-3xl mb-4">
+                        <div className="p-4 bg-primary/10 rounded-full mb-4">
                             <HandCoins className="h-12 w-12 text-primary" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl font-bold tracking-tight">Belum Ada Anggaran</h2>
                         <p className="text-muted-foreground mt-2 mb-8 max-w-xs">Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.</p>
-                        <Button onClick={() => setIsBudgetModalOpen(true)} size="lg" className="rounded-2xl px-8 shadow-lg shadow-primary/20">
+                        <Button onClick={() => setIsBudgetModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
                             <PlusCircle className="mr-2 h-5 w-5" />
                             Buat Anggaran Pertama
                         </Button>
@@ -173,9 +169,9 @@ export default function BudgetingPage() {
                         <div className="grid grid-cols-12 gap-8">
                             
                             {/* OVERVIEW SECTION */}
-                            <div className="col-span-12 lg:col-span-4 space-y-6">
+                            <div className="col-span-12 lg:col-span-4 space-y-4">
                                 <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Ringkasan Bulan Ini</h2>
-                                <Card className="border-none shadow-sm rounded-3xl bg-card/50 backdrop-blur-sm overflow-hidden">
+                                <Card className="border-none shadow-sm rounded-xl bg-card overflow-hidden">
                                     <CardContent className="p-6 space-y-8">
                                         <div className="h-48 flex justify-center relative">
                                             <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
@@ -199,18 +195,18 @@ export default function BudgetingPage() {
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-4">
-                                            <div className="p-4 rounded-2xl bg-background/40 shadow-inner">
+                                            <div className="p-4 rounded-lg bg-background/40 shadow-inner">
                                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Limit</p>
                                                 <p className="text-xl font-extrabold">{formatCurrency(overview.totalBudget)}</p>
                                             </div>
                                             <div className="grid grid-cols-2 gap-3">
-                                                <div className="p-4 rounded-2xl bg-destructive/5 shadow-inner border border-destructive/10">
+                                                <div className="p-4 rounded-lg bg-destructive/5 shadow-inner border border-destructive/10">
                                                     <p className="text-[10px] font-bold text-destructive/70 uppercase tracking-widest mb-1">Terpakai</p>
                                                     <p className="text-base font-extrabold text-destructive">{formatCurrency(overview.totalSpent)}</p>
                                                 </div>
-                                                <div className="p-4 rounded-2xl bg-success/5 shadow-inner border border-success/10">
-                                                    <p className="text-[10px] font-bold text-success/70 uppercase tracking-widest mb-1">Tersedia</p>
-                                                    <p className="text-base font-extrabold text-success">{formatCurrency(overview.totalRemaining)}</p>
+                                                <div className="p-4 rounded-lg bg-teal-600/5 shadow-inner border border-teal-600/10">
+                                                    <p className="text-[10px] font-bold text-teal-600/70 uppercase tracking-widest mb-1">Tersedia</p>
+                                                    <p className="text-base font-extrabold text-teal-600">{formatCurrency(overview.totalRemaining)}</p>
                                                 </div>
                                             </div>
                                         </div>

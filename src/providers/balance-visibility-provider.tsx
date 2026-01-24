@@ -23,13 +23,14 @@ interface BalanceVisibilityProviderProps {
 }
 
 export const BalanceVisibilityProvider: React.FC<BalanceVisibilityProviderProps> = ({ children }) => {
-  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('balanceVisibility');
-      return saved !== null ? JSON.parse(saved) : true;
+  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('balanceVisibility');
+    if (saved !== null) {
+      setIsBalanceVisible(JSON.parse(saved));
     }
-    return true;
-  });
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('balanceVisibility', JSON.stringify(isBalanceVisible));

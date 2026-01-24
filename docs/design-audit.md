@@ -37,9 +37,10 @@
 - Kartu insight memakai uppercase microcopy 12 px untuk menandai status tanpa mengganggu hierarki.
 
 ### Spacing, Layout & Radius
-- Sistem 4/8 px grid: padding section 24/48 px, gap antar kartu 24 px, radius utama 16–24 px (card) & 32 px (modal bottom sheet).
+- Sistem 4/8 px grid: padding section 24/48 px, gap antar kartu 24 px, radius utama 12 px (card) untuk kesan lebih profesional & 32 px (modal bottom sheet).
 - Komponen bottom sheet konsisten menggunakan `rounded-t-2xl` (24 px) dengan handle area dan sticky header.
 - Landing hero dioptimalkan untuk mobile-first: grid 1 kolom yang berubah menjadi 2 kolom di ≥ 768 px, dengan anchor nav horizontal di layar kecil.
+- **Enterprise UI Standardization:** Penggunaan komponen `Scandn UI` (Button, Tabs, Card, etc.) kini ditegakkan untuk menggantikan elemen HTML raw, memastikan konsistensi visual dan perilaku (focus states, variants) di seluruh aplikasi.
 
 ### Elevation & Visual Depth
 - Elevation menggunakan kombinasi border translucent (`border-white/30`) dan shadow lembut (`shadow-sm`/`shadow-2xl`).

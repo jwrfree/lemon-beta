@@ -6,14 +6,31 @@ import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { ChevronLeft, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import dynamic from 'next/dynamic';
 
-// Extracted Components
-import { MonthlySummary } from '@/features/charts/components/monthly-summary';
-import { NetCashflowChart } from '@/features/charts/components/net-cashflow-chart';
-import { CategoryAnalysis } from '@/features/charts/components/category-analysis';
-import { MonthlyTrendChart } from '@/features/charts/components/monthly-trend-chart';
-import { ExpenseShortTermTrend } from '@/features/charts/components/expense-short-term-trend';
+// Extracted Components (Lazy Loaded)
+const MonthlySummary = dynamic(() => import('@/features/charts/components/monthly-summary').then(mod => mod.MonthlySummary), {
+    ssr: false,
+    loading: () => <div className="h-40 w-full animate-pulse rounded-3xl bg-muted" />
+});
+const NetCashflowChart = dynamic(() => import('@/features/charts/components/net-cashflow-chart').then(mod => mod.NetCashflowChart), {
+    ssr: false,
+    loading: () => <div className="h-80 w-full animate-pulse rounded-3xl bg-muted" />
+});
+const CategoryAnalysis = dynamic(() => import('@/features/charts/components/category-analysis').then(mod => mod.CategoryAnalysis), {
+    ssr: false,
+    loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
+});
+const MonthlyTrendChart = dynamic(() => import('@/features/charts/components/monthly-trend-chart').then(mod => mod.MonthlyTrendChart), {
+    ssr: false,
+    loading: () => <div className="h-80 w-full animate-pulse rounded-3xl bg-muted" />
+});
+const ExpenseShortTermTrend = dynamic(() => import('@/features/charts/components/expense-short-term-trend').then(mod => mod.ExpenseShortTermTrend), {
+    ssr: false,
+    loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
+});
 
 type TabValue = 'expense' | 'income' | 'net';
 
@@ -88,20 +105,19 @@ export default function ChartsPage() {
                 <div className="sticky top-0 z-20 border-b bg-background/95 p-4 md:py-2 backdrop-blur">
                     <div className="max-w-6xl mx-auto w-full">
                         <div className="w-full">
-                            <div className="grid w-full max-w-md mx-auto grid-cols-3 h-10 items-center justify-center rounded-full bg-muted/80 p-1">
-                                {tabs.map((tab) => (
-                                    <button
-                                        key={tab.value}
-                                        onClick={() => handleTabChange(tab.value)}
-                                        className={cn(
-                                            "inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold capitalize ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                                            activeTab === tab.value ? "bg-primary text-primary-foreground shadow-sm" : "hover:bg-background/50"
-                                        )}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
-                            </div>
+                            <Tabs value={activeTab} onValueChange={(v) => handleTabChange(v)} className="w-full max-w-md mx-auto">
+                                <TabsList className="grid w-full grid-cols-3 bg-muted/80 h-10 rounded-full p-1">
+                                    {tabs.map((tab) => (
+                                        <TabsTrigger 
+                                            key={tab.value} 
+                                            value={tab.value}
+                                            className="rounded-full"
+                                        >
+                                            {tab.label}
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
+                            </Tabs>
                         </div>
                     </div>
                 </div>
