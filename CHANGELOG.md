@@ -6,6 +6,22 @@ All updates and improvements to the Lemon app will be documented here.
 
 ### ✨ New Features
 
+- **Debt Monitoring & Analytics**: Introduced advanced debt tracking features to monitor financial health.
+  - **Historical Comparison**: Track total debt changes compared to last month and last year with visual trend indicators.
+  - **Silent Growth Detection**: Automatically identifies debts with high interest rates or outstanding balances exceeding the principal to prevent "silent" debt growth.
+  - **Debt Payoff Projection**: Predicts estimated payoff dates based on the average monthly payment history from the last 3 months.
+  - **Interactive Analytics Card**: A new dedicated dashboard for debt insights integrated into the Debts page.
+
+- **Desktop UI/UX Overhaul (Assets & Wallets)**: Complete redesign of the desktop asset management experience.
+  - **Gradient Summary Cards**: New visual cards for Total Assets, Total Liabilities, and Net Worth with beautiful gradients.
+  - **Refined Wallet List**: Modern list view for wallets with improved typography, spacing, and visual hierarchy.
+  - **Enhanced Wallet Details**: Improved desktop view for individual wallet details including active visual state integration.
+  - **Unified Page Headers**: Implementation of the standard `PageHeader` component across desktop views for consistency.
+
+- **Improved Transaction Visuals**: 
+  - **Color-Coded Transaction Indicators**: Expense transactions now consistently use red (`text-rose-600`) for amounts and icons (`arrow-down-left`) across mobile and desktop views.
+  - **Consistent Iconography**: Standardized use of `ArrowDownLeft` (expense) and `ArrowUpRight` (income) with appropriate semantic coloring.
+
 - **Enhanced Mobile Homepage**: Complete redesign with modern glassmorphism design
   - **Glassmorphism Cards**: All main cards now feature backdrop blur effects with semi-transparent backgrounds
   - **Gradient Text Effects**: Total balance display with beautiful gradient text effects for premium visual appeal
@@ -22,10 +38,19 @@ All updates and improvements to the Lemon app will be documented here.
 
 ### 🎨 Enhancements
 
+- **Desktop Navigation Consistency**: Unified header and action patterns across Dashboard, Wallets, and Transaction views.
+- **Improved Visual Hierarchy**: Better use of white space, gradients, and typography in the desktop wallet management interface.
 - **Modern Aesthetics**: Implementation of glassmorphism design trend with subtle shadows and depth effects
 - **User Experience**: Intuitive pull-to-refresh gesture and smooth touch interactions
 - **Performance Optimized**: Efficient animations and optimized build size
 - **Accessibility**: Proper ARIA labels and semantic HTML structure
+
+### 🛠 Technical & Bug Fixes
+
+- **Hydration Fix (Goals Page)**: Resolved hydration mismatch errors by implementing client-side mount detection for date formatting.
+- **TypeScript Build Stabilization**: Fixed multiple type errors across the codebase (debts, budget status, transaction tables, wallet views) to ensure successful production builds.
+- **Component Cleanup**: Removed duplicate state declarations and redundant conditional logic in the Goals feature.
+- **Missing Import Fixes**: Added missing component imports (e.g., `Badge` in wallet views) to prevent runtime errors.
 
 ## [Version 2.1.0] - January 2026
 
