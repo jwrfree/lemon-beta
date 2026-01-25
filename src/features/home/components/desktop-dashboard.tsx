@@ -1,10 +1,11 @@
 
 'use client';
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
+import { cn } from '@/lib/utils';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useGoals } from '@/features/goals/hooks/use-goals';
@@ -14,7 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { 
     Plus, 
     Search, 
-    RefreshCw
+    RefreshCw,
+    BarChart3
 } from 'lucide-react';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays } from 'date-fns';
 
@@ -28,6 +30,12 @@ import { DashboardExpensePie } from './dashboard-expense-pie';
 import { DashboardBudgetStatus } from './dashboard-budget-status';
 import { DashboardGoals } from './dashboard-goals';
 import { DashboardQuickActions } from './dashboard-quick-actions';
+import { DashboardSkeleton } from './dashboard-skeleton';
+import { DashboardRecentTransactionsEmpty } from './dashboard-recent-transactions-empty';
+import { DashboardGoalsEmpty } from './dashboard-goals-empty';
+import { ErrorBoundary } from '@/components/error-boundary';
+import { NetWorthCard } from './net-worth-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const DesktopDashboard = () => {
     const { wallets, transactions } = useData();
@@ -47,9 +55,17 @@ export const DesktopDashboard = () => {
     const [chartRange, setChartRange] = useState<'30' | '90' | 'month'>('month');
     const [selectedWalletId, setSelectedWalletId] = useState<string>('all');
     const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+    const [isPending, startTransition] = useTransition();
+
+    const handleRefresh = () => {
+        startTransition(() => {
+            router.refresh();
+            setLastRefreshed(new Date());
+        });
+    };
 
     // Stats Calculation
-    const now = useMemo(() => new Date(), []);
+    const now = useMemo(() => new Date(), [lastRefreshed]);
     const currentMonth = startOfMonth(now);
     const lastMonth = subMonths(currentMonth, 1);
 
@@ -95,14 +111,19 @@ export const DesktopDashboard = () => {
     const netTrend = calculateTrend(currentStats.net, lastStats.net);
 
     const totalBalance = visibleWallets.reduce((acc, w) => acc + w.balance, 0);
-    const nowDate = useMemo(() => new Date(), []);
+    
+    const totalDebt = useMemo(() => {
+        return debts
+            .filter(d => d.status !== 'settled')
+            .reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0);
+    }, [debts]);
 
     const reminderSummary = useMemo(() => {
-        const overdue = reminders.filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), nowDate) < 0);
+        const overdue = reminders.filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), now) < 0);
         const upcoming = reminders
             .filter(r => r.dueDate && r.status !== 'completed')
             .filter(r => {
-                const diff = differenceInCalendarDays(parseISO(r.dueDate || ''), nowDate);
+                const diff = differenceInCalendarDays(parseISO(r.dueDate || ''), now);
                 return diff >= 0 && diff <= 7;
             })
             .sort((a, b) => {
@@ -115,7 +136,7 @@ export const DesktopDashboard = () => {
             upcomingCount: upcoming.length,
             nextReminder: upcoming[0],
         };
-    }, [reminders, nowDate]);
+    }, [reminders, now]);
 
     const debtSummary = useMemo(() => {
         const activeDebts = debts.filter(d => d.status !== 'settled');
@@ -138,7 +159,7 @@ export const DesktopDashboard = () => {
 
     const recentTransactions = filteredTransactions.slice(0, 5);
 
-    if (!mounted) return null;
+    if (!mounted) return <DashboardSkeleton />;
 
     return (
         <div className="w-full h-full flex flex-col">
@@ -146,92 +167,144 @@ export const DesktopDashboard = () => {
                 title="Dashboard"
                 showBackButton={false}
                 extraActions={
-                    <div className="flex items-center gap-2">
-                        <div className="hidden lg:block">
-                            <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="w-52 h-10 rounded-md bg-background shadow-sm" aria-label="Filter dompet">
-                                    <SelectValue placeholder="Semua dompet" />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-md bg-background shadow-lg">
-                                    <SelectItem value="all">Semua dompet</SelectItem>
-                                    {wallets.map(wallet => (
-                                        <SelectItem key={wallet.id} value={wallet.id}>
-                                            {wallet.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                    <TooltipProvider>
+                        <div className="flex items-center gap-2">
+                            <div className="hidden lg:block">
+                                <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
+                                    <SelectTrigger className="w-52 h-10 rounded-md bg-background shadow-sm" aria-label="Filter dompet">
+                                        <SelectValue placeholder="Semua dompet" />
+                                    </SelectTrigger>
+                                    <SelectContent className="rounded-md bg-background shadow-lg">
+                                        <SelectItem value="all">Semua dompet</SelectItem>
+                                        {wallets.map(wallet => (
+                                            <SelectItem key={wallet.id} value={wallet.id}>
+                                                {wallet.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
+                                        onClick={handleRefresh}
+                                        disabled={isPending}
+                                        aria-label="Segarkan data"
+                                    >
+                                        <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Segarkan data</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
+                                        onClick={() => router.push('/transactions')}
+                                        aria-label="Cari transaksi"
+                                    >
+                                        <Search className="h-4 w-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Cari transaksi</p>
+                                </TooltipContent>
+                            </Tooltip>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
-                            onClick={() => {
-                                router.refresh();
-                                setLastRefreshed(new Date());
-                            }}
-                            aria-label="Segarkan data"
-                            title="Segarkan data"
-                        >
-                            <RefreshCw className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
-                            onClick={() => router.push('/transactions')}
-                            aria-label="Cari transaksi"
-                            title="Cari transaksi"
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                    </div>
+                    </TooltipProvider>
                 }
             />
 
             <div className="flex-1 p-6 space-y-6 overflow-y-auto">
-                <FinanceOverview 
-                    totalBalance={totalBalance}
-                    income={currentStats.income}
-                    expense={currentStats.expense}
-                    net={currentStats.net}
-                    incomeTrend={incomeTrend}
-                    expenseTrend={expenseTrend}
-                    netTrend={netTrend}
-                />
+                <ErrorBoundary>
+                    <FinanceOverview 
+                        totalBalance={totalBalance}
+                        income={currentStats.income}
+                        expense={currentStats.expense}
+                        net={currentStats.net}
+                        prevIncome={lastStats.income}
+                        prevExpense={lastStats.expense}
+                        prevNet={lastStats.net}
+                        incomeTrend={incomeTrend}
+                        expenseTrend={expenseTrend}
+                        netTrend={netTrend}
+                    />
+                </ErrorBoundary>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     {/* Main Content Area */}
                     <div className="lg:col-span-8 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                            <div className="md:col-span-3">
-                                <DashboardCashflow 
-                                    transactions={filteredTransactions}
-                                    chartRange={chartRange}
-                                    setChartRange={setChartRange}
-                                />
+                        {filteredTransactions.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                                <div className="md:col-span-3">
+                                    <ErrorBoundary>
+                                        <DashboardCashflow 
+                                            transactions={filteredTransactions}
+                                            chartRange={chartRange}
+                                            setChartRange={setChartRange}
+                                        />
+                                    </ErrorBoundary>
+                                </div>
+                                <div className="md:col-span-2">
+                                    <ErrorBoundary>
+                                        <DashboardExpensePie transactions={filteredTransactions} />
+                                    </ErrorBoundary>
+                                </div>
                             </div>
-                            <div className="md:col-span-2">
-                                <DashboardExpensePie transactions={filteredTransactions} />
+                        ) : (
+                            <div className="h-[350px] w-full border-2 border-dashed border-muted rounded-xl flex flex-col items-center justify-center text-muted-foreground bg-muted/10 animate-in fade-in duration-500">
+                                <div className="p-4 bg-muted/30 rounded-full mb-3">
+                                    <BarChart3 className="h-8 w-8 opacity-50" />
+                                </div>
+                                <p className="text-sm font-medium">Belum cukup data untuk visualisasi</p>
+                                <p className="text-xs text-muted-foreground mt-1">Grafik akan muncul setelah kamu mencatat transaksi.</p>
                             </div>
-                        </div>
+                        )}
                         
-                        <DashboardRecentTransactions 
-                            transactions={recentTransactions} 
-                            wallets={wallets}
-                        />
+                        {recentTransactions.length > 0 ? (
+                            <ErrorBoundary>
+                                <DashboardRecentTransactions 
+                                    transactions={recentTransactions} 
+                                    wallets={wallets}
+                                />
+                            </ErrorBoundary>
+                        ) : (
+                            <DashboardRecentTransactionsEmpty />
+                        )}
                     </div>
 
                     {/* Sidebar / Widgets Area */}
                     <div className="lg:col-span-4 space-y-6">
-                        <DashboardWallets wallets={visibleWallets} />
+                        <ErrorBoundary>
+                            <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
+                        </ErrorBoundary>
+                        <ErrorBoundary>
+                            <DashboardWallets wallets={visibleWallets} />
+                        </ErrorBoundary>
                         <DashboardQuickActions />
-                        <DashboardBudgetStatus budgets={budgets} />
-                        <DashboardGoals goals={goals} />
-                        <DashboardAlerts 
-                            reminderSummary={reminderSummary}
-                            debtSummary={debtSummary}
-                        />
+                        <ErrorBoundary>
+                            <DashboardBudgetStatus budgets={budgets} />
+                        </ErrorBoundary>
+                        {goals.length > 0 ? (
+                            <ErrorBoundary>
+                                <DashboardGoals goals={goals} />
+                            </ErrorBoundary>
+                        ) : (
+                            <DashboardGoalsEmpty />
+                        )}
+                        <ErrorBoundary>
+                            <DashboardAlerts 
+                                reminderSummary={reminderSummary}
+                                debtSummary={debtSummary}
+                            />
+                        </ErrorBoundary>
                     </div>
                 </div>
             </div>

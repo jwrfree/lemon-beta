@@ -16,6 +16,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Label } from '@/components/ui/label';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
+import { PageHeader } from "@/components/page-header";
 
 function TransactionsPageContent() {
     const router = useRouter();
@@ -108,72 +109,77 @@ function TransactionsPageContent() {
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            <header className="h-16 flex items-center gap-2 relative px-4 shrink-0 border-b bg-background z-20">
-                <div className="relative w-full">
-                    <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                        id="transaction-search"
-                        placeholder="Cari transaksi..."
-                        className="pl-10"
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                 <Sheet>
-                    <SheetTrigger asChild>
-                         <Button
-                            variant="outline"
-                            size="icon"
-                            className="shrink-0 relative"
-                            aria-label="Buka filter transaksi"
-                         >
-                            <ListFilter className="h-5 w-5" />
-                            {activeFilterCount > 0 && (
-                                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
-                                    {activeFilterCount}
-                                </span>
-                            )}
-                            <span className="sr-only">Buka filter transaksi</span>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom" className="rounded-t-xl max-h-[80vh] flex flex-col">
-                        <SheetHeader className="text-left">
-                            <SheetTitle>Filter Transaksi</SheetTitle>
-                        </SheetHeader>
-                        <div className="space-y-4 py-4 overflow-y-auto">
-                            <div>
-                                <Label className="text-sm font-medium">Kategori</Label>
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                    {displayedCategories.map(c => (
-                                        <Button key={c.id} variant={selectedCategories.includes(c.name) ? 'default' : 'outline'} size="sm" onClick={() => handleCategoryToggle(c.name)}>{c.name}</Button>
-                                    ))}
-                                    {categoriesForFilter.length > 8 && !showAllCategories && (
-                                        <Button variant="link" size="sm" onClick={() => setShowAllCategories(true)}>Lihat Semua</Button>
-                                    )}
-                                </div>
-                            </div>
-                             <div>
-                                <Label className="text-sm font-medium">Dompet</Label>
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                    {displayedWallets.map(w => (
-                                        <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
-                                    ))}
-                                    {wallets.length > 8 && !showAllWallets && (
-                                        <Button variant="link" size="sm" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
-                                    )}
-                                </div>
-                            </div>
+            <PageHeader 
+                title="Transaksi" 
+                showBackButton={false}
+                extraActions={
+                    <div className="flex items-center gap-2 flex-1 ml-2">
+                        <div className="relative flex-1">
+                            <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                id="transaction-search"
+                                placeholder="Cari..."
+                                className="pl-9 h-9 text-sm"
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                            />
                         </div>
-                        {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="w-full text-destructive mt-auto" onClick={resetFilters}>Reset Filter</Button>}
-                    </SheetContent>
-                </Sheet>
-            </header>
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="shrink-0 relative h-9 w-9"
+                                    aria-label="Buka filter transaksi"
+                                >
+                                    <ListFilter className="h-4 w-4" />
+                                    {activeFilterCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
+                                            {activeFilterCount}
+                                        </span>
+                                    )}
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="bottom" className="rounded-t-xl max-h-[80vh] flex flex-col">
+                                <SheetHeader className="text-left">
+                                    <SheetTitle>Filter Transaksi</SheetTitle>
+                                </SheetHeader>
+                                <div className="space-y-4 py-4 overflow-y-auto">
+                                    <div>
+                                        <Label className="text-sm font-medium">Kategori</Label>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            {displayedCategories.map(c => (
+                                                <Button key={c.id} variant={selectedCategories.includes(c.name) ? 'default' : 'outline'} size="sm" onClick={() => handleCategoryToggle(c.name)}>{c.name}</Button>
+                                            ))}
+                                            {categoriesForFilter.length > 8 && !showAllCategories && (
+                                                <Button variant="link" size="sm" onClick={() => setShowAllCategories(true)}>Lihat Semua</Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Label className="text-sm font-medium">Dompet</Label>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            {displayedWallets.map(w => (
+                                                <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
+                                            ))}
+                                            {wallets.length > 8 && !showAllWallets && (
+                                                <Button variant="link" size="sm" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="w-full text-destructive mt-auto" onClick={resetFilters}>Reset Filter</Button>}
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+                }
+            />
             
             <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
                 <div className="w-full">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                        <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-gray-800 h-10 p-1 rounded-md">
+                        <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-4">
                             {[
                                 { value: 'all', label: 'Semua' },
                                 { value: 'expense', label: 'Pengeluaran' },
@@ -183,7 +189,7 @@ function TransactionsPageContent() {
                                 <TabsTrigger 
                                     key={tab.value} 
                                     value={tab.value} 
-                                    className="rounded-sm text-xs md:text-sm"
+                                    className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"
                                 >
                                     {tab.label}
                                 </TabsTrigger>

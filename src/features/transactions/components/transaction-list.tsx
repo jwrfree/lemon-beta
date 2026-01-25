@@ -6,11 +6,12 @@ import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar } from 'lucide-react';
+import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
 import { useData } from '@/hooks/use-data';
 import { DesktopTransactionTable } from './desktop-transaction-table';
+import { groupTransactionsByDate } from '../utils';
 
 interface TransactionListProps {
     transactions?: Transaction[];
@@ -36,6 +37,10 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
 
         return limit ? baseTransactions.slice(0, limit) : baseTransactions;
     }, [transactionsToShow, walletId, allTransactions, limit]);
+
+    const groupedTransactions = useMemo(() => {
+        return groupTransactionsByDate(finalTransactions);
+    }, [finalTransactions]);
 
     if (finalTransactions.length === 0 && !isLoading) {
         return (
@@ -64,12 +69,7 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
 
             {/* Mobile List View (Grouped) */}
             <div className="md:hidden space-y-4">
-                {Object.entries(finalTransactions.reduce<Record<string, Transaction[]>>((acc, t) => {
-                    const dateKey = format(parseISO(t.date), 'yyyy-MM-dd');
-                    if (!acc[dateKey]) acc[dateKey] = [];
-                    acc[dateKey].push(t);
-                    return acc;
-                }, {})).map(([date, transactionsForDay]) => (
+                {groupedTransactions.map(([date, transactionsForDay]) => (
                     <div key={date}>
                         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2 px-2">
                             {formatRelativeDate(parseISO(date))}
@@ -91,7 +91,14 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                         disabled={isLoading}
                         className="w-full md:w-auto md:px-8 text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all"
                     >
-                        {isLoading ? 'Memuat...' : 'Muat Lebih Banyak'}
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Memuat...
+                            </>
+                        ) : (
+                            'Muat Lebih Banyak'
+                        )}
                     </Button>
                 </div>
             )}

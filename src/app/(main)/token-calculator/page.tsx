@@ -13,6 +13,7 @@ import { countTransactionTokens } from '@/ai/flows/count-tokens-flow';
 import { useUI } from '@/components/ui-provider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
+import { PageHeader } from '@/components/page-header';
 
 const DEEPSEEK_V3_INPUT_PRICE_PER_1M = 0.14; // USD
 const DEEPSEEK_V3_OUTPUT_PRICE_PER_1M = 0.28; // USD
@@ -73,19 +74,7 @@ export default function TokenCalculatorPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute left-4 md:hidden"
-                    onClick={() => router.back()}
-                    aria-label="Kembali"
-                >
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                    <span className="sr-only">Kembali</span>
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Kalkulator Token AI</h1>
-            </header>
+            <PageHeader title="Kalkulator Token AI" />
             <main className="flex-1 overflow-y-auto p-4 space-y-6">
                 <Card>
                     <CardHeader>

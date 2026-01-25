@@ -15,6 +15,8 @@ import { ChevronLeft, CalendarClock, Trash2 } from 'lucide-react';
 import type { Debt, DebtPayment } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 
+import { PageHeader } from '@/components/page-header';
+
 const PaymentItem = ({ payment, direction }: { payment: DebtPayment; direction: string }) => {
     const paymentDate = payment.paymentDate ? parseISO(payment.paymentDate) : null;
     return (
@@ -57,12 +59,7 @@ export default function DebtDetailPage() {
     if (!debt) {
         return (
             <div className="flex flex-col h-full bg-muted">
-                <header className="h-16 flex items-center gap-2 px-4 border-b bg-background sticky top-0 z-20">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 md:hidden">
-                        <ChevronLeft className="h-5 w-5" />
-                    </Button>
-                    <h1 className="text-xl font-bold">Detail Hutang</h1>
-                </header>
+                <PageHeader title="Detail Hutang" />
                 <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                     Catatan tidak ditemukan.
                 </div>
@@ -78,13 +75,7 @@ export default function DebtDetailPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center gap-2 px-4 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 md:hidden">
-                    <ChevronLeft className="h-5 w-5" />
-                    <span className="sr-only">Kembali</span>
-                </Button>
-                <h1 className="text-xl font-bold flex-1 text-center pr-10">{debt.title}</h1>
-            </header>
+            <PageHeader title={debt.title || "Detail Hutang"} />
             <main className="flex-1 overflow-y-auto">
                 <div className="p-4 space-y-6">
                     <Card>

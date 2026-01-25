@@ -11,6 +11,9 @@ interface FinanceOverviewProps {
     income: number;
     expense: number;
     net: number;
+    prevIncome: number;
+    prevExpense: number;
+    prevNet: number;
     incomeTrend: { direction: 'up' | 'down' | 'flat'; value: string };
     expenseTrend: { direction: 'up' | 'down' | 'flat'; value: string };
     netTrend: { direction: 'up' | 'down' | 'flat'; value: string };
@@ -21,6 +24,9 @@ export const FinanceOverview = ({
     income,
     expense,
     net,
+    prevIncome,
+    prevExpense,
+    prevNet,
     incomeTrend,
     expenseTrend,
     netTrend
@@ -28,6 +34,10 @@ export const FinanceOverview = ({
     
     // Calculate savings rate (Net / Income * 100)
     const savingsRate = income > 0 ? (net / income) * 100 : 0;
+
+    const incomeDiff = income - prevIncome;
+    const expenseDiff = expense - prevExpense;
+    const netDiff = net - prevNet;
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -66,6 +76,9 @@ export const FinanceOverview = ({
                     <div className="text-2xl font-bold text-foreground">
                         <AnimatedCounter value={income} />
                     </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                        {incomeDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(incomeDiff))} vs bulan lalu
+                    </p>
                 </CardContent>
             </Card>
 
@@ -87,6 +100,9 @@ export const FinanceOverview = ({
                     <div className="text-2xl font-bold text-foreground">
                         <AnimatedCounter value={expense} />
                     </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                        {expenseDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(expenseDiff))} vs bulan lalu
+                    </p>
                 </CardContent>
             </Card>
 
@@ -112,6 +128,9 @@ export const FinanceOverview = ({
                         )}>
                             <AnimatedCounter value={net} />
                         </div>
+                        <p className="text-[10px] text-muted-foreground">
+                            {netDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(netDiff))} vs bulan lalu
+                        </p>
                     </div>
                     {income > 0 && (
                         <div className="mt-3">

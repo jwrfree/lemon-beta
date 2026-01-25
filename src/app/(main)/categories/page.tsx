@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-    ChevronLeft, Plus, Pencil, Trash2, 
+    Plus, Pencil, Trash2, 
     Utensils, ShoppingCart, Car, Phone, 
     Gamepad2, Home, GraduationCap, HeartPulse,
     Briefcase, Gift, PiggyBank, Search, Wrench,
@@ -18,6 +18,7 @@ import { useUI } from '@/components/ui-provider';
 import { Input } from '@/components/ui/input';
 import { CategoryForm } from '@/features/transactions/components/category-form';
 import { AnimatePresence } from 'framer-motion';
+import { PageHeader } from "@/components/page-header";
 
 const iconMap: Record<string, any> = {
     Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
@@ -77,24 +78,23 @@ export default function CategoriesPage() {
     };
 
     return (
-        <div className="h-full bg-muted/30 flex flex-col">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-30 md:justify-between md:gap-4">
-                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full md:text-left md:w-auto md:flex-1">Kelola Kategori</h1>
-                <Button variant="ghost" size="icon" className="absolute right-4 text-primary md:static" onClick={handleOpenAdd}>
-                    <Plus className="h-6 w-6" />
-                </Button>
-            </header>
+        <div className="h-full bg-muted/30 flex flex-col relative">
+            <PageHeader 
+                title="Kelola Kategori" 
+                extraActions={
+                    <Button variant="ghost" size="icon" className="rounded-full text-primary" onClick={handleOpenAdd}>
+                        <Plus className="h-6 w-6" />
+                    </Button>
+                }
+            />
 
-            <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full space-y-6">
+            <main className="flex-1 overflow-y-auto p-4 md:p-8 max-w-4xl mx-auto w-full space-y-6 pb-24">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div className="w-full md:w-auto">
-                        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'expense' | 'income')} className="w-full md:w-[300px]">
-                            <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800 h-10 p-1 rounded-lg">
-                                <TabsTrigger value="expense" className="rounded-lg text-xs font-medium">Pengeluaran</TabsTrigger>
-                                <TabsTrigger value="income" className="rounded-lg text-xs font-medium">Pemasukan</TabsTrigger>
+                        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'expense' | 'income')} className="w-full md:w-[320px]">
+                            <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-2">
+                                <TabsTrigger value="expense" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Pengeluaran</TabsTrigger>
+                                <TabsTrigger value="income" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Pemasukan</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </div>

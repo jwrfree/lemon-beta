@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
@@ -11,7 +11,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { differenceInCalendarDays, formatDistanceToNow, isSameMonth, parseISO } from 'date-fns';
+import { differenceInCalendarDays, formatDistanceToNow, isSameMonth, parseISO, subMonths } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AnimatedCounter } from '@/components/animated-counter';
 import type { Reminder, Debt } from '@/types/models';
@@ -53,6 +53,18 @@ export default function HomePage() {
     const monthlyExpense = transactions
         .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
         .reduce((acc, t) => acc + t.amount, 0);
+
+    const lastMonth = subMonths(now, 1);
+    const prevMonthlyIncome = transactions
+        .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), lastMonth))
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    const prevMonthlyExpense = transactions
+        .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), lastMonth))
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    const incomeDiff = monthlyIncome - prevMonthlyIncome;
+    const expenseDiff = monthlyExpense - prevMonthlyExpense;
     
     // ... existing useMemo hooks ...
 
@@ -111,6 +123,41 @@ export default function HomePage() {
         // Get first name only for cleaner UI
         return userData.displayName.split(' ')[0];
     }, [userData]);
+
+    // Check for debts due in 3 days and trigger local notification
+    useEffect(() => {
+        if (isDebtLoading || debts.length === 0) return;
+
+        const checkDueDebts = () => {
+            if (!('Notification' in window)) return;
+
+            if (Notification.permission === 'granted') {
+                const today = new Date();
+                const dueDebts = debts.filter(d => {
+                    if (!d.dueDate || d.status === 'settled') return false;
+                    const diff = differenceInCalendarDays(parseISO(d.dueDate), today);
+                    return diff === 3;
+                });
+
+                dueDebts.forEach(debt => {
+                    const key = `notified-debt-${debt.id}-${today.toDateString()}`;
+                    if (sessionStorage.getItem(key)) return;
+
+                    new Notification('Pengingat Hutang', {
+                        body: `Hutang "${debt.title}" jatuh tempo dalam 3 hari lagi.`,
+                        icon: '/icons/icon-192x192.png',
+                        tag: `debt-due-${debt.id}`
+                    });
+                    sessionStorage.setItem(key, 'true');
+                });
+            } else if (Notification.permission !== 'denied') {
+                // Opsional: Minta izin jika belum ditolak, tapi sebaiknya via tombol settings
+                // Notification.requestPermission();
+            }
+        };
+
+        checkDueDebts();
+    }, [debts, isDebtLoading]);
 
     if (isLoading) {
         return <HomeSkeleton />;
@@ -174,6 +221,9 @@ export default function HomePage() {
                                     <div>
                                         <p className="text-xs text-muted-foreground">Pemasukan</p>
                                         <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold" />
+                                        <p className="text-[10px] text-muted-foreground">
+                                            {incomeDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(incomeDiff))} vs bln lalu
+                                        </p>
                                     </div>
                                 </motion.div>
                                 <motion.div 
@@ -182,12 +232,15 @@ export default function HomePage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.5 }}
                                 >
-                                    <div className="p-1.5 bg-primary/10 rounded-full">
-                                        <ArrowDownLeft className="h-4 w-4 text-foreground" />
+                                    <div className="p-1.5 bg-rose-100 dark:bg-rose-900/50 rounded-full">
+                                        <ArrowDownLeft className="h-4 w-4 text-rose-600 dark:text-rose-500" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Pengeluaran</p>
                                         <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold" />
+                                        <p className="text-[10px] text-muted-foreground">
+                                            {expenseDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(expenseDiff))} vs bln lalu
+                                        </p>
                                     </div>
                                 </motion.div>
                             </div>

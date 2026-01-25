@@ -69,6 +69,14 @@
 - Dukungan preferensi motion sudah diterapkan di seluruh komponen `motion` termasuk ilustrasi dan progress bar.
 
 ## Audit Alur Pengguna
+### 0. Overhaul UI/UX Desktop (Aset & Dompet)
+- **Tujuan:** Memberikan pengalaman manajemen aset yang profesional dan informatif pada layar besar.
+- **Peningkatan:**
+  - Kartu ringkasan menggunakan gradien modern untuk membedakan Aset, Liabilitas, dan Kekayaan Bersih.
+  - Daftar dompet menggunakan layout list yang bersih dengan detail ikon dan warna yang terintegrasi.
+  - Penggunaan `PageHeader` yang konsisten untuk navigasi dan aksi cepat.
+- **Hasil:** Hierarki informasi yang lebih jelas dan tampilan yang lebih "premium" untuk pengguna desktop.
+
 ### 1. Onboarding & Aktivasi
 - **Tujuan:** memahami proposisi nilai, membuat akun, atau masuk kembali.
 - **Langkah:** Landing hero → (opsional) scroll fitur/keamanan → CTA "Buat akun gratis" / "Lihat dashboard" → Modal Sign Up / Login → verifikasi email atau login (opsional biometric) → Dashboard.

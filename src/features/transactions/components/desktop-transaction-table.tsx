@@ -37,7 +37,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                 const aValue = a[sortConfig.key as keyof Transaction];
                 const bValue = b[sortConfig.key as keyof Transaction];
 
-                if (aValue === undefined || bValue === undefined) return 0;
+                if (aValue === undefined || bValue === undefined || aValue === null || bValue === null) return 0;
 
                 if (aValue < bValue) {
                     return sortConfig.direction === 'asc' ? -1 : 1;
@@ -130,7 +130,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                     </td>
                                     <td className={cn(
                                         "p-4 text-right font-extrabold text-sm",
-                                        isExpense ? "text-foreground" : "text-teal-600"
+                                        isExpense ? "text-rose-600" : "text-teal-600"
                                     )}>
                                         <div className="flex items-center justify-end gap-1">
                                             {isExpense ? <ArrowDownLeft className="h-3 w-3" /> : <ArrowUpRight className="h-3 w-3" />}

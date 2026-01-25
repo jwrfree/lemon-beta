@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAssets } from '../hooks/use-assets';
+import { ASSET_CATEGORIES, LIABILITY_CATEGORIES, type AssetCategory } from '../constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { X } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select';
 import { useUI } from '@/components/ui-provider';
 import { cn } from '@/lib/utils';
 
@@ -15,19 +16,6 @@ interface AssetLiabilityFormProps {
   onClose: () => void;
   initialData?: any | null;
 }
-
-const assetCategories = [
-    { key: 'cash', label: 'Kas & Setara Kas' },
-    { key: 'investment', label: 'Investasi' },
-    { key: 'property', label: 'Properti' },
-    { key: 'other', label: 'Lainnya' },
-];
-
-const liabilityCategories = [
-    { key: 'loan', label: 'Pinjaman' },
-    { key: 'credit-card', label: 'Kartu Kredit' },
-    { key: 'other', label: 'Lainnya' },
-];
 
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
     const { addAssetLiability, updateAssetLiability } = useAssets();
@@ -88,7 +76,17 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     };
 
     const title = isEditMode ? `Edit ${type === 'asset' ? 'Aset' : 'Liabilitas'}` : 'Tambah Entri Baru';
-    const categories = type === 'asset' ? assetCategories : liabilityCategories;
+    
+    const assetGroups = React.useMemo(() => {
+        const groups: Record<string, AssetCategory[]> = {};
+        ASSET_CATEGORIES.forEach(cat => {
+            if (cat.hidden) return;
+            const groupName = cat.group || 'Lainnya';
+            if (!groups[groupName]) groups[groupName] = [];
+            groups[groupName].push(cat);
+        });
+        return groups;
+    }, []);
 
     return (
         <div className="w-full h-full md:h-auto flex flex-col bg-background md:rounded-xl overflow-hidden">
@@ -108,9 +106,9 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {!isEditMode && (
                     <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
-                        <TabsList className="grid w-full grid-cols-2 bg-muted p-1 rounded-lg">
-                            <TabsTrigger value="asset" className="rounded-md">Aset</TabsTrigger>
-                            <TabsTrigger value="liability" className="rounded-md">Liabilitas</TabsTrigger>
+                        <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-2">
+                            <TabsTrigger value="asset" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Aset</TabsTrigger>
+                            <TabsTrigger value="liability" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 )}
@@ -148,12 +146,25 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             <SelectValue placeholder="Pilih kategori" />
                         </SelectTrigger>
                         <SelectContent className="rounded-lg">
-                            {categories.map((cat) => (
+                        {type === 'asset' ? (
+                            Object.entries(assetGroups).map(([groupName, cats]) => (
+                                <SelectGroup key={groupName}>
+                                    <SelectLabel className="px-2 py-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/50">{groupName}</SelectLabel>
+                                    {cats.map((cat) => (
+                                        <SelectItem key={cat.key} value={cat.key}>
+                                            {cat.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            ))
+                        ) : (
+                            LIABILITY_CATEGORIES.map((cat) => (
                                 <SelectItem key={cat.key} value={cat.key}>
                                     {cat.label}
                                 </SelectItem>
-                            ))}
-                        </SelectContent>
+                            ))
+                        )}
+                    </SelectContent>
                     </Select>
                 </div>
 

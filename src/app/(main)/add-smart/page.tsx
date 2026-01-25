@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { TransactionForm } from '@/features/transactions/components/transaction-form';
 import { useUI } from '@/components/ui-provider';
 import { useSmartAddFlow, PageState, Message, InsightData } from '@/features/transactions/hooks/use-smart-add-flow';
+import { PageHeader } from '@/components/page-header';
 
 const textLoadingMessages = ["Menganalisis teks...", "Mengidentifikasi detail...", "Memilih kategori...", "Hampir selesai..."];
 const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant...", "Menebak kategori belanja...", "Menyiapkan hasil..."];
@@ -106,12 +107,11 @@ export default function SmartAddPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}>
-                    {pageState === 'IDLE' ? <ChevronLeft className="h-6 w-6" strokeWidth={1.75} /> : <X className="h-6 w-6" strokeWidth={1.75} />}
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Catat Cepat</h1>
-            </header>
+            <PageHeader 
+                title="Catat Cepat"
+                backIcon={pageState === 'IDLE' ? ChevronLeft : X}
+                onBackClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}
+            />
 
             {isVoiceInputMode ? (
                 <div className="flex-1 flex flex-col items-center justify-center p-4">

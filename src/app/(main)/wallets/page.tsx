@@ -24,16 +24,11 @@ export default function WalletsPage() {
   const activeWallet = wallets.length > 0 ? wallets[safeActiveIndex] : null;
 
   return (
-    <div className="flex flex-col bg-muted h-full">
+    <div className="flex flex-col bg-muted h-full relative">
       {/* Mobile View */}
       <div className="md:hidden flex flex-col h-full">
           <PageHeader
             title="Dompet Kamu"
-            actionButton={{
-              icon: Plus,
-              label: 'Tambah dompet',
-              onClick: () => setIsWalletModalOpen(true),
-            }}
             extraActions={<BalanceVisibilityToggle variant="ghost" size="icon" />}
           />
           
@@ -52,38 +47,53 @@ export default function WalletsPage() {
               </div>
             </main>
           ) : (
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <div className="h-64 pt-4 flex-shrink-0 bg-muted">
-                 <WalletCardStack 
-                    wallets={wallets} 
-                    activeIndex={safeActiveIndex} 
-                    setActiveIndex={setActiveIndex} 
-                />
+            <main className="flex-1 overflow-y-auto pb-24">
+              <WalletCardStack 
+                wallets={wallets} 
+                setActiveIndex={setActiveIndex}
+                activeIndex={safeActiveIndex}
+              />
+              
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">Transaksi Terakhir</h2>
+                  <Button variant="link" size="sm">Lihat Semua</Button>
+                </div>
+                
+                {activeWallet && (
+                  <TransactionList walletId={activeWallet.id} limit={10} />
+                )}
               </div>
-              <div className="flex-1 bg-background rounded-t-xl overflow-y-auto px-4 pb-[max(16px,env(safe-area-inset-bottom))] -mt-4 z-10 pt-4">
-                 <h2 className="text-lg font-semibold mb-2 mt-4 sticky top-0 bg-background py-2">Riwayat Transaksi</h2>
-                 {activeWallet ? (
-                    <TransactionList walletId={activeWallet.id} />
-                 ) : (
-                    <p className="text-muted-foreground text-center text-sm py-4">Pilih dompet untuk melihat transaksi.</p>
-                 )}
-              </div>
-            </div>
+            </main>
           )}
+
+          {/* Floating Action Button (FAB) */}
+          <div className="fixed bottom-20 right-6 z-40">
+            <Button 
+                onClick={() => setIsWalletModalOpen(true)}
+                size="icon"
+                className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform active:scale-95"
+                aria-label="Tambah dompet"
+            >
+                <Plus className="h-7 w-7" />
+            </Button>
+          </div>
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:flex flex-col h-full">
-        <div className="h-16 flex items-center justify-between px-6 border-b bg-background">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold">Dompet</h1>
-            <BalanceVisibilityToggle variant="ghost" size="icon" />
-          </div>
-          <Button onClick={() => setIsWalletModalOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Tambah Dompet
-          </Button>
-        </div>
+      <div className="hidden md:flex flex-col h-full bg-background">
+        <PageHeader
+          title="Dompet Kamu"
+          extraActions={
+            <div className="flex items-center gap-2">
+              <BalanceVisibilityToggle variant="ghost" size="icon" />
+              <Button onClick={() => setIsWalletModalOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Tambah Dompet
+              </Button>
+            </div>
+          }
+        />
         <div className="flex-1 overflow-hidden">
           {wallets.length === 0 ? (
             <main className="flex h-full items-center justify-center p-4">

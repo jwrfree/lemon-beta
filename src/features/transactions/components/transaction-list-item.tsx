@@ -20,7 +20,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Tr
     const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(transaction.category);
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-foreground' : 'text-teal-600';
+    const amountColor = isExpense ? 'text-rose-600' : 'text-teal-600';
 
     return (
         <div className="flex items-center gap-4 p-3.5">

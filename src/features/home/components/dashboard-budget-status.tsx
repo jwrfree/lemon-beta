@@ -17,8 +17,8 @@ interface DashboardBudgetStatusProps {
 export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) => {
     // Sort by percentage spent (highest first) to show critical budgets
     const sortedBudgets = [...budgets].sort((a, b) => {
-        const aPercent = (a.spent / a.targetAmount);
-        const bPercent = (b.spent / b.targetAmount);
+        const aPercent = ((a.spent ?? 0) / a.targetAmount);
+        const bPercent = ((b.spent ?? 0) / b.targetAmount);
         return bPercent - aPercent;
     }).slice(0, 3);
 
@@ -45,8 +45,9 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                     </div>
                 ) : (
                     sortedBudgets.map(budget => {
-                        const percent = Math.min((budget.spent / budget.targetAmount) * 100, 100);
-                        const isOver = budget.spent > budget.targetAmount;
+                        const spent = budget.spent ?? 0;
+                        const percent = Math.min((spent / budget.targetAmount) * 100, 100);
+                        const isOver = spent > budget.targetAmount;
                         const isWarning = percent > 80;
                         
                         return (
@@ -57,10 +58,10 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                                         {isOver && <AlertCircle className="h-3 w-3 text-destructive" />}
                                     </span>
                                     <span className={cn(
-                                        "tabular-nums",
+                                        "text-xs",
                                         isOver ? "text-destructive font-bold" : "text-muted-foreground"
                                     )}>
-                                        {formatCurrency(budget.spent)} <span className="text-[10px] text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
+                                        {formatCurrency(spent)} <span className="text-[10px] text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
                                     </span>
                                 </div>
                                 <Progress 

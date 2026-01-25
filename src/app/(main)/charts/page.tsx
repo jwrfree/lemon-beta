@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { ChevronLeft, LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
+import { PageHeader } from "@/components/page-header";
 
 // Extracted Components (Lazy Loaded)
 const MonthlySummary = dynamic(() => import('@/features/charts/components/monthly-summary').then(mod => mod.MonthlySummary), {
@@ -94,14 +95,9 @@ export default function ChartsPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted/30">
-            <header className="sticky top-0 z-30 flex h-16 items-center justify-center border-b bg-background/95 px-4 shadow-sm backdrop-blur">
-                <Button variant="ghost" size="icon" className="absolute left-4" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-                <h1 className="text-xl font-semibold tracking-tight">Statistik & Insight</h1>
-            </header>
+            <PageHeader title="Statistik & Insight" />
 
-            <main className="flex-1 overflow-y-auto" {...handlers}>
+            <main className="flex-1 overflow-x-hidden relative" {...handlers}>
                 <div className="sticky top-0 z-20 border-b bg-background/95 p-4 md:py-2 backdrop-blur">
                     <div className="max-w-6xl mx-auto w-full">
                         <div className="w-full">

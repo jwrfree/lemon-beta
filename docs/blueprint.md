@@ -31,7 +31,8 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
 5. **Insights**
    - Insight mingguan AI, tren kategori, distribusi pengeluaran, widget Debt Health, highlight pengingat.
 6.3. **More**
-   - Assets & Liabilities (Net Worth), AI Token Calculator, Profil, Security (biometrik), Reminders calendar, Data (impor/ekspor), Bantuan, Feedback, serta log perubahan.
+   - Assets & Liabilities (Net Worth): Pelacakan kekayaan bersih dengan dashboard khusus. Desktop version menyajikan visualisasi kartu gradien dan manajemen dompet yang dioptimalkan untuk layar lebar.
+   - AI Token Calculator, Profil, Security (biometrik), Reminders calendar, Data (impor/ekspor), Bantuan, Feedback, serta log perubahan.
 
 ## 4. Core Flow Designs
 ### 4.0 Onboarding & Aktivasi

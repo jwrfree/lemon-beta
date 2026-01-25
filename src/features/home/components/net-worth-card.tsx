@@ -1,0 +1,90 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency, cn } from '@/lib/utils';
+import { TrendingUp, TrendingDown, Wallet, PiggyBank } from 'lucide-react';
+import { AnimatedCounter } from '@/components/animated-counter';
+import { HelpTooltip } from '@/components/help-tooltip';
+
+interface NetWorthCardProps {
+    totalAssets: number;
+    totalLiabilities: number;
+}
+
+export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProps) => {
+    const netWorth = totalAssets - totalLiabilities;
+    const isPositive = netWorth >= 0;
+    const debtRatio = totalAssets > 0 
+        ? (totalLiabilities / totalAssets) * 100 
+        : (totalLiabilities > 0 ? 100 : 0);
+    const [progress, setProgress] = useState(0);
+    const [displayNetWorth, setDisplayNetWorth] = useState(0);
+
+    const getStatusColor = (ratio: number) => {
+        if (ratio <= 30) return { text: "text-emerald-600", bar: "bg-gradient-to-r from-emerald-500 to-emerald-400" };
+        if (ratio <= 60) return { text: "text-yellow-600", bar: "bg-gradient-to-r from-yellow-500 to-yellow-400" };
+        return { text: "text-rose-600", bar: "bg-gradient-to-r from-rose-500 to-rose-400" };
+    };
+
+    const { text: textColor, bar: barColor } = getStatusColor(debtRatio);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setProgress(debtRatio), 500);
+        setDisplayNetWorth(netWorth);
+        return () => clearTimeout(timer);
+    }, [debtRatio, netWorth]);
+
+    return (
+        <Card className="shadow-sm border-border/60">
+            <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <PiggyBank className="h-4 w-4" />
+                    Kekayaan Bersih (Net Worth)
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold mb-4">
+                    <AnimatedCounter value={displayNetWorth} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary/10">
+                    <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Wallet className="h-3 w-3" /> Aset
+                        </p>
+                        <p className="text-sm font-semibold text-emerald-600">
+                            {formatCurrency(totalAssets)}
+                        </p>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <TrendingDown className="h-3 w-3" /> Kewajiban
+                        </p>
+                        <p className="text-sm font-semibold text-rose-600">
+                            {formatCurrency(totalLiabilities)}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="mt-4 space-y-1.5">
+                    <div className="flex justify-between text-xs">
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-muted-foreground">Rasio Hutang</span>
+                            <HelpTooltip content="Persentase aset yang dibiayai oleh hutang." />
+                        </div>
+                        <span className={cn("font-medium", textColor)}>
+                            {debtRatio.toFixed(1)}%
+                        </span>
+                    </div>
+                    <div className="h-2 w-full bg-background/50 rounded-full overflow-hidden border border-primary/10">
+                        <div 
+                            className={cn("h-full rounded-full transition-all duration-1000 ease-out", barColor)}
+                            style={{ width: `${Math.min(progress, 100)}%` }}
+                        />
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+};

@@ -2,7 +2,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, MailCheck } from 'lucide-react';
+import { MailCheck } from 'lucide-react';
+import { PageHeader } from '@/components/page-header';
 
 const AllCaughtUpIllustration = () => (
     <div className="relative w-40 h-40 flex items-center justify-center">
@@ -18,13 +19,7 @@ export default function NotificationsPage() {
     const router = useRouter();
     return (
         <div className="h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                     <span className="sr-only">Kembali</span>
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Notifikasi</h1>
-            </header>
+            <PageHeader title="Notifikasi" />
             <main className="flex justify-center p-8 text-center pt-16">
                 <div className="flex flex-col items-center">
                     <AllCaughtUpIllustration />

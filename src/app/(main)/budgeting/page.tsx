@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, HandCoins } from 'lucide-react';
+import { PlusCircle, HandCoins, Plus } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { cn, formatCurrency, daysInMonth } from '@/lib/utils';
@@ -142,16 +142,9 @@ export default function BudgetingPage() {
     
 
     return (
-        <div className="flex flex-col h-full bg-muted/30">
-            <PageHeader
-                title="Manajemen Anggaran"
-                actionButton={{
-                    icon: PlusCircle,
-                    label: 'Tambah anggaran',
-                    onClick: () => setIsBudgetModalOpen(true),
-                }}
-            />
-            <main className="flex-1 overflow-y-auto">
+        <div className="flex flex-col h-full bg-muted/30 relative">
+            <PageHeader title="Manajemen Anggaran" />
+            <main className="flex-1 overflow-y-auto pb-24">
                 {budgets.length === 0 ? (
                     <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500">
                         <div className="p-4 bg-primary/10 rounded-full mb-4">
@@ -199,31 +192,16 @@ export default function BudgetingPage() {
                                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Limit</p>
                                                 <p className="text-xl font-extrabold">{formatCurrency(overview.totalBudget)}</p>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <div className="p-4 rounded-lg bg-destructive/5 shadow-inner border border-destructive/10">
-                                                    <p className="text-[10px] font-bold text-destructive/70 uppercase tracking-widest mb-1">Terpakai</p>
-                                                    <p className="text-base font-extrabold text-destructive">{formatCurrency(overview.totalSpent)}</p>
-                                                </div>
-                                                <div className="p-4 rounded-lg bg-teal-600/5 shadow-inner border border-teal-600/10">
-                                                    <p className="text-[10px] font-bold text-teal-600/70 uppercase tracking-widest mb-1">Tersedia</p>
-                                                    <p className="text-base font-extrabold text-teal-600">{formatCurrency(overview.totalRemaining)}</p>
-                                                </div>
-                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
                             </div>
 
-                            {/* DETAILS GRID */}
-                            <div className="col-span-12 lg:col-span-8 space-y-6">
-                                <div className="flex items-center justify-between px-1">
-                                    <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Pos Anggaran</h2>
-                                    <Badge variant="outline" className="font-bold text-[10px] border-primary/20 text-primary">
-                                        {budgets.length} AKTIF
-                                    </Badge>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {budgets.map(budget => (
+                            {/* BUDGETS LIST */}
+                            <div className="col-span-12 lg:col-span-8 space-y-4">
+                                <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Pos Anggaran</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {budgets.map((budget: any) => (
                                         <BudgetCard key={budget.id} budget={budget} />
                                     ))}
                                 </div>
@@ -232,6 +210,20 @@ export default function BudgetingPage() {
                     </div>
                 )}
             </main>
+
+            {/* Floating Action Button */}
+            {budgets.length > 0 && (
+                <div className="fixed bottom-20 right-6 z-40 md:bottom-8 md:right-8">
+                    <Button 
+                        onClick={() => setIsBudgetModalOpen(true)}
+                        size="icon"
+                        className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform active:scale-95"
+                        aria-label="Tambah anggaran"
+                    >
+                        <Plus className="h-7 w-7" />
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

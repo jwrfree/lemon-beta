@@ -11,12 +11,13 @@ import { Badge } from '@/components/ui/badge';
 import { useUI } from '@/components/ui-provider';
 import { format, formatDistanceToNow, isBefore, parseISO, addDays, isSameDay, startOfDay, differenceInCalendarDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarClock, Clock, Clock3, Check, ChevronLeft, Plus, BellRing, EllipsisVertical, Filter, Calendar } from 'lucide-react';
+import { CalendarClock, Clock, Clock3, Check, Plus, BellRing, EllipsisVertical, Filter, Calendar } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { PageHeader } from "@/components/page-header";
 
 const statusLabels: Record<string, string> = {
     all: 'Semua',
@@ -133,55 +134,38 @@ export default function RemindersPage() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-muted">
-            <header className="sticky top-0 z-20 border-b bg-background">
-                {/* Mobile header */}
-                <div className="md:hidden flex h-16 items-center gap-2 px-4">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
-                        <ChevronLeft className="h-5 w-5" />
-                        <span className="sr-only">Kembali</span>
-                    </Button>
-                    <div className="flex-1 flex items-center justify-center gap-2">
-                        <h1 className="text-lg font-semibold">Pengingat</h1>
+        <div className="flex flex-col h-full bg-muted relative">
+            <PageHeader 
+                title="Pengingat" 
+                extraActions={
+                    <div className="flex items-center gap-1 md:gap-2">
+                        <div className="hidden md:flex items-center gap-2 mr-2">
+                            <Badge className="bg-destructive/10 text-destructive border-none">
+                                Terlambat: {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
+                            </Badge>
+                            <Badge className="bg-primary/10 text-primary border-none">
+                                Segera: {reminders.filter(r => {
+                                    if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
+                                    const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
+                                    return diff >= 0 && diff <= 7;
+                                }).length}
+                            </Badge>
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                                setReminderToEdit(null);
+                                setIsReminderModalOpen(true);
+                            }}
+                            className="rounded-full"
+                            aria-label="Tambah pengingat"
+                        >
+                            <Plus className="h-6 w-6" />
+                        </Button>
                     </div>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                            setReminderToEdit(null);
-                            setIsReminderModalOpen(true);
-                        }}
-                        className="shrink-0"
-                        aria-label="Tambah pengingat"
-                    >
-                        <Plus className="h-6 w-6" />
-                    </Button>
-                </div>
-                {/* Desktop header */}
-                <div className="hidden md:flex h-16 items-center justify-between px-6">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-xl font-semibold">Pengingat</h1>
-                        <Badge className="bg-destructive/10 text-destructive">
-                            Terlambat: {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
-                        </Badge>
-                        <Badge className="bg-primary/10 text-primary">
-                            Segera: {reminders.filter(r => {
-                                if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
-                                const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
-                                return diff >= 0 && diff <= 7;
-                            }).length}
-                        </Badge>
-                    </div>
-                    <Button
-                        onClick={() => {
-                            setReminderToEdit(null);
-                            setIsReminderModalOpen(true);
-                        }}
-                    >
-                        Tambah Pengingat
-                    </Button>
-                </div>
-            </header>
+                }
+            />
             <main className="flex-1 overflow-y-auto">
                 <div className="p-4 md:p-6 grid md:grid-cols-[2fr_1fr] gap-4 md:gap-6 pb-24 md:pb-6">
                     <div className="space-y-4">
@@ -202,9 +186,9 @@ export default function RemindersPage() {
                             </Tabs>
                             <div className="flex items-center gap-2">
                                 <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
-                                    <TabsList className="grid w-full grid-cols-2 h-9 bg-muted p-1 rounded-lg">
-                                        <TabsTrigger value="week" className="rounded-md text-xs">Minggu ini</TabsTrigger>
-                                        <TabsTrigger value="30" className="rounded-md text-xs">30 hari</TabsTrigger>
+                                    <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-2">
+                                        <TabsTrigger value="week" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                        <TabsTrigger value="30" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                                 <Button

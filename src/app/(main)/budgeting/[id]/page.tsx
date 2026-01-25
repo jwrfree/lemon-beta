@@ -13,6 +13,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { ChevronLeft, AlertTriangle, Pencil } from 'lucide-react';
 import { startOfMonth, parseISO } from 'date-fns';
 import { useUI } from '@/components/ui-provider';
+import { PageHeader } from '@/components/page-header';
 
 export default function BudgetDetailPage() {
     const router = useRouter();
@@ -46,12 +47,7 @@ export default function BudgetDetailPage() {
     if (!budget) {
         return (
              <div className="h-full bg-muted">
-                <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background z-20">
-                    <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => router.back()}>
-                        <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                    </Button>
-                    <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
-                </header>
+                <PageHeader title="Detail Anggaran" />
                 <main className="flex justify-center text-center p-4 pt-16">
                      <div className="flex flex-col items-center">
                         <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
@@ -71,15 +67,14 @@ export default function BudgetDetailPage() {
 
     return (
         <div className="flex flex-col h-full bg-muted">
-            <header className="h-16 flex items-center relative px-4 shrink-0 border-b bg-background sticky top-0 z-20">
-                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden" onClick={() => router.back()}>
-                    <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
-                </Button>
-                <h1 className="text-xl font-bold text-center w-full">Detail Anggaran</h1>
-                <Button variant="ghost" size="icon" className="absolute right-4" onClick={() => openEditBudgetModal(budget)}>
-                    <Pencil className="h-5 w-5" strokeWidth={1.75} />
-                </Button>
-            </header>
+            <PageHeader 
+                title="Detail Anggaran"
+                actionButton={{
+                    icon: Pencil,
+                    label: "Edit Anggaran",
+                    onClick: () => openEditBudgetModal(budget)
+                }}
+            />
 
             <main className="flex-1 overflow-y-auto p-4 space-y-6 pb-16">
                  <Card>

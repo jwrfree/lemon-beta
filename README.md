@@ -4,8 +4,10 @@
 
 Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis v2.1.0 memperkenalkan fitur pelacakan kekayaan bersih (Net Worth) yang komprehensif serta alat bantu estimasi biaya AI bagi developer.
 
-## ✨ Sorotan Utama v2.1.0
+## ✨ Sorotan Utama & Peningkatan Terbaru
+- **Overhaul UI/UX Desktop (Aset & Dompet):** Desain ulang halaman manajemen aset pada desktop dengan kartu ringkasan gradien, daftar dompet modern, dan hierarki visual yang lebih baik.
 - **Tracking Kekayaan Bersih:** Monitor aset (investasi, properti) & liabilitas (hutang, cicilan) dalam satu dashboard untuk melihat Net Worth secara real-time.
+- **Visual Transaksi Konsisten:** Indikator warna merah (`rose-600`) yang konsisten untuk semua pengeluaran dan ikon yang seragam di seluruh aplikasi.
 - **Kalkulator Token AI:** Alat bantu developer untuk estimasi biaya token DeepSeek V3 dan runway budget API.
 - **Landing yang terstruktur & edukatif:** navigasi anchor, skip link, copy hero baru, serta CTA ganda (daftar & masuk) membuat pengguna cepat memahami nilai produk.
 - **Autentikasi kaya kendali:** bottom sheet login/sign-up/forgot-password dengan pesan error inline, dukungan biometrik, dan `prefers-reduced-motion` untuk menjaga kenyamanan.
