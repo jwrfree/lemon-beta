@@ -77,7 +77,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                             {debtRatio.toFixed(1)}%
                         </span>
                     </div>
-                    <div className="h-2 w-full bg-background/50 rounded-full overflow-hidden border border-primary/10">
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden border border-border">
                         <div 
                             className={cn("h-full rounded-full transition-all duration-1000 ease-out", barColor)}
                             style={{ width: `${Math.min(progress, 100)}%` }}

@@ -6,7 +6,7 @@
 }
 
 .fab-enhanced::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -15,7 +15,7 @@
   background: linear-gradient(
     45deg,
     transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
+    rgb(255 255 255 / 10%) 50%,
     transparent 70%
   );
   transform: rotate(45deg);
@@ -25,42 +25,43 @@
 
 .fab-enhanced:hover::before {
   opacity: 1;
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: shimmer-rotate 1.5s ease-in-out infinite;
 }
 
-@keyframes shimmer {
+@keyframes shimmer-rotate {
   0% {
     transform: translateX(-100%) translateY(-100%) rotate(45deg);
   }
+
   100% {
     transform: translateX(100%) translateY(100%) rotate(45deg);
   }
 }
 
 .fab-glow {
-  box-shadow: 
-    0 0 20px rgba(59, 130, 246, 0.3),
-    0 0 40px rgba(59, 130, 246, 0.2),
-    0 0 60px rgba(59, 130, 246, 0.1);
+  box-shadow:
+    0 0 20px rgb(59 130 246 / 30%),
+    0 0 40px rgb(59 130 246 / 20%),
+    0 0 60px rgb(59 130 246 / 10%);
 }
 
 .fab-glow:hover {
-  box-shadow: 
-    0 0 30px rgba(59, 130, 246, 0.4),
-    0 0 60px rgba(59, 130, 246, 0.3),
-    0 0 90px rgba(59, 130, 246, 0.2);
+  box-shadow:
+    0 0 30px rgb(59 130 246 / 40%),
+    0 0 60px rgb(59 130 246 / 30%),
+    0 0 90px rgb(59 130 246 / 20%);
 }
 
 /* Bottom navigation enhancements */
 .bottom-nav-container {
   backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.85);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgb(255 255 255 / 85%);
+  border-top: 1px solid rgb(255 255 255 / 20%);
 }
 
 .dark .bottom-nav-container {
-  background: rgba(31, 41, 55, 0.85);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgb(31 41 55 / 85%);
+  border-top: 1px solid rgb(255 255 255 / 10%);
 }
 
 /* Safe area adjustments */
@@ -71,19 +72,19 @@
 }
 
 /* FAB positioning for different screen sizes */
-@media (max-height: 700px) {
+@media (height <= 700px) {
   .fab-position {
     top: -1.75rem; /* -7 */
   }
 }
 
-@media (min-height: 701px) and (max-height: 800px) {
+@media (height >= 701px) and (height <= 800px) {
   .fab-position {
     top: -1.875rem; /* -7.5 */
   }
 }
 
-@media (min-height: 801px) {
+@media (height >= 801px) {
   .fab-position {
     top: -2rem; /* -8 */
   }

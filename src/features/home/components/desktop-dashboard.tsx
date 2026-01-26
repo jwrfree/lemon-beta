@@ -119,6 +119,23 @@ export const DesktopDashboard = () => {
             .reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0);
     }, [debts]);
 
+    const calculatedBudgets = useMemo(() => {
+        return budgets.map(budget => {
+            const budgetSpent = transactions
+                .filter(t => 
+                    t.type === 'expense' &&
+                    budget.categories.includes(t.category) &&
+                    isSameMonth(parseISO(t.date), currentMonth)
+                )
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            return {
+                ...budget,
+                spent: budgetSpent
+            };
+        });
+    }, [budgets, transactions, currentMonth]);
+
     const reminderSummary = useMemo(() => {
         const overdue = reminders.filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), now) < 0);
         const upcoming = reminders
@@ -294,7 +311,7 @@ export const DesktopDashboard = () => {
                         </ErrorBoundary>
                         <DashboardQuickActions />
                         <ErrorBoundary>
-                            <DashboardBudgetStatus budgets={budgets} />
+                            <DashboardBudgetStatus budgets={calculatedBudgets} />
                         </ErrorBoundary>
                         {goals.length > 0 ? (
                             <ErrorBoundary>

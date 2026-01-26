@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle } from 'lucide-react';
+import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle, RotateCcw, Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { Calendar } from '@/components/ui/calendar';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
@@ -16,6 +19,10 @@ import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flo
 import { PageHeader } from '@/components/page-header';
 import { saveAICorrection } from '@/lib/feedback-service';
 import { DynamicSuggestions } from './dynamic-suggestions';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CategoryGrid } from '@/features/transactions/components/category-grid';
+import { categories } from '@/lib/categories';
+import { SuccessAnimation } from '@/components/success-animation';
 
 const textLoadingMessages = ["Menganalisis teks...", "Mengidentifikasi detail...", "Memilih kategori...", "Hampir selesai..."];
 const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant...", "Menebak kategori belanja...", "Menyiapkan hasil..."];
@@ -48,6 +55,7 @@ export default function SmartAddPage() {
     const [loadingMessage, setLoadingMessage] = useState('');
     const [isListening, setIsListening] = useState(false);
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -72,11 +80,20 @@ export default function SmartAddPage() {
     const handleConfirmSave = useCallback(async (andAddAnother = false) => {
         vibrate(50); // Medium haptic for save start
         const success = await saveTransaction(andAddAnother);
-        if (success) vibrate([40, 30, 40]); // Success double tap
-        if (success && !andAddAnother) router.back();
-        if (success && andAddAnother) {
-            setInputValue('');
-            textareaRef.current?.focus();
+        if (success) {
+            setShowSuccess(true);
+            vibrate([80, 50, 80]); // "Heavy-Light-Heavy" for success satisfaction
+            
+            // Wait for animation
+            setTimeout(() => {
+                setShowSuccess(false);
+                if (!andAddAnother) {
+                    router.back();
+                } else {
+                    setInputValue('');
+                    textareaRef.current?.focus();
+                }
+            }, 1200);
         }
     }, [saveTransaction, router, vibrate]);
 
@@ -84,8 +101,12 @@ export default function SmartAddPage() {
         vibrate(50);
         const success = await saveMultiTransactions();
         if (success) {
-            vibrate([40, 30, 40]);
-            router.back();
+            setShowSuccess(true);
+            vibrate([80, 50, 80]);
+            setTimeout(() => {
+                setShowSuccess(false);
+                router.back();
+            }, 1200);
         }
     }, [saveMultiTransactions, router, vibrate]);
 
@@ -129,6 +150,16 @@ export default function SmartAddPage() {
         if (!SpeechRecognition) { showToast("Browser tidak mendukung input suara.", 'error'); return; }
         if (isListening) { recognitionRef.current?.stop(); setIsListening(false); }
         else { setInputValue(''); finalTranscriptRef.current = ''; recognitionRef.current?.start(); setIsListening(true); }
+    };
+
+    const handleUndoVoice = () => {
+        setInputValue(prev => {
+            const words = prev.trim().split(' ');
+            if (words.length <= 1) return '';
+            words.pop();
+            return words.join(' ') + ' ';
+        });
+        finalTranscriptRef.current = finalTranscriptRef.current.trim().split(' ').slice(0, -1).join(' ') + ' ';
     };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,6 +225,11 @@ export default function SmartAddPage() {
                     </motion.div>
                     <div className="absolute bottom-4 left-4 right-4 flex justify-center items-center gap-4">
                         <Button size="icon" variant="ghost" className="h-11 w-11" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}><Keyboard className="h-6 w-6" /></Button>
+                        {inputValue && (
+                            <Button size="icon" variant="ghost" className="h-11 w-11 text-muted-foreground hover:text-destructive" onClick={handleUndoVoice}>
+                                <RotateCcw className="h-6 w-6" />
+                            </Button>
+                        )}
                         <Button size="lg" className="flex-1" onClick={() => { toggleListening(); processInput(inputValue); }}><Check className="mr-2 h-5 w-5" /> Kirim</Button>
                     </div>
                 </div>
@@ -268,17 +304,44 @@ export default function SmartAddPage() {
                                                             Oke, catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold text-primary">{formatCurrency(parsedData.amount)}</span>?
                                                         </p>
                                                         <div className="flex items-center gap-2 mt-2">
-                                                            <div 
-                                                                className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
-                                                                style={{ 
-                                                                    backgroundColor: `${getCategoryVisuals(parsedData.category).color}15`,
-                                                                    color: getCategoryVisuals(parsedData.category).color,
-                                                                    border: `1px solid ${getCategoryVisuals(parsedData.category).color}30`
-                                                                }}
-                                                            >
-                                                                {React.createElement(getCategoryVisuals(parsedData.category).icon, { size: 10 })}
-                                                                {parsedData.category}
-                                                            </div>
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                    <button 
+                                                                        type="button"
+                                                                        className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80"
+                                                                        style={{ 
+                                                                            backgroundColor: `${getCategoryVisuals(parsedData.category).color}15`,
+                                                                            color: getCategoryVisuals(parsedData.category).color,
+                                                                            border: `1px solid ${getCategoryVisuals(parsedData.category).color}30`
+                                                                        }}
+                                                                    >
+                                                                        {React.createElement(getCategoryVisuals(parsedData.category).icon, { size: 10 })}
+                                                                        {parsedData.category}
+                                                                        <Pencil className="h-2 w-2 ml-1 opacity-50" />
+                                                                    </button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-80 p-2" align="start">
+                                                                    <div className="max-h-[300px] overflow-y-auto">
+                                                                        <p className="text-xs font-medium text-muted-foreground mb-2 px-1">Ganti Kategori Cepat</p>
+                                                                        <CategoryGrid 
+                                                                            categories={parsedData.type === 'income' ? categories.income : categories.expense}
+                                                                            selectedCategory={parsedData.category}
+                                                                            onCategorySelect={(cat) => {
+                                                                                setParsedData(prev => prev ? ({ ...prev, category: cat.name }) : null);
+                                                                                // Close popover logic is handled by standard Popover behavior usually, 
+                                                                                // but we might need a controlled state if we want to force close. 
+                                                                                // For now, let's rely on the user clicking away or re-clicking trigger if default behavior isn't enough,
+                                                                                // or add a simple click handler.
+                                                                                // Actually shadcn/radix Popover usually requires a click outside to close if not controlled.
+                                                                                // Ideally we'd use an open state, but let's keep it simple first.
+                                                                                // To auto-close, we simulate a click on the body or use a ref.
+                                                                                // Let's just update the data for now.
+                                                                                document.body.click(); // Hacky close
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </PopoverContent>
+                                                            </Popover>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -487,6 +550,7 @@ export default function SmartAddPage() {
                     </footer>
                 </>
             )}
+            {showSuccess && <SuccessAnimation />}
         </div>
     );
 }

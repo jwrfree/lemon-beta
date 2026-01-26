@@ -1,9 +1,9 @@
-
 'use client';
 
 import React, { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { Label, Pie, PieChart } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import type { Transaction } from '@/types/models';
@@ -12,7 +12,13 @@ interface DashboardExpensePieProps {
     transactions: Transaction[];
 }
 
-const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
+const chartConfig = {
+    value: {
+        label: "Pengeluaran",
+    },
+    // We can add semantic labels for chart colors if needed, but for dynamic categories
+    // we will assign colors directly in the data payload.
+} satisfies ChartConfig;
 
 export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) => {
     const data = useMemo(() => {
@@ -25,12 +31,29 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
         });
 
         return Object.entries(categoryMap)
-            .map(([name, value]) => ({ name, value }))
+            .map(([name, value]) => {
+                const category = categoryDetails(name);
+                // Extract color name from class like "text-yellow-600"
+                const colorMatch = category.color.match(/text-([a-z]+)-/);
+                const colorName = colorMatch ? colorMatch[1] : 'gray';
+                
+                return { 
+                    name, 
+                    value,
+                    fill: `hsl(var(--${colorName}-500))` 
+                };
+            })
             .sort((a, b) => b.value - a.value)
-            .slice(0, 5); // Top 5 categories
+            .slice(0, 5);
     }, [transactions]);
 
-    const totalExpense = data.reduce((acc, curr) => acc + curr.value, 0);
+    const totalExpense = useMemo(() => {
+        return data.reduce((acc, curr) => acc + curr.value, 0);
+    }, [data]);
+
+    const topCategoryPercentage = data.length > 0 && totalExpense > 0
+        ? ((data[0].value / totalExpense) * 100).toFixed(0)
+        : 0;
 
     return (
         <Card className="border-none shadow-sm bg-card rounded-lg flex flex-col h-full">
@@ -38,48 +61,57 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
                 <CardTitle className="text-sm font-semibold">Distribusi Pengeluaran</CardTitle>
                 <CardDescription className="text-xs">Top 5 kategori pengeluaran</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 min-h-[250px] relative">
+            <CardContent className="flex-1 min-h-[250px] relative pb-0">
                 {data.length === 0 ? (
                      <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
                         Belum ada data pengeluaran.
                     </div>
                 ) : (
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
                         <PieChart>
+                            <ChartTooltip 
+                                cursor={false} 
+                                content={<ChartTooltipContent hideLabel />} 
+                            />
                             <Pie
                                 data={data}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={80}
-                                paddingAngle={2}
                                 dataKey="value"
+                                nameKey="name"
+                                innerRadius={60}
+                                strokeWidth={5}
                             >
-                                {data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
-                                ))}
+                                <Label
+                                    content={({ viewBox }) => {
+                                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                            return (
+                                                <text
+                                                    x={viewBox.cx}
+                                                    y={viewBox.cy}
+                                                    textAnchor="middle"
+                                                    dominantBaseline="middle"
+                                                >
+                                                    <tspan
+                                                        x={viewBox.cx}
+                                                        y={viewBox.cy}
+                                                        className="fill-foreground text-3xl font-bold"
+                                                    >
+                                                        {topCategoryPercentage}%
+                                                    </tspan>
+                                                    <tspan
+                                                        x={viewBox.cx}
+                                                        y={(viewBox.cy || 0) + 24}
+                                                        className="fill-muted-foreground text-xs"
+                                                    >
+                                                        Terbesar
+                                                    </tspan>
+                                                </text>
+                                            )
+                                        }
+                                    }}
+                                />
                             </Pie>
-                            <Tooltip 
-                                formatter={(value: number) => formatCurrency(value)}
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                            />
-                            <Legend 
-                                layout="horizontal" 
-                                verticalAlign="bottom" 
-                                align="center"
-                                iconSize={8}
-                                wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
-                            />
-                            <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
-                                <tspan x="50%" dy="-0.5em" fontSize="18" fontWeight="bold" fill="currentColor">
-                                    {((data[0]?.value / totalExpense) * 100).toFixed(0)}%
-                                </tspan>
-                                <tspan x="50%" dy="1.5em" fontSize="10" fill="#888">
-                                    Terbesar
-                                </tspan>
-                            </text>
                         </PieChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 )}
             </CardContent>
         </Card>

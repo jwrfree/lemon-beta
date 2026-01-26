@@ -21,7 +21,7 @@
 | H5 – Error prevention | Form mengandalkan validasi realtime dengan hint yang jelas. Default cerdas (wallet terakhir, tanggal hari ini) mengurangi kesalahan input. | Sedang | Tambah pratinjau dampak budget sebelum menyimpan perubahan besar. | ✅ Siap |
 | H6 – Recognition rather than recall | Bottom navigation 5 tab, segmented control, dan label ikon membantu orientasi. Landing menambahkan skip link & nav ringkas agar section mudah diakses. | Tinggi | Evaluasi quick search lintas modul untuk mempercepat temuan entri lama. | ✅ Siap |
 | H7 – Flexibility & efficiency of use | Power user mendapat Quick Actions, keyboard shortcuts (desktop), serta haptic di mobile. Dukungan biometric login tersedia. | Tinggi | Riset custom automation (mis. template transaksi) untuk rilis 2.1.0. | ✅ Siap |
-| H8 – Aesthetic & minimalist design | Layout mengandalkan grid 12 kolom, whitespace 8 px scale, dan panel card tanpa clutter. Motion halus 0.28 s dengan stagger 0.08 s. | Sedang | Monitor performa animasi pada perangkat low-end; fallback tanpa blur jika perlu. | ✅ Siap |
+| H8 – Aesthetic & minimalist design | Layout mengandalkan grid 12 kolom, whitespace 8 px scale, dan panel card tanpa clutter. Motion halus 0.28 s dengan stagger 0.08 s. | Sedang | Monitor performa animasi pada perangkat low-end. | ✅ Siap |
 | H9 – Help users recognize, diagnose, recover from errors | Error auth kini muncul sebagai alert inline + toast dengan pesan lokal. Form lain menyediakan pesan bidang spesifik & link bantuan. | Tinggi | Lengkapi knowledge base di tab More > Bantuan pada rilis berikutnya. | ✅ Siap |
 | H10 – Help & documentation | Landing memuat highlight modul, blueprint memberi panduan menyeluruh. Modul More menyimpan FAQ, Pusat Bantuan, dan tautan komunitas. | Sedang | Tambah walkthrough onboarding 3 langkah untuk user baru. | ⚠️ Direncanakan (onboarding overlay)
 
@@ -43,8 +43,8 @@
 - **Enterprise UI Standardization:** Penggunaan komponen `Scandn UI` (Button, Tabs, Card, etc.) kini ditegakkan untuk menggantikan elemen HTML raw, memastikan konsistensi visual dan perilaku (focus states, variants) di seluruh aplikasi.
 
 ### Elevation & Visual Depth
-- Elevation menggunakan kombinasi border translucent (`border-white/30`) dan shadow lembut (`shadow-sm`/`shadow-2xl`).
-- Glow accent pada ilustrasi lemon menggunakan blur 32 px untuk memandu perhatian tanpa mengganggu teks.
+- Elevation menggunakan kombinasi solid background, shadow lembut (`shadow-sm`/`shadow-2xl`), dan border tipis untuk kontras yang jelas.
+- Glow accent pada ilustrasi lemon menggunakan gradien warna untuk memandu perhatian tanpa mengganggu teks.
 
 ### Motion & Microinteractions
 - Durasi standar: **0.28 s ease-out**, delay 0.08 s untuk stagger list, 0.12 s untuk transisi hero > ilustrasi. Motion intensif (path drawing) memiliki batas 0.6 s.
@@ -56,7 +56,7 @@
 - Ilustrasi hero menggunakan bentuk organik yang konsisten dengan brand, dilengkapi `aria-hidden`/`role="presentation"` agar tidak mengganggu pembaca layar.
 
 ## Audit Interaksi & Motion
-- **Overlay autentikasi** menggunakan `backdrop-blur` dan transisi 0.24 s. Swipe gesture + tombol close menjaga kendali pengguna.
+- **Overlay autentikasi** menggunakan transisi 0.24 s dengan latar belakang solid yang bersih. Swipe gesture + tombol close menjaga kendali pengguna.
 - **Hover/focus** untuk anchor nav & tombol link sudah memiliki outline 2 px, memudahkan navigasi keyboard.
 - **State loading**: tombol memuat spinner `LoaderCircle` dengan label berubah ("Memproses…" / "Menghubungkan…") untuk memperlihatkan progres.
 - **Animasi konten**: daftar fitur, kartu keamanan, dan CTA akhir memanfaatkan `whileInView` dengan viewport `amount` 0.2–0.3 sehingga animasi tidak berulang saat pengguna menggulir naik-turun.

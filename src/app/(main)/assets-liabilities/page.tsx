@@ -90,11 +90,11 @@ export default function AssetsLiabilitiesPage() {
             <main className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
                 <div className="max-w-6xl mx-auto space-y-6">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <Card className="lg:col-span-2 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground border-none shadow-lg shadow-primary/30 rounded-3xl overflow-hidden relative min-h-[200px] flex flex-col justify-between p-8">
+                        <Card className="lg:col-span-2 bg-primary text-primary-foreground border-none shadow-lg shadow-primary/30 rounded-3xl overflow-hidden relative min-h-[200px] flex flex-col justify-between p-8">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
                             <div className="relative z-10">
                                 <p className="text-xs font-bold uppercase tracking-widest text-primary-foreground/80">Total Kekayaan Bersih</p>
-                                <AnimatedCounter value={totals.netWorth} className="text-5xl md:text-6xl font-black mt-2 tracking-tighter" />
+                                <AnimatedCounter value={totals.netWorth} className="text-5xl md:text-6xl font-black mt-2 tracking-tighter text-white" />
                             </div>
                             <div className="relative z-10 grid grid-cols-2 gap-8 mt-8 pt-6 border-t border-white/10">
                                  <div>

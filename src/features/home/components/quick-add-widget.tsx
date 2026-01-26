@@ -87,7 +87,7 @@ export const QuickAddWidget = () => {
                         >
                             <Input 
                                 placeholder="Contoh: 'kopi 25rb' atau 'gaji 5jt'" 
-                                className="pr-12 h-11 bg-background/50 border-primary/10 focus-visible:ring-primary/20"
+                                className="pr-12 h-11 bg-background border-border focus-visible:ring-primary/20"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleQuickAdd()}
@@ -135,7 +135,7 @@ export const QuickAddWidget = () => {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground bg-background/50 py-1 px-2 rounded-lg w-fit">
+                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground bg-background py-1 px-2 rounded-lg w-fit border border-border">
                                 <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded uppercase font-bold">{parsedData.category}</span>
                                 <ArrowRight className="h-2 w-2" />
                                 <span className="font-medium italic">{parsedData.wallet}</span>

@@ -4,7 +4,7 @@ export const DashboardSkeleton = () => {
     return (
         <div className="w-full h-full flex flex-col">
             {/* Header Skeleton */}
-            <div className="flex items-center justify-between px-6 py-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex items-center justify-between px-6 py-4 border-b bg-background">
                 <div className="space-y-2">
                     <Skeleton className="h-8 w-32" />
                     <Skeleton className="h-4 w-48" />

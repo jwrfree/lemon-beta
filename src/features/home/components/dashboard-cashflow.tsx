@@ -103,11 +103,11 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
                             Pemasukan vs Pengeluaran
                         </CardDescription>
                     </div>
-                    <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as any)} className="w-[200px]">
-                        <TabsList className="grid w-full grid-cols-3 h-7">
-                            <TabsTrigger value="month" className="text-[10px]">Bulan Ini</TabsTrigger>
-                            <TabsTrigger value="30" className="text-[10px]">30 Hari</TabsTrigger>
-                            <TabsTrigger value="90" className="text-[10px]">3 Bulan</TabsTrigger>
+                    <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as any)} className="w-auto">
+                        <TabsList className="grid w-full grid-cols-3 h-9">
+                            <TabsTrigger value="month" className="text-[10px] px-2">Bulan Ini</TabsTrigger>
+                            <TabsTrigger value="30" className="text-[10px] px-2">30 Hari</TabsTrigger>
+                            <TabsTrigger value="90" className="text-[10px] px-2">3 Bulan</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>

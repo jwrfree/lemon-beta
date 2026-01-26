@@ -193,7 +193,7 @@ export default function HomePage() {
                         }
                     />
                     <main className="flex-1 p-4 space-y-4">
-                    <Card className="backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/5">
+                    <Card className="bg-card border-border shadow-sm">
                         <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-sm font-medium text-muted-foreground">Total Saldo</CardTitle>
@@ -206,7 +206,7 @@ export default function HomePage() {
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
                             >
-                                <AnimatedCounter value={totalBalance} className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent" />
+                                <AnimatedCounter value={totalBalance} className="text-3xl font-bold text-primary" />
                             </motion.div>
                             <div className="flex gap-4 mt-4">
                                 <motion.div 
@@ -294,13 +294,13 @@ export default function HomePage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.1 * index }}
                                         >
-                                            <Card className="flex-shrink-0 w-48 backdrop-blur-md bg-white/60 dark:bg-gray-800/60 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/10 interactive-element">
+                                            <Card className="flex-shrink-0 w-48 bg-card border-border shadow-sm interactive-element">
                                                 <CardContent className="p-4">
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <Icon className={cn('h-6 w-6 text-muted-foreground')} />
                                                         <span className="text-sm font-medium truncate">{wallet.name}</span>
                                                     </div>
-                                                    <p className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                                                    <p className="text-xl font-bold text-primary">
                                                         {formatCurrency(wallet.balance)}
                                                     </p>
                                                 </CardContent>
@@ -355,7 +355,7 @@ export default function HomePage() {
                                 Lihat Semua
                             </Button>
                         </div>
-                        <Card className="p-4 space-y-3 backdrop-blur-md bg-white/60 dark:bg-gray-800/60 border-white/20 dark:border-gray-700/30 shadow-lg shadow-primary/10">
+                        <Card className="p-4 space-y-3 bg-card border-border shadow-sm">
                             <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
                                     <p className="text-muted-foreground text-xs mb-1">Saya Berhutang</p>

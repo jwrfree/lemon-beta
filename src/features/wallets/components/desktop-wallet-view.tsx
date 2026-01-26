@@ -81,12 +81,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
     };
 
     return (
-        <div className="flex flex-col h-full bg-muted/30">
+        <div className="flex flex-col h-full bg-muted/20">
             <div className="flex-1 flex flex-col gap-6 p-6 max-w-[1600px] mx-auto w-full overflow-hidden">
                 {/* Summary Header - New Visual Design */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
                     <div className="bg-gradient-to-br from-primary to-primary/80 rounded-3xl p-6 text-primary-foreground shadow-lg shadow-primary/20 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-2xl" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10" />
                         <div>
                             <p className="text-xs font-bold uppercase tracking-wider opacity-80">Total Saldo Aset</p>
                             <h2 className={cn("text-3xl font-black mt-1 tracking-tight", !isBalanceVisible && "blur-md")}>
@@ -254,7 +254,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         </div>
                                     </div>
 
-                                    <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full lg:w-fit grid grid-cols-3">
+                                    <TabsList className="bg-muted p-1.5 rounded-2xl h-14 w-full lg:w-fit grid grid-cols-3 border border-border">
                                         <TabsTrigger value="transactions" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Riwayat</TabsTrigger>
                                         <TabsTrigger value="analytics" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Insight</TabsTrigger>
                                         <TabsTrigger value="settings" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Pengaturan</TabsTrigger>

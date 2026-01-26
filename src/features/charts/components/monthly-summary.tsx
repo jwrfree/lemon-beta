@@ -195,8 +195,8 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
 
             const heroGradient =
                 type === 'expense'
-                    ? 'bg-gradient-to-br from-rose-500 via-orange-500 to-amber-400'
-                    : 'bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500';
+                    ? 'bg-destructive'
+                    : 'bg-primary';
 
             const heroDescription =
                 type === 'expense'
@@ -271,15 +271,15 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                 </div>
                 <CardHeader className="space-y-6 relative z-10">
                     <div className="flex items-center justify-between gap-3">
-                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/15 text-white backdrop-blur px-3 py-1 font-medium text-[10px]">
+                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-3 py-1 font-medium text-[10px]">
                             <Calendar className="h-3.5 w-3.5" />
                             {summary.monthLabel}
                         </Badge>
                         <Badge
                             className={cn(
-                                'border-none bg-white/20 text-white backdrop-blur font-medium text-[11px] px-3',
-                                summary.type === 'net' && summary.isPositive && 'bg-teal-600/40',
-                                summary.type === 'net' && !summary.isPositive && 'bg-destructive/40'
+                                'border-none bg-white/30 text-white font-medium text-[11px] px-3',
+                                summary.type === 'net' && summary.isPositive && 'bg-teal-600/60',
+                                summary.type === 'net' && !summary.isPositive && 'bg-destructive/60'
                             )}
                         >
                             {summary.badgeLabel}
@@ -311,13 +311,13 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                     <div className="grid grid-cols-2 gap-3">
                         {summary.type === 'net' ? (
                             <>
-                                <div className="rounded-lg bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Pemasukan</p>
                                     <p className="text-base font-bold text-white tabular-nums">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
-                                <div className="rounded-lg bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Pengeluaran</p>
                                     <p className="text-base font-bold text-white tabular-nums">
                                         {formatCurrency(summary.netDetails.expense)}
@@ -326,13 +326,13 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                             </>
                         ) : (
                             <>
-                                <div className="rounded-lg bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Per Hari</p>
                                     <p className="text-base font-bold text-white tabular-nums">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
-                                <div className="rounded-lg bg-white/10 backdrop-blur-md p-4 border border-white/10">
+                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Per Transaksi</p>
                                     <p className="text-base font-bold text-white tabular-nums">
                                         {formatCurrency(summary.averagePerTransaction)}

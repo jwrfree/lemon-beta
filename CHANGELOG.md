@@ -29,8 +29,8 @@ All updates and improvements to the Lemon app will be documented here.
   - **Color-Coded Transaction Indicators**: Expense transactions now consistently use red (`text-rose-600`) for amounts and icons (`arrow-down-left`) across mobile and desktop views.
   - **Consistent Iconography**: Standardized use of `ArrowDownLeft` (expense) and `ArrowUpRight` (income) with appropriate semantic coloring.
 
-- **Enhanced Mobile Homepage**: Complete redesign with modern glassmorphism design
-  - **Glassmorphism Cards**: All main cards now feature backdrop blur effects with semi-transparent backgrounds
+- **Enhanced Mobile Homepage**: Complete redesign with modern solid design
+  - **Clean Solid Cards**: All main cards now feature solid backgrounds with subtle borders and shadows for better clarity
   - **Gradient Text Effects**: Total balance display with beautiful gradient text effects for premium visual appeal
   - **Pull-to-Refresh Functionality**: Native mobile gesture implementation with smooth animated refresh indicator
   - **Horizontal Wallet Carousel**: Enhanced wallet section with horizontal scrollable format showing up to 5 wallets
@@ -52,7 +52,7 @@ All updates and improvements to the Lemon app will be documented here.
 
 - **Desktop Navigation Consistency**: Unified header and action patterns across Dashboard, Wallets, and Transaction views.
 - **Improved Visual Hierarchy**: Better use of white space, gradients, and typography in the desktop wallet management interface.
-- **Modern Aesthetics**: Implementation of glassmorphism design trend with subtle shadows and depth effects
+- **Modern Aesthetics**: Implementation of clean solid design with subtle shadows and depth effects
 - **User Experience**: Intuitive pull-to-refresh gesture and smooth touch interactions
 - **Performance Optimized**: Efficient animations and optimized build size
 - **Accessibility**: Proper ARIA labels and semantic HTML structure
@@ -96,7 +96,7 @@ This release introduces comprehensive net worth tracking and developer tools for
 - Menandai ilustrasi dekoratif sebagai `aria-hidden` dan memberikan outline fokus pada anchor nav untuk menjaga aksesibilitas.
 
 ### 🔐 Authentication & Recovery
-- Memperbarui bottom sheet login, sign up, dan lupa password dengan overlay `backdrop-blur`, transisi konsisten, serta alert error inline yang mudah dibaca.
+- Memperbarui bottom sheet login, sign up, dan lupa password dengan latar belakang solid yang bersih, transisi konsisten, serta alert error inline yang mudah dibaca.
 - Menjaga tombol aksi alternatif (Google, biometrik) tetap tersedia sambil menyajikan status loading yang jelas bagi setiap metode.
 - Menambahkan pesan sukses permanen pada alur lupa password agar pengguna yakin email reset telah dikirim.
 

@@ -99,7 +99,7 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
   - Token diekspos via CSS variable & Tailwind alias.
 - **Tipografi:** Satoshi/Inter, skala 12–40 px, berat 400/500/600/700. Heading ≤ 64 karakter, paragraf ≤ 90 karakter untuk keterbacaan.
 - **Spacing:** basis 4 px; layout section 24–48 px; card gap 24 px; form vertical rhythm 16 px.
-- **Radius & elevation:** Card radius 16 px, modal 24–32 px, bottom sheet `rounded-t-2xl`; shadow lembut + border semi transparan untuk depth.
+- **Radius & elevation:** Card radius 16 px, modal 24–32 px, bottom sheet `rounded-t-2xl`; shadow lembut + solid background untuk depth yang bersih.
 - **Ikon & ilustrasi:** lucide-react 24 px, stroke 1.5 px; ilustrasi hero menggunakan path animasi dengan fallback statis.
 
 ## 7. Data Model Considerations

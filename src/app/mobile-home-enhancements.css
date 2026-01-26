@@ -13,30 +13,38 @@
 /* Glassmorphism effects */
 .glass-card {
   backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  background: rgb(255 255 255 / 25%);
+  border: 1px solid rgb(255 255 255 / 18%);
+  box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%);
 }
 
 .dark .glass-card {
-  background: rgba(31, 41, 55, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgb(31 41 55 / 25%);
+  border: 1px solid rgb(255 255 255 / 10%);
 }
 
 /* Gradient text animation */
 .gradient-text {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-clip: text;
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
 }
 
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Smooth transitions for interactive elements */
@@ -46,19 +54,19 @@
 
 .interactive-element:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 24px rgb(0 0 0 / 15%);
 }
 
 /* Pull to refresh styles */
 .refresh-indicator {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgb(255 255 255 / 90%);
   backdrop-filter: blur(10px);
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
 }
 
 .dark .refresh-indicator {
-  background: rgba(31, 41, 55, 0.9);
+  background: rgb(31 41 55 / 90%);
 }
 
 /* Card hover effects */
@@ -68,7 +76,7 @@
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgb(0 0 0 / 10%);
 }
 
 /* Loading shimmer effect */
@@ -79,6 +87,11 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }

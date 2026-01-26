@@ -106,7 +106,7 @@ export const Sidebar = () => {
             <div className="mt-auto border-t pt-4 space-y-3">
                 <div
                     className={cn(
-                        'flex flex-col items-center rounded-2xl bg-muted/30 border border-muted-foreground/5',
+                        'flex flex-col items-center rounded-2xl bg-muted border border-border',
                         isSidebarCollapsed ? 'p-1.5' : 'p-2'
                     )}
                 >

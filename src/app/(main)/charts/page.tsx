@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
@@ -13,6 +13,7 @@ import { GlobalFinanceHeader } from "@/features/charts/components/global-finance
 import { useSearchParams } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { parseISO, isAfter, isBefore, startOfDay, endOfDay, format } from 'date-fns';
+import * as dateFns from 'date-fns';
 import { SubscriptionAuditCard } from "@/features/insights/components/subscription-audit-card";
 
 // Extracted Components (Lazy Loaded)
@@ -59,6 +60,20 @@ const slideVariants = {
 } as const;
 
 export default function ChartsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex flex-col h-full bg-muted/30 pb-24">
+                <div className="flex h-full w-full items-center justify-center p-8">
+                    <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            </div>
+        }>
+            <ChartsPageContent />
+        </Suspense>
+    );
+}
+
+function ChartsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { transactions, isLoading: isDataLoading } = useData();
@@ -72,10 +87,12 @@ export default function ChartsPage() {
 
     // Filter transactions based on date range
     const filteredTransactions = useMemo(() => {
-        if (!from || !to) return transactions;
+        // Use defaults if not in URL to match DateRangeFilter UI
+        const startDateStr = from || dateFns.format(dateFns.startOfMonth(new Date()), 'yyyy-MM-dd');
+        const endDateStr = to || dateFns.format(dateFns.endOfMonth(new Date()), 'yyyy-MM-dd');
         
-        const startDate = startOfDay(parseISO(from));
-        const endDate = endOfDay(parseISO(to));
+        const startDate = startOfDay(parseISO(startDateStr));
+        const endDate = endOfDay(parseISO(endDateStr));
         
         return transactions.filter(t => {
             const date = parseISO(t.date);
@@ -84,8 +101,9 @@ export default function ChartsPage() {
     }, [transactions, from, to]);
 
     const headerLabel = useMemo(() => {
-        if (!from || !to) return undefined;
-        return `${format(parseISO(from), 'd MMM yyyy')} - ${format(parseISO(to), 'd MMM yyyy')}`;
+        const startDateStr = from || dateFns.format(dateFns.startOfMonth(new Date()), 'yyyy-MM-dd');
+        const endDateStr = to || dateFns.format(dateFns.endOfMonth(new Date()), 'yyyy-MM-dd');
+        return `${format(parseISO(startDateStr), 'd MMM yyyy')} - ${format(parseISO(endDateStr), 'd MMM yyyy')}`;
     }, [from, to]);
 
     useEffect(() => {

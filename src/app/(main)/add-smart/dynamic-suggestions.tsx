@@ -1,24 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, Sun, CloudSun, Moon, Sunset } from 'lucide-react';
+import { Sparkles, ArrowRight, Sun, CloudSun, Moon, Sunset, Calendar, Smile } from 'lucide-react';
 
 interface DynamicSuggestionsProps {
     onSuggestionClick: (text: string) => void;
 }
 
 type TimeOfDay = 'pagi' | 'siang' | 'sore' | 'malam';
+type DayContext = 'normal' | 'weekend' | 'gajian';
 
 export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProps) => {
     const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('pagi');
+    const [dayContext, setDayContext] = useState<DayContext>('normal');
     
     useEffect(() => {
-        const hour = new Date().getHours();
+        const now = new Date();
+        const hour = now.getHours();
+        const date = now.getDate();
+        const day = now.getDay(); // 0 = Sunday, 6 = Saturday
+
+        // Determine Time of Day
         if (hour >= 4 && hour < 11) setTimeOfDay('pagi');
         else if (hour >= 11 && hour < 15) setTimeOfDay('siang');
         else if (hour >= 15 && hour < 19) setTimeOfDay('sore');
         else setTimeOfDay('malam');
+
+        // Determine Day Context (Priority: Payday > Weekend > Normal)
+        if (date >= 25 || date <= 5) {
+            setDayContext('gajian');
+        } else if (day === 0 || day === 6) {
+            setDayContext('weekend');
+        } else {
+            setDayContext('normal');
+        }
     }, []);
 
     const getGreeting = () => {
+        // Special Greetings based on Context
+        if (dayContext === 'gajian') {
+            return { text: "Saatnya Atur Gaji!", icon: Calendar, color: "text-emerald-500", bg: "bg-emerald-500/10", ring: "ring-emerald-500/5" };
+        }
+        if (dayContext === 'weekend') {
+            return { text: "Happy Weekend!", icon: Smile, color: "text-pink-500", bg: "bg-pink-500/10", ring: "ring-pink-500/5" };
+        }
+
+        // Fallback to Time of Day Greetings
         switch (timeOfDay) {
             case 'pagi': return { text: "Selamat Pagi!", icon: Sun, color: "text-orange-500", bg: "bg-orange-500/10", ring: "ring-orange-500/5" };
             case 'siang': return { text: "Selamat Siang!", icon: CloudSun, color: "text-sky-500", bg: "bg-sky-500/10", ring: "ring-sky-500/5" };
@@ -29,16 +54,36 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
 
     const getSuggestions = () => {
         const common = [
-            "Bayar hutang ke Budi 100rb",
             "Pindah 500rb dari BCA ke Kas"
         ];
+
+        if (dayContext === 'gajian') {
+            return [
+                "Gaji masuk 10jt di Mandiri",
+                "Bayar listrik 500rb",
+                "Bayar kosan 1.5jt",
+                "Belanja bulanan 1jt",
+                "Topup investasi 500rb"
+            ];
+        }
+
+        if (dayContext === 'weekend') {
+            const weekendActivity = timeOfDay === 'malam' ? "Makan malam di mall 200rb" : "Tiket bioskop 50rb";
+            return [
+                weekendActivity,
+                "Bayar parkir mall 15rb",
+                "Jajan snack 35rb",
+                "Isi bensin full tank 50rb",
+                ...common
+            ];
+        }
         
         switch (timeOfDay) {
             case 'pagi':
                 return [
                     "Sarapan bubur ayam 15rb",
                     "Kopi susu gula aren 20rb",
-                    "Isi bensin motor 30rb",
+                    "Ojek online ke kantor 25rb",
                     ...common
                 ];
             case 'siang':
@@ -76,18 +121,25 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             </div>
             <h2 className="text-xl font-bold text-foreground">{greeting.text}</h2>
             <p className="mt-2 text-sm leading-relaxed">
-                Ada pengeluaran apa {timeOfDay === 'malam' ? 'hari ini' : 'saat ini'}? Ceritakan saja, AI akan mencatatnya.
+                {dayContext === 'gajian' 
+                    ? "Sudah alokasikan pos-pos pengeluaran bulan ini?" 
+                    : dayContext === 'weekend'
+                        ? "Nikmati akhir pekanmu! Jangan lupa catat pengeluaran ya."
+                        : `Ada pengeluaran apa ${timeOfDay === 'malam' ? 'hari ini' : 'saat ini'}? Ceritakan saja.`
+                }
             </p>
             
             <div className="mt-10 w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">Contoh {timeOfDay} ini</p>
+                    <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">
+                        {dayContext === 'gajian' ? 'Rutin Bulanan' : dayContext === 'weekend' ? 'Ide Akhir Pekan' : `Contoh ${timeOfDay} ini`}
+                    </p>
                     <div className="h-px flex-1 bg-border/50 ml-3" />
                 </div>
                 <div className="grid grid-cols-1 gap-2">
                     {suggestions.map((s, idx) => (
                         <button
-                            key={`${timeOfDay}-${idx}`}
+                            key={`${timeOfDay}-${dayContext}-${idx}`}
                             type="button"
                             onClick={() => onSuggestionClick(s)}
                             className="text-xs text-left bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 px-4 py-3 rounded-xl active:scale-[0.98] transition-all flex items-center justify-between group"

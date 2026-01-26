@@ -48,7 +48,7 @@ export const LemonTabs = ({
 
     if (variant === 'sticky') {
         return (
-            <div className={cn("sticky top-0 z-20 border-b bg-background/95 p-4 md:py-3 backdrop-blur", className)}>
+            <div className={cn("sticky top-0 z-20 border-b bg-background p-4 md:py-3", className)}>
                 <div className="max-w-6xl mx-auto w-full">
                     {content}
                 </div>

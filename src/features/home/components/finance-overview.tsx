@@ -59,7 +59,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Income Card */}
-            <Card className="border-none shadow-sm bg-card hover:shadow-md transition-all">
+            <Card className="border-none shadow-sm bg-teal-50/30 dark:bg-teal-950/10 hover:shadow-md transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
@@ -67,7 +67,11 @@ export const FinanceOverview = ({
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-[10px] font-medium",
-                            incomeTrend.direction === 'up' ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" : "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                            incomeTrend.direction === 'up' 
+                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" 
+                                : incomeTrend.direction === 'down'
+                                    ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
                         )}>
                             {incomeTrend.direction === 'up' ? '+' : ''}{incomeTrend.value}
                         </div>
@@ -83,7 +87,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Expense Card */}
-            <Card className="border-none shadow-sm bg-card hover:shadow-md transition-all">
+            <Card className="border-none shadow-sm bg-rose-50/30 dark:bg-rose-950/10 hover:shadow-md transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-rose-100 dark:bg-rose-900/30 rounded-lg">
@@ -91,7 +95,11 @@ export const FinanceOverview = ({
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-[10px] font-medium",
-                            expenseTrend.direction === 'down' ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" : "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400"
+                            expenseTrend.direction === 'down' 
+                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" 
+                                : expenseTrend.direction === 'up'
+                                    ? "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400"
+                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
                         )}>
                             {expenseTrend.direction === 'up' ? '+' : ''}{expenseTrend.value}
                         </div>
@@ -107,7 +115,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Net / Savings Card */}
-            <Card className="border-none shadow-sm bg-card hover:shadow-md transition-all">
+            <Card className="border-none shadow-sm bg-blue-50/30 dark:bg-blue-950/10 hover:shadow-md transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -115,7 +123,11 @@ export const FinanceOverview = ({
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-[10px] font-medium",
-                            netTrend.direction === 'up' ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" : "bg-muted text-muted-foreground"
+                            netTrend.direction === 'up' 
+                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" 
+                                : netTrend.direction === 'down'
+                                    ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
                         )}>
                             {netTrend.direction === 'up' ? '+' : ''}{netTrend.value}
                         </div>

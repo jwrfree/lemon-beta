@@ -187,7 +187,7 @@ export const NetCashflowChart = () => {
                                 'rounded-full border border-transparent px-3 py-1.5 text-[11px] font-medium transition',
                                 selectedQuarter === option.value
                                     ? 'bg-primary text-primary-foreground shadow-sm'
-                                    : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                             )}
                         >
                             {option.label}

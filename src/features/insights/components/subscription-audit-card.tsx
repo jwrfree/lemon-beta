@@ -42,7 +42,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                     </div>
                     
                     <div className="flex items-center gap-2 mt-3">
-                        <Badge variant="outline" className="bg-background/50 backdrop-blur-sm border-indigo-200 dark:border-indigo-800">
+                        <Badge variant="outline" className="bg-background border-indigo-200 dark:border-indigo-800">
                             {activeSubscriptions} Layanan Aktif
                         </Badge>
                     </div>

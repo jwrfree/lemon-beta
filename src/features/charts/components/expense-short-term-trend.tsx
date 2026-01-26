@@ -67,7 +67,7 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <Tabs value={range} onValueChange={(v) => setRange(v as '14' | '30')}>
-                        <TabsList className="rounded-full bg-muted/60 p-1 h-auto">
+                        <TabsList className="rounded-full bg-muted p-1 h-auto">
                             {['14', '30'].map((option) => (
                                 <TabsTrigger 
                                     key={option} 
@@ -80,7 +80,7 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
                         </TabsList>
                     </Tabs>
                     <Tabs value={chartType} onValueChange={(v) => setChartType(v as 'area' | 'bar')}>
-                        <TabsList className="rounded-full bg-muted/60 p-1 h-auto">
+                        <TabsList className="rounded-full bg-muted p-1 h-auto">
                             {[
                                 { value: 'area' as const, label: 'Area', icon: ChartAreaIcon },
                                 { value: 'bar' as const, label: 'Bar', icon: BarChart },
