@@ -71,7 +71,7 @@ export const Sidebar = () => {
                                 'group flex items-center gap-3 px-3 py-1.5 rounded-xl text-sm font-medium transition-all relative overflow-hidden',
                                 isSidebarCollapsed ? 'justify-center px-0' : 'px-3',
                                 isActive
-                                    ? 'text-primary bg-primary/10 dark:bg-primary/20'
+                                    ? 'text-primary bg-gradient-to-r from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent'
                                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                             )}
                         >
