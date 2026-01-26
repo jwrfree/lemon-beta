@@ -18,7 +18,7 @@ const AllCaughtUpIllustration = () => (
 export default function NotificationsPage() {
     const router = useRouter();
     return (
-        <div className="h-full bg-muted">
+        <div className="h-full">
             <PageHeader title="Notifikasi" />
             <main className="flex justify-center p-8 text-center pt-16">
                 <div className="flex flex-col items-center">

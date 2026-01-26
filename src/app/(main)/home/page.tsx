@@ -169,7 +169,7 @@ export default function HomePage() {
                 <DesktopDashboard />
             </div>
 
-            <div className="md:hidden bg-muted min-h-full flex flex-col">
+            <div className="md:hidden min-h-full flex flex-col">
                 <PullToRefresh onRefresh={async () => {
                     // Simple refresh simulation
                     await new Promise(resolve => setTimeout(resolve, 1000));

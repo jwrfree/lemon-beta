@@ -179,7 +179,7 @@ function TransactionsPageContent() {
             <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
                 <div className="w-full">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                        <TabsList className="bg-muted p-1.5 rounded-2xl h-14 w-full grid grid-cols-4">
+                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-4">
                             {[
                                 { value: 'all', label: 'Semua' },
                                 { value: 'expense', label: 'Pengeluaran' },
@@ -189,7 +189,7 @@ function TransactionsPageContent() {
                                 <TabsTrigger 
                                     key={tab.value} 
                                     value={tab.value} 
-                                    className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                                    className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
                                 >
                                     {tab.label}
                                 </TabsTrigger>

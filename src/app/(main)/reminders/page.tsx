@@ -134,7 +134,7 @@ export default function RemindersPage() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-muted relative">
+        <div className="flex flex-col h-full relative">
             <PageHeader 
                 title="Pengingat" 
                 extraActions={
@@ -186,9 +186,9 @@ export default function RemindersPage() {
                             </Tabs>
                             <div className="flex items-center gap-2">
                                 <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
-                                    <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-2">
-                                        <TabsTrigger value="week" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                        <TabsTrigger value="30" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                    <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
+                                        <TabsTrigger value="week" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                         <TabsTrigger value="30" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                                 <Button
@@ -468,9 +468,9 @@ export default function RemindersPage() {
                                     </p>
                                     <div className="w-full">
                                         <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
-                                            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-lg">
-                                                <TabsTrigger value="week" className="rounded-md text-xs">Minggu ini</TabsTrigger>
-                                                <TabsTrigger value="30" className="rounded-md text-xs">30 hari</TabsTrigger>
+                                            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-2xl h-14">
+                                                <TabsTrigger value="week" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                                <TabsTrigger value="30" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                             </TabsList>
                                         </Tabs>
                                     </div>

@@ -62,7 +62,7 @@ const slideVariants = {
 export default function ChartsPage() {
     return (
         <Suspense fallback={
-            <div className="flex flex-col h-full bg-muted/30 pb-24">
+            <div className="flex flex-col h-full pb-24">
                 <div className="flex h-full w-full items-center justify-center p-8">
                     <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
                 </div>
@@ -135,7 +135,7 @@ function ChartsPageContent() {
     });
 
     return (
-        <div className="flex flex-col h-full bg-muted/30 pb-24">
+        <div className="flex flex-col h-full pb-24">
             <GlobalFinanceHeader 
                 transactions={from && to ? filteredTransactions : undefined} 
                 label={headerLabel}
@@ -145,12 +145,12 @@ function ChartsPageContent() {
                 <div className="sticky top-0 z-30 bg-background border-b">
                     <div className="max-w-7xl mx-auto px-4 py-3">
                         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-11 p-1 bg-muted rounded-xl">
+                            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-14 p-1 bg-muted rounded-2xl">
                                 {tabs.map((tab) => (
                                     <TabsTrigger
                                         key={tab.value}
                                         value={tab.value}
-                                        className="rounded-lg text-xs font-bold uppercase tracking-wider transition-all"
+                                        className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
                                     >
                                         {tab.label}
                                     </TabsTrigger>

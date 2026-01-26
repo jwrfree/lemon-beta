@@ -46,7 +46,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-muted/30">
+        <div className="flex flex-col h-full">
             <PageHeader 
                 title="Profil Saya" 
                 description="Kelola informasi pribadi dan akunmu"

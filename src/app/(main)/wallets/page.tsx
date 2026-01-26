@@ -24,7 +24,7 @@ export default function WalletsPage() {
   const activeWallet = wallets.length > 0 ? wallets[safeActiveIndex] : null;
 
   return (
-    <div className="flex flex-col bg-muted h-full relative">
+    <div className="flex flex-col h-full relative">
       {/* Mobile View */}
       <div className="md:hidden flex flex-col h-full">
           <PageHeader
@@ -81,7 +81,7 @@ export default function WalletsPage() {
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:flex flex-col h-full bg-background">
+      <div className="hidden md:flex flex-col h-full">
         <PageHeader
           title="Dompet Kamu"
           extraActions={

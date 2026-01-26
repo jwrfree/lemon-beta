@@ -196,7 +196,7 @@ export default function SmartAddPage() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-muted">
+        <div className="flex flex-col h-full">
             <PageHeader 
                 title="Catat Cepat"
                 backIcon={pageState === 'IDLE' ? ChevronLeft : X}

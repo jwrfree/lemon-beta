@@ -138,7 +138,7 @@ export default function DebtsPage() {
     }, [debts, activeFilter, sortBy]);
 
     return (
-        <div className="flex flex-col h-full bg-muted relative">
+        <div className="flex flex-col h-full relative">
             <PageHeader 
                 title="Hutang & Piutang" 
                 extraActions={
@@ -185,9 +185,9 @@ export default function DebtsPage() {
                     <DebtAnalyticsCard debts={debts} />
 
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                        <TabsList className="grid grid-cols-4 w-full h-11 bg-background/50 p-1 rounded-xl">
+                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="text-[10px] font-bold uppercase tracking-tight rounded-lg">
+                                <TabsTrigger key={value} value={value} className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
                                     {label}
                                 </TabsTrigger>
                             ))}

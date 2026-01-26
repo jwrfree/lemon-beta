@@ -58,7 +58,7 @@ export default function DebtDetailPage() {
 
     if (!debt) {
         return (
-            <div className="flex flex-col h-full bg-muted">
+            <div className="flex flex-col h-full">
                 <PageHeader title="Detail Hutang" />
                 <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                     Catatan tidak ditemukan.
@@ -74,7 +74,7 @@ export default function DebtDetailPage() {
     const nextPaymentDate = debt.nextPaymentDate ? parseISO(debt.nextPaymentDate) : null;
 
     return (
-        <div className="flex flex-col h-full bg-muted">
+        <div className="flex flex-col h-full">
             <PageHeader title={debt.title || "Detail Hutang"} />
             <main className="flex-1 overflow-y-auto">
                 <div className="p-4 space-y-6">

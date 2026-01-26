@@ -149,7 +149,7 @@ export default function GoalsPage() {
   const totalProgress = calculateProgress(totalSavings, totalTarget);
 
   return (
-    <div className="flex flex-col h-full bg-muted/30 min-h-screen font-sans relative">
+    <div className="flex flex-col h-full min-h-screen font-sans relative">
       <PageHeader 
         title="Target Keuangan" 
         extraActions={
@@ -248,11 +248,11 @@ export default function GoalsPage() {
               <p className="text-sm text-muted-foreground">Kelola dan pantau progres setiap target keuanganmu</p>
             </div>
             
-            <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full md:w-[320px] grid grid-cols-2">
-              <TabsTrigger value="active" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full md:w-[320px] grid grid-cols-2">
+              <TabsTrigger value="active" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
                 Aktif
               </TabsTrigger>
-              <TabsTrigger value="completed" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <TabsTrigger value="completed" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
                 Selesai
               </TabsTrigger>
             </TabsList>

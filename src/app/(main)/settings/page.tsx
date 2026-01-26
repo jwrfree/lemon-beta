@@ -96,7 +96,7 @@ function SettingsContent() {
     };
     
     return (
-        <div className="flex flex-col h-full bg-muted/30">
+        <div className="flex flex-col h-full">
             <PageHeader 
                 title="Pengaturan" 
                 description="Kelola preferensi aplikasi dan akunmu"

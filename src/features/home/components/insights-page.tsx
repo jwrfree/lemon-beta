@@ -40,10 +40,10 @@ export const InsightsPage = () => {
                 </Card>
 
                 <Tabs defaultValue="cashflow" className="w-full">
-                    <TabsList>
-                        <TabsTrigger value="cashflow">Arus Kas</TabsTrigger>
-                        <TabsTrigger value="spending">Pengeluaran</TabsTrigger>
-                        <TabsTrigger value="trends">Tren Kategori</TabsTrigger>
+                    <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-3">
+                        <TabsTrigger value="cashflow" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Arus Kas</TabsTrigger>
+                        <TabsTrigger value="spending" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengeluaran</TabsTrigger>
+                        <TabsTrigger value="trends" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Tren Kategori</TabsTrigger>
                     </TabsList>
                     
                     <TabsContent value="cashflow" className="mt-4">

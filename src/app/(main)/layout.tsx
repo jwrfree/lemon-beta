@@ -118,7 +118,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const showBottomNav = mainPagesForNav.includes(pathname);
 
     return (
-        <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">
+        <div className="w-full h-dvh bg-slate-100 dark:bg-slate-950 relative flex flex-col md:flex-row overflow-hidden">
             <Sidebar />
             <div className={cn(
                 "flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden transition-all duration-300",

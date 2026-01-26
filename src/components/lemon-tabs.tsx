@@ -30,12 +30,12 @@ export const LemonTabs = ({
                 onValueChange={onValueChange} 
                 className="w-full max-w-md mx-auto"
             >
-                <TabsList className="grid w-full bg-muted/50 p-1.5 rounded-2xl h-12 shadow-inner border border-border/20" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+                <TabsList className="grid w-full bg-muted p-1 rounded-2xl h-14" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
                     {tabs.map((tab) => (
                         <TabsTrigger 
                             key={tab.value} 
                             value={tab.value}
-                            className="rounded-xl font-bold text-[10px] uppercase tracking-[0.15em] transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm flex items-center gap-2"
+                            className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm flex items-center gap-2"
                         >
                             {tab.icon && <span className="shrink-0">{tab.icon}</span>}
                             {tab.label}

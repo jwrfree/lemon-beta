@@ -77,9 +77,9 @@ export default function AssetsLiabilitiesPage() {
     };
 
     return (
-        <div className="h-full bg-muted/30 flex flex-col">
+        <div className="h-full flex flex-col">
             <PageHeader 
-                title="Aset & Liabilitas" 
+                title="Aset & Liabilitas"  
                 actionButton={{
                     icon: Plus,
                     label: 'Tambah entri baru',
@@ -192,10 +192,10 @@ export default function AssetsLiabilitiesPage() {
                                                 <Plus className="h-5 w-5" />
                                             </Button>
                                         </div>
-                                        <TabsList className="bg-muted/50 p-1 rounded-xl w-full grid grid-cols-3">
-                                            <TabsTrigger value="all" className="rounded-lg text-[10px] font-bold">Semua</TabsTrigger>
-                                            <TabsTrigger value="productive" className="rounded-lg text-[10px] font-bold">Produktif</TabsTrigger>
-                                            <TabsTrigger value="consumptive" className="rounded-lg text-[10px] font-bold">Konsumtif</TabsTrigger>
+                                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-3">
+                                            <TabsTrigger value="all" className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Semua</TabsTrigger>
+                                            <TabsTrigger value="productive" className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Produktif</TabsTrigger>
+                                            <TabsTrigger value="consumptive" className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Konsumtif</TabsTrigger>
                                         </TabsList>
                                     </CardHeader>
                                     <CardContent className="px-0 flex-1 overflow-hidden">

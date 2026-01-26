@@ -73,7 +73,7 @@ export default function TokenCalculatorPage() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-muted">
+        <div className="flex flex-col h-full">
             <PageHeader title="Kalkulator Token AI" />
             <main className="flex-1 overflow-y-auto p-4 space-y-6">
                 <Card>

@@ -253,10 +253,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </div>
                                 </div>
 
-                                <TabsList className="w-full justify-start h-10 bg-muted/50 p-1">
-                                    <TabsTrigger value="transactions" className="text-xs font-medium px-4">Riwayat</TabsTrigger>
-                                    <TabsTrigger value="analytics" className="text-xs font-medium px-4">Insight</TabsTrigger>
-                                    <TabsTrigger value="settings" className="text-xs font-medium px-4">Pengaturan</TabsTrigger>
+                                <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full lg:w-fit grid grid-cols-3">
+                                    <TabsTrigger value="transactions" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Riwayat</TabsTrigger>
+                                    <TabsTrigger value="analytics" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Insight</TabsTrigger>
+                                    <TabsTrigger value="settings" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengaturan</TabsTrigger>
                                 </TabsList>
                             </div>
 

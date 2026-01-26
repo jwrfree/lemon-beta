@@ -46,7 +46,7 @@ export default function BudgetDetailPage() {
 
     if (!budget) {
         return (
-             <div className="h-full bg-muted">
+             <div className="h-full">
                 <PageHeader title="Detail Anggaran" />
                 <main className="flex justify-center text-center p-4 pt-16">
                      <div className="flex flex-col items-center">
@@ -66,7 +66,7 @@ export default function BudgetDetailPage() {
     else if (progress > 100) progressBarColor = 'bg-destructive';
 
     return (
-        <div className="flex flex-col h-full bg-muted">
+        <div className="flex flex-col h-full">
             <PageHeader 
                 title="Detail Anggaran"
                 actionButton={{

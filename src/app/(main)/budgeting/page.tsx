@@ -142,7 +142,7 @@ export default function BudgetingPage() {
     
 
     return (
-        <div className="flex flex-col h-full bg-muted/30 relative">
+        <div className="flex flex-col h-full relative">
             <PageHeader title="Manajemen Anggaran" />
             <main className="flex-1 overflow-y-auto pb-24">
                 {budgets.length === 0 ? (

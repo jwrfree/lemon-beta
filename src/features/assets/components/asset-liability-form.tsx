@@ -106,9 +106,9 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {!isEditMode && (
                     <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
-                        <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-2">
-                            <TabsTrigger value="asset" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Aset</TabsTrigger>
-                            <TabsTrigger value="liability" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
+                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
+                            <TabsTrigger value="asset" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Aset</TabsTrigger>
+                            <TabsTrigger value="liability" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 )}

@@ -67,12 +67,12 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <Tabs value={range} onValueChange={(v) => setRange(v as '14' | '30')}>
-                        <TabsList className="rounded-full bg-muted p-1 h-auto">
+                        <TabsList className="rounded-full bg-muted p-1 h-9">
                             {['14', '30'].map((option) => (
                                 <TabsTrigger 
                                     key={option} 
                                     value={option}
-                                    className="rounded-full px-3 py-1 text-[11px] font-medium"
+                                    className="h-full rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
                                 >
                                     {option} Hari
                                 </TabsTrigger>
@@ -80,7 +80,7 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
                         </TabsList>
                     </Tabs>
                     <Tabs value={chartType} onValueChange={(v) => setChartType(v as 'area' | 'bar')}>
-                        <TabsList className="rounded-full bg-muted p-1 h-auto">
+                        <TabsList className="rounded-full bg-muted p-1 h-9">
                             {[
                                 { value: 'area' as const, label: 'Area', icon: ChartAreaIcon },
                                 { value: 'bar' as const, label: 'Bar', icon: BarChart },
@@ -88,7 +88,7 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
                                 <TabsTrigger
                                     key={option.value}
                                     value={option.value}
-                                    className="flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-medium"
+                                    className="h-full flex items-center gap-1 rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
                                 >
                                     <option.icon className="h-3 w-3" />
                                     {option.label}

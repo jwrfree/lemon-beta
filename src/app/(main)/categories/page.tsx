@@ -78,7 +78,7 @@ export default function CategoriesPage() {
     };
 
     return (
-        <div className="h-full bg-muted/30 flex flex-col relative">
+        <div className="h-full flex flex-col relative">
             <PageHeader 
                 title="Kelola Kategori" 
                 extraActions={
@@ -92,9 +92,9 @@ export default function CategoriesPage() {
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div className="w-full md:w-auto">
                         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'expense' | 'income')} className="w-full md:w-[320px]">
-                            <TabsList className="bg-muted/50 p-1.5 rounded-2xl h-14 w-full grid grid-cols-2">
-                                <TabsTrigger value="expense" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Pengeluaran</TabsTrigger>
-                                <TabsTrigger value="income" className="rounded-xl font-bold text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm">Pemasukan</TabsTrigger>
+                            <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
+                                <TabsTrigger value="expense" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengeluaran</TabsTrigger>
+                                <TabsTrigger value="income" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pemasukan</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </div>
