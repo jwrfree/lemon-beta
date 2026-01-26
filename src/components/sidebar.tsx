@@ -68,7 +68,7 @@ export const Sidebar = () => {
                             prefetch={false}
                             aria-current={isActive ? 'page' : undefined}
                             className={cn(
-                                'group flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all relative overflow-hidden',
+                                'group flex items-center gap-3 px-3 py-1.5 rounded-xl text-sm font-medium transition-all relative overflow-hidden',
                                 isSidebarCollapsed ? 'justify-center px-0' : 'px-3',
                                 isActive
                                     ? 'text-primary bg-primary/10 dark:bg-primary/20'
