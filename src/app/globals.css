@@ -106,14 +106,14 @@
     --background: hsl(var(--gray-50));
     --foreground: hsl(var(--gray-950));
     
-    --card: 0 0% 100%;
+    --card: hsl(0 0% 100%);
     --card-foreground: hsl(var(--gray-950));
     
-    --popover: 0 0% 100%;
+    --popover: hsl(0 0% 100%);
     --popover-foreground: hsl(var(--gray-950));
     
     --primary: hsl(var(--teal-600));
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: hsl(0 0% 100%);
     
     --secondary: hsl(var(--gray-100));
     --secondary-foreground: hsl(var(--gray-900));
@@ -125,10 +125,10 @@
     --accent-foreground: hsl(var(--gray-900));
     
     --destructive: hsl(var(--rose-600));
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: hsl(0 0% 100%);
 
     --success: hsl(var(--emerald-600));
-    --success-foreground: 0 0% 100%;
+    --success-foreground: hsl(0 0% 100%);
     
     --border: hsl(var(--gray-200));
     --input: hsl(var(--gray-200));
@@ -169,7 +169,7 @@
     --accent-foreground: hsl(var(--teal-50));
 
     --destructive: hsl(var(--rose-600));
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: hsl(0 0% 100%);
 
     --success: hsl(var(--emerald-500));
     --success-foreground: hsl(var(--emerald-900));
