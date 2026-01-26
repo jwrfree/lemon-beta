@@ -31,7 +31,7 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
         if (match && match[1]) {
             return `hsl(var(--${match[1]}-500))`;
         }
-        return 'hsl(var(--primary))';
+        return 'var(--primary)';
     };
 
     const chartData = Object.entries(categoryMap)

@@ -133,8 +133,8 @@ export default function BudgetingPage() {
         const totalRemaining = totalBudget - totalSpent;
         
         const chartData = [
-            { name: 'Terpakai', value: totalSpent, fill: 'hsl(var(--destructive))' },
-            { name: 'Sisa', value: Math.max(0, totalRemaining), fill: 'hsl(var(--primary))' },
+            { name: 'Terpakai', value: totalSpent, fill: 'var(--destructive)' },
+            { name: 'Sisa', value: Math.max(0, totalRemaining), fill: 'var(--primary)' },
         ];
         
         return { totalBudget, totalSpent, totalRemaining, chartData };

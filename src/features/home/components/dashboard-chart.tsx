@@ -9,7 +9,6 @@ import {
     YAxis,
 } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { formatCurrency } from '@/lib/utils';
 
 interface DashboardChartProps {
     data: any[];
@@ -18,7 +17,7 @@ interface DashboardChartProps {
 const chartConfig = {
     income: {
         label: "Pemasukan",
-        color: "var(--color-teal-600)",
+        color: "var(--primary)",
     },
     expense: {
         label: "Pengeluaran",
@@ -69,14 +68,14 @@ export const DashboardChart = ({ data }: DashboardChartProps) => {
                     <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                     <XAxis 
                         dataKey="label" 
-                        stroke="hsl(var(--muted-foreground))" 
+                        stroke="var(--muted-foreground)" 
                         fontSize={12} 
                         tickLine={false} 
                         axisLine={false} 
                         minTickGap={30}
                     />
                     <YAxis 
-                        stroke="hsl(var(--muted-foreground))" 
+                        stroke="var(--muted-foreground)" 
                         fontSize={12} 
                         tickLine={false} 
                         axisLine={false}

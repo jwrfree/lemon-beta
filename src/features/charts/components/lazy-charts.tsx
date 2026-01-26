@@ -46,7 +46,7 @@ export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: any[],
                     <Cell
                         key={`cell-${entry.name}`}
                         fill={entry.fill}
-                        stroke="hsl(var(--background))"
+                        stroke="var(--background)"
                         strokeWidth={2}
                     />
                 ))}
@@ -68,15 +68,15 @@ export const ExpenseTrendChart = ({
     peakDayKey?: string 
 }) => (
     <ChartContainer
-        config={{ total: { label: 'Pengeluaran', color: 'hsl(var(--chart-2))' } } as any}
+        config={{ total: { label: 'Pengeluaran', color: 'var(--chart-2)' } } as any}
         className="h-full w-full"
     >
         {chartType === 'area' ? (
             <RechartsAreaChart data={filteredData} margin={{ left: 0, right: 0, bottom: 0 }}>
                 <defs>
                     <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.9} />
-                        <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1} />
+                        <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.9} />
+                        <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0.1} />
                     </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
@@ -88,7 +88,7 @@ export const ExpenseTrendChart = ({
                     tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
                 />
                 <ChartTooltip
-                    cursor={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1, opacity: 0.6 }}
+                    cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1, opacity: 0.6 }}
                     content={
                         <ChartTooltipContent
                             formatter={(value) => formatCurrency(Number(value))}
@@ -99,10 +99,10 @@ export const ExpenseTrendChart = ({
                 <Area
                     type="monotone"
                     dataKey="total"
-                    stroke="hsl(var(--chart-2))"
+                    stroke="var(--chart-2)"
                     fill={`url(#${gradientId})`}
                     strokeWidth={2.5}
-                    activeDot={{ r: 4, strokeWidth: 2, fill: 'hsl(var(--chart-2))' }}
+                    activeDot={{ r: 4, strokeWidth: 2, fill: 'var(--chart-2)' }}
                 />
             </RechartsAreaChart>
         ) : (
@@ -116,7 +116,7 @@ export const ExpenseTrendChart = ({
                     tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
                 />
                 <ChartTooltip
-                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.35 }}
+                    cursor={{ fill: 'var(--muted)', opacity: 0.35 }}
                     content={
                         <ChartTooltipContent
                             formatter={(value) => formatCurrency(Number(value))}
@@ -128,7 +128,7 @@ export const ExpenseTrendChart = ({
                     {filteredData.map((item) => (
                         <Cell
                             key={item.key}
-                            fill="hsl(var(--chart-2))"
+                            fill="var(--chart-2)"
                             fillOpacity={peakDayKey === item.key ? 1 : 0.6}
                         />
                     ))}
@@ -155,7 +155,7 @@ export const MonthlyBarChart = ({
     
     return (
         <ChartContainer
-            config={{ total: { label: sectionLabel, color: color || 'hsl(var(--primary))' } } as any}
+            config={{ total: { label: sectionLabel, color: color || 'var(--primary)' } } as any}
             className="h-full w-full"
         >
             <RechartsBarChart data={data} barCategoryGap={12} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -179,7 +179,7 @@ export const MonthlyBarChart = ({
                     tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
                 />
                 <ChartTooltip
-                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.35 }}
+                    cursor={{ fill: 'var(--muted)', opacity: 0.35 }}
                     content={
                         <ChartTooltipContent
                             formatter={(value) => formatCurrency(Number(value))}
@@ -212,9 +212,9 @@ export const NetCashflowComposedChart = ({
     <ChartContainer
         config={
             {
-                income: { label: 'Pemasukan', color: 'var(--color-teal-600)' },
-                expense: { label: 'Pengeluaran', color: 'hsl(var(--destructive))' },
-                net: { label: 'Arus Kas', color: 'hsl(var(--chart-2))' },
+                income: { label: 'Pemasukan', color: 'var(--primary)' },
+                expense: { label: 'Pengeluaran', color: 'var(--destructive)' },
+                net: { label: 'Arus Kas', color: 'var(--chart-2)' },
             } as any
         }
         className="h-full w-full"
@@ -237,10 +237,9 @@ export const NetCashflowComposedChart = ({
                 width={68}
                 tickFormatter={(value) => compactCurrencyFormatter.format(Number(value))}
             />
-            <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="3 3" />
-            <ChartTooltip
-                cursor={{ fill: 'hsl(var(--muted))', opacity: 0.25 }}
-                content={
+            <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
+                            <ChartTooltip
+                                cursor={{ fill: 'var(--muted)', opacity: 0.25 }}                content={
                     <ChartTooltipContent
                         formatter={(value) => formatCurrency(Number(value))}
                         labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}

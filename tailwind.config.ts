@@ -53,30 +53,30 @@ export default {
           foreground: 'var(--accent-foreground)',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: 'var(--destructive)',
+          foreground: 'var(--destructive-foreground)',
         },
         success: {
-          DEFAULT: 'hsl(var(--success))', // Kept as HSL
-          foreground: 'hsl(var(--success-foreground))', // Kept as HSL
+          DEFAULT: 'var(--success)',
+          foreground: 'var(--success-foreground)',
         },
         border: 'var(--border)',
         input: 'var(--input)',
         ring: 'var(--ring)',
         
-        // Custom Gray Palette (OKLCH)
+        // Custom Gray Palette (HSL)
         gray: {
-          '50': 'var(--color-gray-50)',
-          '100': 'var(--color-gray-100)',
-          '200': 'var(--color-gray-200)',
-          '300': 'var(--color-gray-300)',
-          '400': 'var(--color-gray-400)',
-          '500': 'var(--color-gray-500)',
-          '600': 'var(--color-gray-600)',
-          '700': 'var(--color-gray-700)',
-          '800': 'var(--color-gray-800)',
-          '900': 'var(--color-gray-900)',
-          '950': 'var(--color-gray-950)',
+          '50': 'hsl(var(--gray-50))',
+          '100': 'hsl(var(--gray-100))',
+          '200': 'hsl(var(--gray-200))',
+          '300': 'hsl(var(--gray-300))',
+          '400': 'hsl(var(--gray-400))',
+          '500': 'hsl(var(--gray-500))',
+          '600': 'hsl(var(--gray-600))',
+          '700': 'hsl(var(--gray-700))',
+          '800': 'hsl(var(--gray-800))',
+          '900': 'hsl(var(--gray-900))',
+          '950': 'hsl(var(--gray-950))',
         },
 
         chart: {
@@ -97,13 +97,21 @@ export default {
         fuchsia: { '100': 'hsl(var(--fuchsia-100))', '500': 'hsl(var(--fuchsia-500))', '600': 'hsl(var(--fuchsia-600))', '900': 'hsl(var(--fuchsia-900))' },
         violet: { '100': 'hsl(var(--violet-100))', '500': 'hsl(var(--violet-500))', '600': 'hsl(var(--violet-600))', '900': 'hsl(var(--violet-900))' },
         green: { '100': 'hsl(var(--green-100))', '500': 'hsl(var(--green-500))', '600': 'hsl(var(--green-600))', '900': 'hsl(var(--green-900))' },
+        emerald: { '100': 'hsl(var(--emerald-100))', '500': 'hsl(var(--emerald-500))', '600': 'hsl(var(--emerald-600))', '900': 'hsl(var(--emerald-900))' },
         indigo: { '100': 'hsl(var(--indigo-100))', '500': 'hsl(var(--indigo-500))', '600': 'hsl(var(--indigo-600))', '900': 'hsl(var(--indigo-900))' },
         red: { '100': 'hsl(var(--red-100))', '500': 'hsl(var(--red-500))', '600': 'hsl(var(--red-600))', '900': 'hsl(var(--red-900))' },
         teal: {
+          '50': 'hsl(var(--teal-50))',
           '100': 'hsl(var(--teal-100))',
+          '200': 'hsl(var(--teal-200))',
+          '300': 'hsl(var(--teal-300))',
+          '400': 'hsl(var(--teal-400))',
           '500': 'hsl(var(--teal-500))',
           '600': 'hsl(var(--teal-600))',
+          '700': 'hsl(var(--teal-700))',
+          '800': 'hsl(var(--teal-800))',
           '900': 'hsl(var(--teal-900))',
+          '950': 'hsl(var(--teal-950))',
         },
       },
       borderRadius: {
