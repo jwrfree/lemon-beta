@@ -10,13 +10,16 @@ import { getMonthlyTrendData } from '../lib/chart-utils';
 import { PlaceholderContent } from './placeholder-content';
 import dynamic from 'next/dynamic';
 
+import type { Transaction } from '@/types/models';
+
 const MonthlyBarChart = dynamic(() => import('./lazy-charts').then(mod => mod.MonthlyBarChart), {
     ssr: false,
     loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
 });
 
-export const MonthlyTrendChart = ({ type }: { type: 'expense' | 'income' }) => {
-    const { transactions } = useData();
+export const MonthlyTrendChart = ({ type, transactions: manualTransactions }: { type: 'expense' | 'income', transactions?: Transaction[] }) => {
+    const { transactions: hookTransactions } = useData();
+    const transactions = manualTransactions || hookTransactions;
 
     const { data, rangeLabel, highestMonth, totalYear, average } = useMemo(() => {
         const data = getMonthlyTrendData(transactions, type);

@@ -10,13 +10,16 @@ import { getDailyTrendData } from '../lib/chart-utils';
 import { PlaceholderContent } from './placeholder-content';
 import dynamic from 'next/dynamic';
 
+import type { Transaction } from '@/types/models';
+
 const ExpenseTrendChart = dynamic(() => import('./lazy-charts').then(mod => mod.ExpenseTrendChart), {
     ssr: false,
     loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
 });
 
-export const ExpenseShortTermTrend = () => {
-    const { transactions } = useData();
+export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { transactions?: Transaction[] }) => {
+    const { transactions: hookTransactions } = useData();
+    const transactions = manualTransactions || hookTransactions;
     const [range, setRange] = useState<'14' | '30'>('14');
     const [chartType, setChartType] = useState<'area' | 'bar'>('area');
 

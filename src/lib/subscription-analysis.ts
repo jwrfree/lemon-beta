@@ -33,7 +33,8 @@ export const analyzeSubscriptions = (transactions: Transaction[]): SubscriptionS
     subTx.forEach(tx => {
         // Normalisasi nama: "Netflix Premium" -> "netflix"
         // Mengambil kata pertama atau kedua sebagai identifier sederhana
-        const name = tx.description.toLowerCase().trim();
+        // Juga membersihkan prefix umum pembayaran digital
+        const name = tx.description.toLowerCase().replace(/^(paypal|google|apple|gopay|ovo)\s*\*?\s*/, '').trim();
         // Logic fuzzy match sederhana bisa ditambahkan di sini
         // Untuk sekarang kita group by exact normalized description
         if (!merchantGroups[name]) {

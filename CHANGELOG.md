@@ -43,6 +43,11 @@ All updates and improvements to the Lemon app will be documented here.
   - **Hover Animations**: Scale effects and shimmer animations for better interactivity
   - **Responsive Design**: Adaptive positioning based on screen height
 
+- **Subscription Audit & Silent Inflation Detector**:
+  - **Automated Audit**: Scans transactions for recurring subscriptions and calculates total monthly burn.
+  - **Inflation Alert**: Detects price increases (silent inflation) by comparing recent transactions with historical data.
+  - **Visual Insights**: New dashboard card displaying active subscriptions and alerts.
+
 ### 🎨 Enhancements
 
 - **Desktop Navigation Consistency**: Unified header and action patterns across Dashboard, Wallets, and Transaction views.

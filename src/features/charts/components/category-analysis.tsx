@@ -14,13 +14,16 @@ import { groupTransactionsByCategory, getMonthlyTransactions } from '../lib/char
 import { PlaceholderContent } from './placeholder-content';
 import dynamic from 'next/dynamic';
 
+import type { Transaction } from '@/types/models';
+
 const CategoryPieChart = dynamic(() => import('./lazy-charts').then(mod => mod.CategoryPieChart), {
     ssr: false,
     loading: () => <div className="mx-auto h-56 w-full max-w-[260px] animate-pulse rounded-full bg-muted" />
 });
 
-export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
-    const { transactions } = useData();
+export const CategoryAnalysis = ({ type, transactions: manualTransactions }: { type: 'expense' | 'income', transactions?: Transaction[] }) => {
+    const { transactions: hookTransactions } = useData();
+    const transactions = manualTransactions || hookTransactions;
     const router = useRouter();
 
     const handleCategoryClick = (category: string) => {
@@ -28,13 +31,16 @@ export const CategoryAnalysis = ({ type }: { type: 'expense' | 'income' }) => {
     };
 
     const { chartData, chartConfig, total } = useMemo(() => {
-        const monthlyTransactions = getMonthlyTransactions(transactions, type);
+        // If manualTransactions provided, assume they are already filtered by date
+        const relevantTransactions = manualTransactions 
+            ? manualTransactions.filter(t => t.type === type)
+            : getMonthlyTransactions(hookTransactions, type);
 
-        if (monthlyTransactions.length === 0) {
+        if (relevantTransactions.length === 0) {
             return { chartData: [], chartConfig: {}, total: 0 };
         }
 
-        const { chartData, total } = groupTransactionsByCategory(monthlyTransactions, type);
+        const { chartData, total } = groupTransactionsByCategory(relevantTransactions, type);
 
         const chartConfig = Object.fromEntries(
             chartData.map((item) => [

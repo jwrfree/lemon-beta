@@ -18,10 +18,13 @@ import { Progress as UIProgress } from '@/components/ui/progress';
 import { generateFinancialInsight, FinancialData } from '@/ai/flows/generate-insight-flow';
 import { subMonths, isAfter, differenceInMonths } from 'date-fns';
 
+import type { Transaction } from '@/types/models';
+
 type TabValue = 'expense' | 'income' | 'net';
 
-export const MonthlySummary = ({ type }: { type: TabValue }) => {
-    const { transactions, wallets, debts } = useData();
+export const MonthlySummary = ({ type, transactions: manualTransactions }: { type: TabValue, transactions?: Transaction[] }) => {
+    const { transactions: hookTransactions, wallets, debts } = useData();
+    const transactions = manualTransactions || hookTransactions;
     const router = useRouter();
     const [aiInsight, setAiInsight] = useState<string | null>(null);
     const [isAiLoading, setIsAiLoading] = useState(false);
@@ -30,13 +33,15 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
         setIsAiLoading(true);
         try {
             const now = new Date();
-            const currentMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), now));
+            // If manualTransactions provided, we use them as the base (they are already date-filtered)
+            // Otherwise we fallback to current month
+            const relevantTransactions = manualTransactions || transactions.filter(t => isSameMonth(parseISO(t.date), now));
             
-            const monthlyIncome = currentMonthTransactions
+            const monthlyIncome = relevantTransactions
                 .filter(t => t.type === 'income')
                 .reduce((acc, t) => acc + t.amount, 0);
 
-            const monthlyExpense = currentMonthTransactions
+            const monthlyExpense = relevantTransactions
                 .filter(t => t.type === 'expense')
                 .reduce((acc, t) => acc + t.amount, 0);
 
@@ -44,7 +49,7 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
 
             // Calculate top categories
             const categoryMap = new Map<string, number>();
-            currentMonthTransactions
+            relevantTransactions
                 .filter(t => t.type === 'expense')
                 .forEach(t => {
                     const current = categoryMap.get(t.category) || 0;
@@ -92,7 +97,7 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                 monthlyExpense,
                 totalBalance,
                 topExpenseCategories,
-                recentTransactionsCount: currentMonthTransactions.length,
+                recentTransactionsCount: relevantTransactions.length,
                 debtInfo: totalDebt > 0 ? {
                     totalDebt,
                     debtChangeMonth,
@@ -118,9 +123,11 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
         const daysElapsed = now.getDate();
         const monthProgress = (daysElapsed / daysInMonth) * 100;
 
-        const monthlyTransactions = transactions.filter((t) => isSameMonth(parseISO(t.date), now));
-        const incomeTransactions = monthlyTransactions.filter((t) => t.type === 'income');
-        const expenseTransactions = monthlyTransactions.filter((t) => t.type === 'expense');
+        // Use manualTransactions if provided (already filtered), otherwise use current month
+        const relevantTransactions = manualTransactions || transactions.filter((t) => isSameMonth(parseISO(t.date), now));
+        
+        const incomeTransactions = relevantTransactions.filter((t) => t.type === 'income');
+        const expenseTransactions = relevantTransactions.filter((t) => t.type === 'expense');
 
         const income = incomeTransactions.reduce((sum, t) => sum + t.amount, 0);
         const expense = expenseTransactions.reduce((sum, t) => sum + t.amount, 0);

@@ -1,4 +1,4 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 
 export interface FeedbackEntry {
     originalInput: string;
@@ -11,7 +11,7 @@ export interface FeedbackEntry {
  * Panggil fungsi ini saat pengguna menyimpan transaksi setelah mengedit kategori hasil AI.
  */
 export const saveAICorrection = async (feedback: FeedbackEntry) => {
-    const supabase = createClientComponentClient();
+    const supabase = createClient();
     
     try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -33,7 +33,7 @@ export const saveAICorrection = async (feedback: FeedbackEntry) => {
  * Gunakan hasil fungsi ini saat menyusun prompt untuk AI.
  */
 export const getFewShotExamples = async (limit = 5) => {
-    const supabase = createClientComponentClient();
+    const supabase = createClient();
     
     try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -46,7 +46,9 @@ export const getFewShotExamples = async (limit = 5) => {
             .order('created_at', { ascending: false })
             .limit(limit);
 
-        return data?.map(item => `Input: "${item.original_input}" -> Kategori: "${item.corrected_category}"`) || [];
+        return data?.map((item: { original_input: string; corrected_category: string }) => 
+            `Input: "${item.original_input}" -> Kategori: "${item.corrected_category}"`
+        ) || [];
     } catch (error) {
         console.error('Error fetching AI examples:', error);
         return [];

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle } from 'lucide-react';
+import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
@@ -14,58 +14,13 @@ import { TransactionForm } from '@/features/transactions/components/transaction-
 import { useUI } from '@/components/ui-provider';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { PageHeader } from '@/components/page-header';
+import { saveAICorrection } from '@/lib/feedback-service';
+import { DynamicSuggestions } from './dynamic-suggestions';
 
 const textLoadingMessages = ["Menganalisis teks...", "Mengidentifikasi detail...", "Memilih kategori...", "Hampir selesai..."];
 const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant...", "Menebak kategori belanja...", "Menyiapkan hasil..."];
 
-const WelcomePlaceholder = ({ onSuggestionClick }: { onSuggestionClick: (text: string) => void }) => {
-    const suggestions = [
-        "Beli kopi 25rb pake BCA",
-        "Makan siang 50rb via GoPay",
-        "Bayar hutang ke Budi 100rb dari Kas",
-        "Pindah 500rb dari BCA ke Kas",
-        "Gaji masuk 10jt di Mandiri"
-    ];
 
-    return (
-        <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500 max-w-sm mx-auto">
-            <div className="p-4 bg-primary/10 rounded-2xl mb-6 ring-8 ring-primary/5">
-                <Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} />
-            </div>
-            <h2 className="text-xl font-bold text-foreground">Asisten Keuangan Pintar</h2>
-            <p className="mt-2 text-sm leading-relaxed">
-                Tulis apa saja seperti kamu bicara dengan teman. AI akan mengaturnya untukmu.
-            </p>
-            
-            <div className="mt-10 w-full">
-                <div className="flex items-center justify-between mb-4">
-                    <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">Coba ketik ini</p>
-                    <div className="h-px flex-1 bg-border/50 ml-3" />
-                </div>
-                <div className="grid grid-cols-1 gap-2">
-                    {suggestions.map((s) => (
-                        <button
-                            key={s}
-                            type="button"
-                            onClick={() => onSuggestionClick(s)}
-                            className="text-xs text-left bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 px-4 py-3 rounded-xl active:scale-[0.98] transition-all flex items-center justify-between group"
-                        >
-                            <span className="text-foreground/80 group-hover:text-primary font-medium">{s}</span>
-                            <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary" />
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-dashed border-border w-full">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase mb-2">💡 Tahukah kamu?</p>
-                <p className="text-[11px] text-muted-foreground leading-relaxed text-left">
-                    Kamu bisa mencatat **banyak transaksi sekaligus** hanya dengan memisahkan kata "dan" atau tanda koma.
-                </p>
-            </div>
-        </div>
-    );
-};
 
 const SpeechRecognition = (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
@@ -98,6 +53,7 @@ export default function SmartAddPage() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const recognitionRef = useRef<any>(null);
     const finalTranscriptRef = useRef('');
+    const originalCategoryRef = useRef<string | null>(null);
 
     // Haptic feedback utility
     const vibrate = useCallback((pattern: number | number[]) => {
@@ -246,7 +202,7 @@ export default function SmartAddPage() {
                     <main className="flex-1 flex flex-col justify-end overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
                             {messages.length === 0 && pageState === 'IDLE' && (
-                                <WelcomePlaceholder 
+                                <DynamicSuggestions 
                                     onSuggestionClick={(text) => {
                                         setInputValue(text);
                                         processInput(text);
