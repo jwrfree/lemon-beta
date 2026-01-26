@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Plus, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
@@ -16,6 +16,7 @@ export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useApp();
     const { setIsTxModalOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
+    const router = useRouter();
 
     return (
         <aside
@@ -42,15 +43,15 @@ export const Sidebar = () => {
                     Aksi Cepat
                 </p>
                 <Button
-                    onClick={() => setIsTxModalOpen(true)}
+                    onClick={() => router.push('/add-smart')}
                     className={cn(
                         'shadow-sm active:scale-95 transition-all bg-primary text-primary-foreground hover:bg-primary/90',
                         isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-xl'
                     )}
                     size={isSidebarCollapsed ? "icon" : "lg"}
                 >
-                    <Plus className="h-5 w-5" />
-                    {!isSidebarCollapsed && <span className="truncate">Catat Transaksi</span>}
+                    <Sparkles className="h-5 w-5" />
+                    {!isSidebarCollapsed && <span className="truncate">Smart Add</span>}
                 </Button>
             </div>
 
@@ -64,6 +65,7 @@ export const Sidebar = () => {
                         <Link
                             key={item.id}
                             href={item.href}
+                            prefetch={false}
                             aria-current={isActive ? 'page' : undefined}
                             className={cn(
                                 'group flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all relative overflow-hidden',

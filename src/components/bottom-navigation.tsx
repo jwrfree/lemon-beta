@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, PieChart, Plus, HandCoins, User } from 'lucide-react';
+import { Home, PieChart, Sparkles, HandCoins, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
 import Link from 'next/link';
@@ -26,7 +26,7 @@ export const BottomNavigation = () => {
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'statistik', href: '/charts', icon: PieChart, name: 'Statistik' },
-        { id: 'add', href: '/add-smart', icon: Plus, name: 'Tambah', primary: true },
+        { id: 'add', href: '/add-smart', icon: Sparkles, name: 'Smart', primary: true },
         { id: 'anggaran', href: '/budgeting', icon: HandCoins, name: 'Anggaran' },
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
@@ -67,6 +67,7 @@ export const BottomNavigation = () => {
                                         <div className="absolute -top-7 bg-background rounded-full p-1.5 shadow-lg ring-2 ring-background/50 fab-position">
                                            <Link
                                                href={item.href}
+                                               prefetch={false}
                                                className={cn(
                                                    'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
                                                )}
@@ -85,6 +86,7 @@ export const BottomNavigation = () => {
                                 <Link
                                     key={item.id}
                                     href={item.href}
+                                    prefetch={false}
                                     className={cn(
                                         'flex flex-col items-center justify-center h-full w-full rounded-none transition-all active:scale-95 group relative',
                                         isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'

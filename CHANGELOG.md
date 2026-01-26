@@ -6,6 +6,13 @@ All updates and improvements to the Lemon app will be documented here.
 
 ### ✨ New Features
 
+- **AI Smart Add 2.0 (Powered by DeepSeek V3)**: Major upgrade to the intelligent transaction logging system.
+  - **Bulk Transaction Processing**: Record multiple transactions in a single natural language sentence (e.g., "Beli kopi 25rb dan bensin 50rb").
+  - **Automatic Wallet Detection**: Intelligent mapping of payment sources like "BCA", "GoPay", or "Kas" using fuzzy matching.
+  - **Debt Payment Integration**: Automatically detects when a transaction is a debt repayment and suggests linking it to existing debts.
+  - **Real-time Balance & Budget Insights**: Instant AI warnings if a transaction leads to insufficient funds or exceeds category budgets.
+  - **Enhanced AI UI**: New confirmation chips with category-specific colors and icons, haptic feedback, and auto-focus for a smoother experience.
+
 - **Debt Monitoring & Analytics**: Introduced advanced debt tracking features to monitor financial health.
   - **Historical Comparison**: Track total debt changes compared to last month and last year with visual trend indicators.
   - **Silent Growth Detection**: Automatically identifies debts with high interest rates or outstanding balances exceeding the principal to prevent "silent" debt growth.

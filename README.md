@@ -5,6 +5,8 @@
 Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis v2.1.0 memperkenalkan fitur pelacakan kekayaan bersih (Net Worth) yang komprehensif serta alat bantu estimasi biaya AI bagi developer.
 
 ## ✨ Sorotan Utama & Peningkatan Terbaru
+- **AI Smart Add 2.0 (Powered by DeepSeek V3):** Pencatatan super cepat dengan bahasa alami yang kini mendukung deteksi banyak transaksi sekaligus (bulk add), identifikasi sumber dana (wallet), dan deteksi pembayaran hutang secara otomatis dengan akurasi tinggi dari DeepSeek V3.
+- **Peringatan Saldo & Budget Real-time:** Analisis instan yang memberikan peringatan jika transaksi akan membuat saldo dompet minus atau melampaui sisa anggaran kategori.
 - **Overhaul UI/UX Desktop (Aset & Dompet):** Desain ulang halaman manajemen aset pada desktop dengan kartu ringkasan gradien, daftar dompet modern, dan hierarki visual yang lebih baik.
 - **Tracking Kekayaan Bersih:** Monitor aset (investasi, properti) & liabilitas (hutang, cicilan) dalam satu dashboard untuk melihat Net Worth secara real-time.
 - **Visual Transaksi Konsisten:** Indikator warna merah (`rose-600`) yang konsisten untuk semua pengeluaran dan ikon yang seragam di seluruh aplikasi.
@@ -41,8 +43,8 @@ Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia 
 ## 🛠️ Tech Stack
 - **Framework:** Next.js (App Router)
 - **UI:** Tailwind CSS & shadcn/ui
-- **Backend:** Firebase (Auth, Firestore, Functions)
-- **AI:** Google Gemini & Genkit
+- **Backend:** Supabase (Auth, Database, Realtime)
+- **AI:** DeepSeek V3 (Core Extraction), Google Gemini & Genkit (Insights)
 - **Form & Validasi:** React Hook Form & Zod
 - **Animasi:** Framer Motion (dengan dukungan `prefers-reduced-motion`)
 

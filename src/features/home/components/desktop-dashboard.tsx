@@ -36,6 +36,7 @@ import { DashboardGoalsEmpty } from './dashboard-goals-empty';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { UserProfileDropdown } from '@/components/user-profile-dropdown';
 
 export const DesktopDashboard = () => {
     const { wallets, transactions } = useData();
@@ -217,6 +218,9 @@ export const DesktopDashboard = () => {
                                     <p>Cari transaksi</p>
                                 </TooltipContent>
                             </Tooltip>
+                            <div className="pl-2 ml-2 border-l border-border/60">
+                                <UserProfileDropdown />
+                            </div>
                         </div>
                     </TooltipProvider>
                 }

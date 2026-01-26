@@ -48,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
-      <body>
+      <body className="antialiased font-sans">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ThemeTransition />
           <UIProvider>

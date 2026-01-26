@@ -17,6 +17,10 @@ export function ThemeTransition() {
       return;
     }
 
+    // Apply global body styles on client-side only to avoid hydration mismatch
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'hidden';
+
     const mediaQuery = window.matchMedia(PREFERS_REDUCED_MOTION_QUERY);
 
     const updatePreference = (event: MediaQueryList | MediaQueryListEvent) => {

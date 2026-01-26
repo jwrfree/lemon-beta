@@ -8,23 +8,27 @@ import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { startOfMonth, parseISO } from 'date-fns';
 
-export type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING';
+export type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING' | 'MULTI_CONFIRMING';
 
 export type Message = {
     id: string;
-    type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation';
+    type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation' | 'ai-multi-confirmation';
     content: any;
 };
 
 export type InsightData = {
     wallet: {
+        id: string;
+        name: string;
         currentBalance: number;
         newBalance: number;
+        isInsufficient: boolean;
     } | null;
     budget: {
         name: string;
         currentRemaining: number;
         newRemaining: number;
+        isOverBudget: boolean;
     } | null;
 }
 
@@ -36,11 +40,23 @@ export const useSmartAddFlow = () => {
     const [pageState, setPageState] = useState<PageState>('IDLE');
     const [messages, setMessages] = useState<Message[]>([]);
     const [parsedData, setParsedData] = useState<any | null>(null);
+    const [multiParsedData, setMultiParsedData] = useState<any[]>([]);
     const [insightData, setInsightData] = useState<InsightData | null>(null);
+
+    const removeMultiTransaction = useCallback((index: number) => {
+        setMultiParsedData(prev => {
+            const newData = prev.filter((_, i) => i !== index);
+            if (newData.length === 0) {
+                setPageState('IDLE');
+            }
+            return newData;
+        });
+    }, []);
 
     const resetFlow = useCallback((keepInput = false) => {
         setPageState('IDLE');
         setParsedData(null);
+        setMultiParsedData([]);
         setInsightData(null);
         setMessages([]);
     }, []);
@@ -49,9 +65,16 @@ export const useSmartAddFlow = () => {
         const finalWallet = wallets.find(w => w.id === dataToConfirm.walletId);
         let walletInsight = null;
         if (finalWallet) {
+            const newBalance = dataToConfirm.type === 'expense' 
+                ? finalWallet.balance - dataToConfirm.amount 
+                : finalWallet.balance + dataToConfirm.amount;
+            
             walletInsight = {
+                id: finalWallet.id,
+                name: finalWallet.name,
                 currentBalance: finalWallet.balance,
-                newBalance: dataToConfirm.type === 'expense' ? finalWallet.balance - dataToConfirm.amount : finalWallet.balance + dataToConfirm.amount
+                newBalance,
+                isInsufficient: dataToConfirm.type === 'expense' && newBalance < 0
             };
         }
 
@@ -68,11 +91,13 @@ export const useSmartAddFlow = () => {
                 );
                 const spent = budgetTransactions.reduce((acc, t) => acc + t.amount, 0);
                 const currentRemaining = relevantBudget.targetAmount - spent;
+                const newRemaining = currentRemaining - dataToConfirm.amount;
 
                 budgetInsight = {
                     name: relevantBudget.name,
                     currentRemaining,
-                    newRemaining: currentRemaining - dataToConfirm.amount,
+                    newRemaining,
+                    isOverBudget: newRemaining < 0
                 }
             }
         }
@@ -80,52 +105,100 @@ export const useSmartAddFlow = () => {
     }, [wallets, budgets, transactions]);
 
     const handleAISuccess = useCallback((result: any, isReceipt = false) => {
-        const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date } = result;
+        const rawTransactions = result.transactions || [result];
 
-        // 1. Smart transfer detection
-        if (category === 'Transfer' && sourceWallet && destinationWallet) {
-            const from = wallets.find(w => w.name.toLowerCase() === sourceWallet.toLowerCase());
-            const to = wallets.find(w => w.name.toLowerCase() === destinationWallet.toLowerCase());
+        const processedTransactions = rawTransactions.map((tx: any) => {
+            const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty } = tx;
 
-            if (from && to) {
-                setPreFilledTransfer({
-                    fromWalletId: from.id,
-                    toWalletId: to.id,
-                    amount: amount || 0,
-                    description: description || 'Transfer',
-                });
-                setIsTransferModalOpen(true);
-                resetFlow();
-                return;
+            // 1. Wallet resolution with fuzzy matching
+            const walletName = (tx.wallet || sourceWallet || '').toLowerCase().trim();
+            let matchingWallet = wallets.find(w => w.name.toLowerCase() === walletName);
+            
+            // If no exact match, try fuzzy matching (e.g., "BCA" matches "Bank BCA")
+            if (!matchingWallet && walletName) {
+                matchingWallet = wallets.find(w => 
+                    w.name.toLowerCase().includes(walletName) || 
+                    walletName.includes(w.name.toLowerCase())
+                );
             }
+            
+            const walletId = matchingWallet?.id || wallets.find(w => w.isDefault)?.id || wallets.find(w => w.name.toLowerCase() === 'tunai')?.id || wallets[0]?.id || '';
+
+            // 2. Type & Category resolution
+            let transactionType: 'income' | 'expense' = type || 'expense';
+            
+            // Normalize category from AI
+            const normalizedCategory = (category || '').trim();
+            const allCategories = [...incomeCategories, ...expenseCategories];
+            
+            // Try exact match first
+            let finalCategory = allCategories.find(c => c.name.toLowerCase() === normalizedCategory.toLowerCase())?.name;
+            
+            // If no exact match, try fuzzy
+            if (!finalCategory && normalizedCategory) {
+                finalCategory = allCategories.find(c => 
+                    c.name.toLowerCase().includes(normalizedCategory.toLowerCase()) || 
+                    normalizedCategory.toLowerCase().includes(c.name.toLowerCase())
+                )?.name;
+            }
+
+            if (!finalCategory) {
+                if (incomeCategories.some(c => c.name === normalizedCategory)) transactionType = 'income';
+                else if (expenseCategories.some(c => c.name === normalizedCategory)) transactionType = 'expense';
+                finalCategory = normalizedCategory || 'Lain-lain';
+            } else {
+                // Set type based on the matched category
+                if (incomeCategories.some(c => c.name === finalCategory)) transactionType = 'income';
+                else transactionType = 'expense';
+            }
+
+            return {
+                type: transactionType,
+                amount: Math.abs(amount || 0),
+                description: description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
+                category: finalCategory,
+                subCategory: subCategory || '',
+                walletId,
+                location: location || merchant || '',
+                date: date ? new Date(date).toISOString() : new Date().toISOString(),
+                isDebtPayment,
+                counterparty,
+                sourceWallet,
+                destinationWallet
+            };
+        });
+
+        if (processedTransactions.length > 1) {
+            setMultiParsedData(processedTransactions);
+            setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+            setPageState('MULTI_CONFIRMING');
+        } else {
+            const dataToConfirm = processedTransactions[0];
+
+            // Smart transfer detection (only for single transaction for now to keep flow simple)
+            if (dataToConfirm.category === 'Transfer' && dataToConfirm.sourceWallet && dataToConfirm.destinationWallet) {
+                const from = wallets.find(w => w.name.toLowerCase() === dataToConfirm.sourceWallet.toLowerCase());
+                const to = wallets.find(w => w.name.toLowerCase() === dataToConfirm.destinationWallet.toLowerCase());
+
+                if (from && to) {
+                    setPreFilledTransfer({
+                        fromWalletId: from.id,
+                        toWalletId: to.id,
+                        amount: dataToConfirm.amount || 0,
+                        description: dataToConfirm.description || 'Transfer',
+                    });
+                    setIsTransferModalOpen(true);
+                    resetFlow();
+                    return;
+                }
+            }
+
+            const { walletInsight, budgetInsight } = calculateInsights(dataToConfirm);
+            setInsightData({ wallet: walletInsight, budget: budgetInsight });
+            setParsedData(dataToConfirm);
+            setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+            setPageState('CONFIRMING');
         }
-
-        // 2. Wallet resolution
-        const walletName = (result.wallet || sourceWallet || '').toLowerCase();
-        const matchingWallet = wallets.find(w => w.name.toLowerCase() === walletName);
-        const walletId = matchingWallet?.id || wallets.find(w => w.isDefault)?.id || wallets.find(w => w.name.toLowerCase() === 'tunai')?.id || '';
-
-        // 3. Type & Category resolution
-        let transactionType: 'income' | 'expense' = type || 'expense';
-        if (incomeCategories.some(c => c.name === category)) transactionType = 'income';
-        else if (expenseCategories.some(c => c.name === category)) transactionType = 'expense';
-
-        const dataToConfirm = {
-            type: transactionType,
-            amount: Math.abs(amount || 0),
-            description: description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
-            category: category || 'Lain-lain',
-            subCategory: subCategory || '',
-            walletId,
-            location: location || merchant || '',
-            date: date ? new Date(date).toISOString() : new Date().toISOString(),
-        };
-
-        const { walletInsight, budgetInsight } = calculateInsights(dataToConfirm);
-        setInsightData({ wallet: walletInsight, budget: budgetInsight });
-        setParsedData(dataToConfirm);
-        setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
-        setPageState('CONFIRMING');
     }, [wallets, incomeCategories, expenseCategories, calculateInsights, setPreFilledTransfer, setIsTransferModalOpen, resetFlow]);
 
     const processInput = useCallback(async (input: string | { type: 'image', dataUrl: string }) => {
@@ -141,7 +214,13 @@ export const useSmartAddFlow = () => {
 
         try {
             if (typeof input === 'string') {
-                const result = await extractTransaction(input);
+                const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
+                const availableWallets = wallets.map(w => w.name);
+                
+                const result = await extractTransaction(input, {
+                    categories: availableCategories,
+                    wallets: availableWallets
+                });
                 handleAISuccess(result);
             } else {
                 const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
@@ -153,7 +232,7 @@ export const useSmartAddFlow = () => {
             showToast('Oops! Gagal menganalisis input. Coba lagi ya.', 'error');
             resetFlow(true);
         }
-    }, [expenseCategories, incomeCategories, handleAISuccess, showToast, resetFlow]);
+    }, [wallets, expenseCategories, incomeCategories, handleAISuccess, showToast, resetFlow]);
 
     const saveTransaction = useCallback(async (andAddAnother = false) => {
         if (!parsedData) return;
@@ -174,15 +253,37 @@ export const useSmartAddFlow = () => {
         return false;
     }, [parsedData, addTransaction, showToast, resetFlow]);
 
+    const saveMultiTransactions = useCallback(async () => {
+        if (multiParsedData.length === 0) return;
+        setPageState('ANALYZING');
+        try {
+            for (const tx of multiParsedData) {
+                await addTransaction(tx);
+            }
+            showToast(`${multiParsedData.length} transaksi berhasil disimpan!`, 'success');
+            resetFlow();
+            return true;
+        } catch (error) {
+            console.error("Failed to save multi transactions:", error);
+            showToast("Gagal menyimpan beberapa transaksi.", 'error');
+            setPageState('MULTI_CONFIRMING');
+        }
+        return false;
+    }, [multiParsedData, addTransaction, showToast, resetFlow]);
+
     return {
         pageState,
         setPageState,
         messages,
         parsedData,
         setParsedData,
+        multiParsedData,
+        setMultiParsedData,
+        removeMultiTransaction,
         insightData,
         processInput,
         saveTransaction,
+        saveMultiTransactions,
         resetFlow,
     };
 };

@@ -1,7 +1,12 @@
 # Lemon Mobile Blueprint
 
-## 0. Release Snapshot – v2.0.0 (22 September 2025)
-- **Status:** Ready to Launch.
+## 0. Release Snapshot – v2.1.0 (January 2026)
+- **Status:** In Progress.
+- **Fokus rilis:** Memperkuat kecerdasan buatan (AI) untuk efisiensi pencatatan, pemantauan kesehatan hutang yang lebih mendalam, serta optimalisasi UI desktop.
+- **Highlight baru:** Smart Add 2.0 didukung DeepSeek V3 (bulk add, wallet detection), dashboard Net Worth real-time, dan kalkulator estimasi biaya AI bagi developer.
+
+## 0.1 Previous Snapshot – v2.0.0 (22 September 2025)
+- **Status:** Released.
 - **Fokus rilis:** menuntaskan audit desain menyeluruh, memoles landing & modal autentikasi, memastikan setiap alur utama siap produksi, dan memperbarui dokumentasi agar seluruh tim selaras.
 - **Highlight baru:** navigasi anchor pada landing, dukungan `prefers-reduced-motion` di seluruh animasi, copy hero edukatif, serta penegasan jalur pemulihan akun yang jelas.
 
@@ -42,6 +47,9 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
 
 ### 4.1 Transaction Logging
 - Floating button "Catat" membuka bottom sheet Manual / Catat Cepat (AI).
+- **Smart Add 2.0 (DeepSeek V3):** Mendukung input bahasa natural untuk satu atau banyak transaksi sekaligus (*bulk*).
+- **Auto-mapping:** Deteksi otomatis kategori, sumber dana (wallet), dan deteksi pembayaran hutang secara cerdas.
+- **Insights Instan:** Memberikan feedback langsung jika saldo tidak cukup atau melebihi budget saat konfirmasi AI.
 - Field: amount keypad, tipe, wallet, kategori + sub, tanggal, catatan, tag, lokasi opsional.
 - Smart defaults & suggestions: wallet terakhir, tanggal hari ini, auto-tag dari AI.
 - Feedback: counter saldo animasi, toast dengan tombol undo, update grafis real-time di Home.

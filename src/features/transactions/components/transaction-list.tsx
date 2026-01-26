@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
 import { useData } from '@/hooks/use-data';
 import { DesktopTransactionTable } from './desktop-transaction-table';
-import { groupTransactionsByDate } from '../utils';
+import { groupTransactionsByDate } from '@/features/transactions/utils';
 
 interface TransactionListProps {
     transactions?: Transaction[];
@@ -69,13 +69,13 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
 
             {/* Mobile List View (Grouped) */}
             <div className="md:hidden space-y-4">
-                {groupedTransactions.map(([date, transactionsForDay]) => (
+                {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
                     <div key={date}>
                         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2 px-2">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
                         <div className="space-y-2">
-                            {transactionsForDay.map(transaction => (
+                            {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem key={transaction.id} transaction={transaction} hideDate />
                             ))}
                         </div>

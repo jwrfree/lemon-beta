@@ -1,6 +1,6 @@
-
 'use client';
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
@@ -16,7 +16,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, BellRing, HandCoins, Calculator } from 'lucide-react';
+import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, BellRing, HandCoins, Calculator, User } from 'lucide-react';
 import { useApp } from '@/providers/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +28,7 @@ import { Switch } from '@/components/ui/switch';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
 
-export default function SettingsPage() {
+function SettingsContent() {
     const router = useRouter();
     const { user, userData, handleSignOut, updateUserBiometricStatus } = useApp();
     const { theme, setTheme } = useTheme();
@@ -97,7 +97,10 @@ export default function SettingsPage() {
     
     return (
         <div className="flex flex-col h-full bg-muted/30">
-            <PageHeader title="Pengaturan" />
+            <PageHeader 
+                title="Pengaturan" 
+                description="Kelola preferensi aplikasi dan akunmu"
+            />
             
             <main className="flex-1 overflow-y-auto">
                 <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
@@ -119,7 +122,7 @@ export default function SettingsPage() {
                                         <p className="text-muted-foreground font-medium">{user?.email}</p>
                                         <div className="pt-2 flex flex-wrap justify-center sm:justify-start gap-2">
                                             <Badge variant="secondary" className="bg-primary/10 text-primary border-none">Versi Beta</Badge>
-                                            <Badge variant="outline" className="text-[10px]">ID: {user?.id.slice(0, 8)}</Badge>
+                                            <Badge variant="outline" className="text-[10px]">ID: {user?.id?.slice(0, 8)}</Badge>
                                         </div>
                                     </div>
                                 </div>
@@ -140,7 +143,6 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        
                         {/* LEFT COLUMN: SECURITY & TOOLS */}
                         <div className="space-y-6">
                             <section className="space-y-3">
@@ -244,5 +246,13 @@ export default function SettingsPage() {
                 </div>
             </main>
         </div>
+    );
+}
+
+export default function SettingsPage() {
+    return (
+        <Suspense fallback={<div className="flex h-full items-center justify-center">Memuat pengaturan...</div>}>
+            <SettingsContent />
+        </Suspense>
     );
 }

@@ -15,9 +15,15 @@ export type FinancialData = {
     totalBalance: number;
     topExpenseCategories: { category: string; amount: number }[];
     recentTransactionsCount: number;
+    debtInfo?: {
+        totalDebt: number;
+        debtChangeMonth: number; // positive means debt increased
+        hasSilentGrowth: boolean;
+        projectedPayoffMonths?: number;
+    }
 };
 
-export type InsightFocus = 'general' | 'expense' | 'income' | 'net';
+export type InsightFocus = 'general' | 'expense' | 'income' | 'net' | 'debt';
 
 export async function generateFinancialInsight(data: FinancialData, focus: InsightFocus = 'general'): Promise<string> {
     const systemPrompt = `You are "Lemon AI", a sharp, friendly, and helpful financial advisor.
@@ -35,8 +41,22 @@ Tone: Casual, empathetic (like a friend), but professional.`;
         case 'net':
             focusInstruction = "Fokus pada arus kas bersih (surplus/defisit) dan kesehatan finansial jangka panjang.";
             break;
+        case 'debt':
+            focusInstruction = "Fokus pada pengelolaan hutang, pengurangan bunga, dan strategi pelunasan.";
+            break;
         default:
             focusInstruction = "Berikan insight umum tentang kesehatan keuangan.";
+    }
+
+    let debtContext = "";
+    if (data.debtInfo) {
+        debtContext = `
+Data Hutang:
+- Total Hutang: ${data.debtInfo.totalDebt}
+- Perubahan Bulan Ini: ${data.debtInfo.debtChangeMonth > 0 ? 'Naik' : 'Turun'} ${Math.abs(data.debtInfo.debtChangeMonth)}
+- Silent Growth (Bunga > Cicilan): ${data.debtInfo.hasSilentGrowth ? 'YA (Bahaya!)' : 'Tidak'}
+- Proyeksi Lunas: ${data.debtInfo.projectedPayoffMonths ? `${data.debtInfo.projectedPayoffMonths} bulan` : 'Tidak terdeteksi pembayaran rutin'}
+`;
     }
 
     const userPrompt = `Data Keuangan Bulan Ini:
@@ -45,9 +65,10 @@ Tone: Casual, empathetic (like a friend), but professional.`;
 - Pengeluaran: ${data.monthlyExpense}
 - Kategori Terboros: ${data.topExpenseCategories.map(c => `${c.category} (${c.amount})`).join(', ')}
 - Jumlah Transaksi: ${data.recentTransactionsCount}
+${debtContext}
 - Konteks: ${focusInstruction}
 
-Berikan 1 insight singkat (max 2 kalimat) yang cerdas dan memotivasi sesuai konteks di atas.`;
+Berikan 1 insight singkat (max 2 kalimat) yang cerdas dan memotivasi sesuai konteks di atas. Jika ada silent growth pada hutang, berikan peringatan tegas tapi suportif.`;
 
     try {
         const completion = await openai.chat.completions.create({

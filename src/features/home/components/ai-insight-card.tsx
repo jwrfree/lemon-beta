@@ -5,16 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles, RefreshCw, Lightbulb } from 'lucide-react';
 import { generateFinancialInsight, FinancialData } from '@/ai/flows/generate-insight-flow';
-import { Transaction, Wallet } from '@/types/models';
-import { isSameMonth, parseISO } from 'date-fns';
+import { Transaction, Wallet, Debt } from '@/types/models';
+import { isSameMonth, parseISO, subMonths, isAfter } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface AIInsightCardProps {
     transactions: Transaction[];
     wallets: Wallet[];
+    debts: Debt[];
 }
 
-export function AIInsightCard({ transactions, wallets }: AIInsightCardProps) {
+export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardProps) {
     const [insight, setInsight] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,12 +49,49 @@ export function AIInsightCard({ transactions, wallets }: AIInsightCardProps) {
                 .slice(0, 3)
                 .map(([category, amount]) => ({ category, amount }));
 
+            // Debt analytics for AI
+            const myDebts = debts?.filter(d => d.direction === 'owed') || [];
+            const totalDebt = myDebts.reduce((acc, d) => acc + (d.outstandingBalance ?? 0), 0);
+            
+            const lastMonth = subMonths(now, 1);
+            const calculateHistoricalBalance = (targetDate: Date) => {
+                return myDebts.reduce((acc, d) => {
+                    const startDate = d.startDate ? parseISO(d.startDate) : (d.createdAt ? parseISO(d.createdAt) : new Date(0));
+                    if (isAfter(startDate, targetDate)) return acc;
+                    const paymentsUntilTarget = d.payments?.filter(p => {
+                        const pDate = p.paymentDate ? parseISO(p.paymentDate) : new Date(0);
+                        return !isAfter(pDate, targetDate);
+                    }) || [];
+                    const totalPaidUntilTarget = paymentsUntilTarget.reduce((sum, p) => sum + p.amount, 0);
+                    const estimatedBalance = Math.max(0, (d.principal ?? 0) - totalPaidUntilTarget);
+                    return acc + estimatedBalance;
+                }, 0);
+            };
+            
+            const lastMonthBalance = calculateHistoricalBalance(lastMonth);
+            const debtChangeMonth = totalDebt - lastMonthBalance;
+            
+            const hasSilentGrowth = myDebts.some(d => (d.outstandingBalance ?? 0) > (d.principal ?? 0) && (d.interestRate ?? 0) > 0);
+            
+            // Simplified projection
+            const threeMonthsAgo = subMonths(now, 3);
+            const recentPayments = myDebts.flatMap(d => d.payments || [])
+                .filter(p => isAfter(parseISO(p.paymentDate), threeMonthsAgo));
+            const avgMonthlyPayment = recentPayments.reduce((sum, p) => sum + p.amount, 0) / 3;
+            const projectedPayoffMonths = avgMonthlyPayment > 0 ? Math.ceil(totalDebt / avgMonthlyPayment) : undefined;
+
             const data: FinancialData = {
                 monthlyIncome,
                 monthlyExpense,
                 totalBalance,
                 topExpenseCategories,
-                recentTransactionsCount: currentMonthTransactions.length
+                recentTransactionsCount: currentMonthTransactions.length,
+                debtInfo: totalDebt > 0 ? {
+                    totalDebt,
+                    debtChangeMonth,
+                    hasSilentGrowth,
+                    projectedPayoffMonths
+                } : undefined
             };
 
             const result = await generateFinancialInsight(data);

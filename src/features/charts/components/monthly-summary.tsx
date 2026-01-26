@@ -4,22 +4,24 @@ import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, parseISO, isSameMonth, getDaysInMonth } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw } from 'lucide-react';
+import { cn, formatCurrency } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { categoryDetails } from '@/lib/categories';
+import { PlaceholderContent } from './placeholder-content';
+import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw } from 'lucide-react';
 import { useData } from '@/hooks/use-data';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress as UIProgress } from '@/components/ui/progress';
-import { cn, formatCurrency } from '@/lib/utils';
-import { categoryDetails } from '@/lib/categories';
-import { PlaceholderContent } from './placeholder-content';
 import { generateFinancialInsight, FinancialData } from '@/ai/flows/generate-insight-flow';
+import { subMonths, isAfter, differenceInMonths } from 'date-fns';
 
 type TabValue = 'expense' | 'income' | 'net';
 
 export const MonthlySummary = ({ type }: { type: TabValue }) => {
-    const { transactions, wallets } = useData();
+    const { transactions, wallets, debts } = useData();
     const router = useRouter();
     const [aiInsight, setAiInsight] = useState<string | null>(null);
     const [isAiLoading, setIsAiLoading] = useState(false);
@@ -54,15 +56,52 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                 .slice(0, 3)
                 .map(([category, amount]) => ({ category, amount }));
 
+            // Debt analytics for AI
+            const myDebts = debts?.filter(d => d.direction === 'owed') || [];
+            const totalDebt = myDebts.reduce((acc, d) => acc + (d.outstandingBalance ?? 0), 0);
+            
+            const lastMonth = subMonths(now, 1);
+            const calculateHistoricalBalance = (targetDate: Date) => {
+                return myDebts.reduce((acc, d) => {
+                    const startDate = d.startDate ? parseISO(d.startDate) : (d.createdAt ? parseISO(d.createdAt) : new Date(0));
+                    if (isAfter(startDate, targetDate)) return acc;
+                    const paymentsUntilTarget = d.payments?.filter(p => {
+                        const pDate = p.paymentDate ? parseISO(p.paymentDate) : new Date(0);
+                        return !isAfter(pDate, targetDate);
+                    }) || [];
+                    const totalPaidUntilTarget = paymentsUntilTarget.reduce((sum, p) => sum + p.amount, 0);
+                    const estimatedBalance = Math.max(0, (d.principal ?? 0) - totalPaidUntilTarget);
+                    return acc + estimatedBalance;
+                }, 0);
+            };
+            
+            const lastMonthBalance = calculateHistoricalBalance(lastMonth);
+            const debtChangeMonth = totalDebt - lastMonthBalance;
+            
+            const hasSilentGrowth = myDebts.some(d => (d.outstandingBalance ?? 0) > (d.principal ?? 0) && (d.interestRate ?? 0) > 0);
+            
+            // Simplified projection
+            const threeMonthsAgo = subMonths(now, 3);
+            const recentPayments = myDebts.flatMap(d => d.payments || [])
+                .filter(p => p.paymentDate && isAfter(parseISO(p.paymentDate), threeMonthsAgo));
+            const avgMonthlyPayment = recentPayments.reduce((sum, p) => sum + p.amount, 0) / 3;
+            const projectedPayoffMonths = avgMonthlyPayment > 0 ? Math.ceil(totalDebt / avgMonthlyPayment) : undefined;
+
             const data: FinancialData = {
                 monthlyIncome,
                 monthlyExpense,
                 totalBalance,
                 topExpenseCategories,
-                recentTransactionsCount: currentMonthTransactions.length
+                recentTransactionsCount: currentMonthTransactions.length,
+                debtInfo: totalDebt > 0 ? {
+                    totalDebt,
+                    debtChangeMonth,
+                    hasSilentGrowth,
+                    projectedPayoffMonths
+                } : undefined
             };
 
-            const focus = type === 'expense' ? 'expense' : type === 'income' ? 'income' : 'net';
+            const focus = type === 'expense' ? 'expense' : type === 'income' ? 'income' : type === 'net' ? 'net' : 'debt';
             const result = await generateFinancialInsight(data, focus);
             setAiInsight(result);
         } catch (error) {
@@ -376,9 +415,31 @@ export const MonthlySummary = ({ type }: { type: TabValue }) => {
                                 <RefreshCw className={cn("h-3.5 w-3.5", isAiLoading && "animate-spin")} />
                             </Button>
                         </div>
-                        <p className="text-sm font-medium leading-relaxed text-foreground/80">
-                            {isAiLoading ? "Sedang menganalisis keuanganmu..." : (aiInsight || summary.tipCopy)}
-                        </p>
+                        <div className="text-sm font-medium leading-relaxed text-foreground/80 min-h-[3rem] flex items-center">
+                            <AnimatePresence mode="wait">
+                                {isAiLoading ? (
+                                    <motion.div 
+                                        key="loading"
+                                        initial={{ opacity: 0, filter: "blur(4px)" }}
+                                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                                        exit={{ opacity: 0, filter: "blur(4px)" }}
+                                        className="flex items-center gap-2 text-primary/70"
+                                    >
+                                        <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                                        <span>Sedang menganalisis keuanganmu...</span>
+                                    </motion.div>
+                                ) : (
+                                    <motion.span
+                                        key={aiInsight || summary.tipCopy}
+                                        initial={{ opacity: 0, y: 5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        {aiInsight || summary.tipCopy}
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
+                        </div>
                         {!aiInsight && !isAiLoading && (
                             <Button 
                                 variant="link" 

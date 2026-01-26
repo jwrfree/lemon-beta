@@ -128,10 +128,11 @@ export default function DebtsPage() {
                     if (!b.dueDate) return -1;
                     return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
                 case 'updated_desc':
-                default:
+                default: {
                     const dateA = a.updatedAt ? new Date(a.updatedAt) : (a.createdAt ? new Date(a.createdAt) : new Date(0));
                     const dateB = b.updatedAt ? new Date(b.updatedAt) : (b.createdAt ? new Date(b.createdAt) : new Date(0));
                     return dateB.getTime() - dateA.getTime();
+                }
             }
         });
     }, [debts, activeFilter, sortBy]);

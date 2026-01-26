@@ -1,30 +1,71 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft } from 'lucide-react';
+import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Sparkles, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
 import Image from 'next/image';
 import { TransactionForm } from '@/features/transactions/components/transaction-form';
 import { useUI } from '@/components/ui-provider';
-import { useSmartAddFlow, PageState, Message, InsightData } from '@/features/transactions/hooks/use-smart-add-flow';
+import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { PageHeader } from '@/components/page-header';
 
 const textLoadingMessages = ["Menganalisis teks...", "Mengidentifikasi detail...", "Memilih kategori...", "Hampir selesai..."];
 const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant...", "Menebak kategori belanja...", "Menyiapkan hasil..."];
 
-const WelcomePlaceholder = () => (
-    <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500">
-        <div className="p-3 bg-primary/10 rounded-lg mb-4"><Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} /></div>
-        <h2 className="text-lg font-semibold text-foreground">Catat Cepat dengan AI</h2>
-        <p className="mt-1 max-w-xs">Ketik transaksi seperti &quot;beli kopi 25rb&quot;, rekam suara, atau pindai struk untuk memulai.</p>
-    </div>
-);
+const WelcomePlaceholder = ({ onSuggestionClick }: { onSuggestionClick: (text: string) => void }) => {
+    const suggestions = [
+        "Beli kopi 25rb pake BCA",
+        "Makan siang 50rb via GoPay",
+        "Bayar hutang ke Budi 100rb dari Kas",
+        "Pindah 500rb dari BCA ke Kas",
+        "Gaji masuk 10jt di Mandiri"
+    ];
+
+    return (
+        <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500 max-w-sm mx-auto">
+            <div className="p-4 bg-primary/10 rounded-2xl mb-6 ring-8 ring-primary/5">
+                <Sparkles className="h-10 w-10 text-primary" strokeWidth={1.5} />
+            </div>
+            <h2 className="text-xl font-bold text-foreground">Asisten Keuangan Pintar</h2>
+            <p className="mt-2 text-sm leading-relaxed">
+                Tulis apa saja seperti kamu bicara dengan teman. AI akan mengaturnya untukmu.
+            </p>
+            
+            <div className="mt-10 w-full">
+                <div className="flex items-center justify-between mb-4">
+                    <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">Coba ketik ini</p>
+                    <div className="h-px flex-1 bg-border/50 ml-3" />
+                </div>
+                <div className="grid grid-cols-1 gap-2">
+                    {suggestions.map((s) => (
+                        <button
+                            key={s}
+                            type="button"
+                            onClick={() => onSuggestionClick(s)}
+                            className="text-xs text-left bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 px-4 py-3 rounded-xl active:scale-[0.98] transition-all flex items-center justify-between group"
+                        >
+                            <span className="text-foreground/80 group-hover:text-primary font-medium">{s}</span>
+                            <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary" />
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-dashed border-border w-full">
+                <p className="text-[10px] font-bold text-muted-foreground uppercase mb-2">💡 Tahukah kamu?</p>
+                <p className="text-[11px] text-muted-foreground leading-relaxed text-left">
+                    Kamu bisa mencatat **banyak transaksi sekaligus** hanya dengan memisahkan kata "dan" atau tanda koma.
+                </p>
+            </div>
+        </div>
+    );
+};
 
 const SpeechRecognition = (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
@@ -32,7 +73,21 @@ const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 export default function SmartAddPage() {
     const router = useRouter();
     const { showToast } = useUI();
-    const { pageState, setPageState, messages, parsedData, setParsedData, insightData, processInput, saveTransaction, resetFlow } = useSmartAddFlow();
+    const { getCategoryVisuals } = useData();
+    const { 
+        pageState, 
+        setPageState, 
+        messages, 
+        parsedData, 
+        setParsedData, 
+        multiParsedData, 
+        removeMultiTransaction,
+        insightData, 
+        processInput, 
+        saveTransaction, 
+        saveMultiTransactions, 
+        resetFlow 
+    } = useSmartAddFlow();
 
     const [inputValue, setInputValue] = useState('');
     const [loadingMessage, setLoadingMessage] = useState('');
@@ -40,17 +95,47 @@ export default function SmartAddPage() {
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const recognitionRef = useRef<any>(null);
     const finalTranscriptRef = useRef('');
 
-    const handleConfirmSave = async (andAddAnother = false) => {
+    // Haptic feedback utility
+    const vibrate = useCallback((pattern: number | number[]) => {
+        if (typeof window !== 'undefined' && navigator.vibrate) {
+            navigator.vibrate(pattern);
+        }
+    }, []);
+
+    // Auto-focus on mount
+    useEffect(() => {
+        if (pageState === 'IDLE' && !isVoiceInputMode) {
+            textareaRef.current?.focus();
+        }
+    }, [pageState, isVoiceInputMode]);
+
+    const handleConfirmSave = useCallback(async (andAddAnother = false) => {
+        vibrate(50); // Medium haptic for save start
         const success = await saveTransaction(andAddAnother);
+        if (success) vibrate([40, 30, 40]); // Success double tap
         if (success && !andAddAnother) router.back();
-        if (success && andAddAnother) setInputValue('');
-    };
+        if (success && andAddAnother) {
+            setInputValue('');
+            textareaRef.current?.focus();
+        }
+    }, [saveTransaction, router, vibrate]);
+
+    const handleMultiConfirmSave = useCallback(async () => {
+        vibrate(50);
+        const success = await saveMultiTransactions();
+        if (success) {
+            vibrate([40, 30, 40]);
+            router.back();
+        }
+    }, [saveMultiTransactions, router, vibrate]);
 
     useEffect(() => {
         if (pageState === 'ANALYZING') {
+            vibrate(30); // Light haptic when starting analysis
             const loadingMsgs = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
             let i = 0;
             setLoadingMessage(loadingMsgs[i]);
@@ -60,7 +145,11 @@ export default function SmartAddPage() {
             }, 1500);
             return () => clearInterval(interval);
         }
-    }, [pageState, messages]);
+        
+        if (pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') {
+            vibrate([20, 30, 20]); // Light double tap when analysis finishes
+        }
+    }, [pageState, messages, vibrate]);
 
     useEffect(() => {
         if (!SpeechRecognition) return;
@@ -101,6 +190,20 @@ export default function SmartAddPage() {
         finally { e.target.value = ''; }
     };
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                if (pageState === 'CONFIRMING') {
+                    handleConfirmSave(false);
+                } else if (pageState === 'MULTI_CONFIRMING') {
+                    handleMultiConfirmSave();
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [pageState, handleConfirmSave, handleMultiConfirmSave]);
+
     if (pageState === 'EDITING' && parsedData) {
         return <TransactionForm isModal={false} initialData={parsedData} onClose={(data) => { if (data) setParsedData((prev: any) => ({ ...prev, ...data })); setPageState('CONFIRMING'); }} />;
     }
@@ -121,7 +224,17 @@ export default function SmartAddPage() {
                             <motion.div className="absolute inset-0 bg-primary/20 rounded-full" animate={{ scale: isListening ? [1, 1.2, 1] : 1 }} transition={{ duration: 1.5, repeat: Infinity }} />
                             <Mic className="h-10 w-10 text-primary" />
                         </div>
-                        <p className="mt-4 min-h-6 text-lg font-medium">{inputValue}</p>
+                        <AnimatePresence mode="wait">
+                            <motion.p 
+                                key={inputValue}
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -5 }}
+                                className="mt-4 min-h-6 text-lg font-medium"
+                            >
+                                {inputValue || "Silakan bicara..."}
+                            </motion.p>
+                        </AnimatePresence>
                     </motion.div>
                     <div className="absolute bottom-4 left-4 right-4 flex justify-center items-center gap-4">
                         <Button size="icon" variant="ghost" className="h-11 w-11" onClick={() => { setIsVoiceInputMode(false); toggleListening(); }}><Keyboard className="h-6 w-6" /></Button>
@@ -132,26 +245,202 @@ export default function SmartAddPage() {
                 <>
                     <main className="flex-1 flex flex-col justify-end overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                            {messages.length === 0 && pageState === 'IDLE' && <WelcomePlaceholder />}
+                            {messages.length === 0 && pageState === 'IDLE' && (
+                                <WelcomePlaceholder 
+                                    onSuggestionClick={(text) => {
+                                        setInputValue(text);
+                                        processInput(text);
+                                    }} 
+                                />
+                            )}
                             <AnimatePresence>
                                 {messages.map((msg) => (
                                     <motion.div key={msg.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8 }}>
                                         {msg.type === 'user' && <div className="flex justify-end"><div className="p-3 bg-primary text-primary-foreground rounded-2xl">{msg.content}</div></div>}
                                         {msg.type === 'user-image' && <div className="flex justify-end"><Card className="p-2 bg-primary max-w-xs"><Image src={msg.content} alt="Receipt" width={200} height={300} className="rounded-md" /></Card></div>}
-                                        {msg.type === 'ai-thinking' && <div className="flex justify-start"><div className="p-3 bg-card rounded-2xl flex items-center gap-2"><LoaderCircle className="h-4 w-4 animate-spin" /><AnimatePresence mode="wait"><motion.span key={loadingMessage} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}>{loadingMessage}</motion.span></AnimatePresence></div></div>}
+                                        {msg.type === 'ai-thinking' && (
+                                            <div className="flex justify-start">
+                                                <div className="p-3 bg-card rounded-2xl flex items-center gap-2.5 shadow-sm border border-border/50">
+                                                    <div className="relative flex items-center justify-center">
+                                                        <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
+                                                        <motion.div 
+                                                            className="absolute inset-0 bg-primary/20 rounded-full"
+                                                            animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                                                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                                        />
+                                                    </div>
+                                                    <AnimatePresence mode="wait">
+                                                        <motion.span 
+                                                            key={loadingMessage} 
+                                                            initial={{ opacity: 0, x: 5, filter: "blur(4px)" }} 
+                                                            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }} 
+                                                            exit={{ opacity: 0, x: -5, filter: "blur(4px)" }}
+                                                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                            className="text-sm font-medium text-muted-foreground"
+                                                        >
+                                                            {loadingMessage}
+                                                        </motion.span>
+                                                    </AnimatePresence>
+                                                </div>
+                                            </div>
+                                        )}
                                     </motion.div>
                                 ))}
                                 {pageState === 'CONFIRMING' && parsedData && (
                                     <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-                                        <div className="flex justify-start"><div className="p-3 bg-card rounded-2xl">Oke, catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold">{formatCurrency(parsedData.amount)}</span>?</div></div>
-                                        {insightData && (
-                                            <Card className="p-4 bg-primary/5 border-primary/20">
-                                                <CardContent className="p-0 space-y-3">
-                                                    {insightData.wallet && <div className="flex items-center text-sm"><Wallet className="h-5 w-5 text-primary mr-3" /><div className="flex flex-col"><span className="text-muted-foreground">Saldo dompet</span><div className="flex items-center gap-2"><span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.wallet.currentBalance)}</span><ArrowRight className="h-3 w-3 text-muted-foreground" /><span className="font-semibold text-foreground">{formatCurrency(insightData.wallet.newBalance)}</span></div></div></div>}
-                                                    {insightData.budget && <div className="flex items-center text-sm"><TrendingDown className="h-5 w-5 text-primary mr-3" /><div className="flex flex-col"><span className="text-muted-foreground">Sisa budget &apos;{insightData.budget.name}&apos;</span><div className="flex items-center gap-2"><span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.budget.currentRemaining)}</span><ArrowRight className="h-3 w-3 text-muted-foreground" /><span className={cn("font-semibold", insightData.budget.newRemaining < 0 ? "text-destructive" : "text-foreground")}>{formatCurrency(insightData.budget.newRemaining)}</span></div></div></div>}
-                                                </CardContent>
-                                            </Card>
+                                        <div className="flex justify-start">
+                                            <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 relative overflow-hidden group">
+                                                {/* Category Background Accent */}
+                                                <div 
+                                                    className="absolute top-0 left-0 w-1 h-full opacity-60" 
+                                                    style={{ backgroundColor: getCategoryVisuals(parsedData.category).color }}
+                                                />
+                                                
+                                                <div className="flex items-start gap-3">
+                                                    <div 
+                                                        className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                                                        style={{ 
+                                                            backgroundColor: `${getCategoryVisuals(parsedData.category).color}15`,
+                                                            color: getCategoryVisuals(parsedData.category).color
+                                                        }}
+                                                    >
+                                                        {React.createElement(getCategoryVisuals(parsedData.category).icon, { size: 20 })}
+                                                    </div>
+                                                    
+                                                    <div className="flex flex-col">
+                                                        <p className="text-sm leading-relaxed text-foreground">
+                                                            Oke, catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold text-primary">{formatCurrency(parsedData.amount)}</span>?
+                                                        </p>
+                                                        <div className="flex items-center gap-2 mt-2">
+                                                            <div 
+                                                                className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1"
+                                                                style={{ 
+                                                                    backgroundColor: `${getCategoryVisuals(parsedData.category).color}15`,
+                                                                    color: getCategoryVisuals(parsedData.category).color,
+                                                                    border: `1px solid ${getCategoryVisuals(parsedData.category).color}30`
+                                                                }}
+                                                            >
+                                                                {React.createElement(getCategoryVisuals(parsedData.category).icon, { size: 10 })}
+                                                                {parsedData.category}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {parsedData.isDebtPayment && (
+                                            <div className="flex justify-start">
+                                                <div className="p-2 px-3 bg-orange-500/10 text-orange-600 rounded-full text-xs font-medium flex items-center gap-1.5 border border-orange-500/20">
+                                                    <TrendingDown className="h-3.5 w-3.5" />
+                                                    Pembayaran hutang: {parsedData.counterparty || 'Tidak diketahui'}
+                                                </div>
+                                            </div>
                                         )}
+                                        {insightData && (
+                                            <div className="space-y-3">
+                                                {insightData.wallet?.isInsufficient && (
+                                                    <motion.div 
+                                                        initial={{ opacity: 0, scale: 0.9 }} 
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        className="flex justify-start"
+                                                    >
+                                                        <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-xs font-medium border border-destructive/20 flex flex-col gap-1 max-w-[85%]">
+                                                            <div className="flex items-center gap-1.5">
+                                                                <AlertTriangle className="h-4 w-4 shrink-0" />
+                                                                <span className="font-bold">Saldo Tidak Cukup!</span>
+                                                            </div>
+                                                            <p className="opacity-90">
+                                                                Saldo {insightData.wallet.name} kamu akan menjadi minus ({formatCurrency(insightData.wallet.newBalance)}). Tetap catat atau koreksi dompetnya?
+                                                            </p>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+
+                                                <Card className={cn(
+                                                    "p-4 border-primary/20 transition-colors",
+                                                    insightData.wallet?.isInsufficient ? "bg-destructive/5 border-destructive/20" : "bg-primary/5"
+                                                )}>
+                                                    <CardContent className="p-0 space-y-3">
+                                                        {insightData.wallet && (
+                                                            <div className="flex items-center text-sm">
+                                                                <Wallet className={cn("h-5 w-5 mr-3", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")} />
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-muted-foreground">Saldo {insightData.wallet.name}</span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.wallet.currentBalance)}</span>
+                                                                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                                                        <span className={cn("font-semibold", insightData.wallet.isInsufficient ? "text-destructive" : "text-foreground")}>
+                                                                            {formatCurrency(insightData.wallet.newBalance)}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        {insightData.budget && (
+                                                            <div className="flex items-center text-sm">
+                                                                <TrendingDown className={cn("h-5 w-5 mr-3", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")} />
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-muted-foreground">Sisa budget &apos;{insightData.budget.name}&apos;</span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.budget.currentRemaining)}</span>
+                                                                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                                                        <span className={cn("font-semibold", insightData.budget.isOverBudget ? "text-destructive" : "text-foreground")}>
+                                                                            {formatCurrency(insightData.budget.newRemaining)}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                )}
+
+                                {pageState === 'MULTI_CONFIRMING' && multiParsedData.length > 0 && (
+                                    <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+                                        <div className="flex justify-start"><div className="p-3 bg-card rounded-2xl">Wah, saya menemukan <span className="font-bold">{multiParsedData.length} transaksi</span> sekaligus!</div></div>
+                                        <div className="space-y-2">
+                                            {multiParsedData.map((tx, idx) => (
+                                                <div key={idx} className="bg-card border rounded-xl p-3 flex justify-between items-center shadow-sm group relative overflow-hidden">
+                                                    <div 
+                                                        className="absolute top-0 left-0 w-1 h-full opacity-60" 
+                                                        style={{ backgroundColor: getCategoryVisuals(tx.category).color }}
+                                                    />
+                                                    <div className="flex items-center gap-3">
+                                                        <div 
+                                                            className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
+                                                            style={{ 
+                                                                backgroundColor: `${getCategoryVisuals(tx.category).color}15`,
+                                                                color: getCategoryVisuals(tx.category).color
+                                                            }}
+                                                        >
+                                                            {React.createElement(getCategoryVisuals(tx.category).icon, { size: 18 })}
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm font-medium text-foreground">{tx.description}</span>
+                                                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">
+                                                                {tx.category} • {tx.walletId ? 'Dompet Terpilih' : 'Pilih Dompet'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={cn("font-bold text-sm", tx.type === 'expense' ? "text-destructive" : "text-emerald-600")}>
+                                                            {tx.type === 'expense' ? '-' : '+'}{formatCurrency(tx.amount)}
+                                                        </span>
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="icon" 
+                                                            className="h-8 w-8 text-muted-foreground hover:text-destructive rounded-full"
+                                                            onClick={() => removeMultiTransaction(idx)}
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -194,12 +483,37 @@ export default function SmartAddPage() {
                                         Iya, Simpan Sekarang
                                     </Button>
                                 </motion.div>
+                            ) : pageState === 'MULTI_CONFIRMING' ? (
+                                <motion.div 
+                                    key="multi-confirming-actions" 
+                                    initial={{ opacity: 0, y: 20 }} 
+                                    animate={{ opacity: 1, y: 0 }} 
+                                    exit={{ opacity: 0, y: -20 }} 
+                                    className="flex flex-col gap-3"
+                                >
+                                    <Button 
+                                        variant="outline" 
+                                        className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary" 
+                                        onClick={() => resetFlow()}
+                                    >
+                                        <X className="mr-2 h-4 w-4" />
+                                        Batalkan Semua
+                                    </Button>
+                                    <Button 
+                                        className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
+                                        size="lg" 
+                                        onClick={() => handleMultiConfirmSave()}
+                                    >
+                                        <Check className="mr-2 h-6 w-6" />
+                                        Simpan {multiParsedData.length} Transaksi
+                                    </Button>
+                                </motion.div>
                             ) : (
                                 <motion.div key="idle-input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                                     <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card h-14">
                                         <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" aria-label="Upload receipt image" />
                                         <Button size="icon" variant="ghost" className="h-11 w-11 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()} aria-label="Attach file"><Paperclip className="h-5 w-5" /></Button>
-                                        <Textarea placeholder="Ketik atau rekam suara..." className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0" minRows={1} maxRows={5} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processInput(inputValue); } }} disabled={pageState !== 'IDLE'} aria-label="Transaction description input" />
+                                        <Textarea ref={textareaRef} placeholder="Ketik atau rekam suara..." className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0" minRows={1} maxRows={5} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processInput(inputValue); setInputValue(''); } }} disabled={pageState !== 'IDLE'} aria-label="Transaction description input" inputMode="text" autoCapitalize="sentences" autoComplete="off" spellCheck="false" />
                                         <div className="flex items-center">
                                             <AnimatePresence>
                                                 {pageState === 'ANALYZING' ? <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground mx-3" /> : (

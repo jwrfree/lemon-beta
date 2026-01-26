@@ -249,7 +249,7 @@ export default function HomePage() {
 
                     <QuickAddWidget />
 
-                    <AIInsightCard transactions={transactions} wallets={wallets} />
+                    <AIInsightCard transactions={transactions} wallets={wallets} debts={debts} />
 
                     <div className="grid grid-cols-2 gap-3">
                         <Button
