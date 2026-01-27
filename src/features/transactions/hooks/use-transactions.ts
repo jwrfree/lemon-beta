@@ -1,56 +1,74 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction } from '@/types/models';
 import { resolveCategoryVisuals } from '@/lib/category-utils';
+import { transactionService } from '@/lib/services/transaction-service';
 
-const mapTransactionFromDb = (t: any): Transaction => ({
-    id: t.id,
-    amount: t.amount,
-    category: t.category,
-    date: t.date,
-    description: t.description,
-    type: t.type,
-    walletId: t.wallet_id,
-    userId: t.user_id,
-    createdAt: t.created_at,
-    updatedAt: t.updated_at,
-    subCategory: t.subCategory || t.sub_category, 
-    location: t.location
-});
+export const useCategories = () => {
+    const { user } = useApp();
+    const [categories, setCategories] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const supabase = createClient();
+
+    const fetchCategories = useCallback(async () => {
+        if (!user) return;
+        try {
+            const data = await transactionService.getCategories();
+            setCategories(data);
+        } catch (err) {
+            console.error("Error fetching categories:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        fetchCategories();
+        const channel = supabase
+            .channel('categories-changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => fetchCategories())
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [supabase, fetchCategories]);
+
+    const expenseCategories = useMemo(() => categories.filter(c => c.type === 'expense'), [categories]);
+    const incomeCategories = useMemo(() => categories.filter(c => c.type === 'income'), [categories]);
+
+    const getCategoryVisuals = useCallback((name: string) => {
+        return resolveCategoryVisuals(name, categories);
+    }, [categories]);
+
+    return {
+        categories,
+        expenseCategories,
+        incomeCategories,
+        getCategoryVisuals,
+        isLoading
+    };
+};
 
 export const useTransactions = () => {
     const { user, isLoading: appLoading } = useApp();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [categoriesFromDb, setCategories] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { categories, getCategoryVisuals, isLoading: isCatLoading } = useCategories();
     const supabase = createClient();
-
-    const getCategoryVisuals = useCallback((name: string) => {
-        return resolveCategoryVisuals(name, categoriesFromDb);
-    }, [categoriesFromDb]);
 
     const fetchTransactions = useCallback(async () => {
         if (!user) return;
-        const { data: txData } = await supabase
-            .from('transactions')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('date', { ascending: false });
-
-        if (txData) {
-            setTransactions(txData.map(mapTransactionFromDb));
+        try {
+            const data = await transactionService.getTransactions(user.id);
+            setTransactions(data);
+        } catch (err) {
+            console.error("Error fetching transactions:", err);
+        } finally {
+            setIsLoading(false);
         }
-    }, [user, supabase]);
-
-    const fetchCategories = useCallback(async () => {
-        if (!user) return;
-        const { data } = await supabase
-            .from('categories')
-            .select('*')
-            .order('name', { ascending: true });
-        if (data) setCategories(data);
-    }, [user, supabase]);
+    }, [user]);
 
     useEffect(() => {
         if (!user) {
@@ -59,38 +77,26 @@ export const useTransactions = () => {
             return;
         }
 
-        const loadAll = async () => {
-            await Promise.all([fetchTransactions(), fetchCategories()]);
-            setIsLoading(false);
-        };
-
-        loadAll();
+        fetchTransactions();
         
         const txChannel = supabase
             .channel('transactions-changes')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions', filter: `user_id=eq.${user.id}` }, () => fetchTransactions())
-            .subscribe();
-
-        const catChannel = supabase
-            .channel('categories-changes-tx')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => fetchCategories())
+            .on('postgres_changes', { 
+                event: '*', 
+                schema: 'public', 
+                table: 'transactions', 
+                filter: `user_id=eq.${user.id}` 
+            }, () => fetchTransactions())
             .subscribe();
 
         return () => {
             supabase.removeChannel(txChannel);
-            supabase.removeChannel(catChannel);
         };
-
-    }, [user, supabase, fetchTransactions, fetchCategories]);
-
-    const expenseCategories = categoriesFromDb.filter(c => c.type === 'expense');
-    const incomeCategories = categoriesFromDb.filter(c => c.type === 'income');
+    }, [user, supabase, fetchTransactions]);
 
     return {
         transactions,
-        expenseCategories,
-        incomeCategories,
         getCategoryVisuals,
-        isLoading: isLoading || appLoading,
+        isLoading: isLoading || appLoading || isCatLoading,
     };
 };

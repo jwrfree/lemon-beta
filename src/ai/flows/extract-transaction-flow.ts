@@ -52,7 +52,8 @@ const SingleTransactionSchema = z.object({
 });
 
 const ExtractionSchema = z.object({
-  transactions: z.array(SingleTransactionSchema).min(1)
+  transactions: z.array(SingleTransactionSchema).optional().default([]),
+  clarificationQuestion: z.string().optional().nullable(),
 });
 
 export type TransactionExtractionOutput = z.infer<typeof ExtractionSchema>;
@@ -131,6 +132,10 @@ Jam sekarang: ${currentTime}
    - 'kemarin' -> ${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}
    - Default: ${currentDate}
 
+9. **KLARIFIKASI AMBIGU (NEW):**
+   - Jika input user terlalu ambigu untuk diproses (misal hanya angka tanpa konteks, atau kategori yang sangat meragukan), Anda BOLEH memberikan pertanyaan klarifikasi di field 'clarificationQuestion' DAN membiarkan 'transactions' kosong atau terisi sebagian.
+   - Contoh: User bilang "Kopi 25rb", Anda bisa tanya: "Ini masuk ke kategori 'Kebutuhan' atau 'Gaya Hidup' (Lifestyle) nih?" di field 'clarificationQuestion'.
+
 ### OUTPUT JSON FORMAT:
 {
   "transactions": [
@@ -146,7 +151,8 @@ Jam sekarang: ${currentTime}
       "isDebtPayment": boolean,
       "counterparty": "..."
     }
-  ]
+  ],
+  "clarificationQuestion": "string (optional)"
 }
 
 Langsung parse tanpa tanya balik!`;
@@ -223,4 +229,59 @@ Langsung parse tanpa tanya balik!`;
         }]
     };
   }
+}
+
+export async function refineTransaction(
+    previousData: TransactionExtractionOutput, 
+    userMessage: string, 
+    context?: ExtractionContext
+): Promise<TransactionExtractionOutput> {
+    const currentDate = new Date().toISOString().slice(0, 10);
+    const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    
+    const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
+    const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi';
+
+    const systemPrompt = `## INSTRUKSI REFINEMENT TRANSAKSI LEMON AI ##
+Anda adalah asisten keuangan yang membantu memperbaiki data transaksi berdasarkan feedback user.
+Tanggal hari ini: ${currentDate}
+Jam sekarang: ${currentTime}
+
+### DATA SAAT INI:
+${JSON.stringify(previousData, null, 2)}
+
+### KONTEKS SISTEM:
+- **Dompet Tersedia**: ${walletList}
+- **Kategori Tersedia**: ${categoryList}
+
+### TUGAS ANDA:
+1. Perbarui data transaksi di atas berdasarkan instruksi terbaru dari user.
+2. Jika user memberikan informasi yang memperbaiki field tertentu (misal: ganti dompet, ganti nominal, ganti kategori), update field tersebut.
+3. Jika user memberikan informasi tambahan untuk transaksi yang belum lengkap, lengkapi datanya.
+4. Tetap gunakan format JSON yang sama.
+5. Jika instruksi user masih ambigu, Anda boleh menggunakan 'clarificationQuestion'.
+
+### OUTPUT JSON FORMAT:
+Sama seperti sebelumnya.`;
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "deepseek-chat",
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: `Instruksi User: "${userMessage}"` }
+            ],
+            temperature: 0,
+            response_format: { type: "json_object" },
+        });
+
+        const responseText = completion.choices[0].message.content || "{}";
+        let parsed = parseRawAiResponse(responseText);
+        const result = ExtractionSchema.safeParse(parsed);
+        
+        return result.success ? result.data : previousData;
+    } catch (error) {
+        console.error("AI Refinement Error:", error);
+        return previousData;
+    }
 }

@@ -76,7 +76,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
             // Simplified projection
             const threeMonthsAgo = subMonths(now, 3);
             const recentPayments = myDebts.flatMap(d => d.payments || [])
-                .filter(p => isAfter(parseISO(p.paymentDate), threeMonthsAgo));
+                .filter(p => p.paymentDate && isAfter(parseISO(p.paymentDate), threeMonthsAgo));
             const avgMonthlyPayment = recentPayments.reduce((sum, p) => sum + p.amount, 0) / 3;
             const projectedPayoffMonths = avgMonthlyPayment > 0 ? Math.ceil(totalDebt / avgMonthlyPayment) : undefined;
 

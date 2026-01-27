@@ -2,10 +2,9 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChevronLeft, Plus, Landmark, TrendingUp, MinusCircle, PlusCircle, Wallet, TrendingDown } from 'lucide-react';
+import { Plus, Landmark, TrendingUp, MinusCircle, PlusCircle } from 'lucide-react';
 import { useAssets } from '@/features/assets/hooks/use-assets';
 import { formatCurrency } from '@/lib/utils';
 import { AssetLiabilityList } from '@/features/assets/components/asset-liability-list';
@@ -16,10 +15,9 @@ import { PageHeader } from '@/components/page-header';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getAssetCategoryInfo } from '@/features/assets/constants';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 export default function AssetsLiabilitiesPage() {
-    const router = useRouter();
     const { assets, liabilities } = useAssets();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formInitialData, setFormInitialData] = useState<any | null>(null);
@@ -144,7 +142,7 @@ export default function AssetsLiabilitiesPage() {
                                 {totals.chartData.map((entry, index) => (
                                     <div key={index} className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                                            <div className="w-2 h-2 rounded-full bg-[var(--entry-color)]" style={{ '--entry-color': entry.color } as React.CSSProperties} />
                                             <span className="text-muted-foreground">{entry.name}</span>
                                         </div>
                                         <span>{Math.round((entry.value / (totals.totalAssets + totals.totalLiabilities)) * 100)}%</span>

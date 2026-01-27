@@ -1,3 +1,6 @@
+/* global Deno */
+/// <reference lib="deno.ns" />
+
 // supabase/functions/subscription-digest/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -48,7 +51,7 @@ const analyzeSubscriptions = (transactions: Transaction[]) => {
   // Tanggal referensi adalah akhir bulan lalu (karena cron jalan tgl 1 bulan baru)
   const referenceDate = endOfMonth(subMonths(new Date(), 1)); 
 
-  Object.entries(merchantGroups).forEach(([name, txs]) => {
+  Object.entries(merchantGroups).forEach(([_name, txs]) => {
       // Sort by date desc
       txs.sort((a, b) => compareDesc(parseISO(a.date), parseISO(b.date)));
       
@@ -125,7 +128,7 @@ const generateEmailHtml = (userName: string, summary: any) => {
 };
 
 // --- Main Handler ---
-serve(async (req) => {
+serve(async (_req: Request) => {
   try {
     // 1. Ambil semua user (gunakan pagination jika user banyak)
     const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
@@ -187,7 +190,8 @@ serve(async (req) => {
       status: 200,
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    const error = err as Error;
+    return new Response(JSON.stringify({ error: error.message }), {
       headers: { "Content-Type": "application/json" },
       status: 500,
     });

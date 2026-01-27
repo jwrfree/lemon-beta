@@ -17,6 +17,7 @@ import { AnimatedCounter } from '@/components/animated-counter';
 import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
+import { useHomeSummary } from '@/features/home/hooks/use-home-summary';
 import { DesktopDashboard } from '@/features/home/components/desktop-dashboard';
 import { AIInsightCard } from '@/features/home/components/ai-insight-card';
 import { HomeSkeleton } from '@/features/home/components/home-skeleton';
@@ -41,32 +42,11 @@ export default function HomePage() {
     const { userData } = useApp();
     const router = useRouter();
 
+    const { monthlyIncome, monthlyExpense, incomeDiff, expenseDiff } = useHomeSummary(transactions);
+
     const isLoading = isDataLoading || isDebtLoading || isReminderLoading;
 
     const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
-
-    const now = new Date();
-    const monthlyIncome = transactions
-        .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), now))
-        .reduce((acc, t) => acc + t.amount, 0);
-
-    const monthlyExpense = transactions
-        .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
-        .reduce((acc, t) => acc + t.amount, 0);
-
-    const lastMonth = subMonths(now, 1);
-    const prevMonthlyIncome = transactions
-        .filter(t => t.type === 'income' && isSameMonth(parseISO(t.date), lastMonth))
-        .reduce((acc, t) => acc + t.amount, 0);
-    
-    const prevMonthlyExpense = transactions
-        .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), lastMonth))
-        .reduce((acc, t) => acc + t.amount, 0);
-    
-    const incomeDiff = monthlyIncome - prevMonthlyIncome;
-    const expenseDiff = monthlyExpense - prevMonthlyExpense;
-    
-    // ... existing useMemo hooks ...
 
     const upcomingReminders = useMemo(() => {
         const nowDate = new Date();

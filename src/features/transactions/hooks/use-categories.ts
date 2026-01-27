@@ -13,15 +13,25 @@ export const useCategories = () => {
 
     const fetchCategories = useCallback(async () => {
         if (!user) return;
-        const { data, error } = await supabase
-            .from('categories')
-            .select('*')
-            .order('name', { ascending: true });
+        try {
+            const { data, error } = await supabase
+                .from('categories')
+                .select('*')
+                .order('name', { ascending: true });
 
-        if (data) {
-            setCategories(data);
+            if (error) {
+                console.error("Error fetching categories:", error);
+                return;
+            }
+
+            if (data) {
+                setCategories(data);
+            }
+        } catch (err) {
+            console.error("Unexpected error fetching categories:", err);
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }, [user, supabase]);
 
     useEffect(() => {

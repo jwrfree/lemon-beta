@@ -5,10 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle, RotateCcw, Calendar as CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
-import { Calendar } from '@/components/ui/calendar';
+import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle, RotateCcw } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
@@ -17,7 +14,6 @@ import { TransactionForm } from '@/features/transactions/components/transaction-
 import { useUI } from '@/components/ui-provider';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { PageHeader } from '@/components/page-header';
-import { saveAICorrection } from '@/lib/feedback-service';
 import { DynamicSuggestions } from './dynamic-suggestions';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CategoryGrid } from '@/features/transactions/components/category-grid';
@@ -29,7 +25,45 @@ const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant.
 
 
 
-const SpeechRecognition = (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
+interface SpeechRecognitionEvent extends Event {
+    resultIndex: number;
+    results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+    length: number;
+    item(index: number): SpeechRecognitionResult;
+    [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+    isFinal: boolean;
+    length: number;
+    item(index: number): SpeechRecognitionAlternative;
+    [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+    transcript: string;
+    confidence: number;
+}
+
+interface ISpeechRecognition extends EventTarget {
+    continuous: boolean;
+    lang: string;
+    interimResults: boolean;
+    maxAlternatives: number;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onerror: (event: any) => void;
+    onend: () => void;
+    start(): void;
+    stop(): void;
+    abort(): void;
+}
+
+const SpeechRecognition = (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)) as {
+    new (): ISpeechRecognition;
+};
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
 export default function SmartAddPage() {
@@ -56,12 +90,23 @@ export default function SmartAddPage() {
     const [isListening, setIsListening] = useState(false);
     const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [isCategoryPopoverOpen, setIsCategoryPopoverOpen] = useState(false);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const recognitionRef = useRef<any>(null);
+    const recognitionRef = useRef<ISpeechRecognition | null>(null);
     const finalTranscriptRef = useRef('');
-    const originalCategoryRef = useRef<string | null>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    // Scroll to bottom when messages change
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({
+                top: scrollContainerRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }, [messages, pageState]);
 
     // Haptic feedback utility
     const vibrate = useCallback((pattern: number | number[]) => {
@@ -133,7 +178,7 @@ export default function SmartAddPage() {
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.lang = 'id-ID';
-        recognition.onresult = (event: any) => {
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
             let transcript = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 if (event.results[i].isFinal) transcript += event.results[i][0].transcript + ' ';
@@ -192,7 +237,7 @@ export default function SmartAddPage() {
     }, [pageState, handleConfirmSave, handleMultiConfirmSave]);
 
     if (pageState === 'EDITING' && parsedData) {
-        return <TransactionForm isModal={false} initialData={parsedData} onClose={(data) => { if (data) setParsedData((prev: any) => ({ ...prev, ...data })); setPageState('CONFIRMING'); }} />;
+        return <TransactionForm isModal={false} initialData={parsedData as any} onClose={(data) => { if (data) setParsedData((prev) => prev ? ({ ...prev, ...data }) : null); setPageState('CONFIRMING'); }} />;
     }
 
     return (
@@ -236,7 +281,7 @@ export default function SmartAddPage() {
             ) : (
                 <>
                     <main className="flex-1 flex flex-col justify-end overflow-hidden">
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
                             {messages.length === 0 && pageState === 'IDLE' && (
                                 <DynamicSuggestions 
                                     onSuggestionClick={(text) => {
@@ -276,48 +321,39 @@ export default function SmartAddPage() {
                                                 </div>
                                             </div>
                                         )}
+                                        {msg.type === 'ai-clarification' && (
+                                            <div className="flex justify-start">
+                                                <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 max-w-[85%]">
+                                                    <p className="text-sm leading-relaxed text-foreground font-medium italic">
+                                                        &quot;{msg.content}&quot;
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </motion.div>
                                 ))}
                                 {pageState === 'CONFIRMING' && parsedData && (
                                     <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                                         <div className="flex justify-start">
-                                            <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 relative overflow-hidden group">
+                                            <div 
+                                                className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 relative overflow-hidden group"
+                                                style={{ '--category-color': getCategoryVisuals(parsedData.category).color } as React.CSSProperties}
+                                            >
                                                 {/* Category Background Accent */}
-                                                <div 
-                                                    className="absolute top-0 left-0 w-1 h-full opacity-60" 
-                                                    style={{ backgroundColor: getCategoryVisuals(parsedData.category).color }}
-                                                />
+                                                <div className="absolute top-0 left-0 w-1 h-full opacity-60 bg-[var(--category-color)]" />
                                                 
-                                                <div className="flex items-start gap-3">
-                                                    <div 
-                                                        className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                                                        style={{ 
-                                                            backgroundColor: `${getCategoryVisuals(parsedData.category).color}15`,
-                                                            color: getCategoryVisuals(parsedData.category).color
-                                                        }}
-                                                    >
-                                                        {React.createElement(getCategoryVisuals(parsedData.category).icon, { size: 20 })}
-                                                    </div>
-                                                    
-                                                    <div className="flex flex-col">
-                                                        <p className="text-sm leading-relaxed text-foreground">
-                                                            Oke, catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold text-primary">{formatCurrency(parsedData.amount)}</span>?
-                                                        </p>
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm leading-relaxed text-foreground">
+                                                        Oke, catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold text-primary">{formatCurrency(parsedData.amount)}</span>?
+                                                    </p>
                                                         <div className="flex items-center gap-2 mt-2">
-                                                            <Popover>
+                                                            <Popover open={isCategoryPopoverOpen} onOpenChange={setIsCategoryPopoverOpen}>
                                                                 <PopoverTrigger asChild>
                                                                     <button 
                                                                         type="button"
-                                                                        className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80"
-                                                                        style={{ 
-                                                                            backgroundColor: `${getCategoryVisuals(parsedData.category).color}15`,
-                                                                            color: getCategoryVisuals(parsedData.category).color,
-                                                                            border: `1px solid ${getCategoryVisuals(parsedData.category).color}30`
-                                                                        }}
+                                                                        className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80 bg-[var(--category-color)]/10 text-[var(--category-color)] border border-[var(--category-color)]/30"
                                                                     >
-                                                                        {React.createElement(getCategoryVisuals(parsedData.category).icon, { size: 10 })}
                                                                         {parsedData.category}
-                                                                        <Pencil className="h-2 w-2 ml-1 opacity-50" />
                                                                     </button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-80 p-2" align="start">
@@ -327,16 +363,8 @@ export default function SmartAddPage() {
                                                                             categories={parsedData.type === 'income' ? categories.income : categories.expense}
                                                                             selectedCategory={parsedData.category}
                                                                             onCategorySelect={(cat) => {
-                                                                                setParsedData(prev => prev ? ({ ...prev, category: cat.name }) : null);
-                                                                                // Close popover logic is handled by standard Popover behavior usually, 
-                                                                                // but we might need a controlled state if we want to force close. 
-                                                                                // For now, let's rely on the user clicking away or re-clicking trigger if default behavior isn't enough,
-                                                                                // or add a simple click handler.
-                                                                                // Actually shadcn/radix Popover usually requires a click outside to close if not controlled.
-                                                                                // Ideally we'd use an open state, but let's keep it simple first.
-                                                                                // To auto-close, we simulate a click on the body or use a ref.
-                                                                                // Let's just update the data for now.
-                                                                                document.body.click(); // Hacky close
+                                                                                setParsedData((prev) => prev ? ({ ...prev, category: cat.name }) : null);
+                                                                                setIsCategoryPopoverOpen(false);
                                                                             }}
                                                                         />
                                                                     </div>
@@ -346,11 +374,9 @@ export default function SmartAddPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
                                         {parsedData.isDebtPayment && (
                                             <div className="flex justify-start">
                                                 <div className="p-2 px-3 bg-orange-500/10 text-orange-600 rounded-full text-xs font-medium flex items-center gap-1.5 border border-orange-500/20">
-                                                    <TrendingDown className="h-3.5 w-3.5" />
                                                     Pembayaran hutang: {parsedData.counterparty || 'Tidak diketahui'}
                                                 </div>
                                             </div>
@@ -365,7 +391,6 @@ export default function SmartAddPage() {
                                                     >
                                                         <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-xs font-medium border border-destructive/20 flex flex-col gap-1 max-w-[85%]">
                                                             <div className="flex items-center gap-1.5">
-                                                                <AlertTriangle className="h-4 w-4 shrink-0" />
                                                                 <span className="font-bold">Saldo Tidak Cukup!</span>
                                                             </div>
                                                             <p className="opacity-90">
@@ -374,44 +399,30 @@ export default function SmartAddPage() {
                                                         </div>
                                                     </motion.div>
                                                 )}
-
-                                                <Card className={cn(
-                                                    "p-4 border-primary/20 transition-colors",
-                                                    insightData.wallet?.isInsufficient ? "bg-destructive/5 border-destructive/20" : "bg-primary/5"
-                                                )}>
-                                                    <CardContent className="p-0 space-y-3">
-                                                        {insightData.wallet && (
-                                                            <div className="flex items-center text-sm">
-                                                                <Wallet className={cn("h-5 w-5 mr-3", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")} />
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-muted-foreground">Saldo {insightData.wallet.name}</span>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.wallet.currentBalance)}</span>
-                                                                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                                                                        <span className={cn("font-semibold", insightData.wallet.isInsufficient ? "text-destructive" : "text-foreground")}>
-                                                                            {formatCurrency(insightData.wallet.newBalance)}
-                                                                        </span>
-                                                                    </div>
+                                                <div className="space-y-3">
+                                                    {insightData.wallet && (
+                                                        <div className="flex justify-start">
+                                                            <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 max-w-[85%]">
+                                                                <div className="flex flex-col gap-1">
+                                                                    <p className="text-sm leading-relaxed text-foreground">
+                                                                        Saldo <span className="font-bold">{insightData.wallet.name}</span> kamu bakal berubah dari <span className="line-through opacity-60">{formatCurrency(insightData.wallet.currentBalance)}</span> jadi <span className={cn("font-bold", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")}>{formatCurrency(insightData.wallet.newBalance)}</span> nih.
+                                                                    </p>
                                                                 </div>
                                                             </div>
-                                                        )}
-                                                        {insightData.budget && (
-                                                            <div className="flex items-center text-sm">
-                                                                <TrendingDown className={cn("h-5 w-5 mr-3", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")} />
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-muted-foreground">Sisa budget &apos;{insightData.budget.name}&apos;</span>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="font-semibold line-through text-muted-foreground/80">{formatCurrency(insightData.budget.currentRemaining)}</span>
-                                                                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                                                                        <span className={cn("font-semibold", insightData.budget.isOverBudget ? "text-destructive" : "text-foreground")}>
-                                                                            {formatCurrency(insightData.budget.newRemaining)}
-                                                                        </span>
-                                                                    </div>
+                                                        </div>
+                                                    )}
+                                                    {insightData.budget && (
+                                                        <div className="flex justify-start">
+                                                            <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 max-w-[85%]">
+                                                                <div className="flex flex-col gap-1">
+                                                                    <p className="text-sm leading-relaxed text-foreground">
+                                                                        Sisa budget <span className="font-bold">&apos;{insightData.budget.name}&apos;</span> kamu bakal sisa <span className={cn("font-bold", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")}>{formatCurrency(insightData.budget.newRemaining)}</span> dari <span className="line-through opacity-60">{formatCurrency(insightData.budget.currentRemaining)}</span> ya.
+                                                                    </p>
                                                                 </div>
                                                             </div>
-                                                        )}
-                                                    </CardContent>
-                                                </Card>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         )}
                                     </motion.div>
@@ -422,18 +433,13 @@ export default function SmartAddPage() {
                                         <div className="flex justify-start"><div className="p-3 bg-card rounded-2xl">Wah, saya menemukan <span className="font-bold">{multiParsedData.length} transaksi</span> sekaligus!</div></div>
                                         <div className="space-y-2">
                                             {multiParsedData.map((tx, idx) => (
-                                                <div key={idx} className="bg-card border rounded-xl p-3 flex justify-between items-center shadow-sm group relative overflow-hidden">
+                                                <div key={idx} className="bg-card border rounded-xl p-3 flex justify-between items-center shadow-sm group relative overflow-hidden" style={{ '--category-color': getCategoryVisuals(tx.category).color } as React.CSSProperties}>
                                                     <div 
-                                                        className="absolute top-0 left-0 w-1 h-full opacity-60" 
-                                                        style={{ backgroundColor: getCategoryVisuals(tx.category).color }}
+                                                        className="absolute top-0 left-0 w-1 h-full opacity-60 bg-[var(--category-color)]" 
                                                     />
                                                     <div className="flex items-center gap-3">
                                                         <div 
-                                                            className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0"
-                                                            style={{ 
-                                                                backgroundColor: `${getCategoryVisuals(tx.category).color}15`,
-                                                                color: getCategoryVisuals(tx.category).color
-                                                            }}
+                                                            className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 bg-[var(--category-color)]/10 text-[var(--category-color)]"
                                                         >
                                                             {React.createElement(getCategoryVisuals(tx.category).icon, { size: 18 })}
                                                         </div>
@@ -465,9 +471,48 @@ export default function SmartAddPage() {
                             </AnimatePresence>
                         </div>
                     </main>
-                    <footer className="p-4 border-t bg-background">
+                    <footer className="p-4 bg-background/80 backdrop-blur-md border-t">
                         <AnimatePresence mode="wait">
-                            {pageState === 'CONFIRMING' ? (
+                            {(pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') && (
+                                <motion.div 
+                                    key="refinement-input"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mb-4"
+                                >
+                                    <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card h-14 shadow-sm">
+                                        <Textarea 
+                                            ref={textareaRef} 
+                                            placeholder="Koreksi lewat chat..." 
+                                            className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base font-medium placeholder:text-muted-foreground resize-none min-h-0 !p-0 ml-4" 
+                                            minRows={1} 
+                                            maxRows={3} 
+                                            value={inputValue} 
+                                            onChange={(e) => setInputValue(e.target.value)} 
+                                            onKeyDown={(e) => { 
+                                                if (e.key === 'Enter' && !e.shiftKey) { 
+                                                    e.preventDefault(); 
+                                                    processInput(inputValue); 
+                                                    setInputValue(''); 
+                                                } 
+                                            }} 
+                                        />
+                                        <Button 
+                                            size="icon" 
+                                            variant="default" 
+                                            className="h-11 w-11 rounded-full shrink-0" 
+                                            onClick={() => { processInput(inputValue); setInputValue(''); }}
+                                            disabled={!inputValue.trim()}
+                                        >
+                                            <Send className="h-5 w-5" />
+                                        </Button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        <AnimatePresence mode="wait">
+                            {pageState === 'CONFIRMING' && parsedData ? (
                                 <motion.div 
                                     key="confirming-actions" 
                                     initial={{ opacity: 0, y: 20 }} 
@@ -475,31 +520,21 @@ export default function SmartAddPage() {
                                     exit={{ opacity: 0, y: -20 }} 
                                     className="flex flex-col gap-3"
                                 >
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <Button 
-                                            variant="outline" 
-                                            className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary" 
-                                            onClick={() => setPageState('EDITING')}
-                                        >
-                                            <Pencil className="mr-2 h-4 w-4" />
-                                            Koreksi
-                                        </Button>
-                                        <Button 
-                                            variant="outline" 
-                                            className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary" 
-                                            onClick={() => handleConfirmSave(true)}
-                                        >
-                                            <Save className="mr-2 h-4 w-4" />
-                                            Simpan & Lagi
-                                        </Button>
-                                    </div>
+                                    <Button 
+                                        variant="outline" 
+                                        className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary w-full" 
+                                        onClick={() => handleConfirmSave(true)}
+                                    >
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Simpan & Tambah Lagi
+                                    </Button>
                                     <Button 
                                         className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
                                         size="lg" 
                                         onClick={() => handleConfirmSave(false)}
                                     >
                                         <Check className="mr-2 h-6 w-6" />
-                                        Iya, Simpan Sekarang
+                                        Iya, Simpan
                                     </Button>
                                 </motion.div>
                             ) : pageState === 'MULTI_CONFIRMING' ? (

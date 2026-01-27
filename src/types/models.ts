@@ -117,6 +117,7 @@ export interface Transaction extends BaseRecord {
   location?: string;
   date: string;
   linkedDebtId?: string | null;
+  tags?: string[];
 }
 
 export interface UserProfile extends BaseRecord {

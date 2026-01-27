@@ -2,13 +2,14 @@ import {
     Utensils, ShoppingCart, Car, Phone, 
     Gamepad2, Home, GraduationCap, HeartPulse,
     Briefcase, Gift, PiggyBank, Wrench, ReceiptText, 
-    ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake
+    ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake,
+    Heart, Baby
 } from 'lucide-react';
 
 export const iconMap: Record<string, any> = {
     Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
     Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins, 
-    ArrowRightLeft, Handshake, Wrench
+    ArrowRightLeft, Handshake, Wrench, Heart, Baby
 };
 
 export const getCategoryIcon = (iconName: string | null | undefined) => {
@@ -26,9 +27,9 @@ export const resolveCategoryVisuals = (categoryName: string, allCategories: any[
     if (found) {
         return {
             name: found.name,
-            icon: getCategoryIcon(found.icon),
+            icon: typeof found.icon === 'string' ? getCategoryIcon(found.icon) : found.icon,
             color: found.color || 'text-gray-600',
-            bgColor: found.bg_color || 'bg-gray-100'
+            bgColor: found.bgColor || found.bg_color || 'bg-gray-100'
         };
     }
 

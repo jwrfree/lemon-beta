@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Wallet as WalletIcon, MoreVertical, ArrowUpDown, ArrowUp, ArrowDown, TrendingUp, TrendingDown, Target, Search } from 'lucide-react';
+import { Wallet as WalletIcon, ArrowUpDown, ArrowUp, ArrowDown, TrendingUp, TrendingDown, Target, Search } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
@@ -227,10 +227,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     <div className="flex items-center gap-4">
                                         {activeWalletVisuals && (
                                             <div 
-                                                className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm"
+                                                className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm bg-[image:var(--wallet-gradient)]"
                                                 style={{ 
-                                                    backgroundImage: `linear-gradient(to bottom right, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})` 
-                                                }}
+                                                    '--wallet-gradient': `linear-gradient(to bottom right, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})` 
+                                                } as React.CSSProperties}
                                             >
                                                 <activeWalletVisuals.Icon className={cn("h-7 w-7", activeWalletVisuals.textColor)} />
                                             </div>

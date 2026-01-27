@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { 
   Plus, 
@@ -91,10 +91,7 @@ export default function GoalsPage() {
   const [filter, setFilter] = useState<'active' | 'completed'>('active');
   const [isMounted, setIsMounted] = useState(false);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabase = createClient();
 
   useEffect(() => {
     setIsMounted(true);

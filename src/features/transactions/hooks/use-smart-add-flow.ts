@@ -4,15 +4,30 @@ import { useState, useMemo, useCallback } from 'react';
 import { useData } from '@/hooks/use-data';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useUI } from '@/components/ui-provider';
-import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
+import { extractTransaction, refineTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { startOfMonth, parseISO } from 'date-fns';
 
 export type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING' | 'MULTI_CONFIRMING';
 
+export interface SmartTransactionData {
+    type: 'income' | 'expense';
+    amount: number;
+    description: string;
+    category: string;
+    subCategory: string;
+    walletId: string;
+    location: string;
+    date: string;
+    isDebtPayment?: boolean;
+    counterparty?: string;
+    sourceWallet?: string;
+    destinationWallet?: string;
+}
+
 export type Message = {
     id: string;
-    type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation' | 'ai-multi-confirmation';
+    type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation' | 'ai-multi-confirmation' | 'ai-clarification';
     content: any;
 };
 
@@ -39,8 +54,8 @@ export const useSmartAddFlow = () => {
 
     const [pageState, setPageState] = useState<PageState>('IDLE');
     const [messages, setMessages] = useState<Message[]>([]);
-    const [parsedData, setParsedData] = useState<any | null>(null);
-    const [multiParsedData, setMultiParsedData] = useState<any[]>([]);
+    const [parsedData, setParsedData] = useState<SmartTransactionData | null>(null);
+    const [multiParsedData, setMultiParsedData] = useState<SmartTransactionData[]>([]);
     const [insightData, setInsightData] = useState<InsightData | null>(null);
 
     const removeMultiTransaction = useCallback((index: number) => {
@@ -105,7 +120,32 @@ export const useSmartAddFlow = () => {
     }, [wallets, budgets, transactions]);
 
     const handleAISuccess = useCallback((result: any, isReceipt = false) => {
-        const rawTransactions = result.transactions || [result];
+        // Remove thinking message first
+        setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+
+        // Handle clarification question if present
+        if (result.clarificationQuestion) {
+            setMessages(prev => [
+                ...prev,
+                { 
+                    id: `ai-clarify-${Date.now()}`, 
+                    type: 'ai-clarification', 
+                    content: result.clarificationQuestion 
+                }
+            ]);
+            // If there are no transactions, just stay in confirming/analyzing mode
+            if (!result.transactions || result.transactions.length === 0) {
+                setPageState('CONFIRMING');
+                return;
+            }
+        }
+
+        const rawTransactions = result.transactions || (result.amount ? [result] : []);
+        if (rawTransactions.length === 0 && !result.clarificationQuestion) {
+            showToast("AI tidak menemukan data transaksi. Coba input lebih detail ya.", 'info');
+            setPageState('IDLE');
+            return;
+        }
 
         const processedTransactions = rawTransactions.map((tx: any) => {
             const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty } = tx;
@@ -202,28 +242,40 @@ export const useSmartAddFlow = () => {
     }, [wallets, incomeCategories, expenseCategories, calculateInsights, setPreFilledTransfer, setIsTransferModalOpen, resetFlow]);
 
     const processInput = useCallback(async (input: string | { type: 'image', dataUrl: string }) => {
+        const isRefinement = (pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') && typeof input === 'string';
+        
         if (typeof input === 'string') {
             if (!input.trim()) return;
-            setMessages([{ id: `user-${Date.now()}`, type: 'user', content: input }]);
+            setMessages(prev => [...prev, { id: `user-${Date.now()}`, type: 'user', content: input }]);
         } else {
-            setMessages([{ id: `user-image-${Date.now()}`, type: 'user-image', content: input.dataUrl }]);
+            setMessages(prev => [...prev, { id: `user-image-${Date.now()}`, type: 'user-image', content: input.dataUrl }]);
         }
 
         setPageState('ANALYZING');
         setMessages(prev => [...prev, { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }]);
 
         try {
-            if (typeof input === 'string') {
-                const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
-                const availableWallets = wallets.map(w => w.name);
+            const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
+            const availableWallets = wallets.map(w => w.name);
+
+            if (isRefinement && typeof input === 'string') {
+                // Prepare current data for refinement
+                const currentData = {
+                    transactions: multiParsedData.length > 0 ? multiParsedData : (parsedData ? [parsedData] : []),
+                };
                 
+                const result = await refineTransaction(currentData as any, input, {
+                    categories: availableCategories,
+                    wallets: availableWallets
+                });
+                handleAISuccess(result);
+            } else if (typeof input === 'string') {
                 const result = await extractTransaction(input, {
                     categories: availableCategories,
                     wallets: availableWallets
                 });
                 handleAISuccess(result);
             } else {
-                const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
                 const result = await scanReceipt({ photoDataUri: input.dataUrl, availableCategories });
                 handleAISuccess(result, true);
             }
@@ -232,7 +284,7 @@ export const useSmartAddFlow = () => {
             showToast('Oops! Gagal menganalisis input. Coba lagi ya.', 'error');
             resetFlow(true);
         }
-    }, [wallets, expenseCategories, incomeCategories, handleAISuccess, showToast, resetFlow]);
+    }, [wallets, expenseCategories, incomeCategories, handleAISuccess, showToast, resetFlow, pageState, parsedData, multiParsedData]);
 
     const saveTransaction = useCallback(async (andAddAnother = false) => {
         if (!parsedData) return;

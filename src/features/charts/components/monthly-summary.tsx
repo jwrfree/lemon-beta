@@ -244,7 +244,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
             tipCopy,
             isPositive: net >= 0,
         };
-    }, [transactions, type]);
+    }, [hookTransactions, manualTransactions, type]);
 
     const handleTxClick = (txId: string) => {
         router.push('/transactions');

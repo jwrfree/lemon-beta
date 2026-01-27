@@ -54,7 +54,7 @@ export const CategoryAnalysis = ({ type, transactions: manualTransactions }: { t
         ) as ChartConfig;
 
         return { chartData, chartConfig, total };
-    }, [transactions, type]);
+    }, [hookTransactions, manualTransactions, type]);
 
     if (chartData.length === 0) {
         return (

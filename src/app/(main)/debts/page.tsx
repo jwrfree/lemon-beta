@@ -4,16 +4,13 @@ import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn } from '@/lib/utils';
-import { formatDistanceToNow, parseISO, differenceInCalendarDays } from 'date-fns';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { parseISO, differenceInCalendarDays } from 'date-fns';
 import { HandCoins, ArrowUpRight, ArrowDownRight, Plus, CalendarClock, ArrowUpDown } from 'lucide-react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
-import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { PageHeader } from '@/components/page-header';
@@ -91,8 +88,8 @@ const getDebtDueStatus = (debt: Debt) => {
 
 export default function DebtsPage() {
     const router = useRouter();
-    const { debts, markDebtSettled } = useDebts();
-    const { setIsDebtModalOpen, setDebtToEdit, setIsDebtPaymentModalOpen, setDebtForPayment } = useUI();
+    const { debts } = useDebts();
+    const { setIsDebtModalOpen, setDebtToEdit } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
     const [sortBy, setSortBy] = useState('updated_desc');
 
@@ -231,10 +228,10 @@ export default function DebtsPage() {
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                                                         <div
-                                                            className="h-full bg-primary"
+                                                            className="h-full bg-primary w-[var(--progress-width)]"
                                                             style={{
-                                                                width: `${Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%`
-                                                            }}
+                                                                '--progress-width': `${Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%`
+                                                            } as React.CSSProperties}
                                                         />
                                                     </div>
                                                     <span className="text-[10px] font-bold">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>

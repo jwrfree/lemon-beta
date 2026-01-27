@@ -66,7 +66,7 @@ export const DesktopDashboard = () => {
     };
 
     // Stats Calculation
-    const now = useMemo(() => new Date(), [lastRefreshed]);
+    const now = lastRefreshed;
     const currentMonth = startOfMonth(now);
     const lastMonth = subMonths(currentMonth, 1);
 
