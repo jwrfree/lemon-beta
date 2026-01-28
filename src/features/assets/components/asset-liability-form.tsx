@@ -5,6 +5,7 @@ import { useAssets } from '../hooks/use-assets';
 import { ASSET_CATEGORIES, LIABILITY_CATEGORIES, type AssetCategory } from '../constants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { X } from 'lucide-react';
@@ -26,8 +27,13 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     const [type, setType] = useState<'asset' | 'liability'>(initialData?.type || 'asset');
     const [name, setName] = useState(initialData?.name || '');
     const [value, setValue] = useState('');
+    const [quantity, setQuantity] = useState(initialData?.quantity?.toString() || '');
+    const [notes, setNotes] = useState(initialData?.notes || '');
     const [categoryKey, setCategoryKey] = useState(initialData?.categoryKey || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const selectedCategory = ASSET_CATEGORIES.find(c => c.key === categoryKey);
+    const hasUnit = type === 'asset' && selectedCategory?.unit;
 
     useEffect(() => {
         if (initialData?.value) {
@@ -58,6 +64,8 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             name,
             value: parseInt(value.replace(/[^0-9]/g, '')),
             categoryKey,
+            notes,
+            quantity: hasUnit ? parseFloat(quantity.replace(',', '.')) : undefined,
         };
 
         try {
@@ -106,52 +114,26 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {!isEditMode && (
                     <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
-                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
-                            <TabsTrigger value="asset" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Aset</TabsTrigger>
-                            <TabsTrigger value="liability" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
+                        <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-2">
+                            <TabsTrigger value="asset" className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Aset</TabsTrigger>
+                            <TabsTrigger value="liability" className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 )}
 
                 <div className="space-y-2">
-                    <Label htmlFor="name">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
-                    <Input
-                        id="name"
-                        placeholder={type === 'asset' ? 'e.g., Rumah, Saham BBCA' : 'e.g., KPR, Cicilan Mobil'}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                        className="rounded-lg"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="value">Nilai / Jumlah</Label>
-                    <Input
-                        id="value"
-                        placeholder="Rp 0"
-                        value={value}
-                        onChange={handleAmountChange}
-                        required
-                        inputMode="numeric"
-                        size="lg"
-                        className="text-2xl font-bold rounded-lg"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="categoryKey">Kategori</Label>
+                    <Label htmlFor="categoryKey" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Kategori</Label>
                     <Select onValueChange={setCategoryKey} value={categoryKey}>
-                        <SelectTrigger id="categoryKey" className="rounded-lg">
+                        <SelectTrigger id="categoryKey" className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
                             <SelectValue placeholder="Pilih kategori" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-lg">
+                        <SelectContent className="rounded-xl">
                         {type === 'asset' ? (
                             Object.entries(assetGroups).map(([groupName, cats]) => (
                                 <SelectGroup key={groupName}>
-                                    <SelectLabel className="px-2 py-1.5 text-xs font-bold text-muted-foreground uppercase tracking-wider bg-muted/50">{groupName}</SelectLabel>
+                                    <SelectLabel className="px-2 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{groupName}</SelectLabel>
                                     {cats.map((cat) => (
-                                        <SelectItem key={cat.key} value={cat.key}>
+                                        <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
                                             {cat.label}
                                         </SelectItem>
                                     ))}
@@ -159,7 +141,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             ))
                         ) : (
                             LIABILITY_CATEGORIES.map((cat) => (
-                                <SelectItem key={cat.key} value={cat.key}>
+                                <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
                                     {cat.label}
                                 </SelectItem>
                             ))
@@ -168,6 +150,67 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     </Select>
                 </div>
 
+                <div className="space-y-2">
+                    <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
+                    <Input
+                        id="name"
+                        placeholder={type === 'asset' ? 'e.g., Rumah, Saham BBCA' : 'e.g., KPR, Cicilan Mobil'}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
+                    />
+                </div>
+
+                <div className={cn("grid gap-4", hasUnit ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1")}>
+                    {hasUnit && (
+                        <div className="space-y-2">
+                            <Label htmlFor="quantity" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                Jumlah ({selectedCategory.unit})
+                            </Label>
+                            <Input
+                                id="quantity"
+                                value={quantity}
+                                onChange={(e) => setQuantity(e.target.value)}
+                                placeholder={`0 ${selectedCategory.unit}`}
+                                className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
+                                required
+                            />
+                            <p className="text-[10px] text-muted-foreground px-1 italic">
+                                *Masukkan jumlah {selectedCategory.unit} untuk tracking harga otomatis.
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                        <Label htmlFor="value" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                            {hasUnit ? 'Estimasi Nilai Saat Ini' : 'Nilai / Saldo'}
+                        </Label>
+                        <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">Rp</span>
+                            <Input
+                                id="value"
+                                placeholder="0"
+                                value={value}
+                                onChange={handleAmountChange}
+                                required
+                                inputMode="numeric"
+                                className="h-12 pl-11 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 font-bold text-lg"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label htmlFor="notes" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Catatan (Opsional)</Label>
+                    <Textarea
+                        id="notes"
+                        placeholder="Tambahkan catatan di sini..."
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        className="rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 min-h-[100px] resize-none"
+                    />
+                </div>
             </form>
             <div className="p-4 border-t sticky bottom-0 bg-background z-10">
                 <Button type="submit" onClick={handleSubmit} className="w-full rounded-lg" size="lg" disabled={isSubmitting}>

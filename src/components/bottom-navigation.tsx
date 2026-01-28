@@ -100,7 +100,7 @@ export const BottomNavigation = () => {
                                         />
                                     )}
                                     <item.icon className={cn("h-6 w-6 mb-1 transition-transform", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
-                                    <span className={cn('text-[10px] font-medium transition-colors', isActive ? 'font-bold' : '')}>{item.name}</span>
+                                    <span className={cn('text-[10px] font-medium transition-colors', isActive ? 'font-semibold' : '')}>{item.name}</span>
                                 </Link>
                             );
                         })}

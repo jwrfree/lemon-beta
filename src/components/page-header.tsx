@@ -55,7 +55,7 @@ export const PageHeader = ({
         )}
 
         <div className="flex flex-col items-center md:items-start w-full md:w-auto">
-          <h1 className="text-lg font-bold tracking-tight">{title}</h1>
+          <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
           {description && (
             <p className="text-xs text-muted-foreground hidden md:block">
               {description}

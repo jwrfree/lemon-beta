@@ -89,6 +89,7 @@ export interface Asset extends BaseRecord {
   value: number;
   categoryKey: string;
   notes?: string;
+  quantity?: number; // Added for auto-pricing
 }
 
 export interface Liability extends BaseRecord {
@@ -182,6 +183,7 @@ export interface AssetRow {
   value: number;
   notes: string | null;
   category: string;
+  quantity?: number;
   user_id: string;
   created_at: string;
   updated_at: string;

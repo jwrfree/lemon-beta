@@ -280,7 +280,7 @@ export default function SmartAddPage() {
                 </div>
             ) : (
                 <>
-                    <main className="flex-1 flex flex-col justify-end overflow-hidden">
+                    <main className="flex-1 flex flex-col justify-end overflow-hidden pb-10">
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
                             {messages.length === 0 && pageState === 'IDLE' && (
                                 <DynamicSuggestions 
@@ -344,14 +344,14 @@ export default function SmartAddPage() {
                                                 
                                                 <div className="flex flex-col">
                                                     <p className="text-sm leading-relaxed text-foreground">
-                                                        Oke, catat <span className="font-bold">{parsedData.description}</span> sebesar <span className="font-bold text-primary">{formatCurrency(parsedData.amount)}</span>?
+                                                        Oke, catat <span className="font-semibold">{parsedData.description}</span> sebesar <span className="font-semibold text-primary">{formatCurrency(parsedData.amount)}</span>?
                                                     </p>
                                                         <div className="flex items-center gap-2 mt-2">
                                                             <Popover open={isCategoryPopoverOpen} onOpenChange={setIsCategoryPopoverOpen}>
                                                                 <PopoverTrigger asChild>
                                                                     <button 
                                                                         type="button"
-                                                                        className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80 bg-[var(--category-color)]/10 text-[var(--category-color)] border border-[var(--category-color)]/30"
+                                                                        className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80 bg-[var(--category-color)]/10 text-[var(--category-color)] border border-[var(--category-color)]/30"
                                                                     >
                                                                         {parsedData.category}
                                                                     </button>
@@ -445,13 +445,13 @@ export default function SmartAddPage() {
                                                         </div>
                                                         <div className="flex flex-col">
                                                             <span className="text-sm font-medium text-foreground">{tx.description}</span>
-                                                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">
+                                                            <span className="text-[10px] text-muted-foreground font-medium">
                                                                 {tx.category} • {tx.walletId ? 'Dompet Terpilih' : 'Pilih Dompet'}
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
-                                                        <span className={cn("font-bold text-sm", tx.type === 'expense' ? "text-destructive" : "text-emerald-600")}>
+                                                        <span className={cn("font-semibold text-sm", tx.type === 'expense' ? "text-destructive" : "text-emerald-600")}>
                                                             {tx.type === 'expense' ? '-' : '+'}{formatCurrency(tx.amount)}
                                                         </span>
                                                         <Button 
@@ -529,7 +529,7 @@ export default function SmartAddPage() {
                                         Simpan & Tambah Lagi
                                     </Button>
                                     <Button 
-                                        className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
+                                        className="w-full h-14 rounded-2xl text-lg font-semibold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
                                         size="lg" 
                                         onClick={() => handleConfirmSave(false)}
                                     >
@@ -554,7 +554,7 @@ export default function SmartAddPage() {
                                         Batalkan Semua
                                     </Button>
                                     <Button 
-                                        className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
+                                        className="w-full h-14 rounded-2xl text-lg font-semibold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]" 
                                         size="lg" 
                                         onClick={() => handleMultiConfirmSave()}
                                     >

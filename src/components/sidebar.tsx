@@ -44,7 +44,7 @@ export const Sidebar = () => {
             <div className="space-y-2">
                 <p 
                     className={cn(
-                        'text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
+                        'text-[10px] font-semibold text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
                         isSidebarCollapsed ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100 h-4'
                     )}
                 >
@@ -71,15 +71,9 @@ export const Sidebar = () => {
             </div>
 
             <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar" aria-label="Navigasi utama">
-                <p 
-                    className={cn(
-                        'text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
-                        isSidebarCollapsed ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100 h-4'
-                    )}
-                >
-                    Menu Utama
-                </p>
-                {SIDEBAR_NAV_ITEMS.map((item) => {
+                                  <p className="text-[10px] font-semibold text-muted-foreground/60 px-1 mb-2 transition-all duration-300">
+                                    Menu Utama
+                                  </p>                {SIDEBAR_NAV_ITEMS.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
                     return (
                         <Link

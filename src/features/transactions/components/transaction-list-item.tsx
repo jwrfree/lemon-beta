@@ -44,7 +44,7 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Tr
                 </div>
             </div>
             <div 
-                className={cn("text-sm font-semibold tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
+                className={cn("text-sm font-medium tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
                 aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
             >
                 <span aria-hidden="true">

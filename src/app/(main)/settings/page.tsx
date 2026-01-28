@@ -118,7 +118,7 @@ function SettingsContent() {
                                         )}
                                     </div>
                                     <div className="text-center sm:text-left space-y-1">
-                                        <h2 className="text-2xl font-bold tracking-tight">{userData?.displayName || 'Pengguna Lemon'}</h2>
+                                        <h2 className="text-2xl font-semibold tracking-tight">{userData?.displayName || 'Pengguna Lemon'}</h2>
                                         <p className="text-muted-foreground font-medium">{user?.email}</p>
                                         <div className="pt-2 flex flex-wrap justify-center sm:justify-start gap-2">
                                             <Badge variant="secondary" className="bg-primary/10 text-primary border-none">Versi Beta</Badge>
@@ -146,7 +146,7 @@ function SettingsContent() {
                         {/* LEFT COLUMN: SECURITY & TOOLS */}
                         <div className="space-y-6">
                             <section className="space-y-3">
-                                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground px-1">Keamanan</h3>
+                                <h3 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Keamanan</h3>
                                 <Card className="border-none shadow-sm bg-card overflow-hidden">
                                     <CardContent className="p-0">
                                         {isBiometricSupported ? (
@@ -155,7 +155,7 @@ function SettingsContent() {
                                                     <Shield className="h-5 w-5" />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <p className="text-sm font-semibold">Biometrik</p>
+                                                    <p className="text-sm font-medium">Biometrik</p>
                                                     <p className="text-[11px] text-muted-foreground">Login dengan sidik jari</p>
                                                 </div>
                                                 <Switch
@@ -183,7 +183,7 @@ function SettingsContent() {
                                             <Calculator className="h-5 w-5" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-sm font-semibold text-foreground">Kalkulator AI</p>
+                                            <p className="text-sm font-medium text-foreground">Kalkulator AI</p>
                                             <p className="text-[11px] text-muted-foreground">Cek penggunaan token</p>
                                         </div>
                                         <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
@@ -196,7 +196,7 @@ function SettingsContent() {
                                     <AlertDialogTrigger asChild>
                                         <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg py-6 bg-destructive/5">
                                             <LogOut className="h-5 w-5" />
-                                            <span className="font-bold">Keluar dari Akun</span>
+                                            <span className="font-semibold">Keluar dari Akun</span>
                                         </Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
@@ -217,7 +217,7 @@ function SettingsContent() {
 
                         {/* RIGHT COLUMN: DATA MANAGEMENT GRID */}
                         <div className="md:col-span-2 space-y-3">
-                            <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground px-1">Manajemen Data</h3>
+                            <h3 className="text-xs font-medium tracking-[0.05em] text-muted-foreground px-1">Manajemen Data</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {managementItems.map((item) => (
                                     <motion.button
@@ -230,7 +230,7 @@ function SettingsContent() {
                                             <item.icon className="h-6 w-6" strokeWidth={1.5} />
                                         </div>
                                         <div className="space-y-1">
-                                            <p className="font-bold text-foreground">{item.name}</p>
+                                            <p className="font-semibold text-foreground">{item.name}</p>
                                             <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                                         </div>
                                     </motion.button>
@@ -240,7 +240,7 @@ function SettingsContent() {
                     </div>
                     
                     <div className="text-center py-8 space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/40">Lemon Finance</p>
+                        <p className="text-[10px] font-medium tracking-[0.1em] text-primary/40">Lemon Finance</p>
                         <p className="text-[10px] text-muted-foreground">Versi 2.1.0 (Public Beta) • Terlindungi oleh WebAuthn</p>
                     </div>
                 </div>

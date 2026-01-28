@@ -150,7 +150,7 @@ function ChartsPageContent() {
                                     <TabsTrigger
                                         key={tab.value}
                                         value={tab.value}
-                                        className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
+                                        className="h-full rounded-xl text-xs font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
                                     >
                                         {tab.label}
                                     </TabsTrigger>
@@ -169,12 +169,12 @@ function ChartsPageContent() {
                         {/* DESKTOP BENTO GRID */}
                         <div className="hidden md:grid grid-cols-12 gap-6 p-8">
                             <div className="col-span-12 lg:col-span-5 space-y-6">
-                                <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Ringkasan</h2>
+                                <h2 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Ringkasan</h2>
                                 <MonthlySummary type={activeTab} transactions={filteredTransactions} />
                                 
                                 {activeTab === 'expense' && (
                                     <div className="space-y-6">
-                                        <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Audit Langganan</h2>
+                                        <h2 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Audit Langganan</h2>
                                         <SubscriptionAuditCard transactions={filteredTransactions} />
                                     </div>
                                 )}
@@ -183,16 +183,16 @@ function ChartsPageContent() {
                             <div className="col-span-12 lg:col-span-7 space-y-6">
                                 <div className="grid grid-cols-1 gap-6">
                                     <div className="space-y-6">
-                                        <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Analisis Kategori</h2>
+                                        <h2 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Analisis Kategori</h2>
                                         <CategoryAnalysis type={activeTab} transactions={filteredTransactions} />
                                     </div>
                                     <div className="space-y-6">
-                                        <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Tren Bulanan</h2>
+                                        <h2 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Tren Bulanan</h2>
                                         <MonthlyTrendChart type={activeTab} transactions={filteredTransactions} />
                                     </div>
                                     {activeTab === 'expense' && (
                                         <div className="space-y-6">
-                                            <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Tren Harian</h2>
+                                            <h2 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Tren Harian</h2>
                                             <ExpenseShortTermTrend transactions={filteredTransactions} />
                                         </div>
                                     )}
@@ -214,7 +214,7 @@ function ChartsPageContent() {
                                     className="w-full space-y-6 p-4"
                                 >
                                     <div className="space-y-3">
-                                        <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                        <h2 className="text-xs font-medium tracking-[0.05em] text-muted-foreground">
                                             Ringkasan {from && to ? 'periode ini' : 'bulan ini'}
                                         </h2>
                                         <MonthlySummary type={activeTab} transactions={filteredTransactions} />
@@ -222,7 +222,7 @@ function ChartsPageContent() {
 
                                     {activeTab === 'expense' && (
                                         <div className="space-y-3">
-                                            <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                            <h2 className="text-xs font-medium tracking-[0.05em] text-muted-foreground">
                                                 Audit Langganan
                                             </h2>
                                             <SubscriptionAuditCard transactions={filteredTransactions} />
@@ -231,7 +231,7 @@ function ChartsPageContent() {
 
                                     {activeTab === 'expense' ? (
                                         <div className="space-y-3">
-                                            <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                            <h2 className="text-xs font-medium tracking-[0.05em] text-muted-foreground">
                                                 Tren pengeluaran harian
                                             </h2>
                                             <ExpenseShortTermTrend transactions={filteredTransactions} />
@@ -239,14 +239,14 @@ function ChartsPageContent() {
                                     ) : null}
 
                                     <div className="space-y-3">
-                                        <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                        <h2 className="text-xs font-medium tracking-[0.05em] text-muted-foreground">
                                             Tren bulanan
                                         </h2>
                                         <MonthlyTrendChart type={activeTab} transactions={filteredTransactions} />
                                     </div>
 
                                     <div className="space-y-3">
-                                        <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                        <h2 className="text-xs font-medium tracking-[0.05em] text-muted-foreground">
                                             Distribusi kategori
                                         </h2>
                                         <CategoryAnalysis type={activeTab} transactions={filteredTransactions} />

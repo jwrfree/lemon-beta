@@ -40,7 +40,7 @@ export const DashboardHero = ({
                 <CardHeader className="pb-2 flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-xs font-medium text-primary-foreground/80 tracking-tight">Saldo Total</CardTitle>
-                        <div className="text-3xl font-bold tracking-tight">
+                        <div className="text-3xl font-semibold tracking-tight">
                             <AnimatedCounter value={totalBalance} />
                         </div>
                     </div>
@@ -81,7 +81,7 @@ export const DashboardHero = ({
             </Card>
             <Card className="border-none shadow-sm bg-card rounded-lg">
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-semibold">Rentang Data</CardTitle>
+                    <CardTitle className="text-sm font-medium">Rentang Data</CardTitle>
                     <CardDescription className="text-xs">Atur cakupan statistik & grafik</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">

@@ -18,13 +18,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 export default function AssetsLiabilitiesPage() {
-    const { assets, liabilities } = useAssets();
+    const { assets, liabilities, goldPrice } = useAssets();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formInitialData, setFormInitialData] = useState<any | null>(null);
     const isMobile = useIsMobile();
 
     const totals = useMemo(() => {
-        const totalAssets = assets.reduce((sum, item) => sum + item.value, 0);
+        const totalAssets = assets.reduce((sum, item) => {
+            if (item.categoryKey === 'gold' && item.quantity && goldPrice) {
+                return sum + (item.quantity * goldPrice);
+            }
+            return sum + item.value;
+        }, 0);
+        
         const totalLiabilities = liabilities.reduce((sum, item) => sum + item.value, 0);
         const netWorth = totalAssets - totalLiabilities;
 
@@ -39,7 +45,13 @@ export default function AssetsLiabilitiesPage() {
              return info.type === 'depreciating';
         });
 
-        const realAssetsValue = realAssets.reduce((sum, item) => sum + item.value, 0);
+        const realAssetsValue = realAssets.reduce((sum, item) => {
+            if (item.categoryKey === 'gold' && item.quantity && goldPrice) {
+                return sum + (item.quantity * goldPrice);
+            }
+            return sum + item.value;
+        }, 0);
+        
         const depreciatingAssetsValue = depreciatingAssets.reduce((sum, item) => sum + item.value, 0);
 
         const chartData = [
@@ -58,7 +70,7 @@ export default function AssetsLiabilitiesPage() {
             depreciatingAssetsValue,
             chartData
         };
-    }, [assets, liabilities]);
+    }, [assets, liabilities, goldPrice]);
 
     const handleOpenForm = (initialData: any | null = null) => {
         setFormInitialData(initialData);
@@ -190,10 +202,10 @@ export default function AssetsLiabilitiesPage() {
                                                 <Plus className="h-5 w-5" />
                                             </Button>
                                         </div>
-                                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-3">
-                                            <TabsTrigger value="all" className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Semua</TabsTrigger>
-                                            <TabsTrigger value="productive" className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Produktif</TabsTrigger>
-                                            <TabsTrigger value="consumptive" className="h-full rounded-xl text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Konsumtif</TabsTrigger>
+                                        <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-3">
+                                            <TabsTrigger value="all" className="h-full rounded-xl text-xs font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Semua</TabsTrigger>
+                                            <TabsTrigger value="productive" className="h-full rounded-xl text-xs font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Produktif</TabsTrigger>
+                                            <TabsTrigger value="consumptive" className="h-full rounded-xl text-xs font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Konsumtif</TabsTrigger>
                                         </TabsList>
                                     </CardHeader>
                                     <CardContent className="px-0 flex-1 overflow-hidden">

@@ -177,7 +177,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                                 field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
                             }}
                             inputMode="numeric"
-                            className={cn("text-2xl font-bold", errors.amount && "border-destructive")}
+                            className={cn("text-2xl font-semibold", errors.amount && "border-destructive")}
                         />
                     )}
                 />
@@ -325,7 +325,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         {...handlers}
                     >
                         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl md:rounded-t-lg z-10">
-                            <h2 className="text-xl font-bold">{title}</h2>
+                            <h2 className="text-xl font-semibold">{title}</h2>
                             <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted rounded-md">
                                 <X className="h-5 w-5" />
                                 <span className="sr-only">Tutup</span>
@@ -360,7 +360,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                     <ChevronLeft className="h-6 w-6" strokeWidth={1.75} />
                     <span className="sr-only">Kembali</span>
                 </Button>
-                <h1 className="text-xl font-bold text-center w-full">{title}</h1>
+                <h1 className="text-xl font-semibold text-center w-full">{title}</h1>
             </header>
             <div className="flex-1 flex flex-col overflow-hidden">
                 <div className="flex-1 overflow-y-auto">

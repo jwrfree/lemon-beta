@@ -11,6 +11,9 @@ All updates and improvements to the Lemon app will be documented here.
   - **Automatic Wallet Detection**: Intelligent mapping of payment sources like "BCA", "GoPay", or "Kas" using fuzzy matching.
   - **Debt Payment Integration**: Automatically detects when a transaction is a debt repayment and suggests linking it to existing debts.
   - **Real-time Balance & Budget Insights**: Instant AI warnings if a transaction leads to insufficient funds or exceeds category budgets.
+  - **Conversational Refinement**: 
+    - **Chat Correction**: Correct mistakes naturally via chat (e.g., "Eh, tadi salah, itu pakai kartu kredit BCA").
+    - **Ambiguity Clarification**: AI asks clarifying questions for ambiguous inputs (e.g., "Ini masuk kategori 'Kebutuhan' atau 'Gaya Hidup'?").
   - **Enhanced AI UI**: New confirmation chips with category-specific colors and icons, haptic feedback, and auto-focus for a smoother experience.
 
 - **Debt Monitoring & Analytics**: Introduced advanced debt tracking features to monitor financial health.

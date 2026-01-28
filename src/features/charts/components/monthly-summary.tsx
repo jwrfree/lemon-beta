@@ -287,7 +287,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                     </div>
                     <div className="space-y-1">
                         <CardTitle className="text-[11px] font-medium text-white/70">{summary.title}</CardTitle>
-                        <div className="text-4xl md:text-5xl font-bold tracking-tight text-white tabular-nums">
+                        <div className="text-4xl md:text-5xl font-semibold tracking-tight text-white tabular-nums">
                             <AnimatedCounter value={summary.value} />
                         </div>
                     </div>
@@ -313,13 +313,13 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                             <>
                                 <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Pemasukan</p>
-                                    <p className="text-base font-bold text-white tabular-nums">
+                                    <p className="text-base font-semibold text-white tabular-nums">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Pengeluaran</p>
-                                    <p className="text-base font-bold text-white tabular-nums">
+                                    <p className="text-base font-semibold text-white tabular-nums">
                                         {formatCurrency(summary.netDetails.expense)}
                                     </p>
                                 </div>
@@ -328,13 +328,13 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                             <>
                                 <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Per Hari</p>
-                                    <p className="text-base font-bold text-white tabular-nums">
+                                    <p className="text-base font-semibold text-white tabular-nums">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-4 border border-white/20">
                                     <p className="text-[11px] font-medium text-white/50 mb-1">Per Transaksi</p>
-                                    <p className="text-base font-bold text-white tabular-nums">
+                                    <p className="text-base font-semibold text-white tabular-nums">
                                         {formatCurrency(summary.averagePerTransaction)}
                                     </p>
                                 </div>
@@ -353,7 +353,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                             ) : null}
                         </div>
                         <div className="space-y-0.5">
-                            <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Kategori Terbesar</CardTitle>
+                            <CardTitle className="text-[11px] font-semibold tracking-[0.05em] text-muted-foreground">Kategori Terbesar</CardTitle>
                             <p className="text-lg font-extrabold tracking-tight">{summary.topCategory.name}</p>
                         </div>
                     </CardHeader>
@@ -362,8 +362,8 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                             <p className="text-2xl font-extrabold text-primary">
                                 {formatCurrency(summary.topCategory.value)}
                             </p>
-                            <Badge variant="outline" className="font-bold text-[11px] border-primary/20 text-primary">
-                                {summary.topCategory.percentage.toFixed(1)}% TOTAL
+                            <Badge variant="outline" className="font-semibold text-[11px] border-primary/20 text-primary">
+                                {summary.topCategory.percentage.toFixed(1)}% total
                             </Badge>
                         </div>
                     </CardContent>
@@ -377,8 +377,8 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                 >
                     <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
                         <div className="space-y-0.5">
-                            <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Transaksi Termahal</CardTitle>
-                            <p className="text-base font-bold tracking-tight group-hover:text-primary transition-colors">
+                            <CardTitle className="text-[11px] font-semibold tracking-[0.05em] text-muted-foreground">Transaksi Termahal</CardTitle>
+                            <p className="text-base font-semibold tracking-tight group-hover:text-primary transition-colors">
                                 {summary.topTransaction.description || 'Tanpa deskripsi'}
                             </p>
                         </div>
@@ -389,7 +389,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                     <CardContent>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="bg-muted/50 text-[11px] font-bold uppercase border-none">
+                                <Badge variant="secondary" className="bg-muted/50 text-[11px] font-semibold border-none">
                                     {summary.topTransaction.category}
                                 </Badge>
                                 <span className="text-[11px] font-medium text-muted-foreground">
@@ -411,7 +411,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                     </div>
                     <div className="space-y-1 flex-1">
                         <div className="flex items-center justify-between">
-                            <p className="text-[11px] font-bold uppercase tracking-widest text-primary/70">Insight Lemon AI</p>
+                            <p className="text-[11px] font-semibold tracking-[0.05em] text-primary/70">Insight Lemon AI</p>
                             <Button 
                                 variant="ghost" 
                                 size="icon" 
@@ -451,7 +451,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                             <Button 
                                 variant="link" 
                                 onClick={handleGenerateInsight} 
-                                className="h-auto p-0 text-xs text-primary mt-1 font-semibold"
+                                className="h-auto p-0 text-xs text-primary mt-1 font-medium"
                             >
                                 Analisis dengan AI ✨
                             </Button>

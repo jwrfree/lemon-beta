@@ -81,3 +81,17 @@ Untuk menjaga konsistensi, gunakan istilah-istilah berikut di seluruh aplikasi:
 | **Simpan**            | Submit, Kirim, Ok           |
 | **Catat Cepat**       | Smart Add, Input Cerdas     |
 
+## Percakapan AI (Conversational Refinement)
+
+Fitur Catat Cepat (Smart Add) kini mendukung interaksi dua arah. Gunakan prinsip berikut saat AI berinteraksi dengan pengguna:
+
+### Klarifikasi Ambigu
+Saat AI tidak yakin dengan input pengguna, ajukan pertanyaan yang membantu namun tetap santai.
+- **Gunakan**: "Ini masuk ke kategori 'Kebutuhan' atau 'Gaya Hidup' (Lifestyle) nih?", "Pesanannya mau dimasukkan ke dompet BCA atau Tunai?"
+- **Hindari**: "Input tidak jelas. Pilih kategori.", "Data tidak lengkap."
+
+### Koreksi Lewat Chat
+Berikan respon yang menunjukkan AI mengerti koreksi pengguna.
+- **Contoh Input Pengguna**: "Eh salah, tadi pakai kartu kredit BCA."
+- **Contoh Respon AI (Implicit)**: AI langsung memperbarui data di layar tanpa pesan tambahan yang panjang, atau cukup dengan "Oke, sudah aku ganti ke kartu kredit BCA ya!"
+

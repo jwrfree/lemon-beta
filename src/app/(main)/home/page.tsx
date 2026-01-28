@@ -186,7 +186,7 @@ export default function HomePage() {
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
                             >
-                                <AnimatedCounter value={totalBalance} className="text-3xl font-bold text-primary" />
+                                <AnimatedCounter value={totalBalance} className="text-3xl font-semibold text-primary" />
                             </motion.div>
                             <div className="flex gap-4 mt-4">
                                 <motion.div 
@@ -200,7 +200,7 @@ export default function HomePage() {
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Pemasukan</p>
-                                        <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold" />
+                                        <AnimatedCounter value={monthlyIncome} className="text-sm font-medium" />
                                         <p className="text-[10px] text-muted-foreground">
                                             {incomeDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(incomeDiff))} vs bln lalu
                                         </p>
@@ -217,7 +217,7 @@ export default function HomePage() {
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Pengeluaran</p>
-                                        <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold" />
+                                        <AnimatedCounter value={monthlyExpense} className="text-sm font-medium" />
                                         <p className="text-[10px] text-muted-foreground">
                                             {expenseDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(expenseDiff))} vs bln lalu
                                         </p>
@@ -280,7 +280,7 @@ export default function HomePage() {
                                                         <Icon className={cn('h-6 w-6 text-muted-foreground')} />
                                                         <span className="text-sm font-medium truncate">{wallet.name}</span>
                                                     </div>
-                                                    <p className="text-xl font-bold text-primary">
+                                                    <p className="text-xl font-semibold text-primary">
                                                         {formatCurrency(wallet.balance)}
                                                     </p>
                                                 </CardContent>
@@ -319,7 +319,7 @@ export default function HomePage() {
                                                 )}
                                             </div>
                                             {reminder.amount ? (
-                                                <span className="text-sm font-semibold">{formatCurrency(reminder.amount)}</span>
+                                                <span className="text-sm font-medium">{formatCurrency(reminder.amount)}</span>
                                             ) : null}
                                         </Card>
                                     );
@@ -339,11 +339,11 @@ export default function HomePage() {
                             <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
                                     <p className="text-muted-foreground text-xs mb-1">Saya Berhutang</p>
-                                    <p className="text-lg font-semibold text-destructive">{formatCurrency(debtSummary.owed)}</p>
+                                    <p className="text-lg font-medium text-destructive">{formatCurrency(debtSummary.owed)}</p>
                                 </div>
                                 <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg text-right">
                                     <p className="text-muted-foreground text-xs mb-1">Orang Lain Berhutang</p>
-                                    <p className="text-lg font-semibold text-emerald-600">{formatCurrency(debtSummary.owing)}</p>
+                                    <p className="text-lg font-medium text-emerald-600">{formatCurrency(debtSummary.owing)}</p>
                                 </div>
                             </div>
                             {nextDueDebt ? (

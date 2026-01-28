@@ -119,7 +119,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             <div className={`p-4 rounded-2xl mb-6 ring-8 ${greeting.bg} ${greeting.ring}`}>
                 <Icon className={`h-10 w-10 ${greeting.color}`} strokeWidth={1.5} />
             </div>
-            <h2 className="text-xl font-bold text-foreground">{greeting.text}</h2>
+            <h2 className="text-xl font-semibold text-foreground">{greeting.text}</h2>
             <p className="mt-2 text-sm leading-relaxed">
                 {dayContext === 'gajian' 
                     ? "Sudah alokasikan pos-pos pengeluaran bulan ini?" 
@@ -131,7 +131,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             
             <div className="mt-10 w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/60">
+                    <p className="text-[10px] font-semibold tracking-[0.05em] text-muted-foreground/60">
                         {dayContext === 'gajian' ? 'Rutin Bulanan' : dayContext === 'weekend' ? 'Ide Akhir Pekan' : `Contoh ${timeOfDay} ini`}
                     </p>
                     <div className="h-px flex-1 bg-border/50 ml-3" />
@@ -152,7 +152,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             </div>
 
             <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-dashed border-border w-full">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase mb-2">💡 Tips Cerdas</p>
+                <p className="text-[10px] font-semibold text-muted-foreground mb-2">💡 Tips Cerdas</p>
                 <p className="text-[11px] text-muted-foreground leading-relaxed text-left">
                     Gunakan kata hubung seperti <b>"dan"</b> atau <b>tanda koma</b> untuk mencatat banyak transaksi sekaligus.
                 </p>

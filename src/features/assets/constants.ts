@@ -6,6 +6,7 @@ export interface AssetCategory {
     type: AssetType;
     group: string;
     hidden?: boolean;
+    unit?: 'gram' | 'lot' | 'unit'; // Added unit for auto-pricing
 }
 
 export const ASSET_CATEGORIES: readonly AssetCategory[] = [
@@ -13,9 +14,9 @@ export const ASSET_CATEGORIES: readonly AssetCategory[] = [
     { key: 'cash', label: 'Kas & Tabungan', type: 'liquid', group: 'Likuiditas' },
     
     // Appreciating Assets (Real Assets)
-    { key: 'gold', label: 'Emas & Logam Mulia', type: 'appreciating', group: 'Aset Produktif' },
-    { key: 'stock', label: 'Saham & Reksa Dana', type: 'appreciating', group: 'Aset Produktif' },
-    { key: 'crypto', label: 'Aset Kripto', type: 'appreciating', group: 'Aset Produktif' },
+    { key: 'gold', label: 'Emas & Logam Mulia', type: 'appreciating', group: 'Aset Produktif', unit: 'gram' },
+    { key: 'stock', label: 'Saham & Reksa Dana', type: 'appreciating', group: 'Aset Produktif', unit: 'lot' },
+    { key: 'crypto', label: 'Aset Kripto', type: 'appreciating', group: 'Aset Produktif', unit: 'unit' },
     { key: 'land', label: 'Tanah & Properti', type: 'appreciating', group: 'Aset Produktif' },
     { key: 'business', label: 'Bisnis & Usaha', type: 'appreciating', group: 'Aset Produktif' },
     { key: 'investment', label: 'Investasi Lainnya', type: 'appreciating', group: 'Aset Produktif' },

@@ -4,9 +4,11 @@ import { useAssets } from '../hooks/use-assets';
 import { formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { Button } from '@/components/ui/button';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical, TrendingUp } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface AssetLiabilityListProps {
     items: any[];
@@ -15,7 +17,7 @@ interface AssetLiabilityListProps {
 }
 
 export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListProps) => {
-    const { deleteAssetLiability } = useAssets();
+    const { deleteAssetLiability, goldPrice } = useAssets();
 
     if (items.length === 0) {
         const message = type === 'asset' ? "Aset yang kamu miliki akan muncul di sini." : "Daftar utang atau cicilanmu akan muncul di sini.";
@@ -28,14 +30,48 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                 const { Icon } = getWalletVisuals(item.name, item.categoryKey);
                 return (
                     <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
-                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors shadow-sm">
+                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors shadow-sm relative">
                             <Icon className="h-5 w-5 text-muted-foreground" />
+                            {item.categoryKey === 'gold' && goldPrice && (
+                                <div className="absolute -top-1 -right-1 bg-teal-500 rounded-full p-0.5 border-2 border-background">
+                                    <TrendingUp className="h-2 w-2 text-white" />
+                                </div>
+                            )}
                         </div>
                         <div className="flex-1">
-                            <p className="font-semibold text-sm">{item.name}</p>
-                            <p className="text-xs text-muted-foreground capitalize">{item.categoryKey.replace('-', ' ')}</p>
+                            <div className="flex items-center gap-2">
+                                <p className="font-semibold text-sm">{item.name}</p>
+                                {item.categoryKey === 'gold' && item.quantity && (
+                                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">
+                                        {item.quantity} gr
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-xs text-muted-foreground capitalize">
+                                {item.categoryKey.replace('-', ' ')}
+                                {item.categoryKey === 'gold' && goldPrice && (
+                                    <span className="ml-1 text-[10px] text-teal-600 font-medium">
+                                        • Harga: {formatCurrency(goldPrice)}/gr
+                                    </span>
+                                )}
+                            </p>
                         </div>
-                        <p className="font-bold tabular-nums text-sm">{formatCurrency(item.value)}</p>
+                        <div className="text-right">
+                            <p className="font-bold tabular-nums text-sm">
+                                {item.categoryKey === 'gold' && item.quantity && goldPrice 
+                                    ? formatCurrency(item.quantity * goldPrice) 
+                                    : formatCurrency(item.value)}
+                            </p>
+                            {item.categoryKey === 'gold' && item.quantity && goldPrice && (
+                                <p className={cn(
+                                    "text-[10px] font-medium",
+                                    (item.quantity * goldPrice) > item.value ? "text-teal-600" : "text-rose-600"
+                                )}>
+                                    {(item.quantity * goldPrice) > item.value ? '+' : ''}
+                                    {formatCurrency((item.quantity * goldPrice) - item.value)}
+                                </p>
+                            )}
+                        </div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button

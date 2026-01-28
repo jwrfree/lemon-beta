@@ -38,7 +38,7 @@ export default function WalletsPage() {
                  <div className="p-3 bg-primary/10 rounded-full mb-3">
                     <Wallet className="h-8 w-8 text-primary" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-xl font-bold">Belum Ada Dompet</h2>
+                <h2 className="text-xl font-semibold">Belum Ada Dompet</h2>
                 <p className="text-muted-foreground mt-2 mb-6">Yuk, buat dompet pertamamu untuk memulai!</p>
                 <Button onClick={() => setIsWalletModalOpen(true)}>
                   <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
@@ -56,7 +56,7 @@ export default function WalletsPage() {
               
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">Transaksi Terakhir</h2>
+                  <h2 className="text-lg font-semibold">Transaksi Terakhir</h2>
                   <Button variant="link" size="sm">Lihat Semua</Button>
                 </div>
                 
@@ -101,7 +101,7 @@ export default function WalletsPage() {
                 <div className="p-4 bg-primary/10 rounded-full mb-4">
                   <Wallet className="h-12 w-12 text-primary" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-2xl font-bold">Belum Ada Dompet</h2>
+                <h2 className="text-2xl font-semibold">Belum Ada Dompet</h2>
                 <p className="text-muted-foreground mt-2 mb-8 text-lg">Yuk, buat dompet pertamamu untuk memulai mencatat keuanganmu dengan lebih rapi!</p>
                 <Button size="lg" onClick={() => setIsWalletModalOpen(true)} className="w-full">
                   <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
