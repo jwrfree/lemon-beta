@@ -1,12 +1,12 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Landmark, TrendingUp, MinusCircle, PlusCircle } from 'lucide-react';
 import { useAssets } from '@/features/assets/hooks/use-assets';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { AssetLiabilityList } from '@/features/assets/components/asset-liability-list';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AssetLiabilityForm } from '@/features/assets/components/asset-liability-form';
@@ -154,7 +154,11 @@ export default function AssetsLiabilitiesPage() {
                                 {totals.chartData.map((entry, index) => (
                                     <div key={index} className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-[var(--entry-color)]" style={{ '--entry-color': entry.color } as React.CSSProperties} />
+                                            <div className={cn("w-2 h-2 rounded-full", 
+                                                entry.name === 'Aset Produktif' ? 'bg-teal-600' : 
+                                                entry.name === 'Aset Konsumtif' ? 'bg-rose-600' : 
+                                                'bg-indigo-600'
+                                            )} />
                                             <span className="text-muted-foreground">{entry.name}</span>
                                         </div>
                                         <span>{Math.round((entry.value / (totals.totalAssets + totals.totalLiabilities)) * 100)}%</span>

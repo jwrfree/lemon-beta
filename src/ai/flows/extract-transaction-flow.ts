@@ -256,10 +256,13 @@ ${JSON.stringify(previousData, null, 2)}
 
 ### TUGAS ANDA:
 1. Perbarui data transaksi di atas berdasarkan instruksi terbaru dari user.
-2. Jika user memberikan informasi yang memperbaiki field tertentu (misal: ganti dompet, ganti nominal, ganti kategori), update field tersebut.
-3. Jika user memberikan informasi tambahan untuk transaksi yang belum lengkap, lengkapi datanya.
-4. Tetap gunakan format JSON yang sama.
-5. Jika instruksi user masih ambigu, Anda boleh menggunakan 'clarificationQuestion'.
+2. **KOREKSI SUMBER DANA (WALLET)**:
+   - Sangat sensitif terhadap kata kunci seperti: "pake", "ganti dompet", "dari bca", "via gopay", "pindah ke cash", dll.
+   - Jika user menyebutkan nama dompet, pastikan field 'wallet' diupdate sesuai daftar: ${walletList}.
+3. Jika user memberikan informasi yang memperbaiki field tertentu (nominal, kategori, deskripsi), update field tersebut.
+4. Jika user memberikan informasi tambahan untuk transaksi yang belum lengkap, lengkapi datanya.
+5. Tetap gunakan format JSON yang sama.
+6. Jika instruksi user masih ambigu, Anda boleh menggunakan 'clarificationQuestion'.
 
 ### OUTPUT JSON FORMAT:
 Sama seperti sebelumnya.`;

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+import { Progress } from '@/components/ui/progress';
 import { PageHeader } from '@/components/page-header';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -226,14 +227,10 @@ export default function DebtsPage() {
                                             <div className="text-right">
                                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1 text-right">Progress</p>
                                                 <div className="flex items-center gap-2">
-                                                    <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-primary w-[var(--progress-width)]"
-                                                            style={{
-                                                                '--progress-width': `${Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%`
-                                                            } as React.CSSProperties}
-                                                        />
-                                                    </div>
+                                                    <Progress 
+                                                         value={Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))} 
+                                                         className="w-16 h-1.5 bg-muted"
+                                                     />
                                                     <span className="text-[10px] font-bold">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
                                                 </div>
                                             </div>

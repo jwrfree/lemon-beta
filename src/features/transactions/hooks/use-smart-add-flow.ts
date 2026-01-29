@@ -152,6 +152,10 @@ export const useSmartAddFlow = () => {
 
             // 1. Wallet resolution with fuzzy matching
             const walletName = (tx.wallet || sourceWallet || '').toLowerCase().trim();
+            
+            // Log for debugging
+            console.log('Resolving wallet for:', walletName);
+
             let matchingWallet = wallets.find(w => w.name.toLowerCase() === walletName);
             
             // If no exact match, try fuzzy matching (e.g., "BCA" matches "Bank BCA")
@@ -162,7 +166,9 @@ export const useSmartAddFlow = () => {
                 );
             }
             
-            const walletId = matchingWallet?.id || wallets.find(w => w.isDefault)?.id || wallets.find(w => w.name.toLowerCase() === 'tunai')?.id || wallets[0]?.id || '';
+            // If we found a matching wallet, use its ID. 
+            // ONLY use default/tunai if walletName was actually empty or no match found.
+            const walletId = matchingWallet?.id || (walletName ? wallets.find(w => w.isDefault)?.id : (wallets.find(w => w.name.toLowerCase() === 'tunai')?.id || wallets[0]?.id)) || wallets[0]?.id;
 
             // 2. Type & Category resolution
             let transactionType: 'income' | 'expense' = type || 'expense';

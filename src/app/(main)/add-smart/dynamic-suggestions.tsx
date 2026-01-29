@@ -142,7 +142,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
                             key={`${timeOfDay}-${dayContext}-${idx}`}
                             type="button"
                             onClick={() => onSuggestionClick(s)}
-                            className="text-xs text-left bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/5 px-4 py-3 rounded-xl active:scale-[0.98] transition-all flex items-center justify-between group"
+                            className="text-xs text-left bg-card hover:bg-primary/5 px-4 py-3 rounded-xl active:scale-[0.98] transition-all flex items-center justify-between group"
                         >
                             <span className="text-foreground/80 group-hover:text-primary font-medium">{s}</span>
                             <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary" />
@@ -151,7 +151,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
                 </div>
             </div>
 
-            <div className="mt-8 p-4 bg-muted/50 rounded-2xl border border-dashed border-border w-full">
+            <div className="mt-8 p-4 bg-muted/50 rounded-2xl w-full">
                 <p className="text-[10px] font-semibold text-muted-foreground mb-2">💡 Tips Cerdas</p>
                 <p className="text-[11px] text-muted-foreground leading-relaxed text-left">
                     Gunakan kata hubung seperti <b>"dan"</b> atau <b>tanda koma</b> untuk mencatat banyak transaksi sekaligus.

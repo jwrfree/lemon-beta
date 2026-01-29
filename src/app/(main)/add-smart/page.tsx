@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Paperclip, Send, LoaderCircle, Mic, X, Check, Pencil, Save, Keyboard, Wallet, ArrowRight, TrendingDown, ChevronLeft, AlertTriangle, RotateCcw } from 'lucide-react';
+import { Paperclip, Send, LoaderCircle, Mic, X, Check, Save, Keyboard, ChevronLeft, RotateCcw } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { cn, formatCurrency, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
 import Image from 'next/image';
 import { TransactionForm } from '@/features/transactions/components/transaction-form';
@@ -243,7 +243,12 @@ export default function SmartAddPage() {
     return (
         <div className="flex flex-col h-full">
             <PageHeader 
-                title="Catat Cepat"
+                title={
+                    pageState === 'ANALYZING' ? 'Menganalisis...' :
+                    pageState === 'CONFIRMING' ? 'Konfirmasi' :
+                    pageState === 'MULTI_CONFIRMING' ? 'Konfirmasi Massal' :
+                    'Catat Cepat'
+                }
                 backIcon={pageState === 'IDLE' ? ChevronLeft : X}
                 onBackClick={() => pageState === 'IDLE' ? router.back() : resetFlow()}
             />
@@ -293,11 +298,11 @@ export default function SmartAddPage() {
                             <AnimatePresence>
                                 {messages.map((msg) => (
                                     <motion.div key={msg.id} layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8 }}>
-                                        {msg.type === 'user' && <div className="flex justify-end"><div className="p-3 bg-primary text-primary-foreground rounded-2xl">{msg.content}</div></div>}
+                                        {msg.type === 'user' && <div className="flex justify-end"><div className="p-3 bg-[#E0F2F1] text-black rounded-2xl text-sm leading-relaxed">{msg.content}</div></div>}
                                         {msg.type === 'user-image' && <div className="flex justify-end"><Card className="p-2 bg-primary max-w-xs"><Image src={msg.content} alt="Receipt" width={200} height={300} className="rounded-md" /></Card></div>}
                                         {msg.type === 'ai-thinking' && (
                                             <div className="flex justify-start">
-                                                <div className="p-3 bg-card rounded-2xl flex items-center gap-2.5 shadow-sm border border-border/50">
+                                                <div className="p-3 bg-card rounded-2xl flex items-center gap-2.5">
                                                     <div className="relative flex items-center justify-center">
                                                         <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
                                                         <motion.div 
@@ -323,8 +328,8 @@ export default function SmartAddPage() {
                                         )}
                                         {msg.type === 'ai-clarification' && (
                                             <div className="flex justify-start">
-                                                <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 max-w-[85%]">
-                                                    <p className="text-sm leading-relaxed text-foreground font-medium italic">
+                                                <div className="p-3 bg-card rounded-2xl max-w-[85%]">
+                                                    <p className="text-sm leading-relaxed text-foreground">
                                                         &quot;{msg.content}&quot;
                                                     </p>
                                                 </div>
@@ -332,15 +337,19 @@ export default function SmartAddPage() {
                                         )}
                                     </motion.div>
                                 ))}
-                                {pageState === 'CONFIRMING' && parsedData && (
+                                {pageState === 'CONFIRMING' && parsedData && !inputValue && (
                                     <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                                         <div className="flex justify-start">
                                             <div 
-                                                className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 relative overflow-hidden group"
-                                                style={{ '--category-color': getCategoryVisuals(parsedData.category).color } as React.CSSProperties}
+                                                className="p-3 bg-card rounded-2xl relative overflow-hidden group"
                                             >
                                                 {/* Category Background Accent */}
-                                                <div className="absolute top-0 left-0 w-1 h-full opacity-60 bg-[var(--category-color)]" />
+                                                <div 
+                                                    className={cn(
+                                                        "absolute top-0 left-0 w-1 h-full opacity-60",
+                                                        getCategoryVisuals(parsedData.category).color.replace('text-', 'bg-')
+                                                    )}
+                                                />
                                                 
                                                 <div className="flex flex-col">
                                                     <p className="text-sm leading-relaxed text-foreground">
@@ -351,7 +360,12 @@ export default function SmartAddPage() {
                                                                 <PopoverTrigger asChild>
                                                                     <button 
                                                                         type="button"
-                                                                        className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80 bg-[var(--category-color)]/10 text-[var(--category-color)] border border-[var(--category-color)]/30"
+                                                                        className={cn(
+                                                                            "px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-1 active:scale-95 transition-transform hover:opacity-80 border",
+                                                                            getCategoryVisuals(parsedData.category).bgColor,
+                                                                            getCategoryVisuals(parsedData.category).color,
+                                                                            getCategoryVisuals(parsedData.category).color.replace('text-', 'border-').replace('600', '300').replace('500', '200')
+                                                                        )}
                                                                     >
                                                                         {parsedData.category}
                                                                     </button>
@@ -389,7 +403,7 @@ export default function SmartAddPage() {
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         className="flex justify-start"
                                                     >
-                                                        <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-xs font-medium border border-destructive/20 flex flex-col gap-1 max-w-[85%]">
+                                                        <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-xs font-medium flex flex-col gap-1 max-w-[85%]">
                                                             <div className="flex items-center gap-1.5">
                                                                 <span className="font-bold">Saldo Tidak Cukup!</span>
                                                             </div>
@@ -402,7 +416,7 @@ export default function SmartAddPage() {
                                                 <div className="space-y-3">
                                                     {insightData.wallet && (
                                                         <div className="flex justify-start">
-                                                            <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 max-w-[85%]">
+                                                            <div className="p-3 bg-card rounded-2xl max-w-[85%]">
                                                                 <div className="flex flex-col gap-1">
                                                                     <p className="text-sm leading-relaxed text-foreground">
                                                                         Saldo <span className="font-bold">{insightData.wallet.name}</span> kamu bakal berubah dari <span className="line-through opacity-60">{formatCurrency(insightData.wallet.currentBalance)}</span> jadi <span className={cn("font-bold", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")}>{formatCurrency(insightData.wallet.newBalance)}</span> nih.
@@ -413,7 +427,7 @@ export default function SmartAddPage() {
                                                     )}
                                                     {insightData.budget && (
                                                         <div className="flex justify-start">
-                                                            <div className="p-3 bg-card rounded-2xl shadow-sm border border-border/50 max-w-[85%]">
+                                                            <div className="p-3 bg-card rounded-2xl max-w-[85%]">
                                                                 <div className="flex flex-col gap-1">
                                                                     <p className="text-sm leading-relaxed text-foreground">
                                                                         Sisa budget <span className="font-bold">&apos;{insightData.budget.name}&apos;</span> kamu bakal sisa <span className={cn("font-bold", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")}>{formatCurrency(insightData.budget.newRemaining)}</span> dari <span className="line-through opacity-60">{formatCurrency(insightData.budget.currentRemaining)}</span> ya.
@@ -428,20 +442,30 @@ export default function SmartAddPage() {
                                     </motion.div>
                                 )}
 
-                                {pageState === 'MULTI_CONFIRMING' && multiParsedData.length > 0 && (
+                                {pageState === 'MULTI_CONFIRMING' && multiParsedData.length > 0 && !inputValue && (
                                     <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                                         <div className="flex justify-start"><div className="p-3 bg-card rounded-2xl">Wah, saya menemukan <span className="font-bold">{multiParsedData.length} transaksi</span> sekaligus!</div></div>
                                         <div className="space-y-2">
                                             {multiParsedData.map((tx, idx) => (
-                                                <div key={idx} className="bg-card border rounded-xl p-3 flex justify-between items-center shadow-sm group relative overflow-hidden" style={{ '--category-color': getCategoryVisuals(tx.category).color } as React.CSSProperties}>
+                                                <div key={idx} className="bg-card rounded-xl p-3 flex justify-between items-center group relative overflow-hidden">
                                                     <div 
-                                                        className="absolute top-0 left-0 w-1 h-full opacity-60 bg-[var(--category-color)]" 
+                                                        className={cn(
+                                                            "absolute top-0 left-0 w-1 h-full opacity-60",
+                                                            getCategoryVisuals(tx.category).color.replace('text-', 'bg-')
+                                                        )}
                                                     />
                                                     <div className="flex items-center gap-3">
                                                         <div 
-                                                            className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 bg-[var(--category-color)]/10 text-[var(--category-color)]"
+                                                            className={cn(
+                                                                "h-10 w-10 rounded-xl flex items-center justify-center shrink-0",
+                                                                getCategoryVisuals(tx.category).bgColor,
+                                                                getCategoryVisuals(tx.category).color
+                                                            )}
                                                         >
-                                                            {React.createElement(getCategoryVisuals(tx.category).icon, { size: 18 })}
+                                                            {(() => {
+                                                                const Icon = getCategoryVisuals(tx.category).icon;
+                                                                return <Icon size={18} />;
+                                                            })()}
                                                         </div>
                                                         <div className="flex flex-col">
                                                             <span className="text-sm font-medium text-foreground">{tx.description}</span>
@@ -471,7 +495,7 @@ export default function SmartAddPage() {
                             </AnimatePresence>
                         </div>
                     </main>
-                    <footer className="p-4 bg-background/80 backdrop-blur-md border-t">
+                    <footer className="p-4 bg-background/80 backdrop-blur-md">
                         <AnimatePresence mode="wait">
                             {(pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') && (
                                 <motion.div 
@@ -480,7 +504,7 @@ export default function SmartAddPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="mb-4"
                                 >
-                                    <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card h-14 shadow-sm">
+                                    <div className="flex items-center gap-2 w-full p-1 rounded-full bg-card h-14">
                                         <Textarea 
                                             ref={textareaRef} 
                                             placeholder="Koreksi lewat chat..." 
@@ -564,10 +588,10 @@ export default function SmartAddPage() {
                                 </motion.div>
                             ) : (
                                 <motion.div key="idle-input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-                                    <div className="flex items-center gap-2 w-full p-1 border rounded-full bg-card h-14">
+                                    <div className="flex items-center gap-2 w-full p-1 rounded-full bg-card h-14">
                                         <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" aria-label="Upload receipt image" />
                                         <Button size="icon" variant="ghost" className="h-11 w-11 shrink-0 rounded-full bg-muted" onClick={() => fileInputRef.current?.click()} aria-label="Attach file"><Paperclip className="h-5 w-5" /></Button>
-                                        <Textarea ref={textareaRef} placeholder="Ketik atau rekam suara..." className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0" minRows={1} maxRows={5} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processInput(inputValue); setInputValue(''); } }} disabled={pageState !== 'IDLE'} aria-label="Transaction description input" inputMode="text" autoCapitalize="sentences" autoComplete="off" spellCheck="false" />
+                                        <Textarea ref={textareaRef} placeholder="Ketik atau rekam suara..." className="flex-1 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium placeholder:text-primary resize-none min-h-0 !p-0" minRows={1} maxRows={5} value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processInput(inputValue); setInputValue(''); } }} disabled={pageState === 'ANALYZING'} aria-label="Transaction description input" inputMode="text" autoCapitalize="sentences" autoComplete="off" spellCheck="false" />
                                         <div className="flex items-center">
                                             <AnimatePresence>
                                                 {pageState === 'ANALYZING' ? <LoaderCircle className="animate-spin h-5 w-5 text-muted-foreground mx-3" /> : (

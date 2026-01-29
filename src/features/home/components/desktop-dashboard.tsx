@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useMemo, useState, useEffect, useTransition } from 'react';
+import { useMemo, useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/hooks/use-data';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
@@ -13,10 +13,10 @@ import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-    Plus, 
     Search, 
     RefreshCw,
-    BarChart3
+    BarChart3,
+    Sparkles
 } from 'lucide-react';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays } from 'date-fns';
 
@@ -37,6 +37,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
+import { DashboardSmartInsight } from '@/features/home/components/dashboard-smart-insight';
 
 export const DesktopDashboard = () => {
     const { wallets, transactions } = useData();
@@ -44,7 +45,6 @@ export const DesktopDashboard = () => {
     const { debts } = useDebts();
     const { budgets } = useBudgets();
     const { goals } = useGoals();
-    const { setIsTxModalOpen } = useUI();
     const router = useRouter();
 
     const [mounted, setMounted] = useState(false);
@@ -207,6 +207,22 @@ export const DesktopDashboard = () => {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        className="h-10 w-10 rounded-md bg-background shadow-sm text-violet-600 hover:text-violet-700 hover:bg-violet-50"
+                                        onClick={() => router.push('/add-smart')}
+                                        aria-label="Smart Add AI"
+                                    >
+                                        <Sparkles className="h-4 w-4" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Smart Add (AI)</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
                                         className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
                                         onClick={handleRefresh}
                                         disabled={isPending}
@@ -305,6 +321,14 @@ export const DesktopDashboard = () => {
                     <div className="lg:col-span-4 space-y-6">
                         <ErrorBoundary>
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
+                        </ErrorBoundary>
+                        <ErrorBoundary>
+                            <DashboardSmartInsight 
+                                income={currentStats.income} 
+                                expense={currentStats.expense} 
+                                net={currentStats.net}
+                                hasTransactions={filteredTransactions.length > 0}
+                            />
                         </ErrorBoundary>
                         <ErrorBoundary>
                             <DashboardWallets wallets={visibleWallets} />

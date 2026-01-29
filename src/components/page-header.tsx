@@ -39,7 +39,7 @@ export const PageHeader = ({
   };
 
   return (
-    <header className="h-16 flex items-center shrink-0 border-b bg-background sticky top-0 z-20">
+    <header className="h-16 flex items-center shrink-0 bg-background sticky top-0 z-20">
       <div className="max-w-7xl mx-auto w-full px-4 flex items-center justify-between relative">
         {/* Mobile Back Button */}
         {showBackButton && (
