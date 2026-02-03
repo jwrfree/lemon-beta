@@ -198,7 +198,12 @@ export const TransactionListItem = ({ transaction, hideDate = false }: { transac
                 style={{ x }}
                 className="relative bg-card z-20"
                 whileTap={{ scale: 0.98 }}
-                onTap={() => openEditTransactionModal(transaction)}
+                onTap={() => {
+                    // Only open edit modal if we haven't dragged significantly
+                    if (Math.abs(x.get()) < 5) {
+                        openEditTransactionModal(transaction);
+                    }
+                }}
             >
                 <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
             </motion.div>

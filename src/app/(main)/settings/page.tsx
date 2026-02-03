@@ -16,51 +16,26 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Shield, Moon, Sun, BellRing, HandCoins, Calculator, User } from 'lucide-react';
+import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Moon, Sun, BellRing, HandCoins, Calculator, User } from 'lucide-react';
 import { useApp } from '@/providers/app-provider';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { useBiometric } from '@/hooks/use-biometric';
-import { Switch } from '@/components/ui/switch';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
 
 function SettingsContent() {
     const router = useRouter();
-    const { user, userData, handleSignOut, updateUserBiometricStatus } = useApp();
+    const { user, userData, handleSignOut } = useApp();
     const { theme, setTheme } = useTheme();
     const { showToast } = useUI();
-    const { isBiometricSupported, registerBiometric, unregisterBiometric } = useBiometric();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
-
-    const handleBiometricToggle = async (enabled: boolean) => {
-        if (!user?.email) return;
-
-        try {
-            if (enabled) {
-                await registerBiometric(user.email, user.id);
-                await updateUserBiometricStatus(true);
-                localStorage.setItem('lemon_biometric_user', user.email);
-                showToast("Login sidik jari diaktifkan.", 'success');
-            } else {
-                await unregisterBiometric(user.id);
-                await updateUserBiometricStatus(false);
-                localStorage.removeItem('lemon_biometric_user');
-                showToast("Login sidik jari dinonaktifkan.", 'info');
-            }
-        } catch (error) {
-            console.error("Biometric operation failed:", error);
-            showToast("Operasi biometrik gagal. Coba lagi.", 'error');
-            await updateUserBiometricStatus(!enabled);
-        }
-    };
 
     const managementItems = [
         { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: '/wallets', desc: 'Atur dompet dan pantau saldo' },
@@ -146,33 +121,6 @@ function SettingsContent() {
                         {/* LEFT COLUMN: SECURITY & TOOLS */}
                         <div className="space-y-6">
                             <section className="space-y-3">
-                                <h3 className="text-xs font-semibold tracking-[0.05em] text-muted-foreground px-1">Keamanan</h3>
-                                <Card className="border-none shadow-sm bg-card overflow-hidden">
-                                    <CardContent className="p-0">
-                                        {isBiometricSupported ? (
-                                            <div className="flex items-center gap-4 p-4">
-                                                <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                                                    <Shield className="h-5 w-5" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">Biometrik</p>
-                                                    <p className="text-[11px] text-muted-foreground">Login dengan sidik jari</p>
-                                                </div>
-                                                <Switch
-                                                    checked={userData?.isBiometricEnabled || false}
-                                                    onCheckedChange={handleBiometricToggle}
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="p-4 text-center">
-                                                <p className="text-xs text-muted-foreground italic">Biometrik tidak tersedia di perangkat ini</p>
-                                            </div>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                            </section>
-
-                            <section className="space-y-3">
                                 <h3 className="text-sm font-medium tracking-tight text-muted-foreground px-1">Alat Bantu</h3>
                                 <Card className="border-none shadow-sm bg-card overflow-hidden group">
                                     <button 
@@ -241,7 +189,7 @@ function SettingsContent() {
                     
                     <div className="text-center py-8 space-y-1">
                         <p className="text-[10px] font-medium tracking-[0.1em] text-primary/40">Lemon Finance</p>
-                        <p className="text-[10px] text-muted-foreground">Versi 2.1.0 (Public Beta) • Terlindungi oleh WebAuthn</p>
+                        <p className="text-[10px] text-muted-foreground">Versi 2.1.0 (Public Beta)</p>
                     </div>
                 </div>
             </main>

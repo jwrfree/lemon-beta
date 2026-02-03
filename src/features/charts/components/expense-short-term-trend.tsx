@@ -99,26 +99,26 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
                 </div>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div className="rounded-lg bg-muted/50 p-4 border-none">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>
-                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(totalSpent)}</p>
-                        <p className={cn("text-[11px] font-bold uppercase mt-1", delta > 0 ? "text-destructive" : "text-teal-600")}>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none">
+                        <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>
+                        <p className="text-base sm:text-lg font-extrabold text-foreground tabular-nums">{formatCurrency(totalSpent)}</p>
+                        <p className={cn("text-[10px] sm:text-[11px] font-bold uppercase mt-1", delta > 0 ? "text-destructive" : "text-teal-600")}>
                             {percentChange ? (percentChange > 0 ? '+' : '') + percentChange.toFixed(1) + '%' : '—'}
                         </p>
                     </div>
-                    <div className="rounded-lg bg-muted/50 p-4 border-none">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
-                        <p className="text-lg font-extrabold text-foreground">{formatCurrency(average)}</p>
-                        <p className="text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-wider">PER HARI</p>
+                    <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none">
+                        <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
+                        <p className="text-base sm:text-lg font-extrabold text-foreground tabular-nums">{formatCurrency(average)}</p>
+                        <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-wider">PER HARI</p>
                     </div>
-                    <div className="rounded-lg bg-muted/50 p-4 border-none">
-                        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
+                    <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none col-span-2 sm:col-span-1">
+                        <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
                         {peakDay ? (
-                            <>
-                                <p className="text-lg font-extrabold text-foreground">{formatCurrency(peakDay.total)}</p>
-                                <p className="text-[11px] font-bold text-muted-foreground mt-1 uppercase tracking-wider">{peakDay.shortLabel}</p>
-                            </>
+                            <div className="flex items-center justify-between sm:block">
+                                <p className="text-base sm:text-lg font-extrabold text-foreground tabular-nums">{formatCurrency(peakDay.total)}</p>
+                                <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground sm:mt-1 uppercase tracking-wider">{peakDay.shortLabel}</p>
+                            </div>
                         ) : (
                             <p className="text-sm text-muted-foreground">None</p>
                         )}

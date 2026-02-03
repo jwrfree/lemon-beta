@@ -8,7 +8,8 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categoryDetails } from '@/lib/categories';
 import { PlaceholderContent } from './placeholder-content';
-import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw } from 'lucide-react';
+import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useData } from '@/hooks/use-data';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
@@ -23,78 +24,53 @@ import type { Transaction } from '@/types/models';
 type TabValue = 'expense' | 'income' | 'net';
 
 export const MonthlySummary = ({ type, transactions: manualTransactions }: { type: TabValue, transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions, wallets, debts } = useData();
-    const transactions = manualTransactions || hookTransactions;
     const router = useRouter();
+    const { transactions: hookTransactions, wallets } = useData();
+    const transactions = manualTransactions || hookTransactions;
+    const isMobile = useIsMobile();
     const [aiInsight, setAiInsight] = useState<string | null>(null);
     const [isAiLoading, setIsAiLoading] = useState(false);
 
-    const handleGenerateInsight = async () => {
+    const generateInsight = async () => {
         setIsAiLoading(true);
         try {
             const now = new Date();
-            // If manualTransactions provided, we use them as the base (they are already date-filtered)
-            // Otherwise we fallback to current month
-            const relevantTransactions = manualTransactions || transactions.filter(t => isSameMonth(parseISO(t.date), now));
+            const relevantTransactions = manualTransactions || transactions.filter((t) => isSameMonth(parseISO(t.date), now));
             
-            const monthlyIncome = relevantTransactions
-                .filter(t => t.type === 'income')
-                .reduce((acc, t) => acc + t.amount, 0);
+            const income = relevantTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expense = relevantTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const totalBalance = (wallets || []).reduce((sum, w) => sum + (w.balance || 0), 0);
+            const totalDebt = transactions.filter(t => t.category === 'Hutang').reduce((sum, t) => sum + t.amount, 0);
+            
+            // Calculate debt change this month
+            const debtTransactionsMonth = relevantTransactions.filter(t => t.category === 'Hutang');
+            const debtChangeMonth = debtTransactionsMonth.reduce((sum, t) => sum + t.amount, 0);
+            
+            // Analyze for "Silent Growth" (debts increasing)
+            const hasSilentGrowth = debtChangeMonth > 0;
+            
+            // Simple projection: if they keep paying average monthly amount, how long to clear?
+            const averageMonthlyPayment = Math.abs(transactions
+                .filter(t => t.category === 'Hutang' && t.amount < 0)
+                .reduce((sum, t) => sum + t.amount, 0) / 12); // crude 12 month avg
+            
+            const projectedPayoffMonths = averageMonthlyPayment > 0 ? Math.ceil(totalDebt / averageMonthlyPayment) : 0;
 
-            const monthlyExpense = relevantTransactions
-                .filter(t => t.type === 'expense')
-                .reduce((acc, t) => acc + t.amount, 0);
-
-            const totalBalance = wallets.reduce((acc, w) => acc + w.balance, 0);
-
-            // Calculate top categories
-            const categoryMap = new Map<string, number>();
-            relevantTransactions
-                .filter(t => t.type === 'expense')
-                .forEach(t => {
-                    const current = categoryMap.get(t.category) || 0;
-                    categoryMap.set(t.category, current + t.amount);
-                });
-            
-            const topExpenseCategories = Array.from(categoryMap.entries())
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 3)
-                .map(([category, amount]) => ({ category, amount }));
-
-            // Debt analytics for AI
-            const myDebts = debts?.filter(d => d.direction === 'owed') || [];
-            const totalDebt = myDebts.reduce((acc, d) => acc + (d.outstandingBalance ?? 0), 0);
-            
-            const lastMonth = subMonths(now, 1);
-            const calculateHistoricalBalance = (targetDate: Date) => {
-                return myDebts.reduce((acc, d) => {
-                    const startDate = d.startDate ? parseISO(d.startDate) : (d.createdAt ? parseISO(d.createdAt) : new Date(0));
-                    if (isAfter(startDate, targetDate)) return acc;
-                    const paymentsUntilTarget = d.payments?.filter(p => {
-                        const pDate = p.paymentDate ? parseISO(p.paymentDate) : new Date(0);
-                        return !isAfter(pDate, targetDate);
-                    }) || [];
-                    const totalPaidUntilTarget = paymentsUntilTarget.reduce((sum, p) => sum + p.amount, 0);
-                    const estimatedBalance = Math.max(0, (d.principal ?? 0) - totalPaidUntilTarget);
-                    return acc + estimatedBalance;
-                }, 0);
-            };
-            
-            const lastMonthBalance = calculateHistoricalBalance(lastMonth);
-            const debtChangeMonth = totalDebt - lastMonthBalance;
-            
-            const hasSilentGrowth = myDebts.some(d => (d.outstandingBalance ?? 0) > (d.principal ?? 0) && (d.interestRate ?? 0) > 0);
-            
-            // Simplified projection
-            const threeMonthsAgo = subMonths(now, 3);
-            const recentPayments = myDebts.flatMap(d => d.payments || [])
-                .filter(p => p.paymentDate && isAfter(parseISO(p.paymentDate), threeMonthsAgo));
-            const avgMonthlyPayment = recentPayments.reduce((sum, p) => sum + p.amount, 0) / 3;
-            const projectedPayoffMonths = avgMonthlyPayment > 0 ? Math.ceil(totalDebt / avgMonthlyPayment) : undefined;
+            const topExpenseCategories = Object.entries(
+                relevantTransactions
+                    .filter(t => t.type === 'expense')
+                    .reduce((acc, t) => {
+                        acc[t.category] = (acc[t.category] || 0) + t.amount;
+                        return acc;
+                    }, {} as Record<string, number>)
+            )
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([category, amount]) => ({ category, amount }));
 
             const data: FinancialData = {
-                monthlyIncome,
-                monthlyExpense,
+                monthlyIncome: income,
+                monthlyExpense: expense,
                 totalBalance,
                 topExpenseCategories,
                 recentTransactionsCount: relevantTransactions.length,
@@ -264,20 +240,20 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
     const TopCategoryIcon = summary.topCategory?.icon as React.ElementType | undefined;
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-4 sm:space-y-6">
             <Card className={cn('relative overflow-hidden border-none text-white shadow-xl', summary.heroGradient)}>
-                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                    <Icon className="h-40 w-40 rotate-12" />
+                <div className="absolute top-0 right-0 p-4 sm:p-8 opacity-10 pointer-events-none">
+                    <Icon className="h-24 w-24 sm:h-40 sm:w-40 rotate-12" />
                 </div>
-                <CardHeader className="space-y-6 relative z-10">
+                <CardHeader className="space-y-4 sm:space-y-6 relative z-10 p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-3">
-                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-3 py-1 font-medium text-[10px]">
-                            <Calendar className="h-3.5 w-3.5" />
+                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-2 sm:px-3 py-0.5 sm:py-1 font-medium text-[9px] sm:text-[10px]">
+                            <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             {summary.monthLabel}
                         </Badge>
                         <Badge
                             className={cn(
-                                'border-none bg-white/30 text-white font-medium text-[11px] px-3',
+                                'border-none bg-white/30 text-white font-medium text-[10px] sm:text-[11px] px-2 sm:px-3',
                                 summary.type === 'net' && summary.isPositive && 'bg-teal-600/60',
                                 summary.type === 'net' && !summary.isPositive && 'bg-destructive/60'
                             )}
@@ -286,16 +262,16 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                         </Badge>
                     </div>
                     <div className="space-y-1">
-                        <CardTitle className="text-[11px] font-medium text-white/70">{summary.title}</CardTitle>
-                        <div className="text-4xl md:text-5xl font-semibold tracking-tight text-white tabular-nums">
+                        <CardTitle className="text-[10px] sm:text-[11px] font-medium text-white/70">{summary.title}</CardTitle>
+                        <div className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-white tabular-nums">
                             <AnimatedCounter value={summary.value} />
                         </div>
                     </div>
-                    <p className="text-sm font-medium leading-relaxed text-white/90 max-w-[280px]">{summary.heroDescription}</p>
+                    <p className="text-xs sm:text-sm font-medium leading-relaxed text-white/90 max-w-[280px]">{summary.heroDescription}</p>
                 </CardHeader>
-                <CardContent className="space-y-6 pb-8 pt-0 relative z-10">
+                <CardContent className="space-y-4 sm:space-y-6 pb-6 sm:pb-8 pt-0 relative z-10 px-4 sm:px-6">
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between text-[11px] font-medium text-white/60">
+                        <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-medium text-white/60">
                             <span>Laju Hari</span>
                             <span className="tabular-nums">
                                 {summary.daysElapsed} / {summary.daysInMonth} Hari
@@ -303,38 +279,38 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                         </div>
                         <UIProgress
                             value={summary.monthProgress}
-                            className="h-1.5 bg-white/20 border-none"
+                            className="h-1 sm:h-1.5 bg-white/20 border-none"
                             indicatorClassName="bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)]"
                         />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
                         {summary.type === 'net' ? (
                             <>
-                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
-                                    <p className="text-[11px] font-medium text-white/50 mb-1">Pemasukan</p>
-                                    <p className="text-base font-semibold text-white tabular-nums">
+                                <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
+                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Pemasukan</p>
+                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
-                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
-                                    <p className="text-[11px] font-medium text-white/50 mb-1">Pengeluaran</p>
-                                    <p className="text-base font-semibold text-white tabular-nums">
+                                <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
+                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Pengeluaran</p>
+                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.expense)}
                                     </p>
                                 </div>
                             </>
                         ) : (
                             <>
-                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
-                                    <p className="text-[11px] font-medium text-white/50 mb-1">Per Hari</p>
-                                    <p className="text-base font-semibold text-white tabular-nums">
+                                <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
+                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Per Hari</p>
+                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
-                                <div className="rounded-lg bg-white/20 p-4 border border-white/20">
-                                    <p className="text-[11px] font-medium text-white/50 mb-1">Per Transaksi</p>
-                                    <p className="text-base font-semibold text-white tabular-nums">
+                                <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
+                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Per Transaksi</p>
+                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerTransaction)}
                                     </p>
                                 </div>
@@ -345,118 +321,130 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
             </Card>
 
             {summary.type !== 'net' && summary.topCategory ? (
-                <Card className="rounded-3xl border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
-                    <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                        <div className={cn('rounded-2xl p-3 group-hover:scale-110 transition-transform duration-500', summary.topCategory.bgColor)}>
-                            {TopCategoryIcon ? (
-                                <TopCategoryIcon className={cn('h-6 w-6', summary.topCategory.color)} />
-                            ) : null}
+                <Card className="rounded-2xl sm:rounded-3xl border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                    <CardHeader className="flex flex-row items-center gap-3 sm:gap-4 pb-3 sm:pb-4 p-4 sm:p-6">
+                        <div className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
+                            {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
                         </div>
-                        <div className="space-y-0.5">
-                            <CardTitle className="text-[11px] font-semibold tracking-[0.05em] text-muted-foreground">Kategori Terbesar</CardTitle>
-                            <p className="text-lg font-extrabold tracking-tight">{summary.topCategory.name}</p>
+                        <div className="flex-1 min-w-0">
+                            <CardTitle className="text-xs sm:text-sm font-semibold text-muted-foreground truncate">Kategori Terbesar</CardTitle>
+                            <p className="text-lg sm:text-xl font-extrabold text-foreground truncate">{summary.topCategory.name}</p>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex items-end justify-between">
-                            <p className="text-2xl font-extrabold text-primary">
-                                {formatCurrency(summary.topCategory.value)}
-                            </p>
-                            <Badge variant="outline" className="font-semibold text-[11px] border-primary/20 text-primary">
-                                {summary.topCategory.percentage.toFixed(1)}% total
-                            </Badge>
-                        </div>
-                    </CardContent>
-                </Card>
-            ) : null}
-
-            {summary.topTransaction ? (
-                <Card
-                    className="rounded-3xl border-none bg-card shadow-sm transition-all hover:shadow-md hover:bg-background cursor-pointer group"
-                    onClick={() => handleTxClick(summary.topTransaction.id)}
-                >
-                    <CardHeader className="flex flex-row items-start justify-between gap-2 pb-2">
-                        <div className="space-y-0.5">
-                            <CardTitle className="text-[11px] font-semibold tracking-[0.05em] text-muted-foreground">Transaksi Termahal</CardTitle>
-                            <p className="text-base font-semibold tracking-tight group-hover:text-primary transition-colors">
-                                {summary.topTransaction.description || 'Tanpa deskripsi'}
-                            </p>
-                        </div>
-                        <div className="p-2 rounded-full bg-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                            <ArrowRight className="h-4 w-4 text-primary" />
+                        <div className="text-right">
+                            <p className="text-lg sm:text-xl font-black text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
+                            <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Kontribusi</p>
                         </div>
                     </CardHeader>
-                    <CardContent>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="bg-muted/50 text-[11px] font-semibold border-none">
-                                    {summary.topTransaction.category}
-                                </Badge>
-                                <span className="text-[11px] font-medium text-muted-foreground">
-                                    {summary.topTransaction.date ? format(parseISO(summary.topTransaction.date), 'd MMM') : ''}
-                                </span>
+                    <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 sm:space-y-6">
+                        <div className="space-y-1.5 sm:space-y-2">
+                            <div className="flex justify-between text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                                <span>Total di kategori ini</span>
+                                <span className="text-foreground tabular-nums">{formatCurrency(summary.topCategory.value)}</span>
                             </div>
-                            <span className="font-extrabold text-foreground">
-                                {formatCurrency(summary.topTransaction.amount)}
-                            </span>
+                            <UIProgress value={summary.topCategory.percentage} className="h-1.5 sm:h-2" />
+                        </div>
+
+                        {summary.topTransaction && (
+                            <div 
+                                onClick={() => handleTxClick(summary.topTransaction.id)}
+                                className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
+                            >
+                                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-background flex items-center justify-center border border-muted shadow-sm group-hover/item:rotate-12 transition-transform">
+                                    <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-tighter mb-0.5">Transaksi Terbesar</p>
+                                    <p className="text-xs sm:text-sm font-bold text-foreground truncate">{summary.topTransaction.description}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-xs sm:text-sm font-extrabold text-foreground tabular-nums">{formatCurrency(summary.topTransaction.amount)}</p>
+                                    <p className="text-[9px] sm:text-[10px] font-medium text-muted-foreground">{format(parseISO(summary.topTransaction.date), 'd MMM')}</p>
+                                </div>
+                                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
+                            </div>
+                        )}
+
+                        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-primary/5 border border-primary/10">
+                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg text-primary shrink-0 mt-0.5">
+                                <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </div>
+                            <p className="text-[11px] sm:text-xs text-primary/80 font-medium leading-relaxed">
+                                {summary.tipCopy}
+                            </p>
                         </div>
                     </CardContent>
                 </Card>
             ) : null}
 
-            <Card className="rounded-3xl border-2 border-dashed border-primary/20 bg-primary/5 shadow-none">
-                <CardContent className="flex items-start gap-4 p-5">
-                    <div className="rounded-2xl bg-primary/10 p-3 text-primary shadow-sm">
-                        <Sparkles className="h-5 w-5" />
-                    </div>
-                    <div className="space-y-1 flex-1">
-                        <div className="flex items-center justify-between">
-                            <p className="text-[11px] font-semibold tracking-[0.05em] text-primary/70">Insight Lemon AI</p>
+            {/* AI INSIGHT SECTION */}
+            <Card className="rounded-2xl sm:rounded-3xl border-none bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 shadow-sm border border-indigo-500/20 dark:border-indigo-500/30 overflow-hidden relative group">
+                {/* Decorative background elements */}
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-all duration-500"></div>
+                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/10 blur-3xl rounded-full group-hover:bg-pink-500/20 transition-all duration-500"></div>
+                
+                <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6 relative z-10">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="p-2 sm:p-2.5 bg-indigo-500 rounded-xl sm:rounded-2xl shadow-lg shadow-indigo-500/30 text-white animate-pulse">
+                                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </div>
+                            <div>
+                                <CardTitle className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">AI Financial Insight</CardTitle>
+                                <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
+                            </div>
+                        </div>
+                        {aiInsight && (
                             <Button 
                                 variant="ghost" 
-                                size="icon" 
-                                onClick={handleGenerateInsight} 
-                                disabled={isAiLoading} 
-                                className="h-6 w-6 -mr-2 text-primary/60 hover:text-primary hover:bg-primary/10"
+                                size="sm" 
+                                onClick={generateInsight}
+                                className="h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
                             >
-                                <RefreshCw className={cn("h-3.5 w-3.5", isAiLoading && "animate-spin")} />
-                            </Button>
-                        </div>
-                        <div className="text-sm font-medium leading-relaxed text-foreground/80 min-h-[3rem] flex items-center">
-                            <AnimatePresence mode="wait">
-                                {isAiLoading ? (
-                                    <motion.div 
-                                        key="loading"
-                                        initial={{ opacity: 0, filter: "blur(4px)" }}
-                                        animate={{ opacity: 1, filter: "blur(0px)" }}
-                                        exit={{ opacity: 0, filter: "blur(4px)" }}
-                                        className="flex items-center gap-2 text-primary/70"
-                                    >
-                                        <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
-                                        <span>Sedang menganalisis keuanganmu...</span>
-                                    </motion.div>
-                                ) : (
-                                    <motion.span
-                                        key={aiInsight || summary.tipCopy}
-                                        initial={{ opacity: 0, y: 5 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.4 }}
-                                    >
-                                        {aiInsight || summary.tipCopy}
-                                    </motion.span>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                        {!aiInsight && !isAiLoading && (
-                            <Button 
-                                variant="link" 
-                                onClick={handleGenerateInsight} 
-                                className="h-auto p-0 text-xs text-primary mt-1 font-medium"
-                            >
-                                Analisis dengan AI ✨
+                                <RefreshCw className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", isAiLoading && "animate-spin")} />
                             </Button>
                         )}
                     </div>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-6 pt-0 relative z-10">
+                    {!aiInsight ? (
+                        <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-center space-y-3 sm:space-y-4">
+                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-indigo-100 dark:border-indigo-900/30 shadow-inner">
+                                <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-400 opacity-50" />
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs sm:text-sm font-semibold text-foreground">Butuh pandangan baru?</p>
+                                <p className="text-[10px] sm:text-[11px] text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
+                            </div>
+                            <Button 
+                                onClick={generateInsight} 
+                                disabled={isAiLoading}
+                                className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-bold shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95"
+                            >
+                                {isAiLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
+                                        Menganalisis...
+                                    </>
+                                ) : (
+                                    'Dapatkan Insight'
+                                )}
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-xl sm:rounded-2xl border border-white dark:border-zinc-800 shadow-sm backdrop-blur-sm">
+                                <div className="prose prose-sm dark:prose-invert max-w-none">
+                                    <p className="text-xs sm:text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap font-medium">
+                                        {aiInsight}
+                                    </p>
+                                </div>
+                            </div>
+                            <p className="text-[9px] sm:text-[10px] text-center text-muted-foreground font-medium flex items-center justify-center gap-1.5">
+                                <AlertCircle className="h-3 w-3" />
+                                Analisis AI mungkin tidak sepenuhnya akurat. Gunakan sebagai pertimbangan tambahan.
+                            </p>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </section>

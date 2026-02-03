@@ -138,21 +138,22 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
                 <CustomToast />
 
-                <AnimatePresence>
-                    {isTxModalOpen && <TransactionForm initialData={transactionToEdit} onClose={handleCloseTxModal} />}
-                    {isWalletModalOpen && <AddWalletModal onClose={() => setIsWalletModalOpen(false)} />}
-                    {isBudgetModalOpen && <AddBudgetModal onClose={() => setIsBudgetModalOpen(false)} />}
-                    {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
-                    {isTransferModalOpen && <AddTransferModal onClose={() => setIsTransferModalOpen(false)} />}
-                    {isEditWalletModalOpen && walletToEdit && <EditWalletModal wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
-                    {isGoalModalOpen && <GoalForm initialData={goalToEdit} onClose={handleCloseGoalModal} />}
-                    {isReminderModalOpen && <ReminderForm initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
-                    {isDebtModalOpen && <DebtForm initialData={debtToEdit} onClose={handleCloseDebtModal} />}
+                <AnimatePresence mode="wait">
+                    {isTxModalOpen && <TransactionForm key="transaction-form" initialData={transactionToEdit} onClose={handleCloseTxModal} />}
+                    {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}
+                    {isBudgetModalOpen && <AddBudgetModal key="add-budget-modal" onClose={() => setIsBudgetModalOpen(false)} />}
+                    {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal key="edit-budget-modal" budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
+                    {isTransferModalOpen && <AddTransferModal key="add-transfer-modal" onClose={() => setIsTransferModalOpen(false)} />}
+                    {isEditWalletModalOpen && walletToEdit && <EditWalletModal key="edit-wallet-modal" wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
+                    {isGoalModalOpen && <GoalForm key="goal-form" initialData={goalToEdit} onClose={handleCloseGoalModal} />}
+                    {isReminderModalOpen && <ReminderForm key="reminder-form" initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
+                    {isDebtModalOpen && <DebtForm key="debt-form" initialData={debtToEdit} onClose={handleCloseDebtModal} />}
                     {isDebtPaymentModalOpen && debtForPayment && (
-                        <DebtPaymentForm debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
+                        <DebtPaymentForm key="debt-payment-form" debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
                     )}
                     {isDeleteModalOpen && transactionToDelete && (
                         <ConfirmDeleteModal
+                            key="confirm-delete-modal"
                             transaction={transactionToDelete}
                             onClose={closeDeleteModal}
                             onConfirm={handleConfirmDelete}
