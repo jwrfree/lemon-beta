@@ -2,6 +2,18 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Unreleased] - February 2026
+
+### 🛠 Codebase Refactoring & Quality Audit
+
+- **Form Management Overhaul**: Refactored Debt, Wallet, and Transaction forms to use `React Hook Form` and `Zod` for robust validation and improved UX.
+- **Type Safety Enforcement**: Eliminated 100+ instances of `any` types in critical files ([use-assets.ts](file:///g:/01_projects/lemon-beta/src/features/assets/hooks/use-assets.ts), [lazy-charts.tsx](file:///g:/01_projects/lemon-beta/src/features/charts/components/lazy-charts.tsx), etc.) to improve developer experience and prevent runtime bugs.
+- **Hook Modernization**: Replaced deprecated `useApp` hook with modular `useAuth` and `useActions` across 13+ files, reducing unnecessary re-renders and improving code modularity.
+- **Performance Optimization**: Optimized Context Providers (`AuthProvider`, `ActionProvider`, `UIProvider`) using `useMemo` and `useCallback` for stable state management.
+- **Icon Casing Fix**: Resolved 10 console errors related to incorrect React component casing for Lucide icons in [chart-utils.ts](file:///g:/01_projects/lemon-beta/src/features/charts/lib/chart-utils.ts).
+- **Centralized Actions**: Moved core CRUD operations to `ActionProvider` for better maintainability and state consistency.
+- **Clean Code**: Deleted legacy `use-data.ts` and other redundant files to reduce technical debt.
+
 ## [Unreleased] - January 2026
 
 ### ✨ New Features
