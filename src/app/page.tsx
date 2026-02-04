@@ -6,14 +6,14 @@ import { AnimatePresence } from 'framer-motion';
 import { LoginPage } from '@/features/auth/components/login-page';
 import { SignUpPage } from '@/features/auth/components/signup-page';
 import { ForgotPasswordPage } from '@/features/auth/components/forgot-password-page';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { useRouter } from 'next/navigation';
 import type { AuthModalView } from '@/types/auth';
 import { LoaderCircle } from 'lucide-react';
 
 export default function WelcomePage() {
     const [authView, setAuthView] = useState<AuthModalView>('login');
-    const { user, isLoading } = useApp();
+    const { user, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {

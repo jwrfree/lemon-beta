@@ -85,7 +85,7 @@ export const DashboardHero = ({
                     <CardDescription className="text-xs">Atur cakupan statistik & grafik</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    <Select value={chartRange} onValueChange={(v: any) => setChartRange(v)}>
+                    <Select value={chartRange} onValueChange={(v) => setChartRange(v as '30' | '90' | 'month')}>
                         <SelectTrigger aria-label="Pilih rentang data">
                             <SelectValue placeholder="Rentang" />
                         </SelectTrigger>

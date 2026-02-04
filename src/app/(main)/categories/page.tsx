@@ -12,6 +12,7 @@ import {
     ReceiptText, ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake
 } from 'lucide-react';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { useActions } from '@/providers/action-provider';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
@@ -19,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { CategoryForm } from '@/features/transactions/components/category-form';
 import { AnimatePresence } from 'framer-motion';
 import { PageHeader } from "@/components/page-header";
+import type { Category } from '@/lib/categories';
 
 const iconMap: Record<string, any> = {
     Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
@@ -28,13 +30,14 @@ const iconMap: Record<string, any> = {
 
 export default function CategoriesPage() {
     const router = useRouter();
-    const { categories, isLoading, deleteCategory, addCategory, updateCategory } = useCategories();
+    const { categories, isLoading } = useCategories();
+    const { addCategory, updateCategory, deleteCategory } = useActions();
     const { showToast } = useUI();
     const [activeTab, setActiveTab] = useState<'expense' | 'income'>('expense');
     const [searchQuery, setSearchQuery] = useState('');
     
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [editingCategory, setEditingCategory] = useState<any>(null);
+    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
     const filteredCategories = categories.filter(c => 
         c.type === activeTab && 
@@ -46,34 +49,28 @@ export default function CategoriesPage() {
         setIsFormOpen(true);
     };
 
-    const handleOpenEdit = (cat: any) => {
+    const handleOpenEdit = (cat: Category) => {
         setEditingCategory(cat);
         setIsFormOpen(true);
     };
 
-    const handleSave = async (data: any) => {
+    const handleSave = async (data: Partial<Category>) => {
         if (editingCategory) {
-            const { error } = await updateCategory(editingCategory.id, data);
-            if (error) showToast("Gagal update kategori.", 'error');
-            else showToast("Kategori berhasil diupdate.", 'success');
+            await updateCategory(editingCategory.id, data);
         } else {
-            const result = await addCategory(data);
-            if (!result) showToast("Gagal menambah kategori: pengguna belum login.", 'error');
-            else if (result.error) showToast("Gagal menambah kategori.", 'error');
-            else showToast("Kategori baru ditambahkan.", 'success');
+            await addCategory(data);
         }
+        setIsFormOpen(false);
     };
 
-    const handleDelete = async (id: string, isDefault: boolean) => {
+    const handleDeleteClick = async (id: string, isDefault?: boolean) => {
         if (isDefault) {
             showToast("Kategori bawaan tidak bisa dihapus.", 'error');
             return;
         }
         
         if (confirm("Hapus kategori ini? Transaksi lama mungkin akan kehilangan kategori ini.")) {
-            const { error } = await deleteCategory(id);
-            if (error) showToast("Gagal menghapus kategori.", 'error');
-            else showToast("Kategori berhasil dihapus.", 'success');
+            await deleteCategory(id);
         }
     };
 
@@ -156,7 +153,7 @@ export default function CategoriesPage() {
                                                     variant="ghost" 
                                                     size="icon" 
                                                     className="h-9 w-9 rounded-xl bg-muted/50 hover:bg-destructive/10 hover:text-destructive"
-                                                    onClick={() => handleDelete(cat.id, cat.is_default)}
+                                                    onClick={() => handleDeleteClick(cat.id, cat.is_default)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>

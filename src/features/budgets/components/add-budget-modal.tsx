@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useData } from '@/hooks/use-data';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
@@ -18,7 +18,7 @@ const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const { addBudget } = useBudgets();
-  const { expenseCategories } = useData();
+  const { expenseCategories } = useCategories();
   const { showToast } = useUI();
   const [step, setStep] = useState(1);
   const [budgetName, setBudgetName] = useState('');

@@ -2,8 +2,8 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, CalendarClock } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { X, CalendarClock, Loader2 } from 'lucide-react';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { debtPaymentSchema, DebtPaymentFormValues } from '../schemas/debt-schema';
 import { cn, formatCurrency } from '@/lib/utils';
 import type { Debt, DebtPaymentInput } from '@/types/models';
 import { useDebts } from '../hooks/use-debts';
@@ -24,47 +27,28 @@ interface DebtPaymentFormProps {
 }
 
 export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
-    const { wallets } = useData();
+    const { wallets } = useWallets();
     const { logDebtPayment } = useDebts();
     const { showToast } = useUI();
 
-    const defaultWallet = wallets.find(wallet => wallet.isDefault) || wallets[0];
-    const [amount, setAmount] = useState(() => {
-        const suggested = typeof debt?.outstandingBalance === 'number' ? debt.outstandingBalance : debt?.principal || 0;
-        return suggested > 0 ? new Intl.NumberFormat('id-ID').format(suggested) : '';
+    const defaultWallet = useMemo(() => wallets.find(wallet => wallet.isDefault) || wallets[0], [wallets]);
+
+    const form = useForm<DebtPaymentFormValues>({
+        resolver: zodResolver(debtPaymentSchema),
+        defaultValues: {
+            amount: debt?.outstandingBalance ? new Intl.NumberFormat('id-ID').format(debt.outstandingBalance) : '',
+            paymentDate: new Date(),
+            walletId: defaultWallet?.id || '',
+            notes: '',
+            nextPaymentDate: debt?.nextPaymentDate ? new Date(debt.nextPaymentDate) : null,
+        },
     });
-    const [paymentDate, setPaymentDate] = useState<Date | undefined>(new Date());
-    const [walletId, setWalletId] = useState(defaultWallet?.id || '');
-    const [notes, setNotes] = useState('');
-    const [nextPaymentDate, setNextPaymentDate] = useState<Date | undefined>(
-        debt?.nextPaymentDate ? new Date(debt.nextPaymentDate) : undefined
-    );
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const paymentDateLabel = useMemo(() => {
-        if (!paymentDate) return 'Pilih tanggal';
-        return format(paymentDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
-    }, [paymentDate]);
+    const { control, handleSubmit, formState: { isSubmitting, errors } } = form;
 
-    const nextPaymentLabel = useMemo(() => {
-        if (!nextPaymentDate) return 'Opsional';
-        return format(nextPaymentDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
-    }, [nextPaymentDate]);
-
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rawValue = e.target.value.replace(/[^0-9]/g, '');
-        const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-        setAmount(formattedValue);
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const amountValue = parseInt(amount.replace(/[^0-9]/g, '')) || 0;
-        if (amountValue <= 0 || !paymentDate) {
-            showToast('Tanggal pembayaran dan nominal harus diisi.', 'error');
-            return;
-        }
-
+    const onSubmit = async (values: DebtPaymentFormValues) => {
+        const amountValue = parseInt(values.amount.replace(/[^0-9]/g, '')) || 0;
+        
         if (debt?.direction === 'owed' && amountValue > (debt.outstandingBalance ?? debt.principal ?? 0)) {
             showToast('Nominal melebihi sisa hutang yang tercatat.', 'error');
             return;
@@ -72,21 +56,18 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
 
         const payload: DebtPaymentInput = {
             amount: amountValue,
-            paymentDate: paymentDate.toISOString(),
-            walletId: walletId || null,
-            notes,
-            nextPaymentDate: nextPaymentDate ? nextPaymentDate.toISOString() : null,
+            paymentDate: values.paymentDate.toISOString(),
+            walletId: values.walletId || null,
+            notes: values.notes || '',
+            nextPaymentDate: values.nextPaymentDate ? values.nextPaymentDate.toISOString() : null,
         };
 
         try {
-            setIsSubmitting(true);
             await logDebtPayment(debt.id, payload);
             onClose();
         } catch (error) {
             console.error(error);
             showToast('Gagal mencatat pembayaran.', 'error');
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -119,102 +100,148 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-4">
                     <div className="space-y-2">
-                        <Label>Nominal Pembayaran</Label>
-                        <Input
-                            placeholder="Rp 0"
-                            value={amount}
-                            onChange={handleAmountChange}
-                            inputMode="numeric"
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Tanggal Pembayaran</Label>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className={cn('w-full justify-start text-left font-normal', !paymentDate && 'text-muted-foreground')}
-                                >
-                                    <CalendarClock className="mr-2 h-4 w-4" />
-                                    {paymentDateLabel}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={paymentDate}
-                                    onSelect={setPaymentDate}
-                                    locale={dateFnsLocaleId}
-                                    initialFocus
+                        <Label className={cn(errors.amount && "text-destructive")}>Nominal Pembayaran</Label>
+                        <Controller
+                            control={control}
+                            name="amount"
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    placeholder="Rp 0"
+                                    onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                                        if (rawValue === '') {
+                                            field.onChange('');
+                                            return;
+                                        }
+                                        field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
+                                    }}
+                                    inputMode="numeric"
+                                    className={cn(errors.amount && "border-destructive")}
                                 />
-                            </PopoverContent>
-                        </Popover>
+                            )}
+                        />
+                        {errors.amount && <p className="text-xs text-destructive">{errors.amount.message}</p>}
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Dompet</Label>
-                        <Select value={walletId} onValueChange={setWalletId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih dompet" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {wallets.length === 0 ? (
-                                    <SelectItem value="" disabled>
-                                        Belum ada dompet
-                                    </SelectItem>
-                                ) : (
-                                    wallets.map(wallet => (
-                                        <SelectItem key={wallet.id} value={wallet.id}>
-                                            {wallet.name}
-                                        </SelectItem>
-                                    ))
-                                )}
-                            </SelectContent>
-                        </Select>
+                        <Label className={cn(errors.paymentDate && "text-destructive")}>Tanggal Pembayaran</Label>
+                        <Controller
+                            control={control}
+                            name="paymentDate"
+                            render={({ field }) => (
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground', errors.paymentDate && "border-destructive")}
+                                        >
+                                            <CalendarClock className="mr-2 h-4 w-4" />
+                                            {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Pilih tanggal'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            locale={dateFnsLocaleId}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        />
+                        {errors.paymentDate && <p className="text-xs text-destructive">{errors.paymentDate.message}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label className={cn(errors.walletId && "text-destructive")}>Dompet</Label>
+                        <Controller
+                            control={control}
+                            name="walletId"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <SelectTrigger className={cn(errors.walletId && "border-destructive")}>
+                                        <SelectValue placeholder="Pilih dompet" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {wallets.length === 0 ? (
+                                            <SelectItem value="" disabled>
+                                                Belum ada dompet
+                                            </SelectItem>
+                                        ) : (
+                                            wallets.map(wallet => (
+                                                <SelectItem key={wallet.id} value={wallet.id}>
+                                                    {wallet.name}
+                                                </SelectItem>
+                                            ))
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                        {errors.walletId && <p className="text-xs text-destructive">{errors.walletId.message}</p>}
                     </div>
 
                     <div className="space-y-2">
                         <Label>Pembayaran Berikutnya (opsional)</Label>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className={cn('w-full justify-start text-left font-normal', !nextPaymentDate && 'text-muted-foreground')}
-                                >
-                                    <CalendarClock className="mr-2 h-4 w-4" />
-                                    {nextPaymentLabel}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={nextPaymentDate}
-                                    onSelect={setNextPaymentDate}
-                                    locale={dateFnsLocaleId}
-                                    initialFocus
-                                />
-                            </PopoverContent>
-                        </Popover>
+                        <Controller
+                            control={control}
+                            name="nextPaymentDate"
+                            render={({ field }) => (
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
+                                        >
+                                            <CalendarClock className="mr-2 h-4 w-4" />
+                                            {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Opsional'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value || undefined}
+                                            onSelect={field.onChange}
+                                            locale={dateFnsLocaleId}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <Label>Catatan</Label>
-                        <Textarea
-                            placeholder="Tambahkan catatan seperti metode pembayaran atau bukti transfer"
-                            value={notes}
-                            onChange={e => setNotes(e.target.value)}
+                        <Controller
+                            control={control}
+                            name="notes"
+                            render={({ field }) => (
+                                <Textarea
+                                    {...field}
+                                    placeholder="Tambahkan catatan seperti metode pembayaran atau bukti transfer"
+                                />
+                            )}
                         />
                     </div>
                 </form>
                 <div className="p-4 border-t sticky bottom-0 bg-background">
-                    <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
-                        {isSubmitting ? 'Menyimpan...' : 'Simpan Pembayaran'}
+                    <Button type="submit" onClick={handleSubmit(onSubmit)} className="w-full" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Menyimpan...
+                            </>
+                        ) : (
+                            'Simpan Pembayaran'
+                        )}
                     </Button>
                 </div>
             </motion.div>

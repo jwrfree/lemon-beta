@@ -17,7 +17,7 @@ import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/providers/app-provider';
+import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
 
 const pageVariants = {
@@ -76,7 +76,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         isSidebarCollapsed,
     } = useUI();
 
-    const { deleteTransaction } = useApp();
+    const { deleteTransaction } = useActions();
 
     useEffect(() => {
         containerRef.current?.scrollTo({ top: 0, behavior: 'instant' });

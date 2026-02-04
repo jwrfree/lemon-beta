@@ -12,12 +12,12 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { UserAvatar } from '@/components/user-avatar';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { LogOut, Settings, User } from 'lucide-react';
 
 export const UserProfileDropdown = () => {
     const router = useRouter();
-    const { userData, handleSignOut } = useApp();
+    const { userData, handleSignOut } = useAuth();
 
     const handleLogout = async () => {
         try {

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useData } from '@/hooks/use-data';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Paperclip, Send, LoaderCircle, Mic, X, Check, Save, Keyboard, ChevronLeft, RotateCcw } from 'lucide-react';
@@ -69,7 +69,7 @@ const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 export default function SmartAddPage() {
     const router = useRouter();
     const { showToast } = useUI();
-    const { getCategoryVisuals } = useData();
+    const { getCategoryVisuals } = useCategories();
     const { 
         pageState, 
         setPageState, 

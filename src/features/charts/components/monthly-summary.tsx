@@ -10,7 +10,8 @@ import { categoryDetails } from '@/lib/categories';
 import { PlaceholderContent } from './placeholder-content';
 import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,7 +26,8 @@ type TabValue = 'expense' | 'income' | 'net';
 
 export const MonthlySummary = ({ type, transactions: manualTransactions }: { type: TabValue, transactions?: Transaction[] }) => {
     const router = useRouter();
-    const { transactions: hookTransactions, wallets } = useData();
+    const { transactions: hookTransactions } = useTransactions();
+    const { wallets } = useWallets();
     const transactions = manualTransactions || hookTransactions;
     const isMobile = useIsMobile();
     const [aiInsight, setAiInsight] = useState<string | null>(null);

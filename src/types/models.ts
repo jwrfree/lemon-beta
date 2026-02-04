@@ -74,15 +74,15 @@ export interface Wallet extends BaseRecord {
   isDefault?: boolean;
 }
 
-  export interface Budget extends BaseRecord {
-    name: string;
-    targetAmount: number;
-    categories: string[];
-    spent?: number;
-    period?: string;
-    startDate?: string | null;
-    endDate?: string | null;
-  }
+export interface Budget extends BaseRecord {
+  name: string;
+  targetAmount: number;
+  categories: string[];
+  spent?: number;
+  period?: string;
+  startDate?: string | null;
+  endDate?: string | null;
+}
 
 export interface Asset extends BaseRecord {
   name: string;

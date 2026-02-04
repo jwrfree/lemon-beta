@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Debt, DebtInput, DebtPayment, DebtPaymentInput } from '@/types/models';
 import { debtService } from '@/lib/services/debt-service';
 
 export const useDebts = () => {
-    const { user } = useApp();
+    const { user, isLoading: appLoading } = useAuth();
     const router = useNextRouter();
     const { showToast, setDebtForPayment, setIsDebtPaymentModalOpen, setDebtToEdit, setIsDebtModalOpen } = useUI();
     const [debts, setDebts] = useState<Debt[]>([]);

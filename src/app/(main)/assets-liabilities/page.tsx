@@ -16,6 +16,9 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { getAssetCategoryInfo } from '@/features/assets/constants';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import type { Asset, Liability } from '@/types/models';
+
+type AssetOrLiabilityWithMeta = (Asset & { type: 'asset' }) | (Liability & { type: 'liability' });
 
 export default function AssetsLiabilitiesPage() {
     const { assets, liabilities, goldPrice } = useAssets();
@@ -82,8 +85,8 @@ export default function AssetsLiabilitiesPage() {
         setFormInitialData(null);
     };
 
-    const handleEdit = (item: any, type: 'asset' | 'liability') => {
-        handleOpenForm({ ...item, type });
+    const handleEdit = (item: Asset | Liability, type: 'asset' | 'liability') => {
+        handleOpenForm({ ...item, type } as AssetOrLiabilityWithMeta);
     };
 
     return (

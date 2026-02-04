@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { isSameMonth, parseISO, format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { formatCurrency } from '@/lib/utils';
 import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownLeft, Scale, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,7 +21,7 @@ export const GlobalFinanceHeader = ({
     transactions?: Transaction[],
     label?: string 
 }) => {
-    const { transactions: hookTransactions } = useData();
+    const { transactions: hookTransactions } = useTransactions();
     const transactions = manualTransactions || hookTransactions;
     const isMobile = useIsMobile();
     

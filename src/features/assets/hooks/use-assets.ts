@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Asset, Liability, AssetLiabilityInput, AssetRow, LiabilityRow } from '@/types/models';
+import type { Asset, Liability, AssetLiabilityInput, AssetRow, LiabilityRow, AssetPayload, LiabilityPayload } from '@/types/models';
 
 const mapAssetFromDb = (a: AssetRow): Asset => ({
     id: a.id,
@@ -30,7 +30,7 @@ const mapLiabilityFromDb = (l: LiabilityRow): Liability => ({
 });
 
 export const useAssets = () => {
-    const { user } = useApp();
+    const { user } = useAuth();
     const { showToast } = useUI();
     const [assets, setAssets] = useState<Asset[]>([]);
     const [liabilities, setLiabilities] = useState<Liability[]>([]);
@@ -110,17 +110,27 @@ export const useAssets = () => {
         const { type, ...itemData } = data;
         const tableName = type === 'asset' ? 'assets' : 'liabilities';
 
-        const insertData: any = {
-            name: itemData.name,
-            value: itemData.value,
-            notes: itemData.notes,
-            category: itemData.categoryKey,
-            user_id: user.id
-        };
+        let insertData: Partial<AssetRow> | Partial<LiabilityRow>;
 
-        // Only add quantity if it's an asset and quantity is provided
-        if (type === 'asset' && (itemData as any).quantity !== undefined) {
-            insertData.quantity = (itemData as any).quantity;
+        if (type === 'asset') {
+            const assetInput = itemData as AssetPayload;
+            insertData = {
+                name: assetInput.name,
+                value: assetInput.value,
+                notes: assetInput.notes || null,
+                category: assetInput.categoryKey,
+                user_id: user.id,
+                quantity: assetInput.quantity
+            };
+        } else {
+            const liabilityInput = itemData as LiabilityPayload;
+            insertData = {
+                name: liabilityInput.name,
+                value: liabilityInput.value,
+                notes: liabilityInput.notes || null,
+                category: liabilityInput.categoryKey,
+                user_id: user.id
+            };
         }
 
         const { error } = await supabase.from(tableName).insert(insertData);
@@ -162,13 +172,21 @@ export const useAssets = () => {
         if (!user) throw new Error("User not authenticated.");
         const tableName = type === 'asset' ? 'assets' : 'liabilities';
         
-        const updateData: any = { ...data };
-        delete updateData.userId; // Remove non-db fields if any
+        const updateData: Record<string, unknown> = {};
         
-        // Map quantity and categoryKey to DB column names if present
-        if (updateData.categoryKey) {
-            updateData.category = updateData.categoryKey;
-            delete updateData.categoryKey;
+        // Map common fields
+        if (data.name !== undefined) updateData.name = data.name;
+        if (data.value !== undefined) updateData.value = data.value;
+        if (data.notes !== undefined) updateData.notes = data.notes;
+        
+        // Map categoryKey to category
+        if ('categoryKey' in data && data.categoryKey !== undefined) {
+            updateData.category = data.categoryKey;
+        }
+
+        // Handle quantity for assets
+        if (type === 'asset' && 'quantity' in data) {
+             updateData.quantity = (data as Partial<Asset>).quantity;
         }
         
         const { error } = await supabase.from(tableName).update(updateData).eq('id', id);

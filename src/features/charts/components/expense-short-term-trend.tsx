@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { BarChart, ChartArea as ChartAreaIcon } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -18,7 +18,7 @@ const ExpenseTrendChart = dynamic(() => import('./lazy-charts').then(mod => mod.
 });
 
 export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions } = useData();
+    const { transactions: hookTransactions } = useTransactions();
     const transactions = manualTransactions || hookTransactions;
     const [range, setRange] = useState<'14' | '30'>('14');
     const [chartType, setChartType] = useState<'area' | 'bar'>('area');

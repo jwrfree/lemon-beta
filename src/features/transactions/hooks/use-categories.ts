@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Category } from '@/lib/categories';
+import { resolveCategoryVisuals } from '@/lib/category-utils';
 
 export const useCategories = () => {
-    const { user } = useApp();
-    const [categories, setCategories] = useState<any[]>([]);
+    const { user } = useAuth();
+    const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
 
@@ -52,32 +53,19 @@ export const useCategories = () => {
         };
     }, [user, fetchCategories, supabase]);
 
-    const addCategory = async (category: any) => {
-        if (!user) return;
-        const { error } = await supabase.from('categories').insert({
-            ...category,
-            user_id: user.id,
-            is_default: false
-        });
-        return { error };
-    };
+    const expenseCategories = useMemo(() => categories.filter(c => c.type === 'expense'), [categories]);
+    const incomeCategories = useMemo(() => categories.filter(c => c.type === 'income'), [categories]);
 
-    const updateCategory = async (id: string, updates: any) => {
-        const { error } = await supabase.from('categories').update(updates).eq('id', id);
-        return { error };
-    };
-
-    const deleteCategory = async (id: string) => {
-        const { error } = await supabase.from('categories').delete().eq('id', id).eq('is_default', false);
-        return { error };
-    };
+    const getCategoryVisuals = useCallback((name: string) => {
+        return resolveCategoryVisuals(name, categories);
+    }, [categories]);
 
     return {
         categories,
+        expenseCategories,
+        incomeCategories,
+        getCategoryVisuals,
         isLoading,
-        addCategory,
-        updateCategory,
-        deleteCategory,
         refresh: fetchCategories
     };
 };

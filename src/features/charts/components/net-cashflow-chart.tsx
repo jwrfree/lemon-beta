@@ -3,7 +3,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Scale } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -20,7 +20,7 @@ const NetCashflowComposedChart = dynamic(() => import('./lazy-charts').then(mod 
 const romanQuarters = ['I', 'II', 'III', 'IV'] as const;
 
 export const NetCashflowChart = () => {
-    const { transactions } = useData();
+    const { transactions } = useTransactions();
     const [selectedQuarter, setSelectedQuarter] = useState<'all' | string>('all');
     const [selectedMonthKey, setSelectedMonthKey] = useState<string | null>(null);
 

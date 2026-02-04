@@ -2,6 +2,7 @@ import { format, parseISO, isSameMonth, startOfMonth, subMonths, eachDayOfInterv
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import type { Transaction } from '@/types/models';
 import { categoryDetails } from '@/lib/categories';
+import { getCategoryIcon } from '@/lib/category-utils';
 
 /**
  * Filter transactions by month and type
@@ -42,10 +43,10 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
             return {
                 name,
                 value,
-                icon: details.icon,
+                icon: getCategoryIcon(details.icon),
                 fill,
                 categoryColor: details.color,
-                categoryBgColor: details.bgColor,
+                categoryBgColor: details.bg_color || details.bgColor,
                 percentage: total > 0 ? (value / total) * 100 : 0,
             };
         })

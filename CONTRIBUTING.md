@@ -20,7 +20,7 @@ Thank you for considering contributing to the Lemon app! We greatly appreciate h
 
 3.  **Configure Environment**:
     *   Copy the `.env.local.example` file to `.env.local`.
-    *   Fill in the required environment variables, especially your Firebase configuration.
+*   Fill in the required environment variables, especially your Supabase configuration.
 
 4.  **Run the Development Server**:
     ```bash
@@ -37,10 +37,11 @@ Here is a brief overview of the main folder structure:
     -   `ui/`: Base UI components from `shadcn/ui`.
     -   Other components are application-specific (e.g., `add-transaction-form.tsx`).
 -   `src/lib`: Contains core logic and utilities.
-    -   `firebase.ts`: Firebase configuration and initialization.
+    -   `supabase/`: Supabase client and server-side utilities.
     -   `categories.ts`: Category and icon definitions.
     -   `utils.ts`: General helper functions.
--   `src/hooks`: Custom React Hooks (e.g., `useApp`).
+-   `src/providers`: Application context providers (e.g., `AuthProvider`, `ActionProvider`).
+-   `src/hooks`: Custom React Hooks (e.g., `useData`).
 
 ## Contribution Workflow
 

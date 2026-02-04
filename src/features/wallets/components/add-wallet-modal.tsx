@@ -2,13 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wallet, Landmark, Smartphone, ArrowLeft, CircleDollarSign } from 'lucide-react';
+import { X, Wallet, Landmark, Smartphone, ArrowLeft, CircleDollarSign, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useApp } from '@/providers/app-provider';
+import { useActions } from '@/providers/action-provider';
 import { useUI } from '@/components/ui-provider';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { walletSchema, WalletFormValues } from '../schemas/wallet-schema';
+import { cn } from '@/lib/utils';
 
 const popularWallets: Record<string, string[]> = {
   'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay'],
@@ -23,55 +27,50 @@ const walletCategories = [
 ];
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet } = useApp();
+  const { addWallet } = useActions();
   const { showToast } = useUI();
   const [step, setStep] = useState(1);
-  const [walletName, setWalletName] = useState('');
-  const [initialBalance, setInitialBalance] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<{key: string, name: string, Icon: React.ElementType} | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<WalletFormValues>({
+    resolver: zodResolver(walletSchema),
+    defaultValues: {
+      name: '',
+      balance: '',
+      icon: '',
+      isDefault: false,
+    }
+  });
+
+  const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = form;
 
   const handleCategorySelect = (category: {key: string, name: string, Icon: React.ElementType}) => {
     setSelectedCategory(category);
+    setValue('icon', category.key);
     if (category.key === 'cash') {
-      setWalletName('Tunai');
+      setValue('name', 'Tunai');
     }
     setStep(2);
   };
   
   const handleBack = () => {
     setStep(1);
-    setWalletName('');
-    setInitialBalance('');
+    setValue('name', '');
+    setValue('balance', '');
+    setValue('icon', '');
     setSelectedCategory(null);
   };
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = e.target.value.replace(/[^0-9]/g, '');
-      const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-      setInitialBalance(formattedValue);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!walletName) {
-      showToast("Nama dompet tidak boleh kosong.", 'error');
-      return;
-    }
-    setIsSubmitting(true);
-    const balance = parseInt(initialBalance.replace(/[^0-9]/g, '')) || 0;
+  const onSubmit = async (values: WalletFormValues) => {
     try {
       await addWallet({ 
-        name: walletName, 
-        icon: selectedCategory?.key, 
-        balance: balance 
+        name: values.name, 
+        icon: values.icon, 
+        balance: Number(values.balance)
       });
-      // The addWallet function in provider now closes the modal
     } catch (error) {
       showToast("Gagal membuat dompet.", 'error');
       console.error(error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -172,23 +171,29 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                 exit="exit"
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
-                <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="wallet-name">Nama Dompet</Label>
-                    <Input
-                      id="wallet-name"
-                      placeholder={`Contoh: ${selectedCategory.key === 'e-wallet' ? 'GoPay' : 'Rekening Gaji'}`}
-                      value={walletName}
-                      onChange={(e) => setWalletName(e.target.value)}
-                      required
-                      disabled={selectedCategory.key === 'cash'}
+                    <Label htmlFor="wallet-name" className={cn(errors.name && "text-destructive")}>Nama Dompet</Label>
+                    <Controller
+                      control={control}
+                      name="name"
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          id="wallet-name"
+                          placeholder={`Contoh: ${selectedCategory.key === 'e-wallet' ? 'GoPay' : 'Rekening Gaji'}`}
+                          disabled={selectedCategory.key === 'cash'}
+                          className={cn(errors.name && "border-destructive")}
+                        />
+                      )}
                     />
+                    {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
                   </div>
                   
                   {popularWallets[selectedCategory.key] && (
                     <div className="flex flex-wrap gap-2">
                         {popularWallets[selectedCategory.key].map(name => (
-                            <Button key={name} type="button" variant="outline" size="sm" onClick={() => setWalletName(name)}>
+                            <Button key={name} type="button" variant="outline" size="sm" onClick={() => setValue('name', name, { shouldValidate: true })}>
                                 {name}
                             </Button>
                         ))}
@@ -196,17 +201,39 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="initial-balance">Saldo Awal (Opsional)</Label>
-                    <Input
-                      id="initial-balance"
-                      placeholder="Rp 0"
-                      value={initialBalance}
-                      onChange={handleAmountChange}
-                      inputMode="numeric"
+                    <Label htmlFor="initial-balance" className={cn(errors.balance && "text-destructive")}>Saldo Awal</Label>
+                    <Controller
+                      control={control}
+                      name="balance"
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          id="initial-balance"
+                          placeholder="Rp 0"
+                          onChange={(e) => {
+                            const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                            if (rawValue === '') {
+                              field.onChange('');
+                              return;
+                            }
+                            field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
+                          }}
+                          inputMode="numeric"
+                          className={cn(errors.balance && "border-destructive")}
+                        />
+                      )}
                     />
+                    {errors.balance && <p className="text-xs text-destructive">{errors.balance.message}</p>}
                   </div>
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? 'Memproses...' : 'Simpan Dompet'}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Memproses...
+                      </>
+                    ) : (
+                      'Simpan Dompet'
+                    )}
                   </Button>
                 </form>
               </motion.div>

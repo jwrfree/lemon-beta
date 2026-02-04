@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, CalendarClock } from 'lucide-react';
+import { X, Trash2, CalendarClock, Loader2 } from 'lucide-react';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { debtSchema, DebtFormValues } from '../schemas/debt-schema';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -27,7 +30,6 @@ import {
 import { cn, normalizeDateInput } from '@/lib/utils';
 import type { Debt, DebtInput, PaymentFrequency } from '@/types/models';
 import { useDebts } from '../hooks/use-debts';
-import { useCurrencyInput } from '@/hooks/use-currency-input';
 
 interface DebtFormProps {
     onClose: () => void;
@@ -57,83 +59,55 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
     const { addDebt, updateDebt, deleteDebt } = useDebts();
     const { showToast } = useUI();
     const isEditMode = !!initialData;
-
-    const [title, setTitle] = useState(initialData?.title || '');
-    const [direction, setDirection] = useState<Debt['direction']>(initialData?.direction || 'owed');
-    const [counterparty, setCounterparty] = useState(initialData?.counterparty || '');
-    const [category, setCategory] = useState(initialData?.category || 'personal');
-    
-    const principalInput = useCurrencyInput(initialData?.principal || '');
-    const outstandingInput = useCurrencyInput(initialData?.outstandingBalance ?? initialData?.principal ?? '');
-
-    const [interestRate, setInterestRate] = useState(
-        typeof initialData?.interestRate === 'number' ? String(initialData.interestRate) : ''
-    );
-    const [paymentFrequency, setPaymentFrequency] = useState<PaymentFrequency>(
-        initialData?.paymentFrequency || 'monthly'
-    );
-    const [customInterval, setCustomInterval] = useState(
-        initialData?.customInterval ? String(initialData.customInterval) : ''
-    );
-    const [startDate, setStartDate] = useState<Date | undefined>(
-        initialData?.startDate ? parseISO(initialData.startDate) : new Date()
-    );
-    const [dueDate, setDueDate] = useState<Date | undefined>(
-        initialData?.dueDate ? parseISO(initialData.dueDate) : undefined
-    );
-    const [nextPaymentDate, setNextPaymentDate] = useState<Date | undefined>(
-        initialData?.nextPaymentDate ? parseISO(initialData.nextPaymentDate) : undefined
-    );
-    const [notes, setNotes] = useState(initialData?.notes || '');
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const formattedStartDate = useMemo(() => {
-        if (!startDate) return 'Pilih tanggal';
-        return format(startDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
-    }, [startDate]);
+    const form = useForm<DebtFormValues>({
+        resolver: zodResolver(debtSchema),
+        defaultValues: {
+            title: initialData?.title || '',
+            direction: initialData?.direction || 'owed',
+            counterparty: initialData?.counterparty || '',
+            category: initialData?.category || 'personal',
+            principal: initialData?.principal ? new Intl.NumberFormat('id-ID').format(initialData.principal) : '',
+            outstandingBalance: initialData?.outstandingBalance ? new Intl.NumberFormat('id-ID').format(initialData.outstandingBalance) : '',
+            interestRate: initialData?.interestRate?.toString() || '',
+            paymentFrequency: initialData?.paymentFrequency || 'monthly',
+            customInterval: initialData?.customInterval?.toString() || '',
+            startDate: initialData?.startDate ? parseISO(initialData.startDate) : new Date(),
+            dueDate: initialData?.dueDate ? parseISO(initialData.dueDate) : null,
+            nextPaymentDate: initialData?.nextPaymentDate ? parseISO(initialData.nextPaymentDate) : null,
+            notes: initialData?.notes || '',
+        },
+    });
 
-    const formattedDueDate = useMemo(() => {
-        if (!dueDate) return 'Tidak ditentukan';
-        return format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
-    }, [dueDate]);
+    const { control, handleSubmit, watch, formState: { isSubmitting, errors } } = form;
+    const paymentFrequency = watch('paymentFrequency');
 
-    const formattedNextPayment = useMemo(() => {
-        if (!nextPaymentDate) return 'Tidak ditentukan';
-        return format(nextPaymentDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
-    }, [nextPaymentDate]);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const principalValue = principalInput.getRawValue();
-        if (!title || !counterparty || principalValue <= 0) {
-            showToast('Nama hutang/piutang, pihak terkait, dan nominal utama wajib diisi.', 'error');
-            return;
-        }
-
-        const outstandingValue = outstandingInput.getRawValue() || principalValue;
+    const onSubmit = async (values: DebtFormValues) => {
+        const principalValue = parseInt(values.principal.replace(/[^0-9]/g, '')) || 0;
+        const outstandingValue = values.outstandingBalance 
+            ? parseInt(values.outstandingBalance.replace(/[^0-9]/g, '')) || principalValue
+            : principalValue;
 
         const payload: DebtInput = {
-            title,
-            direction,
-            counterparty,
-            category,
+            title: values.title,
+            direction: values.direction,
+            counterparty: values.counterparty,
+            category: values.category,
             principal: principalValue,
             outstandingBalance: outstandingValue,
-            interestRate: interestRate ? parseFloat(interestRate) : null,
-            paymentFrequency,
-            customInterval:
-                paymentFrequency === 'custom' ? parseInt(customInterval || '0') || null : null,
-            startDate: normalizeDateInput(startDate),
-            dueDate: normalizeDateInput(dueDate),
-            nextPaymentDate: normalizeDateInput(nextPaymentDate),
-            notes,
+            interestRate: values.interestRate ? parseFloat(values.interestRate) : null,
+            paymentFrequency: values.paymentFrequency,
+            customInterval: values.paymentFrequency === 'custom' ? parseInt(values.customInterval || '0') || null : null,
+            startDate: normalizeDateInput(values.startDate),
+            dueDate: normalizeDateInput(values.dueDate),
+            nextPaymentDate: normalizeDateInput(values.nextPaymentDate),
+            notes: values.notes || '',
             status: initialData?.status || 'active',
             payments: initialData?.payments || [],
         };
 
         try {
-            setIsSubmitting(true);
             if (isEditMode) {
                 await updateDebt(initialData.id, payload);
             } else {
@@ -143,8 +117,6 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
         } catch (error) {
             console.error(error);
             showToast('Gagal menyimpan catatan hutang/piutang.', 'error');
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -189,231 +161,302 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="title">Nama Hutang/Piutang</Label>
-                        <Input
-                            id="title"
-                            placeholder="Contoh: Cicilan Laptop"
-                            value={title}
-                            onChange={e => setTitle(e.target.value)}
-                            required
+                        <Label htmlFor="title" className={cn(errors.title && "text-destructive")}>Nama Hutang/Piutang</Label>
+                        <Controller
+                            control={control}
+                            name="title"
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="title"
+                                    placeholder="Contoh: Cicilan Laptop"
+                                    className={cn(errors.title && "border-destructive")}
+                                />
+                            )}
                         />
+                        {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
                     </div>
 
                     <div className="space-y-2">
                         <Label>Tipe</Label>
-                        <Select value={direction} onValueChange={value => setDirection(value as Debt['direction'])}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih tipe" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {directionOptions.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="counterparty">Pihak Terkait</Label>
-                        <Input
-                            id="counterparty"
-                            placeholder="Nama teman, bank, atau institusi"
-                            value={counterparty}
-                            onChange={e => setCounterparty(e.target.value)}
-                            required
+                        <Controller
+                            control={control}
+                            name="direction"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Pilih tipe" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {directionOptions.map(option => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
                         />
                     </div>
 
+                    <div className="space-y-2">
+                        <Label htmlFor="counterparty" className={cn(errors.counterparty && "text-destructive")}>Pihak Terkait</Label>
+                        <Controller
+                            control={control}
+                            name="counterparty"
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="counterparty"
+                                    placeholder="Nama teman, bank, atau institusi"
+                                    className={cn(errors.counterparty && "border-destructive")}
+                                />
+                            )}
+                        />
+                        {errors.counterparty && <p className="text-xs text-destructive">{errors.counterparty.message}</p>}
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label>Nominal Awal</Label>
-                            <Input
-                                placeholder="Rp 0"
-                                value={principalInput.formattedValue}
-                                onChange={principalInput.onChange}
-                                inputMode="numeric"
-                                required
+                            <Label className={cn(errors.principal && "text-destructive")}>Nominal Awal</Label>
+                            <Controller
+                                control={control}
+                                name="principal"
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        placeholder="Rp 0"
+                                        onChange={(e) => {
+                                            const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                                            if (rawValue === '') {
+                                                field.onChange('');
+                                                return;
+                                            }
+                                            field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
+                                        }}
+                                        inputMode="numeric"
+                                        className={cn(errors.principal && "border-destructive")}
+                                    />
+                                )}
                             />
+                            {errors.principal && <p className="text-xs text-destructive">{errors.principal.message}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label>Sisa Saat Ini</Label>
-                            <Input
-                                placeholder="Rp 0"
-                                value={outstandingInput.formattedValue}
-                                onChange={outstandingInput.onChange}
-                                inputMode="numeric"
+                            <Controller
+                                control={control}
+                                name="outstandingBalance"
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        value={field.value || ''}
+                                        placeholder="Rp 0"
+                                        onChange={(e) => {
+                                            const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                                            if (rawValue === '') {
+                                                field.onChange('');
+                                                return;
+                                            }
+                                            field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
+                                        }}
+                                        inputMode="numeric"
+                                    />
+                                )}
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label>Kategori</Label>
-                            <Select value={category} onValueChange={setCategory}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih kategori" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categoryOptions.map(option => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Label>Bunga (%)</Label>
+                            <Controller
+                                control={control}
+                                name="interestRate"
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        value={field.value || ''}
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                    />
+                                )}
+                            />
                         </div>
                         <div className="space-y-2">
-                            <Label>Suku Bunga (%)</Label>
-                            <Input
-                                placeholder="0"
-                                value={interestRate}
-                                onChange={e => setInterestRate(e.target.value.replace(/[^0-9.]/g, ''))}
-                                inputMode="decimal"
+                            <Label>Kategori</Label>
+                            <Controller
+                                control={control}
+                                name="category"
+                                render={({ field }) => (
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih kategori" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {categoryOptions.map(option => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
                             />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label>Frekuensi Pembayaran</Label>
-                        <Select
-                            value={paymentFrequency}
-                            onValueChange={value => setPaymentFrequency(value as PaymentFrequency)}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih frekuensi" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {frequencyOptions.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label>Frekuensi Bayar</Label>
+                            <Controller
+                                control={control}
+                                name="paymentFrequency"
+                                render={({ field }) => (
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih frekuensi" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {frequencyOptions.map(option => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </div>
                         {paymentFrequency === 'custom' && (
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Input
-                                    value={customInterval}
-                                    onChange={e => setCustomInterval(e.target.value.replace(/[^0-9]/g, ''))}
-                                    className="w-20"
-                                    inputMode="numeric"
+                            <div className="space-y-2">
+                                <Label>Interval (Hari)</Label>
+                                <Controller
+                                    control={control}
+                                    name="customInterval"
+                                    render={({ field }) => (
+                                        <Input
+                                            {...field}
+                                            value={field.value || ''}
+                                            type="number"
+                                            placeholder="30"
+                                        />
+                                    )}
                                 />
-                                <span>hari sekali</span>
                             </div>
                         )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label>Tanggal Mulai</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className={cn('w-full justify-start text-left font-normal', !startDate && 'text-muted-foreground')}
-                                    >
-                                        <CalendarClock className="mr-2 h-4 w-4" />
-                                        {formattedStartDate}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={startDate}
-                                        onSelect={setStartDate}
-                                        locale={dateFnsLocaleId}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
+                            <Label>Mulai Pada</Label>
+                            <Controller
+                                control={control}
+                                name="startDate"
+                                render={({ field }) => (
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
+                                            >
+                                                <CalendarClock className="mr-2 h-4 w-4" />
+                                                {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Pilih tanggal'}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                locale={dateFnsLocaleId}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label>Jatuh Tempo</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className={cn('w-full justify-start text-left font-normal', !dueDate && 'text-muted-foreground')}
-                                    >
-                                        <CalendarClock className="mr-2 h-4 w-4" />
-                                        {formattedDueDate}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={dueDate}
-                                        onSelect={setDueDate}
-                                        locale={dateFnsLocaleId}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
+                            <Controller
+                                control={control}
+                                name="dueDate"
+                                render={({ field }) => (
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
+                                            >
+                                                <CalendarClock className="mr-2 h-4 w-4" />
+                                                {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Tidak ditentukan'}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value || undefined}
+                                                onSelect={field.onChange}
+                                                locale={dateFnsLocaleId}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            />
                         </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Pembayaran Berikutnya</Label>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className={cn('w-full justify-start text-left font-normal', !nextPaymentDate && 'text-muted-foreground')}
-                                >
-                                    <CalendarClock className="mr-2 h-4 w-4" />
-                                    {formattedNextPayment}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={nextPaymentDate}
-                                    onSelect={setNextPaymentDate}
-                                    locale={dateFnsLocaleId}
-                                    initialFocus
-                                />
-                            </PopoverContent>
-                        </Popover>
                     </div>
 
                     <div className="space-y-2">
                         <Label>Catatan</Label>
-                        <Textarea
-                            placeholder="Tambahkan detail penting seperti skedul pembayaran, nomor rekening, atau jaminan"
-                            value={notes}
-                            onChange={e => setNotes(e.target.value)}
+                        <Controller
+                            control={control}
+                            name="notes"
+                            render={({ field }) => (
+                                <Textarea
+                                    {...field}
+                                    placeholder="Tambahkan catatan atau detail pinjaman di sini..."
+                                    rows={3}
+                                />
+                            )}
                         />
                     </div>
                 </form>
-                <div className="p-4 border-t sticky bottom-0 bg-background flex gap-2">
-                    <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
-                        {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Catatan'}`}
+                <div className="p-4 border-t sticky bottom-0 bg-background flex flex-col gap-2">
+                    <Button type="submit" onClick={handleSubmit(onSubmit)} className="w-full" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Menyimpan...
+                            </>
+                        ) : (
+                            `Simpan ${isEditMode ? 'Perubahan' : 'Catatan'}`
+                        )}
                     </Button>
                     {isEditMode && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
-                                    <Trash2 className="h-5 w-5" />
+                                <Button variant="ghost" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10" disabled={isDeleting}>
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Hapus Catatan
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle>Hapus catatan ini?</AlertDialogTitle>
+                                    <AlertDialogTitle>Hapus Catatan Hutang?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Penghapusan tidak dapat dibatalkan dan akan menghapus seluruh riwayat pembayaran.
+                                        Tindakan ini tidak dapat dibatalkan. Seluruh riwayat pembayaran juga akan terhapus.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
-                                        Hapus
+                                    <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                        Ya, Hapus
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>

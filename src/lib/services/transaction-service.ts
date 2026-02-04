@@ -3,7 +3,7 @@ import type { Transaction, TransactionRow } from '@/types/models';
 
 const supabase = createClient();
 
-export const mapTransactionFromDb = (t: any): Transaction => ({
+export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
     id: t.id,
     amount: t.amount,
     category: t.category,
@@ -14,8 +14,8 @@ export const mapTransactionFromDb = (t: any): Transaction => ({
     userId: t.user_id,
     createdAt: t.created_at,
     updatedAt: t.updated_at,
-    subCategory: t.subCategory || t.sub_category, 
-    location: t.location
+    subCategory: t.sub_category || undefined, 
+    location: t.location || undefined
 });
 
 export const transactionService = {

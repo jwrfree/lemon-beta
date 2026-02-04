@@ -6,15 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, PlusCircle, Send, Loader2, Check, X, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
-import { useApp } from '@/providers/app-provider';
-import { useData } from '@/hooks/use-data';
+import { useActions } from '@/providers/action-provider';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { formatCurrency, cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const QuickAddWidget = () => {
     const { setIsTxModalOpen, showToast } = useUI();
-    const { addTransaction } = useApp();
-    const { wallets } = useData();
+    const { addTransaction } = useActions();
+    const { wallets } = useWallets();
     const router = useRouter();
 
     const [inputValue, setInputValue] = useState('');

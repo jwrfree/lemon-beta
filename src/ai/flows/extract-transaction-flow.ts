@@ -62,7 +62,7 @@ export type SingleTransactionOutput = z.infer<typeof SingleTransactionSchema>;
 /**
  * Helper to extract JSON from a string that might contain markdown or extra text
  */
-function parseRawAiResponse(text: string): any {
+function parseRawAiResponse(text: string): unknown {
     try {
         // 1. Try to find JSON block first (most reliable)
         const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -176,9 +176,12 @@ Langsung parse tanpa tanya balik!`;
     // Auto-unwrap common nested keys
     const wrapperKeys = ['transaction', 'transaksi', 'data'];
     for (const key of wrapperKeys) {
-        if (parsed[key] && typeof parsed[key] === 'object') {
-            parsed = parsed[key];
-            break;
+        if (parsed && typeof parsed === 'object' && key in parsed) {
+             const val = (parsed as Record<string, unknown>)[key];
+             if (val && typeof val === 'object') {
+                parsed = val;
+                break;
+             }
         }
     }
 

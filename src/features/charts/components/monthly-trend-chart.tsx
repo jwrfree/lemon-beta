@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { BarChart } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -20,7 +20,7 @@ const MonthlyBarChart = dynamic(() => import('./lazy-charts').then(mod => mod.Mo
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const MonthlyTrendChart = ({ type, transactions: manualTransactions }: { type: 'expense' | 'income', transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions } = useData();
+    const { transactions: hookTransactions } = useTransactions();
     const transactions = manualTransactions || hookTransactions;
     const isMobile = useIsMobile();
 

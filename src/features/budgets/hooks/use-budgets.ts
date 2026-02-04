@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Budget, BudgetInput, BudgetRow } from '@/types/models';
@@ -19,7 +19,7 @@ const mapBudgetFromDb = (b: BudgetRow): Budget => ({
 });
 
 export const useBudgets = () => {
-    const { user } = useApp();
+    const { user } = useAuth();
     const router = useNextRouter();
     const { showToast, setIsBudgetModalOpen, setIsEditBudgetModalOpen } = useUI();
     const [budgets, setBudgets] = useState<Budget[]>([]);
@@ -77,7 +77,7 @@ export const useBudgets = () => {
     const updateBudget = useCallback(async (budgetId: string, budgetData: Partial<Budget>) => {
         if (!user) throw new Error("User not authenticated.");
 
-        const updateData: any = { ...budgetData };
+        const updateData: Record<string, any> = { ...budgetData };
         
         if (updateData.targetAmount !== undefined) {
             updateData.amount = updateData.targetAmount;

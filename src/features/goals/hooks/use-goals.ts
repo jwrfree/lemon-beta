@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Goal, GoalInput, GoalRow } from '@/types/models';
@@ -18,7 +18,7 @@ const mapGoalFromDb = (g: GoalRow): Goal => ({
 });
 
 export const useGoals = () => {
-    const { user } = useApp();
+    const { user } = useAuth();
     const { showToast, setIsGoalModalOpen } = useUI();
     const [goals, setGoals] = useState<Goal[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -74,13 +74,7 @@ export const useGoals = () => {
     const updateGoal = useCallback(async (goalId: string, goalData: Partial<Goal>) => {
         if (!user) throw new Error("User not authenticated.");
         
-        const updateData: any = { ...goalData };
-        delete updateData.userId;
-        
-        // Map camelCase to snake_case for DB update if needed manually, 
-        // or just ensure we pass correct column names.
-        // Since Partial<Goal> has camelCase keys, we need to map them.
-        const dbPayload: any = {};
+        const dbPayload: Record<string, any> = {};
         if (goalData.name) dbPayload.name = goalData.name;
         if (goalData.targetAmount !== undefined) dbPayload.target_amount = goalData.targetAmount;
         if (goalData.currentAmount !== undefined) dbPayload.current_amount = goalData.currentAmount;

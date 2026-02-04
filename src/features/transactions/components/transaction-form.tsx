@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useApp } from '@/providers/app-provider';
-import { useData } from '@/hooks/use-data';
+import { useActions } from '@/providers/action-provider';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useCategories } from '../hooks/use-transactions';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
@@ -28,14 +29,15 @@ import type { Transaction } from '@/types/models';
 import { suggestCategory } from '@/ai/flows/suggest-category-flow';
 
 interface TransactionFormProps {
-  onClose: (data?: any) => void;
+  onClose: (data?: Transaction) => void;
   isModal?: boolean;
   initialData?: Transaction | null;
 }
 
 export const TransactionForm = ({ onClose, isModal = true, initialData = null }: TransactionFormProps) => {
-    const { addTransaction, updateTransaction } = useApp();
-    const { wallets, expenseCategories, incomeCategories } = useData();
+    const { addTransaction, updateTransaction } = useActions();
+    const { wallets } = useWallets();
+    const { expenseCategories, incomeCategories } = useCategories();
     const { setIsTransferModalOpen, showToast } = useUI();
     
     const isEditMode = !!initialData;
@@ -47,7 +49,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     const lastSuggestedRef = useRef<string>('');
 
     const form = useForm<z.input<typeof transactionSchema>>({
-        resolver: zodResolver(transactionSchema) as any,
+        resolver: zodResolver(transactionSchema),
         defaultValues: {
             type: initialData?.type || 'expense',
             amount: initialData?.amount ? new Intl.NumberFormat('id-ID').format(initialData.amount) : '',
@@ -137,15 +139,16 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                 await addTransaction(transactionData);
             }
             onClose(transactionData);
-        } catch (error: any) {
+        } catch (error) {
+            const err = error as Error;
             const action = isEditMode ? 'memperbarui' : 'menambahkan';
-            showToast(`Gagal ${action} transaksi: ${error.message || 'Terjadi kesalahan'}`, 'error');
+            showToast(`Gagal ${action} transaksi: ${err.message || 'Terjadi kesalahan'}`, 'error');
         }
     };
 
-    const onInvalid = (errors: any) => {
-        const firstError = Object.values(errors)[0] as any;
-        if (firstError?.message) showToast(firstError.message, 'error');
+    const onInvalid = (errors: FieldErrors<TransactionFormValues>) => {
+        const firstError = Object.values(errors)[0];
+        if (firstError?.message) showToast(firstError.message as string, 'error');
     };
     
     const handlers = useSwipeable({
@@ -155,7 +158,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
     });
     
     const formContent = (
-        <form onSubmit={handleSubmit(onSubmit as any, onInvalid)} className="flex-1 overflow-y-auto p-4 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="flex-1 overflow-y-auto p-4 space-y-4">
             <TransactionTypeSelector type={type} onTypeChange={handleTypeChange} />
 
             <div className="space-y-2">

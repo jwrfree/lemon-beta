@@ -17,7 +17,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Moon, Sun, BellRing, HandCoins, Calculator, User } from 'lucide-react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +28,7 @@ import { PageHeader } from '@/components/page-header';
 
 function SettingsContent() {
     const router = useRouter();
-    const { user, userData, handleSignOut } = useApp();
+    const { user, userData, handleSignOut } = useAuth();
     const { theme, setTheme } = useTheme();
     const { showToast } = useUI();
     const [mounted, setMounted] = useState(false);

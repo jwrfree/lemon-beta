@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
+import { useActions } from '@/providers/action-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Wallet } from '@/types/models';
 import { walletService } from '@/lib/services/wallet-service';
 
 export const useWallets = () => {
-    const app = useApp();
-    const { user } = app;
+    const auth = useAuth();
+    const actions = useActions();
+    const { user } = auth;
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
@@ -53,8 +55,9 @@ export const useWallets = () => {
     }, [user, supabase, fetchWallets]);
 
     return {
-        ...app,
+        ...auth,
+        ...actions,
         wallets,
-        isLoading: isLoading || app.isLoading,
+        isLoading: isLoading || auth.isLoading,
     };
 };

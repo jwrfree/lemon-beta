@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, TrendingDown, TrendingUp } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig } from '@/components/ui/chart';
@@ -24,7 +24,7 @@ const CategoryPieChart = dynamic(() => import('./lazy-charts').then(mod => mod.C
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const CategoryAnalysis = ({ type, transactions: manualTransactions }: { type: 'expense' | 'income', transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions } = useData();
+    const { transactions: hookTransactions } = useTransactions();
     const transactions = manualTransactions || hookTransactions;
     const router = useRouter();
     const isMobile = useIsMobile();

@@ -19,3 +19,23 @@ export const transactionSchema = z.object({
 });
 
 export type TransactionFormValues = z.infer<typeof transactionSchema>;
+
+export const transferSchema = z.object({
+  fromWalletId: z.string().min(1, { message: 'Dompet asal wajib dipilih' }),
+  toWalletId: z.string().min(1, { message: 'Dompet tujuan wajib dipilih' }),
+  amount: z.string()
+    .min(1, { message: 'Jumlah wajib diisi' })
+    .transform((val) => {
+      const cleaned = val.replace(/[^0-9]/g, '');
+      const number = parseInt(cleaned, 10);
+      return isNaN(number) ? 0 : number;
+    })
+    .refine((val) => val > 0, { message: 'Jumlah harus lebih dari 0' }),
+  description: z.string().min(1, { message: 'Deskripsi wajib diisi' }),
+  date: z.date({ required_error: 'Tanggal wajib diisi' }),
+}).refine((data) => data.fromWalletId !== data.toWalletId, {
+  message: "Dompet asal dan tujuan tidak boleh sama",
+  path: ["toWalletId"],
+});
+
+export type TransferFormValues = z.infer<typeof transferSchema>;

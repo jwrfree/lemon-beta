@@ -3,7 +3,8 @@
 
 import { useMemo, useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { useData } from '@/hooks/use-data';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { cn } from '@/lib/utils';
 import { useDebts } from '@/features/debts/hooks/use-debts';
@@ -40,7 +41,8 @@ import { UserProfileDropdown } from '@/components/user-profile-dropdown';
 import { DashboardSmartInsight } from '@/features/home/components/dashboard-smart-insight';
 
 export const DesktopDashboard = () => {
-    const { wallets, transactions } = useData();
+    const { wallets } = useWallets();
+    const { transactions } = useTransactions();
     const { reminders } = useReminders();
     const { debts } = useDebts();
     const { budgets } = useBudgets();

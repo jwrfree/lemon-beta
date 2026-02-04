@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import { GlobalFinanceHeader } from "@/features/charts/components/global-finance-header";
 import { useSearchParams } from 'next/navigation';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { parseISO, isAfter, isBefore, startOfDay, endOfDay, format } from 'date-fns';
 import * as dateFns from 'date-fns';
 import { SubscriptionAuditCard } from "@/features/insights/components/subscription-audit-card";
@@ -76,7 +76,7 @@ export default function ChartsPage() {
 function ChartsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, isLoading: isDataLoading } = useData();
+    const { transactions, isLoading: isDataLoading } = useTransactions();
     const [isClient, setIsClient] = useState(false);
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { UserAvatar } from '@/components/user-avatar';
 import { Loader2, Save, Camera } from 'lucide-react';
 
 export default function ProfilePage() {
-    const { userData } = useApp();
+    const { userData } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [displayName, setDisplayName] = useState('');
     const [photoURL, setPhotoURL] = useState('');

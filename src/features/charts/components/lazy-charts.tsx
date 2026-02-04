@@ -27,8 +27,21 @@ const compactCurrencyFormatter = new Intl.NumberFormat('id-ID', {
     maximumFractionDigits: 1,
 });
 
+interface PieChartData {
+    name: string;
+    value: number;
+    fill: string;
+}
+
+interface TrendChartData {
+    shortLabel: string;
+    total: number;
+    isPeak?: boolean;
+    [key: string]: string | number | boolean | undefined;
+}
+
 // 1. Category Pie Chart
-export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: any[], chartConfig: any }) => {
+export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: PieChartData[], chartConfig: Record<string, { label: string; color: string }> }) => {
     const isMobile = useIsMobile();
     return (
         <ChartContainer 
@@ -73,14 +86,14 @@ export const ExpenseTrendChart = ({
     peakDayKey 
 }: { 
     chartType: 'area' | 'bar', 
-    filteredData: any[], 
+    filteredData: TrendChartData[], 
     gradientId: string,
     peakDayKey?: string 
 }) => {
     const isMobile = useIsMobile();
     return (
         <ChartContainer
-            config={{ total: { label: 'Pengeluaran', color: 'var(--chart-2)' } } as any}
+            config={{ total: { label: 'Pengeluaran', color: 'var(--chart-2)' } }}
             className="h-full w-full"
         >
             {chartType === 'area' ? (

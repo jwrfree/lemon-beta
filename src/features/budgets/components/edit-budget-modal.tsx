@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Trash2 } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,17 +13,18 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn, formatCurrency } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useUI } from '@/components/ui-provider';
+import type { Budget } from '@/types/models';
 
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
-export const EditBudgetModal = ({ budget, onClose }: { budget: any, onClose: () => void }) => {
-  const { expenseCategories } = useData();
+export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: () => void }) => {
+  const { expenseCategories } = useCategories();
   const { updateBudget, deleteBudget } = useBudgets();
   const { showToast } = useUI();
 
   const [budgetName, setBudgetName] = useState(budget.name);
-  const [targetAmount, setTargetAmount] = useState(budget.amount);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([budget.category]);
+  const [targetAmount, setTargetAmount] = useState(budget.targetAmount);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(budget.categories);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -75,8 +76,8 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: any, onClose: () 
   
   const hasChanges = 
     budgetName !== budget.name || 
-    targetAmount !== budget.amount || 
-    selectedCategories[0] !== budget.category;
+    targetAmount !== budget.targetAmount || 
+    JSON.stringify(selectedCategories) !== JSON.stringify(budget.categories);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm" onClick={onClose}>

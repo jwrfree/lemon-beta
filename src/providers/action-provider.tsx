@@ -1,10 +1,12 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import type { Wallet, WalletInput, Transaction, TransactionInput, TransactionUpdate } from '@/types/models';
+import type { Category } from '@/lib/categories';
 import { useTransactionActions } from '@/features/transactions/hooks/use-transaction-actions';
 import { useWalletActions } from '@/features/wallets/hooks/use-wallet-actions';
 import { useTransferActions } from '@/features/transactions/hooks/use-transfer-actions';
+import { useCategoryActions } from '@/features/transactions/hooks/use-category-actions';
 import { useAuth } from './auth-provider';
 
 interface TransferPayload {
@@ -23,6 +25,9 @@ interface ActionContextType {
     updateWallet: (walletId: string, walletData: Partial<Wallet>) => Promise<void>;
     deleteWallet: (walletId: string) => Promise<void>;
     addTransfer: (data: TransferPayload) => Promise<void>;
+    addCategory: (category: Partial<Category>) => Promise<void>;
+    updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
+    deleteCategory: (id: string) => Promise<void>;
 }
 
 const ActionContext = createContext<ActionContextType | null>(null);
@@ -41,17 +46,34 @@ export const ActionProvider = ({ children }: { children: React.ReactNode }) => {
     const { addTransaction, updateTransaction, deleteTransaction } = useTransactionActions(user);
     const { addWallet, updateWallet, deleteWallet } = useWalletActions(user);
     const { addTransfer } = useTransferActions(user);
+    const { addCategory, updateCategory, deleteCategory } = useCategoryActions(user);
+
+    const contextValue = useMemo(() => ({
+        addTransaction, 
+        updateTransaction, 
+        deleteTransaction, 
+        addWallet, 
+        updateWallet, 
+        deleteWallet, 
+        addTransfer,
+        addCategory,
+        updateCategory,
+        deleteCategory
+    }), [
+        addTransaction, 
+        updateTransaction, 
+        deleteTransaction, 
+        addWallet, 
+        updateWallet, 
+        deleteWallet, 
+        addTransfer,
+        addCategory,
+        updateCategory,
+        deleteCategory
+    ]);
 
     return (
-        <ActionContext.Provider value={{ 
-            addTransaction, 
-            updateTransaction, 
-            deleteTransaction, 
-            addWallet, 
-            updateWallet, 
-            deleteWallet, 
-            addTransfer 
-        }}>
+        <ActionContext.Provider value={contextValue}>
             {children}
         </ActionContext.Provider>
     );

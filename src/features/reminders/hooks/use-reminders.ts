@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import { normalizeDateInput } from '@/lib/utils';
@@ -28,7 +28,7 @@ const mapReminderFromDb = (r: ReminderRow): Reminder => ({
 });
 
 export const useReminders = () => {
-    const { user } = useApp();
+    const { user } = useAuth();
     const ui = useUI();
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [isLoading, setIsLoading] = useState(true);

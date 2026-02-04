@@ -1,8 +1,8 @@
 
 'use client';
 
-import React, { useState, createContext, useContext } from 'react';
-import type { Transaction, Wallet, Budget, Reminder, Debt } from '@/types/models';
+import React, { useState, createContext, useContext, useMemo } from 'react';
+import type { Transaction, Wallet, Budget, Reminder, Debt, Goal } from '@/types/models';
 
 interface PreFilledTransfer {
     fromWalletId: string;
@@ -47,9 +47,9 @@ interface UIContextType {
 
     isGoalModalOpen: boolean;
     setIsGoalModalOpen: (isOpen: boolean) => void;
-    goalToEdit: any | null;
-    setGoalToEdit: (goal: any | null) => void;
-    openEditGoalModal: (goal: any) => void;
+    goalToEdit: Goal | null;
+    setGoalToEdit: (goal: Goal | null) => void;
+    openEditGoalModal: (goal: Goal) => void;
 
     isReminderModalOpen: boolean;
     setIsReminderModalOpen: (isOpen: boolean) => void;
@@ -101,7 +101,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [walletToEdit, setWalletToEdit] = useState<Wallet | null>(null);
     const [preFilledTransfer, setPreFilledTransfer] = useState<PreFilledTransfer | null>(null);
     const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
-    const [goalToEdit, setGoalToEdit] = useState<any | null>(null);
+    const [goalToEdit, setGoalToEdit] = useState<Goal | null>(null);
     const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
     const [reminderToEdit, setReminderToEdit] = useState<Reminder | null>(null);
     const [isDebtModalOpen, setIsDebtModalOpen] = useState(false);
@@ -153,7 +153,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxModalOpen(true);
     };
 
-    const openEditGoalModal = (goal: any) => {
+    const openEditGoalModal = (goal: Goal) => {
         setGoalToEdit(goal);
         setIsGoalModalOpen(true);
     };
@@ -173,7 +173,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsDebtPaymentModalOpen(true);
     };
 
-    const contextValue = {
+    const contextValue = useMemo(() => ({
         isTxModalOpen,
         setIsTxModalOpen,
         transactionToEdit,
@@ -224,7 +224,30 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         toastState,
         showToast,
         hideToast,
-    };
+    }), [
+        isTxModalOpen,
+        transactionToEdit,
+        isWalletModalOpen,
+        isBudgetModalOpen,
+        isEditBudgetModalOpen,
+        budgetToEdit,
+        isTransferModalOpen,
+        preFilledTransfer,
+        isDeleteModalOpen,
+        transactionToDelete,
+        isEditWalletModalOpen,
+        walletToEdit,
+        isGoalModalOpen,
+        goalToEdit,
+        isReminderModalOpen,
+        reminderToEdit,
+        isDebtModalOpen,
+        debtToEdit,
+        isDebtPaymentModalOpen,
+        debtForPayment,
+        isSidebarCollapsed,
+        toastState
+    ]);
     
     return <UIContext.Provider value={contextValue}>{children}</UIContext.Provider>
 }

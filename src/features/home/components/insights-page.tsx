@@ -5,13 +5,13 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BrainCircuit, TrendingUp } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { DashboardCashflow } from '@/features/home/components/dashboard-cashflow';
 import { DashboardExpensePie } from '@/features/home/components/dashboard-expense-pie';
 import { ErrorBoundary } from '@/components/error-boundary';
 
 export const InsightsPage = () => {
-    const { transactions } = useData();
+    const { transactions } = useTransactions();
     const [chartRange, setChartRange] = useState<'30' | '90' | 'month'>('month');
 
     return (

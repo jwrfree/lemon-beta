@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PlusCircle, HandCoins, Plus } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { cn, formatCurrency, daysInMonth } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
@@ -16,9 +17,11 @@ import { Pie, PieChart } from "recharts"
 import { useUI } from '@/components/ui-provider';
 import { startOfMonth, parseISO } from 'date-fns';
 import { PageHeader } from '@/components/page-header';
+import type { Budget } from '@/types/models';
 
-const BudgetCard = ({ budget }: { budget: any }) => {
-    const { transactions, getCategoryVisuals } = useData();
+const BudgetCard = ({ budget }: { budget: Budget }) => {
+    const { transactions } = useTransactions();
+    const { getCategoryVisuals } = useCategories();
     const router = useRouter();
 
     const spent = useMemo(() => {
@@ -110,7 +113,8 @@ const BudgetCard = ({ budget }: { budget: any }) => {
 };
 
 export default function BudgetingPage() {
-    const { transactions, getCategoryVisuals } = useData();
+    const { transactions } = useTransactions();
+    const { getCategoryVisuals } = useCategories();
     const { budgets } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();
 
@@ -201,7 +205,7 @@ export default function BudgetingPage() {
                             <div className="col-span-12 lg:col-span-8 space-y-4">
                                 <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Pos Anggaran</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {budgets.map((budget: any) => (
+                                    {budgets.map((budget) => (
                                         <BudgetCard key={budget.id} budget={budget} />
                                     ))}
                                 </div>

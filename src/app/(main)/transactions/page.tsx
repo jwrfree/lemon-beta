@@ -6,7 +6,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, X, ListFilter } from 'lucide-react';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Input } from '@/components/ui/input';
-import { useData } from '@/hooks/use-data';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useCategories } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -21,7 +22,8 @@ import { PageHeader } from "@/components/page-header";
 function TransactionsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { expenseCategories, incomeCategories, wallets } = useData();
+    const { wallets } = useWallets();
+    const { expenseCategories, incomeCategories } = useCategories();
     const { debts } = useDebts();
     
     const [searchQuery, setSearchQuery] = useState('');

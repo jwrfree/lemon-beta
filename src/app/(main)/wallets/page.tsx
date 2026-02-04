@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Wallet, PlusCircle } from 'lucide-react';
-import { useData } from '@/hooks/use-data';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { WalletCardStack } from '@/features/wallets/components/wallet-card-stack';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { useUI } from '@/components/ui-provider';
@@ -12,7 +12,7 @@ import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle'
 import { DesktopWalletView } from '@/features/wallets/components/desktop-wallet-view';
 
 export default function WalletsPage() {
-  const { wallets } = useData();
+  const { wallets } = useWallets();
   const { setIsWalletModalOpen } = useUI();
   const [activeIndex, setActiveIndex] = useState(0);
 

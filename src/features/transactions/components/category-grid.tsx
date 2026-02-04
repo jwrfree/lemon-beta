@@ -6,9 +6,9 @@ import { Category } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 
 interface CategoryGridProps {
-    categories: any[];
+    categories: (Category & { bg_color?: string })[];
     selectedCategory: string;
-    onCategorySelect: (cat: any) => void;
+    onCategorySelect: (cat: Category) => void;
 }
 
 export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }: CategoryGridProps) => {

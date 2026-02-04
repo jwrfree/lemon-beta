@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Transaction } from '@/types/models';
+import type { Transaction, TransactionRow } from '@/types/models';
 
 const PAGE_SIZE = 20;
 
@@ -13,7 +13,7 @@ export interface TransactionFilters {
 }
 
 export const usePaginatedTransactions = (filters: TransactionFilters) => {
-    const { user } = useApp();
+    const { user } = useAuth();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [hasMore, setHasMore] = useState(true);
@@ -82,7 +82,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
             if (error) throw error;
 
             if (data) {
-                const mappedTx = data.map((t: any) => ({
+                const mappedTx = data.map((t: TransactionRow) => ({
                     id: t.id,
                     amount: t.amount,
                     category: t.category,
@@ -92,8 +92,8 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
                     walletId: t.wallet_id,
                     userId: t.user_id,
                     createdAt: t.created_at,
-                    subCategory: t.subCategory,
-                    location: t.location
+                    subCategory: t.sub_category || undefined,
+                    location: t.location || undefined
                 }));
 
                 if (isReset) {
@@ -112,13 +112,13 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
                     setHasMore(true);
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             // Ignore abort errors
-            if (err.name === 'AbortError' || signal.aborted) {
+            if ((err instanceof Error && err.name === 'AbortError') || signal.aborted) {
                 return;
             }
             console.error("Error fetching paginated transactions:", err);
-            setError(err.message || "Gagal memuat transaksi.");
+            setError(err instanceof Error ? err.message : "Gagal memuat transaksi.");
         } finally {
             // Only update loading state if this request wasn't aborted
             if (!signal.aborted) {

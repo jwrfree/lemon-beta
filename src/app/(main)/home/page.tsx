@@ -2,9 +2,10 @@
 
 import React, { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useData } from '@/hooks/use-data';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Button } from '@/components/ui/button';
 import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -35,16 +36,17 @@ export default function HomePage() {
     const remindersForwardDays = homeUi?.upcomingRemindersForwardDays ?? 7;
     const recentTransactionsLimit = homeUi?.recentTransactionsLimit ?? 5;
 
-    const { wallets, transactions, isLoading: isDataLoading } = useData();
+    const { wallets, isLoading: isWalletsLoading } = useWallets();
+    const { transactions, isLoading: isTransactionsLoading } = useTransactions();
     const { debts, isLoading: isDebtLoading } = useDebts();
     const { reminders, isLoading: isReminderLoading } = useReminders();
     const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit } = useUI();
-    const { userData } = useApp();
+    const { userData } = useAuth();
     const router = useRouter();
 
     const { monthlyIncome, monthlyExpense, incomeDiff, expenseDiff } = useHomeSummary(transactions);
 
-    const isLoading = isDataLoading || isDebtLoading || isReminderLoading;
+    const isLoading = isWalletsLoading || isTransactionsLoading || isDebtLoading || isReminderLoading;
 
     const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
 

@@ -2,38 +2,44 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2 } from 'lucide-react';
+import { X, Trash2, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useApp } from '@/providers/app-provider';
+import { useActions } from '@/providers/action-provider';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Switch } from '@/components/ui/switch';
 import { useUI } from '@/components/ui-provider';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { walletSchema, WalletFormValues } from '../schemas/wallet-schema';
+import { cn } from '@/lib/utils';
+import type { Wallet as WalletType } from '@/types/models';
 
-export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () => void }) => {
-  const { updateWallet, deleteWallet } = useApp();
+export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClose: () => void }) => {
+  const { updateWallet, deleteWallet } = useActions();
   const { showToast } = useUI();
-  const [walletName, setWalletName] = useState(wallet.name);
-  const [isDefault, setIsDefault] = useState(wallet.isDefault || false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<WalletFormValues>({
+    resolver: zodResolver(walletSchema),
+    defaultValues: {
+      name: wallet.name,
+      balance: wallet.balance.toString(), // Balance can't be edited but schema needs it
+      icon: wallet.icon || 'other',
+      isDefault: wallet.isDefault || false,
+    }
+  });
+
+  const { control, handleSubmit, watch, formState: { errors, isSubmitting } } = form;
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!walletName) {
-      showToast("Nama dompet tidak boleh kosong.", 'error');
-      return;
-    }
-    setIsSubmitting(true);
+  const onSubmit = async (values: WalletFormValues) => {
     try {
-      await updateWallet(wallet.id, { name: walletName, isDefault });
+      await updateWallet(wallet.id, { name: values.name, isDefault: values.isDefault });
     } catch (error) {
       showToast("Gagal memperbarui dompet.", 'error');
       console.error(error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -49,7 +55,9 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
     }
   };
 
-  const hasChanges = walletName !== wallet.name || isDefault !== !!wallet.isDefault;
+  const currentName = watch('name');
+  const currentIsDefault = watch('isDefault');
+  const hasChanges = currentName !== wallet.name || currentIsDefault !== !!wallet.isDefault;
 
   return (
     <motion.div
@@ -71,16 +79,22 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
           <h2 className="text-xl font-bold">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="wallet-name">Nama Dompet</Label>
-            <Input
-              id="wallet-name"
-              value={walletName}
-              onChange={(e) => setWalletName(e.target.value)}
-              required
-              disabled={wallet.name === 'Tunai'}
+            <Label htmlFor="wallet-name" className={cn(errors.name && "text-destructive")}>Nama Dompet</Label>
+            <Controller
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="wallet-name"
+                  disabled={wallet.name === 'Tunai'}
+                  className={cn(errors.name && "border-destructive")}
+                />
+              )}
             />
+            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
           </div>
           
           <div className="flex items-center justify-between rounded-lg border p-3">
@@ -90,18 +104,31 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: any, onClose: () 
                       Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
                   </p>
               </div>
-              <Switch
-                id="is-default"
-                checked={isDefault}
-                onCheckedChange={setIsDefault}
+              <Controller
+                control={control}
+                name="isDefault"
+                render={({ field }) => (
+                  <Switch
+                    id="is-default"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
               />
           </div>
           
           <p className="text-xs text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
-          
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1" size="lg" disabled={isSubmitting || !hasChanges}>
-              {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
+
+          <div className="flex flex-col gap-3 pt-4">
+            <Button type="submit" className="w-full" disabled={isSubmitting || !hasChanges}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Menyimpan...
+                </>
+              ) : (
+                'Simpan Perubahan'
+              )}
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>

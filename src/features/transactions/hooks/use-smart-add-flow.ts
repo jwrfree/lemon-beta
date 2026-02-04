@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { useData } from '@/hooks/use-data';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { useActions } from '@/providers/action-provider';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useUI } from '@/components/ui-provider';
-import { extractTransaction, refineTransaction } from '@/ai/flows/extract-transaction-flow';
+import { extractTransaction, refineTransaction, type TransactionExtractionOutput } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { startOfMonth, parseISO } from 'date-fns';
 
@@ -28,7 +31,7 @@ export interface SmartTransactionData {
 export type Message = {
     id: string;
     type: 'user' | 'user-image' | 'ai-thinking' | 'ai-confirmation' | 'ai-multi-confirmation' | 'ai-clarification';
-    content: any;
+    content: string | SmartTransactionData | SmartTransactionData[];
 };
 
 export type InsightData = {
@@ -48,7 +51,10 @@ export type InsightData = {
 }
 
 export const useSmartAddFlow = () => {
-    const { wallets, transactions, incomeCategories, expenseCategories, addTransaction } = useData();
+    const { wallets } = useWallets();
+    const { transactions } = useTransactions();
+    const { incomeCategories, expenseCategories } = useCategories();
+    const { addTransaction } = useActions();
     const { budgets } = useBudgets();
     const { setIsTransferModalOpen, setPreFilledTransfer, showToast } = useUI();
 
@@ -76,7 +82,7 @@ export const useSmartAddFlow = () => {
         setMessages([]);
     }, []);
 
-    const calculateInsights = useCallback((dataToConfirm: any) => {
+    const calculateInsights = useCallback((dataToConfirm: SmartTransactionData) => {
         const finalWallet = wallets.find(w => w.id === dataToConfirm.walletId);
         let walletInsight = null;
         if (finalWallet) {
@@ -119,7 +125,7 @@ export const useSmartAddFlow = () => {
         return { walletInsight, budgetInsight };
     }, [wallets, budgets, transactions]);
 
-    const handleAISuccess = useCallback((result: any, isReceipt = false) => {
+    const handleAISuccess = useCallback((result: AIResult, isReceipt = false) => {
         // Remove thinking message first
         setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
 
@@ -130,7 +136,7 @@ export const useSmartAddFlow = () => {
                 { 
                     id: `ai-clarify-${Date.now()}`, 
                     type: 'ai-clarification', 
-                    content: result.clarificationQuestion 
+                    content: result.clarificationQuestion! 
                 }
             ]);
             // If there are no transactions, just stay in confirming/analyzing mode
@@ -140,22 +146,19 @@ export const useSmartAddFlow = () => {
             }
         }
 
-        const rawTransactions = result.transactions || (result.amount ? [result] : []);
+        const rawTransactions = result.transactions || (result.amount ? [result as AIProcessedTransaction] : []);
         if (rawTransactions.length === 0 && !result.clarificationQuestion) {
             showToast("AI tidak menemukan data transaksi. Coba input lebih detail ya.", 'info');
             setPageState('IDLE');
             return;
         }
 
-        const processedTransactions = rawTransactions.map((tx: any) => {
+        const processedTransactions = rawTransactions.map((tx: AIProcessedTransaction) => {
             const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty } = tx;
 
             // 1. Wallet resolution with fuzzy matching
             const walletName = (tx.wallet || sourceWallet || '').toLowerCase().trim();
             
-            // Log for debugging
-            console.log('Resolving wallet for:', walletName);
-
             let matchingWallet = wallets.find(w => w.name.toLowerCase() === walletName);
             
             // If no exact match, try fuzzy matching (e.g., "BCA" matches "Bank BCA")
@@ -266,11 +269,32 @@ export const useSmartAddFlow = () => {
 
             if (isRefinement && typeof input === 'string') {
                 // Prepare current data for refinement
-                const currentData = {
-                    transactions: multiParsedData.length > 0 ? multiParsedData : (parsedData ? [parsedData] : []),
+                const currentTransactions = multiParsedData.length > 0 ? multiParsedData : (parsedData ? [parsedData] : []);
+                
+                // Map back to AI-friendly format (names instead of IDs)
+                const mappedTransactions = currentTransactions.map(t => {
+                    const walletName = wallets.find(w => w.id === t.walletId)?.name || 'Tunai';
+                    return {
+                        amount: t.amount,
+                        description: t.description,
+                        category: t.category,
+                        subCategory: t.subCategory,
+                        wallet: walletName,
+                        sourceWallet: t.sourceWallet,
+                        destinationWallet: t.destinationWallet,
+                        location: t.location,
+                        date: t.date.split('T')[0], // YYYY-MM-DD
+                        type: t.type,
+                        isDebtPayment: t.isDebtPayment,
+                        counterparty: t.counterparty
+                    };
+                });
+
+                const currentData: TransactionExtractionOutput = {
+                    transactions: mappedTransactions
                 };
                 
-                const result = await refineTransaction(currentData as any, input, {
+                const result = await refineTransaction(currentData, input, {
                     categories: availableCategories,
                     wallets: availableWallets
                 });

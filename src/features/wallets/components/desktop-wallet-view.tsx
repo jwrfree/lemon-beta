@@ -14,7 +14,7 @@ import type { Wallet } from '@/types/models';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useData } from '@/hooks/use-data';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { parseISO, subDays, isAfter } from 'date-fns';
 
 interface DesktopWalletViewProps {
@@ -26,7 +26,7 @@ interface DesktopWalletViewProps {
 export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: DesktopWalletViewProps) => {
     const { openEditWalletModal } = useUI();
     const { isBalanceVisible } = useBalanceVisibility();
-    const { transactions } = useData();
+    const { transactions } = useTransactions();
     const activeWallet = wallets[activeIndex];
     const activeWalletVisuals = activeWallet ? getWalletVisuals(activeWallet.name, activeWallet.icon || undefined) : null;
 
@@ -53,24 +53,44 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         });
     }, [wallets, search, sort, sortDir]);
 
+    const { income30, expense30 } = useMemo(() => {
+        const now = new Date();
+        const start = subDays(now, 30);
+        let income = 0;
+        let expense = 0;
+
+        transactions.forEach(t => {
+            const date = parseISO(t.date);
+            if (!isAfter(date, start)) return;
+            
+            if (t.type === 'income') {
+                income += t.amount;
+            } else {
+                expense += t.amount;
+            }
+        });
+
+        return { income30: income, expense30: expense };
+    }, [transactions]);
+
     const walletTransactions = useMemo(() => {
         if (!activeWallet) return [];
         return transactions.filter(t => t.walletId === activeWallet.id);
     }, [transactions, activeWallet]);
 
-    const analytics = useMemo(() => {
+    const activeAnalytics = useMemo(() => {
         if (!activeWallet) return { income30: 0, expense30: 0 };
         const now = new Date();
         const start = subDays(now, 30);
-        let income30 = 0;
-        let expense30 = 0;
+        let income = 0;
+        let expense = 0;
         walletTransactions.forEach(t => {
             const date = parseISO(t.date);
             if (!isAfter(date, start)) return;
-            if (t.type === 'income') income30 += t.amount;
-            else expense30 += t.amount;
+            if (t.type === 'income') income += t.amount;
+            else expense += t.amount;
         });
-        return { income30, expense30 };
+        return { income30: income, expense30: expense };
     }, [walletTransactions, activeWallet]);
 
     const getHealth = (wallet?: Wallet) => {
@@ -118,7 +138,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <TrendingUp className="h-4 w-4 text-emerald-600" />
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-foreground">
-                                {formatCurrency(wallets.reduce((acc, w) => acc + (transactions.filter(t => t.walletId === w.id && t.type === 'income' && isAfter(parseISO(t.date), subDays(new Date(), 30))).reduce((sum, t) => sum + t.amount, 0)), 0))}
+                                {formatCurrency(income30)}
                             </div>
                         </div>
                     </CardContent>
@@ -134,7 +154,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <TrendingDown className="h-4 w-4 text-rose-600" />
                             </div>
                             <div className="text-2xl font-bold tracking-tight text-foreground">
-                                {formatCurrency(wallets.reduce((acc, w) => acc + (transactions.filter(t => t.walletId === w.id && t.type === 'expense' && isAfter(parseISO(t.date), subDays(new Date(), 30))).reduce((sum, t) => sum + t.amount, 0)), 0))}
+                                {formatCurrency(expense30)}
                             </div>
                         </div>
                     </CardContent>
@@ -276,7 +296,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-medium text-emerald-600/80 uppercase tracking-wider">Pemasukan</p>
-                                                    <p className="text-xl font-bold text-emerald-700 dark:text-emerald-500">{formatCurrency(analytics.income30)}</p>
+                                                    <p className="text-xl font-bold text-emerald-700 dark:text-emerald-500">{formatCurrency(activeAnalytics.income30)}</p>
                                                     <p className="text-[10px] text-muted-foreground">30 Hari terakhir</p>
                                                 </div>
                                             </CardContent>
@@ -289,7 +309,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-medium text-rose-600/80 uppercase tracking-wider">Pengeluaran</p>
-                                                    <p className="text-xl font-bold text-rose-700 dark:text-rose-500">{formatCurrency(analytics.expense30)}</p>
+                                                    <p className="text-xl font-bold text-rose-700 dark:text-rose-500">{formatCurrency(activeAnalytics.expense30)}</p>
                                                     <p className="text-[10px] text-muted-foreground">30 Hari terakhir</p>
                                                 </div>
                                             </CardContent>

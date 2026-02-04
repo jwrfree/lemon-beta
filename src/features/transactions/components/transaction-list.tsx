@@ -9,7 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
-import { useData } from '@/hooks/use-data';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { DesktopTransactionTable } from './desktop-transaction-table';
 import { groupTransactionsByDate } from '@/features/transactions/utils';
 
@@ -23,7 +25,9 @@ interface TransactionListProps {
 }
 
 export const TransactionList = ({ transactions: transactionsToShow, limit, walletId, hasMore, loadMore, isLoading }: TransactionListProps) => {
-    const { transactions: allTransactions, wallets, getCategoryVisuals } = useData();
+    const { wallets } = useWallets();
+    const { transactions: allTransactions } = useTransactions();
+    const { getCategoryVisuals } = useCategories();
     const router = useRouter();
 
     const finalTransactions = useMemo(() => {

@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, CalendarIcon, ArrowRightLeft } from 'lucide-react';
+import { X, CalendarIcon, ArrowRightLeft, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,67 +15,58 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { useData } from '@/hooks/use-data';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/providers/app-provider';
+import { useActions } from '@/providers/action-provider';
+import { transferSchema, TransferFormValues } from '../schemas/transaction-schema';
 
 export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
-  const { addTransfer } = useApp();
-  const { wallets } = useData();
+  const { addTransfer } = useActions();
+  const { wallets } = useWallets();
   const { preFilledTransfer, setPreFilledTransfer, showToast } = useUI();
-  
-  const [fromWalletId, setFromWalletId] = useState(preFilledTransfer?.fromWalletId || '');
-  const [toWalletId, setToWalletId] = useState(preFilledTransfer?.toWalletId || '');
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState(preFilledTransfer?.description || '');
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<TransferFormValues>({
+    resolver: zodResolver(transferSchema),
+    defaultValues: {
+      fromWalletId: preFilledTransfer?.fromWalletId || '',
+      toWalletId: preFilledTransfer?.toWalletId || '',
+      amount: preFilledTransfer?.amount ? new Intl.NumberFormat('id-ID').format(preFilledTransfer.amount) : '',
+      description: preFilledTransfer?.description || '',
+      date: new Date(),
+    },
+  });
+
+  const { control, handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = form;
 
   useEffect(() => {
     if (preFilledTransfer) {
-      const formattedValue = new Intl.NumberFormat('id-ID').format(preFilledTransfer.amount || 0);
-      setAmount(formattedValue);
+      if (preFilledTransfer.fromWalletId) setValue('fromWalletId', preFilledTransfer.fromWalletId);
+      if (preFilledTransfer.toWalletId) setValue('toWalletId', preFilledTransfer.toWalletId);
+      if (preFilledTransfer.amount) setValue('amount', new Intl.NumberFormat('id-ID').format(preFilledTransfer.amount));
+      if (preFilledTransfer.description) setValue('description', preFilledTransfer.description);
     }
-    // Clear the pre-filled data after using it
     return () => {
       setPreFilledTransfer(null);
     };
-  }, [preFilledTransfer, setPreFilledTransfer]);
+  }, [preFilledTransfer, setPreFilledTransfer, setValue]);
 
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, '');
-    const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-    setAmount(formattedValue);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!amount || !fromWalletId || !toWalletId || !date || !description) {
-      showToast("Harap isi semua kolom.", 'error');
-      return;
-    }
-    if (fromWalletId === toWalletId) {
-        showToast("Dompet asal dan tujuan tidak boleh sama.", 'error');
-        return;
-    }
-    setIsSubmitting(true);
+  const onSubmit = async (values: TransferFormValues) => {
     try {
-        await addTransfer({
-            fromWalletId,
-            toWalletId,
-            amount: parseInt(amount.replace(/[^0-9]/g, '')),
-            description,
-            date: date.toISOString(),
-        });
+      await addTransfer({
+        fromWalletId: values.fromWalletId,
+        toWalletId: values.toWalletId,
+        amount: values.amount as unknown as number, // Zod transform handles this
+        description: values.description,
+        date: values.date.toISOString(),
+      });
+      onClose();
     } catch (error) {
-        showToast('Gagal mencatat transfer.', 'error');
-        console.error(error);
-    } finally {
-        setIsSubmitting(false);
+      showToast('Gagal mencatat transfer.', 'error');
+      console.error(error);
     }
   };
 
+  const fromWalletId = watch('fromWalletId');
   const toWallets = wallets.filter(w => w.id !== fromWalletId);
 
   return (
@@ -102,80 +95,123 @@ export const AddTransferModal = ({ onClose }: { onClose: () => void }) => {
             <span className="sr-only">Tutup</span>
           </Button>
         </div>
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="amount-transfer">Jumlah</Label>
-            <Input
-              id="amount-transfer"
-              placeholder="Rp 0"
-              value={amount}
-              onChange={handleAmountChange}
-              required
-              inputMode="numeric"
-              size="lg"
-              className="text-2xl font-bold"
+            <Label htmlFor="amount-transfer" className={cn(errors.amount && "text-destructive")}>Jumlah</Label>
+            <Controller
+              control={control}
+              name="amount"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="amount-transfer"
+                  placeholder="Rp 0"
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                    const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
+                    field.onChange(formattedValue);
+                  }}
+                  className={cn("text-2xl font-bold", errors.amount && "border-destructive")}
+                  inputMode="numeric"
+                />
+              )}
             />
+            {errors.amount && <p className="text-xs text-destructive">{errors.amount.message}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="from-wallet">Dari Dompet</Label>
-              <Select onValueChange={setFromWalletId} value={fromWalletId}>
-                <SelectTrigger id="from-wallet">
-                  <SelectValue placeholder="Pilih dompet" />
-                </SelectTrigger>
-                <SelectContent>
-                  {wallets.map((wallet) => (
-                    <SelectItem key={wallet.id} value={wallet.id}>
-                      {wallet.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="from-wallet" className={cn(errors.fromWalletId && "text-destructive")}>Dari Dompet</Label>
+              <Controller
+                control={control}
+                name="fromWalletId"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger id="from-wallet" className={cn(errors.fromWalletId && "border-destructive")}>
+                      <SelectValue placeholder="Pilih dompet" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {wallets.map((wallet) => (
+                        <SelectItem key={wallet.id} value={wallet.id}>
+                          {wallet.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.fromWalletId && <p className="text-xs text-destructive">{errors.fromWalletId.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="to-wallet">Ke Dompet</Label>
-              <Select onValueChange={setToWalletId} value={toWalletId} disabled={!fromWalletId}>
-                <SelectTrigger id="to-wallet">
-                  <SelectValue placeholder="Pilih dompet" />
-                </SelectTrigger>
-                <SelectContent>
-                  {toWallets.map((wallet) => (
-                    <SelectItem key={wallet.id} value={wallet.id}>
-                      {wallet.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor="to-wallet" className={cn(errors.toWalletId && "text-destructive")}>Ke Dompet</Label>
+              <Controller
+                control={control}
+                name="toWalletId"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value} disabled={!fromWalletId}>
+                    <SelectTrigger id="to-wallet" className={cn(errors.toWalletId && "border-destructive")}>
+                      <SelectValue placeholder="Pilih dompet" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {toWallets.map((wallet) => (
+                        <SelectItem key={wallet.id} value={wallet.id}>
+                          {wallet.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.toWalletId && <p className="text-xs text-destructive">{errors.toWalletId.message}</p>}
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="date-transfer">Tanggal</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button id="date-transfer" variant={"outline"} className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}>
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={setDate} initialFocus locale={dateFnsLocaleId} />
-              </PopoverContent>
-            </Popover>
+            <Label htmlFor="date-transfer" className={cn(errors.date && "text-destructive")}>Tanggal</Label>
+            <Controller
+              control={control}
+              name="date"
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button id="date-transfer" variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground", errors.date && "border-destructive")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus locale={dateFnsLocaleId} />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
+            {errors.date && <p className="text-xs text-destructive">{errors.date.message}</p>}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description-transfer">Deskripsi</Label>
-            <Input
-              id="description-transfer"
-              placeholder="e.g., Pindah dana untuk belanja"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
+            <Label htmlFor="description-transfer" className={cn(errors.description && "text-destructive")}>Deskripsi</Label>
+            <Controller
+              control={control}
+              name="description"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="description-transfer"
+                  placeholder="e.g., Pindah dana untuk belanja"
+                  className={cn(errors.description && "border-destructive")}
+                />
+              )}
             />
+            {errors.description && <p className="text-xs text-destructive">{errors.description.message}</p>}
           </div>
         </form>
         <div className="p-4 border-t sticky bottom-0 bg-popover z-10">
-          <Button type="submit" onClick={handleSubmit} className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? 'Memproses...' : 'Simpan Transfer'}
+          <Button onClick={handleSubmit(onSubmit)} className="w-full" size="lg" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Memproses...
+              </>
+            ) : (
+              'Simpan Transfer'
+            )}
           </Button>
         </div>
       </motion.div>

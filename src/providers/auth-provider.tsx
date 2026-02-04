@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import React, { useState, useEffect, createContext, useContext, useCallback, useMemo } from 'react';
 import { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter as useNextRouter } from 'next/navigation';
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await supabase.from('profiles').upsert({ id: user.id, is_biometric_enabled: isBiometricEnabled });
     }, [user, supabase]);
 
-    const handleSignOut = async () => {
+    const handleSignOut = useCallback(async () => {
         try {
             await logActivity({ action: 'LOGOUT', entity: 'USER' });
             await supabase.auth.signOut();
@@ -97,10 +97,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             ui.showToast("Gagal keluar.", 'error');
             console.error("Sign out error:", error);
         }
-    };
+    }, [supabase, ui, router]);
+
+    const contextValue = useMemo(() => ({
+        user,
+        userData,
+        isLoading,
+        handleSignOut,
+        updateUserBiometricStatus
+    }), [user, userData, isLoading, handleSignOut, updateUserBiometricStatus]);
 
     return (
-        <AuthContext.Provider value={{ user, userData, isLoading, handleSignOut, updateUserBiometricStatus }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );

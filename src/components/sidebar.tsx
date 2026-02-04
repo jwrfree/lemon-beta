@@ -8,13 +8,13 @@ import { ChevronLeft, ChevronRight, Sparkles, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
-import { useApp } from '@/providers/app-provider';
+import { useAuth } from '@/providers/auth-provider';
 import { BalanceVisibilityToggle } from './balance-visibility-toggle';
 import { SIDEBAR_NAV_ITEMS, SIDEBAR_CONFIG } from '@/lib/sidebar-config';
 
 export const Sidebar = () => {
     const pathname = usePathname();
-    const { handleSignOut } = useApp();
+    const { handleSignOut } = useAuth();
     const { setIsTxModalOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
     const router = useRouter();
 
