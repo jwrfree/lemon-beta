@@ -1,3 +1,4 @@
+import React from 'react';
 import { 
     Utensils, ShoppingCart, Car, Phone, 
     Gamepad2, Home, GraduationCap, HeartPulse,
@@ -6,7 +7,7 @@ import {
     Heart, Baby
 } from 'lucide-react';
 
-export const iconMap: Record<string, any> = {
+export const iconMap: Record<string, React.ElementType> = {
     Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
     Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins, 
     ArrowRightLeft, Handshake, Wrench, Heart, Baby
@@ -21,7 +22,7 @@ export const getCategoryIcon = (iconName: string | null | undefined) => {
  * Jika kategori ada di database, gunakan data DB. 
  * Jika tidak (fallback), gunakan default.
  */
-export const resolveCategoryVisuals = (categoryName: string, allCategories: any[]) => {
+export const resolveCategoryVisuals = (categoryName: string, allCategories: { name: string; icon?: string | React.ElementType; color?: string; bgColor?: string; bg_color?: string }[]) => {
     const found = allCategories.find(c => c.name === categoryName);
     
     if (found) {

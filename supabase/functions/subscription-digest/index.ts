@@ -85,8 +85,14 @@ const analyzeSubscriptions = (transactions: Transaction[]) => {
   return { totalMonthlyBurn, activeSubscriptions, anomalies };
 };
 
+interface SubscriptionSummary {
+  totalMonthlyBurn: number;
+  activeSubscriptions: number;
+  anomalies: SubscriptionAnomaly[];
+}
+
 // --- Format Email HTML ---
-const generateEmailHtml = (userName: string, summary: any) => {
+const generateEmailHtml = (userName: string, summary: SubscriptionSummary) => {
   const formatter = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
   
   let anomaliesHtml = '';
@@ -95,7 +101,7 @@ const generateEmailHtml = (userName: string, summary: any) => {
       <div style="background-color: #fff1f2; border: 1px solid #fecdd3; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
         <h3 style="color: #be123c; margin-top: 0;">⚠️ Deteksi Kenaikan Harga</h3>
         <ul style="padding-left: 20px; color: #881337;">
-          ${summary.anomalies.map((a: any) => `
+          ${summary.anomalies.map((a: SubscriptionAnomaly) => `
             <li>
               <strong>${a.merchantName}</strong> naik 
               <span style="color: #e11d48; font-weight: bold;">${formatter.format(a.difference)}</span> 

@@ -78,9 +78,10 @@ export const LoginPage = ({
             showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
             router.push('/home');
-        } catch (error: any) {
-            setAuthError(error.message);
-            showToast(error.message, 'error');
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Gagal masuk. Coba lagi ya.';
+            setAuthError(message);
+            showToast(message, 'error');
         }
     };
 

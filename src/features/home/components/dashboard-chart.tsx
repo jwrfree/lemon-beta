@@ -10,8 +10,14 @@ import {
 } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
+interface ChartDataItem {
+    date: string;
+    income: number;
+    expense: number;
+}
+
 interface DashboardChartProps {
-    data: any[];
+    data: ChartDataItem[];
 }
 
 const chartConfig = {

@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useUI } from '@/components/ui-provider';
 import { useAuth } from '@/providers/auth-provider';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { Button } from '@/components/ui/button';
 import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { differenceInCalendarDays, formatDistanceToNow, isSameMonth, parseISO, subMonths } from 'date-fns';
+import { differenceInCalendarDays, formatDistanceToNow, isSameMonth, parseISO, subMonths, startOfMonth } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AnimatedCounter } from '@/components/animated-counter';
 import type { Reminder, Debt } from '@/types/models';
@@ -37,7 +37,11 @@ export default function HomePage() {
     const recentTransactionsLimit = homeUi?.recentTransactionsLimit ?? 5;
 
     const { wallets, isLoading: isWalletsLoading } = useWallets();
-    const { transactions, isLoading: isTransactionsLoading } = useTransactions();
+    
+    const now = useMemo(() => new Date(), []);
+    const twoMonthsAgoStart = useMemo(() => startOfMonth(subMonths(now, 1)), [now]);
+    const { transactions, isLoading: isTransactionsLoading } = useRangeTransactions(twoMonthsAgoStart, now);
+    
     const { debts, isLoading: isDebtLoading } = useDebts();
     const { reminders, isLoading: isReminderLoading } = useReminders();
     const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit } = useUI();
@@ -365,7 +369,11 @@ export default function HomePage() {
                                 Lihat Semua
                             </Button>
                         </div>
-                        <TransactionList limit={recentTransactionsLimit} />
+                        <TransactionList 
+                            transactions={transactions} 
+                            limit={recentTransactionsLimit} 
+                            isLoading={isTransactionsLoading} 
+                        />
                     </div>
                     </main>
                 </PullToRefresh>

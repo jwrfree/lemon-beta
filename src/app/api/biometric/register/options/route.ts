@@ -65,10 +65,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(options);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error generating registration options:', error);
+    const message = error instanceof Error ? error.message : 'Failed to prepare biometric registration.';
     return NextResponse.json(
-      { message: error.message || 'Failed to prepare biometric registration.' },
+      { message },
       { status: 500 },
     );
   }

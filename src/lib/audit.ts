@@ -18,7 +18,7 @@ interface AuditLogParams {
   action: AuditAction;
   entity: AuditEntity;
   entityId?: string;
-  details?: any;
+  details?: Record<string, unknown> | null;
 }
 
 export const logActivity = async ({ action, entity, entityId, details }: AuditLogParams) => {

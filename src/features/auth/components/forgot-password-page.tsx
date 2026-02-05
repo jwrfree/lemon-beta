@@ -57,12 +57,14 @@ export const ForgotPasswordPage = ({
 
             setIsSuccess(true);
             showToast('Kami telah mengirim email untuk mengatur ulang password.', 'success');
-        } catch (error: any) {
+        } catch (error) {
             let message = 'Gagal mengirim tautan reset password. Coba lagi ya.';
-            if (error.message?.includes('User not found')) {
-                message = 'Email belum terdaftar di Lemon.';
-            } else if (error.status === 429) {
-                message = 'Terlalu banyak permintaan. Coba beberapa menit lagi.';
+            if (error instanceof Error) {
+                if (error.message?.includes('User not found')) {
+                    message = 'Email belum terdaftar di Lemon.';
+                } else if ('status' in error && error.status === 429) {
+                    message = 'Terlalu banyak permintaan. Coba beberapa menit lagi.';
+                }
             }
             setAuthError(message);
             showToast(message, 'error');

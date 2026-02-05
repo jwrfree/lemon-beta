@@ -16,7 +16,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { formatCurrency, cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -180,6 +180,12 @@ export const ExpenseTrendChart = ({
     );
 };
 
+interface MonthlyTrendData {
+    shortLabel: string;
+    fullLabel: string;
+    total: number;
+}
+
 // 3. Monthly Trend Chart
 export const MonthlyBarChart = ({ 
     data, 
@@ -187,7 +193,7 @@ export const MonthlyBarChart = ({
     sectionLabel,
     color 
 }: { 
-    data: any[], 
+    data: MonthlyTrendData[], 
     gradientId: string, 
     sectionLabel: string,
     color?: string 
@@ -198,7 +204,7 @@ export const MonthlyBarChart = ({
     
     return (
         <ChartContainer
-            config={{ total: { label: sectionLabel, color: color || 'var(--primary)' } } as any}
+            config={{ total: { label: sectionLabel, color: color || 'var(--primary)' } } satisfies ChartConfig}
             className="h-full w-full"
         >
             <RechartsBarChart data={data} barCategoryGap={isMobile ? 8 : 12} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -244,13 +250,21 @@ export const MonthlyBarChart = ({
     );
 };
 
+interface CashflowData {
+    key: string;
+    label: string;
+    income: number;
+    expense: number;
+    net: number;
+}
+
 // 4. Net Cashflow Composed Chart
 export const NetCashflowComposedChart = ({ 
     filteredData, 
     selectedMonthKey, 
     onMonthClick 
 }: { 
-    filteredData: any[], 
+    filteredData: CashflowData[], 
     selectedMonthKey: string | null,
     onMonthClick: (key: string) => void
 }) => {
@@ -262,7 +276,7 @@ export const NetCashflowComposedChart = ({
                     income: { label: 'Pemasukan', color: 'var(--primary)' },
                     expense: { label: 'Pengeluaran', color: 'var(--destructive)' },
                     net: { label: 'Arus Kas', color: 'var(--chart-2)' },
-                } as any
+                } satisfies ChartConfig
             }
             className="h-full w-full"
         >
@@ -271,7 +285,7 @@ export const NetCashflowComposedChart = ({
                 barCategoryGap={isMobile ? 10 : 18}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                 onClick={(state) => {
-                    const payload = state?.activePayload?.[0]?.payload as any;
+                    const payload = state?.activePayload?.[0]?.payload as CashflowData;
                     if (payload?.key) {
                         onMonthClick(payload.key);
                     }

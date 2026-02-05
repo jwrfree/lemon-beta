@@ -4,7 +4,7 @@
 import { useMemo, useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { cn } from '@/lib/utils';
 import { useDebts } from '@/features/debts/hooks/use-debts';
@@ -12,6 +12,7 @@ import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useGoals } from '@/features/goals/hooks/use-goals';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
     Search, 
@@ -41,9 +42,16 @@ import { UserProfileDropdown } from '@/components/user-profile-dropdown';
 import { DashboardSmartInsight } from '@/features/home/components/dashboard-smart-insight';
 
 export const DesktopDashboard = () => {
+    const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+    
+    // Dates for fetching
+    const now = lastRefreshed;
+    const currentMonthStart = startOfMonth(now);
+    const threeMonthsAgoStart = startOfMonth(subMonths(currentMonthStart, 2));
+    
     const { wallets } = useWallets();
-    const { transactions } = useTransactions();
-    const { reminders } = useReminders();
+     const { transactions } = useRangeTransactions(threeMonthsAgoStart, now);
+     const { reminders } = useReminders();
     const { debts } = useDebts();
     const { budgets } = useBudgets();
     const { goals } = useGoals();
@@ -57,7 +65,6 @@ export const DesktopDashboard = () => {
 
     const [chartRange, setChartRange] = useState<'30' | '90' | 'month'>('month');
     const [selectedWalletId, setSelectedWalletId] = useState<string>('all');
-    const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
     const [isPending, startTransition] = useTransition();
 
     const handleRefresh = () => {
@@ -68,8 +75,7 @@ export const DesktopDashboard = () => {
     };
 
     // Stats Calculation
-    const now = lastRefreshed;
-    const currentMonth = startOfMonth(now);
+    const currentMonth = currentMonthStart;
     const lastMonth = subMonths(currentMonth, 1);
 
     const visibleWallets = useMemo(() => {
@@ -109,11 +115,11 @@ export const DesktopDashboard = () => {
         };
     };
 
-    const incomeTrend = calculateTrend(currentStats.income, lastStats.income);
-    const expenseTrend = calculateTrend(currentStats.expense, lastStats.expense);
-    const netTrend = calculateTrend(currentStats.net, lastStats.net);
+    const incomeTrend = useMemo(() => calculateTrend(currentStats.income, lastStats.income), [currentStats.income, lastStats.income]);
+    const expenseTrend = useMemo(() => calculateTrend(currentStats.expense, lastStats.expense), [currentStats.expense, lastStats.expense]);
+    const netTrend = useMemo(() => calculateTrend(currentStats.net, lastStats.net), [currentStats.net, lastStats.net]);
 
-    const totalBalance = visibleWallets.reduce((acc, w) => acc + w.balance, 0);
+    const totalBalance = useMemo(() => visibleWallets.reduce((acc, w) => acc + w.balance, 0), [visibleWallets]);
     
     const totalDebt = useMemo(() => {
         return debts
@@ -177,184 +183,163 @@ export const DesktopDashboard = () => {
         return { nextDueDebt: nextDue, largestDebt: largest };
     }, [debts]);
 
-    const recentTransactions = filteredTransactions.slice(0, 5);
+    const recentTransactions = useMemo(() => filteredTransactions.slice(0, 5), [filteredTransactions]);
+
+    // Memoize derived stats to prevent unnecessary re-renders of children
+    const activeBudgets = useMemo(() => {
+        return calculatedBudgets.sort((a, b) => {
+            const aPercent = ((a.spent ?? 0) / a.limitAmount);
+            const bPercent = ((b.spent ?? 0) / b.limitAmount);
+            return bPercent - aPercent;
+        }).slice(0, 3);
+    }, [calculatedBudgets]);
+
+    const activeGoals = useMemo(() => {
+        return goals
+            .filter(g => (g.currentAmount || 0) < g.targetAmount)
+            .sort((a, b) => {
+                const aPercent = (a.currentAmount || 0) / a.targetAmount;
+                const bPercent = (b.currentAmount || 0) / b.targetAmount;
+                return bPercent - aPercent;
+            })
+            .slice(0, 3);
+    }, [goals]);
 
     if (!mounted) return <DashboardSkeleton />;
 
     return (
-        <div className="w-full h-full flex flex-col">
-            <PageHeader
-                title="Dashboard"
-                showBackButton={false}
-                extraActions={
-                    <TooltipProvider>
-                        <div className="flex items-center gap-2">
-                            <div className="hidden lg:block">
-                                <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                    <SelectTrigger className="w-52 h-10 rounded-md bg-background shadow-sm" aria-label="Filter dompet">
-                                        <SelectValue placeholder="Semua dompet" />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-md bg-background shadow-lg">
-                                        <SelectItem value="all">Semua dompet</SelectItem>
-                                        {wallets.map(wallet => (
-                                            <SelectItem key={wallet.id} value={wallet.id}>
-                                                {wallet.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+        <TooltipProvider>
+            <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/50">
+                <div className="max-w-[1600px] mx-auto p-4 lg:p-8 space-y-8">
+                    {/* Header Section */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <PageHeader 
+                            title="Dashboard" 
+                            description="Ringkasan aktivitas keuanganmu hari ini."
+                            className="p-0"
+                        />
+                        
+                        <div className="flex items-center gap-3">
+                            <div className="relative w-full md:w-64">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <input 
+                                    placeholder="Cari transaksi..." 
+                                    className="flex h-10 w-full rounded-lg border-none bg-card px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 pl-9 shadow-sm"
+                                />
                             </div>
+                            
+                            <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
+                                <SelectTrigger className="w-[180px] bg-card border-none shadow-sm h-10 rounded-lg">
+                                    <SelectValue placeholder="Pilih Dompet" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Semua Dompet</SelectItem>
+                                    {wallets.map(w => (
+                                        <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-10 w-10 rounded-md bg-background shadow-sm text-violet-600 hover:text-violet-700 hover:bg-violet-50"
-                                        onClick={() => router.push('/add-smart')}
-                                        aria-label="Smart Add AI"
-                                    >
-                                        <Sparkles className="h-4 w-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Smart Add (AI)</p>
-                                </TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
+                                    <Button 
+                                        variant="outline" 
+                                        size="icon" 
+                                        className={cn(
+                                            "h-10 w-10 bg-card border-none shadow-sm hover:bg-primary/5 transition-all rounded-lg",
+                                            isPending && "animate-spin"
+                                        )}
                                         onClick={handleRefresh}
                                         disabled={isPending}
-                                        aria-label="Segarkan data"
                                     >
-                                        <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+                                        <RefreshCw className="h-4 w-4" />
                                     </Button>
                                 </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Segarkan data</p>
-                                </TooltipContent>
+                                <TooltipContent>Segarkan Data</TooltipContent>
                             </Tooltip>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-10 w-10 rounded-md bg-background shadow-sm text-muted-foreground"
-                                        onClick={() => router.push('/transactions')}
-                                        aria-label="Cari transaksi"
-                                    >
-                                        <Search className="h-4 w-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Cari transaksi</p>
-                                </TooltipContent>
-                            </Tooltip>
-                            <div className="pl-2 ml-2 border-l border-border/60">
-                                <UserProfileDropdown />
-                            </div>
+
+                            <UserProfileDropdown />
                         </div>
-                    </TooltipProvider>
-                }
-            />
-
-            <div className="flex-1 p-6 space-y-6 overflow-y-auto">
-                <ErrorBoundary>
-                    <FinanceOverview 
-                        totalBalance={totalBalance}
-                        income={currentStats.income}
-                        expense={currentStats.expense}
-                        net={currentStats.net}
-                        prevIncome={lastStats.income}
-                        prevExpense={lastStats.expense}
-                        prevNet={lastStats.net}
-                        incomeTrend={incomeTrend}
-                        expenseTrend={expenseTrend}
-                        netTrend={netTrend}
-                    />
-                </ErrorBoundary>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    {/* Main Content Area */}
-                    <div className="lg:col-span-8 space-y-6">
-                        {filteredTransactions.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                                <div className="md:col-span-3">
-                                    <ErrorBoundary>
-                                        <DashboardCashflow 
-                                            transactions={filteredTransactions}
-                                            chartRange={chartRange}
-                                            setChartRange={setChartRange}
-                                        />
-                                    </ErrorBoundary>
-                                </div>
-                                <div className="md:col-span-2">
-                                    <ErrorBoundary>
-                                        <DashboardExpensePie transactions={filteredTransactions} />
-                                    </ErrorBoundary>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="h-[350px] w-full border-2 border-dashed border-muted rounded-xl flex flex-col items-center justify-center text-muted-foreground bg-muted/10 animate-in fade-in duration-500">
-                                <div className="p-4 bg-muted/30 rounded-full mb-3">
-                                    <BarChart3 className="h-8 w-8 opacity-50" />
-                                </div>
-                                <p className="text-sm font-medium">Belum cukup data untuk visualisasi</p>
-                                <p className="text-xs text-muted-foreground mt-1">Grafik akan muncul setelah kamu mencatat transaksi.</p>
-                            </div>
-                        )}
-                        
-                        {recentTransactions.length > 0 ? (
-                            <ErrorBoundary>
-                                <DashboardRecentTransactions 
-                                    transactions={recentTransactions} 
-                                    wallets={wallets}
-                                />
-                            </ErrorBoundary>
-                        ) : (
-                            <DashboardRecentTransactionsEmpty />
-                        )}
                     </div>
 
-                    {/* Sidebar / Widgets Area */}
-                    <div className="lg:col-span-4 space-y-6">
-                        <ErrorBoundary>
-                            <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
-                        </ErrorBoundary>
-                        <ErrorBoundary>
-                            <DashboardSmartInsight 
-                                income={currentStats.income} 
-                                expense={currentStats.expense} 
+                    {/* Quick Actions & Hero Section */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div className="lg:col-span-8">
+                            <FinanceOverview 
+                                totalBalance={totalBalance}
+                                income={currentStats.income}
+                                expense={currentStats.expense}
                                 net={currentStats.net}
-                                hasTransactions={filteredTransactions.length > 0}
+                                prevIncome={lastStats.income}
+                                prevExpense={lastStats.expense}
+                                prevNet={lastStats.net}
+                                incomeTrend={incomeTrend}
+                                expenseTrend={expenseTrend}
+                                netTrend={netTrend}
                             />
-                        </ErrorBoundary>
-                        <ErrorBoundary>
-                            <DashboardWallets wallets={visibleWallets} />
-                        </ErrorBoundary>
-                        <DashboardQuickActions />
-                        <ErrorBoundary>
-                            <DashboardBudgetStatus budgets={calculatedBudgets} />
-                        </ErrorBoundary>
-                        {goals.length > 0 ? (
+                        </div>
+                        <div className="lg:col-span-4">
+                            <DashboardQuickActions />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        {/* Main Charts Section */}
+                        <div className="lg:col-span-8 space-y-6">
+                            <DashboardCashflow 
+                                transactions={filteredTransactions}
+                                chartRange={chartRange}
+                                setChartRange={setChartRange}
+                            />
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <DashboardWallets wallets={visibleWallets} />
+                                <DashboardExpensePie transactions={filteredTransactions} />
+                            </div>
+
+                            {filteredTransactions.length > 0 ? (
+                                <DashboardRecentTransactions 
+                                    transactions={recentTransactions} 
+                                    wallets={wallets} 
+                                />
+                            ) : (
+                                <DashboardRecentTransactionsEmpty />
+                            )}
+                        </div>
+
+                        {/* Sidebar Sections */}
+                        <div className="lg:col-span-4 space-y-6">
                             <ErrorBoundary>
-                                <DashboardGoals goals={goals} />
+                                <DashboardSmartInsight 
+                                    income={currentStats.income} 
+                                    expense={currentStats.expense} 
+                                    net={currentStats.net}
+                                    hasTransactions={filteredTransactions.length > 0}
+                                />
                             </ErrorBoundary>
-                        ) : (
-                            <DashboardGoalsEmpty />
-                        )}
-                        <ErrorBoundary>
-                            <DashboardAlerts 
-                                reminderSummary={reminderSummary}
-                                debtSummary={debtSummary}
-                            />
-                        </ErrorBoundary>
+                            <ErrorBoundary>
+                                <DashboardAlerts 
+                                    reminderSummary={reminderSummary}
+                                    debtSummary={debtSummary}
+                                />
+                            </ErrorBoundary>
+                            <ErrorBoundary>
+                                <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
+                            </ErrorBoundary>
+                            <ErrorBoundary>
+                                <DashboardBudgetStatus budgets={activeBudgets} />
+                            </ErrorBoundary>
+                            {activeGoals.length > 0 ? (
+                                <ErrorBoundary>
+                                    <DashboardGoals goals={activeGoals} />
+                                </ErrorBoundary>
+                            ) : (
+                                <DashboardGoalsEmpty />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </TooltipProvider>
     );
 };

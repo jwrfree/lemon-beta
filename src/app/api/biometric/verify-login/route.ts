@@ -100,10 +100,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, redirectUrl: linkData.properties.action_link });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Biometric verification error:', error);
     return NextResponse.json(
-      { message: error.message || 'Failed to verify biometric login.' },
+      { message: error instanceof Error ? error.message : 'Failed to verify biometric login.' },
       { status: 500 },
     );
   }

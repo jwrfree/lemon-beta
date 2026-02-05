@@ -106,9 +106,22 @@ export default function GoalsPage() {
           .eq("user_id", user.id)
           .order("created_at", { ascending: false });
 
+interface GoalRow {
+  id: string;
+  title: string;
+  emoji: string;
+  current_amount: number;
+  target_amount: number;
+  deadline: string;
+  category: string;
+  color: string;
+  bar_color: string;
+}
+
+// ... in useEffect ...
         if (data) {
           // Mapping snake_case dari DB ke camelCase untuk UI
-          const goalsData: Goal[] = data.map((doc: any) => ({
+          const goalsData: Goal[] = (data as GoalRow[]).map((doc) => ({
             id: doc.id,
             title: doc.title,
             emoji: doc.emoji,

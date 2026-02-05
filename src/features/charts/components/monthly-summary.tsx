@@ -10,7 +10,6 @@ import { categoryDetails } from '@/lib/categories';
 import { PlaceholderContent } from './placeholder-content';
 import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
@@ -24,11 +23,9 @@ import type { Transaction } from '@/types/models';
 
 type TabValue = 'expense' | 'income' | 'net';
 
-export const MonthlySummary = ({ type, transactions: manualTransactions }: { type: TabValue, transactions?: Transaction[] }) => {
+export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabValue, transactions: Transaction[], isLoading?: boolean }) => {
     const router = useRouter();
-    const { transactions: hookTransactions } = useTransactions();
     const { wallets } = useWallets();
-    const transactions = manualTransactions || hookTransactions;
     const isMobile = useIsMobile();
     const [aiInsight, setAiInsight] = useState<string | null>(null);
     const [isAiLoading, setIsAiLoading] = useState(false);
@@ -37,7 +34,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
         setIsAiLoading(true);
         try {
             const now = new Date();
-            const relevantTransactions = manualTransactions || transactions.filter((t) => isSameMonth(parseISO(t.date), now));
+            const relevantTransactions = transactions.filter((t) => isSameMonth(parseISO(t.date), now));
             
             const income = relevantTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
             const expense = relevantTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
@@ -127,7 +124,7 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
                 color: string;
                 bgColor: string;
             },
-            topTransaction: null as null | any,
+            topTransaction: null as null | Transaction,
             tipCopy: '',
             badgeLabel: '',
             heroDescription: '',
@@ -227,6 +224,10 @@ export const MonthlySummary = ({ type, transactions: manualTransactions }: { typ
     const handleTxClick = (txId: string) => {
         router.push('/transactions');
     };
+
+    if (isLoading) {
+        return <div className="h-40 w-full animate-pulse rounded-3xl bg-muted" />;
+    }
 
     if (type !== 'net' && summary.value === 0) {
         return (

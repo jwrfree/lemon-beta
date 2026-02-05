@@ -3,7 +3,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Scale } from 'lucide-react';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -17,10 +16,11 @@ const NetCashflowComposedChart = dynamic(() => import('./lazy-charts').then(mod 
     loading: () => <div className="h-72 w-full animate-pulse rounded-md bg-muted" />,
 });
 
+import type { Transaction } from '@/types/models';
+
 const romanQuarters = ['I', 'II', 'III', 'IV'] as const;
 
-export const NetCashflowChart = () => {
-    const { transactions } = useTransactions();
+export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Transaction[], isLoading?: boolean }) => {
     const [selectedQuarter, setSelectedQuarter] = useState<'all' | string>('all');
     const [selectedMonthKey, setSelectedMonthKey] = useState<string | null>(null);
 
@@ -89,6 +89,10 @@ export const NetCashflowChart = () => {
             setSelectedMonthKey(fallback?.key ?? null);
         }
     }, [filteredData, selectedMonthKey]);
+
+    if (isLoading) {
+        return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
+    }
 
     if (!hasActivity) {
         return (

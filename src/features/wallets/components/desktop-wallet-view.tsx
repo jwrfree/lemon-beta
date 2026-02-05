@@ -14,8 +14,9 @@ import type { Wallet } from '@/types/models';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
-import { parseISO, subDays, isAfter } from 'date-fns';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
+import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
+import { parseISO, subDays, isAfter, startOfDay, endOfDay } from 'date-fns';
 
 interface DesktopWalletViewProps {
     wallets: Wallet[];
@@ -26,8 +27,23 @@ interface DesktopWalletViewProps {
 export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: DesktopWalletViewProps) => {
     const { openEditWalletModal } = useUI();
     const { isBalanceVisible } = useBalanceVisibility();
-    const { transactions } = useTransactions();
+    
+    // For 30-day overview (all wallets)
+    const thirtyDaysAgo = useMemo(() => subDays(new Date(), 30), []);
+    const { transactions: recentTransactions } = useRangeTransactions(thirtyDaysAgo, new Date());
+    
     const activeWallet = wallets[activeIndex];
+    
+    // For the specific wallet's transaction list (paginated)
+    const { 
+        transactions: walletTransactions, 
+        isLoading: isTransactionsLoading,
+        hasMore,
+        loadMore
+    } = usePaginatedTransactions(useMemo(() => ({
+        walletId: activeWallet ? [activeWallet.id] : []
+    }), [activeWallet]));
+
     const activeWalletVisuals = activeWallet ? getWalletVisuals(activeWallet.name, activeWallet.icon || undefined) : null;
 
     const [search, setSearch] = useState('');
@@ -54,15 +70,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
     }, [wallets, search, sort, sortDir]);
 
     const { income30, expense30 } = useMemo(() => {
-        const now = new Date();
-        const start = subDays(now, 30);
         let income = 0;
         let expense = 0;
 
-        transactions.forEach(t => {
-            const date = parseISO(t.date);
-            if (!isAfter(date, start)) return;
-            
+        recentTransactions.forEach(t => {
             if (t.type === 'income') {
                 income += t.amount;
             } else {
@@ -71,27 +82,20 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         });
 
         return { income30: income, expense30: expense };
-    }, [transactions]);
-
-    const walletTransactions = useMemo(() => {
-        if (!activeWallet) return [];
-        return transactions.filter(t => t.walletId === activeWallet.id);
-    }, [transactions, activeWallet]);
+    }, [recentTransactions]);
 
     const activeAnalytics = useMemo(() => {
         if (!activeWallet) return { income30: 0, expense30: 0 };
-        const now = new Date();
-        const start = subDays(now, 30);
         let income = 0;
         let expense = 0;
-        walletTransactions.forEach(t => {
-            const date = parseISO(t.date);
-            if (!isAfter(date, start)) return;
+        
+        // Use recentTransactions which already contains the last 30 days
+        recentTransactions.filter(t => t.walletId === activeWallet.id).forEach(t => {
             if (t.type === 'income') income += t.amount;
             else expense += t.amount;
         });
         return { income30: income, expense30: expense };
-    }, [walletTransactions, activeWallet]);
+    }, [recentTransactions, activeWallet]);
 
     const getHealth = (wallet?: Wallet) => {
         if (!wallet) return { label: 'Tidak ada', variant: 'secondary' as const };
@@ -241,7 +245,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 {/* Right Side: Detail & Transactions */}
                 <Card className="flex flex-col border-none shadow-sm overflow-hidden bg-card/80 backdrop-blur-sm h-full">
                     {activeWallet ? (
-                        <Tabs value={panelTab} onValueChange={(v: any) => setPanelTab(v)} className="flex flex-col h-full">
+                        <Tabs value={panelTab} onValueChange={(v) => setPanelTab(v as 'transactions' | 'analytics' | 'settings')} className="flex flex-col h-full">
                             <div className="p-6 border-b bg-card/50">
                                 <div className="flex justify-between items-start mb-6">
                                     <div className="flex items-center gap-4">
@@ -283,7 +287,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             <div className="flex-1 min-h-0 bg-background/50">
                                 <TabsContent value="transactions" className="h-full m-0 p-0 relative">
                                     <div className="absolute inset-0 overflow-y-auto custom-scrollbar px-6 py-4">
-                                        <TransactionList walletId={activeWallet.id} />
+                                        <TransactionList 
+                                            transactions={walletTransactions} 
+                                            isLoading={isTransactionsLoading}
+                                            hasMore={hasMore}
+                                            loadMore={loadMore}
+                                        />
                                     </div>
                                 </TabsContent>
                                 

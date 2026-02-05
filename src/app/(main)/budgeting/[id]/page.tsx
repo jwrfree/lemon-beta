@@ -3,7 +3,7 @@
 
 import React, { useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +18,11 @@ import { PageHeader } from '@/components/page-header';
 export default function BudgetDetailPage() {
     const router = useRouter();
     const params = useParams();
-    const { transactions } = useTransactions();
+
+    const now = useMemo(() => new Date(), []);
+    const start = useMemo(() => startOfMonth(now), [now]);
+
+    const { transactions, isLoading: isTransactionsLoading } = useRangeTransactions(start, now);
     const { budgets } = useBudgets();
     const { openEditBudgetModal } = useUI();
 
@@ -28,13 +32,9 @@ export default function BudgetDetailPage() {
     const budgetDetails = useMemo(() => {
         if (!budget) return null;
 
-        const now = new Date();
-        const start = startOfMonth(now);
-
         const budgetTransactions = transactions.filter(t => 
             t.type === 'expense' && 
-            budget.categories.includes(t.category) &&
-            parseISO(t.date) >= start
+            budget.categories.includes(t.category)
         );
 
         const spent = budgetTransactions.reduce((acc, t) => acc + t.amount, 0);

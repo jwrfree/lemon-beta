@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from 'react';
 import { BarChart, ChartArea as ChartAreaIcon } from 'lucide-react';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -17,9 +16,7 @@ const ExpenseTrendChart = dynamic(() => import('./lazy-charts').then(mod => mod.
     loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
 });
 
-export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions } = useTransactions();
-    const transactions = manualTransactions || hookTransactions;
+export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transactions: Transaction[], isLoading?: boolean }) => {
     const [range, setRange] = useState<'14' | '30'>('14');
     const [chartType, setChartType] = useState<'area' | 'bar'>('area');
 
@@ -46,6 +43,10 @@ export const ExpenseShortTermTrend = ({ transactions: manualTransactions }: { tr
         }
         return best;
     }, null);
+
+    if (isLoading) {
+        return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
+    }
 
     if (!hasActivity) {
         return (

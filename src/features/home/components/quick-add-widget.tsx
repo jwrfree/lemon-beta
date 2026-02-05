@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, PlusCircle, Send, Loader2, Check, X, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { extractTransaction } from '@/ai/flows/extract-transaction-flow';
+import { extractTransaction, type SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
 import { useActions } from '@/providers/action-provider';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -19,7 +19,7 @@ export const QuickAddWidget = () => {
 
     const [inputValue, setInputValue] = useState('');
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [parsedData, setParsedData] = useState<any>(null);
+    const [parsedData, setParsedData] = useState<SingleTransactionOutput | null>(null);
 
     const handleQuickAdd = async () => {
         if (!inputValue.trim()) return;
@@ -27,7 +27,11 @@ export const QuickAddWidget = () => {
         setIsAnalyzing(true);
         try {
             const result = await extractTransaction(inputValue);
-            setParsedData(result);
+            if (result.transactions && result.transactions.length > 0) {
+                setParsedData(result.transactions[0]);
+            } else if (result.clarificationQuestion) {
+                showToast(result.clarificationQuestion, 'info');
+            }
         } catch (error) {
             showToast('Gagal menganalisis transaksi', 'error');
         } finally {

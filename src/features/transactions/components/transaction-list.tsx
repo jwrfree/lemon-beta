@@ -10,7 +10,6 @@ import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar, Loader
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { DesktopTransactionTable } from './desktop-transaction-table';
 import { groupTransactionsByDate } from '@/features/transactions/utils';
@@ -24,23 +23,15 @@ interface TransactionListProps {
     isLoading?: boolean;
 }
 
-export const TransactionList = ({ transactions: transactionsToShow, limit, walletId, hasMore, loadMore, isLoading }: TransactionListProps) => {
+export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMore, isLoading }: TransactionListProps) => {
     const { wallets } = useWallets();
-    const { transactions: allTransactions } = useTransactions();
     const { getCategoryVisuals } = useCategories();
     const router = useRouter();
 
     const finalTransactions = useMemo(() => {
-        if (transactionsToShow) {
-            return transactionsToShow;
-        }
-
-        const baseTransactions = walletId
-            ? allTransactions.filter(transaction => transaction.walletId === walletId)
-            : allTransactions;
-
-        return limit ? baseTransactions.slice(0, limit) : baseTransactions;
-    }, [transactionsToShow, walletId, allTransactions, limit]);
+        if (!transactions) return [];
+        return limit ? transactions.slice(0, limit) : transactions;
+    }, [transactions, limit]);
 
     const groupedTransactions = useMemo(() => {
         return groupTransactionsByDate(finalTransactions);
@@ -80,7 +71,13 @@ export const TransactionList = ({ transactions: transactionsToShow, limit, walle
                         </h3>
                         <div className="space-y-2">
                             {transactionsForDay.map((transaction: Transaction) => (
-                                <TransactionListItem key={transaction.id} transaction={transaction} hideDate />
+                                <TransactionListItem 
+                                    key={transaction.id} 
+                                    transaction={transaction} 
+                                    wallets={wallets}
+                                    getCategoryVisuals={getCategoryVisuals}
+                                    hideDate 
+                                />
                             ))}
                         </div>
                     </div>

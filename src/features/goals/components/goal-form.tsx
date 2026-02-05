@@ -14,6 +14,7 @@ import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
 import { useGoals } from '@/features/goals/hooks/use-goals';
+import type { Goal } from '@/types/models';
 
 
 const goalIcons = [
@@ -29,7 +30,7 @@ const goalIcons = [
 
 interface GoalFormProps {
   onClose: () => void;
-  initialData?: any | null;
+  initialData?: Goal | null;
 }
 
 export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {

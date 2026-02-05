@@ -74,7 +74,7 @@ export const useGoals = () => {
     const updateGoal = useCallback(async (goalId: string, goalData: Partial<Goal>) => {
         if (!user) throw new Error("User not authenticated.");
         
-        const dbPayload: Record<string, any> = {};
+        const dbPayload: Partial<GoalRow> = {};
         if (goalData.name) dbPayload.name = goalData.name;
         if (goalData.targetAmount !== undefined) dbPayload.target_amount = goalData.targetAmount;
         if (goalData.currentAmount !== undefined) dbPayload.current_amount = goalData.currentAmount;

@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronRight, TrendingDown, TrendingUp } from 'lucide-react';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig } from '@/components/ui/chart';
@@ -23,9 +22,7 @@ const CategoryPieChart = dynamic(() => import('./lazy-charts').then(mod => mod.C
 
 import { useIsMobile } from '@/hooks/use-mobile';
 
-export const CategoryAnalysis = ({ type, transactions: manualTransactions }: { type: 'expense' | 'income', transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions } = useTransactions();
-    const transactions = manualTransactions || hookTransactions;
+export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'expense' | 'income', transactions: Transaction[], isLoading?: boolean }) => {
     const router = useRouter();
     const isMobile = useIsMobile();
 
@@ -34,10 +31,8 @@ export const CategoryAnalysis = ({ type, transactions: manualTransactions }: { t
     };
 
     const { chartData, chartConfig, total } = useMemo(() => {
-        // If manualTransactions provided, assume they are already filtered by date
-        const relevantTransactions = manualTransactions 
-            ? manualTransactions.filter(t => t.type === type)
-            : getMonthlyTransactions(hookTransactions, type);
+        // Assume transactions are already filtered by date
+        const relevantTransactions = transactions.filter(t => t.type === type);
 
         if (relevantTransactions.length === 0) {
             return { chartData: [], chartConfig: {}, total: 0 };
@@ -57,7 +52,11 @@ export const CategoryAnalysis = ({ type, transactions: manualTransactions }: { t
         ) as ChartConfig;
 
         return { chartData, chartConfig, total };
-    }, [hookTransactions, manualTransactions, type]);
+    }, [transactions, type]);
+
+    if (isLoading) {
+        return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
+    }
 
     if (chartData.length === 0) {
         return (

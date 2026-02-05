@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { useMonthTransactions } from '@/features/transactions/hooks/use-month-transactions';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useActions } from '@/providers/action-provider';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
@@ -52,7 +52,7 @@ export type InsightData = {
 
 export const useSmartAddFlow = () => {
     const { wallets } = useWallets();
-    const { transactions } = useTransactions();
+    const { transactions } = useMonthTransactions();
     const { incomeCategories, expenseCategories } = useCategories();
     const { addTransaction } = useActions();
     const { budgets } = useBudgets();

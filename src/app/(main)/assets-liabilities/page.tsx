@@ -19,11 +19,12 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import type { Asset, Liability } from '@/types/models';
 
 type AssetOrLiabilityWithMeta = (Asset & { type: 'asset' }) | (Liability & { type: 'liability' });
+type AssetOrLiabilityFormInitialData = (Partial<Asset> & { type: 'asset' }) | (Partial<Liability> & { type: 'liability' });
 
 export default function AssetsLiabilitiesPage() {
     const { assets, liabilities, goldPrice } = useAssets();
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [formInitialData, setFormInitialData] = useState<any | null>(null);
+    const [formInitialData, setFormInitialData] = useState<AssetOrLiabilityFormInitialData | null>(null);
     const isMobile = useIsMobile();
 
     const totals = useMemo(() => {
@@ -75,7 +76,7 @@ export default function AssetsLiabilitiesPage() {
         };
     }, [assets, liabilities, goldPrice]);
 
-    const handleOpenForm = (initialData: any | null = null) => {
+    const handleOpenForm = (initialData: AssetOrLiabilityFormInitialData | null = null) => {
         setFormInitialData(initialData);
         setIsFormOpen(true);
     };

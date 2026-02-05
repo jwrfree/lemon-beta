@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
     }).eq('id', profile.id);
 
     return NextResponse.json(options);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error generating login challenge:', error);
     return NextResponse.json(
-      { message: error.message || 'Failed to prepare biometric login.' },
+      { message: error instanceof Error ? error.message : 'Failed to prepare biometric login.' },
       { status: 500 },
     );
   }

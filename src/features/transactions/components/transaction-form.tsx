@@ -19,7 +19,7 @@ import { X, CalendarIcon, ArrowRightLeft, MapPin, ChevronRight, ChevronLeft, Spa
 import { categoryDetails, Category } from '@/lib/categories';
 import { SubCategorySheet } from './sub-category-sheet';
 import { useUI } from '@/components/ui-provider';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { transactionSchema, TransactionFormValues } from '../schemas/transaction-schema';
 import { z } from 'zod';
@@ -31,7 +31,7 @@ import { suggestCategory } from '@/ai/flows/suggest-category-flow';
 interface TransactionFormProps {
   onClose: (data?: Transaction) => void;
   isModal?: boolean;
-  initialData?: Transaction | null;
+  initialData?: Transaction | Partial<Transaction> | null;
 }
 
 export const TransactionForm = ({ onClose, isModal = true, initialData = null }: TransactionFormProps) => {
@@ -336,7 +336,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                         </div>
                         {formContent}
                         <div className="p-4 border-t sticky bottom-0 bg-background md:rounded-b-lg z-10">
-                            <Button type="submit" onClick={handleSubmit(onSubmit as any, onInvalid)} className="w-full" size="lg" disabled={isSubmitting}>
+                            <Button type="submit" onClick={handleSubmit(onSubmit, onInvalid)} className="w-full" size="lg" disabled={isSubmitting}>
                                 {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
                             </Button>
                         </div>
@@ -370,7 +370,7 @@ export const TransactionForm = ({ onClose, isModal = true, initialData = null }:
                     {formContent}
                 </div>
                 <div className="p-4 border-t bg-background z-10">
-                    <Button type="submit" onClick={handleSubmit(onSubmit as any, onInvalid)} className="w-full" size="lg" disabled={isSubmitting}>
+                    <Button type="submit" onClick={handleSubmit(onSubmit, onInvalid)} className="w-full" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Transaksi'}`}
                     </Button>
                 </div>

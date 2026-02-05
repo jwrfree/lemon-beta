@@ -31,10 +31,10 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error unregistering biometric credential:', error);
     return NextResponse.json(
-      { message: error.message || 'Failed to unregister biometric credential.' },
+      { message: error instanceof Error ? error.message : 'Failed to unregister biometric credential.' },
       { status: 500 },
     );
   }

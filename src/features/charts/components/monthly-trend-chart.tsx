@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react';
 import { BarChart } from 'lucide-react';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -19,9 +18,7 @@ const MonthlyBarChart = dynamic(() => import('./lazy-charts').then(mod => mod.Mo
 
 import { useIsMobile } from '@/hooks/use-mobile';
 
-export const MonthlyTrendChart = ({ type, transactions: manualTransactions }: { type: 'expense' | 'income', transactions?: Transaction[] }) => {
-    const { transactions: hookTransactions } = useTransactions();
-    const transactions = manualTransactions || hookTransactions;
+export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'expense' | 'income', transactions: Transaction[], isLoading?: boolean }) => {
     const isMobile = useIsMobile();
 
     const { data, rangeLabel, highestMonth, totalYear, average } = useMemo(() => {
@@ -44,6 +41,10 @@ export const MonthlyTrendChart = ({ type, transactions: manualTransactions }: { 
     }, [transactions, type]);
 
     const hasActivity = data.some((item) => item.total > 0);
+
+    if (isLoading) {
+        return <div className="h-80 w-full animate-pulse rounded-3xl bg-muted" />;
+    }
 
     if (!hasActivity) {
         return (

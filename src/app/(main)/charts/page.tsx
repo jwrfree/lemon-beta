@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import { GlobalFinanceHeader } from "@/features/charts/components/global-finance-header";
 import { useSearchParams } from 'next/navigation';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
-import { parseISO, isAfter, isBefore, startOfDay, endOfDay, format } from 'date-fns';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
+import { parseISO, isAfter, isBefore, startOfDay, endOfDay, format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 import * as dateFns from 'date-fns';
 import { SubscriptionAuditCard } from "@/features/insights/components/subscription-audit-card";
 
@@ -30,6 +30,10 @@ const MonthlyTrendChart = dynamic(() => import('@/features/charts/components/mon
     loading: () => <div className="h-80 w-full animate-pulse rounded-3xl bg-muted" />
 });
 const ExpenseShortTermTrend = dynamic(() => import('@/features/charts/components/expense-short-term-trend').then(mod => mod.ExpenseShortTermTrend), {
+    ssr: false,
+    loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
+});
+const NetCashflowChart = dynamic(() => import('@/features/charts/components/net-cashflow-chart').then(mod => mod.NetCashflowChart), {
     ssr: false,
     loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
 });
@@ -76,7 +80,38 @@ export default function ChartsPage() {
 function ChartsPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { transactions, isLoading: isDataLoading } = useTransactions();
+    
+    // Get date range from URL or defaults
+    const from = searchParams.get('from');
+    const to = searchParams.get('to');
+    
+    const { fetchStartDate, fetchEndDate, viewStartDate, viewEndDate, twelveMonthsAgo, sixtyDaysAgo } = useMemo(() => {
+        const now = new Date();
+        const vStartStr = from || format(startOfMonth(now), 'yyyy-MM-dd');
+        const vEndStr = to || format(endOfMonth(now), 'yyyy-MM-dd');
+        
+        const vStart = startOfDay(parseISO(vStartStr));
+        const vEnd = endOfDay(parseISO(vEndStr));
+        
+        // Always fetch at least 12 months back for the trend charts, 
+        // or further back if the user selected an older range
+        const twelveMonthsAgo = startOfMonth(subMonths(now, 11));
+        const sixtyDaysAgo = startOfDay(dateFns.subDays(now, 59));
+
+        const fStart = vStart < twelveMonthsAgo ? vStart : twelveMonthsAgo;
+        const fEnd = vEnd > now ? vEnd : now;
+        
+        return {
+            fetchStartDate: fStart,
+            fetchEndDate: fEnd,
+            viewStartDate: vStart,
+            viewEndDate: vEnd,
+            twelveMonthsAgo,
+            sixtyDaysAgo
+        };
+    }, [from, to]);
+
+    const { transactions, isLoading: isDataLoading } = useRangeTransactions(fetchStartDate, fetchEndDate);
     const [isClient, setIsClient] = useState(false);
     const [activeTab, setActiveTab] = useState<TabValue>('expense');
     const [direction, setDirection] = useState(0);
@@ -85,24 +120,29 @@ function ChartsPageContent() {
         setIsClient(true);
     }, []);
 
-    // Get date range from URL
-    const from = searchParams.get('from');
-    const to = searchParams.get('to');
-
-    // Filter transactions based on date range
+    // Filter transactions based on date range for current view
     const filteredTransactions = useMemo(() => {
-        // Use defaults if not in URL to match DateRangeFilter UI
-        const startDateStr = from || dateFns.format(dateFns.startOfMonth(new Date()), 'yyyy-MM-dd');
-        const endDateStr = to || dateFns.format(dateFns.endOfMonth(new Date()), 'yyyy-MM-dd');
-        
-        const startDate = startOfDay(parseISO(startDateStr));
-        const endDate = endOfDay(parseISO(endDateStr));
-        
         return transactions.filter(t => {
             const date = parseISO(t.date);
-            return (date >= startDate && date <= endDate);
+            return (date >= viewStartDate && date <= viewEndDate);
         });
-    }, [transactions, from, to]);
+    }, [transactions, viewStartDate, viewEndDate]);
+
+    // Transactions for trend charts (last 12 months)
+    const trendTransactions = useMemo(() => {
+        return transactions.filter(t => {
+            const date = parseISO(t.date);
+            return date >= twelveMonthsAgo;
+        });
+    }, [transactions, twelveMonthsAgo]);
+
+    // Transactions for short-term trend (last 60 days)
+    const shortTermTransactions = useMemo(() => {
+        return transactions.filter(t => {
+            const date = parseISO(t.date);
+            return date >= sixtyDaysAgo;
+        });
+    }, [transactions, sixtyDaysAgo]);
 
     const handleTabChange = (value: TabValue) => {
         const currentIndex = tabs.findIndex(t => t.value === activeTab);
@@ -168,20 +208,26 @@ function ChartsPageContent() {
                             >
                                 {activeTab === 'expense' ? (
                                     <>
-                                        <MonthlySummary type="expense" transactions={filteredTransactions} />
+                                        <MonthlySummary type="expense" transactions={filteredTransactions} isLoading={isDataLoading} />
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                                            <CategoryAnalysis type="expense" transactions={filteredTransactions} />
-                                            <ExpenseShortTermTrend transactions={filteredTransactions} />
+                                            <CategoryAnalysis type="expense" transactions={filteredTransactions} isLoading={isDataLoading} />
+                                            <ExpenseShortTermTrend transactions={shortTermTransactions} isLoading={isDataLoading} />
                                         </div>
-                                        <MonthlyTrendChart type="expense" transactions={filteredTransactions} />
+                                        <MonthlyTrendChart type="expense" transactions={trendTransactions} isLoading={isDataLoading} />
+                                        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+                                            <NetCashflowChart transactions={trendTransactions} isLoading={isDataLoading} />
+                                        </div>
                                         <SubscriptionAuditCard transactions={filteredTransactions} />
                                     </>
                                 ) : (
                                     <>
-                                        <MonthlySummary type="income" transactions={filteredTransactions} />
+                                        <MonthlySummary type="income" transactions={filteredTransactions} isLoading={isDataLoading} />
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                                            <CategoryAnalysis type="income" transactions={filteredTransactions} />
-                                            <MonthlyTrendChart type="income" transactions={filteredTransactions} />
+                                            <CategoryAnalysis type="income" transactions={filteredTransactions} isLoading={isDataLoading} />
+                                            <MonthlyTrendChart type="income" transactions={trendTransactions} isLoading={isDataLoading} />
+                                        </div>
+                                        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+                                            <NetCashflowChart transactions={trendTransactions} isLoading={isDataLoading} />
                                         </div>
                                     </>
                                 )}

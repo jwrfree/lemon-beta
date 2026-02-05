@@ -26,14 +26,14 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
     const now = useMemo(() => new Date(), []);
 
     const chartRangeDays = useMemo(() => {
-        if ((chartRange as string) === '90') return 89;
-        if ((chartRange as string) === 'month') return differenceInCalendarDays(now, startOfDay(startOfMonth(now)));
+        if (chartRange === '90') return 89;
+        if (chartRange === 'month') return differenceInCalendarDays(now, startOfDay(startOfMonth(now)));
         return 29;
     }, [chartRange, now]);
 
     const chartData = useMemo(() => {
         // Handle monthly aggregation for '90' days (3 months) view
-        if ((chartRange as string) === '90') {
+        if (chartRange === '90') {
             const months = eachMonthOfInterval({
                 start: subMonths(now, 2), // Current month + 2 previous months
                 end: now
@@ -103,7 +103,7 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
                             Pemasukan vs Pengeluaran
                         </CardDescription>
                     </div>
-                    <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as any)} className="w-auto">
+                    <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as '30' | '90' | 'month')} className="w-auto">
                         <TabsList className="grid w-full grid-cols-3 h-9 p-1 bg-muted rounded-xl">
                             <TabsTrigger value="month" className="h-full rounded-lg text-[10px] px-2 font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Bulan Ini</TabsTrigger>
                             <TabsTrigger value="30" className="h-full rounded-lg text-[10px] px-2 font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 Hari</TabsTrigger>

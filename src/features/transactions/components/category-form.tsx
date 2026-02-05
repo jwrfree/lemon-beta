@@ -10,10 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 import { CATEGORY_ICONS, CATEGORY_COLORS } from '@/features/transactions/constants';
 
+interface CategoryData {
+    name: string;
+    type: 'expense' | 'income';
+    icon: string;
+    color: string;
+    bg_color: string;
+}
+
 interface CategoryFormProps {
-    initialData?: any;
+    initialData?: CategoryData;
     onClose: () => void;
-    onSave: (data: any) => Promise<void>;
+    onSave: (data: CategoryData) => Promise<void>;
 }
 
 export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps) => {
@@ -77,7 +85,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
 
                     <div className="space-y-2">
                         <Label>Tipe</Label>
-                        <Select value={type} onValueChange={(v: any) => setType(v)}>
+                        <Select value={type} onValueChange={(v: 'expense' | 'income') => setType(v)}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Pilih tipe" />
                             </SelectTrigger>

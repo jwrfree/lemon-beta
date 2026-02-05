@@ -22,7 +22,7 @@ vi.mock('@/components/ui-provider', () => ({
 }));
 
 vi.mock('@/lib/audit', () => ({
-  logActivity: (args: any) => mockLogActivity(args),
+  logActivity: (args: { action: string; entity: string; entityId?: string; details?: Record<string, unknown> }) => mockLogActivity(args),
 }));
 
 vi.mock('@/lib/supabase/client', () => ({
@@ -32,7 +32,7 @@ vi.mock('@/lib/supabase/client', () => ({
 }));
 
 describe('useTransactionActions', () => {
-  const mockUser: any = { id: 'user-123' };
+  const mockUser = { id: 'user-123' } as { id: string };
 
   beforeEach(() => {
     vi.clearAllMocks();

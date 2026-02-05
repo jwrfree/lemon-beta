@@ -7,32 +7,27 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, HandCoins, Plus } from 'lucide-react';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { PlusCircle, HandCoins, Plus, LoaderCircle } from 'lucide-react';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { cn, formatCurrency, daysInMonth } from '@/lib/utils';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Pie, PieChart } from "recharts"
 import { useUI } from '@/components/ui-provider';
-import { startOfMonth, parseISO } from 'date-fns';
+import { startOfMonth, parseISO, endOfMonth } from 'date-fns';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { PageHeader } from '@/components/page-header';
-import type { Budget } from '@/types/models';
+import type { Budget, Transaction } from '@/types/models';
 
-const BudgetCard = ({ budget }: { budget: Budget }) => {
-    const { transactions } = useTransactions();
+const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Transaction[] }) => {
     const { getCategoryVisuals } = useCategories();
     const router = useRouter();
 
     const spent = useMemo(() => {
-        const now = new Date();
-        const startOfMonthDate = startOfMonth(now);
-
         return transactions
             .filter(t => 
                 t.type === 'expense' && 
-                budget.categories.includes(t.category) &&
-                parseISO(t.date) >= startOfMonthDate
+                budget.categories.includes(t.category)
             )
             .reduce((acc, t) => acc + t.amount, 0);
     }, [transactions, budget.categories]);
@@ -113,15 +108,17 @@ const BudgetCard = ({ budget }: { budget: Budget }) => {
 };
 
 export default function BudgetingPage() {
-    const { transactions } = useTransactions();
     const { getCategoryVisuals } = useCategories();
-    const { budgets } = useBudgets();
+    const { budgets, isLoading } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();
 
-    const overview = useMemo(() => {
-        const now = new Date();
-        const startOfMonthDate = startOfMonth(now);
+    const now = useMemo(() => new Date(), []);
+    const start = useMemo(() => startOfMonth(now), [now]);
+    const end = useMemo(() => endOfMonth(now), [now]);
 
+    const { transactions, isLoading: isTransactionsLoading } = useRangeTransactions(start, end);
+
+    const overview = useMemo(() => {
         const totalBudget = budgets.reduce((acc, b) => acc + b.targetAmount, 0);
         
         const relevantCategories = Array.from(new Set(budgets.flatMap(b => b.categories)));
@@ -129,8 +126,7 @@ export default function BudgetingPage() {
         const totalSpent = transactions
             .filter(t => 
                 t.type === 'expense' && 
-                relevantCategories.includes(t.category) &&
-                parseISO(t.date) >= startOfMonthDate
+                relevantCategories.includes(t.category)
             )
             .reduce((acc, t) => acc + t.amount, 0);
 
@@ -144,6 +140,15 @@ export default function BudgetingPage() {
         return { totalBudget, totalSpent, totalRemaining, chartData };
     }, [budgets, transactions]);
     
+    if (isLoading || isTransactionsLoading) {
+        return (
+            <div className="flex flex-col h-full pb-24">
+                <div className="flex h-full w-full items-center justify-center p-8">
+                    <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full relative">
@@ -203,10 +208,16 @@ export default function BudgetingPage() {
 
                             {/* BUDGETS LIST */}
                             <div className="col-span-12 lg:col-span-8 space-y-4">
-                                <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Pos Anggaran</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="flex items-center justify-between px-1">
+                                    <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Pos Anggaran</h2>
+                                    <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+                                        <Plus className="h-3.5 w-3.5 mr-1" />
+                                        Tambah
+                                    </Button>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {budgets.map((budget) => (
-                                        <BudgetCard key={budget.id} budget={budget} />
+                                        <BudgetCard key={budget.id} budget={budget} transactions={transactions} />
                                     ))}
                                 </div>
                             </div>

@@ -12,10 +12,14 @@ import { X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select';
 import { useUI } from '@/components/ui-provider';
 import { cn } from '@/lib/utils';
+import type { Asset, Liability } from '@/types/models';
+
+type AssetOrLiabilityWithMeta = (Asset & { type: 'asset' }) | (Liability & { type: 'liability' });
+type AssetOrLiabilityFormInitialData = (Partial<Asset> & { type: 'asset' }) | (Partial<Liability> & { type: 'liability' });
 
 interface AssetLiabilityFormProps {
   onClose: () => void;
-  initialData?: any | null;
+  initialData?: AssetOrLiabilityFormInitialData | null;
 }
 
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
@@ -69,7 +73,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         };
 
         try {
-            if (isEditMode) {
+            if (isEditMode && initialData?.id) {
                 await updateAssetLiability(initialData.id, type, itemData);
             } else {
                 await addAssetLiability({ ...itemData, type });

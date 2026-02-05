@@ -24,7 +24,7 @@ vi.mock('@/lib/supabase/client', () => ({
 }));
 
 describe('useTransferActions', () => {
-  const mockUser: any = { id: 'user-123' };
+  const mockUser = { id: 'user-123' } as { id: string };
 
   beforeEach(() => {
     vi.clearAllMocks();

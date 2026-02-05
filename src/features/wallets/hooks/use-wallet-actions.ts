@@ -42,9 +42,9 @@ export const useWalletActions = (user: User | null) => {
             }
         }
         
-        const updateData: any = { ...walletData };
-        if (walletData.isDefault !== undefined) updateData.is_default = walletData.isDefault;
-        delete updateData.isDefault;
+        const { isDefault, ...rest } = walletData;
+        const updateData: Record<string, unknown> = { ...rest };
+        if (isDefault !== undefined) updateData.is_default = isDefault;
 
         const { error } = await supabase.from('wallets').update(updateData).eq('id', walletId);
 

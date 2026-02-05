@@ -113,6 +113,15 @@ export const getMonthlyTrendData = (transactions: Transaction[], type: 'expense'
     }));
 };
 
+interface CashflowRecord {
+    income: number;
+    expense: number;
+    breakdown: {
+        income: Record<string, number>;
+        expense: Record<string, number>;
+    };
+}
+
 /**
  * Calculate net cashflow breakdown per month
  */
@@ -133,7 +142,7 @@ export const getNetCashflowData = (transactions: Transaction[], monthsCount: num
     const totalsByMonth = transactions.reduce((acc, t) => {
         const key = format(parseISO(t.date), 'yyyy-MM');
         if (!acc[key]) {
-            acc[key] = { income: 0, expense: 0, breakdown: { income: {} as any, expense: {} as any } };
+            acc[key] = { income: 0, expense: 0, breakdown: { income: {}, expense: {} } };
         }
         
         if (t.type === 'income') {
@@ -144,7 +153,7 @@ export const getNetCashflowData = (transactions: Transaction[], monthsCount: num
             acc[key].breakdown.expense[t.category] = (acc[key].breakdown.expense[t.category] || 0) + t.amount;
         }
         return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, CashflowRecord>);
 
     return monthSequence.map((m) => {
         const record = totalsByMonth[m.key];

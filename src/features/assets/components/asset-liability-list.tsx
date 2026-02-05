@@ -9,11 +9,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import type { Asset, Liability } from '@/types/models';
 
 interface AssetLiabilityListProps {
-    items: any[];
+    items: (Asset | Liability)[];
     type: 'asset' | 'liability';
-    onEdit: (item: any, type: 'asset' | 'liability') => void;
+    onEdit: (item: Asset | Liability, type: 'asset' | 'liability') => void;
 }
 
 export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListProps) => {

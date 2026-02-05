@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react';
 import { isSameMonth, parseISO, format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 import { formatCurrency } from '@/lib/utils';
 import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownLeft, Scale, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,22 +14,20 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import type { Transaction } from '@/types/models';
 
 export const GlobalFinanceHeader = ({ 
-    transactions: manualTransactions,
+    transactions,
     label: manualLabel 
 }: { 
-    transactions?: Transaction[],
+    transactions: Transaction[],
     label?: string 
 }) => {
-    const { transactions: hookTransactions } = useTransactions();
-    const transactions = manualTransactions || hookTransactions;
     const isMobile = useIsMobile();
     
     const summary = useMemo(() => {
         const now = new Date();
         const monthLabel = manualLabel || format(now, 'MMMM yyyy', { locale: dateFnsLocaleId });
         
-        // If manualTransactions provided, we assume they are already filtered by the caller
-        const relevantTransactions = manualTransactions ? transactions : transactions.filter((t) => isSameMonth(parseISO(t.date), now));
+        // We assume transactions are already filtered by the caller
+        const relevantTransactions = transactions;
         
         const income = relevantTransactions
             .filter((t) => t.type === 'income')
@@ -42,7 +39,7 @@ export const GlobalFinanceHeader = ({
         const isPositive = net >= 0;
 
         return { monthLabel, income, expense, net, isPositive, relevantTransactions };
-    }, [transactions, manualTransactions, manualLabel]);
+    }, [transactions, manualLabel]);
 
     return (
         <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6 bg-background border-b">

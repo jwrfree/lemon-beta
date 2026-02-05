@@ -102,11 +102,8 @@ export const SignUpPage = ({
 
             showToast("Akun berhasil dibuat! Silakan masuk.", 'success');
             setAuthModal('login');
-        } catch (error: any) {
-            let message = 'Gagal membuat akun. Coba lagi ya.';
-            if (error.message.includes('User already registered')) {
-                message = 'Email ini sudah terdaftar.';
-            }
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Gagal mendaftar. Coba lagi ya.';
             setAuthError(message);
             showToast(message, 'error');
         }

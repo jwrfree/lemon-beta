@@ -1,16 +1,17 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
+import type { Wallet } from '@/types/models';
 
 interface WalletCardStackProps {
-  wallets: any[];
+  wallets: Wallet[];
   activeIndex: number;
   setActiveIndex: (update: number | ((prevIndex: number) => number)) => void;
 }
@@ -28,7 +29,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);
   };
 
-  const onDragEnd = (e: any, { offset, velocity }: { offset: any, velocity: any }) => {
+  const onDragEnd = (_e: unknown, { offset, velocity }: PanInfo) => {
     const swipe = swipePower(offset.y, velocity.y);
 
     if (swipe < -swipeConfidenceThreshold) {

@@ -218,7 +218,7 @@ Langsung parse tanpa tanya balik!`;
     });
 
     return result.data;
-  } catch (error: any) {
+  } catch (error) {
     console.error("AI Extraction Error:", error);
     return {
         transactions: [{

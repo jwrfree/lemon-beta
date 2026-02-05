@@ -7,12 +7,13 @@ import { Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, Luc
 import { formatDistanceToNowStrict, parseISO, isPast } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
+import type { Goal } from '@/types/models';
 
 const goalIcons: { [key: string]: LucideIcon } = {
     Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer
 };
 
-export const GoalList = ({ goals }: { goals: any[] }) => {
+export const GoalList = ({ goals }: { goals: Goal[] }) => {
     const { openEditGoalModal } = useUI();
 
     return (

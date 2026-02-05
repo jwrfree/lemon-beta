@@ -77,20 +77,13 @@ export const useBudgets = () => {
     const updateBudget = useCallback(async (budgetId: string, budgetData: Partial<Budget>) => {
         if (!user) throw new Error("User not authenticated.");
 
-        const updateData: Record<string, any> = { ...budgetData };
+        const updateData: Partial<BudgetRow> = {};
         
-        if (updateData.targetAmount !== undefined) {
-            updateData.amount = updateData.targetAmount;
-            delete updateData.targetAmount;
-        }
-        
-        if (updateData.categories !== undefined) {
-            updateData.category = updateData.categories[0];
-            delete updateData.categories;
-        }
-
-        delete updateData.userId;
-        delete updateData.createdAt;
+        if (budgetData.name) updateData.name = budgetData.name;
+        if (budgetData.targetAmount !== undefined) updateData.amount = budgetData.targetAmount;
+        if (budgetData.categories !== undefined) updateData.category = budgetData.categories[0];
+        if (budgetData.period) updateData.period = budgetData.period;
+        if (budgetData.spent !== undefined) updateData.spent = budgetData.spent;
 
         const { error } = await supabase.from('budgets').update(updateData).eq('id', budgetId);
 

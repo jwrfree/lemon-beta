@@ -22,7 +22,7 @@ import { AnimatePresence } from 'framer-motion';
 import { PageHeader } from "@/components/page-header";
 import type { Category } from '@/lib/categories';
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ElementType> = {
     Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
     Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins, 
     ArrowRightLeft, Handshake, Wrench

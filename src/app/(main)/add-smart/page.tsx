@@ -48,22 +48,29 @@ interface SpeechRecognitionAlternative {
     confidence: number;
 }
 
+interface SpeechRecognitionErrorEvent extends Event {
+    error: string;
+    message?: string;
+}
+
 interface ISpeechRecognition extends EventTarget {
     continuous: boolean;
     lang: string;
     interimResults: boolean;
     maxAlternatives: number;
     onresult: (event: SpeechRecognitionEvent) => void;
-    onerror: (event: any) => void;
+    onerror: (event: SpeechRecognitionErrorEvent) => void;
     onend: () => void;
     start(): void;
     stop(): void;
     abort(): void;
 }
 
-const SpeechRecognition = (typeof window !== 'undefined' && ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition)) as {
+const SpeechRecognition = (typeof window !== 'undefined' && 
+    ((window as unknown as { SpeechRecognition?: new () => ISpeechRecognition }).SpeechRecognition || 
+     (window as unknown as { webkitSpeechRecognition?: new () => ISpeechRecognition }).webkitSpeechRecognition)) as {
     new (): ISpeechRecognition;
-};
+} | undefined;
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
 export default function SmartAddPage() {
@@ -237,7 +244,7 @@ export default function SmartAddPage() {
     }, [pageState, handleConfirmSave, handleMultiConfirmSave]);
 
     if (pageState === 'EDITING' && parsedData) {
-        return <TransactionForm isModal={false} initialData={parsedData as any} onClose={(data) => { if (data) setParsedData((prev) => prev ? ({ ...prev, ...data }) : null); setPageState('CONFIRMING'); }} />;
+        return <TransactionForm isModal={false} initialData={parsedData} onClose={(data) => { if (data) setParsedData((prev) => prev ? ({ ...prev, ...data }) : null); setPageState('CONFIRMING'); }} />;
     }
 
     return (

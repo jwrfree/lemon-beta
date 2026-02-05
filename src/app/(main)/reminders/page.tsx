@@ -120,7 +120,7 @@ export default function RemindersPage() {
         }
     };
 
-    const renderStatusBadge = (status: string) => {
+    const renderStatusBadge = React.useCallback((status: string) => {
         switch (status) {
             case 'completed':
                 return <Badge className="bg-emerald-500/10 text-emerald-600">Selesai</Badge>;
@@ -131,7 +131,14 @@ export default function RemindersPage() {
             default:
                 return <Badge className="bg-primary/10 text-primary">Akan Datang</Badge>;
         }
-    };
+    }, []);
+
+    const overdueRemindersCount = useMemo(() => reminders.filter(r => getReminderStatus(r) === 'overdue').length, [reminders]);
+    const upcomingRemindersCount = useMemo(() => reminders.filter(r => {
+        if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
+        const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
+        return diff >= 0 && diff <= 7;
+    }).length, [reminders]);
 
     return (
         <div className="flex flex-col h-full relative">
@@ -141,14 +148,10 @@ export default function RemindersPage() {
                     <div className="flex items-center gap-1 md:gap-2">
                         <div className="hidden md:flex items-center gap-2 mr-2">
                             <Badge className="bg-destructive/10 text-destructive border-none">
-                                Terlambat: {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
+                                Terlambat: {overdueRemindersCount}
                             </Badge>
                             <Badge className="bg-primary/10 text-primary border-none">
-                                Segera: {reminders.filter(r => {
-                                    if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
-                                    const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
-                                    return diff >= 0 && diff <= 7;
-                                }).length}
+                                Segera: {upcomingRemindersCount}
                             </Badge>
                         </div>
                         <Button

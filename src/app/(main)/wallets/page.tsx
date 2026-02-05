@@ -10,6 +10,7 @@ import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 import { DesktopWalletView } from '@/features/wallets/components/desktop-wallet-view';
+import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
 
 export default function WalletsPage() {
   const { wallets } = useWallets();
@@ -22,6 +23,13 @@ export default function WalletsPage() {
     : 0;
 
   const activeWallet = wallets.length > 0 ? wallets[safeActiveIndex] : null;
+
+  // Fetch transactions for active wallet (mobile view)
+  const { transactions: walletTransactions, isLoading: isTransactionsLoading } = usePaginatedTransactions(
+    React.useMemo(() => ({
+      walletId: activeWallet ? [activeWallet.id] : []
+    }), [activeWallet])
+  );
 
   return (
     <div className="flex flex-col h-full relative">
@@ -61,7 +69,11 @@ export default function WalletsPage() {
                 </div>
                 
                 {activeWallet && (
-                  <TransactionList walletId={activeWallet.id} limit={10} />
+                  <TransactionList 
+                    transactions={walletTransactions} 
+                    isLoading={isTransactionsLoading}
+                    limit={10} 
+                  />
                 )}
               </div>
             </main>

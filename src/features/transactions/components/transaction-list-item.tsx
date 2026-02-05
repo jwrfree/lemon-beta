@@ -1,26 +1,27 @@
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
-import { cn, formatCurrency } from '@/lib/utils';
-import { categoryDetails as getCategoryDetails } from '@/lib/categories';
-import { format, parseISO } from 'date-fns';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { Trash2, Pencil } from 'lucide-react';
-import { useUI } from '@/components/ui-provider';
-import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
-import type { Transaction } from '@/types/models';
-import { useTransactions } from '../hooks/use-transactions';
+import type { Wallet, Transaction } from '@/types/models';
+import type { CategoryVisuals } from '@/types/visuals';
 
-const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Transaction; hideDate?: boolean }) => {
-    const { wallets } = useWallets();
-    const { getCategoryVisuals } = useCategories();
+interface TransactionListItemProps {
+    transaction: Transaction;
+    wallets: Wallet[];
+    getCategoryVisuals: (name: string) => CategoryVisuals;
+    hideDate?: boolean;
+}
+
+const TransactionListItemContent = ({ 
+    transaction, 
+    wallets, 
+    getCategoryVisuals, 
+    hideDate 
+}: TransactionListItemProps) => {
     const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
     
     const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(transaction.category);
-
+    
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-rose-600' : 'text-teal-600';
 
@@ -59,7 +60,8 @@ const TransactionListItemContent = ({ transaction, hideDate }: { transaction: Tr
 };
 
 
-export const TransactionListItem = ({ transaction, hideDate = false }: { transaction: Transaction; hideDate?: boolean }) => {
+export const TransactionListItem = (props: TransactionListItemProps) => {
+    const { transaction, hideDate = false } = props;
     const itemRef = useRef<HTMLDivElement>(null);
     const { openDeleteModal, openEditTransactionModal } = useUI();
 
@@ -207,7 +209,7 @@ export const TransactionListItem = ({ transaction, hideDate = false }: { transac
                     }
                 }}
             >
-                <TransactionListItemContent transaction={transaction} hideDate={hideDate} />
+                <TransactionListItemContent {...props} />
             </motion.div>
         </div>
     );

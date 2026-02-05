@@ -87,10 +87,10 @@ export async function POST(req: NextRequest) {
     if (updateError) throw updateError;
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error verifying biometric registration:', error);
     return NextResponse.json(
-      { message: error.message || 'Failed to register biometric credential.' },
+      { message: error instanceof Error ? error.message : 'Failed to register biometric credential.' },
       { status: 500 },
     );
   }
