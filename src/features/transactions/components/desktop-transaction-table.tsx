@@ -11,10 +11,13 @@ import {
     Download,
     CheckCircle2,
     ArrowUpRight,
-    ArrowDownLeft
+    ArrowDownLeft,
+    Pencil,
+    Trash2
 } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useUI } from '@/components/ui-provider';
 import type { Transaction, Wallet } from '@/types/models';
 
 interface DesktopTransactionTableProps {
@@ -28,9 +31,11 @@ type SortConfig = {
 };
 
 export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransactionTableProps) => {
+    const { openEditTransactionModal, openDeleteModal } = useUI();
     const [sortConfig, setSortConfig] = useState<SortConfig | null>({ key: 'date', direction: 'desc' });
 
     const sortedTransactions = useMemo(() => {
+        // ... existing sorting logic
         const sortableItems = [...transactions];
         if (sortConfig !== null) {
             sortableItems.sort((a, b) => {
@@ -70,7 +75,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
             t.amount,
             'Tuntas'
         ]);
-        
+
         const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -91,11 +96,11 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-lg bg-card shadow-sm">
+            <div className="overflow-hidden rounded-lg bg-card shadow-sm border border-border/50">
                 <table className="w-full text-sm text-left">
-                    <thead className="bg-muted/50 text-muted-foreground font-medium border-b">
+                    <thead className="bg-muted/30 text-muted-foreground font-medium border-b">
                         <tr>
-                            <th className="p-4 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('date')}> 
+                            <th className="p-4 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
                                     Tanggal
                                     <ArrowUpDown className="h-3 w-3" />
@@ -114,22 +119,23 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                 </div>
                             </th>
                             <th className="p-4">Status</th>
+                            <th className="p-4 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border/40 bg-card">
                         {sortedTransactions.map((t) => {
                             const isExpense = t.type === 'expense';
                             return (
-                                <tr key={t.id} className="hover:bg-primary/[0.02] transition-colors group cursor-pointer">
+                                <tr key={t.id} className="hover:bg-primary/[0.01] transition-colors group">
                                     <td className="p-4 text-xs font-medium text-muted-foreground/60 whitespace-nowrap">
                                         {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                     </td>
                                     <td className="p-4">
-                                        <div className="font-medium text-foreground text-sm leading-tight group-hover:text-primary transition-colors">{t.description}</div>
-                                        <div className="text-[10px] text-muted-foreground mt-1">{t.category} • {wallets.find(w => w.id === t.walletId)?.name}</div>
+                                        <div className="font-medium text-foreground text-sm leading-tight">{t.description}</div>
+                                        <div className="text-[10px] text-muted-foreground mt-1 lowercase opacity-70">{t.category} • {wallets.find(w => w.id === t.walletId)?.name}</div>
                                     </td>
                                     <td className={cn(
-                                        "p-4 text-right font-extrabold text-sm",
+                                        "p-4 text-right font-bold text-sm tabular-nums",
                                         isExpense ? "text-rose-600" : "text-teal-600"
                                     )}>
                                         <div className="flex items-center justify-end gap-1">
@@ -138,9 +144,29 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <div className="flex items-center gap-1.5 text-xs font-medium text-teal-600 bg-teal-50 dark:bg-teal-900/20 px-2 py-0.5 rounded-full w-fit">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-teal-600 bg-teal-50 dark:bg-teal-900/20 px-2 py-0.5 rounded-full w-fit border border-teal-100 dark:border-teal-900/30">
                                             <CheckCircle2 className="h-3 w-3" />
                                             Tuntas
+                                        </div>
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10"
+                                                onClick={() => openEditTransactionModal(t)}
+                                            >
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                                onClick={() => openDeleteModal(t)}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     </td>
                                 </tr>

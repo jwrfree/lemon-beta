@@ -18,7 +18,6 @@ interface DatePickerProps<T extends FieldValues> {
 export function DatePicker<T extends FieldValues>({ control, name, label = "Tanggal", error }: DatePickerProps<T>) {
     return (
         <div className="space-y-2">
-            <Label htmlFor={name} className={cn(error && "text-destructive")}>{label}</Label>
             <Controller
                 control={control}
                 name={name}

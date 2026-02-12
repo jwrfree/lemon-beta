@@ -37,7 +37,6 @@ export function WalletSelector<T extends FieldValues>({
 
     return (
         <div className="space-y-2">
-            <Label htmlFor={name} className={cn(error && "text-destructive")}>{label}</Label>
             <Controller
                 control={control}
                 name={name}

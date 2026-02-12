@@ -10,10 +10,13 @@ import { Input } from '@/components/ui/input';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from '@/components/ui-provider';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useReminders } from '@/features/reminders/hooks/use-reminders';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useActions } from '@/providers/action-provider';
 import { useCategories } from '../hooks/use-transactions';
 import { Transaction } from '@/types/models';
 import { unifiedTransactionSchema, UnifiedTransactionFormValues } from '../schemas/transaction-schema';
+import { cn } from '@/lib/utils';
 import { parseISO } from 'date-fns';
 import { z } from 'zod';
 
@@ -141,110 +144,74 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
         return (errors as any)[field]?.message;
     }
 
+    const { budgets } = useBudgets();
+    const categoryVisuals = category ? expenseCategories.find(c => c.name === category) || incomeCategories.find(c => c.name === category) : null;
+    const accentColor = categoryVisuals?.color.split(' ')[0] || 'text-primary';
+    const accentBg = categoryVisuals?.bg_color || 'bg-primary/5';
+
+    const relevantBudget = category ? budgets.find(b => b.categories.includes(category)) : null;
+    const remainingBudget = relevantBudget ? relevantBudget.targetAmount - (relevantBudget.spent || 0) : null;
+    const isOverBudget = remainingBudget !== null && remainingBudget <= 0;
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={isModal ? "fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center backdrop-blur-sm p-0 md:p-4" : ""}
+            className={isModal ? "fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center backdrop-blur-[2px] p-0 md:p-4" : ""}
             onClick={() => isModal && onClose()}
         >
             <motion.div
+                drag={isModal ? "y" : false}
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={{ top: 0, bottom: 0.8 }}
+                onDragEnd={(_, info) => {
+                    if (info.offset.y > 150) onClose();
+                }}
                 initial={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }) : {}}
                 animate={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }) : {}}
                 exit={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }) : {}}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-lg bg-background rounded-t-2xl md:rounded-xl shadow-2xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh] border border-border/50 overflow-hidden"
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="w-full max-w-lg bg-background rounded-t-[2.5rem] md:rounded-2xl shadow-2xl flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border/50 overflow-hidden relative pb-safe"
                 onClick={(e) => e.stopPropagation()}
-                {...handlers}
             >
-                {/* Header */}
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10 shrink-0">
-                    <h2 className="text-lg font-semibold flex items-center gap-2">
+                <div className="md:hidden w-12 h-1.5 bg-muted rounded-full mx-auto mt-3 mb-1 shrink-0 opacity-40" />
+                <div className={cn("absolute top-0 left-0 w-full h-1.5 transition-colors duration-500", accentBg.replace('bg-', 'bg-').split(' ')[0])} />
+
+                <div className="p-4 pt-5 border-b flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 shrink-0">
+                    <h2 className="text-xl font-bold flex items-center gap-2 tracking-tight">
+                        <div className={cn("w-2.5 h-2.5 rounded-full ring-4 transition-colors duration-500", accentColor.replace('text-', 'bg-').split(' ')[0], accentBg.replace('bg-', 'ring-').split(' ')[0])} />
                         {isEditMode ? 'Edit Transaksi' : 'Transaksi Baru'}
                     </h2>
-                    <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted/50 rounded-full hover:bg-muted">
+                    <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted/50 rounded-full hover:bg-muted h-9 w-9">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
 
-                {/* Body */}
-                <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-6">
-
+                <form onSubmit={handleSubmit(onSubmit)} className="overflow-y-auto p-4 space-y-6">
                     <TransactionTypeTabs value={type} onChange={handleTypeChange} />
-
                     <AmountInput control={control} name="amount" error={getError('amount')} />
 
                     <AnimatePresence mode="popLayout">
                         {type === 'transfer' ? (
-                            <motion.div
-                                key="transfer-fields"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="grid grid-cols-2 gap-4"
-                            >
-                                <WalletSelector
-                                    control={control}
-                                    name="fromWalletId"
-                                    wallets={wallets}
-                                    label="Dari Dompet"
-                                    placeholder="Sumber Dana"
-                                    error={getError('fromWalletId')}
-                                />
-                                <WalletSelector
-                                    control={control}
-                                    name="toWalletId"
-                                    wallets={wallets}
-                                    label="Ke Dompet"
-                                    placeholder="Tujuan"
-                                    excludedWalletId={fromWalletId}
-                                    error={getError('toWalletId')}
-                                />
+                            <motion.div key="transfer-fields" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="grid grid-cols-2 gap-4">
+                                <WalletSelector control={control} name="fromWalletId" wallets={wallets} label="Dari Dompet" placeholder="Sumber Dana" error={getError('fromWalletId')} />
+                                <WalletSelector control={control} name="toWalletId" wallets={wallets} label="Ke Dompet" placeholder="Tujuan" excludedWalletId={fromWalletId} error={getError('toWalletId')} />
                             </motion.div>
                         ) : (
-                            <motion.div
-                                key="regular-fields"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="space-y-6"
-                            >
+                            <motion.div key="regular-fields" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <WalletSelector
-                                        control={control}
-                                        name="walletId"
-                                        wallets={wallets}
-                                        label="Dompet"
-                                        error={getError('walletId')}
-                                    />
+                                    <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={getError('walletId')} />
                                     <DatePicker control={control} name="date" error={getError('date')} />
                                 </div>
-
-                                <CategorySelector
-                                    control={control}
-                                    name="category"
-                                    categories={activeCategories}
-                                    error={getError('category')}
-                                    isSuggesting={isSuggesting}
-                                    isAiSuggested={lastSuggestedDescription === description && description.length > 2}
-                                    onSubCategoryChange={(val) => setValue('subCategory', val)}
-                                />
+                                <CategorySelector control={control} name="category" categories={activeCategories} error={getError('category')} isSuggesting={isSuggesting} isAiSuggested={lastSuggestedDescription === description && description.length > 2} onSubCategoryChange={(val) => setValue('subCategory', val)} />
                             </motion.div>
                         )}
                     </AnimatePresence>
 
                     <div className="space-y-2">
-                        <label htmlFor="description" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Deskripsi
-                        </label>
-                        <Input
-                            {...form.register('description')}
-                            id="description"
-                            placeholder="e.g., Makan Siang, Bayar Listrik"
-                            className={errors.description ? "border-destructive" : ""}
-                        />
+                        <Input {...form.register('description')} id="description" placeholder="Deskripsi (makan siang, bensin, dll...)" className={cn("h-12 rounded-2xl bg-muted/20 border-border/50 shrink-0 focus-visible:ring-primary/30", errors.description && "border-destructive")} />
                         {errors.description && <p className="text-sm font-medium text-destructive">{errors.description.message}</p>}
                     </div>
 
@@ -253,12 +220,27 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                             <DatePicker control={control} name="date" error={getError('date')} />
                         </div>
                     )}
-
                 </form>
 
-                {/* Footer */}
-                <div className="p-4 border-t sticky bottom-0 bg-background z-10 shrink-0">
-                    <Button onClick={handleSubmit(onSubmit)} className="w-full h-12 text-base" size="lg" disabled={isSubmitting}>
+                <div className="p-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-3">
+                    {relevantBudget && remainingBudget !== null && (
+                        <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className={cn("flex items-center justify-between px-3 py-2 rounded-xl text-[11px] font-medium border", isOverBudget ? "bg-destructive/5 text-destructive border-destructive/20" : "bg-emerald-500/5 text-emerald-600 border-emerald-500/20")}>
+                            <span>Sisa Anggaran {category}:</span>
+                            <span className="font-bold tabular-nums">Rp {new Intl.NumberFormat('id-ID').format(remainingBudget)}</span>
+                        </motion.div>
+                    )}
+
+                    <Button
+                        onClick={handleSubmit(onSubmit)}
+                        className={cn(
+                            "w-full h-12 text-base rounded-2xl font-bold transition-all duration-300 shadow-lg active:scale-[0.98]",
+                            categoryVisuals
+                                ? cn(accentColor.replace('text-', 'bg-').split(' ')[0], "text-white hover:brightness-110 shadow-lg", accentColor.replace('text-', 'shadow-').split(' ')[0] + "/20")
+                                : "bg-primary text-primary-foreground"
+                        )}
+                        size="lg"
+                        disabled={isSubmitting}
+                    >
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />

@@ -37,12 +37,12 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit md:h-auto"
+                className="w-full max-w-md bg-background rounded-t-xl shadow-lg flex flex-col h-fit md:h-auto"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-                    <h2 className="text-xl font-bold text-destructive">Konfirmasi Hapus</h2>
+                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl">
+                    <h2 className="text-xl font-bold text-destructive tracking-tight">Konfirmasi Hapus</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
@@ -50,15 +50,19 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 </div>
                 <div className="p-4 space-y-4">
                     <p className="text-sm text-muted-foreground">Yakin mau menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
-                    <div className="flex items-center gap-3 rounded-lg border p-3">
-                        <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
+                    <div className="flex items-center gap-3 rounded-xl border-none bg-muted/30 p-3.5">
+                        <div className={cn("flex-shrink-0 p-2.5 rounded-xl shadow-sm", bgColor)}>
                             <CategoryIcon className={cn("h-5 w-5", details.color)} />
                         </div>
-                        <div className="flex-1">
-                            <div className="font-medium">{transaction.description}</div>
-                            <div className="text-sm text-muted-foreground">{transaction.location ? `${transaction.location} • ` : ''}{transaction.category} &bull; {format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</div>
+                        <div className="flex-1 overflow-hidden">
+                            <div className="font-semibold text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
+                            <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
+                                <span>{transaction.subCategory || transaction.category}</span>
+                                <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                                <span>{format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
+                            </div>
                         </div>
-                        <div className={cn("text-sm font-semibold text-right", amountColor)}>
+                        <div className={cn("text-sm font-semibold text-right tabular-nums tracking-tight", amountColor)}>
                             <span>
                                 {transaction.type === 'expense' ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                             </span>

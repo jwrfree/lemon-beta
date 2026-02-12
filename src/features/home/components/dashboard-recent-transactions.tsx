@@ -61,28 +61,28 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                     <tr key={t.id} className="border-t hover:bg-muted/30 transition-colors">
                                         <td className="p-3 pl-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={cn("p-2 rounded-md", bgColor)}>
-                                                    <CategoryIcon className={cn("h-4 w-4", categoryData.color)} />
+                                                <div className={cn("p-2.5 rounded-xl shadow-sm", bgColor)}>
+                                                    <CategoryIcon className={cn("h-5 w-5", categoryData.color)} />
                                                 </div>
                                                 <div>
-                                                    <div className="font-semibold">{t.description || t.category}</div>
-                                                    <div className="text-xs text-muted-foreground hidden sm:block">
+                                                    <div className="font-semibold leading-tight">{t.description || t.category}</div>
+                                                    <div className="text-[11px] text-muted-foreground/70 hidden sm:block">
                                                         {t.subCategory || t.category}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-3 text-muted-foreground">
+                                        <td className="p-3 text-muted-foreground text-xs">
                                             {t.category}
                                         </td>
-                                        <td className="p-3 text-muted-foreground whitespace-nowrap">
+                                        <td className="p-3 text-muted-foreground whitespace-nowrap text-xs">
                                             {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                         </td>
-                                        <td className="p-3 text-muted-foreground">
+                                        <td className="p-3 text-muted-foreground text-xs">
                                             {wallet?.name || '-'}
                                         </td>
-                                        <td className="p-3 pr-4 text-right font-medium">
-                                            <span className={cn(t.type === 'income' ? 'text-teal-600' : 'text-destructive', 'tabular-nums')}>
+                                        <td className="p-3 pr-4 text-right font-semibold tracking-tight">
+                                            <span className={cn(t.type === 'income' ? 'text-teal-600 dark:text-teal-500' : 'text-destructive', 'tabular-nums')}>
                                                 {t.type === 'income' ? '+' : '-'} {formatCurrency(t.amount)}
                                             </span>
                                         </td>

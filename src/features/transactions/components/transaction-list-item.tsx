@@ -29,7 +29,7 @@ const TransactionListItemContent = ({
     const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(transaction.category);
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-rose-600' : 'text-teal-600';
+    const amountColor = isExpense ? 'text-destructive' : 'text-teal-600 dark:text-teal-500';
 
     return (
         <div className="flex items-center gap-4 p-3.5">
@@ -37,13 +37,13 @@ const TransactionListItemContent = ({
                 <CategoryIcon className={cn("h-5 w-5", color)} />
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-medium text-foreground text-sm leading-tight mb-0.5">{transaction.description}</div>
+                <div className="font-semibold text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     <span>{transaction.subCategory || transaction.category}</span>
                     {transaction.location && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
                     {transaction.location && <span className="truncate">{transaction.location}</span>}
                     {wallet && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
-                    {wallet && <span>{wallet?.name || '...'}</span>}
+                    {wallet && <span>{wallet?.name || '-'}</span>}
                     {!hideDate && (
                         <>
                             <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
@@ -53,7 +53,7 @@ const TransactionListItemContent = ({
                 </div>
             </div>
             <div
-                className={cn("text-sm font-medium tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
+                className={cn("text-sm font-semibold tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
                 aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
             >
                 <span aria-hidden="true">

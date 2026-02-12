@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { ChevronRight, Loader2, Sparkles } from 'lucide-react';
+import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { Category } from '@/lib/categories';
 import { CategoryGrid } from '../category-grid';
 import { SubCategorySheet } from '../sub-category-sheet';
+import { getCategoryIcon } from '@/lib/category-utils';
 
 interface CategorySelectorProps<T extends FieldValues> {
     control: Control<T>;
@@ -34,6 +35,7 @@ export function CategorySelector<T extends FieldValues>({
 }: CategorySelectorProps<T>) {
     const [isSubCategorySheetOpen, setIsSubCategorySheetOpen] = useState(false);
     const [selectedCategoryForSub, setSelectedCategoryForSub] = useState<Category | null>(null);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const handleCategoryClick = (cat: Category, onChange: (value: string) => void) => {
         onChange(cat.name);
@@ -48,91 +50,113 @@ export function CategorySelector<T extends FieldValues>({
     };
 
     return (
-        <div className="space-y-2">
-            <div className="flex items-center justify-between">
-                <Label htmlFor={name} className={cn(error && "text-destructive")}>{label}</Label>
-                <AnimatePresence>
-                    {isSuggesting && (
-                        <motion.div
-                            initial={{ opacity: 0, x: 5 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0 }}
-                            className="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-md"
-                        >
-                            <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                            AI berpikir...
-                        </motion.div>
-                    )}
-                    {!isSuggesting && isAiSuggested && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100"
-                        >
-                            <Sparkles className="h-2.5 w-2.5 fill-amber-600" />
-                            Disarankan AI
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
+        <Controller
+            control={control}
+            name={name}
+            render={({ field }) => {
+                const selectedCategory = categories.find(c => c.name === field.value);
 
-            <Controller
-                control={control}
-                name={name}
-                render={({ field }) => (
-                    <>
-                        <Button
-                            id={name}
-                            type="button"
-                            variant="outline"
-                            className={cn(
-                                "flex w-full items-center justify-between rounded-xl p-3 h-auto min-h-[3.5rem]",
-                                error && "border-destructive hover:bg-destructive/10"
-                            )}
-                            onClick={() => {
-                                const catObj = categories.find(c => c.name === field.value);
-                                if (catObj && catObj.sub_categories?.length) {
-                                    setSelectedCategoryForSub(catObj);
-                                    setIsSubCategorySheetOpen(true);
-                                }
-                                // If no subcategories, maybe open a full category picker modal? 
-                                // For now we rely on the grid below.
-                            }}
-                        >
-                            {field.value ? (
-                                <div className="flex flex-col text-left">
-                                    <span className="font-medium truncate">{field.value}</span>
-                                    {/* Subcategory display logic would be passed in or handled via separate prop if needed */}
+                return (
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-end min-h-[20px]">
+                            <AnimatePresence>
+                                {isSuggesting && (
+                                    <motion.div initial={{ opacity: 0, x: 5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-md">
+                                        <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                                        AI berpikir...
+                                    </motion.div>
+                                )}
+                                {!isSuggesting && isAiSuggested && (
+                                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
+                                        <Sparkles className="h-2.5 w-2.5 fill-amber-600" />
+                                        Disarankan AI
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        <div className="space-y-3">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className={cn(
+                                    "flex w-full items-center justify-between rounded-2xl p-4 h-auto border-border/50 bg-muted/20 transition-all active:scale-[0.99]",
+                                    isExpanded && "ring-2 ring-primary/20 border-primary/30 bg-background",
+                                    error && "border-destructive hover:bg-destructive/5"
+                                )}
+                                onClick={() => setIsExpanded(!isExpanded)}
+                            >
+                                <div className="flex items-center gap-3">
+                                    {selectedCategory ? (
+                                        <>
+                                            <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shadow-sm", selectedCategory.bg_color, selectedCategory.color)}>
+                                                {(() => {
+                                                    const Icon = getCategoryIcon(selectedCategory.icon);
+                                                    return <Icon size={20} />;
+                                                })()}
+                                            </div>
+                                            <div className="flex flex-col text-left">
+                                                <span className="font-bold text-sm tracking-tight">{selectedCategory.name}</span>
+                                                <span className="text-[10px] text-muted-foreground font-medium">Klik untuk ganti kategori</span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border border-dashed border-muted-foreground/30">
+                                                <Sparkles className="h-5 w-5 text-muted-foreground/40" />
+                                            </div>
+                                            <span className="text-muted-foreground font-medium text-sm">Pilih Kategori</span>
+                                        </>
+                                    )}
                                 </div>
-                            ) : (
-                                <span className="text-muted-foreground">Pilih dari grid di bawah</span>
+                                <motion.div
+                                    animate={{ rotate: isExpanded ? 180 : 0 }}
+                                    className="h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground"
+                                >
+                                    <ChevronDown className="h-4 w-4" />
+                                </motion.div>
+                            </Button>
+
+                            <AnimatePresence>
+                                {isExpanded && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="pt-2 pb-4 px-1">
+                                            <CategoryGrid
+                                                categories={categories}
+                                                selectedCategory={field.value}
+                                                onCategorySelect={(cat) => {
+                                                    handleCategoryClick(cat, field.onChange);
+                                                    setIsExpanded(false);
+                                                }}
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                        {error && <p className="text-sm font-medium text-destructive mt-1">{error}</p>}
+
+                        <AnimatePresence>
+                            {isSubCategorySheetOpen && selectedCategoryForSub && onSubCategoryChange && (
+                                <SubCategorySheet
+                                    category={selectedCategoryForSub}
+                                    selectedValue={""}
+                                    onSelect={(val) => {
+                                        onSubCategoryChange(val);
+                                        setIsSubCategorySheetOpen(false);
+                                    }}
+                                    onClose={() => setIsSubCategorySheetOpen(false)}
+                                />
                             )}
-                            {/* <ChevronRight className="h-5 w-5 text-muted-foreground" /> */}
-                        </Button>
-
-                        <CategoryGrid
-                            categories={categories}
-                            selectedCategory={field.value}
-                            onCategorySelect={(cat) => handleCategoryClick(cat, field.onChange)}
-                        />
-                    </>
-                )}
-            />
-            {error && <p className="text-sm font-medium text-destructive">{error}</p>}
-
-            <AnimatePresence>
-                {isSubCategorySheetOpen && selectedCategoryForSub && onSubCategoryChange && (
-                    <SubCategorySheet
-                        category={selectedCategoryForSub}
-                        selectedValue={""} // You might need to pass the actual subcategory value here
-                        onSelect={(val) => {
-                            onSubCategoryChange(val);
-                            setIsSubCategorySheetOpen(false);
-                        }}
-                        onClose={() => setIsSubCategorySheetOpen(false)}
-                    />
-                )}
-            </AnimatePresence>
-        </div>
+                        </AnimatePresence>
+                    </div>
+                );
+            }}
+        />
     );
 }
