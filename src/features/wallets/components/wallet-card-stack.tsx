@@ -24,7 +24,7 @@ const swipePower = (offset: number, velocity: number) => {
 export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: WalletCardStackProps) => {
   const { openEditWalletModal } = useUI();
   const { isBalanceVisible } = useBalanceVisibility();
-  
+
   const paginate = (newDirection: number) => {
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);
   };
@@ -47,7 +47,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             const isActive = i === activeIndex;
             const isNext = i === (activeIndex + 1) % wallets.length;
 
-            const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon);
+            const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon || undefined);
 
             return (
               <motion.div
@@ -65,9 +65,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   backgroundImage: `linear-gradient(to right, ${gradient.from}, ${gradient.to})`
                 }}
                 initial={{
-                   scale: i === activeIndex ? 1 : 0.85,
-                   y: (i - activeIndex) * 30,
-                   opacity: i === activeIndex ? 1 : (i === (activeIndex + 1) % wallets.length ? 1 : 0),
+                  scale: i === activeIndex ? 1 : 0.85,
+                  y: (i - activeIndex) * 30,
+                  opacity: i === activeIndex ? 1 : (i === (activeIndex + 1) % wallets.length ? 1 : 0),
                 }}
                 animate={{
                   scale: isActive ? 1 : 0.85,
@@ -95,39 +95,39 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   }
                 }}
               >
-                  {/* Ornaments */}
-                  <div className="absolute -top-1/4 -left-1/4 w-48 h-48 bg-white/10 rounded-full" />
-                  <div className="absolute -bottom-1/4 -right-10 w-40 h-40 bg-white/5 rounded-full" />
+                {/* Ornaments */}
+                <div className="absolute -top-1/4 -left-1/4 w-48 h-48 bg-white/10 rounded-full" />
+                <div className="absolute -bottom-1/4 -right-10 w-40 h-40 bg-white/5 rounded-full" />
 
-                  <div className="relative p-5 flex flex-col h-full">
-                      <div className="flex items-start justify-between">
-                           <div className="flex items-center gap-3">
-                              <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
-                              <p className="font-semibold text-lg drop-shadow-md">{wallet.name}</p>
-                              {wallet.isDefault && (
-                                <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-md">
-                                    Utama
-                                </div>
-                              )}
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-white hover:bg-white/20 h-8 w-8 rounded-md relative z-10"
-                            onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}
-                            aria-label={`Kelola dompet ${wallet.name}`}
-                          >
-                              <MoreVertical className="h-5 w-5" />
-                              <span className="sr-only">Kelola dompet {wallet.name}</span>
-                          </Button>
-                      </div>
-
-                      <div className="flex-1 flex items-end">
-                          <p className={cn("text-3xl font-bold drop-shadow-lg", textColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}>
-                              {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
-                          </p>
-                      </div>
+                <div className="relative p-5 flex flex-col h-full">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
+                      <p className="font-semibold text-lg drop-shadow-md">{wallet.name}</p>
+                      {wallet.isDefault && (
+                        <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-md">
+                          Utama
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-white hover:bg-white/20 h-8 w-8 rounded-md relative z-10"
+                      onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}
+                      aria-label={`Kelola dompet ${wallet.name}`}
+                    >
+                      <MoreVertical className="h-5 w-5" />
+                      <span className="sr-only">Kelola dompet {wallet.name}</span>
+                    </Button>
                   </div>
+
+                  <div className="flex-1 flex items-end">
+                    <p className={cn("text-3xl font-bold drop-shadow-lg", textColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}>
+                      {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             );
           })}

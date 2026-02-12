@@ -31,15 +31,17 @@ vi.mock('@/lib/supabase/client', () => ({
   }),
 }));
 
+import { User } from '@supabase/supabase-js';
+
 describe('useTransactionActions', () => {
-  const mockUser = { id: 'user-123' } as { id: string };
+  const mockUser = { id: 'user-123' } as unknown as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     // -- Chain Setup --
     mockInsert.mockResolvedValue({ error: null });
-    
+
     const updateEqMock = vi.fn().mockResolvedValue({ error: null });
     mockUpdate.mockReturnValue({ eq: updateEqMock });
 

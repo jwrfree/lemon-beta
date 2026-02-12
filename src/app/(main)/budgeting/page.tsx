@@ -25,8 +25,8 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
 
     const spent = useMemo(() => {
         return transactions
-            .filter(t => 
-                t.type === 'expense' && 
+            .filter(t =>
+                t.type === 'expense' &&
                 budget.categories.includes(t.category)
             )
             .reduce((acc, t) => acc + t.amount, 0);
@@ -45,12 +45,14 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
     } else if (progress > 100) {
         progressBarColor = 'bg-foreground';
     }
-    
-    const firstCategory = budget.categories[0];
-    const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(firstCategory);
+
+    const firstCategory = budget.categories[0] || 'Lainnya';
+    const visuals = getCategoryVisuals(firstCategory);
+    const CategoryIcon = visuals.icon as React.ElementType;
+    const { color, bgColor } = visuals;
 
     return (
-         <motion.button
+        <motion.button
             type="button"
             onClick={() => router.push(`/budgeting/${budget.id}`)}
             whileHover={{ y: -4 }}
@@ -63,7 +65,7 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
                 <CardContent className="p-5 flex flex-col justify-between h-full gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                             <div className={cn("flex-shrink-0 p-2.5 rounded-lg shadow-inner", bgColor)}>
+                            <div className={cn("flex-shrink-0 p-2.5 rounded-lg shadow-inner", bgColor)}>
                                 <CategoryIcon className={cn("h-5 w-5", color)} />
                             </div>
                             <div>
@@ -75,17 +77,17 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
                             {daysLeft} HARI LAGI
                         </Badge>
                     </div>
-                    
+
                     <div className="space-y-2">
-                         <div className="w-full bg-muted/50 rounded-full h-1.5 overflow-hidden">
-                            <motion.div 
+                        <div className="w-full bg-muted/50 rounded-full h-1.5 overflow-hidden">
+                            <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${Math.min(progress, 100)}%` }}
                                 transition={{ duration: 1, ease: "easeOut" }}
-                                className={cn("h-full rounded-full", progressBarColor)} 
+                                className={cn("h-full rounded-full", progressBarColor)}
                             />
                         </div>
-                         <div className="flex justify-between items-end">
+                        <div className="flex justify-between items-end">
                             <div>
                                 <p className="text-[11px] font-medium text-muted-foreground mb-0.5">Sisa</p>
                                 <p className={cn(
@@ -120,26 +122,26 @@ export default function BudgetingPage() {
 
     const overview = useMemo(() => {
         const totalBudget = budgets.reduce((acc, b) => acc + b.targetAmount, 0);
-        
+
         const relevantCategories = Array.from(new Set(budgets.flatMap(b => b.categories)));
 
         const totalSpent = transactions
-            .filter(t => 
-                t.type === 'expense' && 
+            .filter(t =>
+                t.type === 'expense' &&
                 relevantCategories.includes(t.category)
             )
             .reduce((acc, t) => acc + t.amount, 0);
 
         const totalRemaining = totalBudget - totalSpent;
-        
+
         const chartData = [
             { name: 'Terpakai', value: totalSpent, fill: 'var(--destructive)' },
             { name: 'Sisa', value: Math.max(0, totalRemaining), fill: 'var(--primary)' },
         ];
-        
+
         return { totalBudget, totalSpent, totalRemaining, chartData };
     }, [budgets, transactions]);
-    
+
     if (isLoading || isTransactionsLoading) {
         return (
             <div className="flex flex-col h-full pb-24">
@@ -169,7 +171,7 @@ export default function BudgetingPage() {
                 ) : (
                     <div className="max-w-7xl mx-auto w-full p-4 md:p-8">
                         <div className="grid grid-cols-12 gap-8">
-                            
+
                             {/* OVERVIEW SECTION */}
                             <div className="col-span-12 lg:col-span-4 space-y-4">
                                 <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Ringkasan Bulan Ini</h2>
@@ -229,7 +231,7 @@ export default function BudgetingPage() {
             {/* Floating Action Button */}
             {budgets.length > 0 && (
                 <div className="fixed bottom-20 right-6 z-40 md:bottom-8 md:right-8">
-                    <Button 
+                    <Button
                         onClick={() => setIsBudgetModalOpen(true)}
                         size="icon"
                         className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform active:scale-95"

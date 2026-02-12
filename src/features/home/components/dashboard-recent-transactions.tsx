@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
+import { getCategoryIcon } from '@/lib/category-utils';
 import type { Transaction, Wallet } from '@/types/models';
 
 interface DashboardRecentTransactionsProps {
@@ -52,14 +53,15 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                             )}
                             {transactions.map((t) => {
                                 const categoryData = categoryDetails(t.category);
-                                const CategoryIcon = categoryData.icon;
+                                const CategoryIcon = getCategoryIcon(categoryData.icon);
                                 const wallet = wallets.find(w => w.id === t.walletId);
-                                
+                                const bgColor = categoryData.bg_color;
+
                                 return (
                                     <tr key={t.id} className="border-t hover:bg-muted/30 transition-colors">
                                         <td className="p-3 pl-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={cn("p-2 rounded-md", categoryData.bgColor)}>
+                                                <div className={cn("p-2 rounded-md", bgColor)}>
                                                     <CategoryIcon className={cn("h-4 w-4", categoryData.color)} />
                                                 </div>
                                                 <div>

@@ -34,18 +34,19 @@ interface PieChartData {
 }
 
 interface TrendChartData {
+    key: string;
     shortLabel: string;
     total: number;
     isPeak?: boolean;
-    [key: string]: string | number | boolean | undefined;
+    [key: string]: string | number | boolean | Date | undefined;
 }
 
 // 1. Category Pie Chart
-export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: PieChartData[], chartConfig: Record<string, { label: string; color: string }> }) => {
+export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: PieChartData[], chartConfig: ChartConfig }) => {
     const isMobile = useIsMobile();
     return (
-        <ChartContainer 
-            config={chartConfig} 
+        <ChartContainer
+            config={chartConfig}
             className={cn(
                 "mx-auto aspect-square w-full max-w-[260px]",
                 isMobile ? "h-48" : "h-56"
@@ -56,11 +57,11 @@ export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: PieCha
                     cursor={false}
                     content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} hideLabel />}
                 />
-                <Pie 
-                    data={chartData} 
-                    dataKey="value" 
-                    nameKey="name" 
-                    innerRadius="60%" 
+                <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius="60%"
                     strokeWidth={3}
                     cornerRadius={4}
                 >
@@ -79,16 +80,16 @@ export const CategoryPieChart = ({ chartData, chartConfig }: { chartData: PieCha
 };
 
 // 2. Expense Trend Chart (Area or Bar)
-export const ExpenseTrendChart = ({ 
-    chartType, 
-    filteredData, 
-    gradientId, 
-    peakDayKey 
-}: { 
-    chartType: 'area' | 'bar', 
-    filteredData: TrendChartData[], 
+export const ExpenseTrendChart = ({
+    chartType,
+    filteredData,
+    gradientId,
+    peakDayKey
+}: {
+    chartType: 'area' | 'bar',
+    filteredData: TrendChartData[],
     gradientId: string,
-    peakDayKey?: string 
+    peakDayKey?: string
 }) => {
     const isMobile = useIsMobile();
     return (
@@ -105,12 +106,12 @@ export const ExpenseTrendChart = ({
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
-                    <XAxis 
-                        dataKey="shortLabel" 
-                        tickLine={false} 
-                        axisLine={false} 
-                        tickMargin={10} 
-                        minTickGap={isMobile ? 20 : 14} 
+                    <XAxis
+                        dataKey="shortLabel"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={10}
+                        minTickGap={isMobile ? 20 : 14}
                         style={{ fontSize: isMobile ? '10px' : '12px' }}
                     />
                     <YAxis
@@ -141,11 +142,11 @@ export const ExpenseTrendChart = ({
             ) : (
                 <RechartsBarChart data={filteredData} barCategoryGap={isMobile ? 4 : 8} margin={{ left: -20, right: 10, bottom: 0, top: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
-                    <XAxis 
-                        dataKey="shortLabel" 
-                        tickLine={false} 
-                        axisLine={false} 
-                        tickMargin={10} 
+                    <XAxis
+                        dataKey="shortLabel"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={10}
                         minTickGap={isMobile ? 20 : 14}
                         style={{ fontSize: isMobile ? '10px' : '12px' }}
                     />
@@ -187,21 +188,21 @@ interface MonthlyTrendData {
 }
 
 // 3. Monthly Trend Chart
-export const MonthlyBarChart = ({ 
-    data, 
-    gradientId: propsGradientId, 
+export const MonthlyBarChart = ({
+    data,
+    gradientId: propsGradientId,
     sectionLabel,
-    color 
-}: { 
-    data: MonthlyTrendData[], 
-    gradientId: string, 
+    color
+}: {
+    data: MonthlyTrendData[],
+    gradientId: string,
     sectionLabel: string,
-    color?: string 
+    color?: string
 }) => {
     const id = React.useId();
     const gradientId = propsGradientId || `gradient-${id.replace(/:/g, '')}`;
     const isMobile = useIsMobile();
-    
+
     return (
         <ChartContainer
             config={{ total: { label: sectionLabel, color: color || 'var(--primary)' } } satisfies ChartConfig}
@@ -215,11 +216,11 @@ export const MonthlyBarChart = ({
                     </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
-                <XAxis 
-                    dataKey="shortLabel" 
-                    tickLine={false} 
-                    axisLine={false} 
-                    tickMargin={10} 
+                <XAxis
+                    dataKey="shortLabel"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={10}
                     style={{ fontSize: isMobile ? '10px' : '12px' }}
                 />
                 <YAxis
@@ -238,9 +239,9 @@ export const MonthlyBarChart = ({
                         />
                     }
                 />
-                <Bar 
-                    dataKey="total" 
-                    fill={`url(#${gradientId})`} 
+                <Bar
+                    dataKey="total"
+                    fill={`url(#${gradientId})`}
                     radius={[6, 6, 4, 4]}
                     strokeWidth={0}
                     maxBarSize={isMobile ? 32 : 52}
@@ -252,19 +253,20 @@ export const MonthlyBarChart = ({
 
 interface CashflowData {
     key: string;
-    label: string;
+    shortLabel: string;
+    fullLabel?: string;
     income: number;
     expense: number;
     net: number;
 }
 
 // 4. Net Cashflow Composed Chart
-export const NetCashflowComposedChart = ({ 
-    filteredData, 
-    selectedMonthKey, 
-    onMonthClick 
-}: { 
-    filteredData: CashflowData[], 
+export const NetCashflowComposedChart = ({
+    filteredData,
+    selectedMonthKey,
+    onMonthClick
+}: {
+    filteredData: CashflowData[],
     selectedMonthKey: string | null,
     onMonthClick: (key: string) => void
 }) => {
@@ -292,11 +294,11 @@ export const NetCashflowComposedChart = ({
                 }}
             >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
-                <XAxis 
-                    dataKey="shortLabel" 
-                    tickLine={false} 
-                    axisLine={false} 
-                    tickMargin={10} 
+                <XAxis
+                    dataKey="shortLabel"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={10}
                     style={{ fontSize: isMobile ? '10px' : '12px' }}
                 />
                 <YAxis
@@ -307,8 +309,8 @@ export const NetCashflowComposedChart = ({
                     style={{ fontSize: isMobile ? '10px' : '12px' }}
                 />
                 <ReferenceLine y={0} stroke="var(--border)" strokeDasharray="3 3" />
-                                <ChartTooltip
-                                    cursor={{ fill: 'var(--muted)', opacity: 0.25 }}                content={
+                <ChartTooltip
+                    cursor={{ fill: 'var(--muted)', opacity: 0.25 }} content={
                         <ChartTooltipContent
                             formatter={(value) => formatCurrency(Number(value))}
                             labelFormatter={(label, payload) => payload?.[0]?.payload.fullLabel ?? label}

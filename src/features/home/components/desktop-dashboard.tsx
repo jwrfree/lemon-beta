@@ -14,8 +14,8 @@ import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-    Search, 
+import {
+    Search,
     RefreshCw,
     BarChart3,
     Sparkles
@@ -43,15 +43,15 @@ import { DashboardSmartInsight } from '@/features/home/components/dashboard-smar
 
 export const DesktopDashboard = () => {
     const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
-    
+
     // Dates for fetching
     const now = lastRefreshed;
     const currentMonthStart = startOfMonth(now);
     const threeMonthsAgoStart = startOfMonth(subMonths(currentMonthStart, 2));
-    
+
     const { wallets } = useWallets();
-     const { transactions } = useRangeTransactions(threeMonthsAgoStart, now);
-     const { reminders } = useReminders();
+    const { transactions } = useRangeTransactions(threeMonthsAgoStart, now);
+    const { reminders } = useReminders();
     const { debts } = useDebts();
     const { budgets } = useBudgets();
     const { goals } = useGoals();
@@ -120,7 +120,7 @@ export const DesktopDashboard = () => {
     const netTrend = useMemo(() => calculateTrend(currentStats.net, lastStats.net), [currentStats.net, lastStats.net]);
 
     const totalBalance = useMemo(() => visibleWallets.reduce((acc, w) => acc + w.balance, 0), [visibleWallets]);
-    
+
     const totalDebt = useMemo(() => {
         return debts
             .filter(d => d.status !== 'settled')
@@ -130,13 +130,13 @@ export const DesktopDashboard = () => {
     const calculatedBudgets = useMemo(() => {
         return budgets.map(budget => {
             const budgetSpent = transactions
-                .filter(t => 
+                .filter(t =>
                     t.type === 'expense' &&
                     budget.categories.includes(t.category) &&
                     isSameMonth(parseISO(t.date), currentMonth)
                 )
                 .reduce((sum, t) => sum + t.amount, 0);
-            
+
             return {
                 ...budget,
                 spent: budgetSpent
@@ -188,8 +188,8 @@ export const DesktopDashboard = () => {
     // Memoize derived stats to prevent unnecessary re-renders of children
     const activeBudgets = useMemo(() => {
         return calculatedBudgets.sort((a, b) => {
-            const aPercent = ((a.spent ?? 0) / a.limitAmount);
-            const bPercent = ((b.spent ?? 0) / b.limitAmount);
+            const aPercent = ((a.spent ?? 0) / a.targetAmount);
+            const bPercent = ((b.spent ?? 0) / b.targetAmount);
             return bPercent - aPercent;
         }).slice(0, 3);
     }, [calculatedBudgets]);
@@ -213,21 +213,21 @@ export const DesktopDashboard = () => {
                 <div className="max-w-[1600px] mx-auto p-4 lg:p-8 space-y-8">
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <PageHeader 
-                            title="Dashboard" 
+                        <PageHeader
+                            title="Dashboard"
                             description="Ringkasan aktivitas keuanganmu hari ini."
                             className="p-0"
                         />
-                        
+
                         <div className="flex items-center gap-3">
                             <div className="relative w-full md:w-64">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <input 
-                                    placeholder="Cari transaksi..." 
+                                <input
+                                    placeholder="Cari transaksi..."
                                     className="flex h-10 w-full rounded-lg border-none bg-card px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 pl-9 shadow-sm"
                                 />
                             </div>
-                            
+
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
                                 <SelectTrigger className="w-[180px] bg-card border-none shadow-sm h-10 rounded-lg">
                                     <SelectValue placeholder="Pilih Dompet" />
@@ -242,9 +242,9 @@ export const DesktopDashboard = () => {
 
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button 
-                                        variant="outline" 
-                                        size="icon" 
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
                                         className={cn(
                                             "h-10 w-10 bg-card border-none shadow-sm hover:bg-primary/5 transition-all rounded-lg",
                                             isPending && "animate-spin"
@@ -265,7 +265,7 @@ export const DesktopDashboard = () => {
                     {/* Quick Actions & Hero Section */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         <div className="lg:col-span-8">
-                            <FinanceOverview 
+                            <FinanceOverview
                                 totalBalance={totalBalance}
                                 income={currentStats.income}
                                 expense={currentStats.expense}
@@ -286,21 +286,21 @@ export const DesktopDashboard = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         {/* Main Charts Section */}
                         <div className="lg:col-span-8 space-y-6">
-                            <DashboardCashflow 
+                            <DashboardCashflow
                                 transactions={filteredTransactions}
                                 chartRange={chartRange}
                                 setChartRange={setChartRange}
                             />
-                            
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <DashboardWallets wallets={visibleWallets} />
                                 <DashboardExpensePie transactions={filteredTransactions} />
                             </div>
 
                             {filteredTransactions.length > 0 ? (
-                                <DashboardRecentTransactions 
-                                    transactions={recentTransactions} 
-                                    wallets={wallets} 
+                                <DashboardRecentTransactions
+                                    transactions={recentTransactions}
+                                    wallets={wallets}
                                 />
                             ) : (
                                 <DashboardRecentTransactionsEmpty />
@@ -310,15 +310,15 @@ export const DesktopDashboard = () => {
                         {/* Sidebar Sections */}
                         <div className="lg:col-span-4 space-y-6">
                             <ErrorBoundary>
-                                <DashboardSmartInsight 
-                                    income={currentStats.income} 
-                                    expense={currentStats.expense} 
+                                <DashboardSmartInsight
+                                    income={currentStats.income}
+                                    expense={currentStats.expense}
                                     net={currentStats.net}
                                     hasTransactions={filteredTransactions.length > 0}
                                 />
                             </ErrorBoundary>
                             <ErrorBoundary>
-                                <DashboardAlerts 
+                                <DashboardAlerts
                                     reminderSummary={reminderSummary}
                                     debtSummary={debtSummary}
                                 />

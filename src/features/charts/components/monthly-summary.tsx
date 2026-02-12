@@ -7,6 +7,7 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { cn, formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categoryDetails } from '@/lib/categories';
+import { getCategoryIcon } from '@/lib/category-utils';
 import { PlaceholderContent } from './placeholder-content';
 import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -35,24 +36,24 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
         try {
             const now = new Date();
             const relevantTransactions = transactions.filter((t) => isSameMonth(parseISO(t.date), now));
-            
+
             const income = relevantTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
             const expense = relevantTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
             const totalBalance = (wallets || []).reduce((sum, w) => sum + (w.balance || 0), 0);
             const totalDebt = transactions.filter(t => t.category === 'Hutang').reduce((sum, t) => sum + t.amount, 0);
-            
+
             // Calculate debt change this month
             const debtTransactionsMonth = relevantTransactions.filter(t => t.category === 'Hutang');
             const debtChangeMonth = debtTransactionsMonth.reduce((sum, t) => sum + t.amount, 0);
-            
+
             // Analyze for "Silent Growth" (debts increasing)
             const hasSilentGrowth = debtChangeMonth > 0;
-            
+
             // Simple projection: if they keep paying average monthly amount, how long to clear?
             const averageMonthlyPayment = Math.abs(transactions
                 .filter(t => t.category === 'Hutang' && t.amount < 0)
                 .reduce((sum, t) => sum + t.amount, 0) / 12); // crude 12 month avg
-            
+
             const projectedPayoffMonths = averageMonthlyPayment > 0 ? Math.ceil(totalDebt / averageMonthlyPayment) : 0;
 
             const topExpenseCategories = Object.entries(
@@ -63,9 +64,9 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         return acc;
                     }, {} as Record<string, number>)
             )
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3)
-            .map(([category, amount]) => ({ category, amount }));
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([category, amount]) => ({ category, amount }));
 
             const data: FinancialData = {
                 monthlyIncome: income,
@@ -98,9 +99,9 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
         const daysElapsed = now.getDate();
         const monthProgress = (daysElapsed / daysInMonth) * 100;
 
-        // Use manualTransactions if provided (already filtered), otherwise use current month
-        const relevantTransactions = manualTransactions || transactions.filter((t) => isSameMonth(parseISO(t.date), now));
-        
+        // Filter for current month
+        const relevantTransactions = transactions.filter((t) => isSameMonth(parseISO(t.date), now));
+
         const incomeTransactions = relevantTransactions.filter((t) => t.type === 'income');
         const expenseTransactions = relevantTransactions.filter((t) => t.type === 'expense');
 
@@ -155,9 +156,9 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                     name: name as string,
                     value: categoryValue as number,
                     percentage: value > 0 ? ((categoryValue as number) / value) * 100 : 0,
-                    icon: details.icon,
+                    icon: getCategoryIcon(details.icon),
                     color: details.color,
-                    bgColor: details.bgColor,
+                    bgColor: details.bg_color,
                 };
             }
 
@@ -219,7 +220,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             tipCopy,
             isPositive: net >= 0,
         };
-    }, [hookTransactions, manualTransactions, type]);
+    }, [transactions, type]);
 
     const handleTxClick = (txId: string) => {
         router.push('/transactions');
@@ -286,7 +287,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             indicatorClassName="bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)]"
                         />
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-2 sm:gap-3">
                         {summary.type === 'net' ? (
                             <>
@@ -348,8 +349,8 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
 
                         {summary.topTransaction && (
-                            <div 
-                                onClick={() => handleTxClick(summary.topTransaction.id)}
+                            <div
+                                onClick={() => handleTxClick(summary.topTransaction!.id)}
                                 className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
                             >
                                 <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-background flex items-center justify-center border border-muted shadow-sm group-hover/item:rotate-12 transition-transform">
@@ -384,7 +385,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 {/* Decorative background elements */}
                 <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-all duration-500"></div>
                 <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/10 blur-3xl rounded-full group-hover:bg-pink-500/20 transition-all duration-500"></div>
-                
+
                 <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6 relative z-10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 sm:gap-3">
@@ -397,9 +398,9 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             </div>
                         </div>
                         {aiInsight && (
-                            <Button 
-                                variant="ghost" 
-                                size="sm" 
+                            <Button
+                                variant="ghost"
+                                size="sm"
                                 onClick={generateInsight}
                                 className="h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
                             >
@@ -418,8 +419,8 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 <p className="text-xs sm:text-sm font-semibold text-foreground">Butuh pandangan baru?</p>
                                 <p className="text-[10px] sm:text-[11px] text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
                             </div>
-                            <Button 
-                                onClick={generateInsight} 
+                            <Button
+                                onClick={generateInsight}
                                 disabled={isAiLoading}
                                 className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-bold shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95"
                             >

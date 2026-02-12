@@ -8,16 +8,19 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
+import { getCategoryIcon } from '@/lib/category-utils';
 import type { Transaction } from '@/types/models';
 
-export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { transaction: Transaction, onClose: () => void, onConfirm: () => Promise<void> }) => {
+export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transaction: Transaction, onClose: () => void, onConfirm: () => Promise<void> }) => {
     const handlers = useSwipeable({
         onSwipedDown: onClose,
         preventScrollOnSwipe: true,
         trackMouse: true,
     });
-    
-    const { icon: CategoryIcon, color, bgColor } = categoryDetails(transaction.category);
+
+    const details = categoryDetails(transaction.category);
+    const CategoryIcon = getCategoryIcon(details.icon);
+    const bgColor = details.bg_color;
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-destructive' : 'text-teal-600 dark:text-teal-500';
 
@@ -49,7 +52,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm } : { trans
                     <p className="text-sm text-muted-foreground">Yakin mau menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
                     <div className="flex items-center gap-3 rounded-lg border p-3">
                         <div className={cn("flex-shrink-0 p-2 rounded-full", bgColor)}>
-                             <CategoryIcon className={cn("h-5 w-5", color)} />
+                            <CategoryIcon className={cn("h-5 w-5", details.color)} />
                         </div>
                         <div className="flex-1">
                             <div className="font-medium">{transaction.description}</div>

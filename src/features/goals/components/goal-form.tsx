@@ -29,8 +29,8 @@ const goalIcons = [
 ];
 
 interface GoalFormProps {
-  onClose: () => void;
-  initialData?: Goal | null;
+    onClose: () => void;
+    initialData?: Goal | null;
 }
 
 export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
@@ -69,7 +69,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
         };
 
         try {
-            if (isEditMode) {
+            if (isEditMode && initialData) {
                 await updateGoal(initialData.id, goalData);
             } else {
                 await addGoal(goalData);
@@ -83,7 +83,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
     };
 
     const handleDelete = async () => {
-        if (!isEditMode) return;
+        if (!isEditMode || !initialData) return;
         setIsDeleting(true);
         try {
             await deleteGoal(initialData.id);
@@ -94,7 +94,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
             setIsDeleting(false);
         }
     };
-    
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -140,15 +140,15 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                             ))}
                         </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                         <Label htmlFor="targetAmount">Jumlah Target</Label>
                         <Input id="targetAmount" placeholder="Rp 0" value={targetAmount} onChange={handleAmountChange(setTargetAmount)} required inputMode="numeric" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                             <Label htmlFor="currentAmount">Sudah Terkumpul</Label>
-                             <Input id="currentAmount" placeholder="Rp 0" value={currentAmount} onChange={handleAmountChange(setCurrentAmount)} inputMode="numeric" />
+                            <Label htmlFor="currentAmount">Sudah Terkumpul</Label>
+                            <Input id="currentAmount" placeholder="Rp 0" value={currentAmount} onChange={handleAmountChange(setCurrentAmount)} inputMode="numeric" />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="targetDate">Tanggal Target</Label>
@@ -181,7 +181,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                     </div>
 
                 </form>
-                 <div className="p-4 border-t sticky bottom-0 bg-background flex gap-2">
+                <div className="p-4 border-t sticky bottom-0 bg-background flex gap-2">
                     <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Target'}`}
                     </Button>
@@ -189,21 +189,21 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
-                                <Trash2 className="h-5 w-5" />
+                                    <Trash2 className="h-5 w-5" />
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                <AlertDialogTitle>Yakin mau menghapus target ini?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    Tindakan ini tidak dapat dibatalkan dan akan menghapus target &apos;{initialData.name}&apos; secara permanen.
-                                </AlertDialogDescription>
+                                    <AlertDialogTitle>Yakin mau menghapus target ini?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Tindakan ini tidak dapat dibatalkan dan akan menghapus target &apos;{initialData?.name}&apos; secara permanen.
+                                    </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                <AlertDialogCancel>Batal</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
-                                    {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
-                                </AlertDialogAction>
+                                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
+                                        {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
+                                    </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>

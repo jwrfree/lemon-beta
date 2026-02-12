@@ -11,6 +11,7 @@ import { useActions } from '@/providers/action-provider';
 import { useUI } from '@/components/ui-provider';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { walletSchema, WalletFormValues } from '../schemas/wallet-schema';
 import { cn } from '@/lib/utils';
 
@@ -30,10 +31,10 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
   const { addWallet } = useActions();
   const { showToast } = useUI();
   const [step, setStep] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<{key: string, name: string, Icon: React.ElementType} | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<{ key: string, name: string, Icon: React.ElementType } | null>(null);
 
-  const form = useForm<WalletFormValues>({
-    resolver: zodResolver(walletSchema),
+  const form = useForm<z.input<typeof walletSchema>>({
+    resolver: zodResolver(walletSchema) as any,
     defaultValues: {
       name: '',
       balance: '',
@@ -44,7 +45,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
 
   const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = form;
 
-  const handleCategorySelect = (category: {key: string, name: string, Icon: React.ElementType}) => {
+  const handleCategorySelect = (category: { key: string, name: string, Icon: React.ElementType }) => {
     setSelectedCategory(category);
     setValue('icon', category.key);
     if (category.key === 'cash') {
@@ -52,7 +53,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     }
     setStep(2);
   };
-  
+
   const handleBack = () => {
     setStep(1);
     setValue('name', '');
@@ -61,11 +62,12 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     setSelectedCategory(null);
   };
 
-  const onSubmit = async (values: WalletFormValues) => {
+  const onSubmit = async (data: z.input<typeof walletSchema>) => {
+    const values = data as unknown as WalletFormValues;
     try {
-      await addWallet({ 
-        name: values.name, 
-        icon: values.icon, 
+      await addWallet({
+        name: values.name,
+        icon: values.icon,
         balance: Number(values.balance)
       });
     } catch (error) {
@@ -124,7 +126,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
             <span className="sr-only">Tutup</span>
           </Button>
         </div>
-        
+
         <div className="relative overflow-hidden">
           <AnimatePresence initial={false} custom={direction}>
             {step === 1 && (
@@ -162,7 +164,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
             )}
 
             {step === 2 && selectedCategory && (
-               <motion.div
+              <motion.div
                 key="step2"
                 custom={direction}
                 variants={slideVariants}
@@ -189,14 +191,14 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                     />
                     {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
                   </div>
-                  
+
                   {popularWallets[selectedCategory.key] && (
                     <div className="flex flex-wrap gap-2">
-                        {popularWallets[selectedCategory.key].map(name => (
-                            <Button key={name} type="button" variant="outline" size="sm" onClick={() => setValue('name', name, { shouldValidate: true })}>
-                                {name}
-                            </Button>
-                        ))}
+                      {popularWallets[selectedCategory.key].map(name => (
+                        <Button key={name} type="button" variant="outline" size="sm" onClick={() => setValue('name', name, { shouldValidate: true })}>
+                          {name}
+                        </Button>
+                      ))}
                     </div>
                   )}
 

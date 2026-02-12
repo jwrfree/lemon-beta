@@ -29,15 +29,17 @@ vi.mock('@/lib/supabase/client', () => ({
   }),
 }));
 
+import { User } from '@supabase/supabase-js';
+
 describe('useWalletActions', () => {
-  const mockUser = { id: 'user-123' } as { id: string };
+  const mockUser = { id: 'user-123' } as unknown as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     // -- Chain Setup --
     mockInsert.mockResolvedValue({ error: null });
-    
+
     // update: from('...').update(...).eq(...)
     const updateEqMock = vi.fn().mockResolvedValue({ error: null });
     mockUpdate.mockReturnValue({ eq: updateEqMock });
@@ -45,9 +47,9 @@ describe('useWalletActions', () => {
     // delete: from('...').delete().eq(...)
     const deleteEqMock = vi.fn().mockResolvedValue({ error: null });
     mockDelete.mockReturnValue({ eq: deleteEqMock });
-    
+
     // update is_default: from('...').update(...).eq(...) - reused updateEqMock
-    
+
     // select for check: from('transactions').select(...).eq(...)
     const selectEqMock = vi.fn().mockResolvedValue({ count: 0 }); // Default no transactions
     mockSelect.mockReturnValue({ eq: selectEqMock });
@@ -124,45 +126,45 @@ describe('useWalletActions', () => {
     });
 
     it('should reset other defaults if setting as default', async () => {
-        const { result } = renderHook(() => useWalletActions(mockUser));
-        
-        await act(async () => {
-            await result.current.updateWallet('wallet-1', { isDefault: true });
-        });
+      const { result } = renderHook(() => useWalletActions(mockUser));
 
-        // Should first unset all defaults
-        expect(mockUpdate).toHaveBeenCalledWith({ is_default: false });
-        // Then set the specific wallet as default
-        expect(mockUpdate).toHaveBeenCalledWith({ is_default: true });
+      await act(async () => {
+        await result.current.updateWallet('wallet-1', { isDefault: true });
+      });
+
+      // Should first unset all defaults
+      expect(mockUpdate).toHaveBeenCalledWith({ is_default: false });
+      // Then set the specific wallet as default
+      expect(mockUpdate).toHaveBeenCalledWith({ is_default: true });
     });
   });
 
   describe('deleteWallet', () => {
     it('should delete a wallet if no transactions exist', async () => {
-       const { result } = renderHook(() => useWalletActions(mockUser));
-       
-       await act(async () => {
-           await result.current.deleteWallet('wallet-1');
-       });
+      const { result } = renderHook(() => useWalletActions(mockUser));
 
-       expect(mockDelete).toHaveBeenCalled();
-       expect(mockShowToast).toHaveBeenCalledWith("Dompet berhasil dihapus.", 'success');
+      await act(async () => {
+        await result.current.deleteWallet('wallet-1');
+      });
+
+      expect(mockDelete).toHaveBeenCalled();
+      expect(mockShowToast).toHaveBeenCalledWith("Dompet berhasil dihapus.", 'success');
     });
 
     it('should prevent deletion if transactions exist', async () => {
-        // Mock transaction existence
-        mockSelect.mockReturnValue({ 
-            eq: vi.fn().mockResolvedValue({ count: 5 }) 
-        });
+      // Mock transaction existence
+      mockSelect.mockReturnValue({
+        eq: vi.fn().mockResolvedValue({ count: 5 })
+      });
 
-        const { result } = renderHook(() => useWalletActions(mockUser));
+      const { result } = renderHook(() => useWalletActions(mockUser));
 
-        await act(async () => {
-            await result.current.deleteWallet('wallet-1');
-        });
+      await act(async () => {
+        await result.current.deleteWallet('wallet-1');
+      });
 
-        expect(mockDelete).not.toHaveBeenCalled();
-        expect(mockShowToast).toHaveBeenCalledWith("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
+      expect(mockDelete).not.toHaveBeenCalled();
+      expect(mockShowToast).toHaveBeenCalledWith("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
     });
   });
 });

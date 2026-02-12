@@ -18,20 +18,20 @@ type AssetOrLiabilityWithMeta = (Asset & { type: 'asset' }) | (Liability & { typ
 type AssetOrLiabilityFormInitialData = (Partial<Asset> & { type: 'asset' }) | (Partial<Liability> & { type: 'liability' });
 
 interface AssetLiabilityFormProps {
-  onClose: () => void;
-  initialData?: AssetOrLiabilityFormInitialData | null;
+    onClose: () => void;
+    initialData?: AssetOrLiabilityFormInitialData | null;
 }
 
 export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabilityFormProps) => {
     const { addAssetLiability, updateAssetLiability } = useAssets();
     const { showToast } = useUI();
-    
+
     const isEditMode = !!initialData?.id;
 
     const [type, setType] = useState<'asset' | 'liability'>(initialData?.type || 'asset');
     const [name, setName] = useState(initialData?.name || '');
     const [value, setValue] = useState('');
-    const [quantity, setQuantity] = useState(initialData?.quantity?.toString() || '');
+    const [quantity, setQuantity] = useState((initialData as Partial<Asset>)?.quantity?.toString() || '');
     const [notes, setNotes] = useState(initialData?.notes || '');
     const [categoryKey, setCategoryKey] = useState(initialData?.categoryKey || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,7 +88,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     };
 
     const title = isEditMode ? `Edit ${type === 'asset' ? 'Aset' : 'Liabilitas'}` : 'Tambah Entri Baru';
-    
+
     const assetGroups = React.useMemo(() => {
         const groups: Record<string, AssetCategory[]> = {};
         ASSET_CATEGORIES.forEach(cat => {
@@ -132,25 +132,25 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             <SelectValue placeholder="Pilih kategori" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
-                        {type === 'asset' ? (
-                            Object.entries(assetGroups).map(([groupName, cats]) => (
-                                <SelectGroup key={groupName}>
-                                    <SelectLabel className="px-2 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{groupName}</SelectLabel>
-                                    {cats.map((cat) => (
-                                        <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
-                                            {cat.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            ))
-                        ) : (
-                            LIABILITY_CATEGORIES.map((cat) => (
-                                <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
-                                    {cat.label}
-                                </SelectItem>
-                            ))
-                        )}
-                    </SelectContent>
+                            {type === 'asset' ? (
+                                Object.entries(assetGroups).map(([groupName, cats]) => (
+                                    <SelectGroup key={groupName}>
+                                        <SelectLabel className="px-2 py-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">{groupName}</SelectLabel>
+                                        {cats.map((cat) => (
+                                            <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
+                                                {cat.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                ))
+                            ) : (
+                                LIABILITY_CATEGORIES.map((cat) => (
+                                    <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
+                                        {cat.label}
+                                    </SelectItem>
+                                ))
+                            )}
+                        </SelectContent>
                     </Select>
                 </div>
 
@@ -170,18 +170,18 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     {hasUnit && (
                         <div className="space-y-2">
                             <Label htmlFor="quantity" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                Jumlah ({selectedCategory.unit})
+                                Jumlah ({selectedCategory?.unit})
                             </Label>
                             <Input
                                 id="quantity"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
-                                placeholder={`0 ${selectedCategory.unit}`}
+                                placeholder={`0 ${selectedCategory?.unit}`}
                                 className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
                                 required
                             />
                             <p className="text-[10px] text-muted-foreground px-1 italic">
-                                *Masukkan jumlah {selectedCategory.unit} untuk tracking harga otomatis.
+                                *Masukkan jumlah {selectedCategory?.unit} untuk tracking harga otomatis.
                             </p>
                         </div>
                     )}
@@ -203,7 +203,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             />
                         </div>
                     </div>
-                </div>
+                </div >
 
                 <div className="space-y-2">
                     <Label htmlFor="notes" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Catatan (Opsional)</Label>
@@ -215,12 +215,12 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                         className="rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 min-h-[100px] resize-none"
                     />
                 </div>
-            </form>
+            </form >
             <div className="p-4 border-t sticky bottom-0 bg-background z-10">
                 <Button type="submit" onClick={handleSubmit} className="w-full rounded-lg" size="lg" disabled={isSubmitting}>
                     {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : ''}`}
                 </Button>
             </div>
-        </div>
+        </div >
     );
 };

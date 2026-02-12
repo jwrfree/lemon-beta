@@ -20,12 +20,12 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
         <div className="space-y-4">
             {goals.map(goal => {
                 const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
-                const Icon = goalIcons[goal.icon] || Rocket;
-                const targetDate = parseISO(goal.targetDate);
-                const isOverdue = isPast(targetDate) && progress < 100;
-                
+                const Icon = (goal.icon && goalIcons[goal.icon]) || Rocket;
+                const targetDate = goal.targetDate ? parseISO(goal.targetDate) : new Date();
+                const isOverdue = goal.targetDate ? (isPast(targetDate) && progress < 100) : false;
+
                 let timeLeftText = '';
-                if(progress < 100) {
+                if (goal.targetDate && progress < 100) {
                     if (isOverdue) {
                         timeLeftText = `Terlampaui ${formatDistanceToNowStrict(targetDate, { locale: dateFnsLocaleId })}`;
                     } else {

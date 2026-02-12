@@ -7,9 +7,22 @@ import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useActions } from '@/providers/action-provider';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useUI } from '@/components/ui-provider';
-import { extractTransaction, refineTransaction, type TransactionExtractionOutput } from '@/ai/flows/extract-transaction-flow';
+import { extractTransaction, refineTransaction } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { startOfMonth, parseISO } from 'date-fns';
+import type { TransactionExtractionOutput, SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
+import type { ScanReceiptOutput } from '@/ai/flows/scan-receipt-flow';
+
+// Unified type for AI processing results
+type AIResult = TransactionExtractionOutput | ScanReceiptOutput;
+
+// Helper type that covers fields from both extraction and receipt scanning
+type AIProcessedTransaction = Partial<SingleTransactionOutput> & Partial<ScanReceiptOutput> & {
+    // Standardize fields that might have different names
+    type?: 'income' | 'expense';
+    date?: string;
+    wallet?: string;
+};
 
 export type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING' | 'MULTI_CONFIRMING';
 
@@ -86,10 +99,10 @@ export const useSmartAddFlow = () => {
         const finalWallet = wallets.find(w => w.id === dataToConfirm.walletId);
         let walletInsight = null;
         if (finalWallet) {
-            const newBalance = dataToConfirm.type === 'expense' 
-                ? finalWallet.balance - dataToConfirm.amount 
+            const newBalance = dataToConfirm.type === 'expense'
+                ? finalWallet.balance - dataToConfirm.amount
                 : finalWallet.balance + dataToConfirm.amount;
-            
+
             walletInsight = {
                 id: finalWallet.id,
                 name: finalWallet.name,
@@ -129,14 +142,14 @@ export const useSmartAddFlow = () => {
         // Remove thinking message first
         setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
 
-        // Handle clarification question if present
-        if (result.clarificationQuestion) {
+        // Handle clarification question if present (only in ExtractionOutput)
+        if ('clarificationQuestion' in result && result.clarificationQuestion) {
             setMessages(prev => [
                 ...prev,
-                { 
-                    id: `ai-clarify-${Date.now()}`, 
-                    type: 'ai-clarification', 
-                    content: result.clarificationQuestion! 
+                {
+                    id: `ai-clarify-${Date.now()}`,
+                    type: 'ai-clarification',
+                    content: result.clarificationQuestion!
                 }
             ]);
             // If there are no transactions, just stay in confirming/analyzing mode
@@ -146,47 +159,55 @@ export const useSmartAddFlow = () => {
             }
         }
 
-        const rawTransactions = result.transactions || (result.amount ? [result as AIProcessedTransaction] : []);
-        if (rawTransactions.length === 0 && !result.clarificationQuestion) {
+        let rawTransactions: AIProcessedTransaction[] = [];
+        if ('transactions' in result && result.transactions) {
+            rawTransactions = result.transactions;
+        } else if ('amount' in result && result.amount) {
+            rawTransactions = [result as unknown as AIProcessedTransaction];
+        }
+
+        if (rawTransactions.length === 0 && !('clarificationQuestion' in result && result.clarificationQuestion)) {
             showToast("AI tidak menemukan data transaksi. Coba input lebih detail ya.", 'info');
             setPageState('IDLE');
             return;
         }
 
-        const processedTransactions = rawTransactions.map((tx: AIProcessedTransaction) => {
-            const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty } = tx;
+        const processedTransactions = rawTransactions.map((tx) => {
+            const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty, transactionDate } = tx;
+
+            const txDate = date || transactionDate;
 
             // 1. Wallet resolution with fuzzy matching
             const walletName = (tx.wallet || sourceWallet || '').toLowerCase().trim();
-            
+
             let matchingWallet = wallets.find(w => w.name.toLowerCase() === walletName);
-            
+
             // If no exact match, try fuzzy matching (e.g., "BCA" matches "Bank BCA")
             if (!matchingWallet && walletName) {
-                matchingWallet = wallets.find(w => 
-                    w.name.toLowerCase().includes(walletName) || 
+                matchingWallet = wallets.find(w =>
+                    w.name.toLowerCase().includes(walletName) ||
                     walletName.includes(w.name.toLowerCase())
                 );
             }
-            
+
             // If we found a matching wallet, use its ID. 
             // ONLY use default/tunai if walletName was actually empty or no match found.
             const walletId = matchingWallet?.id || (walletName ? wallets.find(w => w.isDefault)?.id : (wallets.find(w => w.name.toLowerCase() === 'tunai')?.id || wallets[0]?.id)) || wallets[0]?.id;
 
             // 2. Type & Category resolution
             let transactionType: 'income' | 'expense' = type || 'expense';
-            
+
             // Normalize category from AI
             const normalizedCategory = (category || '').trim();
             const allCategories = [...incomeCategories, ...expenseCategories];
-            
+
             // Try exact match first
             let finalCategory = allCategories.find(c => c.name.toLowerCase() === normalizedCategory.toLowerCase())?.name;
-            
+
             // If no exact match, try fuzzy
             if (!finalCategory && normalizedCategory) {
-                finalCategory = allCategories.find(c => 
-                    c.name.toLowerCase().includes(normalizedCategory.toLowerCase()) || 
+                finalCategory = allCategories.find(c =>
+                    c.name.toLowerCase().includes(normalizedCategory.toLowerCase()) ||
                     normalizedCategory.toLowerCase().includes(c.name.toLowerCase())
                 )?.name;
             }
@@ -210,10 +231,10 @@ export const useSmartAddFlow = () => {
                 walletId,
                 location: location || merchant || '',
                 date: date ? new Date(date).toISOString() : new Date().toISOString(),
-                isDebtPayment,
-                counterparty,
-                sourceWallet,
-                destinationWallet
+                isDebtPayment: isDebtPayment || false,
+                counterparty: counterparty || undefined,
+                sourceWallet: sourceWallet || undefined,
+                destinationWallet: destinationWallet || undefined
             };
         });
 
@@ -226,8 +247,8 @@ export const useSmartAddFlow = () => {
 
             // Smart transfer detection (only for single transaction for now to keep flow simple)
             if (dataToConfirm.category === 'Transfer' && dataToConfirm.sourceWallet && dataToConfirm.destinationWallet) {
-                const from = wallets.find(w => w.name.toLowerCase() === dataToConfirm.sourceWallet.toLowerCase());
-                const to = wallets.find(w => w.name.toLowerCase() === dataToConfirm.destinationWallet.toLowerCase());
+                const from = wallets.find(w => w.name.toLowerCase() === (dataToConfirm.sourceWallet || '').toLowerCase());
+                const to = wallets.find(w => w.name.toLowerCase() === (dataToConfirm.destinationWallet || '').toLowerCase());
 
                 if (from && to) {
                     setPreFilledTransfer({
@@ -252,7 +273,7 @@ export const useSmartAddFlow = () => {
 
     const processInput = useCallback(async (input: string | { type: 'image', dataUrl: string }) => {
         const isRefinement = (pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') && typeof input === 'string';
-        
+
         if (typeof input === 'string') {
             if (!input.trim()) return;
             setMessages(prev => [...prev, { id: `user-${Date.now()}`, type: 'user', content: input }]);
@@ -270,7 +291,7 @@ export const useSmartAddFlow = () => {
             if (isRefinement && typeof input === 'string') {
                 // Prepare current data for refinement
                 const currentTransactions = multiParsedData.length > 0 ? multiParsedData : (parsedData ? [parsedData] : []);
-                
+
                 // Map back to AI-friendly format (names instead of IDs)
                 const mappedTransactions = currentTransactions.map(t => {
                     const walletName = wallets.find(w => w.id === t.walletId)?.name || 'Tunai';
@@ -285,7 +306,7 @@ export const useSmartAddFlow = () => {
                         location: t.location,
                         date: t.date.split('T')[0], // YYYY-MM-DD
                         type: t.type,
-                        isDebtPayment: t.isDebtPayment,
+                        isDebtPayment: t.isDebtPayment || false,
                         counterparty: t.counterparty
                     };
                 });
@@ -293,7 +314,7 @@ export const useSmartAddFlow = () => {
                 const currentData: TransactionExtractionOutput = {
                     transactions: mappedTransactions
                 };
-                
+
                 const result = await refineTransaction(currentData, input, {
                     categories: availableCategories,
                     wallets: availableWallets

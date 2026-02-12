@@ -1,15 +1,15 @@
 import React from 'react';
-import { 
-    Utensils, ShoppingCart, Car, Phone, 
+import {
+    Utensils, ShoppingCart, Car, Phone,
     Gamepad2, Home, GraduationCap, HeartPulse,
-    Briefcase, Gift, PiggyBank, Wrench, ReceiptText, 
+    Briefcase, Gift, PiggyBank, Wrench, ReceiptText,
     ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake,
     Heart, Baby
 } from 'lucide-react';
 
 export const iconMap: Record<string, React.ElementType> = {
-    Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
-    Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins, 
+    Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse,
+    Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins,
     ArrowRightLeft, Handshake, Wrench, Heart, Baby
 };
 
@@ -24,11 +24,11 @@ export const getCategoryIcon = (iconName: string | null | undefined) => {
  */
 export const resolveCategoryVisuals = (categoryName: string, allCategories: { name: string; icon?: string | React.ElementType; color?: string; bgColor?: string; bg_color?: string }[]) => {
     const found = allCategories.find(c => c.name === categoryName);
-    
+
     if (found) {
         return {
             name: found.name,
-            icon: typeof found.icon === 'string' ? getCategoryIcon(found.icon) : found.icon,
+            icon: typeof found.icon === 'string' ? getCategoryIcon(found.icon) : (found.icon || Wrench),
             color: found.color || 'text-gray-600',
             bgColor: found.bgColor || found.bg_color || 'bg-gray-100'
         };

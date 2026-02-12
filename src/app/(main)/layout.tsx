@@ -4,11 +4,11 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { Sidebar } from '@/components/sidebar';
-import { TransactionForm } from '@/features/transactions/components/transaction-form';
+import { TransactionComposer } from '@/features/transactions/components/transaction-composer';
 import { AddWalletModal } from '@/features/wallets/components/add-wallet-modal';
 import { AddBudgetModal } from '@/features/budgets/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/features/transactions/components/confirm-delete-modal';
-import { AddTransferModal } from '@/features/transactions/components/add-transfer-modal';
+
 import { EditWalletModal } from '@/features/wallets/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/features/budgets/components/edit-budget-modal';
 import { CustomToast } from '@/components/custom-toast';
@@ -37,9 +37,9 @@ const pageVariants = {
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const containerRef = useRef<HTMLDivElement>(null);
-    const { 
-        isTxModalOpen, 
-        setIsTxModalOpen, 
+    const {
+        isTxModalOpen,
+        setIsTxModalOpen,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -124,7 +124,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 "flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden transition-all duration-300",
                 isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
             )}>
-                <div 
+                <div
                     ref={containerRef}
                     className={cn(
                         'flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth',
@@ -139,11 +139,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 <CustomToast />
 
                 <AnimatePresence mode="wait">
-                    {isTxModalOpen && <TransactionForm key="transaction-form" initialData={transactionToEdit} onClose={handleCloseTxModal} />}
+                    {isTxModalOpen && <TransactionComposer key="transaction-composer" initialData={transactionToEdit} onClose={handleCloseTxModal} />}
                     {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}
                     {isBudgetModalOpen && <AddBudgetModal key="add-budget-modal" onClose={() => setIsBudgetModalOpen(false)} />}
                     {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal key="edit-budget-modal" budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
-                    {isTransferModalOpen && <AddTransferModal key="add-transfer-modal" onClose={() => setIsTransferModalOpen(false)} />}
+                    {isTransferModalOpen && <TransactionComposer key="transfer-composer" initialData={{ type: 'transfer' }} onClose={() => setIsTransferModalOpen(false)} />}
                     {isEditWalletModalOpen && walletToEdit && <EditWalletModal key="edit-wallet-modal" wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
                     {isGoalModalOpen && <GoalForm key="goal-form" initialData={goalToEdit} onClose={handleCloseGoalModal} />}
                     {isReminderModalOpen && <ReminderForm key="reminder-form" initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
@@ -160,7 +160,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         />
                     )}
                 </AnimatePresence>
-                
+
                 <div className="md:hidden">
                     {showBottomNav && <BottomNavigation />}
                 </div>

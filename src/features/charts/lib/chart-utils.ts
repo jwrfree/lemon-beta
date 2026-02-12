@@ -39,14 +39,14 @@ export const groupTransactionsByCategory = (transactions: Transaction[], type: '
         .map(([name, value]) => {
             const details = categoryDetails(name);
             const fill = getCategoryColor(name, details.color);
-            
+
             return {
                 name,
                 value,
                 icon: getCategoryIcon(details.icon),
                 fill,
                 categoryColor: details.color,
-                categoryBgColor: details.bg_color || details.bgColor,
+                categoryBgColor: details.bg_color,
                 percentage: total > 0 ? (value / total) * 100 : 0,
             };
         })
@@ -67,7 +67,7 @@ export const getDailyTrendData = (transactions: Transaction[], daysCount: number
         if (t.type !== 'expense') return acc;
         const date = startOfDay(parseISO(t.date));
         if (date < startDate || date > endDate) return acc;
-        
+
         const key = format(date, 'yyyy-MM-dd');
         acc[key] = (acc[key] || 0) + t.amount;
         return acc;
@@ -144,7 +144,7 @@ export const getNetCashflowData = (transactions: Transaction[], monthsCount: num
         if (!acc[key]) {
             acc[key] = { income: 0, expense: 0, breakdown: { income: {}, expense: {} } };
         }
-        
+
         if (t.type === 'income') {
             acc[key].income += t.amount;
             acc[key].breakdown.income[t.category] = (acc[key].breakdown.income[t.category] || 0) + t.amount;

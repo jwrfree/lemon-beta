@@ -4,6 +4,7 @@
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, type LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface PageHeaderProps {
   title: string;
@@ -17,6 +18,7 @@ interface PageHeaderProps {
     onClick: () => void;
   };
   extraActions?: React.ReactNode;
+  className?: string;
 }
 
 export const PageHeader = ({
@@ -27,6 +29,7 @@ export const PageHeader = ({
   onBackClick,
   actionButton,
   extraActions,
+  className,
 }: PageHeaderProps) => {
   const router = useRouter();
 
@@ -39,7 +42,7 @@ export const PageHeader = ({
   };
 
   return (
-    <header className="h-16 flex items-center shrink-0 bg-background sticky top-0 z-20">
+    <header className={cn("h-16 flex items-center shrink-0 bg-background sticky top-0 z-20", className)}>
       <div className="max-w-7xl mx-auto w-full px-4 flex items-center justify-between relative">
         {/* Mobile Back Button */}
         {showBackButton && (

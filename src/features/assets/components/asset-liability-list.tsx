@@ -42,7 +42,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                         <div className="flex-1">
                             <div className="flex items-center gap-2">
                                 <p className="font-semibold text-sm">{item.name}</p>
-                                {item.categoryKey === 'gold' && item.quantity && (
+                                {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && (
                                     <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">
                                         {item.quantity} gr
                                     </span>
@@ -59,11 +59,11 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                         </div>
                         <div className="text-right">
                             <p className="font-bold tabular-nums text-sm">
-                                {item.categoryKey === 'gold' && item.quantity && goldPrice 
-                                    ? formatCurrency(item.quantity * goldPrice) 
+                                {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && goldPrice
+                                    ? formatCurrency(item.quantity * goldPrice)
                                     : formatCurrency(item.value)}
                             </p>
-                            {item.categoryKey === 'gold' && item.quantity && goldPrice && (
+                            {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && goldPrice && (
                                 <p className={cn(
                                     "text-[10px] font-medium",
                                     (item.quantity * goldPrice) > item.value ? "text-teal-600" : "text-rose-600"
@@ -96,19 +96,19 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
-                                        <AlertDialogTitle>Yakin mau menghapus {item.name}?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Tindakan ini tidak dapat dibatalkan dan akan menghapus entri ini secara permanen.
-                                        </AlertDialogDescription>
+                                            <AlertDialogTitle>Yakin mau menghapus {item.name}?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Tindakan ini tidak dapat dibatalkan dan akan menghapus entri ini secara permanen.
+                                            </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                        <AlertDialogCancel>Batal</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={() => deleteAssetLiability(item.id, type)}
-                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                        >
-                                            Ya, Hapus
-                                        </AlertDialogAction>
+                                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => deleteAssetLiability(item.id, type)}
+                                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                            >
+                                                Ya, Hapus
+                                            </AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>

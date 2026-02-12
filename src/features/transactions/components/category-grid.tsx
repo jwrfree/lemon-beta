@@ -16,16 +16,16 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
         <div className="grid grid-cols-4 gap-2">
             {categories.map((cat) => {
                 const isSelected = selectedCategory === cat.name;
-                
+
                 // Jika cat.icon sudah berupa komponen (LucideIcon), gunakan langsung.
                 // Jika string (nama ikon dari DB), gunakan getCategoryIcon.
-                const CategoryIcon = typeof cat.icon === 'string' 
-                    ? getCategoryIcon(cat.icon) 
+                const CategoryIcon = typeof cat.icon === 'string'
+                    ? getCategoryIcon(cat.icon)
                     : (cat.icon || getCategoryIcon('Wrench'));
-                
+
                 const color = cat.color || 'text-gray-600';
-                const bgColor = cat.bgColor || cat.bg_color || 'bg-gray-100';
-                
+                const bgColor = cat.bg_color || 'bg-gray-100';
+
                 return (
                     <button
                         type="button"

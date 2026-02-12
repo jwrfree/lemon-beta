@@ -41,7 +41,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                 </div>
                 <ScrollArea className="flex-1">
                     <div className="p-4 space-y-2">
-                        {category.subCategories?.map((subCat) => (
+                        {category.sub_categories?.map((subCat) => (
                             <button
                                 key={subCat}
                                 type="button"

@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-    Plus, Pencil, Trash2, 
-    Utensils, ShoppingCart, Car, Phone, 
+import {
+    Plus, Pencil, Trash2,
+    Utensils, ShoppingCart, Car, Phone,
     Gamepad2, Home, GraduationCap, HeartPulse,
     Briefcase, Gift, PiggyBank, Search, Wrench,
     ReceiptText, ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake
@@ -23,8 +23,8 @@ import { PageHeader } from "@/components/page-header";
 import type { Category } from '@/lib/categories';
 
 const iconMap: Record<string, React.ElementType> = {
-    Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse, 
-    Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins, 
+    Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse,
+    Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins,
     ArrowRightLeft, Handshake, Wrench
 };
 
@@ -35,12 +35,12 @@ export default function CategoriesPage() {
     const { showToast } = useUI();
     const [activeTab, setActiveTab] = useState<'expense' | 'income'>('expense');
     const [searchQuery, setSearchQuery] = useState('');
-    
+
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
-    const filteredCategories = categories.filter(c => 
-        c.type === activeTab && 
+    const filteredCategories = categories.filter(c =>
+        c.type === activeTab &&
         c.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -68,7 +68,7 @@ export default function CategoriesPage() {
             showToast("Kategori bawaan tidak bisa dihapus.", 'error');
             return;
         }
-        
+
         if (confirm("Hapus kategori ini? Transaksi lama mungkin akan kehilangan kategori ini.")) {
             await deleteCategory(id);
         }
@@ -76,8 +76,8 @@ export default function CategoriesPage() {
 
     return (
         <div className="h-full flex flex-col relative">
-            <PageHeader 
-                title="Kelola Kategori" 
+            <PageHeader
+                title="Kelola Kategori"
                 extraActions={
                     <Button variant="ghost" size="icon" className="rounded-full text-primary" onClick={handleOpenAdd}>
                         <Plus className="h-6 w-6" />
@@ -98,8 +98,8 @@ export default function CategoriesPage() {
 
                     <div className="relative w-full md:w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                            placeholder="Cari kategori..." 
+                        <Input
+                            placeholder="Cari kategori..."
                             className="pl-9 rounded-xl bg-background shadow-sm h-11 font-medium"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -109,7 +109,7 @@ export default function CategoriesPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-20">
                     {isLoading ? (
-                        [1,2,3,4].map(i => <div key={i} className="h-24 bg-card animate-pulse rounded-3xl" />)
+                        [1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-card animate-pulse rounded-3xl" />)
                     ) : filteredCategories.length === 0 ? (
                         <div className="col-span-full py-20 text-center text-muted-foreground space-y-2">
                             <div className="p-4 bg-muted rounded-full w-16 h-16 mx-auto flex items-center justify-center">
@@ -130,8 +130,8 @@ export default function CategoriesPage() {
                                             <div className="space-y-0.5">
                                                 <p className="font-semibold text-base tracking-tight">{cat.name}</p>
                                                 <div className="flex gap-1.5 flex-wrap">
-                                                    {cat.sub_categories?.length > 0 ? (
-                                                        cat.sub_categories.slice(0, 2).map((s: string) => (
+                                                    {(cat.sub_categories?.length || 0) > 0 ? (
+                                                        cat.sub_categories?.slice(0, 2).map((s: string) => (
                                                             <span key={s} className="text-[10px] text-muted-foreground font-medium bg-muted/50 px-1.5 rounded-md">
                                                                 {s}
                                                             </span>
@@ -143,15 +143,15 @@ export default function CategoriesPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
                                             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl bg-muted/50 hover:bg-primary/10 hover:text-primary" onClick={() => handleOpenEdit(cat)}>
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
                                             {!cat.is_default && (
-                                                <Button 
-                                                    variant="ghost" 
-                                                    size="icon" 
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
                                                     className="h-9 w-9 rounded-xl bg-muted/50 hover:bg-destructive/10 hover:text-destructive"
                                                     onClick={() => handleDeleteClick(cat.id, cat.is_default)}
                                                 >
@@ -169,8 +169,14 @@ export default function CategoriesPage() {
 
             <AnimatePresence>
                 {isFormOpen && (
-                    <CategoryForm 
-                        initialData={editingCategory}
+                    <CategoryForm
+                        initialData={editingCategory ? {
+                            name: editingCategory.name,
+                            type: editingCategory.type === 'income' ? 'income' : 'expense',
+                            icon: editingCategory.icon,
+                            color: editingCategory.color,
+                            bg_color: editingCategory.bg_color,
+                        } : undefined}
                         onClose={() => setIsFormOpen(false)}
                         onSave={handleSave}
                     />

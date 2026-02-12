@@ -16,13 +16,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { walletSchema, WalletFormValues } from '../schemas/wallet-schema';
 import { cn } from '@/lib/utils';
 import type { Wallet as WalletType } from '@/types/models';
+import { z } from 'zod';
+
+// ...
 
 export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClose: () => void }) => {
   const { updateWallet, deleteWallet } = useActions();
   const { showToast } = useUI();
 
-  const form = useForm<WalletFormValues>({
-    resolver: zodResolver(walletSchema),
+  const form = useForm<z.input<typeof walletSchema>>({
+    resolver: zodResolver(walletSchema) as any,
     defaultValues: {
       name: wallet.name,
       balance: wallet.balance.toString(), // Balance can't be edited but schema needs it
@@ -34,7 +37,8 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
   const { control, handleSubmit, watch, formState: { errors, isSubmitting } } = form;
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const onSubmit = async (values: WalletFormValues) => {
+  const onSubmit = async (data: z.input<typeof walletSchema>) => {
+    const values = data as unknown as WalletFormValues;
     try {
       await updateWallet(wallet.id, { name: values.name, isDefault: values.isDefault });
     } catch (error) {
@@ -96,27 +100,27 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
             />
             {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
           </div>
-          
+
           <div className="flex items-center justify-between rounded-lg border p-3">
-              <div className="space-y-0.5">
-                  <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
-                  <p className="text-xs text-muted-foreground">
-                      Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
-                  </p>
-              </div>
-              <Controller
-                control={control}
-                name="isDefault"
-                render={({ field }) => (
-                  <Switch
-                    id="is-default"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                )}
-              />
+            <div className="space-y-0.5">
+              <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
+              <p className="text-xs text-muted-foreground">
+                Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
+              </p>
+            </div>
+            <Controller
+              control={control}
+              name="isDefault"
+              render={({ field }) => (
+                <Switch
+                  id="is-default"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
           </div>
-          
+
           <p className="text-xs text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
 
           <div className="flex flex-col gap-3 pt-4">

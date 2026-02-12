@@ -23,15 +23,17 @@ vi.mock('@/lib/supabase/client', () => ({
   }),
 }));
 
+import { User } from '@supabase/supabase-js';
+
 describe('useTransferActions', () => {
-  const mockUser = { id: 'user-123' } as { id: string };
+  const mockUser = { id: 'user-123' } as unknown as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     // -- Chain Setup --
     mockInsert.mockResolvedValue({ error: null });
-    
+
     mockFrom.mockImplementation((table: string) => {
       if (table === 'transactions') return { insert: mockInsert };
       return {};
@@ -40,30 +42,30 @@ describe('useTransferActions', () => {
 
   it('should execute a transfer successfully', async () => {
     const { result } = renderHook(() => useTransferActions(mockUser));
-    
+
     const transferData = {
-        fromWalletId: 'w1',
-        toWalletId: 'w2',
-        amount: 500,
-        date: '2024-01-01',
-        description: 'Test Transfer'
+      fromWalletId: 'w1',
+      toWalletId: 'w2',
+      amount: 500,
+      date: '2024-01-01',
+      description: 'Test Transfer'
     };
 
     await act(async () => {
-        await result.current.addTransfer(transferData);
+      await result.current.addTransfer(transferData);
     });
 
     // 1. Should create 2 transactions (expense & income)
     expect(mockInsert).toHaveBeenCalledTimes(2);
     expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
-        type: 'expense',
-        amount: 500,
-        wallet_id: 'w1'
+      type: 'expense',
+      amount: 500,
+      wallet_id: 'w1'
     }));
     expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
-        type: 'income',
-        amount: 500,
-        wallet_id: 'w2'
+      type: 'income',
+      amount: 500,
+      wallet_id: 'w2'
     }));
 
     expect(mockShowToast).toHaveBeenCalledWith("Transfer berhasil dicatat!", 'success');
