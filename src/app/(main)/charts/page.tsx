@@ -1,241 +1,327 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { useSwipeable } from 'react-swipeable';
-import { LoaderCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
-import dynamic from 'next/dynamic';
-import { GlobalFinanceHeader } from "@/features/charts/components/global-finance-header";
-import { useSearchParams } from 'next/navigation';
+import { LoaderCircle, Flame, Calendar, Info, Layers, Zap, ArrowUpRight } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
-import { parseISO, isAfter, isBefore, startOfDay, endOfDay, format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
-import * as dateFns from 'date-fns';
-import { SubscriptionAuditCard } from "@/features/insights/components/subscription-audit-card";
+import { parseISO, startOfMonth, endOfMonth, subMonths, format, differenceInDays, eachDayOfInterval, subDays } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
+import type { MonthData, DailyMetric, MonthlyMetric } from '@/features/charts/types';
+import { useUI } from '@/components/ui-provider';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 
-// Extracted Components (Lazy Loaded)
-const MonthlySummary = dynamic(() => import('@/features/charts/components/monthly-summary').then(mod => mod.MonthlySummary), {
-    ssr: false,
-    loading: () => <div className="h-40 w-full animate-pulse rounded-3xl bg-muted" />
-});
-const CategoryAnalysis = dynamic(() => import('@/features/charts/components/category-analysis').then(mod => mod.CategoryAnalysis), {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
-});
-const MonthlyTrendChart = dynamic(() => import('@/features/charts/components/monthly-trend-chart').then(mod => mod.MonthlyTrendChart), {
-    ssr: false,
-    loading: () => <div className="h-80 w-full animate-pulse rounded-3xl bg-muted" />
-});
-const ExpenseShortTermTrend = dynamic(() => import('@/features/charts/components/expense-short-term-trend').then(mod => mod.ExpenseShortTermTrend), {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
-});
-const NetCashflowChart = dynamic(() => import('@/features/charts/components/net-cashflow-chart').then(mod => mod.NetCashflowChart), {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />
-});
+// Components
+import { FinancialPulse } from '@/features/charts/components/financial-pulse';
+import { TrendAnalytics } from '@/features/charts/components/trend-analytics';
+import { HealthGauge, MetricCard } from '@/features/charts/components/financial-health';
+import { HistoryChart } from '@/features/charts/components/history-chart';
+import { CategoryPilla, TopTransactionItem } from '@/features/charts/components/chart-lists';
+import { AIInsights } from '@/features/charts/components/ai-insights';
 
-type TabValue = 'expense' | 'income';
+function ChartContent() {
+    const router = useRouter();
+    const { setIsTxModalOpen, setTransactionToEdit } = useUI();
+    const { budgets } = useBudgets();
 
-const tabs: { value: TabValue; label: string }[] = [
-    { value: 'expense', label: 'Pengeluaran' },
-    { value: 'income', label: 'Pemasukan' },
-];
+    // ==========================================
+    // DATE LOGIC
+    // ==========================================
+    const now = new Date();
+    const currentMonthStart = startOfMonth(now);
+    const currentMonthEnd = endOfMonth(now);
+    const prevMonth = subMonths(now, 1);
+    const prevMonthStart = startOfMonth(prevMonth);
+    const prevMonthEnd = endOfMonth(prevMonth);
+    const last30DaysStart = subDays(now, 29);
+    const sixMonthsAgoStart = startOfMonth(subMonths(now, 5));
 
-const slideVariants = {
-    enter: (direction: number) => ({
-        x: direction > 0 ? '100%' : '-100%',
-        opacity: 0,
-        position: 'absolute',
-    }),
-    center: {
-        x: 0,
-        opacity: 1,
-        position: 'relative',
-    },
-    exit: (direction: number) => ({
-        x: direction < 0 ? '100%' : '-100%',
-        opacity: 0,
-        position: 'absolute',
-    }),
-} as const;
+    // ==========================================
+    // DATA FETCHING (Single Source of Truth)
+    // ==========================================
+    const fetchStart = sixMonthsAgoStart;
+    const fetchEnd = now;
 
-export default function ChartsPage() {
+    const { transactions: allTransactions, isLoading } = useRangeTransactions(fetchStart, fetchEnd);
+
+    // ==========================================
+    // DATA PROCESSING (Client Side)
+    // ==========================================
+
+    // 1. Filter Transactions by Period
+    const { currentMonthTx, prevMonthTx, last30DaysTx, last6MonthsTx } = useMemo(() => {
+        const current = allTransactions.filter(t => {
+            const date = parseISO(t.date);
+            return date >= currentMonthStart && date <= currentMonthEnd;
+        });
+
+        const prev = allTransactions.filter(t => {
+            const date = parseISO(t.date);
+            return date >= prevMonthStart && date <= prevMonthEnd;
+        });
+
+        const last30 = allTransactions.filter(t => {
+            const date = parseISO(t.date);
+            return date >= last30DaysStart && date <= now;
+        });
+
+        // Already fetched 6 months total
+        return { currentMonthTx: current, prevMonthTx: prev, last30DaysTx: last30, last6MonthsTx: allTransactions };
+    }, [allTransactions, currentMonthStart, currentMonthEnd, prevMonthStart, prevMonthEnd, last30DaysStart, now]);
+
+    // 2. Compute Current Month Metrics
+    const currentMonthData: MonthData = useMemo(() => {
+        let inc = 0, exp = 0;
+        const cats: Record<string, number> = {};
+
+        currentMonthTx.forEach(t => {
+            if (t.type === 'income') inc += t.amount;
+            if (t.type === 'expense') {
+                exp += t.amount;
+                cats[t.category] = (cats[t.category] || 0) + t.amount;
+            }
+        });
+
+        const sortedCats = Object.entries(cats)
+            .sort(([, a], [, b]) => b - a)
+            .map(([cat, amt]) => ({ name: cat, value: amt }));
+
+        return { income: inc, expense: exp, net: inc - exp, expenseCategories: sortedCats };
+    }, [currentMonthTx]);
+
+    // 3. Compute Previous Month Metrics
+    const prevMonthData: MonthData = useMemo(() => {
+        let inc = 0, exp = 0;
+        prevMonthTx.forEach(t => {
+            if (t.type === 'income') inc += t.amount;
+            if (t.type === 'expense') exp += t.amount;
+        });
+        return { income: inc, expense: exp, net: inc - exp, expenseCategories: [] };
+    }, [prevMonthTx]);
+
+    // 4. Compute 30-Day Trend
+    const trendData: DailyMetric[] = useMemo(() => {
+        const dailyData: Record<string, { expense: number, count: number }> = {};
+
+        eachDayOfInterval({ start: last30DaysStart, end: now }).forEach(day => {
+            dailyData[format(day, 'yyyy-MM-dd')] = { expense: 0, count: 0 };
+        });
+
+        last30DaysTx.forEach(t => {
+            if (t.type === 'expense') {
+                const dayKey = format(parseISO(t.date), 'yyyy-MM-dd');
+                if (dailyData[dayKey]) {
+                    dailyData[dayKey].expense += t.amount;
+                    dailyData[dayKey].count += 1;
+                }
+            }
+        });
+
+        return Object.entries(dailyData)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([date, val]) => ({ date, expense: val.expense, count: val.count }));
+    }, [last30DaysTx, last30DaysStart, now]);
+
+    // 5. Compute 6-Month History
+    const historyData: MonthlyMetric[] = useMemo(() => {
+        const monthsMap: Record<string, MonthlyMetric> = {};
+        // Init last 6 months buckets
+        for (let i = 0; i < 6; i++) {
+            const d = subMonths(now, i);
+            const key = format(d, 'MMM');
+            monthsMap[key] = { month: key, income: 0, expense: 0, net: 0 };
+        }
+
+        last6MonthsTx.forEach(t => {
+            const d = parseISO(t.date);
+            const key = format(d, 'MMM');
+            if (monthsMap[key]) {
+                if (t.type === 'income') monthsMap[key].income += t.amount;
+                if (t.type === 'expense') monthsMap[key].expense += t.amount;
+            }
+        });
+
+        return Object.values(monthsMap).reverse();
+    }, [last6MonthsTx, now]);
+
+    // 6. Projections & Metrics
+    const projectedExpense = useMemo(() => {
+        const daysElapsed = differenceInDays(now, currentMonthStart) + 1;
+        const daysInMonth = differenceInDays(currentMonthEnd, currentMonthStart) + 1;
+        if (daysElapsed <= 0) return 0;
+        const rate = currentMonthData.expense / daysElapsed;
+        return rate * daysInMonth;
+    }, [currentMonthData.expense, currentMonthStart, currentMonthEnd, now]);
+
+    const savingsRate = useMemo(() => {
+        if (currentMonthData.income === 0) return 0;
+        return ((currentMonthData.income - currentMonthData.expense) / currentMonthData.income) * 100;
+    }, [currentMonthData]);
+
+    const burnRate = useMemo(() => {
+        const daysInMonth = differenceInDays(currentMonthEnd, currentMonthStart) + 1;
+        return currentMonthData.expense / daysInMonth;
+    }, [currentMonthData.expense, currentMonthStart, currentMonthEnd]);
+
+    const topTransactions = useMemo(() => {
+        return [...currentMonthTx]
+            .filter(t => t.type === 'expense')
+            .sort((a, b) => b.amount - a.amount)
+            .slice(0, 5);
+    }, [currentMonthTx]);
+
+    const colorPalette = [
+        'bg-rose-500', 'bg-orange-500', 'bg-amber-500',
+        'bg-yellow-500', 'bg-lime-500', 'bg-emerald-500',
+        'bg-teal-500', 'bg-cyan-500', 'bg-sky-500', 'bg-blue-500'
+    ];
+
+    if (isLoading) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-zinc-50 dark:bg-black">
+                <LoaderCircle className="w-10 h-10 animate-spin text-zinc-900 dark:text-white" />
+            </div>
+        );
+    }
+
     return (
-        <Suspense fallback={
-            <div className="flex flex-col h-full pb-24">
-                <div className="flex h-full w-full items-center justify-center p-8">
-                    <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+        <div className="min-h-screen bg-zinc-50 dark:bg-black pb-40">
+            {/* STICKY HEADER */}
+            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-zinc-50/80 dark:bg-black/80 backdrop-blur-xl z-30 border-b border-zinc-200/50 dark:border-zinc-800/50">
+                <div className="flex justify-between items-center py-3">
+                    <h2 className="text-xl font-bold tracking-tight">Financial Analytics</h2>
+                    <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-[10px] uppercase font-semibold px-2 py-1">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            {format(now, 'MMM yyyy')}
+                        </Badge>
+                    </div>
                 </div>
             </div>
-        }>
-            <ChartsPageContent />
-        </Suspense>
+
+            {/* SECTIONS */}
+            <FinancialPulse
+                net={currentMonthData.net}
+                income={currentMonthData.income}
+                expense={currentMonthData.expense}
+                dataPoints={trendData}
+                prevMonthNet={prevMonthData.net}
+                prevMonthIncome={prevMonthData.income}
+                prevMonthExpense={prevMonthData.expense}
+                projectedExpense={projectedExpense}
+            />
+
+            <div className="px-4 mt-6">
+                <AIInsights transactions={currentMonthTx} />
+            </div>
+
+            <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-1">
+                    <HealthGauge savingsRate={savingsRate} />
+                </div>
+                <div className="md:col-span-2 grid grid-cols-2 gap-4">
+                    <MetricCard
+                        title="Burn Rate"
+                        value={formatCurrency(burnRate)}
+                        subtitle="Rata-rata per hari"
+                        icon={Flame}
+                        trend={{ value: prevMonthData.expense > 0 ? ((burnRate * 30 - prevMonthData.expense) / prevMonthData.expense) * 100 : 0 }}
+                    />
+                    <MetricCard
+                        title="Freq. Transaksi"
+                        value={currentMonthTx.length.toString()}
+                        subtitle="Kali bulan ini"
+                        icon={Zap}
+                    />
+                    <MetricCard
+                        title="Runway"
+                        value={burnRate > 0 && currentMonthData.net > 0 ? `${(currentMonthData.net / burnRate).toFixed(0)} Hari` : '∞'}
+                        subtitle="Sisa waktu surplus"
+                        icon={Layers}
+                    />
+                    <MetricCard
+                        title="Rekor Tertinggi"
+                        value={topTransactions.length > 0 ? formatCurrency(topTransactions[0].amount) : '0'}
+                        subtitle="Transaksi max"
+                        icon={ArrowUpRight}
+                    />
+                </div>
+            </div>
+
+            {/* DESKTOP CHART GRID */}
+            <div className="px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                    <TrendAnalytics data={trendData} />
+                </div>
+                <div className="lg:col-span-1">
+                    <HistoryChart data={historyData} />
+                </div>
+            </div>
+
+            {/* DESKTOP LISTS GRID */}
+            <div className="px-4 mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* Top Transactions */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold tracking-tight">Pengeluaran Terbesar</h3>
+                        <Info className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-3">
+                        {topTransactions.length > 0 ? (
+                            topTransactions.map((tx, idx) => (
+                                <TopTransactionItem
+                                    key={tx.id}
+                                    transaction={tx}
+                                    rank={idx + 1}
+                                    onClick={() => {
+                                        setTransactionToEdit(tx);
+                                        setIsTxModalOpen(true);
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+                                Belum ada pengeluaran.
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Categories */}
+                <div className="space-y-4">
+                    <h3 className="text-lg font-semibold tracking-tight">Breakdown Kategori</h3>
+                    <div className="grid grid-cols-1 gap-4">
+                        {currentMonthData.expenseCategories.length > 0 ? (
+                            currentMonthData.expenseCategories.map((cat, idx) => {
+                                const budget = budgets.find(b => b.categories.includes(cat.name));
+                                return (
+                                    <CategoryPilla
+                                        key={cat.name}
+                                        category={cat.name}
+                                        amount={cat.value}
+                                        total={currentMonthData.expense}
+                                        budgetAmount={budget?.targetAmount}
+                                        color={colorPalette[idx % colorPalette.length]}
+                                        onClick={() => router.push(`/transactions?category=${encodeURIComponent(cat.name)}`)}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+                                Belum ada data kategori.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 
-function ChartsPageContent() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    
-    // Get date range from URL or defaults
-    const from = searchParams.get('from');
-    const to = searchParams.get('to');
-    
-    const { fetchStartDate, fetchEndDate, viewStartDate, viewEndDate, twelveMonthsAgo, sixtyDaysAgo } = useMemo(() => {
-        const now = new Date();
-        const vStartStr = from || format(startOfMonth(now), 'yyyy-MM-dd');
-        const vEndStr = to || format(endOfMonth(now), 'yyyy-MM-dd');
-        
-        const vStart = startOfDay(parseISO(vStartStr));
-        const vEnd = endOfDay(parseISO(vEndStr));
-        
-        // Always fetch at least 12 months back for the trend charts, 
-        // or further back if the user selected an older range
-        const twelveMonthsAgo = startOfMonth(subMonths(now, 11));
-        const sixtyDaysAgo = startOfDay(dateFns.subDays(now, 59));
-
-        const fStart = vStart < twelveMonthsAgo ? vStart : twelveMonthsAgo;
-        const fEnd = vEnd > now ? vEnd : now;
-        
-        return {
-            fetchStartDate: fStart,
-            fetchEndDate: fEnd,
-            viewStartDate: vStart,
-            viewEndDate: vEnd,
-            twelveMonthsAgo,
-            sixtyDaysAgo
-        };
-    }, [from, to]);
-
-    const { transactions, isLoading: isDataLoading } = useRangeTransactions(fetchStartDate, fetchEndDate);
-    const [isClient, setIsClient] = useState(false);
-    const [activeTab, setActiveTab] = useState<TabValue>('expense');
-    const [direction, setDirection] = useState(0);
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    // Filter transactions based on date range for current view
-    const filteredTransactions = useMemo(() => {
-        return transactions.filter(t => {
-            const date = parseISO(t.date);
-            return (date >= viewStartDate && date <= viewEndDate);
-        });
-    }, [transactions, viewStartDate, viewEndDate]);
-
-    // Transactions for trend charts (last 12 months)
-    const trendTransactions = useMemo(() => {
-        return transactions.filter(t => {
-            const date = parseISO(t.date);
-            return date >= twelveMonthsAgo;
-        });
-    }, [transactions, twelveMonthsAgo]);
-
-    // Transactions for short-term trend (last 60 days)
-    const shortTermTransactions = useMemo(() => {
-        return transactions.filter(t => {
-            const date = parseISO(t.date);
-            return date >= sixtyDaysAgo;
-        });
-    }, [transactions, sixtyDaysAgo]);
-
-    const handleTabChange = (value: TabValue) => {
-        const currentIndex = tabs.findIndex(t => t.value === activeTab);
-        const newIndex = tabs.findIndex(t => t.value === value);
-        setDirection(newIndex > currentIndex ? 1 : -1);
-        setActiveTab(value);
-    };
-
-    const handlers = useSwipeable({
-        onSwipedLeft: () => {
-            const currentIndex = tabs.findIndex(t => t.value === activeTab);
-            if (currentIndex < tabs.length - 1) {
-                handleTabChange(tabs[currentIndex + 1].value);
-            }
-        },
-        onSwipedRight: () => {
-            const currentIndex = tabs.findIndex(t => t.value === activeTab);
-            if (currentIndex > 0) {
-                handleTabChange(tabs[currentIndex - 1].value);
-            }
-        },
-        preventScrollOnSwipe: true,
-        trackMouse: true
-    });
-
-    if (!isClient) return null;
-
+export default function ChartsPage() {
     return (
-        <div className="flex flex-col min-h-screen pb-24 bg-zinc-50/50 dark:bg-zinc-950/50">
-            <GlobalFinanceHeader 
-                transactions={filteredTransactions} 
-                label={from && to ? `${format(parseISO(from), 'd MMM')} - ${format(parseISO(to), 'd MMM yyyy')}` : undefined}
-            />
-            
-            <div className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-                <Tabs value={activeTab} onValueChange={(v) => handleTabChange(v as TabValue)} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 p-1 bg-muted/50 rounded-xl mb-6 sm:mb-8 h-11 sm:h-12">
-                        {tabs.map((tab) => (
-                            <TabsTrigger 
-                                key={tab.value} 
-                                value={tab.value}
-                                className="rounded-lg text-xs sm:text-sm font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
-                            >
-                                {tab.label}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
-
-                    <div {...handlers} className="relative overflow-hidden min-h-[600px]">
-                        <AnimatePresence initial={false} custom={direction}>
-                            <motion.div
-                                key={activeTab}
-                                custom={direction}
-                                variants={slideVariants as unknown as Variants}
-                                initial="enter"
-                                animate="center"
-                                exit="exit"
-                                transition={{
-                                    x: { type: "spring", stiffness: 300, damping: 30 },
-                                    opacity: { duration: 0.2 }
-                                }}
-                                className="w-full space-y-4 sm:space-y-6"
-                            >
-                                {activeTab === 'expense' ? (
-                                    <>
-                                        <MonthlySummary type="expense" transactions={filteredTransactions} isLoading={isDataLoading} />
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                                            <CategoryAnalysis type="expense" transactions={filteredTransactions} isLoading={isDataLoading} />
-                                            <ExpenseShortTermTrend transactions={shortTermTransactions} isLoading={isDataLoading} />
-                                        </div>
-                                        <MonthlyTrendChart type="expense" transactions={trendTransactions} isLoading={isDataLoading} />
-                                        <div className="grid grid-cols-1 gap-4 sm:gap-6">
-                                            <NetCashflowChart transactions={trendTransactions} isLoading={isDataLoading} />
-                                        </div>
-                                        <SubscriptionAuditCard transactions={filteredTransactions} />
-                                    </>
-                                ) : (
-                                    <>
-                                        <MonthlySummary type="income" transactions={filteredTransactions} isLoading={isDataLoading} />
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                                            <CategoryAnalysis type="income" transactions={filteredTransactions} isLoading={isDataLoading} />
-                                            <MonthlyTrendChart type="income" transactions={trendTransactions} isLoading={isDataLoading} />
-                                        </div>
-                                        <div className="grid grid-cols-1 gap-4 sm:gap-6">
-                                            <NetCashflowChart transactions={trendTransactions} isLoading={isDataLoading} />
-                                        </div>
-                                    </>
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
-                    </div>
-                </Tabs>
-            </div>
-        </div>
+        <Suspense fallback={<div className="min-h-screen bg-zinc-50 dark:bg-black" />}>
+            <ChartContent />
+        </Suspense>
     );
 }

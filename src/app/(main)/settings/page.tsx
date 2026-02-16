@@ -4,7 +4,14 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Wallet, Wrench, Target, Landmark, LogOut,
+    BellRing, Calculator, Moon, Sun, User as UserIcon,
+    ShieldCheck, Smartphone, Monitor, ChevronRight
+} from 'lucide-react';
+import { useAuth } from '@/providers/auth-provider';
+import { cn } from '@/lib/utils';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,190 +23,232 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Wallet, Wrench, Target, Landmark, LogOut, ChevronRight, UserCircle, Bell, Moon, Sun, BellRing, HandCoins, Calculator, User } from 'lucide-react';
-import { useAuth } from '@/providers/auth-provider';
-import { Separator } from '@/components/ui/separator';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
-import { useUI } from '@/components/ui-provider';
-import { PageHeader } from '@/components/page-header';
+
+// --- VISI SAYA: BENTO GRID COMMAND CENTER ---
+
+function BentoItem({
+    className,
+    children,
+    onClick,
+    delay = 0
+}: {
+    className?: string;
+    children: React.ReactNode;
+    onClick?: () => void;
+    delay?: number;
+}) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: delay, ease: [0.23, 1, 0.32, 1] }}
+            whileHover={{ scale: 0.98 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onClick}
+            className={cn(
+                "relative overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all cursor-pointer group select-none",
+                className
+            )}
+        >
+            {children}
+        </motion.div>
+    );
+}
 
 function SettingsContent() {
     const router = useRouter();
     const { user, userData, handleSignOut } = useAuth();
     const { theme, setTheme } = useTheme();
-    const { showToast } = useUI();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    const managementItems = [
-        { id: 'wallets', name: 'Kelola Dompet', icon: Wallet, page: '/wallets', desc: 'Atur dompet dan pantau saldo' },
-        { id: 'categories', name: 'Kelola Kategori', icon: Wrench, page: '/categories', desc: 'Kostumisasi kategori transaksi' },
-        { id: 'goals', name: 'Target Keuangan', icon: Target, page: '/goals', desc: 'Pantau progres tabungan kamu' },
-        { id: 'reminders', name: 'Pengingat Tagihan', icon: BellRing, page: '/reminders', desc: 'Jangan lewatkan jatuh tempo' },
-        { id: 'debts', name: 'Hutang & Piutang', icon: HandCoins, page: '/debts', desc: 'Catat pinjaman dengan rapi' },
-        { id: 'assets-liabilities', name: 'Aset & Liabilitas', icon: Landmark, page: '/assets-liabilities', desc: 'Hitung kekayaan bersih kamu' },
-    ];
-    
-    const renderThemeToggle = () => {
-        if (!mounted) return <div className="h-10 w-20 bg-muted rounded-full animate-pulse" />;
-        return (
-            <div className="flex items-center gap-1 p-1 rounded-full bg-muted/50">
-                <Button
-                    size="sm"
-                    variant={theme === 'light' ? 'default' : 'ghost'}
-                    onClick={() => setTheme('light')}
-                    className={cn("rounded-full h-8 px-3 gap-2 text-xs", theme === 'light' && "shadow-sm")}
-                >
-                    <Sun className="h-3.5 w-3.5" /> Terang
-                </Button>
-                <Button
-                    size="sm"
-                    variant={theme === 'dark' ? 'default' : 'ghost'}
-                    onClick={() => setTheme('dark')}
-                    className={cn("rounded-full h-8 px-3 gap-2 text-xs", theme === 'dark' && "shadow-sm")}
-                >
-                    <Moon className="h-3.5 w-3.5" /> Gelap
-                </Button>
-            </div>
-        );
+    const toggleTheme = () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
     };
-    
+
     return (
-        <div className="flex flex-col h-full">
-            <PageHeader 
-                title="Pengaturan" 
-                description="Kelola preferensi aplikasi dan akunmu"
-            />
-            
-            <main className="flex-1 overflow-y-auto">
-                <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-                    
-                    {/* TOP SECTION: PROFILE & THEME */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Card className="md:col-span-2 border-none shadow-sm overflow-hidden bg-card">
-                            <CardContent className="p-6">
-                                <div className="flex flex-col sm:flex-row items-center gap-6">
-                                    <div className="w-24 h-24 bg-primary/10 rounded-lg flex items-center justify-center relative overflow-hidden shadow-inner transition-transform duration-300">
-                                        {userData?.photoURL ? (
-                                            <Image src={userData.photoURL} alt="Avatar" width={96} height={96} className="object-cover" />
-                                        ) : (
-                                            <UserCircle className="w-14 h-14 text-primary" strokeWidth={1} />
-                                        )}
-                                    </div>
-                                    <div className="text-center sm:text-left space-y-1">
-                                        <h2 className="text-2xl font-semibold tracking-tight">{userData?.displayName || 'Pengguna Lemon'}</h2>
-                                        <p className="text-muted-foreground font-medium">{user?.email}</p>
-                                        <div className="pt-2 flex flex-wrap justify-center sm:justify-start gap-2">
-                                            <Badge variant="secondary" className="bg-primary/10 text-primary border-none">Versi Beta</Badge>
-                                            <Badge variant="outline" className="text-[10px]">ID: {user?.id?.slice(0, 8)}</Badge>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+        <div className="min-h-screen bg-zinc-50/50 dark:bg-black text-zinc-900 dark:text-zinc-100 pb-32">
 
-                        <Card className="border-none shadow-sm flex flex-col justify-center bg-card">
-                            <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-medium text-muted-foreground">Tampilan</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex items-center justify-between gap-4">
-                                    <span className="text-sm font-medium">Tema Mode</span>
-                                    {renderThemeToggle()}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* LEFT COLUMN: SECURITY & TOOLS */}
-                        <div className="space-y-6">
-                            <section className="space-y-3">
-                                <h3 className="text-sm font-medium tracking-tight text-muted-foreground px-1">Alat Bantu</h3>
-                                <Card className="border-none shadow-sm bg-card overflow-hidden group">
-                                    <button 
-                                        onClick={() => router.push('/token-calculator')} 
-                                        className="w-full flex items-center gap-4 p-4 hover:bg-primary/5 transition-colors text-left"
-                                    >
-                                        <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-orange-600">
-                                            <Calculator className="h-5 w-5" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-foreground">Kalkulator AI</p>
-                                            <p className="text-[11px] text-muted-foreground">Cek penggunaan token</p>
-                                        </div>
-                                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                                    </button>
-                                </Card>
-                            </section>
-
-                            <section className="pt-4">
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg py-6 bg-destructive/5">
-                                            <LogOut className="h-5 w-5" />
-                                            <span className="font-semibold">Keluar dari Akun</span>
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                Kamu akan keluar dari Lemon pada perangkat ini. Tenang, data kamu aman di cloud.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Batal</AlertDialogCancel>
-                                            <AlertDialogAction onClick={handleSignOut} className="bg-destructive text-white hover:bg-destructive/90">Iya, Keluar</AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </section>
-                        </div>
-
-                        {/* RIGHT COLUMN: DATA MANAGEMENT GRID */}
-                        <div className="md:col-span-2 space-y-3">
-                            <h3 className="text-xs font-medium tracking-[0.05em] text-muted-foreground px-1">Manajemen Data</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {managementItems.map((item) => (
-                                    <motion.button
-                                        key={item.id}
-                                        whileHover={{ y: -4 }}
-                                        onClick={() => router.push(item.page)}
-                                        className="flex items-start gap-4 p-5 rounded-2xl bg-card shadow-sm hover:shadow-md transition-all text-left group"
-                                    >
-                                        <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                                            <item.icon className="h-6 w-6" strokeWidth={1.5} />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <p className="font-semibold text-foreground">{item.name}</p>
-                                            <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
-                                        </div>
-                                    </motion.button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="text-center py-8 space-y-1">
-                        <p className="text-[10px] font-medium tracking-[0.1em] text-primary/40">Lemon Finance</p>
-                        <p className="text-[10px] text-muted-foreground">Versi 2.1.0 (Public Beta)</p>
+            {/* Header Bersih */}
+            <div className="pt-safe-top px-6 pb-6 sticky top-0 bg-zinc-50/80 dark:bg-black/80 backdrop-blur-xl z-30">
+                <div className="flex items-center justify-between mt-4">
+                    <h1 className="text-3xl font-black tracking-tighter">Profil</h1>
+                    <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700">
+                        {userData?.photoURL ? (
+                            <Image src={userData.photoURL} alt="User" width={40} height={40} className="object-cover" />
+                        ) : (
+                            <UserIcon className="w-full h-full p-2 text-zinc-400" />
+                        )}
                     </div>
                 </div>
-            </main>
+            </div>
+
+            {/* BENTO GRID LAYOUT */}
+            <div className="px-4 md:px-6 w-full max-w-5xl mx-auto space-y-4">
+
+                {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
+                <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
+                    {/* Identity Card */}
+                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white border-none p-6 md:p-8 flex flex-col justify-between" delay={0.05}>
+                        <div className="flex justify-between items-start">
+                            <div className="space-y-1">
+                                <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Digital ID</p>
+                                <h2 className="text-2xl md:text-4xl font-black tracking-tight">{userData?.displayName || 'Guest User'}</h2>
+                                <p className="text-white/80 font-medium">{user?.email}</p>
+                            </div>
+                            <ShieldCheck className="w-8 h-8 text-white/50" />
+                        </div>
+                        <div className="mt-8 flex items-end justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold border border-white/10 shadow-lg">PRO MEMBER</span>
+                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-xs font-bold border border-white/5">LEVEL 4</span>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-xs text-white/60 font-medium">Bergabung sejak</p>
+                                <p className="text-sm font-bold">2024</p>
+                            </div>
+                        </div>
+
+                        {/* Abstract Decor */}
+                        <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-white/20 blur-3xl rounded-full" />
+                    </BentoItem>
+
+                    {/* Theme Switcher - Visual */}
+                    <BentoItem
+                        onClick={toggleTheme}
+                        className="col-span-12 md:col-span-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black p-6 flex flex-col justify-center items-center relative gap-4"
+                        delay={0.1}
+                    >
+                        <div className="relative">
+                            <AnimatePresence mode="wait">
+                                {mounted && theme === 'dark' ? (
+                                    <motion.div
+                                        key="moon"
+                                        initial={{ rotate: -90, opacity: 0 }}
+                                        animate={{ rotate: 0, opacity: 1 }}
+                                        exit={{ rotate: 90, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <Moon className="w-16 h-16" strokeWidth={1} />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="sun"
+                                        initial={{ rotate: 90, opacity: 0 }}
+                                        animate={{ rotate: 0, opacity: 1 }}
+                                        exit={{ rotate: -90, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <Sun className="w-16 h-16" strokeWidth={1} />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                        <p className="font-bold text-sm tracking-widest uppercase mt-4">
+                            {mounted && theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                        </p>
+                        <p className="text-[10px] opacity-60">Tap to switch</p>
+                    </BentoItem>
+                </div>
+
+                {/* BARIS 2: Core Actions (Grid 3) */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                        <div className="p-4 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                            <Wallet className="w-6 h-6" />
+                        </div>
+                        <span className="font-bold text-sm text-center">Dompet</span>
+                    </BentoItem>
+
+                    <BentoItem onClick={() => router.push('/categories')} delay={0.2} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                        <div className="p-4 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                            <Wrench className="w-6 h-6" />
+                        </div>
+                        <span className="font-bold text-sm text-center">Kategori</span>
+                    </BentoItem>
+
+                    <BentoItem onClick={() => router.push('/goals')} delay={0.25} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                        <div className="p-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                            <Target className="w-6 h-6" />
+                        </div>
+                        <span className="font-bold text-sm text-center">Target</span>
+                    </BentoItem>
+
+                    <BentoItem onClick={() => router.push('/token-calculator')} delay={0.3} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                        <div className="p-4 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                            <Calculator className="w-6 h-6" />
+                        </div>
+                        <span className="font-bold text-sm text-center">AI Calc</span>
+                    </BentoItem>
+                </div>
+
+                {/* BARIS 3: List Menu (Settings Detail) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <BentoItem delay={0.35} className="p-2 flex flex-col gap-1">
+                        <div className="px-4 py-3 text-xs font-bold uppercase tracking-widest text-zinc-400">Pengaturan Lanjutan</div>
+                        {[
+                            { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
+                            { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts' },
+                            { name: 'Aset & Liabilitas', icon: Landmark, path: '/assets-liabilities' },
+                        ].map((item, idx) => (
+                            <div
+                                key={idx}
+                                onClick={() => router.push(item.path)}
+                                className="flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <item.icon className="w-5 h-5 text-zinc-500 group-hover:text-black dark:group-hover:text-white transition-colors" />
+                                    <span className="font-semibold text-sm">{item.name}</span>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-600 dark:text-zinc-700 dark:group-hover:text-zinc-400" />
+                            </div>
+                        ))}
+                    </BentoItem>
+
+                    <BentoItem delay={0.4} className="p-6 flex flex-col justify-center gap-4 bg-zinc-50 dark:bg-zinc-900/50 border-dashed border-2">
+                        <div className="flex items-center gap-3 opacity-50">
+                            <Monitor className="w-5 h-5" />
+                            <span className="text-sm font-medium">Versi Web Desktop (Beta)</span>
+                        </div>
+                        <div className="h-px bg-zinc-200 dark:bg-zinc-800 w-full" />
+
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <div className="flex items-center gap-3 text-red-500 cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-lg">
+                                    <LogOut className="w-5 h-5" />
+                                    <span className="font-bold text-sm">Keluar dari Akun</span>
+                                </div>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Logout</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Apakah Anda yakin ingin keluar? Sesi Anda akan berakhir.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleSignOut} className="bg-red-500 hover:bg-red-600">Keluar</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </BentoItem>
+                </div>
+
+                <div className="pt-8 pb-12 text-center">
+                    <p className="text-[10px] font-black tracking-[0.3em] uppercase opacity-30">Designed by Lemon AI</p>
+                </div>
+            </div>
         </div>
     );
 }
 
 export default function SettingsPage() {
     return (
-        <Suspense fallback={<div className="flex h-full items-center justify-center">Memuat pengaturan...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-black" />}>
             <SettingsContent />
         </Suspense>
     );

@@ -114,7 +114,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     };
 
 
-    const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings', '/budgeting'];
+    const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings', '/budgeting', '/plan'];
     const showBottomNav = mainPagesForNav.includes(pathname);
 
     return (

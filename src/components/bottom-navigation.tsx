@@ -1,16 +1,15 @@
-
 'use client';
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, PieChart, Sparkles, HandCoins, User } from 'lucide-react';
+import { Home, PieChart, Sparkles, NotebookPen, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
 import Link from 'next/link';
 
 export const BottomNavigation = () => {
     const pathname = usePathname();
-    const { 
+    const {
         isTxModalOpen,
         isWalletModalOpen,
         isBudgetModalOpen,
@@ -27,10 +26,11 @@ export const BottomNavigation = () => {
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'statistik', href: '/charts', icon: PieChart, name: 'Statistik' },
         { id: 'add', href: '/add-smart', icon: Sparkles, name: 'Smart', primary: true },
-        { id: 'anggaran', href: '/budgeting', icon: HandCoins, name: 'Anggaran' },
+        { id: 'rencana', href: '/plan', icon: NotebookPen, name: 'Rencana' },
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
-    
+
+    // Check if any modal is open to hide the bottom nav
     const isModalOpen =
         isTxModalOpen ||
         isWalletModalOpen ||
@@ -42,7 +42,7 @@ export const BottomNavigation = () => {
         isReminderModalOpen ||
         isDebtModalOpen ||
         isDebtPaymentModalOpen;
-    
+
     const isVisible = !isModalOpen;
 
     return (
@@ -57,26 +57,26 @@ export const BottomNavigation = () => {
                 >
                     <div
                         className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none bottom-nav-container pb-[env(safe-area-inset-bottom)] min-h-[calc(4rem+env(safe-area-inset-bottom))]"
-                >
-                    {navItems.map(item => {
+                    >
+                        {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
 
                             if (item.primary) {
                                 return (
                                     <div key={item.id} className="flex justify-center items-center relative">
                                         <div className="absolute -top-7 bg-background rounded-full p-1.5 shadow-lg ring-2 ring-background/50 fab-position">
-                                           <Link
-                                               href={item.href}
-                                               prefetch={false}
-                                               className={cn(
-                                                   'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
-                                               )}
-                                               aria-label={item.name}
-                                           >
-                                               <item.icon className="h-7 w-7 relative z-10" />
-                                               <span className="sr-only">{item.name}</span>
-                                               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                                           </Link>
+                                            <Link
+                                                href={item.href}
+                                                prefetch={false}
+                                                className={cn(
+                                                    'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
+                                                )}
+                                                aria-label={item.name}
+                                            >
+                                                <item.icon className="h-7 w-7 relative z-10" />
+                                                <span className="sr-only">{item.name}</span>
+                                                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                                            </Link>
                                         </div>
                                     </div>
                                 );
