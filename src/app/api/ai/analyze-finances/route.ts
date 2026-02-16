@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-// Initialize OpenAI client for DeepSeek
+// Initialize OpenAI client for DeepSeek (or any compatible API)
 const client = new OpenAI({
     baseURL: 'https://api.deepseek.com',
     apiKey: process.env.DEEPSEEK_API_KEY,
@@ -9,65 +9,82 @@ const client = new OpenAI({
 
 export async function POST(req: Request) {
     try {
+        // Fallback or Mock if API Key missing (Good for dev environment/demo)
         if (!process.env.DEEPSEEK_API_KEY) {
-            return NextResponse.json(
-                { error: 'DeepSeek API Key not configured' },
-                { status: 500 }
-            );
+            // Return mock data for demo purposes if no key
+            console.warn("No API Key, returning mock data");
+            return NextResponse.json({
+                summary: "Mode Demo: Pendapatan Anda stabil, namun pengeluaran kategori Makanan perlu diperhatikan.",
+                savingsTip: "Coba kurangi jajan kopi kekinian, bisa hemat 500rb/bulan.",
+                categoryForecast: [
+                    { category: 'Makanan', predictedAmount: 1500000, reason: 'Tren harian tinggi' },
+                    { category: 'Transport', predictedAmount: 500000, reason: 'Stabil' }
+                ],
+                sentiment: 'neutral'
+            });
         }
 
-        const { transactions, daysElapsed, daysInMonth } = await req.json();
+        const body = await req.json();
+        const { transactions, view } = body;
 
-        // Summarize transactions to save tokens
-        // Group by category and date to see patterns
-        const summary = transactions.map((t: any) => ({
-            d: t.date.split('T')[0], // YYYY-MM-DD
+        // Simplify data for AI Context Window
+        const summary = transactions.slice(0, 100).map((t: any) => ({
+            d: t.date.split('T')[0],
             c: t.category,
-            a: t.amount
+            a: t.amount,
+            t: t.type // income/expense
         }));
 
-        const prompt = `
-        You are a smart financial assistant.
-        Current Date Progress: Day ${daysElapsed} of ${daysInMonth}.
-        
-        Analyze the following transaction history for this month and forecast the end-of-month spending.
-        
-        Transactions (Date, Category, Amount):
-        ${JSON.stringify(summary)}
+        let prompt = '';
 
-        Instructions:
-        1. Predict the final "projected" amount for each category based on the current run rate and patterns (e.g. if bills usually happen once, don't project them linearly. If food is daily, project linearly).
-        2. Assign a status: 'safe' (on track), 'warning' (slightly high), 'critical' (spending too fast).
-        3. Provide a short, witty, and actionable 1-sentence insight for each category in Bahasa Indonesia.
-        
-        Format your response purely as a JSON object with this structure:
-        {
-            "forecasts": [
-                { "category": "Example", "current": 1000, "projected": 1500, "status": "safe", "insight": "Hemat pangkal kaya!" }
-            ],
-            "overall_comment": "A summary comment about the overall financial health in Bahasa Indonesia."
+        if (view === 'dashboard_summary') {
+            prompt = `
+            Act as a witty financial advisor. Analyze these recent transactions JSON:
+            ${JSON.stringify(summary)}
+
+            Return ONLY a raw JSON object (no markdown) with this structure:
+            {
+                "summary": "A concise, witty 2-sentence summary of the user's financial behavior this month in Bahasa Indonesia (slang/gaul is okay).",
+                "savingsTip": "One specific, actionable tip to save money based on the highest expense category.",
+                "categoryForecast": [ 
+                    {"category": "category_name", "predictedAmount": number, "reason": "short reason"} 
+                ] (Top 2 categories likely to overspend),
+                "sentiment": "positive" | "neutral" | "negative" | "critical"
+            }
+            `;
+        } else {
+            // Default Forecasting View
+            prompt = `
+            Analyze the following transaction history and forecast end-of-month spending.
+            Transactions: ${JSON.stringify(summary)}
+            
+            Return JSON:
+            {
+                "forecasts": [
+                    { "category": "Name", "current": 100, "projected": 150, "status": "safe"|"warning"|"critical", "insight": "Indonesian insight" }
+                ],
+                "overall_comment": "Summary in Indonesian"
+            }
+            `;
         }
-        Do not include markdown formatting (like \`\`\`json). Just the raw JSON.
-        `;
 
         const completion = await client.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: "deepseek-chat",
-            temperature: 0.1,
+            temperature: 0.3,
             max_tokens: 1000,
             response_format: { type: 'json_object' }
         });
 
         const result = completion.choices[0].message.content;
 
-        if (!result) {
-            throw new Error('No content from AI');
-        }
+        if (!result) throw new Error('No content from AI');
 
         return NextResponse.json(JSON.parse(result));
 
     } catch (error: any) {
-        console.error('DeepSeek Error:', error);
+        console.error('AI Error:', error);
+        // Fail gracefully
         return NextResponse.json(
             { error: error.message || 'Failed to analyze finances' },
             { status: 500 }

@@ -24,4 +24,5 @@ export interface MonthData {
     expense: number;
     net: number;
     expenseCategories: CategoryTotal[];
+    incomeCategories: { name: string; value: number }[];
 }

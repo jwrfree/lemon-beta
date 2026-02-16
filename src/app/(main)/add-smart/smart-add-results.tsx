@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X, Check, Pencil, Save } from 'lucide-react';
+import { X, Check, Pencil, Save, ChevronLeft, CornerDownRight } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CategoryGrid } from '@/features/transactions/components/category-grid';
-import { categories } from '@/lib/categories';
+import { categories, Category } from '@/lib/categories';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -39,12 +39,48 @@ export const SmartAddResults = ({
     const [editDesc, setEditDesc] = useState('');
     const [editAmount, setEditAmount] = useState('');
 
+    // Sub-category logic state
+    const [popoverView, setPopoverView] = useState<'CATEGORY' | 'SUBCATEGORY'>('CATEGORY');
+    const [tempCategory, setTempCategory] = useState<Category | null>(null);
+
     useEffect(() => {
         if (parsedData) {
             setEditDesc(parsedData.description || '');
             setEditAmount(String(parsedData.amount || ''));
         }
     }, [parsedData]);
+
+    // Reset popover view when closed
+    useEffect(() => {
+        if (!isCategoryPopoverOpen) {
+            setTimeout(() => {
+                setPopoverView('CATEGORY');
+                setTempCategory(null);
+            }, 300);
+        }
+    }, [isCategoryPopoverOpen]);
+
+    const handleCategorySelect = (cat: Category) => {
+        // Robust lookup: Re-fetch from source logic to ensure sub_categories exist
+        // Sometimes prop passing strips optional fields or transforms them
+        const originalCat = [...categories.expense, ...categories.income].find(c => c.name === cat.name);
+
+        if (originalCat && originalCat.sub_categories && originalCat.sub_categories.length > 0) {
+            setTempCategory(originalCat);
+            setPopoverView('SUBCATEGORY');
+        } else {
+            // No sub-categories, just set and close
+            setParsedData({ ...parsedData, category: cat.name, subCategory: undefined });
+            setIsCategoryPopoverOpen(false);
+        }
+    };
+
+    const handleSubCategorySelect = (sub: string) => {
+        if (tempCategory) {
+            setParsedData({ ...parsedData, category: tempCategory.name, subCategory: sub });
+            setIsCategoryPopoverOpen(false);
+        }
+    };
 
     if (pageState === 'CONFIRMING' && parsedData) {
         return (
@@ -125,21 +161,64 @@ export const SmartAddResults = ({
                                         >
                                             <span className="opacity-90 text-[10px]">Kategori:</span>
                                             {parsedData.category}
+                                            {parsedData.subCategory && (
+                                                <>
+                                                    <span className="opacity-50">/</span>
+                                                    <span className="opacity-90">{parsedData.subCategory}</span>
+                                                </>
+                                            )}
                                             <Pencil className="h-2.5 w-2.5 ml-0.5 opacity-70" />
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-80 p-2 shadow-2xl rounded-2xl border-primary/10" align="start">
-                                        <div className="max-h-[300px] overflow-y-auto">
-                                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-3 mt-1 px-2">Ganti Kategori Cepat</p>
-                                            <CategoryGrid
-                                                categories={parsedData.type === 'income' ? categories.income : categories.expense}
-                                                selectedCategory={parsedData.category}
-                                                onCategorySelect={(cat) => {
-                                                    setParsedData({ ...parsedData, category: cat.name });
-                                                    setIsCategoryPopoverOpen(false);
-                                                }}
-                                            />
-                                        </div>
+                                    <PopoverContent className="w-80 p-0 shadow-2xl rounded-2xl border-primary/10 overflow-hidden" align="start">
+
+                                        {popoverView === 'CATEGORY' ? (
+                                            <div className="max-h-[300px] overflow-y-auto p-2">
+                                                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-3 mt-1 px-2">Ganti Kategori Cepat</p>
+                                                <CategoryGrid
+                                                    categories={parsedData.type === 'income' ? categories.income : categories.expense}
+                                                    selectedCategory={parsedData.category}
+                                                    onCategorySelect={handleCategorySelect}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="max-h-[300px] overflow-y-auto bg-slate-50 dark:bg-zinc-900">
+                                                <div className="sticky top-0 bg-white dark:bg-black p-3 border-b flex items-center gap-2 z-10">
+                                                    <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => setPopoverView('CATEGORY')}>
+                                                        <ChevronLeft className="h-4 w-4" />
+                                                    </Button>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={cn("w-2 h-2 rounded-full", tempCategory?.color?.replace('text-', 'bg-') || 'bg-gray-500')} />
+                                                        <span className="text-sm font-bold">{tempCategory?.name}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="p-2 grid grid-cols-1 gap-1">
+                                                    {/* Option to select parent only */}
+                                                    <button
+                                                        className="w-full text-left px-4 py-3 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between group"
+                                                        onClick={() => {
+                                                            if (tempCategory) {
+                                                                setParsedData({ ...parsedData, category: tempCategory.name, subCategory: undefined });
+                                                                setIsCategoryPopoverOpen(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <span>Tanpa Sub-Kategori</span>
+                                                    </button>
+
+                                                    {tempCategory?.sub_categories?.map((sub) => (
+                                                        <button
+                                                            key={sub}
+                                                            className="w-full text-left px-4 py-3 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between group"
+                                                            onClick={() => handleSubCategorySelect(sub)}
+                                                        >
+                                                            <span>{sub}</span>
+                                                            <CornerDownRight className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </PopoverContent>
                                 </Popover>
                             </div>
@@ -149,6 +228,7 @@ export const SmartAddResults = ({
 
                 {insightData && (
                     <div className="space-y-3">
+                        {/* Existing Insight rendering code preserved */}
                         {insightData.wallet?.isInsufficient && (
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-start">
                                 <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-[11px] font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-sm shadow-destructive/5">
@@ -219,7 +299,11 @@ export const SmartAddResults = ({
                                 </div>
                                 <div className="flex flex-col overflow-hidden">
                                     <span className="text-sm font-semibold text-foreground tracking-tight truncate">{tx.description}</span>
-                                    <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider opacity-60">{tx.category}</span>
+                                    {/* Updated: Check if subCategory exists in Multi-mode as well if parser supports it */}
+                                    <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider opacity-60">
+                                        {tx.category}
+                                        {tx.subCategory ? ` / ${tx.subCategory}` : ''}
+                                    </span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 shrink-0">

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useMemo, Suspense } from 'react';
+import React, { useMemo, Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, Flame, Calendar, Info, Layers, Zap, ArrowUpRight } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { parseISO, startOfMonth, endOfMonth, subMonths, format, differenceInDays, eachDayOfInterval, subDays } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
@@ -18,11 +18,13 @@ import { HealthGauge, MetricCard } from '@/features/charts/components/financial-
 import { HistoryChart } from '@/features/charts/components/history-chart';
 import { CategoryPilla, TopTransactionItem } from '@/features/charts/components/chart-lists';
 import { AIInsights } from '@/features/charts/components/ai-insights';
+import { CategoryPie } from '@/features/charts/components/category-pie';
 
 function ChartContent() {
     const router = useRouter();
     const { setIsTxModalOpen, setTransactionToEdit } = useUI();
     const { budgets } = useBudgets();
+    const [categoryView, setCategoryView] = useState<'expense' | 'income'>('expense');
 
     // ==========================================
     // DATE LOGIC
@@ -65,28 +67,41 @@ function ChartContent() {
             return date >= last30DaysStart && date <= now;
         });
 
-        // Already fetched 6 months total
         return { currentMonthTx: current, prevMonthTx: prev, last30DaysTx: last30, last6MonthsTx: allTransactions };
     }, [allTransactions, currentMonthStart, currentMonthEnd, prevMonthStart, prevMonthEnd, last30DaysStart, now]);
 
     // 2. Compute Current Month Metrics
     const currentMonthData: MonthData = useMemo(() => {
         let inc = 0, exp = 0;
-        const cats: Record<string, number> = {};
+        const expCats: Record<string, number> = {};
+        const incCats: Record<string, number> = {};
 
         currentMonthTx.forEach(t => {
-            if (t.type === 'income') inc += t.amount;
+            if (t.type === 'income') {
+                inc += t.amount;
+                incCats[t.category] = (incCats[t.category] || 0) + t.amount;
+            }
             if (t.type === 'expense') {
                 exp += t.amount;
-                cats[t.category] = (cats[t.category] || 0) + t.amount;
+                expCats[t.category] = (expCats[t.category] || 0) + t.amount;
             }
         });
 
-        const sortedCats = Object.entries(cats)
+        const sortedExpCats = Object.entries(expCats)
             .sort(([, a], [, b]) => b - a)
             .map(([cat, amt]) => ({ name: cat, value: amt }));
 
-        return { income: inc, expense: exp, net: inc - exp, expenseCategories: sortedCats };
+        const sortedIncCats = Object.entries(incCats)
+            .sort(([, a], [, b]) => b - a)
+            .map(([cat, amt]) => ({ name: cat, value: amt }));
+
+        return {
+            income: inc,
+            expense: exp,
+            net: inc - exp,
+            expenseCategories: sortedExpCats,
+            incomeCategories: sortedIncCats
+        };
     }, [currentMonthTx]);
 
     // 3. Compute Previous Month Metrics
@@ -96,7 +111,7 @@ function ChartContent() {
             if (t.type === 'income') inc += t.amount;
             if (t.type === 'expense') exp += t.amount;
         });
-        return { income: inc, expense: exp, net: inc - exp, expenseCategories: [] };
+        return { income: inc, expense: exp, net: inc - exp, expenseCategories: [], incomeCategories: [] };
     }, [prevMonthTx]);
 
     // 4. Compute 30-Day Trend
@@ -125,7 +140,6 @@ function ChartContent() {
     // 5. Compute 6-Month History
     const historyData: MonthlyMetric[] = useMemo(() => {
         const monthsMap: Record<string, MonthlyMetric> = {};
-        // Init last 6 months buckets
         for (let i = 0; i < 6; i++) {
             const d = subMonths(now, i);
             const key = format(d, 'MMM');
@@ -289,27 +303,82 @@ function ChartContent() {
 
                 {/* Categories */}
                 <div className="space-y-4">
-                    <h3 className="text-lg font-semibold tracking-tight">Breakdown Kategori</h3>
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold tracking-tight">Breakdown Kategori</h3>
+
+                        {/* Toggle Expense / Income */}
+                        <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-lg">
+                            <button
+                                onClick={() => setCategoryView('expense')}
+                                className={cn(
+                                    "px-3 py-1 text-xs font-medium rounded-md transition-all",
+                                    categoryView === 'expense'
+                                        ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                        : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                                )}
+                            >
+                                Pengeluaran
+                            </button>
+                            <button
+                                onClick={() => setCategoryView('income')}
+                                className={cn(
+                                    "px-3 py-1 text-xs font-medium rounded-md transition-all",
+                                    categoryView === 'income'
+                                        ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                                        : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                                )}
+                            >
+                                Pemasukan
+                            </button>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-1 gap-4">
-                        {currentMonthData.expenseCategories.length > 0 ? (
-                            currentMonthData.expenseCategories.map((cat, idx) => {
-                                const budget = budgets.find(b => b.categories.includes(cat.name));
-                                return (
+                        {/* PIE CHART */}
+                        <CategoryPie
+                            data={categoryView === 'expense' ? currentMonthData.expenseCategories : currentMonthData.incomeCategories}
+                            total={categoryView === 'expense' ? currentMonthData.expense : currentMonthData.income}
+                            type={categoryView}
+                        />
+
+                        {categoryView === 'expense' ? (
+                            currentMonthData.expenseCategories.length > 0 ? (
+                                currentMonthData.expenseCategories.map((cat, idx) => {
+                                    const budget = budgets.find(b => b.categories.includes(cat.name));
+                                    return (
+                                        <CategoryPilla
+                                            key={cat.name}
+                                            category={cat.name}
+                                            amount={cat.value}
+                                            total={currentMonthData.expense}
+                                            budgetAmount={budget?.targetAmount}
+                                            color={colorPalette[idx % colorPalette.length]}
+                                            onClick={() => router.push(`/transactions?category=${encodeURIComponent(cat.name)}`)}
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+                                    Belum ada pengeluaran.
+                                </div>
+                            )
+                        ) : (
+                            currentMonthData.incomeCategories.length > 0 ? (
+                                currentMonthData.incomeCategories.map((cat, idx) => (
                                     <CategoryPilla
                                         key={cat.name}
                                         category={cat.name}
                                         amount={cat.value}
-                                        total={currentMonthData.expense}
-                                        budgetAmount={budget?.targetAmount}
-                                        color={colorPalette[idx % colorPalette.length]}
+                                        total={currentMonthData.income}
+                                        color="bg-emerald-500"
                                         onClick={() => router.push(`/transactions?category=${encodeURIComponent(cat.name)}`)}
                                     />
-                                );
-                            })
-                        ) : (
-                            <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
-                                Belum ada data kategori.
-                            </div>
+                                ))
+                            ) : (
+                                <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+                                    Belum ada pemasukan.
+                                </div>
+                            )
                         )}
                     </div>
                 </div>
