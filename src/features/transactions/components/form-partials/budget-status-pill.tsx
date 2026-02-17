@@ -37,10 +37,11 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 )}
             >
                 <span>Sisa Anggaran {category}:</span>
-                <span className="font-bold tabular-nums">
+                <span className="font-medium tabular-nums">
                     Rp {new Intl.NumberFormat('id-ID').format(remainingBudget)}
                 </span>
             </motion.div>
         </AnimatePresence>
     );
 };
+

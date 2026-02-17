@@ -80,7 +80,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
-          <h2 className="text-xl font-bold">Edit Dompet</h2>
+          <h2 className="text-xl font-medium">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
@@ -161,3 +161,4 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
     </motion.div>
   );
 };
+

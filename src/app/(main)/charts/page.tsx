@@ -365,9 +365,9 @@ function ChartContent() {
             {/* STICKY HEADER */}
             <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-zinc-50/80 dark:bg-black/80 backdrop-blur-xl z-30 border-b border-zinc-200/50 dark:border-zinc-800/50">
                 <div className="flex justify-between items-center py-3">
-                    <h2 className="text-xl font-bold tracking-tight">Financial Analytics</h2>
+                    <h2 className="text-xl font-medium tracking-tight">Financial Analytics</h2>
                     <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] uppercase font-semibold px-2 py-1">
+                        <Badge variant="outline" className="text-[10px] uppercase font-medium px-2 py-1">
                             <Calendar className="w-3 h-3 mr-1" />
                             {format(now, 'MMM yyyy')}
                         </Badge>
@@ -446,7 +446,7 @@ function ChartContent() {
                 {/* Top Transactions */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold tracking-tight">Pengeluaran Terbesar</h3>
+                        <h3 className="text-lg font-medium tracking-tight">Pengeluaran Terbesar</h3>
                         <Info className="w-4 h-4 text-muted-foreground" />
                     </div>
                     <div className="space-y-3">
@@ -470,7 +470,7 @@ function ChartContent() {
                                 <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-3xl mb-4">
                                     <Info className="w-8 h-8 text-zinc-400" />
                                 </div>
-                                <h3 className="text-lg font-bold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
+                                <h3 className="text-lg font-medium tracking-tight mb-1">Belum Ada Pengeluaran</h3>
                                 <p className="text-sm text-muted-foreground max-w-[250px]">
                                     Semua transaksi besarmu akan dianalisis secara otomatis di sini.
                                 </p>
@@ -482,7 +482,7 @@ function ChartContent() {
                 {/* Categories */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold tracking-tight">Breakdown Kategori</h3>
+                        <h3 className="text-lg font-medium tracking-tight">Breakdown Kategori</h3>
 
                         {/* Toggle Expense / Income */}
                         <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-lg">
@@ -543,7 +543,7 @@ function ChartContent() {
                                         <div className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
                                             <PieChart className="w-8 h-8 text-zinc-400" />
                                         </div>
-                                        <h3 className="text-lg font-bold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
+                                        <h3 className="text-lg font-medium tracking-tight mb-1">Belum Ada Pengeluaran</h3>
                                         <p className="text-sm text-muted-foreground max-w-[250px]">
                                             Mulai catat pengeluaranmu untuk melihat breakdown kategori secara mendalam.
                                         </p>
@@ -569,7 +569,7 @@ function ChartContent() {
                                         <div className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
                                             <PieChart className="w-8 h-8 text-zinc-400" />
                                         </div>
-                                        <h3 className="text-lg font-bold tracking-tight mb-1">Belum Ada Pemasukan</h3>
+                                        <h3 className="text-lg font-medium tracking-tight mb-1">Belum Ada Pemasukan</h3>
                                         <p className="text-sm text-muted-foreground max-w-[250px]">
                                             Catat setiap pendapatanmu untuk melihat analisis sumber keuangan yang komprehensif.
                                         </p>

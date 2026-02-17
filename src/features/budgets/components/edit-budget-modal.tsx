@@ -91,7 +91,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
-          <h2 className="text-xl font-bold text-center">Edit Anggaran</h2>
+          <h2 className="text-xl font-medium text-center">Edit Anggaran</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
           </Button>
@@ -110,7 +110,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                 id="target-amount"
                 value={formatCurrency(targetAmount)}
                 onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                className="text-4xl font-bold border-none focus-visible:ring-0 text-center bg-transparent"
+                className="text-4xl font-medium border-none focus-visible:ring-0 text-center bg-transparent"
                 size="lg"
                 inputMode="numeric"
               />
@@ -185,3 +185,4 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
     </motion.div>
   );
 };
+

@@ -124,7 +124,7 @@ export function DateRangeFilter() {
                 <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="h-7 text-[10px] font-bold uppercase tracking-wider px-2.5 bg-muted/50 hover:bg-muted" 
+                    className="h-7 text-[10px] font-medium uppercase tracking-wider px-2.5 bg-muted/50 hover:bg-muted" 
                     onClick={() => setPreset("thisMonth")}
                 >
                     Bulan Ini
@@ -132,7 +132,7 @@ export function DateRangeFilter() {
                 <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="h-7 text-[10px] font-bold uppercase tracking-wider px-2.5 bg-muted/50 hover:bg-muted" 
+                    className="h-7 text-[10px] font-medium uppercase tracking-wider px-2.5 bg-muted/50 hover:bg-muted" 
                     onClick={() => setPreset("lastMonth")}
                 >
                     Bulan Lalu

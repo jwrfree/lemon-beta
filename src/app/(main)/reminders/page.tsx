@@ -190,8 +190,8 @@ export default function RemindersPage() {
                             <div className="flex items-center gap-2">
                                 <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
                                     <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
-                                        <TabsTrigger value="week" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                         <TabsTrigger value="30" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                        <TabsTrigger value="week" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                         <TabsTrigger value="30" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                                 <Button
@@ -255,7 +255,7 @@ export default function RemindersPage() {
                                                             </div>
                                                             <div className="flex-1 space-y-2">
                                                                 <div className="flex items-center justify-between gap-2">
-                                                                    <h2 className="font-semibold text-base">{reminder.title}</h2>
+                                                                    <h2 className="font-medium text-base">{reminder.title}</h2>
                                                                     {renderStatusBadge(status)}
                                                                 </div>
                                                                 {dueDate && (
@@ -363,7 +363,7 @@ export default function RemindersPage() {
                                                                 <div className="flex-1 space-y-2">
                                                                     <div className="flex flex-col gap-1">
                                                                         <div className="flex items-center justify-between gap-2">
-                                                                            <h2 className="font-semibold text-base">{reminder.title}</h2>
+                                                                            <h2 className="font-medium text-base">{reminder.title}</h2>
                                                                             {renderStatusBadge(status)}
                                                                         </div>
                                                                         {dueDate && (
@@ -443,7 +443,7 @@ export default function RemindersPage() {
                     <div className="hidden md:flex flex-col gap-4 sticky top-20 h-fit">
                         <Card>
                             <CardHeader className="pb-3">
-                                <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                                <CardTitle className="flex items-center gap-2 text-base font-medium">
                                     <Filter className="h-4 w-4 text-primary" /> Filter & Ringkasan
                                 </CardTitle>
                             </CardHeader>
@@ -472,8 +472,8 @@ export default function RemindersPage() {
                                     <div className="w-full">
                                         <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
                                             <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-2xl h-14">
-                                                <TabsTrigger value="week" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                                <TabsTrigger value="30" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                                <TabsTrigger value="week" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                                <TabsTrigger value="30" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                             </TabsList>
                                         </Tabs>
                                     </div>
@@ -481,13 +481,13 @@ export default function RemindersPage() {
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div className="rounded-xl bg-destructive/10 text-destructive p-3">
                                         <p className="text-xs text-destructive/80">Terlambat</p>
-                                        <p className="text-lg font-semibold">
+                                        <p className="text-lg font-medium">
                                             {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
                                         </p>
                                     </div>
                                     <div className="rounded-xl bg-primary/10 text-primary p-3">
                                         <p className="text-xs text-primary/80">Segera</p>
-                                        <p className="text-lg font-semibold">
+                                        <p className="text-lg font-medium">
                                             {reminders.filter(r => {
                                                 if (!r.dueDate || getReminderStatus(r) === 'completed') return false;
                                                 const diff = differenceInCalendarDays(parseISO(r.dueDate), new Date());
@@ -500,7 +500,7 @@ export default function RemindersPage() {
                         </Card>
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm font-semibold">Aksi Cepat</CardTitle>
+                                <CardTitle className="text-sm font-medium">Aksi Cepat</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <Button className="w-full" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
@@ -527,3 +527,4 @@ export default function RemindersPage() {
         </div>
     );
 }
+

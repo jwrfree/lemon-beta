@@ -106,7 +106,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
     return (
         <Card className="border-none shadow-sm bg-card">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-violet-700 dark:text-violet-400">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-violet-700 dark:text-violet-400">
                     <Lightbulb className="h-4 w-4" />
                     Lemon Insight
                 </CardTitle>
@@ -161,3 +161,4 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
         </Card>
     );
 }
+

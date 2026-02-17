@@ -15,7 +15,7 @@ export const DashboardGoalsEmpty = () => {
             </div>
 
             <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-bold tracking-tight">Target Keuangan</CardTitle>
+                <CardTitle className="text-lg font-medium tracking-tight">Target Keuangan</CardTitle>
                 <CardDescription className="text-xs font-medium text-muted-foreground/70">Wujudkan impianmu jadi nyata</CardDescription>
             </CardHeader>
 
@@ -24,12 +24,12 @@ export const DashboardGoalsEmpty = () => {
                     <div className="p-4 bg-orange-500/10 rounded-2xl border border-orange-500/10">
                         <Target className="h-8 w-8 text-orange-500" strokeWidth={1.5} />
                     </div>
-                    <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] text-white font-bold shadow-sm">
+                    <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] text-white font-medium shadow-sm">
                         !
                     </div>
                 </div>
 
-                <h3 className="text-base font-bold tracking-tight mb-2">Apa Impianmu?</h3>
+                <h3 className="text-base font-medium tracking-tight mb-2">Apa Impianmu?</h3>
                 <p className="text-xs text-muted-foreground max-w-[200px] mb-6 leading-relaxed">
                     Mulai dari dana darurat hingga liburan impian. Kami bantu kamu mencapainya lebih cepat.
                 </p>
@@ -38,7 +38,7 @@ export const DashboardGoalsEmpty = () => {
                     onClick={() => setIsGoalModalOpen(true)} 
                     size="sm" 
                     variant="outline" 
-                    className="gap-2 rounded-xl h-9 text-xs font-bold border-orange-500/20 hover:bg-orange-500/5 hover:text-orange-500 transition-colors w-full max-w-[160px]"
+                    className="gap-2 rounded-xl h-9 text-xs font-medium border-orange-500/20 hover:bg-orange-500/5 hover:text-orange-500 transition-colors w-full max-w-[160px]"
                 >
                     <Plus className="h-3.5 w-3.5" />
                     Buat Target Baru

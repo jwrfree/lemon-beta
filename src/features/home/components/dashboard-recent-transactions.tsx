@@ -27,12 +27,12 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     return (
         <div className="overflow-hidden rounded-[2rem] border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 shadow-sm">
             <table className="w-full text-sm text-left">
-                <thead className="bg-zinc-50/50 dark:bg-zinc-800/50 text-zinc-400 font-bold border-b border-zinc-100 dark:border-zinc-800">
+                <thead className="bg-zinc-50/50 dark:bg-zinc-800/50 text-zinc-400 font-medium border-b border-zinc-100 dark:border-zinc-800">
                     <tr>
-                        <th className="p-5 pl-6 font-bold text-[10px] uppercase tracking-[0.15em]">Detail Transaksi</th>
-                        <th className="p-5 font-bold text-[10px] uppercase tracking-[0.15em]">Kategori / Sub</th>
-                        <th className="p-5 font-bold text-[10px] uppercase tracking-[0.15em]">Sumber Dana</th>
-                        <th className="p-5 text-right pr-6 font-bold text-[10px] uppercase tracking-[0.15em]">Nominal</th>
+                        <th className="p-5 pl-6 font-medium text-[10px] uppercase tracking-[0.15em]">Detail Transaksi</th>
+                        <th className="p-5 font-medium text-[10px] uppercase tracking-[0.15em]">Kategori / Sub</th>
+                        <th className="p-5 font-medium text-[10px] uppercase tracking-[0.15em]">Sumber Dana</th>
+                        <th className="p-5 text-right pr-6 font-medium text-[10px] uppercase tracking-[0.15em]">Nominal</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
@@ -66,10 +66,10 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                             </div>
                                         </div>
                                         <div className="min-w-0">
-                                            <div className="font-bold text-zinc-900 dark:text-zinc-100 leading-tight truncate max-w-[200px]">
+                                            <div className="font-medium text-zinc-900 dark:text-zinc-100 leading-tight truncate max-w-[200px]">
                                                 {t.description || t.category}
                                             </div>
-                                            <div className="text-[10px] font-bold text-zinc-400 mt-1 flex items-center gap-2">
+                                            <div className="text-[10px] font-medium text-zinc-400 mt-1 flex items-center gap-2">
                                                 <span>{format(dateObj, 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
                                                 <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-700" />
                                                 <span>{format(dateObj, 'HH:mm')}</span>
@@ -90,14 +90,14 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                 <td className="p-4 align-middle">
                                     <div className="flex flex-col">
                                         <span className={cn(
-                                            "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg w-fit mb-1 border",
+                                            "text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-lg w-fit mb-1 border",
                                             categoryData.bg_color ? `${categoryData.bg_color} border-black/5 dark:border-white/5` : "bg-zinc-100 border-transparent",
                                             categoryData.color
                                         )}>
                                             {t.category}
                                         </span>
                                         {t.subCategory ? (
-                                            <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 flex items-center gap-1 ml-1">
+                                            <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1 ml-1">
                                                 <CornerDownRight className="w-3 h-3 text-zinc-300" />
                                                 {t.subCategory}
                                             </span>
@@ -107,7 +107,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                     </div>
                                 </td>
 
-                                <td className="p-4 text-xs font-bold text-zinc-500 dark:text-zinc-400 align-middle">
+                                <td className="p-4 text-xs font-medium text-zinc-500 dark:text-zinc-400 align-middle">
                                     <div className="flex items-center gap-2">
                                         <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-zinc-300')} />
                                         {wallet?.name || 'Dompet'}
@@ -117,7 +117,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                                 <td className="p-4 pr-6 text-right align-middle">
                                     <div className="flex flex-col items-end">
                                         <span className={cn(
-                                            "font-bold tabular-nums text-sm tracking-tight",
+                                            "font-medium tabular-nums text-sm tracking-tight",
                                             t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-900 dark:text-zinc-100'
                                         )}>
                                             {t.type === 'income' ? '+' : '-'} {formatCurrency(t.amount)}
@@ -135,7 +135,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push('/transactions')}
-                    className="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-primary transition-colors"
+                    className="text-xs font-medium uppercase tracking-widest text-zinc-500 hover:text-primary transition-colors"
                 >
                     Lihat Riwayat Lengkap
                     <ArrowRight className="w-3.5 h-3.5 ml-2" />
@@ -144,3 +144,4 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
         </div>
     );
 };
+

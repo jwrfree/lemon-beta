@@ -28,7 +28,7 @@ export const Sidebar = () => {
         >
             <div className={cn('flex items-center transition-[padding] duration-300', isSidebarCollapsed ? 'justify-center px-1' : 'px-3 py-4')}>
                 <div className="h-9 w-9 rounded-xl bg-primary shadow-sm flex items-center justify-center shrink-0">
-                    <div className="text-primary-foreground font-bold text-lg leading-none">L</div>
+                    <div className="text-primary-foreground font-medium text-lg leading-none">L</div>
                 </div>
                 <div 
                     className={cn(
@@ -36,7 +36,7 @@ export const Sidebar = () => {
                         isSidebarCollapsed ? "w-0 opacity-0 ml-0 translate-x-[-10px]" : "w-[120px] opacity-100 ml-3 translate-x-0"
                     )}
                 >
-                    <p className="text-base font-semibold tracking-tight truncate">{SIDEBAR_CONFIG.appName}</p>
+                    <p className="text-base font-medium tracking-tight truncate">{SIDEBAR_CONFIG.appName}</p>
                     <p className="text-xs text-muted-foreground font-medium truncate">{SIDEBAR_CONFIG.appVersion}</p>
                 </div>
             </div>
@@ -44,7 +44,7 @@ export const Sidebar = () => {
             <div className="space-y-2">
                 <p 
                     className={cn(
-                        'text-[10px] font-semibold text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
+                        'text-[10px] font-medium text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
                         isSidebarCollapsed ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100 h-4'
                     )}
                 >
@@ -71,7 +71,7 @@ export const Sidebar = () => {
             </div>
 
             <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar" aria-label="Navigasi utama">
-                                  <p className="text-[10px] font-semibold text-muted-foreground/60 px-1 mb-2 transition-all duration-300">
+                                  <p className="text-[10px] font-medium text-muted-foreground/60 px-1 mb-2 transition-all duration-300">
                                     Menu Utama
                                   </p>                {SIDEBAR_NAV_ITEMS.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
@@ -182,3 +182,4 @@ export const Sidebar = () => {
         </aside>
     );
 };
+

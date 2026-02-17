@@ -17,7 +17,7 @@ export const DashboardRecentTransactionsEmpty = () => {
             
             <CardHeader className="pb-2 relative z-10">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl font-bold tracking-tight">Transaksi Terakhir</CardTitle>
+                    <CardTitle className="text-xl font-medium tracking-tight">Transaksi Terakhir</CardTitle>
                 </div>
                 <CardDescription className="text-sm font-medium text-muted-foreground/70">Pantau setiap aliran keuanganmu</CardDescription>
             </CardHeader>
@@ -33,7 +33,7 @@ export const DashboardRecentTransactionsEmpty = () => {
                     </div>
                 </div>
 
-                <h3 className="text-lg font-bold tracking-tight mb-2">Mulai Perjalanan Finansialmu</h3>
+                <h3 className="text-lg font-medium tracking-tight mb-2">Mulai Perjalanan Finansialmu</h3>
                 <p className="text-sm text-muted-foreground max-w-[280px] mb-8 leading-relaxed">
                     Setiap rupiah berarti. Catat transaksi pertamamu untuk mulai mendapatkan insight cerdas dari Lemon.
                 </p>
@@ -47,7 +47,7 @@ export const DashboardRecentTransactionsEmpty = () => {
                     Catat Sekarang
                 </Button>
                 
-                <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary/40">
+                <div className="mt-8 flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-primary/40">
                     <Sparkles className="h-3 w-3" />
                     <span>Didukung AI Lemon</span>
                 </div>

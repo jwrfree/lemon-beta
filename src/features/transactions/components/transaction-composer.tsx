@@ -188,7 +188,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 <div className={cn("absolute top-0 left-0 w-full h-1.5 transition-colors duration-500", accentBg.replace('bg-', 'bg-').split(' ')[0])} />
 
                 <div className="p-4 pt-5 border-b flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 shrink-0">
-                    <h2 className="text-xl font-bold flex items-center gap-2 tracking-tight">
+                    <h2 className="text-xl font-medium flex items-center gap-2 tracking-tight">
                         <div className={cn("w-2.5 h-2.5 rounded-full ring-4 transition-colors duration-500", accentColor.replace('text-', 'bg-').split(' ')[0], accentBg.replace('bg-', 'ring-').split(' ')[0])} />
                         {isEditMode ? 'Edit Transaksi' : 'Transaksi Baru'}
                     </h2>
@@ -236,7 +236,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
 
                     <Button
                         onClick={handleSubmit(onSubmit)}
-                        className="w-full h-12 text-base rounded-2xl font-bold transition-all duration-300 shadow-lg active:scale-[0.98] text-white hover:brightness-110 bg-primary"
+                        className="w-full h-12 text-base rounded-2xl font-medium transition-all duration-300 shadow-lg active:scale-[0.98] text-white hover:brightness-110 bg-primary"
                         style={categoryVisuals ? {
                             backgroundColor: getCategoryColorHex(categoryVisuals)
                         } : undefined}
@@ -257,3 +257,4 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
         </motion.div>
     );
 };
+

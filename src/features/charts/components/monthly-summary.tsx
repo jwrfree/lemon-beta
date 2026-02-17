@@ -267,7 +267,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                     </div>
                     <div className="space-y-1">
                         <CardTitle className="text-[10px] sm:text-[11px] font-medium text-white/70">{summary.title}</CardTitle>
-                        <div className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-white tabular-nums">
+                        <div className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-white tabular-nums">
                             <AnimatedCounter value={summary.value} />
                         </div>
                     </div>
@@ -293,13 +293,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             <>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
                                     <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Pemasukan</p>
-                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
+                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
                                     <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Pengeluaran</p>
-                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
+                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.expense)}
                                     </p>
                                 </div>
@@ -308,13 +308,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             <>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
                                     <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Per Hari</p>
-                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
+                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
                                     <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Per Transaksi</p>
-                                    <p className="text-sm sm:text-base font-semibold text-white tabular-nums leading-none">
+                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerTransaction)}
                                     </p>
                                 </div>
@@ -331,17 +331,17 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <CardTitle className="text-xs sm:text-sm font-semibold text-muted-foreground truncate">Kategori Terbesar</CardTitle>
-                            <p className="text-lg sm:text-xl font-extrabold text-foreground truncate">{summary.topCategory.name}</p>
+                            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Kategori Terbesar</CardTitle>
+                            <p className="text-lg sm:text-xl font-medium text-foreground truncate">{summary.topCategory.name}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-lg sm:text-xl font-black text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
-                            <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Kontribusi</p>
+                            <p className="text-lg sm:text-xl font-medium text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
+                            <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">Kontribusi</p>
                         </div>
                     </CardHeader>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 sm:space-y-6">
                         <div className="space-y-1.5 sm:space-y-2">
-                            <div className="flex justify-between text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                            <div className="flex justify-between text-[10px] sm:text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
                                 <span>Total di kategori ini</span>
                                 <span className="text-foreground tabular-nums">{formatCurrency(summary.topCategory.value)}</span>
                             </div>
@@ -357,11 +357,11 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-tighter mb-0.5">Transaksi Terbesar</p>
-                                    <p className="text-xs sm:text-sm font-bold text-foreground truncate">{summary.topTransaction.description}</p>
+                                    <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground uppercase tracking-tighter mb-0.5">Transaksi Terbesar</p>
+                                    <p className="text-xs sm:text-sm font-medium text-foreground truncate">{summary.topTransaction.description}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-xs sm:text-sm font-extrabold text-foreground tabular-nums">{formatCurrency(summary.topTransaction.amount)}</p>
+                                    <p className="text-xs sm:text-sm font-medium text-foreground tabular-nums">{formatCurrency(summary.topTransaction.amount)}</p>
                                     <p className="text-[9px] sm:text-[10px] font-medium text-muted-foreground">{format(parseISO(summary.topTransaction.date), 'd MMM')}</p>
                                 </div>
                                 <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
@@ -393,7 +393,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
                             <div>
-                                <CardTitle className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">AI Financial Insight</CardTitle>
+                                <CardTitle className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">AI Financial Insight</CardTitle>
                                 <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
                             </div>
                         </div>
@@ -416,13 +416,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-400 opacity-50" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-xs sm:text-sm font-semibold text-foreground">Butuh pandangan baru?</p>
+                                <p className="text-xs sm:text-sm font-medium text-foreground">Butuh pandangan baru?</p>
                                 <p className="text-[10px] sm:text-[11px] text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
                             </div>
                             <Button
                                 onClick={generateInsight}
                                 disabled={isAiLoading}
-                                className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-bold shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95"
+                                className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-medium shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95"
                             >
                                 {isAiLoading ? (
                                     <>
@@ -454,3 +454,4 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
         </section>
     );
 };
+

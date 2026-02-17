@@ -95,7 +95,7 @@ function SettingsContent() {
             {/* Header Bersih */}
             <div className="pt-safe-top px-6 pb-6 sticky top-0 bg-zinc-50/80 dark:bg-black/80 backdrop-blur-xl z-30">
                 <div className="flex items-center justify-between mt-4">
-                    <h1 className="text-3xl font-black tracking-tighter">Profil</h1>
+                    <h1 className="text-3xl font-medium tracking-tighter">Profil</h1>
                     <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700">
                         {userData?.photoURL ? (
                             <Image src={userData.photoURL} alt="User" width={40} height={40} className="object-cover" />
@@ -115,20 +115,20 @@ function SettingsContent() {
                     <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white border-none p-6 md:p-8 flex flex-col justify-between" delay={0.05}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Digital ID</p>
-                                <h2 className="text-2xl md:text-4xl font-black tracking-tight">{userData?.displayName || 'Guest User'}</h2>
+                                <p className="text-white/60 text-xs font-medium uppercase tracking-widest">Digital ID</p>
+                                <h2 className="text-2xl md:text-4xl font-medium tracking-tight">{userData?.displayName || 'Guest User'}</h2>
                                 <p className="text-white/80 font-medium">{user?.email}</p>
                             </div>
                             <ShieldCheck className="w-8 h-8 text-white/50" />
                         </div>
                         <div className="mt-8 flex items-end justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold border border-white/10 shadow-lg">PRO MEMBER</span>
-                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-xs font-bold border border-white/5">LEVEL 4</span>
+                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-medium border border-white/10 shadow-lg">PRO MEMBER</span>
+                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-xs font-medium border border-white/5">LEVEL 4</span>
                             </div>
                             <div className="text-right">
                                 <p className="text-xs text-white/60 font-medium">Bergabung sejak</p>
-                                <p className="text-sm font-bold">2024</p>
+                                <p className="text-sm font-medium">2024</p>
                             </div>
                         </div>
 
@@ -167,7 +167,7 @@ function SettingsContent() {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <p className="font-bold text-sm tracking-widest uppercase mt-4">
+                        <p className="font-medium text-sm tracking-widest uppercase mt-4">
                             {mounted && theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                         </p>
                         <p className="text-[10px] opacity-60">Tap to switch</p>
@@ -180,28 +180,28 @@ function SettingsContent() {
                         <div className="p-4 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
                             <Wallet className="w-6 h-6" />
                         </div>
-                        <span className="font-bold text-sm text-center">Dompet</span>
+                        <span className="font-medium text-sm text-center">Dompet</span>
                     </BentoItem>
 
                     <BentoItem onClick={() => router.push('/categories')} delay={0.2} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                         <div className="p-4 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
                             <Wrench className="w-6 h-6" />
                         </div>
-                        <span className="font-bold text-sm text-center">Kategori</span>
+                        <span className="font-medium text-sm text-center">Kategori</span>
                     </BentoItem>
 
                     <BentoItem onClick={() => router.push('/goals')} delay={0.25} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                         <div className="p-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                             <Target className="w-6 h-6" />
                         </div>
-                        <span className="font-bold text-sm text-center">Target</span>
+                        <span className="font-medium text-sm text-center">Target</span>
                     </BentoItem>
 
                     <BentoItem onClick={() => router.push('/token-calculator')} delay={0.3} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                         <div className="p-4 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
                             <Calculator className="w-6 h-6" />
                         </div>
-                        <span className="font-bold text-sm text-center">AI Calc</span>
+                        <span className="font-medium text-sm text-center">AI Calc</span>
                     </BentoItem>
                 </div>
 
@@ -221,14 +221,14 @@ function SettingsContent() {
                                         <Download className="h-8 w-8 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
+                                        <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">
                                             Instal Lemon
                                             <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
                                         </h3>
                                         <p className="text-white/70 text-sm font-medium">Akses lebih cepat & mode luring penuh</p>
                                     </div>
                                 </div>
-                                <div className="relative z-10 bg-white text-teal-700 font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
+                                <div className="relative z-10 bg-white text-teal-700 font-medium text-[10px] uppercase tracking-widest px-4 py-2 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
                                     Pasang Sekarang
                                 </div>
                                 
@@ -239,7 +239,7 @@ function SettingsContent() {
                     </AnimatePresence>
 
                     <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1">
-                        <div className="px-4 py-3 text-xs font-bold uppercase tracking-widest text-zinc-400">Pengaturan Lanjutan</div>
+                        <div className="px-4 py-3 text-xs font-medium uppercase tracking-widest text-zinc-400">Pengaturan Lanjutan</div>
                         {[
                             { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
                             { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts' },
@@ -252,7 +252,7 @@ function SettingsContent() {
                             >
                                 <div className="flex items-center gap-4">
                                     <item.icon className="w-5 h-5 text-zinc-500 group-hover:text-black dark:group-hover:text-white transition-colors" />
-                                    <span className="font-semibold text-sm">{item.name}</span>
+                                    <span className="font-medium text-sm">{item.name}</span>
                                 </div>
                                 <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-600 dark:text-zinc-700 dark:group-hover:text-zinc-400" />
                             </div>
@@ -270,7 +270,7 @@ function SettingsContent() {
                             <AlertDialogTrigger asChild>
                                 <div className="flex items-center gap-3 text-red-500 cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-lg">
                                     <LogOut className="w-5 h-5" />
-                                    <span className="font-bold text-sm">Keluar dari Akun</span>
+                                    <span className="font-medium text-sm">Keluar dari Akun</span>
                                 </div>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
@@ -290,7 +290,7 @@ function SettingsContent() {
                 </div>
 
                 <div className="pt-8 pb-12 text-center">
-                    <p className="text-[10px] font-black tracking-[0.3em] uppercase opacity-30">Designed by Lemon AI</p>
+                    <p className="text-[10px] font-medium tracking-[0.3em] uppercase opacity-30">Designed by Lemon AI</p>
                 </div>
             </div>
         </div>
@@ -304,3 +304,4 @@ export default function SettingsPage() {
         </Suspense>
     );
 }
+

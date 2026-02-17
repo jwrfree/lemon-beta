@@ -22,7 +22,7 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
         <Card className="p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h3 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+                    <h3 className="text-lg font-medium tracking-tight flex items-center gap-2">
                         <BarChart3 className="w-5 h-5 text-indigo-500" />
                         Riwayat 6 Bulan
                     </h3>
@@ -64,3 +64,4 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
         </Card>
     );
 }
+

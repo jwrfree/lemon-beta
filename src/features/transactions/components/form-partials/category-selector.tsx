@@ -109,7 +109,7 @@ export function CategorySelector<T extends FieldValues>({
                                                 })()}
                                             </div>
                                             <div className="flex flex-col text-left">
-                                                <span className="font-bold text-sm tracking-tight">{selectedCategory.name}</span>
+                                                <span className="font-medium text-sm tracking-tight">{selectedCategory.name}</span>
                                                 {localSubCategory ? (
                                                     <span className="text-[10px] text-primary font-medium">• {localSubCategory}</span>
                                                 ) : (
@@ -174,3 +174,4 @@ export function CategorySelector<T extends FieldValues>({
         />
     );
 }
+

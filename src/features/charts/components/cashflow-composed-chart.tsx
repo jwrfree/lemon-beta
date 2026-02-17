@@ -41,7 +41,7 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
         <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                    <h3 className="text-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
                         Cashflow & Net Worth Trend
                     </h3>
                     <p className="text-sm text-zinc-500">Korelasi Pemasukan, Pengeluaran, dan Akumulasi Saldo</p>
@@ -88,23 +88,23 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
                                 if (active && payload && payload.length) {
                                     return (
                                         <div className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-800 text-sm">
-                                            <p className="font-semibold mb-2">{format(parseISO(label), 'EEEE, d MMMM yyyy')}</p>
+                                            <p className="font-medium mb-2">{format(parseISO(label), 'EEEE, d MMMM yyyy')}</p>
                                             <div className="space-y-1">
                                                 <div className="flex justify-between gap-8 text-emerald-600">
                                                     <span>Income:</span>
-                                                    <span className="font-mono font-bold">
+                                                    <span className="font-mono font-medium">
                                                         +{formatCurrency(payload.find(p => p.dataKey === 'income')?.value as number || 0)}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between gap-8 text-rose-500">
                                                     <span>Expense:</span>
-                                                    <span className="font-mono font-bold">
+                                                    <span className="font-mono font-medium">
                                                         -{formatCurrency(payload.find(p => p.dataKey === 'expense')?.value as number || 0)}
                                                     </span>
                                                 </div>
                                                 <div className="border-t border-zinc-200 dark:border-zinc-800 my-2 pt-2 flex justify-between gap-8 text-blue-500">
                                                     <span>Net Balance:</span>
-                                                    <span className="font-mono font-bold">
+                                                    <span className="font-mono font-medium">
                                                         {formatCurrency(payload.find(p => p.dataKey === 'accumulatedNet')?.value as number || 0)}
                                                     </span>
                                                 </div>
@@ -138,3 +138,4 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
         </div>
     );
 }
+

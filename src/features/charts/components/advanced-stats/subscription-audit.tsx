@@ -24,17 +24,17 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
         <Card className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-sm">
             <div className="flex justify-between items-center mb-6">
                 <div className="space-y-1">
-                    <h3 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                    <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">
                         <RefreshCcw className="w-5 h-5 text-purple-500" />
                         Biaya Berulang
                     </h3>
                     <p className="text-sm text-muted-foreground">Total langganan & biaya tetap bulanan</p>
                 </div>
                 <div className="text-right">
-                    <p className="text-2xl font-bold tracking-tighter tabular-nums">
+                    <p className="text-2xl font-medium tracking-tighter tabular-nums">
                         {formatCurrency(totalMonthly)}
                     </p>
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Per Bulan</p>
+                    <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">Per Bulan</p>
                 </div>
             </div>
 
@@ -58,12 +58,12 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
                                     <Bell className={cn("h-5 w-5", item.isDueSoon ? "text-amber-600 dark:text-amber-400" : "text-zinc-500")} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold">{item.name}</p>
+                                    <p className="text-sm font-medium">{item.name}</p>
                                     <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">{item.category}</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-bold tabular-nums">{formatCurrency(item.amount)}</p>
+                                <p className="text-sm font-medium tabular-nums">{formatCurrency(item.amount)}</p>
                                 {item.isDueSoon && (
                                     <Badge variant="outline" className="text-[9px] h-4 border-amber-500/30 text-amber-600 bg-amber-500/5">
                                         Segera Jatuh Tempo
@@ -83,9 +83,10 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
             <div className="mt-6 p-4 rounded-2xl bg-purple-500/5 border border-purple-500/10 flex items-center gap-3">
                 <TrendingUp className="h-4 w-4 text-purple-500" />
                 <p className="text-[11px] font-medium text-purple-700 dark:text-purple-400 leading-snug">
-                    Tips: Mengurangi satu biaya langganan yang jarang terpakai bisa menghemat <span className="font-bold">{(totalMonthly * 12).toLocaleString()}</span> per tahun.
+                    Tips: Mengurangi satu biaya langganan yang jarang terpakai bisa menghemat <span className="font-medium">{(totalMonthly * 12).toLocaleString()}</span> per tahun.
                 </p>
             </div>
         </Card>
     );
 }
+

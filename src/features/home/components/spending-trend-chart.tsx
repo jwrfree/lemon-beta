@@ -44,11 +44,11 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
     return (
         <Card className="border-none shadow-none bg-transparent">
             <CardHeader className="px-5 pb-2 pt-0 flex flex-row items-center justify-between">
-                <CardTitle className="text-base font-bold flex items-center gap-2">
+                <CardTitle className="text-base font-medium flex items-center gap-2">
                     <TrendingDown className="h-4 w-4 text-rose-500" />
                     Tren Pengeluaran
                 </CardTitle>
-                <span className="text-[10px] bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 px-2 py-1 rounded-full font-bold">
+                <span className="text-[10px] bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 px-2 py-1 rounded-full font-medium">
                     {days} Hari Terakhir
                 </span>
             </CardHeader>
@@ -104,3 +104,4 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
         </Card>
     );
 };
+

@@ -33,7 +33,7 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold tracking-tight">
+                <div className="text-2xl font-medium tracking-tight">
                     <AnimatedCounter value={value} />
                 </div>
                 {trend && (
@@ -65,3 +65,4 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
 
     return Content;
 };
+

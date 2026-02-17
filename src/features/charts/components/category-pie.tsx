@@ -41,7 +41,7 @@ const renderActiveShape = (props: any) => {
 
     return (
         <g>
-            <text x={cx} y={cy - 10} dy={8} textAnchor="middle" fill={fill} className="text-xs font-bold uppercase tracking-wider">
+            <text x={cx} y={cy - 10} dy={8} textAnchor="middle" fill={fill} className="text-xs font-medium uppercase tracking-wider">
                 {payload.name}
             </text>
             <text x={cx} y={cy + 10} dy={8} textAnchor="middle" fill="#999" className="text-sm font-medium">
@@ -122,3 +122,4 @@ export function CategoryPie({ data, total, type }: CategoryPieProps) {
         </motion.div>
     );
 }
+

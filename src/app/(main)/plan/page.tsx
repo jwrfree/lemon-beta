@@ -27,7 +27,7 @@ export default function PlanPage() {
             <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/90 backdrop-blur-md z-30 transition-all border-b border-transparent data-[scrolled=true]:border-border/50">
                 <header className="flex items-center justify-between mb-4 mt-4">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Rencana Keuangan</h1>
+                        <h1 className="text-2xl font-medium tracking-tight">Rencana Keuangan</h1>
                         <p className="text-sm text-muted-foreground">Kelola masa depan finansialmu.</p>
                     </div>
                 </header>
@@ -83,3 +83,4 @@ export default function PlanPage() {
         </main>
     );
 }
+

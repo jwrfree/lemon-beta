@@ -152,7 +152,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
                     <div>
-                        <h2 className="text-xl font-bold">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
+                        <h2 className="text-xl font-medium">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
                         <p className="text-sm text-muted-foreground">
                             Simpan detail pinjaman, cicilan, atau piutang yang harus kamu pantau.
                         </p>
@@ -467,3 +467,4 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
         </motion.div>
     );
 };
+

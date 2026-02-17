@@ -250,10 +250,10 @@ function TransactionsPageContent() {
                                     <Card key={debt.id} className="p-4 space-y-2">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="font-semibold">{debt.title}</p>
+                                                <p className="font-medium">{debt.title}</p>
                                                 <p className="text-xs text-muted-foreground">{debt.counterparty}</p>
                                             </div>
-                                            <span className="text-sm font-semibold">{formatCurrency(outstanding)}</span>
+                                            <span className="text-sm font-medium">{formatCurrency(outstanding)}</span>
                                         </div>
                                         {dueDate && (
                                             <p className="text-xs text-muted-foreground">
@@ -290,3 +290,4 @@ export default function AllTransactionsPage() {
         </Suspense>
     );
 }
+

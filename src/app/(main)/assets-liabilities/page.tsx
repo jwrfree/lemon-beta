@@ -118,23 +118,23 @@ export default function AssetsLiabilitiesPage() {
                         <Card className="lg:col-span-2 bg-primary text-primary-foreground border-none shadow-lg shadow-primary/30 rounded-3xl overflow-hidden relative min-h-[200px] flex flex-col justify-between p-8">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
                             <div className="relative z-10">
-                                <p className="text-xs font-bold uppercase tracking-widest text-primary-foreground/80">Total Kekayaan Bersih</p>
-                                <AnimatedCounter value={totals.netWorth} className="text-5xl md:text-6xl font-black mt-2 tracking-tighter text-white" />
+                                <p className="text-xs font-medium uppercase tracking-widest text-primary-foreground/80">Total Kekayaan Bersih</p>
+                                <AnimatedCounter value={totals.netWorth} className="text-5xl md:text-6xl font-medium mt-2 tracking-tighter text-white" />
                             </div>
                             <div className="relative z-10 grid grid-cols-2 gap-8 mt-8 pt-6 border-t border-white/10">
                                 <div>
-                                    <p className="text-[11px] font-bold uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Produktif</p>
-                                    <p className="text-xl font-bold">{formatCurrency(totals.realAssetsValue)}</p>
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Produktif</p>
+                                    <p className="text-xl font-medium">{formatCurrency(totals.realAssetsValue)}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[11px] font-bold uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Konsumtif</p>
-                                    <p className="text-xl font-bold">{formatCurrency(totals.depreciatingAssetsValue)}</p>
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Konsumtif</p>
+                                    <p className="text-xl font-medium">{formatCurrency(totals.depreciatingAssetsValue)}</p>
                                 </div>
                             </div>
                         </Card>
 
                         <Card className="border-none shadow-sm rounded-3xl bg-card border border-white/20 p-6 flex flex-col items-center justify-center min-h-[200px]">
-                            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4 self-start">Distribusi Aset</p>
+                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-4 self-start">Distribusi Aset</p>
                             <div className="w-full h-[180px]">
                                 {totals.chartData.length > 0 ? (
                                     <ResponsiveContainer width="100%" height="100%">
@@ -167,7 +167,7 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                             <div className="grid grid-cols-1 gap-2 w-full mt-4">
                                 {totals.chartData.map((entry, index) => (
-                                    <div key={index} className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight">
+                                    <div key={index} className="flex items-center justify-between text-[10px] font-medium uppercase tracking-tight">
                                         <div className="flex items-center gap-2">
                                             <div className={cn("w-2 h-2 rounded-full",
                                                 entry.name === 'Kas & Bank' ? 'bg-blue-500' :
@@ -189,7 +189,7 @@ export default function AssetsLiabilitiesPage() {
                             <div className="p-4 bg-primary/10 rounded-full mb-4">
                                 <Landmark className="h-12 w-12 text-primary" strokeWidth={1.5} />
                             </div>
-                            <h2 className="text-2xl font-bold tracking-tight">Lacak Kekayaan Bersih Anda</h2>
+                            <h2 className="text-2xl font-medium tracking-tight">Lacak Kekayaan Bersih Anda</h2>
                             <p className="text-muted-foreground mt-2 mb-8 max-w-sm">Mulai dengan menambahkan aset atau liabilitas pertama Anda.</p>
                             <Button onClick={() => handleOpenForm()} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
                                 <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
@@ -203,13 +203,13 @@ export default function AssetsLiabilitiesPage() {
                                     <CardHeader className="flex flex-col gap-4 pb-2">
                                         <div className="flex flex-row items-center justify-between">
                                             <div className="space-y-1">
-                                                <CardTitle className="text-sm font-bold flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
+                                                <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
                                                     <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-xl">
                                                         <TrendingUp className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                                                     </div>
                                                     Aset
                                                 </CardTitle>
-                                                <p className="text-3xl font-black tracking-tighter text-teal-600 dark:text-teal-400">
+                                                <p className="text-3xl font-medium tracking-tighter text-teal-600 dark:text-teal-400">
                                                     {formatCurrency(totals.totalAssets)}
                                                 </p>
                                             </div>
@@ -237,12 +237,12 @@ export default function AssetsLiabilitiesPage() {
                                                             <WalletCards className="h-4 w-4" />
                                                         </div>
                                                         <div>
-                                                            <p className="text-xs font-bold text-slate-700 dark:text-slate-200">Kas & Setara Kas</p>
+                                                            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">Kas & Setara Kas</p>
                                                             <p className="text-[10px] text-muted-foreground">Saldo Dompet & Bank</p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-sm font-black text-blue-600 dark:text-blue-400">{formatCurrency(totals.totalWalletBalance)}</p>
+                                                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{formatCurrency(totals.totalWalletBalance)}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -255,7 +255,7 @@ export default function AssetsLiabilitiesPage() {
                                         <TabsContent value="productive" className="mt-0 h-full">
                                             <div className="px-4 pb-2">
                                                 <p className="text-xs text-muted-foreground mb-2">Aset yang nilainya bertambah/tetap (Emas, Saham, Kas).</p>
-                                                <p className="text-lg font-bold text-teal-600">{formatCurrency(totals.realAssetsValue)}</p>
+                                                <p className="text-lg font-medium text-teal-600">{formatCurrency(totals.realAssetsValue)}</p>
                                             </div>
                                             <div className="px-4 mb-2">
                                                 <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
@@ -264,12 +264,12 @@ export default function AssetsLiabilitiesPage() {
                                                             <WalletCards className="h-4 w-4" />
                                                         </div>
                                                         <div>
-                                                            <p className="text-xs font-bold text-slate-700 dark:text-slate-200">Kas & Setara Kas</p>
+                                                            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">Kas & Setara Kas</p>
                                                             <p className="text-[10px] text-muted-foreground">Saldo Dompet & Bank</p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-sm font-black text-blue-600 dark:text-blue-400">{formatCurrency(totals.totalWalletBalance)}</p>
+                                                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{formatCurrency(totals.totalWalletBalance)}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -282,7 +282,7 @@ export default function AssetsLiabilitiesPage() {
                                         <TabsContent value="consumptive" className="mt-0 h-full">
                                             <div className="px-4 pb-2">
                                                 <p className="text-xs text-muted-foreground mb-2">Aset yang nilainya menurun (Kendaraan, Gadget).</p>
-                                                <p className="text-lg font-bold text-rose-600">{formatCurrency(totals.depreciatingAssetsValue)}</p>
+                                                <p className="text-lg font-medium text-rose-600">{formatCurrency(totals.depreciatingAssetsValue)}</p>
                                             </div>
                                             <AssetLiabilityList
                                                 items={totals.depreciatingAssets}
@@ -297,13 +297,13 @@ export default function AssetsLiabilitiesPage() {
                             <Card className="border-none shadow-sm rounded-3xl h-full overflow-hidden bg-card border border-white/20">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="space-y-1">
-                                        <CardTitle className="text-sm font-bold flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
+                                        <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
                                             <div className="p-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-xl">
                                                 <MinusCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                                             </div>
                                             Liabilitas
                                         </CardTitle>
-                                        <p className="text-3xl font-black tracking-tighter text-rose-600 dark:text-rose-400">
+                                        <p className="text-3xl font-medium tracking-tighter text-rose-600 dark:text-rose-400">
                                             {formatCurrency(totals.totalLiabilities)}
                                         </p>
                                     </div>
@@ -354,3 +354,4 @@ export default function AssetsLiabilitiesPage() {
         </div>
     );
 };
+

@@ -137,7 +137,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                 </CardHeader>
                 <CardContent>
                     <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-2xl font-bold text-foreground">
+                        <span className="text-2xl font-medium text-foreground">
                             {formatCurrency(analytics.currentTotal)}
                         </span>
                         <span className={cn(
@@ -187,7 +187,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                             </div>
                             <div>
                                 <p className="text-xs text-muted-foreground">Estimasi Lunas</p>
-                                <p className="text-sm font-bold">
+                                <p className="text-sm font-medium">
                                     {analytics.payoffDate 
                                         ? format(analytics.payoffDate, 'MMMM yyyy', { locale: dateFnsLocaleId }) 
                                         : "Belum ada pembayaran rutin"}
@@ -207,7 +207,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                             <div className="flex items-start gap-2">
                                 <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-500 mt-0.5 shrink-0" />
                                 <div>
-                                    <p className="text-xs font-bold text-amber-700 dark:text-amber-500">Peringatan Bunga</p>
+                                    <p className="text-xs font-medium text-amber-700 dark:text-amber-500">Peringatan Bunga</p>
                                     <p className="text-[10px] text-amber-600/90 dark:text-amber-500/90 mt-1">
                                         Ada {analytics.highInterestDebts.length} hutang yang mungkin bertambah "diam-diam" karena bunga atau denda.
                                         Cek: {analytics.highInterestDebts.map(d => d.title).join(', ')}.
@@ -226,3 +226,4 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
         </div>
     );
 };
+

@@ -14,7 +14,7 @@ export default function NotFound() {
                 <SearchX aria-hidden className="h-10 w-10" strokeWidth={1.5} />
             </span>
             <div className="max-w-xl space-y-3">
-                <h1 className="text-3xl font-semibold tracking-tight">404 - Halaman Tidak Ditemukan</h1>
+                <h1 className="text-3xl font-medium tracking-tight">404 - Halaman Tidak Ditemukan</h1>
                 <p className="text-base text-muted-foreground">
                     Oops! Halaman yang kamu cari tidak ada. Mungkin URL-nya salah atau halaman tersebut telah dipindahkan.
                 </p>
@@ -30,3 +30,4 @@ export default function NotFound() {
         </main>
     );
 }
+

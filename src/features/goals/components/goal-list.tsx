@@ -60,7 +60,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <div className="flex justify-between items-baseline">
-                                    <span className="text-2xl font-bold text-primary">{formatCurrency(goal.currentAmount)}</span>
+                                    <span className="text-2xl font-medium text-primary">{formatCurrency(goal.currentAmount)}</span>
                                     <span className="text-sm text-muted-foreground">/ {formatCurrency(goal.targetAmount)}</span>
                                 </div>
                                 <div className='space-y-1'>
@@ -75,3 +75,4 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
         </div>
     );
 }
+

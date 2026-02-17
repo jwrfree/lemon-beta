@@ -27,6 +27,7 @@ export const useTransactionActions = (user: User | null) => {
             description: data.description,
             walletId: data.walletId,
             location: data.location || '',
+            isNeed: data.isNeed,
         };
 
         const result = await transactionService.createTransaction(user.id, mappedData);
@@ -66,6 +67,7 @@ export const useTransactionActions = (user: User | null) => {
             description: newData.description,
             walletId: newData.walletId,
             location: newData.location || '',
+            isNeed: newData.isNeed,
         };
 
         const result = await transactionService.updateTransaction(user.id, transactionId, mappedData);

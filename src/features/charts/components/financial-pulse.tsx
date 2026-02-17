@@ -84,7 +84,7 @@ export function FinancialPulse({
                             </Badge>
                         )}
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter tabular-nums leading-none">
+                    <h1 className="text-5xl md:text-7xl font-medium tracking-tighter tabular-nums leading-none">
                         {formatCurrency(net)}
                     </h1>
                     <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 text-xs mt-2">
@@ -98,9 +98,9 @@ export function FinancialPulse({
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
                         <div className="flex items-center gap-2 text-emerald-400 mb-1">
                             <TrendingUp className="w-4 h-4" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Pemasukan</span>
+                            <span className="text-[10px] font-medium uppercase tracking-wider">Pemasukan</span>
                         </div>
-                        <p className="text-lg md:text-xl font-bold tabular-nums">{formatCurrency(income)}</p>
+                        <p className="text-lg md:text-xl font-medium tabular-nums">{formatCurrency(income)}</p>
                         <div className="w-full bg-white/10 h-1 mt-2 mb-2 rounded-full overflow-hidden">
                             <div className="bg-emerald-500 h-full rounded-full" style={{ width: '100%' }} />
                         </div>
@@ -113,9 +113,9 @@ export function FinancialPulse({
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
                         <div className="flex items-center gap-2 text-rose-400 mb-1">
                             <TrendingDown className="w-4 h-4" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Pengeluaran</span>
+                            <span className="text-[10px] font-medium uppercase tracking-wider">Pengeluaran</span>
                         </div>
-                        <p className="text-lg md:text-xl font-bold tabular-nums">{formatCurrency(expense)}</p>
+                        <p className="text-lg md:text-xl font-medium tabular-nums">{formatCurrency(expense)}</p>
                         <div className="w-full bg-white/10 h-1 mt-2 mb-2 rounded-full overflow-hidden">
                             <div className="bg-rose-500 h-full rounded-full" style={{ width: `${income > 0 ? Math.min((expense / income) * 100, 100) : 100}%` }} />
                         </div>
@@ -130,3 +130,4 @@ export function FinancialPulse({
         </div>
     );
 }
+

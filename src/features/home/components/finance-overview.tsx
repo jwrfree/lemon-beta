@@ -48,7 +48,7 @@ export const FinanceOverview = ({
                 </div>
                 <CardContent className="p-6 relative z-10">
                     <p className="text-sm font-medium text-primary-foreground/80 mb-2">Total Saldo</p>
-                    <div className="text-3xl font-semibold tracking-tight mb-4">
+                    <div className="text-3xl font-medium tracking-tight mb-4">
                         <AnimatedCounter value={totalBalance} />
                     </div>
                     <div className="flex items-center gap-2 text-xs text-primary-foreground/70">
@@ -76,7 +76,7 @@ export const FinanceOverview = ({
                             {incomeTrend.direction === 'up' ? '+' : ''}{incomeTrend.value}
                         </div>
                     </div>
-                    <div className="text-2xl font-semibold text-foreground">
+                    <div className="text-2xl font-medium text-foreground">
                         <AnimatedCounter value={income} />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-1">
@@ -104,7 +104,7 @@ export const FinanceOverview = ({
                         </div>
                     </div>
                     <p className="text-sm font-medium text-muted-foreground mb-1">Pengeluaran Bulan Ini</p>
-                    <div className="text-2xl font-semibold text-foreground">
+                    <div className="text-2xl font-medium text-foreground">
                         <AnimatedCounter value={expense} />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-1">
@@ -134,7 +134,7 @@ export const FinanceOverview = ({
                     <div className="space-y-1">
                         <p className="text-sm font-medium text-muted-foreground">Arus Kas Bersih</p>
                         <div className={cn(
-                            "text-2xl font-semibold",
+                            "text-2xl font-medium",
                             net >= 0 ? "text-teal-600 dark:text-teal-400" : "text-rose-600 dark:text-rose-400"
                         )}>
                             <AnimatedCounter value={net} />
@@ -157,3 +157,4 @@ export const FinanceOverview = ({
         </div>
     );
 };
+

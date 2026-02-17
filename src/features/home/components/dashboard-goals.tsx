@@ -32,7 +32,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         <Card className="border-none shadow-sm bg-card rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <CardTitle className="text-sm font-medium flex items-center gap-2">
                         <Target className="h-4 w-4 text-primary" /> Target
                     </CardTitle>
                     <CardDescription className="text-xs">Tabungan prioritas</CardDescription>
@@ -80,3 +80,4 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         </Card>
     );
 };
+

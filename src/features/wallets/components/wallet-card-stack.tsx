@@ -103,11 +103,11 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                         <Icon className={cn("h-6 w-6", textColor)} />
                       </div>
                       <div>
-                        <p className="font-black text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
+                        <p className="font-medium text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
                         {wallet.isDefault && (
                             <div className="flex items-center gap-1 mt-0.5">
                                 <ShieldCheck className="h-3 w-3 text-white/60" />
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Dompet Utama</span>
+                                <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">Dompet Utama</span>
                             </div>
                         )}
                       </div>
@@ -125,9 +125,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   <div className="flex-1 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-1 opacity-60">
                         <Sparkles className="h-3 w-3" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Saldo Tersedia</span>
+                        <span className="text-[9px] font-medium uppercase tracking-[0.2em]">Saldo Tersedia</span>
                     </div>
-                    <p className={cn("text-4xl font-black tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
+                    <p className={cn("text-4xl font-medium tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
                       {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
                     </p>
                   </div>
@@ -159,3 +159,4 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
     </div>
   );
 };
+

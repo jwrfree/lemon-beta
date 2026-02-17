@@ -114,7 +114,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                         </Button>
                     )}
                     <div className="space-y-0.5 sm:space-y-1">
-                        <CardTitle className="text-base sm:text-lg font-bold tracking-tight flex items-center gap-2">
+                        <CardTitle className="text-base sm:text-lg font-medium tracking-tight flex items-center gap-2">
                             {title}
                         </CardTitle>
                         <CardDescription className="text-[10px] sm:text-xs">
@@ -122,7 +122,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                         </CardDescription>
                     </div>
                 </div>
-                <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-bold tabular-nums text-[10px] sm:text-xs px-2 py-0.5">
+                <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-medium tabular-nums text-[10px] sm:text-xs px-2 py-0.5">
                     {formatCurrency(total)}
                 </Badge>
             </CardHeader>
@@ -162,13 +162,13 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                             {IconComponent ? <IconComponent className="h-4 w-4 sm:h-5 sm:w-5" /> : <div className="h-2 w-2 rounded-full bg-current" />}
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="truncate text-xs sm:text-sm font-bold leading-tight">{item.name}</p>
-                                            <p className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-muted-foreground/70 mt-0.5">
+                                            <p className="truncate text-xs sm:text-sm font-medium leading-tight">{item.name}</p>
+                                            <p className="text-[9px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 mt-0.5">
                                                 {item.percentage.toFixed(1)}% TOTAL
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="text-xs sm:text-sm font-bold tabular-nums">{formatCurrency(item.value)}</div>
+                                    <div className="text-xs sm:text-sm font-medium tabular-nums">{formatCurrency(item.value)}</div>
                                 </div>
                                 <Progress
                                     value={item.percentage}
@@ -184,3 +184,4 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
         </Card>
     );
 };
+

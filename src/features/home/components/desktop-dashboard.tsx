@@ -33,7 +33,6 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
-// AI Insights Removed
 
 // Import Analyst Charts Components
 import { FinancialPulse } from '@/features/charts/components/financial-pulse';
@@ -49,9 +48,6 @@ export const DesktopDashboard = () => {
     const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
     const router = useRouter();
 
-    // ==========================================
-    // DATA FETCHING STRATEGY
-    // ==========================================
     const now = lastRefreshed;
     const currentMonthStart = startOfMonth(now);
     const currentMonthEnd = endOfMonth(now);
@@ -59,7 +55,6 @@ export const DesktopDashboard = () => {
     const prevMonthEnd = endOfMonth(subMonths(now, 1));
     const last30DaysStart = subDays(now, 29);
 
-    // Fetch wider range for trend analysis (Last 3 Months)
     const fetchStart = subMonths(currentMonthStart, 3);
 
     const { wallets } = useWallets();
@@ -82,16 +77,11 @@ export const DesktopDashboard = () => {
         });
     };
 
-    // ==========================================
-    // ANALYST MODE CALCULATIONS
-    // ==========================================
-
     const filteredTransactions = useMemo(() => {
         if (selectedWalletId === 'all') return transactions;
         return transactions.filter(t => t.walletId === selectedWalletId);
     }, [transactions, selectedWalletId]);
 
-    // 1. Current Month Stats
     const currentMonthData = useMemo(() => {
         const txs = filteredTransactions.filter(t => {
             const date = parseISO(t.date);
@@ -101,7 +91,6 @@ export const DesktopDashboard = () => {
         const income = txs.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
         const expense = txs.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
 
-        // Category Breakdown
         const cats: Record<string, number> = {};
         txs.filter(t => t.type === 'expense').forEach(t => {
             cats[t.category] = (cats[t.category] || 0) + t.amount;
@@ -113,7 +102,6 @@ export const DesktopDashboard = () => {
         return { income, expense, net: income - expense, expenseCategories };
     }, [filteredTransactions, currentMonthStart, currentMonthEnd]);
 
-    // 2. Previous Month Stats
     const prevMonthData = useMemo(() => {
         const txs = filteredTransactions.filter(t => {
             const date = parseISO(t.date);
@@ -125,7 +113,6 @@ export const DesktopDashboard = () => {
         return { income, expense, net: income - expense };
     }, [filteredTransactions, prevMonthStart, prevMonthEnd]);
 
-    // 3. Trend Data (Daily) for Sparklines
     const trendData: DailyMetric[] = useMemo(() => {
         const dailyData: Record<string, { expense: number, count: number }> = {};
         eachDayOfInterval({ start: last30DaysStart, end: now }).forEach(day => {
@@ -147,7 +134,6 @@ export const DesktopDashboard = () => {
             .map(([date, val]) => ({ date, expense: val.expense, count: val.count || 0 }));
     }, [filteredTransactions, last30DaysStart, now]);
 
-    // 4. CASHFLOW COMPOSED DATA (Daily Accumulation)
     const cashflowData = useMemo(() => {
         const days = eachDayOfInterval({ start: startOfMonth(subMonths(now, 2)), end: now });
         let runningBalance = 0;
@@ -176,7 +162,6 @@ export const DesktopDashboard = () => {
         });
     }, [filteredTransactions, now]);
 
-    // 5. Projections
     const projectedExpense = useMemo(() => {
         const daysElapsed = differenceInCalendarDays(now, currentMonthStart) + 1;
         const daysInMonth = differenceInCalendarDays(currentMonthEnd, currentMonthStart) + 1;
@@ -210,9 +195,8 @@ export const DesktopDashboard = () => {
 
     const debtSummary = useMemo(() => ({ nextDueDebt: undefined, largestDebt: undefined }), []);
 
-    const recentTransactions = useMemo(() => filteredTransactions.slice(0, 10), [filteredTransactions]); // Increased to 10 for main view
+    const recentTransactions = useMemo(() => filteredTransactions.slice(0, 10), [filteredTransactions]);
 
-    // HEATMAP TRANSACTIONS (Current Month Only for intensity focus)
     const heatmapTransactions = useMemo(() => {
         return filteredTransactions
             .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
@@ -225,22 +209,22 @@ export const DesktopDashboard = () => {
 
     return (
         <TooltipProvider>
-            <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/50 pb-20">
+            <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/50 pb-20 text-zinc-900 dark:text-zinc-100">
                 <div className="max-w-[1920px] mx-auto p-4 lg:p-6 space-y-6">
 
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+                            <h1 className="text-2xl font-medium tracking-tight flex items-center gap-2">
                                 <Activity className="w-6 h-6 text-indigo-500" />
                                 Financial Command Center
                             </h1>
-                            <p className="text-sm text-muted-foreground mt-1">Real-time data analysis & portfolio tracking.</p>
+                            <p className="text-sm text-muted-foreground mt-1 font-medium">Real-time data analysis & portfolio tracking.</p>
                         </div>
 
                         <div className="flex items-center gap-3">
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-900 border-none shadow-sm rounded-xl h-9 text-xs">
+                                <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-900 border-none shadow-sm rounded-xl h-9 text-xs font-medium">
                                     <SelectValue placeholder="Pilih Dompet" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -309,7 +293,7 @@ export const DesktopDashboard = () => {
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
                                             <PieIcon className="w-5 h-5 text-indigo-500" />
-                                            <h3 className="font-bold text-zinc-900 dark:text-zinc-100">Allocation Radar</h3>
+                                            <h3 className="font-medium">Allocation Radar</h3>
                                         </div>
                                     </div>
                                     <CategoryPie
@@ -323,7 +307,7 @@ export const DesktopDashboard = () => {
                                 <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
                                     <div className="flex items-center gap-2 mb-6">
                                         <ArrowUpRight className="w-5 h-5 text-rose-500" />
-                                        <h3 className="font-bold text-zinc-900 dark:text-zinc-100">Top Spenders</h3>
+                                        <h3 className="font-medium">Top Spenders</h3>
                                     </div>
                                     <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
                                         {currentMonthData.expenseCategories.map((cat, idx) => {
@@ -340,40 +324,46 @@ export const DesktopDashboard = () => {
                                             );
                                         })}
                                         {currentMonthData.expenseCategories.length === 0 && (
-                                            <p className="text-zinc-400 text-sm text-center py-8">No data available for analysis.</p>
+                                            <p className="text-zinc-400 text-sm text-center py-8 font-medium">No data available for analysis.</p>
                                         )}
                                     </div>
                                 </div>
-                            </div>
-
-                            {/* MOVED: Recent Transactions to Main Column */}
-                            <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
-                                <h3 className="font-bold mb-4 flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
-                                    <ListTodo className="w-5 h-5 text-indigo-500" />
-                                    Mutasi Rekening (10 Terakhir)
-                                </h3>
-                                {filteredTransactions.length > 0 ? (
-                                    <DashboardRecentTransactions
-                                        transactions={recentTransactions} // Shows 10 items now
-                                        wallets={wallets}
-                                    />
-                                ) : (
-                                    <DashboardRecentTransactionsEmpty />
-                                )}
                             </div>
                         </div>
 
                         {/* RIGHT COLUMN (Sidebar Metrics) - Span 3 */}
                         <div className="col-span-12 lg:col-span-3 space-y-6">
-
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
-
                             <DashboardBudgetStatus budgets={activeBudgets} />
-
                             {activeGoals.length > 0 && <DashboardGoals goals={activeGoals} />}
-
                             <DashboardAlerts reminderSummary={reminderSummary} debtSummary={debtSummary} />
                         </div>
+                    </div>
+
+                    {/* FULL WIDTH Mutasi Rekening */}
+                    <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="font-medium flex items-center gap-2">
+                                <ListTodo className="w-5 h-5 text-indigo-500" />
+                                Mutasi Rekening <span className="opacity-50 font-normal">(10 Terakhir)</span>
+                            </h3>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-primary"
+                                onClick={() => router.push('/transactions')}
+                            >
+                                Lihat Semua Transaksi
+                            </Button>
+                        </div>
+                        {filteredTransactions.length > 0 ? (
+                            <DashboardRecentTransactions
+                                transactions={recentTransactions} 
+                                wallets={wallets}
+                            />
+                        ) : (
+                            <DashboardRecentTransactionsEmpty />
+                        )}
                     </div>
                 </div>
             </div>

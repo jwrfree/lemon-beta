@@ -40,7 +40,7 @@ export const DashboardHero = ({
                 <CardHeader className="pb-2 flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-xs font-medium text-primary-foreground/80 tracking-tight">Saldo Total</CardTitle>
-                        <div className="text-3xl font-semibold tracking-tight">
+                        <div className="text-3xl font-medium tracking-tight">
                             <AnimatedCounter value={totalBalance} />
                         </div>
                     </div>
@@ -103,3 +103,4 @@ export const DashboardHero = ({
         </div>
     );
 };
+

@@ -43,7 +43,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                 <div className="p-4 bg-primary/10 rounded-full mb-4 animate-in zoom-in duration-300">
                     <ReceiptText className="h-8 w-8 text-primary/80" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-lg font-semibold tracking-tight">Belum Ada Transaksi</h2>
+                <h2 className="text-lg font-medium tracking-tight">Belum Ada Transaksi</h2>
                 <p className="text-sm text-muted-foreground mt-1 mb-6 max-w-[300px]">
                     Semua catatan pengeluaran dan pemasukan kamu akan muncul di sini.
                 </p>

@@ -21,7 +21,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
     return (
         <Card className="border-none shadow-sm bg-card rounded-lg">
             <CardHeader>
-                <CardTitle className="text-sm font-semibold">Dompet</CardTitle>
+                <CardTitle className="text-sm font-medium">Dompet</CardTitle>
                 <CardDescription className="text-xs">
                     {wallets.length} dompet aktif digunakan
                 </CardDescription>
@@ -54,7 +54,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-semibold text-sm tabular-nums">{formatCurrency(wallet.balance)}</p>
+                                        <p className="font-medium text-sm tabular-nums">{formatCurrency(wallet.balance)}</p>
                                     </div>
                                 </Link>
                             )
@@ -68,3 +68,4 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
         </Card>
     );
 };
+

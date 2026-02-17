@@ -49,6 +49,7 @@ const SingleTransactionSchema = z.object({
   isDebtPayment: z.boolean().optional().default(false),
   debtId: z.string().optional().nullable(),
   counterparty: z.string().optional().nullable(),
+  isNeed: z.boolean().optional().default(true),
 });
 
 const ExtractionSchema = z.object({
@@ -132,7 +133,12 @@ Jam sekarang: ${currentTime}
    - 'kemarin' -> ${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}
    - Default: ${currentDate}
 
-9. **KLARIFIKASI AMBIGU (NEW):**
+9. **DETEKSI NEED VS WANT (PENTING):**
+   - **Need (Kebutuhan)**: Listrik, Air, Internet, Makan Siang (kerja), Bensin, Obat, Sembako, Transportasi Rutin, Cicilan Wajib. (Set 'isNeed': true).
+   - **Want (Keinginan)**: Kopi Mahal (Starbucks dll), Bioskop, Game, Gadget Baru (jika upgrade tidak perlu), Hobi, Jalan-jalan, Makan Mewah. (Set 'isNeed': false).
+   - Default: true jika ragu.
+
+10. **KLARIFIKASI AMBIGU (NEW):**
    - Jika input user terlalu ambigu untuk diproses (misal hanya angka tanpa konteks, atau kategori yang sangat meragukan), Anda BOLEH memberikan pertanyaan klarifikasi di field 'clarificationQuestion' DAN membiarkan 'transactions' kosong atau terisi sebagian.
    - Contoh: User bilang "Kopi 25rb", Anda bisa tanya: "Ini masuk ke kategori 'Kebutuhan' atau 'Gaya Hidup' (Lifestyle) nih?" di field 'clarificationQuestion'.
 
@@ -150,7 +156,10 @@ Jam sekarang: ${currentTime}
       "sourceWallet": "...",
       "destinationWallet": "...",
       "isDebtPayment": boolean,
-      "counterparty": "..."
+      "destinationWallet": "...",
+      "isDebtPayment": boolean,
+      "counterparty": "...",
+      "isNeed": boolean
     }
   ],
   "clarificationQuestion": "string (optional)"
@@ -205,7 +214,8 @@ Langsung parse tanpa tanya balik!`;
           wallet: "Tunai",
           date: currentDate,
           type: "expense",
-          isDebtPayment: false
+          isDebtPayment: false,
+          isNeed: true
         }]
       };
     }
@@ -234,7 +244,8 @@ Langsung parse tanpa tanya balik!`;
         wallet: "Tunai",
         date: currentDate,
         type: "expense",
-        isDebtPayment: false
+        isDebtPayment: false,
+        isNeed: true
       }]
     };
   }
@@ -268,10 +279,13 @@ ${JSON.stringify(previousData, null, 2)}
 2. **KOREKSI SUMBER DANA (WALLET)**:
    - Sangat sensitif terhadap kata kunci seperti: "pake", "ganti dompet", "dari bca", "via gopay", "pindah ke cash", dll.
    - Jika user menyebutkan nama dompet, pastikan field 'wallet' diupdate sesuai daftar: ${walletList}.
-3. Jika user memberikan informasi yang memperbaiki field tertentu (nominal, kategori, deskripsi), update field tersebut.
-4. Jika user memberikan informasi tambahan untuk transaksi yang belum lengkap, lengkapi datanya.
-5. Tetap gunakan format JSON yang sama.
-6. Jika instruksi user masih ambigu, Anda boleh menggunakan 'clarificationQuestion'.
+3. **KOREKSI NEED VS WANT**:
+   - Jika user bilang "ini kebutuhan" -> set 'isNeed': true.
+   - Jika user bilang "ini keinginan/hiburan/lifestyle" -> set 'isNeed': false.
+4. Jika user memberikan informasi yang memperbaiki field tertentu (nominal, kategori, deskripsi), update field tersebut.
+5. Jika user memberikan informasi tambahan untuk transaksi yang belum lengkap, lengkapi datanya.
+6. Tetap gunakan format JSON yang sama.
+7. Jika instruksi user masih ambigu, Anda boleh menggunakan 'clarificationQuestion'.
 
 ### OUTPUT JSON FORMAT:
 Sama seperti sebelumnya.`;

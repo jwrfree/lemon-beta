@@ -112,7 +112,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
-                    <h2 className="text-xl font-bold">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
+                    <h2 className="text-xl font-medium">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
                     </Button>
@@ -213,3 +213,4 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
         </motion.div>
     );
 };
+

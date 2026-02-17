@@ -37,11 +37,11 @@ const TransactionListItemContent = ({
                 <CategoryIcon className={cn("h-5 w-5", color)} />
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-semibold text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
+                <div className="font-medium text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-pink-500 bg-pink-50 dark:bg-pink-900/20 px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider shadow-sm border border-pink-100 dark:border-pink-900/30">
+                        <span className="flex items-center gap-1 text-pink-500 bg-pink-50 dark:bg-pink-900/20 px-1.5 py-0.5 rounded-md text-[9px] font-medium uppercase tracking-wider shadow-sm border border-pink-100 dark:border-pink-900/30">
                             <Sparkles className="h-2 w-2 fill-current" />
                             Want
                         </span>
@@ -65,7 +65,7 @@ const TransactionListItemContent = ({
                 </div>
             </div>
             <div
-                className={cn("text-sm font-semibold tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
+                className={cn("text-sm font-medium tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
                 aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
             >
                 <span aria-hidden="true">
@@ -232,3 +232,4 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
         </div>
     );
 };
+

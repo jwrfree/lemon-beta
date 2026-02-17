@@ -142,7 +142,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
               </Button>
             )}
           </div>
-          <h2 className="text-xl font-bold text-center">{stepTitles[step - 1]}</h2>
+          <h2 className="text-xl font-medium text-center">{stepTitles[step - 1]}</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
             <X className="h-5 w-5" />
             <span className="sr-only">Tutup</span>
@@ -204,14 +204,14 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                         <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 mb-1">Smart Insight</h4>
+                        <h4 className="text-xs font-medium uppercase tracking-wider text-emerald-700 dark:text-emerald-400 mb-1">Smart Insight</h4>
                         <p className="text-xs text-emerald-900 dark:text-emerald-100 leading-relaxed">
-                          Rata-rata pengeluaranmu di <span className="font-bold">{selectedCategories[0]}</span> adalah <span className="font-bold">{formatCurrency(recommendation.avg)}</span> per bulan.
+                          Rata-rata pengeluaranmu di <span className="font-medium">{selectedCategories[0]}</span> adalah <span className="font-medium">{formatCurrency(recommendation.avg)}</span> per bulan.
                         </p>
                         <Button
                           size="sm"
                           variant="link"
-                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-bold text-xs mt-2"
+                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-medium text-xs mt-2"
                           onClick={() => setTargetAmount(Math.ceil(recommendation.avg))}
                         >
                           Gunakan {formatCurrency(Math.ceil(recommendation.avg))}
@@ -231,7 +231,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                       id="target-amount"
                       value={formatCurrency(targetAmount)}
                       onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                      className="text-4xl font-bold border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/20"
+                      className="text-4xl font-medium border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/20"
                       placeholder="Rp 0"
                       size="lg"
                       inputMode="numeric"
@@ -264,3 +264,4 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+

@@ -183,7 +183,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
                     <div>
-                        <h2 className="text-xl font-bold">{isEditMode ? 'Edit Pengingat' : 'Pengingat Baru'}</h2>
+                        <h2 className="text-xl font-medium">{isEditMode ? 'Edit Pengingat' : 'Pengingat Baru'}</h2>
                         <p className="text-sm text-muted-foreground">Atur tagihan, langganan, atau pengingat hutang.</p>
                     </div>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
@@ -370,3 +370,4 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
         </motion.div>
     );
 };
+

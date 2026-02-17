@@ -118,7 +118,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
               </Button>
             )}
           </div>
-          <h2 className="text-xl font-bold text-center">
+          <h2 className="text-xl font-medium text-center">
             {step === 1 ? 'Pilih Jenis Dompet' : `Detail Dompet ${selectedCategory?.name}`}
           </h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
@@ -246,3 +246,4 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+

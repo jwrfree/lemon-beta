@@ -44,7 +44,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold mb-4">
+                <div className="text-2xl font-medium mb-4">
                     <AnimatedCounter value={displayNetWorth} />
                 </div>
 
@@ -53,7 +53,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Wallet className="h-3 w-3" /> Aset
                         </p>
-                        <p className="text-sm font-semibold text-emerald-600">
+                        <p className="text-sm font-medium text-emerald-600">
                             {formatCurrency(totalAssets)}
                         </p>
                     </div>
@@ -61,7 +61,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <TrendingDown className="h-3 w-3" /> Kewajiban
                         </p>
-                        <p className="text-sm font-semibold text-rose-600">
+                        <p className="text-sm font-medium text-rose-600">
                             {formatCurrency(totalLiabilities)}
                         </p>
                     </div>

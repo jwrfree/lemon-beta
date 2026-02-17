@@ -23,6 +23,7 @@ type AIProcessedTransaction = Partial<SingleTransactionOutput> & Partial<ScanRec
     type?: 'income' | 'expense';
     date?: string;
     wallet?: string;
+    isNeed?: boolean;
 };
 
 export type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING' | 'MULTI_CONFIRMING';
@@ -40,6 +41,7 @@ export interface SmartTransactionData {
     counterparty?: string;
     sourceWallet?: string;
     destinationWallet?: string;
+    isNeed?: boolean;
 }
 
 export type Message = {
@@ -174,7 +176,7 @@ export const useSmartAddFlow = () => {
         }
 
         const processedTransactions = rawTransactions.map((tx) => {
-            const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty, transactionDate } = tx;
+            const { category, sourceWallet, destinationWallet, amount, description, type, subCategory, location, merchant, date, isDebtPayment, counterparty, transactionDate, isNeed } = tx;
 
             const txDate = date || transactionDate;
 
@@ -236,7 +238,8 @@ export const useSmartAddFlow = () => {
                 isDebtPayment: isDebtPayment || false,
                 counterparty: counterparty || undefined,
                 sourceWallet: sourceWallet || undefined,
-                destinationWallet: destinationWallet || undefined
+                destinationWallet: destinationWallet || undefined,
+                isNeed: isNeed !== undefined ? isNeed : true
             };
         });
 
@@ -312,7 +315,8 @@ export const useSmartAddFlow = () => {
                         date: t.date.split('T')[0], // YYYY-MM-DD
                         type: t.type,
                         isDebtPayment: t.isDebtPayment || false,
-                        counterparty: t.counterparty
+                        counterparty: t.counterparty,
+                        isNeed: t.isNeed !== undefined ? t.isNeed : true
                     };
                 });
 

@@ -49,14 +49,14 @@ export default function WalletsPage() {
                 </div>
               </div>
               <div className="max-w-[280px] text-center space-y-3">
-                <h2 className="text-2xl font-bold tracking-tighter">Belum Ada Dompet</h2>
+                <h2 className="text-2xl font-medium tracking-tighter">Belum Ada Dompet</h2>
                 <p className="text-sm font-medium text-muted-foreground leading-relaxed">
                   Semua harta dan sumber dana kamu akan terorganisir rapi di sini.
                 </p>
               </div>
               <Button 
                 onClick={() => setIsWalletModalOpen(true)}
-                className="mt-10 rounded-2xl h-12 px-8 shadow-lg shadow-primary/20 active:scale-95 transition-all font-bold"
+                className="mt-10 rounded-2xl h-12 px-8 shadow-lg shadow-primary/20 active:scale-95 transition-all font-medium"
               >
                 <PlusCircle className="mr-2 h-5 w-5" />
                 Buat Dompet Pertama
@@ -70,19 +70,21 @@ export default function WalletsPage() {
                 activeIndex={safeActiveIndex}
               />
               
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold">Transaksi Terakhir</h2>
-                  <Button variant="link" size="sm">Lihat Semua</Button>
+              <div className="mt-4">
+                <div className="px-5 flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-widest">Mutasi Rekening <span className="opacity-50">(10 Terakhir)</span></h2>
+                  <Button variant="link" size="sm" className="text-[10px] font-medium uppercase tracking-widest text-primary" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                 </div>
                 
-                {activeWallet && (
-                  <TransactionList 
-                    transactions={walletTransactions} 
-                    isLoading={isTransactionsLoading}
-                    limit={10} 
-                  />
-                )}
+                <div className="w-full">
+                  {activeWallet && (
+                    <TransactionList 
+                      transactions={walletTransactions} 
+                      isLoading={isTransactionsLoading}
+                      limit={10} 
+                    />
+                  )}
+                </div>
               </div>
             </main>
           )}
@@ -126,11 +128,11 @@ export default function WalletsPage() {
                     <div className="p-5 bg-primary/10 rounded-[2rem] mb-6">
                         <Wallet className="h-12 w-12 text-primary" strokeWidth={1.5} />
                     </div>
-                    <h2 className="text-3xl font-black tracking-tighter mb-4">Mulai Kelola Asetmu</h2>
+                    <h2 className="text-3xl font-medium tracking-tighter mb-4">Mulai Kelola Asetmu</h2>
                     <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
                         Dompet adalah sumber dana transaksi. Buat dompet seperti Kas, Bank, atau E-Wallet untuk mencatat keuangan lebih rapi.
                     </p>
-                    <Button size="lg" onClick={() => setIsWalletModalOpen(true)} className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20">
+                    <Button size="lg" onClick={() => setIsWalletModalOpen(true)} className="w-full h-14 rounded-2xl text-lg font-medium shadow-xl shadow-primary/20">
                         <PlusCircle className="mr-2 h-6 w-6" />
                         Buat Dompet Baru
                     </Button>
@@ -149,3 +151,4 @@ export default function WalletsPage() {
     </div>
   );
 };
+

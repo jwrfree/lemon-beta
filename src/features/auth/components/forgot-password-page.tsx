@@ -106,7 +106,7 @@ export const ForgotPasswordPage = ({
         <Wrapper {...pageProps}>
             <MotionWrapper {...contentProps}>
                 <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
-                    <h2 id="forgot-password-heading" className="text-xl font-semibold">
+                    <h2 id="forgot-password-heading" className="text-xl font-medium">
                         Lupa Password
                     </h2>
                     {!isPage && (
@@ -202,3 +202,4 @@ export const ForgotPasswordPage = ({
         </Wrapper>
     );
 };
+

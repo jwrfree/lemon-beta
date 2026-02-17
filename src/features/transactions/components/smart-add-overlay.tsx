@@ -153,7 +153,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                 <div className="flex items-center justify-between py-4 shrink-0">
                                     <div className="flex items-center gap-2 text-primary">
                                         <Sparkles className="h-4 w-4" />
-                                        <span className="text-sm font-bold uppercase tracking-wide">Smart Add</span>
+                                        <span className="text-sm font-medium uppercase tracking-wide">Smart Add</span>
                                     </div>
                                     {pageState !== 'IDLE' && (
                                         <Button
@@ -249,7 +249,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                                 Batal
                                             </Button>
                                             <Button
-                                                className="flex-[2] h-12 rounded-2xl font-bold text-base shadow-lg shadow-primary/20"
+                                                className="flex-[2] h-12 rounded-2xl font-medium text-base shadow-lg shadow-primary/20"
                                                 onClick={handleConfirm}
                                             >
                                                 <CheckCircle2 className="h-5 w-5 mr-2" />
@@ -266,3 +266,4 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
         </AnimatePresence>
     );
 };
+

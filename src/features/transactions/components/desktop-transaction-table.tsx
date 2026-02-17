@@ -99,7 +99,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="gap-2 h-10 rounded-xl px-4 border-zinc-200/60 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all font-bold text-[10px] uppercase tracking-widest"
+                    className="gap-2 h-10 rounded-xl px-4 border-zinc-200/60 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all font-medium text-[10px] uppercase tracking-widest"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
@@ -107,28 +107,28 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
             </div>
             <div className="overflow-hidden rounded-[2.5rem] bg-white dark:bg-zinc-900 premium-shadow border border-zinc-200/60 dark:border-zinc-800/60">
                 <table className="w-full text-sm text-left">
-                    <thead className="bg-zinc-50/50 dark:bg-zinc-800/50 text-zinc-400 font-bold border-b border-zinc-100 dark:border-zinc-800">
+                    <thead className="bg-zinc-50/50 dark:bg-zinc-800/50 text-zinc-400 font-medium border-b border-zinc-100 dark:border-zinc-800">
                         <tr>
-                            <th className="p-5 pl-8 cursor-pointer hover:text-primary transition-colors font-bold text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('date')}>
+                            <th className="p-5 pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
                                     Tanggal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </th>
-                            <th className="p-5 cursor-pointer hover:text-primary transition-colors font-bold text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('description')}>
+                            <th className="p-5 cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('description')}>
                                 <div className="flex items-center gap-2">
                                     Detail Transaksi
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </th>
-                            <th className="p-5 text-right cursor-pointer hover:text-primary transition-colors font-bold text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('amount')}>
+                            <th className="p-5 text-right cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('amount')}>
                                 <div className="flex items-center justify-end gap-2">
                                     Nominal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </th>
-                            <th className="p-5 font-bold text-[10px] uppercase tracking-[0.15em]">Status</th>
-                            <th className="p-5 text-right pr-8 font-bold text-[10px] uppercase tracking-[0.15em]">Aksi</th>
+                            <th className="p-5 font-medium text-[10px] uppercase tracking-[0.15em]">Status</th>
+                            <th className="p-5 text-right pr-8 font-medium text-[10px] uppercase tracking-[0.15em]">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
@@ -137,12 +137,12 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                             const wallet = wallets.find(w => w.id === t.walletId);
                             return (
                                 <tr key={t.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/30 transition-all group">
-                                    <td className="p-5 pl-8 text-xs font-bold text-zinc-400 whitespace-nowrap">
+                                    <td className="p-5 pl-8 text-xs font-medium text-zinc-400 whitespace-nowrap">
                                         {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                     </td>
                                     <td className="p-5">
-                                        <div className="font-bold text-zinc-900 dark:text-zinc-100 text-sm leading-tight">{t.description || t.category}</div>
-                                        <div className="text-[10px] font-bold mt-1.5 flex items-center gap-2">
+                                        <div className="font-medium text-zinc-900 dark:text-zinc-100 text-sm leading-tight">{t.description || t.category}</div>
+                                        <div className="text-[10px] font-medium mt-1.5 flex items-center gap-2">
                                             <span className="uppercase tracking-wider text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-lg border border-black/5 dark:border-white/5">
                                                 {t.category}
                                             </span>
@@ -175,7 +175,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                         </div>
                                     </td>
                                     <td className={cn(
-                                        "p-5 text-right font-bold text-sm tabular-nums tracking-tight",
+                                        "p-5 text-right font-medium text-sm tabular-nums tracking-tight",
                                         isExpense ? "text-rose-600 dark:text-rose-500" : "text-emerald-600 dark:text-emerald-500"
                                     )}>
                                         <div className="flex items-center justify-end gap-1.5">
@@ -184,7 +184,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                         </div>
                                     </td>
                                     <td className="p-5">
-                                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded-full w-fit border border-emerald-100 dark:border-emerald-900/30">
+                                        <div className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded-full w-fit border border-emerald-100 dark:border-emerald-900/30">
                                             <CheckCircle2 className="h-3 w-3" />
                                             Tuntas
                                         </div>

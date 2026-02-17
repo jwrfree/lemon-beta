@@ -142,7 +142,7 @@ export const LoginPage = ({
         <Wrapper {...pageProps}>
             <MotionWrapper {...contentProps}>
                 <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
-                    <h2 id="login-heading" className="text-xl font-semibold">Selamat Datang Kembali!</h2>
+                    <h2 id="login-heading" className="text-xl font-medium">Selamat Datang Kembali!</h2>
                     {!isPage && (
                         <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
                             <X className="h-5 w-5" />
@@ -295,3 +295,4 @@ export const LoginPage = ({
         </Wrapper>
     );
 };
+

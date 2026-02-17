@@ -103,7 +103,7 @@ export const SmartAddFooter = ({
                             Simpan & Tambah Lagi
                         </Button>
                         <Button
-                            className="w-full h-14 rounded-2xl text-lg font-semibold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
+                            className="w-full h-14 rounded-2xl text-lg font-medium shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
                             size="lg"
                             onClick={() => handleConfirmSave(false)}
                         >
@@ -128,7 +128,7 @@ export const SmartAddFooter = ({
                             Batalkan Semua
                         </Button>
                         <Button
-                            className="w-full h-14 rounded-2xl text-lg font-semibold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
+                            className="w-full h-14 rounded-2xl text-lg font-medium shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
                             size="lg"
                             onClick={() => handleMultiConfirmSave()}
                         >
@@ -193,3 +193,4 @@ export const SmartAddFooter = ({
         </footer>
     );
 };
+

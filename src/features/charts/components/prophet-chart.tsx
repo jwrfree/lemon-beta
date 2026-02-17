@@ -54,7 +54,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
 
             <div className="flex items-center justify-between mb-6 relative z-10">
                 <div>
-                    <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                    <h3 className="text-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                         <BrainCircuit className="w-5 h-5 text-purple-500" />
                         Prophet Engine (Beta)
                     </h3>
@@ -64,7 +64,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                 {finalPrediction && (
                     <div className="text-right">
                         <p className="text-xs text-zinc-400">Proyeksi Akhir</p>
-                        <p className={cn("text-lg font-mono font-bold", isPositive ? "text-emerald-500" : "text-rose-500")}>
+                        <p className={cn("text-lg font-mono font-medium", isPositive ? "text-emerald-500" : "text-rose-500")}>
                             {formatCurrency(finalPrediction.forecast || 0)}
                         </p>
                     </div>
@@ -111,16 +111,16 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
 
                                     return (
                                         <div className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-800 text-sm ring-1 ring-purple-500/20">
-                                            <p className="font-semibold mb-2 flex items-center justify-between">
+                                            <p className="font-medium mb-2 flex items-center justify-between">
                                                 {format(parseISO(label), 'EEEE, d MMM')}
-                                                {isPrediction && <span className="text-[10px] bg-purple-100 dark:bg-purple-900 text-purple-600 px-1.5 py-0.5 rounded-full uppercase font-bold tracking-wider">Forecast</span>}
+                                                {isPrediction && <span className="text-[10px] bg-purple-100 dark:bg-purple-900 text-purple-600 px-1.5 py-0.5 rounded-full uppercase font-medium tracking-wider">Forecast</span>}
                                             </p>
 
                                             <div className="space-y-1">
                                                 {item.actual !== undefined && (
                                                     <div className="flex justify-between gap-8 text-zinc-600 dark:text-zinc-300">
                                                         <span>Actual:</span>
-                                                        <span className="font-mono font-bold">
+                                                        <span className="font-mono font-medium">
                                                             {formatCurrency(item.actual)}
                                                         </span>
                                                     </div>
@@ -128,7 +128,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
 
                                                 <div className="flex justify-between gap-8 text-purple-500">
                                                     <span>Model Projection:</span>
-                                                    <span className="font-mono font-bold">
+                                                    <span className="font-mono font-medium">
                                                         {formatCurrency(item.forecast)}
                                                     </span>
                                                 </div>
@@ -240,3 +240,4 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
         </div>
     );
 }
+

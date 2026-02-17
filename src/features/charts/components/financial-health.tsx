@@ -33,7 +33,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
     return (
         <Card className="p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm flex flex-col justify-between h-full">
             <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+                <h3 className="text-lg font-medium tracking-tight flex items-center gap-2">
                     <Gauge className="w-5 h-5 text-zinc-500" />
                     Kesehatan
                 </h3>
@@ -57,7 +57,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
                     />
                 </div>
                 <div className="mt-4 text-center">
-                    <p className={cn("text-xl font-bold uppercase tracking-wider", colorClass)}>{status}</p>
+                    <p className={cn("text-xl font-medium uppercase tracking-wider", colorClass)}>{status}</p>
                     <p className="text-xs text-muted-foreground font-medium mt-1">
                         Tabungan: {savingsRate.toFixed(1)}%
                     </p>
@@ -90,8 +90,9 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
                 )}
             </div>
             <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">{title}</p>
-            <p className="text-2xl font-semibold tabular-nums mb-1">{value}</p>
+            <p className="text-2xl font-medium tabular-nums mb-1">{value}</p>
             <p className="text-xs text-zinc-500 dark:text-zinc-400">{subtitle}</p>
         </Card>
     );
 }
+

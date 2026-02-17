@@ -42,7 +42,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 {...handlers}
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl">
-                    <h2 className="text-xl font-bold text-destructive tracking-tight">Konfirmasi Hapus</h2>
+                    <h2 className="text-xl font-medium text-destructive tracking-tight">Konfirmasi Hapus</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
@@ -55,14 +55,14 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                             <CategoryIcon className={cn("h-5 w-5", details.color)} />
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <div className="font-semibold text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
+                            <div className="font-medium text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
                             <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                                 <span>{transaction.subCategory || transaction.category}</span>
                                 <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
                                 <span>{format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
                             </div>
                         </div>
-                        <div className={cn("text-sm font-semibold text-right tabular-nums tracking-tight", amountColor)}>
+                        <div className={cn("text-sm font-medium text-right tabular-nums tracking-tight", amountColor)}>
                             <span>
                                 {transaction.type === 'expense' ? '- ' : '+ '}{formatCurrency(transaction.amount)}
                             </span>
@@ -76,3 +76,4 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
         </motion.div>
     );
 };
+

@@ -33,7 +33,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl z-10">
-                    <h2 className="text-xl font-bold tracking-tight">Pilih Sub-kategori {category.name}</h2>
+                    <h2 className="text-xl font-medium tracking-tight">Pilih Sub-kategori {category.name}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
@@ -51,7 +51,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                                 }}
                                 className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-accent text-left"
                             >
-                                <span className={cn(selectedValue === subCat && "font-semibold text-primary")}>
+                                <span className={cn(selectedValue === subCat && "font-medium text-primary")}>
                                     {subCat}
                                 </span>
                                 {selectedValue === subCat && <Check className="h-5 w-5 text-primary" />}
@@ -63,3 +63,4 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
         </motion.div>
     );
 };
+

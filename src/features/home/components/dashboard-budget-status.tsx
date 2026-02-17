@@ -26,7 +26,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
         <Card className="border-none shadow-sm bg-card rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle className="text-sm font-semibold">Status Anggaran</CardTitle>
+                    <CardTitle className="text-sm font-medium">Status Anggaran</CardTitle>
                     <CardDescription className="text-xs">Monitoring penggunaan budget bulanan</CardDescription>
                 </div>
                 <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
@@ -59,7 +59,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                                     </span>
                                     <span className={cn(
                                         "text-xs",
-                                        isOver ? "text-destructive font-bold" : "text-muted-foreground"
+                                        isOver ? "text-destructive font-medium" : "text-muted-foreground"
                                     )}>
                                         {formatCurrency(spent)} <span className="text-[10px] text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
                                     </span>
@@ -80,3 +80,4 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
         </Card>
     );
 };
+

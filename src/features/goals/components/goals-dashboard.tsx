@@ -24,7 +24,7 @@ export const GoalsDashboard = () => {
                 <div className="p-4 bg-primary/10 rounded-full mb-4">
                     <Target className="h-12 w-12 text-primary" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-2xl font-bold tracking-tight">Belum Ada Target</h2>
+                <h2 className="text-2xl font-medium tracking-tight">Belum Ada Target</h2>
                 <p className="text-muted-foreground mt-2 mb-8 max-w-xs">Mulailah menabung untuk impianmu hari ini.</p>
                 <Button onClick={() => setIsGoalModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
                     <Plus className="mr-2 h-5 w-5" />
@@ -41,8 +41,8 @@ export const GoalsDashboard = () => {
             {/* List */}
             <div>
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Daftar Impian</h2>
-                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+                    <h2 className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground px-1">Daftar Impian</h2>
+                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-medium uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
                         <Plus className="h-3.5 w-3.5 mr-1" />
                         Tambah
                     </Button>
@@ -64,3 +64,4 @@ export const GoalsDashboard = () => {
         </div>
     );
 };
+

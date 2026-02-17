@@ -59,7 +59,7 @@ export const BudgetingDashboard = () => {
                 <div className="p-4 bg-primary/10 rounded-full mb-4">
                     <HandCoins className="h-12 w-12 text-primary" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-2xl font-bold tracking-tight">Belum Ada Anggaran</h2>
+                <h2 className="text-2xl font-medium tracking-tight">Belum Ada Anggaran</h2>
                 <p className="text-muted-foreground mt-2 mb-8 max-w-xs">Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.</p>
                 <Button onClick={() => setIsBudgetModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
                     <PlusCircle className="mr-2 h-5 w-5" />
@@ -75,13 +75,13 @@ export const BudgetingDashboard = () => {
 
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
-                    <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground px-1">Ringkasan Bulan Ini</h2>
+                    <h2 className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground px-1">Ringkasan Bulan Ini</h2>
                     <Card className="border-none shadow-sm rounded-xl bg-card overflow-hidden">
                         <CardContent className="p-6 space-y-8">
                             <div className="h-48 flex justify-center relative">
                                 <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Sisa</p>
-                                    <p className="text-lg font-black">{Math.round((overview.totalRemaining / overview.totalBudget) * 100)}%</p>
+                                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Sisa</p>
+                                    <p className="text-lg font-medium">{Math.round((overview.totalRemaining / overview.totalBudget) * 100)}%</p>
                                 </div>
                                 <ChartContainer config={{}} className="aspect-square h-full relative z-10">
                                     <PieChart>
@@ -101,8 +101,8 @@ export const BudgetingDashboard = () => {
 
                             <div className="grid grid-cols-1 gap-4">
                                 <div className="p-4 rounded-lg bg-background/40 shadow-inner">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Limit</p>
-                                    <p className="text-xl font-extrabold">{formatCurrency(overview.totalBudget)}</p>
+                                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Total Limit</p>
+                                    <p className="text-xl font-medium">{formatCurrency(overview.totalBudget)}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -112,8 +112,8 @@ export const BudgetingDashboard = () => {
                 {/* BUDGETS LIST */}
                 <div className="col-span-12 lg:col-span-8 space-y-4">
                     <div className="flex items-center justify-between px-1">
-                        <h2 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Pos Anggaran</h2>
-                        <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+                        <h2 className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">Pos Anggaran</h2>
+                        <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-medium uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
                             <Plus className="h-3.5 w-3.5 mr-1" />
                             Tambah
                         </Button>
@@ -142,3 +142,4 @@ export const BudgetingDashboard = () => {
         </div>
     );
 };
+

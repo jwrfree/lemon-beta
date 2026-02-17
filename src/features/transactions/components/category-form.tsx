@@ -65,7 +65,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-6 border-b flex items-center justify-between bg-background">
-                    <h2 className="text-lg font-semibold">{initialData ? 'Edit Kategori' : 'Kategori Baru'}</h2>
+                    <h2 className="text-lg font-medium">{initialData ? 'Edit Kategori' : 'Kategori Baru'}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted" aria-label="Tutup">
                         <X className="h-5 w-5" />
                     </Button>
@@ -148,7 +148,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 </form>
 
                 <div className="p-6 border-t bg-background">
-                    <Button type="submit" className="w-full h-12 rounded-xl text-base font-semibold" disabled={isSubmitting}>
+                    <Button type="submit" className="w-full h-12 rounded-xl text-base font-medium" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : 'Simpan Kategori'}
                     </Button>
                 </div>
@@ -156,3 +156,4 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
         </motion.div>
     );
 };
+

@@ -23,7 +23,7 @@ export default function NotificationsPage() {
             <main className="flex justify-center p-8 text-center pt-16">
                 <div className="flex flex-col items-center">
                     <AllCaughtUpIllustration />
-                    <h2 className="text-2xl font-bold mt-6">Semua Sudah Beres!</h2>
+                    <h2 className="text-2xl font-medium mt-6">Semua Sudah Beres!</h2>
                     <p className="text-muted-foreground mt-2 max-w-sm">
                         Tidak ada notifikasi baru untukmu saat ini. Kami akan memberitahumu jika ada pembaruan penting.
                     </p>
@@ -32,3 +32,4 @@ export default function NotificationsPage() {
         </div>
     );
 };
+

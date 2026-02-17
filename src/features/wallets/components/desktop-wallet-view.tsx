@@ -123,7 +123,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                         <CardTitle className="text-sm font-medium opacity-90 uppercase tracking-wider">Total Aset</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold tracking-tight">
+                        <div className="text-3xl font-medium tracking-tight">
                             {isBalanceVisible ? formatCurrency(totalBalance) : "Rp •••••••••"}
                         </div>
                         <p className="text-xs opacity-75 mt-1 font-medium">
@@ -141,7 +141,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             <div className="p-1.5 bg-emerald-500/10 rounded-md">
                                 <TrendingUp className="h-4 w-4 text-emerald-600" />
                             </div>
-                            <div className="text-2xl font-bold tracking-tight text-foreground">
+                            <div className="text-2xl font-medium tracking-tight text-foreground">
                                 {formatCurrency(income30)}
                             </div>
                         </div>
@@ -157,7 +157,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             <div className="p-1.5 bg-rose-500/10 rounded-md">
                                 <TrendingDown className="h-4 w-4 text-rose-600" />
                             </div>
-                            <div className="text-2xl font-bold tracking-tight text-foreground">
+                            <div className="text-2xl font-medium tracking-tight text-foreground">
                                 {formatCurrency(expense30)}
                             </div>
                         </div>
@@ -170,7 +170,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 <Card className="flex flex-col border-none shadow-sm bg-background/50 backdrop-blur-sm h-full overflow-hidden">
                     <div className="p-4 border-b space-y-4">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold tracking-tight flex items-center gap-2">
+                            <h2 className="text-lg font-medium tracking-tight flex items-center gap-2">
                                 Dompet Saya
                                 <Badge variant="secondary" className="rounded-md px-1.5 py-0 text-xs">{filteredWallets.length}</Badge>
                             </h2>
@@ -221,11 +221,11 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                             <Icon className="h-5 w-5" />
                                         </div>
                                         <div className="flex flex-col overflow-hidden">
-                                            <span className={cn("text-sm font-semibold truncate", isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
+                                            <span className={cn("text-sm font-medium truncate", isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
                                                 {wallet.name}
                                             </span>
                                             <span className={cn(
-                                                "text-sm font-bold tracking-tight", 
+                                                "text-sm font-medium tracking-tight", 
                                                 isActive ? "text-primary" : "text-foreground",
                                                 !isBalanceVisible && "blur-sm"
                                             )}>
@@ -261,7 +261,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         )}
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <h3 className="text-xl font-bold tracking-tight">{activeWallet.name}</h3>
+                                                <h3 className="text-xl font-medium tracking-tight">{activeWallet.name}</h3>
                                                 <Badge variant="outline" className={cn("text-[10px] border", getHealthBadgeClass(getHealth(activeWallet).variant))}>
                                                     {getHealth(activeWallet).label}
                                                 </Badge>
@@ -271,16 +271,16 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </div>
                                     <div className="text-right">
                                         <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">Saldo</div>
-                                        <h4 className={cn("text-2xl font-bold tracking-tight text-primary", !isBalanceVisible && "blur-md")}>
+                                        <h4 className={cn("text-2xl font-medium tracking-tight text-primary", !isBalanceVisible && "blur-md")}>
                                             {isBalanceVisible ? formatCurrency(activeWallet.balance) : "Rp •••••••••"}
                                         </h4>
                                     </div>
                                 </div>
 
                                 <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full lg:w-fit grid grid-cols-3">
-                                    <TabsTrigger value="transactions" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Riwayat</TabsTrigger>
-                                    <TabsTrigger value="analytics" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Insight</TabsTrigger>
-                                    <TabsTrigger value="settings" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengaturan</TabsTrigger>
+                                    <TabsTrigger value="transactions" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Riwayat</TabsTrigger>
+                                    <TabsTrigger value="analytics" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Insight</TabsTrigger>
+                                    <TabsTrigger value="settings" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengaturan</TabsTrigger>
                                 </TabsList>
                             </div>
 
@@ -305,7 +305,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-medium text-emerald-600/80 uppercase tracking-wider">Pemasukan</p>
-                                                    <p className="text-xl font-bold text-emerald-700 dark:text-emerald-500">{formatCurrency(activeAnalytics.income30)}</p>
+                                                    <p className="text-xl font-medium text-emerald-700 dark:text-emerald-500">{formatCurrency(activeAnalytics.income30)}</p>
                                                     <p className="text-[10px] text-muted-foreground">30 Hari terakhir</p>
                                                 </div>
                                             </CardContent>
@@ -318,7 +318,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-medium text-rose-600/80 uppercase tracking-wider">Pengeluaran</p>
-                                                    <p className="text-xl font-bold text-rose-700 dark:text-rose-500">{formatCurrency(activeAnalytics.expense30)}</p>
+                                                    <p className="text-xl font-medium text-rose-700 dark:text-rose-500">{formatCurrency(activeAnalytics.expense30)}</p>
                                                     <p className="text-[10px] text-muted-foreground">30 Hari terakhir</p>
                                                 </div>
                                             </CardContent>
@@ -329,7 +329,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 <div className="p-3 bg-background rounded-full shadow-sm">
                                                     <Target className="h-6 w-6 text-primary" />
                                                 </div>
-                                                <h3 className="font-semibold text-sm">Analitik Lanjutan Segera Hadir</h3>
+                                                <h3 className="font-medium text-sm">Analitik Lanjutan Segera Hadir</h3>
                                                 <p className="text-xs text-muted-foreground max-w-sm">
                                                     Kami sedang menyiapkan fitur analitik mendalam untuk membantu Anda memahami pertumbuhan aset dengan lebih baik.
                                                 </p>
@@ -342,7 +342,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     <div className="max-w-md space-y-6 mx-auto">
                                         <div className="space-y-4">
                                             <div>
-                                                <h3 className="text-lg font-semibold">Pengaturan Dompet</h3>
+                                                <h3 className="text-lg font-medium">Pengaturan Dompet</h3>
                                                 <p className="text-sm text-muted-foreground">Ubah informasi dasar atau hapus dompet ini.</p>
                                             </div>
                                             
@@ -381,7 +381,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
                             <WalletIcon className="h-16 w-16 mb-4 opacity-20" />
-                            <h3 className="text-lg font-semibold">Pilih Dompet</h3>
+                            <h3 className="text-lg font-medium">Pilih Dompet</h3>
                             <p className="text-sm max-w-xs mt-1">Pilih salah satu dompet dari daftar di sebelah kiri untuk melihat detailnya.</p>
                         </div>
                     )}

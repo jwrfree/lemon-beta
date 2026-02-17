@@ -65,7 +65,7 @@ export const LiquidPreview = () => {
                             {/* Main Category Chip */}
                             <div className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
                                 <Tag className="h-3 w-3 fill-white/20" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.1em]">{metadata.category}</span>
+                                <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{metadata.category}</span>
                             </div>
 
                             {/* Sub-Category Chip (Staggered) */}
@@ -77,7 +77,7 @@ export const LiquidPreview = () => {
                                     className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-xl border border-primary/10"
                                 >
                                     <CornerDownRight className="h-3 w-3 opacity-50" />
-                                    <span className="text-[10px] font-bold">{metadata.subCategory}</span>
+                                    <span className="text-[10px] font-medium">{metadata.subCategory}</span>
                                 </motion.div>
                             )}
                         </motion.div>
@@ -91,7 +91,7 @@ export const LiquidPreview = () => {
                             className="flex items-center gap-1 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm"
                         >
                             <MapPin className="h-3 w-3 text-rose-500" />
-                            <span className="text-[9px] font-bold uppercase tracking-wider">{metadata.location}</span>
+                            <span className="text-[9px] font-medium uppercase tracking-wider">{metadata.location}</span>
                         </motion.div>
                     )}
 
@@ -100,7 +100,7 @@ export const LiquidPreview = () => {
                             key="idle"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.3 }}
-                            className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] animate-pulse"
+                            className="text-[10px] font-medium text-zinc-400 uppercase tracking-[0.2em] animate-pulse"
                         >
                             Ceritakan transaksimu...
                         </motion.div>
@@ -110,7 +110,7 @@ export const LiquidPreview = () => {
 
             {/* 3. Budget Impact Visualizer */}
             <div className="px-10 py-2">
-                <div className="flex justify-between text-[8px] font-black text-zinc-400 uppercase mb-1 tracking-widest">
+                <div className="flex justify-between text-[8px] font-medium text-zinc-400 uppercase mb-1 tracking-widest">
                     <span>Sisa Anggaran</span>
                     <span className={cn(metadata.category ? "text-rose-500" : "")}>
                         {metadata.category ? 'Hampir Habis' : 'Aman'}
@@ -142,3 +142,4 @@ export const LiquidPreview = () => {
         </div>
     );
 };
+

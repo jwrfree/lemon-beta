@@ -58,7 +58,7 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
     return (
         <Card className="border-none shadow-sm bg-card rounded-lg flex flex-col h-full">
             <CardHeader className="pb-0">
-                <CardTitle className="text-sm font-semibold">Distribusi Pengeluaran</CardTitle>
+                <CardTitle className="text-sm font-medium">Distribusi Pengeluaran</CardTitle>
                 <CardDescription className="text-xs">Top 5 kategori pengeluaran</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 min-h-[250px] relative pb-0">
@@ -93,7 +93,7 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={viewBox.cy}
-                                                        className="fill-foreground text-3xl font-bold"
+                                                        className="fill-foreground text-3xl font-medium"
                                                     >
                                                         {topCategoryPercentage}%
                                                     </tspan>
@@ -117,3 +117,4 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
         </Card>
     );
 };
+

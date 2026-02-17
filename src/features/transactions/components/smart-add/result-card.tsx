@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Check, X, Pencil, ArrowRight } from 'lucide-react';
+import { Check, X, Pencil, ArrowRight, Heart, Sparkles } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -52,7 +52,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         <div className="flex flex-col">
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <button className="text-2xl font-bold tabular-nums text-foreground tracking-tight hover:opacity-70 transition-opacity text-left">
+                                    <button className="text-2xl font-medium tabular-nums text-foreground tracking-tight hover:opacity-70 transition-opacity text-left">
                                         {formatCurrency(parsedData.amount)}
                                     </button>
                                 </PopoverTrigger>
@@ -77,14 +77,14 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
 
                             <Popover open={isCatOpen} onOpenChange={setIsCatOpen}>
                                 <PopoverTrigger asChild>
-                                    <button className={cn("mt-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 w-fit transition-colors hover:brightness-90", visuals.bgColor, visuals.color)}>
+                                    <button className={cn("mt-1 px-2 py-0.5 rounded-md text-[10px] font-medium uppercase tracking-wider flex items-center gap-1 w-fit transition-colors hover:brightness-90", visuals.bgColor, visuals.color)}>
                                         {parsedData.category}
                                         <Pencil className="h-2 w-2 opacity-50" />
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-80 p-0" align="start">
                                     <div className="p-3 max-h-[300px] overflow-y-auto">
-                                        <p className="text-xs font-semibold mb-2 px-1 text-muted-foreground">Pilih Kategori</p>
+                                        <p className="text-xs font-medium mb-2 px-1 text-muted-foreground">Pilih Kategori</p>
                                         <CategoryGrid
                                             categories={parsedData.type === 'income' ? incomeCategories : expenseCategories}
                                             selectedCategory={parsedData.category}
@@ -113,7 +113,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 </PopoverTrigger>
                                 <PopoverContent className="w-60 p-2" align="start">
                                     <div className="space-y-2">
-                                        <p className="text-xs font-semibold text-muted-foreground px-1">Sub Kategori</p>
+                                        <p className="text-xs font-medium text-muted-foreground px-1">Sub Kategori</p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {(() => {
                                                 const catList = parsedData.type === 'income' ? incomeCategories : expenseCategories;
@@ -152,6 +152,34 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         </div>
                     </div>
 
+                    {/* Need vs Want Toggle */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setParsedData({ ...parsedData, isNeed: true })}
+                            className={cn(
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
+                                parsedData.isNeed !== false
+                                    ? "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-900/30 shadow-sm"
+                                    : "bg-transparent text-muted-foreground border-transparent hover:bg-muted"
+                            )}
+                        >
+                            <Heart className={cn("w-3 h-3", parsedData.isNeed !== false ? "fill-current" : "opacity-50")} />
+                            Kebutuhan
+                        </button>
+                        <button
+                            onClick={() => setParsedData({ ...parsedData, isNeed: false })}
+                            className={cn(
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
+                                parsedData.isNeed === false
+                                    ? "bg-pink-50 text-pink-500 border-pink-200 dark:bg-pink-900/20 dark:border-pink-900/30 shadow-sm"
+                                    : "bg-transparent text-muted-foreground border-transparent hover:bg-muted"
+                            )}
+                        >
+                            <Sparkles className={cn("w-3 h-3", parsedData.isNeed === false ? "fill-current" : "opacity-50")} />
+                            Keinginan
+                        </button>
+                    </div>
+
                     {/* Description */}
                     <div className="bg-muted/30 rounded-xl p-3 flex items-start justify-between gap-2 group/desc hover:bg-muted/50 transition-colors cursor-pointer relative">
                         <Popover>
@@ -187,3 +215,4 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
         </motion.div>
     );
 };
+

@@ -183,16 +183,16 @@ export const RemindersDashboard = () => {
             {/* Status Cards */}
             <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-3 flex flex-col justify-between">
-                    <p className="text-[10px] uppercase font-bold text-destructive tracking-wider">Terlambat</p>
+                    <p className="text-[10px] uppercase font-medium text-destructive tracking-wider">Terlambat</p>
                     <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-bold text-destructive">{overdueRemindersCount}</p>
+                        <p className="text-2xl font-medium text-destructive">{overdueRemindersCount}</p>
                         <span className="text-xs text-destructive/80">invoice</span>
                     </div>
                 </div>
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 flex flex-col justify-between">
-                    <p className="text-[10px] uppercase font-bold text-primary tracking-wider">Segera</p>
+                    <p className="text-[10px] uppercase font-medium text-primary tracking-wider">Segera</p>
                     <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-bold text-primary">{upcomingRemindersCount}</p>
+                        <p className="text-2xl font-medium text-primary">{upcomingRemindersCount}</p>
                         <span className="text-xs text-primary/80">jadwal</span>
                     </div>
                 </div>
@@ -223,7 +223,7 @@ export const RemindersDashboard = () => {
                                     : format(parseISO(dateKey), 'EEEE, d MMM', { locale: dateFnsLocaleId });
                         return (
                             <div key={dateKey} className="space-y-2">
-                                <h2 className="text-[11px] font-bold tracking-wider uppercase text-muted-foreground px-1 mt-2">{dateLabel}</h2>
+                                <h2 className="text-[11px] font-medium tracking-wider uppercase text-muted-foreground px-1 mt-2">{dateLabel}</h2>
                                 {items.map(reminder => {
                                     const status = getReminderStatus(reminder);
                                     const dueDate = reminder.dueDate ? parseISO(reminder.dueDate) : null;
@@ -244,7 +244,7 @@ export const RemindersDashboard = () => {
                                                 </div>
                                                 <div className="flex-1 space-y-2 min-w-0">
                                                     <div className="flex items-center justify-between gap-2">
-                                                        <h2 className="font-semibold text-sm truncate pr-2">{reminder.title}</h2>
+                                                        <h2 className="font-medium text-sm truncate pr-2">{reminder.title}</h2>
                                                         {renderStatusBadge(status)}
                                                     </div>
 
@@ -261,7 +261,7 @@ export const RemindersDashboard = () => {
                                                             </p>
                                                         )}
                                                         {reminder.amount ? (
-                                                            <p className="text-sm font-bold text-foreground">{formatCurrency(reminder.amount)}</p>
+                                                            <p className="text-sm font-medium text-foreground">{formatCurrency(reminder.amount)}</p>
                                                         ) : null}
                                                         {reminder.notes && (
                                                             <p className="text-xs text-muted-foreground italic line-clamp-2">{reminder.notes}</p>
@@ -325,3 +325,4 @@ export const RemindersDashboard = () => {
         </div>
     );
 };
+

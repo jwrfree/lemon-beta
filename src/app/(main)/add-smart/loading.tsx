@@ -12,8 +12,9 @@ export default function Loading() {
           <Loader2 className="h-5 w-5 text-primary animate-spin" />
         </div>
       </div>
-      <h2 className="text-lg font-semibold text-foreground">Menyiapkan Smart Add...</h2>
+      <h2 className="text-lg font-medium text-foreground">Menyiapkan Smart Add...</h2>
       <p className="text-sm text-muted-foreground mt-2">Sedang memuat asisten AI kamu</p>
     </div>
   );
 }
+

@@ -41,7 +41,7 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
         <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                    <h3 className="text-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
                         Intensitas Pengeluaran
                     </h3>
                     <p className="text-sm text-zinc-500">Pola belanja harian Anda bulan ini</p>
@@ -66,7 +66,7 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <div className="text-xs">
-                                        <p className="font-semibold">{format(day, 'EEEE, d MMM')}</p>
+                                        <p className="font-medium">{format(day, 'EEEE, d MMM')}</p>
                                         <p className={amount > 0 ? "text-rose-500" : "text-zinc-500"}>
                                             {amount > 0 ? formatCurrency(amount) : 'Tidak ada pengeluaran'}
                                         </p>
@@ -89,3 +89,4 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
         </div>
     );
 }
+

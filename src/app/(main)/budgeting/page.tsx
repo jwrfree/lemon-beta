@@ -87,7 +87,7 @@ export default function BudgetingPage() {
                                 </div>
                             </div>
                             <div className="max-w-[300px] space-y-3">
-                                <h2 className="text-3xl font-black tracking-tighter">Budgeting Cerdas</h2>
+                                <h2 className="text-3xl font-medium tracking-tighter">Budgeting Cerdas</h2>
                                 <p className="text-sm font-medium text-muted-foreground leading-relaxed">
                                     Atur batas pengeluaran untuk setiap pos agar uangmu tidak "numpang lewat".
                                 </p>
@@ -95,7 +95,7 @@ export default function BudgetingPage() {
                             <Button 
                                 onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }} 
                                 size="lg" 
-                                className="mt-10 rounded-2xl h-14 px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all font-bold text-lg"
+                                className="mt-10 rounded-2xl h-14 px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all font-medium text-lg"
                             >
                                 <PlusCircle className="mr-2 h-6 w-6" />
                                 Buat Anggaran Pertama
@@ -118,16 +118,16 @@ export default function BudgetingPage() {
                                         
                                         <CardContent className="p-8 space-y-8 relative z-10">
                                             <div className="space-y-1">
-                                                <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Status Global</h2>
-                                                <p className="text-2xl font-black tracking-tight">Kesehatan Anggaran</p>
+                                                <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-primary">Status Global</h2>
+                                                <p className="text-2xl font-medium tracking-tight">Kesehatan Anggaran</p>
                                             </div>
 
                                             <div className="h-56 flex justify-center items-center relative">
                                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                                    <p className="text-4xl font-black tracking-tighter tabular-nums">
+                                                    <p className="text-4xl font-medium tracking-tighter tabular-nums">
                                                         {Math.round(overview.percentUsed)}%
                                                     </p>
-                                                    <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Terpakai</p>
+                                                    <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest mt-1">Terpakai</p>
                                                 </div>
                                                 
                                                 <ChartContainer config={{}} className="aspect-square h-full">
@@ -154,14 +154,14 @@ export default function BudgetingPage() {
                                             <div className="space-y-4">
                                                 <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 flex justify-between items-end">
                                                     <div>
-                                                        <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Total Sisa</p>
-                                                        <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                                        <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest mb-1">Total Sisa</p>
+                                                        <p className="text-xl font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">
                                                             {formatCurrency(overview.totalRemaining)}
                                                         </p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Dari Total</p>
-                                                        <p className="text-sm font-bold text-zinc-500 tabular-nums">
+                                                        <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest mb-1">Dari Total</p>
+                                                        <p className="text-sm font-medium text-zinc-500 tabular-nums">
                                                             {formatCurrency(overview.totalBudget)}
                                                         </p>
                                                     </div>
@@ -182,13 +182,13 @@ export default function BudgetingPage() {
                                             <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                                                 <Target className="h-4 w-4" />
                                             </div>
-                                            <h2 className="text-xl font-black tracking-tighter">Pos Anggaran</h2>
+                                            <h2 className="text-xl font-medium tracking-tighter">Pos Anggaran</h2>
                                         </div>
                                         <Button 
                                             onClick={() => { triggerHaptic('light'); setIsBudgetModalOpen(true); }} 
                                             variant="ghost" 
                                             size="sm" 
-                                            className="rounded-xl h-9 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-primary transition-colors"
+                                            className="rounded-xl h-9 text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-primary transition-colors"
                                         >
                                             <Plus className="h-4 w-4 mr-2" />
                                             Tambah Baru
@@ -241,3 +241,4 @@ export default function BudgetingPage() {
         </div>
     );
 }
+

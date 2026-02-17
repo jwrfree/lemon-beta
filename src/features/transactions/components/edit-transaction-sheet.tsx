@@ -112,7 +112,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 >
                                     <div className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
                                         <Tag className="h-3 w-3 fill-white/20" />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.1em]">{category}</span>
+                                        <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{category}</span>
                                     </div>
                                     {subCategory && (
                                         <motion.div
@@ -122,7 +122,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                             className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-xl border border-primary/10"
                                         >
                                             <CornerDownRight className="h-3 w-3 opacity-50" />
-                                            <span className="text-[10px] font-bold">{subCategory}</span>
+                                            <span className="text-[10px] font-medium">{subCategory}</span>
                                         </motion.div>
                                     )}
                                 </motion.div>
@@ -134,7 +134,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     className="flex items-center gap-1 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm"
                                 >
                                     <MapPin className="h-3 w-3 text-rose-500" />
-                                    <span className="text-[9px] font-bold uppercase tracking-wider">{location}</span>
+                                    <span className="text-[9px] font-medium uppercase tracking-wider">{location}</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -157,7 +157,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     className="flex items-center justify-center gap-1.5 mt-3 text-emerald-600 dark:text-emerald-400"
                                 >
                                     <Sparkles className="h-3 w-3 fill-current" />
-                                    <span className="text-[10px] font-bold uppercase tracking-widest">{aiExplanation}</span>
+                                    <span className="text-[10px] font-medium uppercase tracking-widest">{aiExplanation}</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -172,7 +172,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                         onClick={() => setShowAllFields(!showManualForm)}
                         className="w-full text-zinc-400 hover:text-zinc-600 flex items-center justify-center gap-2 mb-4"
                     >
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                        <span className="text-[10px] font-medium uppercase tracking-[0.2em]">
                             {showManualForm ? 'Sembunyikan Detail' : 'Edit Manual'}
                         </span>
                         {showManualForm ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -189,8 +189,8 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-zinc-100 dark:border-zinc-800 shadow-sm space-y-5">
                                     <Tabs value={type} onValueChange={(v: any) => setValue('type', v)}>
                                         <TabsList className="w-full h-11 bg-muted/50 rounded-2xl p-1">
-                                            <TabsTrigger value="expense" className="flex-1 rounded-xl text-[10px] font-bold uppercase">Pengeluaran</TabsTrigger>
-                                            <TabsTrigger value="income" className="flex-1 rounded-xl text-[10px] font-bold uppercase">Pemasukan</TabsTrigger>
+                                            <TabsTrigger value="expense" className="flex-1 rounded-xl text-[10px] font-medium uppercase">Pengeluaran</TabsTrigger>
+                                            <TabsTrigger value="income" className="flex-1 rounded-xl text-[10px] font-medium uppercase">Pemasukan</TabsTrigger>
                                         </TabsList>
                                     </Tabs>
                                     <AmountInput control={control} name="amount" error={errors.amount?.message} />
@@ -209,7 +209,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                             type="button"
                                             onClick={() => setValue('isNeed', true, { shouldDirty: true })}
                                             className={cn(
-                                                "flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                                "flex-1 py-3 px-4 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
                                                 isNeed !== false ? "bg-white dark:bg-zinc-900 shadow-sm text-emerald-600 dark:text-emerald-400 ring-1 ring-zinc-200 dark:ring-zinc-700" : "text-zinc-400 hover:bg-white/50 dark:hover:bg-zinc-700/50"
                                             )}
                                         >
@@ -220,7 +220,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                             type="button"
                                             onClick={() => setValue('isNeed', false, { shouldDirty: true })}
                                             className={cn(
-                                                "flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                                "flex-1 py-3 px-4 rounded-xl text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
                                                 isNeed === false ? "bg-white dark:bg-zinc-900 shadow-sm text-pink-500 ring-1 ring-zinc-200 dark:ring-zinc-700" : "text-zinc-400 hover:bg-white/50 dark:hover:bg-zinc-700/50"
                                             )}
                                         >
@@ -231,7 +231,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 )}
 
                                 <div className="space-y-2">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1 flex items-center gap-1">
+                                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 px-1 flex items-center gap-1">
                                         <MapPin className="h-3 w-3" />
                                         Lokasi
                                     </p>
@@ -239,7 +239,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 </div>
 
                                 <div className="space-y-2">
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Deskripsi</p>
+                                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 px-1">Deskripsi</p>
                                     <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700/50" />
                                 </div>
                             </motion.div>
@@ -260,7 +260,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                     <Button
                         onClick={handleSubmit}
                         disabled={isSubmitting}
-                        className="flex-1 h-14 rounded-2xl text-base font-bold shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.98] transition-all"
+                        className="flex-1 h-14 rounded-2xl text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.98] transition-all"
                     >
                         {isSubmitting ? (
                             <Loader2 className="h-6 w-6 animate-spin" />
@@ -277,3 +277,4 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
         </Sheet>
     );
 };
+

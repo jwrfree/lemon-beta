@@ -89,7 +89,7 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
                     <div>
-                        <h2 className="text-xl font-bold">Catat Pembayaran</h2>
+                        <h2 className="text-xl font-medium">Catat Pembayaran</h2>
                         <p className="text-sm text-muted-foreground">
                             {debt?.direction === 'owed'
                                 ? `Sisa hutang: ${formatCurrency(debt?.outstandingBalance ?? debt?.principal ?? 0)}`
@@ -248,3 +248,4 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
         </motion.div>
     );
 };
+

@@ -46,7 +46,7 @@ export const GlobalFinanceHeader = ({
             <div className="max-w-7xl mx-auto w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 sm:mb-6">
                     <div className="flex flex-col gap-1">
-                        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Statistik Keuangan</h1>
+                        <h1 className="text-xl sm:text-2xl font-medium tracking-tight">Statistik Keuangan</h1>
                         <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
                             Ringkasan <span className="font-medium text-foreground">{summary.monthLabel}</span>
                         </p>
@@ -68,7 +68,7 @@ export const GlobalFinanceHeader = ({
                         </div>
                         <CardContent className="p-4 sm:p-5 text-white">
                             <p className="text-[10px] sm:text-xs font-medium opacity-80 uppercase tracking-wider mb-1">Arus Kas (Net)</p>
-                            <h3 className="text-xl sm:text-2xl font-bold mb-2 tabular-nums">
+                            <h3 className="text-xl sm:text-2xl font-medium mb-2 tabular-nums">
                                 {formatCurrency(summary.net)}
                             </h3>
                             <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-medium bg-white/20 w-fit px-2 py-1 rounded-full">
@@ -96,7 +96,7 @@ export const GlobalFinanceHeader = ({
                                     <ArrowUpRight size={isMobile ? 14 : 16} />
                                 </div>
                             </div>
-                            <h3 className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                            <h3 className="text-lg sm:text-xl font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">
                                 {formatCurrency(summary.income)}
                             </h3>
                         </CardContent>
@@ -111,7 +111,7 @@ export const GlobalFinanceHeader = ({
                                     <ArrowDownLeft size={isMobile ? 14 : 16} />
                                 </div>
                             </div>
-                            <h3 className="text-lg sm:text-xl font-bold text-rose-600 dark:text-rose-400 tabular-nums">
+                            <h3 className="text-lg sm:text-xl font-medium text-rose-600 dark:text-rose-400 tabular-nums">
                                 {formatCurrency(summary.expense)}
                             </h3>
                         </CardContent>
@@ -121,3 +121,4 @@ export const GlobalFinanceHeader = ({
         </div>
     );
 };
+

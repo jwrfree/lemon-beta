@@ -120,7 +120,7 @@ export const QuickAddWidget = () => {
                                     <span className="text-xs text-muted-foreground font-medium uppercase tracking-tighter">Konfirmasi</span>
                                     <div className="flex items-center gap-2">
                                         <span className={cn(
-                                            "text-lg font-bold",
+                                            "text-lg font-medium",
                                             parsedData.type === 'income' ? "text-emerald-600" : "text-foreground"
                                         )}>
                                             {formatCurrency(parsedData.amount)}
@@ -140,7 +140,7 @@ export const QuickAddWidget = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 text-[10px] text-muted-foreground bg-background py-1 px-2 rounded-lg w-fit border border-border">
-                                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded uppercase font-bold">{parsedData.category}</span>
+                                <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded uppercase font-medium">{parsedData.category}</span>
                                 <ArrowRight className="h-2 w-2" />
                                 <span className="font-medium italic">{parsedData.wallet}</span>
                             </div>
@@ -151,3 +151,4 @@ export const QuickAddWidget = () => {
         </Card>
     );
 };
+

@@ -35,7 +35,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 </CardHeader>
                 <CardContent>
                     <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-2xl font-bold text-foreground">
+                        <span className="text-2xl font-medium text-foreground">
                             {formatCurrency(totalMonthlyBurn)}
                         </span>
                         <span className="text-xs text-muted-foreground">/ bulan</span>
@@ -48,7 +48,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                     </div>
 
                     <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
-                        Kamu menghabiskan setara dengan <span className="font-semibold text-foreground">{(totalMonthlyBurn / 25000).toFixed(0)}x kopi</span> sebulan hanya untuk langganan.
+                        Kamu menghabiskan setara dengan <span className="font-medium text-foreground">{(totalMonthlyBurn / 25000).toFixed(0)}x kopi</span> sebulan hanya untuk langganan.
                         Pastikan semua terpakai ya!
                     </p>
                 </CardContent>
@@ -78,11 +78,11 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                         <TrendingUp className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-semibold text-rose-900 dark:text-rose-200">
+                                        <p className="text-xs font-medium text-rose-900 dark:text-rose-200">
                                             Tagihan {anomaly.merchantName} naik!
                                         </p>
                                         <p className="text-[11px] text-rose-700 dark:text-rose-300/80 mt-0.5">
-                                            Naik <span className="font-bold">{formatCurrency(anomaly.difference)}</span> dibanding bulan lalu. 
+                                            Naik <span className="font-medium">{formatCurrency(anomaly.difference)}</span> dibanding bulan lalu. 
                                             (Sekarang: {formatCurrency(anomaly.currentAmount)})
                                         </p>
                                     </div>
@@ -97,7 +97,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                             <div className="flex items-center gap-3 text-emerald-600 dark:text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
                                 <CheckCircle2 className="h-5 w-5 shrink-0" />
                                 <div>
-                                    <p className="text-xs font-bold">Aman terkendali</p>
+                                    <p className="text-xs font-medium">Aman terkendali</p>
                                     <p className="text-[10px] opacity-90">
                                         Tidak ada kenaikan harga langganan yang mencurigakan bulan ini.
                                     </p>

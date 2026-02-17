@@ -42,11 +42,11 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
                             <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-rose-500" : color)} />
-                            <p className={cn("font-bold text-sm uppercase tracking-wider", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-zinc-500 dark:text-zinc-400")}>
+                            <p className={cn("font-medium text-sm uppercase tracking-wider", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-zinc-500 dark:text-zinc-400")}>
                                 {category}
                             </p>
                         </div>
-                        <p className={cn("text-xl md:text-2xl font-bold tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-zinc-900 dark:text-zinc-100")}>
+                        <p className={cn("text-xl md:text-2xl font-medium tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-zinc-900 dark:text-zinc-100")}>
                             {formatCurrency(amount)}
                         </p>
                     </div>
@@ -58,7 +58,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                 </div>
 
                 <div className="space-y-2">
-                    <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                    <div className="flex justify-between items-center text-[10px] font-medium uppercase tracking-widest">
                         <div className="flex items-center gap-2">
                             <span className={isOverBudget ? "text-rose-500" : "text-zinc-400"}>
                                 {percentage.toFixed(0)}% Terpakai
@@ -97,14 +97,15 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
             onClick={onClick}
             className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all w-full text-left active:scale-[0.98]"
         >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-black font-bold text-sm">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-black font-medium text-sm">
                 {rank}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate">{transaction.description || transaction.category}</p>
+                <p className="font-medium text-sm truncate">{transaction.description || transaction.category}</p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
             </div>
-            <p className="font-semibold text-base tabular-nums">{formatCurrency(transaction.amount)}</p>
+            <p className="font-medium text-base tabular-nums">{formatCurrency(transaction.amount)}</p>
         </button>
     );
 }
+

@@ -159,7 +159,7 @@ export default function DebtsPage() {
                     {/* Summary Card - Enhanced Visuals */}
                     <Card className="shadow-sm border-border/60 bg-gradient-to-br from-card to-muted/20">
                         <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                            <CardTitle className="flex items-center gap-2 text-base font-medium">
                                 <HandCoins className="h-5 w-5 text-primary" />
                                 Ringkasan
                             </CardTitle>
@@ -169,13 +169,13 @@ export default function DebtsPage() {
                                 <p className="text-muted-foreground flex items-center gap-1">
                                     <ArrowUpRight className="h-4 w-4 text-destructive" /> Saya berhutang
                                 </p>
-                                <p className="text-lg font-semibold text-destructive">{formatCurrency(totals.totalOwed)}</p>
+                                <p className="text-lg font-medium text-destructive">{formatCurrency(totals.totalOwed)}</p>
                             </div>
                             <div>
                                 <p className="text-muted-foreground flex items-center gap-1">
                                     <ArrowDownRight className="h-4 w-4 text-emerald-600" /> Piutang
                                 </p>
-                                <p className="text-lg font-semibold text-emerald-600">{formatCurrency(totals.totalOwing)}</p>
+                                <p className="text-lg font-medium text-emerald-600">{formatCurrency(totals.totalOwing)}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -185,7 +185,7 @@ export default function DebtsPage() {
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                         <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
+                                <TabsTrigger key={value} value={value} className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
                                     {label}
                                 </TabsTrigger>
                             ))}
@@ -205,7 +205,7 @@ export default function DebtsPage() {
                                     <CardContent className="p-4">
                                         <div className="flex items-start justify-between gap-4 mb-3">
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-sm truncate">{debt.title}</h3>
+                                                <h3 className="font-medium text-sm truncate">{debt.title}</h3>
                                                 <p className="text-xs text-muted-foreground mt-0.5">{debt.direction === 'owed' ? 'Kepada: ' : 'Dari: '} {debt.counterparty}</p>
                                                 {getDebtDueStatus(debt)}
                                             </div>
@@ -214,24 +214,24 @@ export default function DebtsPage() {
 
                                         <div className="flex items-end justify-between">
                                             <div>
-                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">
+                                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1">
                                                     {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
                                                 </p>
                                                 <p className={cn(
-                                                    "text-base font-bold tabular-nums",
+                                                    "text-base font-medium tabular-nums",
                                                     debt.direction === 'owed' ? "text-destructive" : "text-emerald-600"
                                                 )}>
                                                     {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1 text-right">Progress</p>
+                                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1 text-right">Progress</p>
                                                 <div className="flex items-center gap-2">
                                                     <Progress 
                                                          value={Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))} 
                                                          className="w-16 h-1.5 bg-muted"
                                                      />
-                                                    <span className="text-[10px] font-bold">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
+                                                    <span className="text-[10px] font-medium">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -269,3 +269,4 @@ export default function DebtsPage() {
         </div>
     );
 }
+

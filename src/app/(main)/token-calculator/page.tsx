@@ -120,18 +120,18 @@ export default function TokenCalculatorPage() {
                                     <div className="grid grid-cols-2 gap-4 text-center">
                                         <div className="p-4 bg-muted rounded-lg">
                                             <p className="text-xs font-medium text-muted-foreground mb-1">Input Token</p>
-                                            <p className="text-2xl font-bold">{result.input}</p>
+                                            <p className="text-2xl font-medium">{result.input}</p>
                                         </div>
                                         <div className="p-4 bg-muted rounded-lg">
                                             <p className="text-xs font-medium text-muted-foreground mb-1">Output Token</p>
-                                            <p className="text-2xl font-bold">{result.output}</p>
+                                            <p className="text-2xl font-medium">{result.output}</p>
                                         </div>
                                     </div>
                                     
                                     <div className="p-4 bg-primary/10 rounded-lg space-y-3">
                                         <div className="flex justify-between items-center border-b border-primary/20 pb-2">
                                             <span className="text-sm font-medium">Total Token</span>
-                                            <span className="text-xl font-bold">{result.input + result.output}</span>
+                                            <span className="text-xl font-medium">{result.input + result.output}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <div className="flex flex-col">
@@ -139,7 +139,7 @@ export default function TokenCalculatorPage() {
                                                 <span className="text-xs text-muted-foreground">($0.14/1M in, $0.28/1M out)</span>
                                             </div>
                                             <div className="text-right">
-                                                <span className="text-xl font-bold text-primary">
+                                                <span className="text-xl font-medium text-primary">
                                                     {calculateCost(result.input, result.output).totalCostIDR < 1 
                                                         ? `Rp ${calculateCost(result.input, result.output).totalCostIDR.toFixed(4)}`
                                                         : formatCurrency(calculateCost(result.input, result.output).totalCostIDR)
@@ -190,13 +190,13 @@ export default function TokenCalculatorPage() {
                                              <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg flex flex-col justify-center items-center">
                                                 <Coins className="h-6 w-6 text-teal-600 mb-2" />
                                                 <p className="text-xs text-teal-700 uppercase tracking-wider mb-1">Total Transaksi</p>
-                                                <p className="text-2xl font-bold text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
+                                                <p className="text-2xl font-medium text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
                                             </div>
                                             <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg flex flex-col justify-center items-center">
                                                 <Calendar className="h-6 w-6 text-blue-600 mb-2" />
                                                 <p className="text-xs text-blue-700 uppercase tracking-wider mb-1">Estimasi Waktu</p>
                                                 <div className="flex items-baseline gap-1">
-                                                     <p className="text-2xl font-bold text-blue-700">{runway.totalDays.toLocaleString()}</p>
+                                                     <p className="text-2xl font-medium text-blue-700">{runway.totalDays.toLocaleString()}</p>
                                                      <span className="text-sm text-blue-600">hari</span>
                                                 </div>
                                                 <p className="text-xs text-blue-600/80 mt-1">({(runway.totalDays / 365).toFixed(1)} tahun)</p>
@@ -215,3 +215,4 @@ export default function TokenCalculatorPage() {
         </div>
     );
 }
+

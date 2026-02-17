@@ -98,13 +98,13 @@ export const SmartAddResults = ({
                                 <span>Oke, catat</span>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <button className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary bg-primary/10 px-1.5 py-0.5 rounded transition-all active:scale-95 text-left">
+                                        <button className="font-medium text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary bg-primary/10 px-1.5 py-0.5 rounded transition-all active:scale-95 text-left">
                                             {parsedData.description}
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-72 p-4 shadow-xl rounded-2xl border-primary/10">
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ubah Deskripsi</Label>
+                                            <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Ubah Deskripsi</Label>
                                             <div className="flex gap-2">
                                                 <Input
                                                     value={editDesc}
@@ -122,13 +122,13 @@ export const SmartAddResults = ({
                                 <span>sebesar</span>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <button className="font-bold text-primary tabular-nums underline underline-offset-4 decoration-primary/30 hover:decoration-primary bg-primary/10 px-1.5 py-0.5 rounded transition-all active:scale-95">
+                                        <button className="font-medium text-primary tabular-nums underline underline-offset-4 decoration-primary/30 hover:decoration-primary bg-primary/10 px-1.5 py-0.5 rounded transition-all active:scale-95">
                                             {formatCurrency(parsedData.amount)}
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-64 p-4 shadow-xl rounded-2xl border-primary/10">
                                         <div className="space-y-3">
-                                            <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ubah Nominal</Label>
+                                            <Label className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Ubah Nominal</Label>
                                             <div className="flex gap-2">
                                                 <Input
                                                     type="number"
@@ -153,7 +153,7 @@ export const SmartAddResults = ({
                                         <button
                                             type="button"
                                             className={cn(
-                                                "px-3 py-1 rounded-full text-[11px] font-semibold flex items-center gap-1.5 active:scale-95 transition-all hover:brightness-95 border shadow-sm",
+                                                "px-3 py-1 rounded-full text-[11px] font-medium flex items-center gap-1.5 active:scale-95 transition-all hover:brightness-95 border shadow-sm",
                                                 getCategoryVisuals(parsedData.category).bgColor,
                                                 getCategoryVisuals(parsedData.category).color,
                                                 getCategoryVisuals(parsedData.category).color.replace('text-', 'border-').split(' ')[0].replace('600', '300').replace('500', '200')
@@ -174,7 +174,7 @@ export const SmartAddResults = ({
 
                                         {popoverView === 'CATEGORY' ? (
                                             <div className="max-h-[300px] overflow-y-auto p-2">
-                                                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-3 mt-1 px-2">Ganti Kategori Cepat</p>
+                                                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-3 mt-1 px-2">Ganti Kategori Cepat</p>
                                                 <CategoryGrid
                                                     categories={parsedData.type === 'income' ? categories.income : categories.expense}
                                                     selectedCategory={parsedData.category}
@@ -189,7 +189,7 @@ export const SmartAddResults = ({
                                                     </Button>
                                                     <div className="flex items-center gap-2">
                                                         <div className={cn("w-2 h-2 rounded-full", tempCategory?.color?.replace('text-', 'bg-') || 'bg-gray-500')} />
-                                                        <span className="text-sm font-bold">{tempCategory?.name}</span>
+                                                        <span className="text-sm font-medium">{tempCategory?.name}</span>
                                                     </div>
                                                 </div>
                                                 <div className="p-2 grid grid-cols-1 gap-1">
@@ -232,7 +232,7 @@ export const SmartAddResults = ({
                         {insightData.wallet?.isInsufficient && (
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-start">
                                 <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-[11px] font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-sm shadow-destructive/5">
-                                    <span className="font-bold uppercase tracking-wider text-[10px]">⚠️ Saldo Tidak Cukup!</span>
+                                    <span className="font-medium uppercase tracking-wider text-[10px]">⚠️ Saldo Tidak Cukup!</span>
                                     <p className="opacity-90">Saldo {insightData.wallet.name} kamu akan menjadi minus ({formatCurrency(insightData.wallet.newBalance)}).</p>
                                 </div>
                             </motion.div>
@@ -240,11 +240,11 @@ export const SmartAddResults = ({
                         {insightData.wallet && (
                             <div className="flex justify-start">
                                 <div className="p-3 bg-card rounded-2xl max-w-[85%] text-xs leading-relaxed border shadow-sm flex flex-col gap-1">
-                                    <span className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider">Dompet: {insightData.wallet.name}</span>
+                                    <span className="text-[10px] uppercase font-medium text-muted-foreground/60 tracking-wider">Dompet: {insightData.wallet.name}</span>
                                     <div>
                                         <span className="line-through opacity-40 tabular-nums">{formatCurrency(insightData.wallet.currentBalance)}</span>
                                         <span className="mx-2 text-muted-foreground/30">→</span>
-                                        <span className={cn("font-bold tabular-nums", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")}>
+                                        <span className={cn("font-medium tabular-nums", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")}>
                                             {formatCurrency(insightData.wallet.newBalance)}
                                         </span>
                                     </div>
@@ -254,11 +254,11 @@ export const SmartAddResults = ({
                         {insightData.budget && (
                             <div className="flex justify-start">
                                 <div className="p-3 bg-card rounded-2xl max-w-[85%] text-xs leading-relaxed border shadow-sm flex flex-col gap-1">
-                                    <span className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider">Anggaran: {insightData.budget.name}</span>
+                                    <span className="text-[10px] uppercase font-medium text-muted-foreground/60 tracking-wider">Anggaran: {insightData.budget.name}</span>
                                     <div>
                                         <span className="line-through opacity-40 tabular-nums">{formatCurrency(insightData.budget.currentRemaining)}</span>
                                         <span className="mx-2 text-muted-foreground/30">→</span>
-                                        <span className={cn("font-bold tabular-nums", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")}>
+                                        <span className={cn("font-medium tabular-nums", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")}>
                                             {formatCurrency(insightData.budget.newRemaining)}
                                         </span>
                                     </div>
@@ -281,7 +281,7 @@ export const SmartAddResults = ({
             >
                 <div className="flex justify-start">
                     <div className="p-3 bg-card rounded-2xl text-sm border shadow-sm font-medium">
-                        Wah, saya menemukan <span className="font-bold text-primary">{multiParsedData.length} transaksi</span> sekaligus!
+                        Wah, saya menemukan <span className="font-medium text-primary">{multiParsedData.length} transaksi</span> sekaligus!
                     </div>
                 </div>
                 <div className="space-y-2">
@@ -298,16 +298,16 @@ export const SmartAddResults = ({
                                     })()}
                                 </div>
                                 <div className="flex flex-col overflow-hidden">
-                                    <span className="text-sm font-semibold text-foreground tracking-tight truncate">{tx.description}</span>
+                                    <span className="text-sm font-medium text-foreground tracking-tight truncate">{tx.description}</span>
                                     {/* Updated: Check if subCategory exists in Multi-mode as well if parser supports it */}
-                                    <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider opacity-60">
+                                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider opacity-60">
                                         {tx.category}
                                         {tx.subCategory ? ` / ${tx.subCategory}` : ''}
                                     </span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 shrink-0">
-                                <span className={cn("font-bold text-sm tabular-nums", tx.type === 'expense' ? "text-destructive" : "text-teal-600 dark:text-teal-500")}>
+                                <span className={cn("font-medium text-sm tabular-nums", tx.type === 'expense' ? "text-destructive" : "text-teal-600 dark:text-teal-500")}>
                                     {tx.type === 'expense' ? '-' : '+'}{formatCurrency(tx.amount)}
                                 </span>
                                 <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors" onClick={() => removeMultiTransaction(idx)}>
@@ -323,3 +323,4 @@ export const SmartAddResults = ({
 
     return null;
 };
+

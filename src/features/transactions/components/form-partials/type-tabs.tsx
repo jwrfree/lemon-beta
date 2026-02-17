@@ -20,7 +20,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 className={cn(
                     "rounded-lg transition-all duration-200 h-9",
                     value === 'expense'
-                        ? 'bg-background text-red-500 shadow-sm font-semibold ring-1 ring-border/10'
+                        ? 'bg-background text-red-500 shadow-sm font-medium ring-1 ring-border/10'
                         : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
                 )}
             >
@@ -34,7 +34,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 className={cn(
                     "rounded-lg transition-all duration-200 h-9",
                     value === 'income'
-                        ? 'bg-background text-emerald-600 shadow-sm font-semibold ring-1 ring-border/10'
+                        ? 'bg-background text-emerald-600 shadow-sm font-medium ring-1 ring-border/10'
                         : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
                 )}
             >
@@ -48,7 +48,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 className={cn(
                     "rounded-lg transition-all duration-200 h-9",
                     value === 'transfer'
-                        ? 'bg-background text-blue-600 shadow-sm font-semibold ring-1 ring-border/10'
+                        ? 'bg-background text-blue-600 shadow-sm font-medium ring-1 ring-border/10'
                         : 'text-muted-foreground hover:bg-background/50 hover:text-foreground'
                 )}
             >
@@ -58,3 +58,4 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
         </div>
     );
 };
+

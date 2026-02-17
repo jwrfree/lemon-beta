@@ -23,7 +23,7 @@ export default function OfflinePage() {
       </div>
 
       <div className="max-w-md space-y-4">
-        <h1 className="text-4xl font-bold tracking-tighter text-zinc-900 dark:text-white leading-none">Anda Sedang Luring</h1>
+        <h1 className="text-4xl font-medium tracking-tighter text-zinc-900 dark:text-white leading-none">Anda Sedang Luring</h1>
         <p className="text-sm font-medium text-muted-foreground leading-relaxed">
           Koneksi internet terputus. Jangan khawatir, Lemon tetap menyimpan perubahanmu secara lokal dan akan menyinkronkannya saat internet kembali.
         </p>
@@ -33,10 +33,11 @@ export default function OfflinePage() {
         <OfflineActions />
       </div>
 
-      <div className="mt-16 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-primary/40">
+      <div className="mt-16 flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-primary/40">
         <Sparkles className="h-3 w-3" />
         <span>Mode Aman Aktif</span>
       </div>
     </main>
   );
 }
+

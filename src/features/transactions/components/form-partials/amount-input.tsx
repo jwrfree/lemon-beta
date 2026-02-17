@@ -52,7 +52,7 @@ export function AmountInput<T extends FieldValues>({ control, name, label = "Jum
                                 }}
                                 inputMode="text"
                                 className={cn(
-                                    "text-2xl font-bold h-14 bg-muted/20 border-border/50 focus-visible:ring-primary/30 pr-12",
+                                    "text-2xl font-medium h-14 bg-muted/20 border-border/50 focus-visible:ring-primary/30 pr-12",
                                     error && "border-destructive focus-visible:ring-destructive"
                                 )}
                             />
@@ -67,7 +67,7 @@ export function AmountInput<T extends FieldValues>({ control, name, label = "Jum
                                     key={amount}
                                     type="button"
                                     onClick={() => field.onChange(new Intl.NumberFormat('id-ID').format(amount))}
-                                    className="px-3 py-1.5 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary text-[11px] font-bold border border-border/50 transition-colors whitespace-nowrap active:scale-95"
+                                    className="px-3 py-1.5 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary text-[11px] font-medium border border-border/50 transition-colors whitespace-nowrap active:scale-95"
                                 >
                                     {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount)}
                                 </button>
@@ -80,3 +80,4 @@ export function AmountInput<T extends FieldValues>({ control, name, label = "Jum
         </div>
     );
 }
+

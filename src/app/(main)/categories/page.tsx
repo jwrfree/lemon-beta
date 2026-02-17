@@ -90,8 +90,8 @@ export default function CategoriesPage() {
                     <div className="w-full md:w-auto">
                         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'expense' | 'income')} className="w-full md:w-[320px]">
                             <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
-                                <TabsTrigger value="expense" className="h-full rounded-xl font-semibold text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengeluaran</TabsTrigger>
-                                <TabsTrigger value="income" className="h-full rounded-xl font-semibold text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pemasukan</TabsTrigger>
+                                <TabsTrigger value="expense" className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengeluaran</TabsTrigger>
+                                <TabsTrigger value="income" className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pemasukan</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </div>
@@ -128,7 +128,7 @@ export default function CategoriesPage() {
                                                 <IconComp className={cn("h-6 w-6", cat.color)} />
                                             </div>
                                             <div className="space-y-0.5">
-                                                <p className="font-semibold text-base tracking-tight">{cat.name}</p>
+                                                <p className="font-medium text-base tracking-tight">{cat.name}</p>
                                                 <div className="flex gap-1.5 flex-wrap">
                                                     {(cat.sub_categories?.length || 0) > 0 ? (
                                                         cat.sub_categories?.slice(0, 2).map((s: string) => (
@@ -185,3 +185,4 @@ export default function CategoriesPage() {
         </div>
     );
 }
+

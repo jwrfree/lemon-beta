@@ -188,10 +188,10 @@ interface GoalRow {
                   <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
                     <Wallet className="w-5 h-5 text-white" strokeWidth={1.5} />
                   </div>
-                  <span className="text-sm font-semibold tracking-wider uppercase">Total Tabungan Terkumpul</span>
+                  <span className="text-sm font-medium tracking-wider uppercase">Total Tabungan Terkumpul</span>
                 </div>
                 
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                <h2 className="text-4xl md:text-5xl font-medium tracking-tight">
                   {formatCurrency(totalSavings)}
                 </h2>
 
@@ -206,7 +206,7 @@ interface GoalRow {
               </div>
               
               <div className="w-full md:w-64 space-y-3">
-                <div className="flex justify-between text-sm font-bold">
+                <div className="flex justify-between text-sm font-medium">
                   <span className="opacity-90 tracking-wide">Progres Keseluruhan</span>
                   <span className="text-yellow-300">{totalProgress}%</span>
                 </div>
@@ -237,7 +237,7 @@ interface GoalRow {
                 <Trophy className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h4 className="font-bold text-lg">Semangat Menabung!</h4>
+                <h4 className="font-medium text-lg">Semangat Menabung!</h4>
                 <p className="text-sm text-muted-foreground mt-1">
                   Kamu telah mengumpulkan <strong>{totalProgress}%</strong> dari total targetmu. Sedikit lagi menuju impian!
                 </p>
@@ -254,15 +254,15 @@ interface GoalRow {
         <Tabs defaultValue="active" value={filter} onValueChange={(v) => setFilter(v as 'active' | 'completed')} className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="text-xl font-bold tracking-tight">Daftar Target</h3>
+              <h3 className="text-xl font-medium tracking-tight">Daftar Target</h3>
               <p className="text-sm text-muted-foreground">Kelola dan pantau progres setiap target keuanganmu</p>
             </div>
             
             <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full md:w-[320px] grid grid-cols-2">
-              <TabsTrigger value="active" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
+              <TabsTrigger value="active" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
                 Aktif
               </TabsTrigger>
-              <TabsTrigger value="completed" className="h-full rounded-xl font-bold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
+              <TabsTrigger value="completed" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
                 Selesai
               </TabsTrigger>
             </TabsList>
@@ -291,14 +291,14 @@ interface GoalRow {
                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-bold bg-muted/50">
+                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
                       
                       <div className="flex-1 space-y-1">
                         <div className="flex justify-between items-center">
-                          <h4 className="font-bold text-lg text-foreground truncate">{goal.title}</h4>
+                          <h4 className="font-medium text-lg text-foreground truncate">{goal.title}</h4>
                           <ChevronRight className="w-5 h-5 text-muted-foreground/20 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
@@ -307,12 +307,12 @@ interface GoalRow {
                         <div className="space-y-2">
                           <div className="flex justify-between items-end">
                             <div className="flex flex-col">
-                              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">Terkumpul</span>
-                              <span className="font-bold text-lg text-primary">{formatCurrency(goal.currentAmount)}</span>
+                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Terkumpul</span>
+                              <span className="font-medium text-lg text-primary">{formatCurrency(goal.currentAmount)}</span>
                             </div>
                             <div className="flex flex-col items-end">
-                              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">Target</span>
-                              <span className="font-semibold text-sm">{formatCurrency(goal.targetAmount)}</span>
+                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Target</span>
+                              <span className="font-medium text-sm">{formatCurrency(goal.targetAmount)}</span>
                             </div>
                           </div>
                           
@@ -324,7 +324,7 @@ interface GoalRow {
                               className={`absolute inset-y-0 left-0 rounded-full ${goal.barColor} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
                             />
                             <div className="absolute inset-0 flex items-center justify-center">
-                               <span className="text-[8px] font-black text-foreground/50 uppercase tracking-tighter">
+                               <span className="text-[8px] font-medium text-foreground/50 uppercase tracking-tighter">
                                  {calculateProgress(goal.currentAmount, goal.targetAmount)}%
                                </span>
                             </div>
@@ -353,7 +353,7 @@ interface GoalRow {
                     <CheckCircle className="w-8 h-8 text-muted-foreground/50" strokeWidth={1.5} />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-semibold text-foreground">Tidak ada target aktif</h3>
+                    <h3 className="font-medium text-foreground">Tidak ada target aktif</h3>
                     <p className="text-sm text-muted-foreground max-w-[250px] mx-auto">
                       Semua targetmu sudah tercapai? Hebat! Buat target baru yuk.
                     </p>
@@ -381,14 +381,14 @@ interface GoalRow {
                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-bold bg-muted/50">
+                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
                       
                       <div className="flex-1 space-y-1">
                         <div className="flex justify-between items-center">
-                          <h4 className="font-bold text-lg text-foreground truncate">{goal.title}</h4>
+                          <h4 className="font-medium text-lg text-foreground truncate">{goal.title}</h4>
                           <ChevronRight className="w-5 h-5 text-muted-foreground/20 group-hover:text-primary group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>
@@ -397,19 +397,19 @@ interface GoalRow {
                         <div className="space-y-2">
                           <div className="flex justify-between items-end">
                             <div className="flex flex-col">
-                              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">Terkumpul</span>
-                              <span className="font-bold text-lg text-primary">{formatCurrency(goal.currentAmount)}</span>
+                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Terkumpul</span>
+                              <span className="font-medium text-lg text-primary">{formatCurrency(goal.currentAmount)}</span>
                             </div>
                             <div className="flex flex-col items-end">
-                              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">Target</span>
-                              <span className="font-semibold text-sm">{formatCurrency(goal.targetAmount)}</span>
+                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Target</span>
+                              <span className="font-medium text-sm">{formatCurrency(goal.targetAmount)}</span>
                             </div>
                           </div>
                           
                           <div className="relative h-3 bg-muted rounded-full overflow-hidden">
                             <div className={`absolute inset-0 rounded-full ${goal.barColor}`} />
                             <div className="absolute inset-0 flex items-center justify-center">
-                               <span className="text-[8px] font-black text-white uppercase tracking-tighter">
+                               <span className="text-[8px] font-medium text-white uppercase tracking-tighter">
                                  100%
                                </span>
                             </div>
@@ -441,7 +441,7 @@ interface GoalRow {
                     <Trophy className="w-8 h-8 text-yellow-500/50" strokeWidth={1.5} />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-semibold text-foreground">Belum ada target tercapai</h3>
+                    <h3 className="font-medium text-foreground">Belum ada target tercapai</h3>
                     <p className="text-sm text-muted-foreground max-w-[250px] mx-auto">
                       Terus menabung untuk mencapai target impianmu!
                     </p>

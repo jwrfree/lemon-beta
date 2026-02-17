@@ -41,7 +41,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center gap-2">
-                                <p className="font-semibold text-sm">{item.name}</p>
+                                <p className="font-medium text-sm">{item.name}</p>
                                 {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && (
                                     <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">
                                         {item.quantity} gr
@@ -58,7 +58,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                             </p>
                         </div>
                         <div className="text-right">
-                            <p className="font-bold tabular-nums text-sm">
+                            <p className="font-medium tabular-nums text-sm">
                                 {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && goldPrice
                                     ? formatCurrency(item.quantity * goldPrice)
                                     : formatCurrency(item.value)}
@@ -120,3 +120,4 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
         </div>
     );
 };
+
