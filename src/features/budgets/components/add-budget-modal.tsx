@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/providers/auth-provider';
+import { transactionService } from '@/features/transactions/services/transaction.service';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +20,7 @@ import { getCategoryIcon } from '@/lib/category-utils';
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
+  const { user } = useAuth();
   const { addBudget } = useBudgets();
   const { expenseCategories } = useCategories();
   const { showToast } = useUI();
@@ -26,6 +29,28 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const [targetAmount, setTargetAmount] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [recommendation, setRecommendation] = useState<{ avg: number; max: number } | null>(null);
+  const [loadingRec, setLoadingRec] = useState(false);
+
+  // Fetch recommendation when entering amount step (Step 3)
+  useEffect(() => {
+    if (step === 3 && selectedCategories.length > 0 && user) {
+      setLoadingRec(true);
+      setRecommendation(null);
+      transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0])
+        .then((res) => {
+          if (res.data) {
+            setRecommendation(res.data);
+            // Optional: Auto-set target if current is 0? 
+            if (targetAmount === 0 && res.data.avg > 0) {
+              // setTargetAmount(Math.ceil(res.data.avg)); // Maybe too intrusive? Let's just suggest.
+            }
+          }
+        })
+        .finally(() => setLoadingRec(false));
+    }
+  }, [step, selectedCategories, user]);
 
   const handleCategoryToggle = (categoryName: string) => {
     setSelectedCategories(prev =>
@@ -40,10 +65,17 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
       showToast("Nama anggaran tidak boleh kosong.", 'error');
       return;
     }
-    if (step === 2 && targetAmount <= 0) {
+    // Step 2 is now Category
+    if (step === 2 && selectedCategories.length === 0) {
+      showToast("Pilih minimal satu kategori.", 'error');
+      return;
+    }
+    // Step 3 is Amount (Validation on Submit or Next if there was a Step 4)
+    if (step === 3 && targetAmount <= 0) {
       showToast("Target anggaran harus lebih besar dari nol.", 'error');
       return;
     }
+    setStep(s => s + 1);
     setStep(s => s + 1);
   };
 
@@ -51,10 +83,9 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     setStep(s => s - 1);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedCategories.length === 0) {
-      showToast("Pilih minimal satu kategori untuk anggaran ini.", 'error');
+  const handleSubmit = async () => {
+    if (targetAmount <= 0) {
+      showToast("Target anggaran harus lebih besar dari nol.", 'error');
       return;
     }
     setIsSubmitting(true);
@@ -62,9 +93,10 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
       await addBudget({
         name: budgetName,
         targetAmount: targetAmount,
-        period: 'monthly', // Default to monthly for now
-        categories: [selectedCategories[0]], // MVP supports single category or we need to update schema
+        period: 'monthly',
+        categories: [selectedCategories[0]],
       });
+      onClose(); // Explicitly close on success
     } catch {
       // error handled by provider
     } finally {
@@ -72,7 +104,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const stepTitles = ["Beri Nama Anggaran", "Tentukan Target", "Pilih Kategori"];
+  const stepTitles = ["Beri Nama Anggaran", "Pilih Kategori", "Tentukan Target"];
 
   const slideVariants = {
     enter: (direction: number) => ({
@@ -135,54 +167,85 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                 </div>
               )}
               {step === 2 && (
-                <div className="space-y-8">
-                  <div className="space-y-2 text-center">
-                    <Label htmlFor="target-amount" className="text-sm">Target Pengeluaran per Bulan</Label>
-                    <Input
-                      id="target-amount"
-                      value={formatCurrency(targetAmount)}
-                      onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                      className="text-4xl font-bold border-none focus-visible:ring-0 text-center bg-transparent"
-                      size="lg"
-                      inputMode="numeric"
-                      autoFocus
-                    />
-                  </div>
-                  <Slider
-                    value={[targetAmount]}
-                    onValueChange={(value) => setTargetAmount(value[0])}
-                    max={10000000}
-                    step={50000}
-                  />
-                  <div className="grid grid-cols-4 gap-2">
-                    {budgetSteps.map(val => (
-                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)}>
-                        {formatCurrency(val / 1000)}k
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {step === 3 && (
                 <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">Pilih satu atau lebih kategori yang masuk dalam anggaran &apos;{budgetName}&apos;.</p>
+                  <p className="text-sm text-muted-foreground">Pilih kategori untuk anggaran &apos;{budgetName}&apos;.</p>
                   <ScrollArea className="h-64">
                     <div className="grid grid-cols-4 gap-2 pr-4">
                       {expenseCategories.map(cat => {
                         const Icon = getCategoryIcon(cat.icon);
+                        const isSelected = selectedCategories.includes(cat.name);
                         return (
-                          <button type="button" key={cat.id} onClick={() => handleCategoryToggle(cat.name)}
+                          <button type="button" key={cat.id} onClick={() => {
+                            // Single select logic for MVP recommendation
+                            setSelectedCategories([cat.name]);
+                          }}
                             className={cn(
-                              "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1.5 aspect-square transition-colors",
-                              selectedCategories.includes(cat.name) ? 'border-primary bg-primary/10' : 'hover:bg-accent'
+                              "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1.5 aspect-square transition-all",
+                              isSelected ? 'border-primary bg-primary/10 scale-95 ring-2 ring-primary/20' : 'hover:bg-accent hover:border-foreground/20'
                             )}>
-                            <Icon className={cn("h-6 w-6", selectedCategories.includes(cat.name) ? 'text-primary' : 'text-muted-foreground')} />
-                            <span className="text-xs text-center leading-tight">{cat.name}</span>
+                            <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground')} />
+                            <span className="text-xs text-center leading-tight font-medium">{cat.name}</span>
                           </button>
                         );
                       })}
                     </div>
                   </ScrollArea>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div className="space-y-6">
+                  {/* Recommendation Card */}
+                  {loadingRec ? (
+                    <div className="h-24 w-full animate-pulse bg-muted rounded-xl" />
+                  ) : recommendation && recommendation.avg > 0 ? (
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl flex items-start gap-3">
+                      <div className="bg-emerald-500/20 p-2 rounded-full">
+                        <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 mb-1">Smart Insight</h4>
+                        <p className="text-xs text-emerald-900 dark:text-emerald-100 leading-relaxed">
+                          Rata-rata pengeluaranmu di <span className="font-bold">{selectedCategories[0]}</span> adalah <span className="font-bold">{formatCurrency(recommendation.avg)}</span> per bulan.
+                        </p>
+                        <Button
+                          size="sm"
+                          variant="link"
+                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-bold text-xs mt-2"
+                          onClick={() => setTargetAmount(Math.ceil(recommendation.avg))}
+                        >
+                          Gunakan {formatCurrency(Math.ceil(recommendation.avg))}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-muted/30 p-4 rounded-xl flex items-center gap-3 text-muted-foreground">
+                      <TrendingUp className="h-4 w-4" />
+                      <p className="text-xs">Belum ada data historis cukup untuk rekomendasi.</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-2 text-center pt-2">
+                    <Label htmlFor="target-amount" className="text-sm font-medium text-muted-foreground">Tentukan Target Maksimal</Label>
+                    <Input
+                      id="target-amount"
+                      value={formatCurrency(targetAmount)}
+                      onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
+                      className="text-4xl font-bold border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/20"
+                      placeholder="Rp 0"
+                      size="lg"
+                      inputMode="numeric"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-2">
+                    {budgetSteps.map(val => (
+                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn(targetAmount === val && "border-primary bg-primary/5")}>
+                        {formatCurrency(val / 1000)}k
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               )}
             </motion.div>

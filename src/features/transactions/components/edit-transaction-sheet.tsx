@@ -79,6 +79,10 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <SheetContent side="bottom" className="h-[95vh] sm:h-auto sm:max-w-lg rounded-t-[3rem] sm:rounded-3xl px-0 pb-0 flex flex-col gap-0 overflow-hidden border-none shadow-2xl bg-zinc-50 dark:bg-black">
+                <SheetHeader className="sr-only">
+                    <SheetTitle>Edit Transaksi</SheetTitle>
+                    <SheetDescription>Gunakan Magic Bar atau formulir manual untuk mengubah detail transaksi.</SheetDescription>
+                </SheetHeader>
                 
                 {/* 1. Liquid Header (The Star) */}
                 <div className="relative pt-8 pb-4 bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900 shadow-sm">
@@ -129,14 +133,13 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
                     {/* Magic Input */}
                     <div className="px-6 mb-2">
-                        <form onSubmit={(e) => { e.preventDefault(); handleMagicSubmit(); }}>
-                            <MagicBar 
-                                value={magicValue}
-                                onChange={setMagicValue}
-                                isProcessing={isAiProcessing}
-                                onClear={() => setMagicValue('')}
-                            />
-                        </form>
+                        <MagicBar 
+                            value={magicValue}
+                            onChange={setMagicValue}
+                            onReturn={handleMagicSubmit}
+                            isProcessing={isAiProcessing}
+                            onClear={() => setMagicValue('')}
+                        />
                         <AnimatePresence>
                             {aiExplanation && (
                                 <motion.div 

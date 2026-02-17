@@ -132,6 +132,53 @@ class TransactionService {
     }
 
     /**
+     * Get monthly statistics for a category (last 3 months).
+     * Used for budget recommendations.
+     */
+    async getCategoryMonthlyStats(userId: string, category: string): Promise<ServiceResult<{ avg: number; max: number }>> {
+        try {
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setDate(1); // Start from the first day
+            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+            const { data, error } = await this.supabase
+                .from('transactions') // Table name is plural 'transactions'
+                .select('amount, date')
+                .eq('user_id', userId)
+                .eq('category', category)
+                .eq('type', 'expense')
+                .gte('date', threeMonthsAgo.toISOString());
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                return { data: { avg: 0, max: 0 }, error: null };
+            }
+
+            const monthlyTotals: Record<string, number> = {};
+
+            data.forEach((t: any) => {
+                const monthKey = t.date.substring(0, 7); // YYYY-MM
+                monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + t.amount;
+            });
+
+            const months = Object.keys(monthlyTotals).length;
+            const values = Object.values(monthlyTotals);
+            const total = values.reduce((a, b) => a + b, 0);
+            const max = Math.max(...values, 0);
+            const avg = months > 0 ? total / months : 0;
+
+            return { data: { avg, max }, error: null };
+        } catch (err: any) {
+            console.error('[TransactionService] Stats Error:', err);
+            return {
+                data: null,
+                error: this.formatError(err),
+            };
+        }
+    }
+
+    /**
      * Helper to format database errors into user-friendly messages.
      */
     private formatError(err: any): string {

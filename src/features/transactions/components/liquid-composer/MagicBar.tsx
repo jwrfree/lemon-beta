@@ -9,6 +9,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 interface MagicBarProps {
     value: string;
     onChange: (val: string) => void;
+    onReturn?: () => void; // New prop for handling Enter key
     isProcessing?: boolean;
     placeholder?: string;
     onClear?: () => void;
@@ -17,11 +18,19 @@ interface MagicBarProps {
 export const MagicBar = ({ 
     value, 
     onChange, 
+    onReturn,
     isProcessing = false, 
     placeholder = "Katakan sesuatu... (misal: 'Ganti harganya jadi 50rb')",
     onClear 
 }: MagicBarProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (onReturn) onReturn();
+        }
+    };
 
     return (
         <div className="relative group w-full max-w-md mx-auto px-4">
@@ -51,6 +60,7 @@ export const MagicBar = ({
                     maxRows={4}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     placeholder={placeholder}
                     className="flex-1 bg-transparent border-none focus:ring-0 text-sm md:text-base font-medium placeholder:text-zinc-400 resize-none py-1"
                 />
