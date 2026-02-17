@@ -9,7 +9,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
-import { getMerchantVisuals, getMerchantLogoUrl } from '@/lib/merchant-utils';
+import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl } from '@/lib/merchant-utils';
 
 interface TransactionListItemProps {
     transaction: Transaction;
@@ -34,10 +34,16 @@ const TransactionListItemContent = ({
     // Multi-tier Fallback State
     const [logoSource, setLogoSource] = React.useState<'clearbit' | 'google' | 'icon'>('clearbit');
 
+    // CRITICAL: Reset state when transaction changes to avoid carrying over errors from previous items in the list
+    React.useEffect(() => {
+        setLogoSource('clearbit');
+    }, [transaction.id, transaction.merchant, transaction.description]);
+
     const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
     const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
 
-    const Icon = merchantVisuals?.icon || categoryVisuals.icon;
+    // Hierarchy: Merchant Icon (e.g., TV for Netflix) > Category Icon (e.g., Game for Entertainment)
+    const DefaultIcon = merchantVisuals?.icon || categoryVisuals.icon;
     const iconColor = merchantVisuals?.color || categoryVisuals.color;
     const iconBg = merchantVisuals?.bgColor || categoryVisuals.bgColor;
 
@@ -54,7 +60,7 @@ const TransactionListItemContent = ({
                     <img 
                         src={primaryLogo} 
                         alt="" 
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover animate-in fade-in duration-500"
                         onError={() => setLogoSource('google')}
                     />
                 )}
@@ -62,15 +68,14 @@ const TransactionListItemContent = ({
                     <img 
                         src={backupLogo} 
                         alt="" 
-                        className="h-6 w-6 object-contain"
+                        className="h-6 w-6 object-contain animate-in zoom-in-50 duration-300"
                         onError={() => setLogoSource('icon')}
                     />
                 )}
-                {logoSource === 'icon' || (!primaryLogo && !backupLogo) ? (
-                    <Icon className={cn("h-5 w-5", iconColor)} />
-                ) : null}
-            </div>
-            <div className="flex-1 overflow-hidden">
+                {(logoSource === 'icon' || !merchantVisuals?.domain) && (
+                    <DefaultIcon className={cn("h-5 w-5", iconColor)} />
+                )}
+            </div>            <div className="flex-1 overflow-hidden">
                 <div className="font-medium text-foreground text-sm leading-tight mb-0.5 tracking-tight">{transaction.description || transaction.category}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     {/* Want Tag */}

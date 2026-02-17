@@ -165,7 +165,7 @@ export const useSmartAddFlow = () => {
 
         let rawTransactions: AIProcessedTransaction[] = [];
         if ('transactions' in result && result.transactions) {
-            rawTransactions = result.transactions;
+            rawTransactions = result.transactions as any;
         } else if ('amount' in result && result.amount) {
             rawTransactions = [result as any];
         }

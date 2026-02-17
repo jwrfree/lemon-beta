@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { parseISO } from 'date-fns';
 
-import { unifiedTransactionSchema, UnifiedTransactionFormValues } from '../schemas/transaction-schema';
+import { unifiedTransactionSchema, UnifiedTransactionFormValues, UnifiedTransactionInputValues } from '../schemas/transaction-schema';
 import { transactionService } from '../services/transaction.service';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
@@ -16,7 +16,7 @@ interface UseTransactionFormProps {
     initialData?: Transaction | null;
     onSuccess?: () => void;
     type?: 'expense' | 'income' | 'transfer'; // Default type override
-    context?: { wallets: Wallet[], categories: string[] }; // Context for AI
+    context?: { wallets: { id: string, name: string }[], categories: string[] }; // Context for AI
 }
 
 export const useTransactionForm = ({ initialData, onSuccess, type, context }: UseTransactionFormProps = {}) => {
@@ -29,8 +29,8 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
     const isEditMode = !!initialData;
 
     // 1. Initialize Form with Zod Resolver
-    const form = useForm<UnifiedTransactionFormValues>({
-        resolver: zodResolver(unifiedTransactionSchema),
+    const form = useForm<UnifiedTransactionInputValues>({
+        resolver: zodResolver(unifiedTransactionSchema) as any,
         defaultValues: {
             type: type || 'expense',
             amount: '', // String for input handling
@@ -58,10 +58,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 category: initialData.category,
                 subCategory: initialData.subCategory || '',
                 location: initialData.location || '',
-                // Transfer specific logic handles mapped fields if needed
-                fromWalletId: '',
-                toWalletId: '',
-            });
+            } as any);
         }
     }, [initialData, form]);
 
@@ -87,7 +84,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 if (patch.location) form.setValue('location', patch.location, { shouldDirty: true });
                 if (patch.description) form.setValue('description', patch.description, { shouldDirty: true });
                 if (patch.walletId) form.setValue('walletId', patch.walletId, { shouldDirty: true });
-                
+
                 if (patch.explanation) {
                     setAiExplanation(patch.explanation);
                     triggerHaptic('success');
@@ -124,10 +121,10 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
         // Success Flow
         triggerHaptic('success');
-        
+
         // IMPORTANT: Refresh router before closing to ensure data sync
         router.refresh();
-        
+
         // Let the UI component handle the animation/close
         if (onSuccess) {
             // Small delay to let Next.js start the refresh process
@@ -143,9 +140,9 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         if (!user || !initialData) return;
 
         triggerHaptic('medium');
-        
+
         const result = await transactionService.deleteTransaction(user.id, initialData.id);
-        
+
         if (result.error) {
             triggerHaptic('error');
             showToast(result.error, 'error');
@@ -154,7 +151,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
         triggerHaptic('success');
         showToast("Transaksi berhasil dihapus", 'success');
-        
+
         router.refresh();
         if (onSuccess) {
             setTimeout(() => {
@@ -171,7 +168,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         isAiProcessing,
         aiExplanation,
         applyLiquidPatch,
-        handleSubmit: form.handleSubmit(handleSubmit),
+        handleSubmit: form.handleSubmit(handleSubmit as any),
         handleDelete,
         errors: form.formState.errors,
     };

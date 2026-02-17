@@ -83,3 +83,5 @@ export const unifiedTransactionSchema = z.discriminatedUnion('type', [
 });
 
 export type UnifiedTransactionFormValues = z.infer<typeof unifiedTransactionSchema>;
+export type UnifiedTransactionInputValues = z.input<typeof unifiedTransactionSchema>;
+
