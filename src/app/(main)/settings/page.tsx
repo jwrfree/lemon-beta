@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -14,6 +15,7 @@ import {
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { cn, triggerHaptic } from '@/lib/utils';
+import { PageHeader } from "@/components/page-header";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,6 +27,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { DeepSeekUsageCard } from '@/features/settings/components/deepseek-usage-card';
 
 // --- VISI SAYA: BENTO GRID COMMAND CENTER ---
 
@@ -75,16 +78,16 @@ function SettingsContent() {
 
     const handleInstallClick = async () => {
         if (!deferredPrompt) return;
-        
+
         triggerHaptic('medium');
-        
+
         // Show the install prompt
         deferredPrompt.prompt();
-        
+
         // Wait for the user to respond to the prompt
         const { outcome } = await deferredPrompt.userChoice;
         console.log(`User response to the install prompt: ${outcome}`);
-        
+
         // We've used the prompt, and can't use it again, throw it away
         setDeferredPrompt(null);
     };
@@ -93,9 +96,10 @@ function SettingsContent() {
         <div className="min-h-screen bg-zinc-50/50 dark:bg-black text-zinc-900 dark:text-zinc-100 pb-32">
 
             {/* Header Bersih */}
-            <div className="pt-safe-top px-6 pb-6 sticky top-0 bg-zinc-50/80 dark:bg-black/80 backdrop-blur-xl z-30">
-                <div className="flex items-center justify-between mt-4">
-                    <h1 className="text-3xl font-medium tracking-tighter">Profil</h1>
+            <PageHeader
+                title="Profil"
+                showBackButton={true}
+                extraActions={
                     <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700">
                         {userData?.photoURL ? (
                             <Image src={userData.photoURL} alt="User" width={40} height={40} className="object-cover" />
@@ -103,11 +107,11 @@ function SettingsContent() {
                             <UserIcon className="w-full h-full p-2 text-zinc-400" />
                         )}
                     </div>
-                </div>
-            </div>
+                }
+            />
 
             {/* BENTO GRID LAYOUT */}
-            <div className="px-4 md:px-6 w-full max-w-5xl mx-auto space-y-4">
+            <div className="px-4 md:px-6 w-full max-w-5xl mx-auto space-y-4 mt-4">
 
                 {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
                 <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
@@ -205,12 +209,15 @@ function SettingsContent() {
                     </BentoItem>
                 </div>
 
+                {/* AI Usage Tracker */}
+                <DeepSeekUsageCard />
+
                 {/* BARIS 3: List Menu (Settings Detail) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* App Installation - Premium CTA */}
                     <AnimatePresence>
                         {deferredPrompt && (
-                            <BentoItem 
+                            <BentoItem
                                 onClick={handleInstallClick}
                                 className="col-span-1 md:col-span-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-none p-6 flex items-center justify-between group overflow-hidden relative"
                                 delay={0.32}
@@ -231,7 +238,7 @@ function SettingsContent() {
                                 <div className="relative z-10 bg-white text-teal-700 font-medium text-[10px] uppercase tracking-widest px-4 py-2 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
                                     Pasang Sekarang
                                 </div>
-                                
+
                                 {/* Decor */}
                                 <div className="absolute -right-4 -bottom-4 h-32 w-32 bg-white/10 blur-3xl rounded-full" />
                             </BentoItem>
@@ -304,4 +311,3 @@ export default function SettingsPage() {
         </Suspense>
     );
 }
-

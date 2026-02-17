@@ -113,7 +113,7 @@ function TransactionsPageContent() {
         <div className="flex flex-col h-full overflow-hidden">
             <PageHeader 
                 title="Transaksi" 
-                showBackButton={false}
+                showBackButton={true}
                 extraActions={
                     <div className="flex items-center gap-2 flex-1 ml-2">
                         <div className="relative flex-1">

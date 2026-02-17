@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
@@ -71,9 +72,9 @@ export const useSmartAddFlow = () => {
     const { wallets } = useWallets();
     const { transactions } = useMonthTransactions();
     const { incomeCategories, expenseCategories } = useCategories();
-    const { addTransaction } = useActions();
+    const { addTransaction, addTransfer } = useActions();
     const { budgets } = useBudgets();
-    const { setIsTransferModalOpen, setPreFilledTransfer, showToast } = useUI();
+    const { setPreFilledTransfer, setIsTransferModalOpen, showToast } = useUI();
 
     const [pageState, setPageState] = useState<PageState>('IDLE');
     const [messages, setMessages] = useState<Message[]>([]);
@@ -251,22 +252,15 @@ export const useSmartAddFlow = () => {
         } else {
             const dataToConfirm = processedTransactions[0];
 
-            // Smart transfer detection (only for single transaction for now to keep flow simple)
+            // Smart transfer detection
             if (dataToConfirm.category === 'Transfer' && dataToConfirm.sourceWallet && dataToConfirm.destinationWallet) {
-                const from = wallets.find(w => w.name.toLowerCase() === (dataToConfirm.sourceWallet || '').toLowerCase());
-                const to = wallets.find(w => w.name.toLowerCase() === (dataToConfirm.destinationWallet || '').toLowerCase());
-
-                if (from && to) {
-                    setPreFilledTransfer({
-                        fromWalletId: from.id,
-                        toWalletId: to.id,
-                        amount: dataToConfirm.amount || 0,
-                        description: dataToConfirm.description || 'Transfer',
-                    });
-                    setIsTransferModalOpen(true);
-                    resetFlow();
-                    return;
-                }
+                // Keep it in confirming state so user can verify
+                const { walletInsight, budgetInsight } = calculateInsights(dataToConfirm);
+                setInsightData({ wallet: walletInsight, budget: budgetInsight });
+                setParsedData(dataToConfirm);
+                setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
+                setPageState('CONFIRMING');
+                return;
             }
 
             const { walletInsight, budgetInsight } = calculateInsights(dataToConfirm);
@@ -275,7 +269,7 @@ export const useSmartAddFlow = () => {
             setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
             setPageState('CONFIRMING');
         }
-    }, [wallets, incomeCategories, expenseCategories, calculateInsights, setPreFilledTransfer, setIsTransferModalOpen, resetFlow]);
+    }, [wallets, incomeCategories, expenseCategories, calculateInsights, showToast]);
 
     const processInput = useCallback(async (input: string | { type: 'image', dataUrl: string }) => {
         const isRefinement = (pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') && typeof input === 'string';
@@ -385,6 +379,25 @@ export const useSmartAddFlow = () => {
         if (!parsedData) return;
         setPageState('ANALYZING');
         try {
+            // Check if it's a transfer
+            if (parsedData.category === 'Transfer' && parsedData.sourceWallet && parsedData.destinationWallet) {
+                const from = wallets.find(w => w.name.toLowerCase() === (parsedData.sourceWallet || '').toLowerCase() || w.id === parsedData.walletId);
+                const to = wallets.find(w => w.name.toLowerCase() === (parsedData.destinationWallet || '').toLowerCase());
+                
+                if (from && to) {
+                    await addTransfer({
+                        fromWalletId: from.id,
+                        toWalletId: to.id,
+                        amount: parsedData.amount,
+                        date: parsedData.date,
+                        description: parsedData.description
+                    });
+                    if (andAddAnother) resetFlow();
+                    else return true;
+                    return false;
+                }
+            }
+
             await addTransaction(parsedData);
             showToast("Transaksi berhasil disimpan!", 'success');
             if (andAddAnother) {
@@ -398,7 +411,7 @@ export const useSmartAddFlow = () => {
             setPageState('CONFIRMING');
         }
         return false;
-    }, [parsedData, addTransaction, showToast, resetFlow]);
+    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow]);
 
     const saveMultiTransactions = useCallback(async () => {
         if (multiParsedData.length === 0) return;

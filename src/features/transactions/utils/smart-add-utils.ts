@@ -121,10 +121,24 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
         searchCats(categories.income, 'income');
     }
 
+    // 2.5 Transfer Detection (Quick Regex)
+    const transferKeywords = ['pindah', 'transfer', 'kirim', 'tf', 'mutasi'];
+    const isTransfer = transferKeywords.some(k => lowerText.includes(k));
+    
+    if (isTransfer) {
+        category = 'Transfer';
+        type = 'expense'; // Used as system trigger
+        foundMatch = true;
+    }
+
     // 3. Need vs Want Logic
     let isNeed = true;
-    const wantCategories = ['Hiburan', 'Jalan-jalan', 'Liburan', 'Hobi', 'Investasi']; // Investasi is not exactly want but usually discretionary
-    const wantKeywords = ['kopi', 'starbucks', 'jalan', 'nonton', 'game', 'jajan'];
+    const wantCategories = ['Hiburan', 'Jalan-jalan', 'Liburan', 'Hobi', 'Gaya Hidup', 'Investasi']; 
+    const wantKeywords = [
+        'kopi', 'starbucks', 'jalan', 'nonton', 'game', 'jajan', 
+        'netflix', 'spotify', 'mcd', 'kfc', 'cinema', 'xxi', 'topup',
+        'mall', 'shopee', 'tokopedia', 'baju', 'kaos'
+    ];
 
     if (wantCategories.includes(category)) {
         isNeed = false;

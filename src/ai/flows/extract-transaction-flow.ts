@@ -134,14 +134,19 @@ Jam sekarang: ${currentTime}
    - 'kemarin' -> ${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}
    - Default: ${currentDate}
 
-9. **DETEKSI NEED VS WANT (PENTING):**
-   - **Need (Kebutuhan)**: Listrik, Air, Internet, Makan Siang (kerja), Bensin, Obat, Sembako, Transportasi Rutin, Cicilan Wajib. (Set 'isNeed': true).
-   - **Want (Keinginan)**: Kopi Mahal (Starbucks dll), Bioskop, Game, Gadget Baru (jika upgrade tidak perlu), Hobi, Jalan-jalan, Makan Mewah. (Set 'isNeed': false).
-   - Default: true jika ragu.
+9. **DETEKSI NEED VS WANT (KRITIKAL):**
+   - **Need (Kebutuhan)**: Sembako, beras, sayur, biaya kos/cicilan rumah, tagihan listrik/air/internet (dasar), bensin transportasi kerja, biaya sekolah, obat-obatan, makan siang harian yang murah (< 25rb). (Set 'isNeed': true).
+   - **Want (Keinginan/Gaya Hidup)**: Kopi kekinian (Starbucks, Janji Jiwa, dll), makan di restoran/mall, nonton bioskop (Cinema XXI, CGV), belanja baju/gadget bukan darurat, game/topup (Steam, Mobile Legends), langganan hiburan (Netflix, Spotify, Disney+), jalan-jalan/wisata. (Set 'isNeed': false).
+   - Khusus Makan: Jika ada nama brand seperti "McD", "KFC", "Starbucks" -> otomatis 'isNeed': false.
+   - Default: true jika ragu, tapi condongkan ke false jika terdengar seperti gaya hidup atau hiburan.
 
-10. **KLARIFIKASI AMBIGU (NEW):**
-   - Jika input user terlalu ambigu untuk diproses (misal hanya angka tanpa konteks, atau kategori yang sangat meragukan), Anda BOLEH memberikan pertanyaan klarifikasi di field 'clarificationQuestion' DAN membiarkan 'transactions' kosong atau terisi sebagian.
-   - Contoh: User bilang "Kopi 25rb", Anda bisa tanya: "Ini masuk ke kategori 'Kebutuhan' atau 'Gaya Hidup' (Lifestyle) nih?" di field 'clarificationQuestion'.
+10. **BRAND & MERCHANT AWARENESS:**
+   - Ekstrak brand populer Indonesia:
+     - Transportasi: Gojek, Grab, Maxim, Bluebird.
+     - Belanja: Alfamart, Indomaret, Tokopedia, Shopee, Lazada, Uniqlo.
+     - Makan: McD, KFC, Hokben, Kopi Kenangan, Janji Jiwa, Starbucks.
+     - Finance: BCA, Mandiri, BNI, BRI, Dana, OVO, GoPay.
+   - Masukkan ke field 'merchant'. Jika ada merchant, sesuaikan 'description' agar lebih natural (misal: "Makan di McD" bukan cuma "Makan").
 
 ### OUTPUT JSON FORMAT:
 {

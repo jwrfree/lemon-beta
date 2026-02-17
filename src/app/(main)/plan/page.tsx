@@ -10,9 +10,12 @@ import { BudgetingDashboard } from '@/features/budgets/components/budgeting-dash
 import { GoalsDashboard } from '@/features/goals/components/goals-dashboard';
 import { DebtsDashboard } from '@/features/debts/components/debts-dashboard';
 import { RemindersDashboard } from '@/features/reminders/components/reminders-dashboard';
+import { SubscriptionAuditCard } from '@/features/insights/components/subscription-audit-card';
+import { useTransactions } from '@/features/transactions/hooks/use-transactions';
 
 export default function PlanPage() {
     const [activeTab, setActiveTab] = useState<'budget' | 'goals' | 'debts' | 'bills'>('budget');
+    const { transactions } = useTransactions();
 
     const tabs = [
         { id: 'budget', label: 'Anggaran', icon: HandCoins },
@@ -64,6 +67,9 @@ export default function PlanPage() {
 
             {/* Content Area */}
             <div className="px-6 pt-4">
+                {/* AI Subscription Audit Section */}
+                <SubscriptionAuditCard transactions={transactions} />
+
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}

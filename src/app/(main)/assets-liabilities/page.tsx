@@ -105,6 +105,7 @@ export default function AssetsLiabilitiesPage() {
         <div className="h-full flex flex-col">
             <PageHeader
                 title="Aset & Liabilitas"
+                showBackButton={true}
                 actionButton={{
                     icon: Plus,
                     label: 'Tambah entri baru',

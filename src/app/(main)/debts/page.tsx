@@ -139,6 +139,7 @@ export default function DebtsPage() {
         <div className="flex flex-col h-full relative">
             <PageHeader 
                 title="Hutang & Piutang" 
+                showBackButton={true}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
                         <SelectTrigger className="w-[140px] h-9 text-xs bg-background shadow-sm border-input/60">

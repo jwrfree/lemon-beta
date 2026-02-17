@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X, Check, Pencil, Save, ChevronLeft, CornerDownRight } from 'lucide-react';
+import { X, Check, Pencil, Save, ChevronLeft, CornerDownRight, Sparkles } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CategoryGrid } from '@/features/transactions/components/category-grid';
@@ -147,7 +147,7 @@ export const SmartAddResults = ({
                                 <span>?</span>
                             </div>
 
-                            <div className="flex items-center gap-2 mt-3">
+                            <div className="flex flex-wrap items-center gap-2 mt-3">
                                 <Popover open={isCategoryPopoverOpen} onOpenChange={setIsCategoryPopoverOpen}>
                                     <PopoverTrigger asChild>
                                         <button
@@ -221,14 +221,30 @@ export const SmartAddResults = ({
                                         )}
                                     </PopoverContent>
                                 </Popover>
+
+                                {/* Need vs Want Toggle */}
+                                {parsedData.type === 'expense' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setParsedData({ ...parsedData, isNeed: !parsedData.isNeed })}
+                                        className={cn(
+                                            "px-3 py-1 rounded-full text-[11px] font-medium flex items-center gap-1.5 active:scale-95 transition-all border shadow-sm",
+                                            parsedData.isNeed 
+                                                ? "bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800" 
+                                                : "bg-pink-50 text-pink-600 border-pink-200 dark:bg-pink-900/20 dark:border-pink-800"
+                                        )}
+                                    >
+                                        <Sparkles className={cn("h-3 w-3", !parsedData.isNeed && "fill-current")} />
+                                        {parsedData.isNeed ? 'Kebutuhan (Need)' : 'Gaya Hidup (Want)'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {insightData && (
-                    <div className="space-y-3">
-                        {/* Existing Insight rendering code preserved */}
+                    <div className="space-y-2">
                         {insightData.wallet?.isInsufficient && (
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-start">
                                 <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-[11px] font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-sm shadow-destructive/5">
@@ -237,34 +253,34 @@ export const SmartAddResults = ({
                                 </div>
                             </motion.div>
                         )}
-                        {insightData.wallet && (
-                            <div className="flex justify-start">
-                                <div className="p-3 bg-card rounded-2xl max-w-[85%] text-xs leading-relaxed border shadow-sm flex flex-col gap-1">
-                                    <span className="text-[10px] uppercase font-medium text-muted-foreground/60 tracking-wider">Dompet: {insightData.wallet.name}</span>
-                                    <div>
-                                        <span className="line-through opacity-40 tabular-nums">{formatCurrency(insightData.wallet.currentBalance)}</span>
-                                        <span className="mx-2 text-muted-foreground/30">→</span>
+                        
+                        <div className="flex flex-wrap gap-2">
+                            {insightData.wallet && (
+                                <div className="p-3 bg-card rounded-2xl text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
+                                    <span className="text-[10px] uppercase font-medium text-muted-foreground/60 tracking-wider">Sumber: {insightData.wallet.name}</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="opacity-40 tabular-nums">{formatCurrency(insightData.wallet.currentBalance)}</span>
+                                        <span className="text-muted-foreground/30">→</span>
                                         <span className={cn("font-medium tabular-nums", insightData.wallet.isInsufficient ? "text-destructive" : "text-primary")}>
                                             {formatCurrency(insightData.wallet.newBalance)}
                                         </span>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                        {insightData.budget && (
-                            <div className="flex justify-start">
-                                <div className="p-3 bg-card rounded-2xl max-w-[85%] text-xs leading-relaxed border shadow-sm flex flex-col gap-1">
+                            )}
+                            
+                            {insightData.budget && (
+                                <div className="p-3 bg-card rounded-2xl text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
                                     <span className="text-[10px] uppercase font-medium text-muted-foreground/60 tracking-wider">Anggaran: {insightData.budget.name}</span>
-                                    <div>
-                                        <span className="line-through opacity-40 tabular-nums">{formatCurrency(insightData.budget.currentRemaining)}</span>
-                                        <span className="mx-2 text-muted-foreground/30">→</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="opacity-40 tabular-nums">{formatCurrency(insightData.budget.currentRemaining)}</span>
+                                        <span className="text-muted-foreground/30">→</span>
                                         <span className={cn("font-medium tabular-nums", insightData.budget.isOverBudget ? "text-destructive" : "text-primary")}>
                                             {formatCurrency(insightData.budget.newRemaining)}
                                         </span>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 )}
             </motion.div>

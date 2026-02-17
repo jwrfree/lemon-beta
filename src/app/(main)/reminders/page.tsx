@@ -144,6 +144,7 @@ export default function RemindersPage() {
         <div className="flex flex-col h-full relative">
             <PageHeader 
                 title="Pengingat" 
+                showBackButton={true}
                 extraActions={
                     <div className="flex items-center gap-1 md:gap-2">
                         <div className="hidden md:flex items-center gap-2 mr-2">

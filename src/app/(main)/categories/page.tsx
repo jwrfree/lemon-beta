@@ -78,6 +78,7 @@ export default function CategoriesPage() {
         <div className="h-full flex flex-col relative">
             <PageHeader
                 title="Kelola Kategori"
+                showBackButton={true}
                 extraActions={
                     <Button variant="ghost" size="icon" className="rounded-full text-primary" onClick={handleOpenAdd}>
                         <Plus className="h-6 w-6" />
