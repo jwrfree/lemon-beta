@@ -1,133 +1,84 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
-import { RotateCcw, Mic } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
-import { TransactionComposer } from '@/features/transactions/components/transaction-composer';
+import { 
+    ArrowLeft, Sparkles, Tag, MapPin, CornerDownRight, 
+    Loader2, Save, RotateCcw, Camera, Mic, X, Trash2,
+    CheckCircle2
+} from 'lucide-react';
+
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useUI } from '@/components/ui-provider';
-import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
-import { PageHeader } from '@/components/page-header';
-import { DynamicSuggestions } from './dynamic-suggestions';
+import { triggerHaptic, cn, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
 import { SuccessAnimation } from '@/components/success-animation';
 
-// New Modular Components & Hooks
-import { useVoiceRecognition } from '@/features/transactions/hooks/use-voice-recognition';
-import { SmartAddFooter } from './smart-add-footer';
-import { SmartAddMessages } from './smart-add-messages';
-import { SmartAddResults } from './smart-add-results';
+// Liquid & Core Logic
+import { HeroAmount } from '@/features/transactions/components/liquid-composer/HeroAmount';
+import { MagicBar } from '@/features/transactions/components/liquid-composer/MagicBar';
+import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
+import { DynamicSuggestions } from './dynamic-suggestions';
 
-const textLoadingMessages = ["Menganalisis teks...", "Mengidentifikasi detail...", "Memilih kategori...", "Hampir selesai..."];
-const imageLoadingMessages = ["Membaca struk...", "Mengekstrak total & merchant...", "Menebak kategori belanja...", "Menyiapkan hasil..."];
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
 export default function SmartAddPage() {
     const router = useRouter();
+    const { wallets } = useWallets();
+    const { expenseCategories, incomeCategories } = useCategories();
     const { showToast } = useUI();
-    const { getCategoryVisuals } = useCategories();
+    const [magicValue, setMagicValue] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [focusedIndex, setFocusedIndex] = useState(0); // For multi-transaction navigation
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const {
         pageState,
         setPageState,
-        messages,
         parsedData,
-        setParsedData,
         multiParsedData,
         removeMultiTransaction,
-        insightData,
         processInput,
         saveTransaction,
         saveMultiTransactions,
         resetFlow
     } = useSmartAddFlow();
 
-    const [inputValue, setInputValue] = useState('');
-    const [loadingMessage, setLoadingMessage] = useState('');
-    const [isVoiceInputMode, setIsVoiceInputMode] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [isCategoryPopoverOpen, setIsCategoryPopoverOpen] = useState(false);
+    // 1. AI Context
+    const aiContext = useMemo(() => ({
+        wallets: wallets.map(w => ({ id: w.id, name: w.name })),
+        categories: [...expenseCategories, ...incomeCategories].map(c => c.name)
+    }), [wallets, expenseCategories, incomeCategories]);
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    // 2. Handle Submissions
+    const handleMagicSubmit = async () => {
+        if (!magicValue) return;
+        triggerHaptic('medium');
+        await processInput(magicValue);
+        setMagicValue('');
+    };
 
-    // Haptic feedback utility
-    const vibrate = useCallback((pattern: number | number[]) => {
-        if (typeof navigator !== 'undefined' && navigator.vibrate) {
-            navigator.vibrate(pattern);
-        }
-    }, []);
-
-    // Scroll bottom
-    useEffect(() => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTo({
-                top: scrollContainerRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
-        }
-    }, [messages, pageState]);
-
-    // Voice Recognition Hook
-    const { isListening, toggleListening, isSupported } = useVoiceRecognition(
-        (text) => setInputValue(text),
-        (finalText) => {
-            if (isVoiceInputMode && finalText.trim()) {
-                setIsVoiceInputMode(false);
-                processInput(finalText);
-                setInputValue('');
-            } else {
-                setIsVoiceInputMode(false);
-            }
-        }
-    );
-
-    const handleToggleVoice = useCallback(() => {
-        if (!isSupported) {
-            showToast("Browser tidak mendukung input suara.", 'error');
-            return;
-        }
-        vibrate(50);
-        setIsVoiceInputMode(!isListening);
-        toggleListening();
-    }, [isListening, isSupported, showToast, vibrate, toggleListening]);
-
-    const handleConfirmSave = useCallback(async (addMore: boolean) => {
-        vibrate(50);
-        const success = await saveTransaction();
-        if (success) {
-            if (addMore) {
-                setPageState('IDLE');
-                setInputValue('');
-            } else {
-                setShowSuccess(true);
-                vibrate([80, 50, 80]);
-                setTimeout(() => {
-                    setShowSuccess(false);
-                    router.back();
-                }, 1200);
-            }
-        }
-    }, [saveTransaction, router, vibrate, setPageState]);
-
-    const handleMultiConfirmSave = useCallback(async () => {
-        vibrate(50);
-        const success = await saveMultiTransactions();
+    const handleConfirmSave = async () => {
+        triggerHaptic('success');
+        const success = multiParsedData.length > 0 ? await saveMultiTransactions() : await saveTransaction();
         if (success) {
             setShowSuccess(true);
-            vibrate([80, 50, 80]);
             setTimeout(() => {
                 setShowSuccess(false);
-                router.back();
-            }, 1200);
+                router.push('/home');
+            }, 1500);
         }
-    }, [saveMultiTransactions, router, vibrate]);
+    };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
         if (!file.type.startsWith('image/')) { showToast('Pilih foto struk ya.', 'error'); return; }
+        
+        triggerHaptic('medium');
         try {
             const compressedDataUrl = await compressImageFile(file, { maxDimension: 1280, quality: 0.8 });
             if (getDataUrlSizeInBytes(compressedDataUrl) > MAX_COMPRESSED_IMAGE_BYTES) {
@@ -135,117 +86,244 @@ export default function SmartAddPage() {
                 return;
             }
             processInput({ type: 'image', dataUrl: compressedDataUrl });
-        } catch (error) { showToast('Gagal memproses gambar.', 'error'); }
-        finally { e.target.value = ''; }
+        } catch (error) { 
+            showToast('Gagal memproses gambar.', 'error'); 
+        } finally { 
+            e.target.value = ''; 
+        }
     };
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                if (pageState === 'CONFIRMING') handleConfirmSave(false);
-                else if (pageState === 'MULTI_CONFIRMING') handleMultiConfirmSave();
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [pageState, handleConfirmSave, handleMultiConfirmSave]);
-
-    useEffect(() => {
-        if (pageState === 'ANALYZING') {
-            vibrate(30);
-            const loadingMsgs = messages.some(m => m.type === 'user-image') ? imageLoadingMessages : textLoadingMessages;
-            let i = 0;
-            setLoadingMessage(loadingMsgs[i]);
-            const interval = setInterval(() => {
-                i = (i + 1) % loadingMsgs.length;
-                setLoadingMessage(loadingMsgs[i]);
-            }, 1500);
-            return () => clearInterval(interval);
-        }
-        if (pageState === 'CONFIRMING' || pageState === 'MULTI_CONFIRMING') vibrate([20, 30, 20]);
-    }, [pageState, messages, vibrate]);
-
-    if (pageState === 'EDITING' && parsedData) {
-        return <TransactionComposer isModal={false} initialData={parsedData} onClose={(data: any) => { if (data) setParsedData((prev: any) => prev ? ({ ...prev, ...data }) : null); setPageState('CONFIRMING'); }} />;
-    }
+    // 3. Derived Visual Data
+    const activeTx = multiParsedData.length > 0 ? multiParsedData[focusedIndex] : parsedData;
+    const isAnalyzing = pageState === 'ANALYZING';
 
     return (
-        <div className="flex flex-col h-screen bg-background safe-bottom overflow-hidden">
-            <PageHeader
-                title="Smart Add"
-                showBackButton={true}
-                extraActions={
-                    <Button variant="ghost" size="icon" onClick={() => resetFlow()} className="rounded-full hover:bg-muted" aria-label="Reset">
-                        <RotateCcw className="h-5 w-5" />
-                    </Button>
-                }
-            />
-
-            <main className="flex-1 flex flex-col justify-end overflow-hidden pb-4 md:pb-10 relative">
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
-                    <AnimatePresence mode="popLayout">
-                        {isListening && (
-                            <motion.div key="voice-overlay" initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="fixed inset-x-0 bottom-24 flex justify-center z-50 pointer-events-none">
-                                <div className="bg-primary/95 backdrop-blur-md text-primary-foreground px-6 py-4 rounded-3xl shadow-2xl flex flex-col items-center gap-3 border border-white/20">
-                                    <div className="flex items-center gap-4">
-                                        <div className="relative">
-                                            <Mic className="h-6 w-6 relative z-10" />
-                                            <motion.div className="absolute inset-0 bg-white rounded-full" animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }} transition={{ duration: 1.5, repeat: Infinity }} />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-bold uppercase tracking-widest opacity-80">Mendengarkan...</span>
-                                            <p className="text-lg font-medium max-w-[200px] truncate">{inputValue || "Bicara sekarang..."}</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-1">
-                                        {[1, 2, 3, 4, 5].map((i) => (
-                                            <motion.div key={i} className="w-1 bg-white rounded-full" animate={{ height: [8, 20, 8] }} transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }} />
-                                        ))}
-                                    </div>
-                                    <Button variant="secondary" size="sm" className="mt-1 rounded-full px-4 h-8 text-[10px] font-bold uppercase tracking-wider pointer-events-auto" onClick={() => handleToggleVoice()}>Selesai</Button>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {!messages.length && !inputValue && !isListening && (
-                            <DynamicSuggestions key="suggestions" onSuggestionClick={(text) => { setInputValue(text); processInput(text); }} />
-                        )}
-
-                        <SmartAddMessages key="messages" messages={messages} loadingMessage={loadingMessage} />
-
-                        <SmartAddResults
-                            key="results"
-                            pageState={pageState}
-                            parsedData={parsedData}
-                            multiParsedData={multiParsedData}
-                            inputValue={inputValue}
-                            getCategoryVisuals={getCategoryVisuals}
-                            isCategoryPopoverOpen={isCategoryPopoverOpen}
-                            setIsCategoryPopoverOpen={setIsCategoryPopoverOpen}
-                            setParsedData={setParsedData}
-                            insightData={insightData}
-                            removeMultiTransaction={removeMultiTransaction}
-                        />
-                    </AnimatePresence>
+        <div className="flex flex-col h-dvh bg-zinc-50 dark:bg-black relative overflow-hidden">
+            
+            {/* 1. Header Premium */}
+            <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-30">
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => router.back()}
+                    className="h-12 w-12 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
+                >
+                    <ArrowLeft className="h-5 w-5" />
+                </Button>
+                
+                <div className="flex gap-2">
+                    {pageState !== 'IDLE' && (
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => { triggerHaptic('light'); resetFlow(); }}
+                            className="h-12 w-12 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
+                        >
+                            <RotateCcw className="h-5 w-5 text-zinc-500" />
+                        </Button>
+                    )}
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800">
+                        <Sparkles className={cn("h-4 w-4 text-primary", isAnalyzing && "animate-pulse")} />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Lemon Intelligence</span>
+                    </div>
                 </div>
-            </main>
+            </div>
 
-            <SmartAddFooter
-                pageState={pageState}
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                isListening={isListening}
-                toggleListening={handleToggleVoice}
-                processInput={processInput}
-                handleConfirmSave={handleConfirmSave}
-                handleMultiConfirmSave={handleMultiConfirmSave}
-                resetFlow={resetFlow}
-                fileInputRef={fileInputRef}
-                multiParsedDataLength={multiParsedData.length}
-                parsedData={parsedData}
+            {/* 2. Liquid Power Stage */}
+            <div className="flex-1 flex flex-col items-center justify-center relative z-10 -mt-10">
+                
+                <AnimatePresence mode="wait">
+                    {/* State: Idle / Suggestions */}
+                    {pageState === 'IDLE' && !magicValue && (
+                        <motion.div 
+                            key="idle-view"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="w-full"
+                        >
+                            <DynamicSuggestions onSuggestionClick={(text) => {
+                                setMagicValue(text);
+                                processInput(text);
+                                setMagicValue('');
+                            }} />
+                        </motion.div>
+                    )}
+
+                    {/* State: Analyzing / Results */}
+                    {(activeTx || isAnalyzing) && (
+                        <motion.div 
+                            key="result-view"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="flex flex-col items-center w-full"
+                        >
+                            {/* Hero Amount (Dynamic from Focused Transaction) */}
+                            <HeroAmount 
+                                amount={activeTx?.amount || 0} 
+                                type={activeTx?.type || 'expense'} 
+                            />
+
+                            {/* Multi-Transaction Indicator */}
+                            {multiParsedData.length > 1 && (
+                                <div className="flex gap-1.5 mb-6">
+                                    {multiParsedData.map((_, i) => (
+                                        <motion.div 
+                                            key={i}
+                                            animate={{ 
+                                                width: i === focusedIndex ? 24 : 6,
+                                                backgroundColor: i === focusedIndex ? 'var(--primary)' : 'rgba(161, 161, 170, 0.3)'
+                                            }}
+                                            className="h-1.5 rounded-full"
+                                        />
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Metadata Orbits */}
+                            <div className="min-h-[100px] flex flex-col items-center justify-center gap-3 w-full px-8">
+                                <AnimatePresence mode="popLayout">
+                                    {isAnalyzing ? (
+                                        <motion.div key="analyzing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-2">
+                                            <Loader2 className="h-8 w-8 text-primary animate-spin" strokeWidth={1.5} />
+                                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Menganalisis...</p>
+                                        </motion.div>
+                                    ) : activeTx && (
+                                        <motion.div key="tx-data" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-3">
+                                            <div className="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-full shadow-xl shadow-primary/20">
+                                                <Tag className="h-4 w-4 fill-white/20" />
+                                                <span className="text-[10px] font-black uppercase tracking-[0.15em]">{activeTx.category}</span>
+                                            </div>
+                                            
+                                            <div className="flex flex-wrap justify-center gap-2">
+                                                {activeTx.subCategory && (
+                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-4 py-1.5 rounded-2xl border border-primary/10">
+                                                        <CornerDownRight className="h-3.5 w-3.5 opacity-50" />
+                                                        <span className="text-[11px] font-bold">{activeTx.subCategory}</span>
+                                                    </div>
+                                                )}
+                                                {activeTx.location && (
+                                                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white dark:bg-zinc-900 px-4 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                                                        <MapPin className="h-3.5 w-3.5 text-rose-500" />
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider">{activeTx.location}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            
+                                            <p className="text-sm font-medium text-zinc-400 italic">"{activeTx.description}"</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* 3. Interaction Zone */}
+            <div className="w-full max-w-md mx-auto px-6 pb-safe mb-8 relative z-20 space-y-6">
+                
+                {/* Magic Bar with OCR and Voice */}
+                <div className="relative">
+                    <MagicBar 
+                        value={magicValue}
+                        onChange={setMagicValue}
+                        onReturn={handleMagicSubmit}
+                        isProcessing={isAnalyzing}
+                        placeholder="Ketik, suara, atau upload struk..."
+                        onClear={() => setMagicValue('')}
+                    />
+                    
+                    {/* OCR Quick Trigger */}
+                    <div className="absolute -top-12 right-4 flex gap-2">
+                        <Button 
+                            variant="secondary" 
+                            size="sm" 
+                            onClick={() => fileInputRef.current?.click()}
+                            className="rounded-full bg-white dark:bg-zinc-900 shadow-lg border border-zinc-200/50 dark:border-zinc-800 h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors"
+                        >
+                            <Camera className="h-4 w-4" />
+                            Scan Struk
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Navigation for Multi-Transaction */}
+                {multiParsedData.length > 1 && (
+                    <div className="flex justify-between items-center px-2">
+                        <Button 
+                            variant="ghost" 
+                            disabled={focusedIndex === 0}
+                            onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f - 1); }}
+                            className="text-zinc-400"
+                        >
+                            Sebelumnya
+                        </Button>
+                        <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">
+                            {focusedIndex + 1} dari {multiParsedData.length}
+                        </span>
+                        <Button 
+                            variant="ghost" 
+                            disabled={focusedIndex === multiParsedData.length - 1}
+                            onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f + 1); }}
+                            className="text-primary font-bold"
+                        >
+                            Berikutnya
+                        </Button>
+                    </div>
+                )}
+
+                {/* Global Confirm Actions */}
+                <AnimatePresence>
+                    {(parsedData || multiParsedData.length > 0) && !isAnalyzing && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            className="flex flex-col gap-3"
+                        >
+                            <Button 
+                                onClick={handleConfirmSave} 
+                                disabled={isSubmitting}
+                                className="w-full h-16 rounded-[2rem] text-lg font-black tracking-tight shadow-2xl shadow-primary/30 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
+                            >
+                                {isSubmitting ? (
+                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                ) : (
+                                    <>
+                                        <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                                        <span>Simpan {multiParsedData.length > 0 ? `${multiParsedData.length} Transaksi` : 'Transaksi'}</span>
+                                    </>
+                                )}
+                            </Button>
+                            
+                            <Button 
+                                variant="ghost" 
+                                onClick={() => { triggerHaptic('medium'); resetFlow(); }}
+                                className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 hover:text-rose-500 transition-colors"
+                            >
+                                <Trash2 className="h-3 w-3 mr-2" />
+                                Batalkan Semua
+                            </Button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Hidden File Input */}
+            <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileSelect} 
+                className="hidden" 
+                accept="image/*" 
             />
 
-            <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" aria-label="Upload receipt image" />
+            {/* Background Decor */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+            </div>
+
             {showSuccess && <SuccessAnimation />}
         </div>
     );

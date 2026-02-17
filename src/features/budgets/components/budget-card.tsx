@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
-import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
+import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
 import { differenceInDays, startOfMonth } from 'date-fns';
 import { Flame, AlertCircle, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
 import type { Budget, Transaction } from '@/types/models';
@@ -15,7 +15,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
     const { getCategoryVisuals } = useCategories();
     const router = useRouter();
 
-    // 1. Core Logic: Spent Calculation
+    // 1. Core Logic
     const spent = useMemo(() => {
         return transactions
             .filter(t =>
@@ -28,7 +28,12 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
     const remaining = budget.targetAmount - spent;
     const progress = (spent / budget.targetAmount) * 100;
 
-    // 2. Advanced Logic: Burn Rate Projection (Pure Math)
+    const now = new Date();
+    const daysInMonthValue = daysInMonth(now);
+    const daysLeft = daysInMonthValue - now.getDate() + 1;
+    const daysPassedPercentage = (now.getDate() / daysInMonthValue) * 100;
+
+    // 2. Burn Rate & Safe Limit Logic
     const projection = useMemo(() => {
         const today = new Date();
         const start = startOfMonth(today);
@@ -46,34 +51,36 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
         return { status, daysToZero, dailyRate };
     }, [spent, remaining]);
 
-    // 3. Visual Configuration
+    const safeDailyLimit = remaining > 0 && daysLeft > 0 ? remaining / daysLeft : 0;
+
+    // 3. Visual Configuration (Minimalist Weight)
     const healthStyles = {
         stable: {
             bar: 'bg-primary',
-            glow: 'shadow-[0_0_15px_rgba(13,148,136,0.3)]',
+            glow: 'shadow-[0_0_15px_rgba(13,148,136,0.2)]',
             text: 'text-primary',
             bg: 'bg-primary/5',
             label: 'Aman'
         },
         warning: {
             bar: 'bg-yellow-400',
-            glow: 'shadow-[0_0_15px_rgba(253,224,71,0.4)]',
+            glow: 'shadow-[0_0_15px_rgba(253,224,71,0.3)]',
             text: 'text-yellow-600 dark:text-yellow-400',
-            bg: 'bg-yellow-400/10',
+            bg: 'bg-yellow-400/5',
             label: 'Mulai Menipis'
         },
         critical: {
             bar: 'bg-rose-500',
-            glow: 'shadow-[0_0_15px_rgba(244,63,94,0.4)]',
+            glow: 'shadow-[0_0_15px_rgba(244,63,94,0.3)]',
             text: 'text-rose-600 dark:text-rose-400',
-            bg: 'bg-rose-500/10',
+            bg: 'bg-rose-500/5',
             label: 'Bahaya'
         },
         over: {
             bar: 'bg-rose-600',
-            glow: 'shadow-[0_0_20px_rgba(225,29,72,0.5)]',
+            glow: 'shadow-[0_0_20px_rgba(225,29,72,0.4)]',
             text: 'text-rose-700 dark:text-rose-300',
-            bg: 'bg-rose-600/20',
+            bg: 'bg-rose-600/10',
             label: 'Overbudget'
         }
     };
@@ -101,7 +108,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 onClick={handleCardClick}
                 className="w-full h-full text-left focus:outline-none group"
             >
-                <Card className="h-full overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-500 premium-shadow">
+                <Card className="h-full overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm hover:shadow-lg transition-all duration-500 premium-shadow">
                     <div className="p-6 flex flex-col h-full space-y-6">
                         {/* Header: Identity & Status */}
                         <div className="flex items-start justify-between">
@@ -110,12 +117,12 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                     <CategoryIcon className={cn("h-6 w-6", currentHealth.text)} />
                                 </div>
                                 <div className="space-y-0.5">
-                                    <h3 className="font-bold text-lg tracking-tight leading-tight group-hover:text-primary transition-colors">{budget.name}</h3>
+                                    <h3 className="font-medium text-lg tracking-tight leading-tight group-hover:text-primary transition-colors">{budget.name}</h3>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
+                                        <Badge variant="outline" className="text-[9px] font-normal uppercase tracking-widest px-2 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
                                             {budget.categories.length} Kategori
                                         </Badge>
-                                        <span className={cn("text-[10px] font-bold uppercase tracking-widest", currentHealth.text)}>
+                                        <span className={cn("text-[10px] font-medium uppercase tracking-widest", currentHealth.text)}>
                                             {currentHealth.label}
                                         </span>
                                     </div>
@@ -126,48 +133,79 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                             </div>
                         </div>
 
-                        {/* Middle: The Living Bar */}
+                        {/* Middle: The Living Bar with Markers */}
                         <div className="space-y-3 flex-1">
-                            <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-[0.15em] text-zinc-400">
+                            <div className="flex justify-between items-end text-[10px] font-medium uppercase tracking-[0.15em] text-zinc-400">
                                 <span>Progres Belanja</span>
                                 <span>{Math.min(progress, 100).toFixed(0)}%</span>
                             </div>
-                            <div className="relative h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                            <div className="relative h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                <div 
+                                    className="absolute top-0 bottom-0 w-0.5 bg-zinc-400/30 z-20"
+                                    style={{ left: `${Math.min(daysPassedPercentage, 100)}%` }}
+                                />
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${Math.min(progress, 100)}%` }}
                                     transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                                    className={cn("absolute inset-y-0 left-0 rounded-full transition-all duration-1000", currentHealth.bar, currentHealth.glow)}
-                                />
+                                    className={cn("absolute inset-y-0 left-0 rounded-full transition-all duration-1000 z-10", currentHealth.bar, currentHealth.glow)}
+                                >
+                                    <div className="absolute inset-0 opacity-10 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%,transparent)', backgroundSize: '0.8rem 0.8rem' }} />
+                                </motion.div>
+                            </div>
+                            <div className="flex justify-between text-[8px] font-medium text-zinc-400/60 uppercase tracking-[0.2em] px-1">
+                                <span>Start</span>
+                                <span style={{ marginLeft: `${Math.max(0, Math.min(daysPassedPercentage - 15, 70))}%` }}>Hari ke-{now.getDate()}</span>
+                                <span>End</span>
                             </div>
                         </div>
 
                         {/* Footer: Projection & Numbers */}
-                        <div className="grid grid-cols-2 gap-4 pt-2">
-                            <div className="space-y-1">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Sisa Anggaran</p>
-                                <p className={cn("text-xl font-black tracking-tighter tabular-nums", remaining < 0 ? "text-rose-600" : "text-zinc-900 dark:text-zinc-100")}>
-                                    {formatCurrency(remaining)}
-                                </p>
-                            </div>
-                            <div className="text-right space-y-1">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400">Prediksi</p>
-                                <div className="flex items-center justify-end gap-1.5">
-                                    {remaining > 0 ? (
-                                        <>
-                                            <span className={cn("text-xs font-bold", currentHealth.text)}>
-                                                {projection.daysToZero === Infinity ? '∞' : `${projection.daysToZero} Hari Lagi`}
-                                            </span>
-                                            <Flame className={cn("h-3.5 w-3.5", projection.daysToZero <= 5 ? "text-orange-500 animate-pulse" : "text-zinc-300")} />
-                                        </>
-                                    ) : (
-                                        <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-                                            <AlertCircle className="h-3.5 w-3.5" />
-                                            <span className="text-xs font-bold">Terlampaui</span>
-                                        </div>
-                                    )}
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <p className="text-[9px] font-medium uppercase tracking-widest text-zinc-400">Status Saldo</p>
+                                    <div className="flex flex-col">
+                                        <p className={cn("text-xl font-medium tracking-tighter tabular-nums", remaining < 0 ? "text-rose-600" : "text-zinc-900 dark:text-zinc-100")}>
+                                            {formatCurrency(remaining)}
+                                        </p>
+                                        <p className="text-[10px] font-normal text-zinc-400">
+                                            Sisa dari {formatCurrency(budget.targetAmount)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="text-right space-y-1">
+                                    <p className="text-[9px] font-medium uppercase tracking-widest text-zinc-400">Prediksi Habis</p>
+                                    <div className="flex items-center justify-end gap-1.5">
+                                        {remaining > 0 ? (
+                                            <>
+                                                <span className={cn("text-xs font-medium", currentHealth.text)}>
+                                                    {projection.daysToZero === Infinity ? '∞' : `${projection.daysToZero} Hari Lagi`}
+                                                </span>
+                                                <Flame className={cn("h-3.5 w-3.5", projection.daysToZero <= 5 ? "text-orange-500 animate-pulse" : "text-zinc-300")} />
+                                            </>
+                                        ) : (
+                                            <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+                                                <AlertCircle className="h-3.5 w-3.5" />
+                                                <span className="text-xs font-medium">Terlampaui</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* Safe Limit Badge */}
+                            {remaining > 0 && (
+                                <div className={cn("flex items-center justify-between p-3 rounded-2xl border bg-zinc-50/50 dark:bg-black/20", "border-zinc-100 dark:border-zinc-800")}>
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest">Jatah Aman Per Hari</span>
+                                    </div>
+                                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                        {formatCurrency(safeDailyLimit)}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </Card>

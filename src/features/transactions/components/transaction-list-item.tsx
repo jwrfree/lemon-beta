@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
-import { Trash2, Pencil } from 'lucide-react';
+import { Trash2, Pencil, Sparkles } from 'lucide-react';
 import type { Wallet, Transaction } from '@/types/models';
 import type { CategoryVisuals } from '@/types/visuals';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -39,6 +39,13 @@ const TransactionListItemContent = ({
             <div className="flex-1 overflow-hidden">
                 <div className="font-semibold text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
+                    {/* Want Tag */}
+                    {transaction.type === 'expense' && transaction.isNeed === false && (
+                        <span className="flex items-center gap-1 text-pink-500 bg-pink-50 dark:bg-pink-900/20 px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider shadow-sm border border-pink-100 dark:border-pink-900/30">
+                            <Sparkles className="h-2 w-2 fill-current" />
+                            Want
+                        </span>
+                    )}
                     <span className="capitalize">
                         {transaction.category}
                         {transaction.subCategory && (

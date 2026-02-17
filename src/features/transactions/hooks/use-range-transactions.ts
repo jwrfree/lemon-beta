@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction, TransactionRow } from '@/types/models';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 export const useRangeTransactions = (startDate: Date, endDate: Date) => {
     const { user, isLoading: authLoading } = useAuth();
@@ -28,7 +28,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             if (error) throw error;
 
             if (data) {
-                const mapped: Transaction[] = data.map((t: TransactionRow) => ({
+                const mapped: Transaction[] = (data as TransactionRow[]).map((t) => ({
                     id: t.id,
                     amount: t.amount,
                     category: t.category,
@@ -39,18 +39,13 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                     userId: t.user_id,
                     createdAt: t.created_at,
                     subCategory: t.sub_category || undefined,
-                    location: t.location || undefined
+                    location: t.location || undefined,
+                    linkedDebtId: (t as any).linked_debt_id || undefined,
                 }));
                 setTransactions(mapped);
             }
         } catch (err) {
-            console.error("Error fetching range transactions:", JSON.stringify(err, null, 2));
-            console.error("Error details:", {
-                message: (err as any)?.message,
-                code: (err as any)?.code,
-                details: (err as any)?.details,
-                hint: (err as any)?.hint
-            });
+            console.error("Error fetching range transactions:", err);
         } finally {
             setIsLoading(false);
         }

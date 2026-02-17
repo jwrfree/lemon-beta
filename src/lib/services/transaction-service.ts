@@ -14,8 +14,9 @@ export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
     userId: t.user_id,
     createdAt: t.created_at,
     updatedAt: t.updated_at,
-    subCategory: t.sub_category || undefined, 
-    location: t.location || undefined
+    subCategory: t.sub_category || undefined,
+    location: t.location || undefined,
+    isNeed: t.is_need
 });
 
 export const transactionService = {
