@@ -11,7 +11,7 @@ import { PlusCircle, HandCoins, Plus, LoaderCircle } from 'lucide-react';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { cn, formatCurrency, daysInMonth } from '@/lib/utils';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Pie, PieChart } from "recharts"
 import { useUI } from '@/components/ui-provider';
 import { startOfMonth, parseISO, endOfMonth } from 'date-fns';
@@ -43,7 +43,7 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
     if (progress > 80 && progress <= 100) {
         progressBarColor = 'bg-yellow-500';
     } else if (progress > 100) {
-        progressBarColor = 'bg-foreground';
+        progressBarColor = 'bg-destructive';
     }
 
     const firstCategory = budget.categories[0] || 'Lainnya';
@@ -79,7 +79,7 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
                     </div>
 
                     <div className="space-y-3">
-                        <div className="w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+                        <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${Math.min(progress, 100)}%` }}
@@ -89,7 +89,7 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
                         </div>
                         <div className="flex justify-between items-end">
                             <div>
-                                <p className="text-[11px] font-medium text-muted-foreground/70 mb-0.5">Sisa</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Sisa</p>
                                 <p className={cn(
                                     "text-sm font-bold tracking-tight tabular-nums",
                                     remaining < 0 ? "text-destructive" : "text-teal-600 dark:text-teal-500"
@@ -98,10 +98,27 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
                                 </p>
                             </div>
                             <div className="text-right">
-                                <p className="text-[11px] font-medium text-muted-foreground/70 mb-0.5">Target</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Target</p>
                                 <p className="text-sm font-bold text-foreground/80 tracking-tight">{formatCurrency(budget.targetAmount)}</p>
                             </div>
                         </div>
+
+                        {/* Safe to Spend Indicator */}
+                        {remaining > 0 && daysLeft > 0 ? (
+                            <div className="mt-2 pt-2 border-t border-dashed flex justify-between items-center text-xs bg-muted/20 -mx-2 px-2 py-1.5 rounded-b-lg">
+                                <span className="text-muted-foreground font-medium flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    Aman per hari
+                                </span>
+                                <span className="font-bold text-emerald-600 dark:text-emerald-500 tabular-nums">
+                                    {formatCurrency(remaining / daysLeft)}
+                                </span>
+                            </div>
+                        ) : remaining <= 0 ? (
+                            <div className="mt-2 pt-2 border-t border-dashed text-xs bg-destructive/5 -mx-2 px-2 py-1.5 rounded-b-lg text-center font-bold text-destructive animate-pulse">
+                                Over Budget!
+                            </div>
+                        ) : null}
                     </div>
                 </CardContent>
             </Card>
@@ -135,11 +152,22 @@ export default function BudgetingPage() {
         const totalRemaining = totalBudget - totalSpent;
 
         const chartData = [
-            { name: 'Terpakai', value: totalSpent, fill: 'var(--destructive)' },
-            { name: 'Sisa', value: Math.max(0, totalRemaining), fill: 'var(--primary)' },
+            { name: 'spent', value: totalSpent, fill: 'var(--color-spent)' },
+            { name: 'remaining', value: Math.max(0, totalRemaining), fill: 'var(--color-remaining)' },
         ];
 
-        return { totalBudget, totalSpent, totalRemaining, chartData };
+        const chartConfig = {
+            spent: {
+                label: "Terpakai",
+                color: "hsl(var(--destructive))",
+            },
+            remaining: {
+                label: "Sisa",
+                color: "hsl(var(--primary))",
+            },
+        } satisfies ChartConfig;
+
+        return { totalBudget, totalSpent, totalRemaining, chartData, chartConfig };
     }, [budgets, transactions]);
 
     if (isLoading || isTransactionsLoading) {
@@ -180,10 +208,14 @@ export default function BudgetingPage() {
                                         <div className="h-48 flex justify-center relative">
                                             <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
                                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Sisa</p>
-                                                <p className="text-lg font-black">{Math.round((overview.totalRemaining / overview.totalBudget) * 100)}%</p>
+                                                <p className="text-lg font-black">{overview.totalBudget > 0 ? Math.round((overview.totalRemaining / overview.totalBudget) * 100) : 0}%</p>
                                             </div>
-                                            <ChartContainer config={{}} className="aspect-square h-full relative z-10">
+                                            <ChartContainer config={overview.chartConfig} className="aspect-square h-full relative z-10">
                                                 <PieChart>
+                                                    <ChartTooltip
+                                                        cursor={false}
+                                                        content={<ChartTooltipContent hideLabel />}
+                                                    />
                                                     <Pie
                                                         data={overview.chartData}
                                                         dataKey="value"
