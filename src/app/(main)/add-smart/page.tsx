@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { 
     ArrowLeft, Sparkles, Tag, MapPin, CornerDownRight, 
     Loader2, Save, RotateCcw, Camera, Mic, X, Trash2,
-    CheckCircle2
+    CheckCircle2, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
@@ -20,6 +20,7 @@ import { SuccessAnimation } from '@/components/success-animation';
 import { HeroAmount } from '@/features/transactions/components/liquid-composer/HeroAmount';
 import { MagicBar } from '@/features/transactions/components/liquid-composer/MagicBar';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
+import { useTransactionForm } from '@/features/transactions/hooks/use-transaction-form';
 import { DynamicSuggestions } from './dynamic-suggestions';
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
@@ -31,10 +32,11 @@ export default function SmartAddPage() {
     const { showToast } = useUI();
     const [magicValue, setMagicValue] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
-    const [focusedIndex, setFocusedIndex] = useState(0); // For multi-transaction navigation
+    const [focusedIndex, setFocusedIndex] = useState(0);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // Otak Multi-Transaction & OCR
     const {
         pageState,
         setPageState,
@@ -47,13 +49,15 @@ export default function SmartAddPage() {
         resetFlow
     } = useSmartAddFlow();
 
-    // 1. AI Context
+    // AI Context
     const aiContext = useMemo(() => ({
         wallets: wallets.map(w => ({ id: w.id, name: w.name })),
         categories: [...expenseCategories, ...incomeCategories].map(c => c.name)
     }), [wallets, expenseCategories, incomeCategories]);
 
-    // 2. Handle Submissions
+    // Hook untuk handle submission akhir
+    const { isSubmitting } = useTransactionForm({ context: aiContext });
+
     const handleMagicSubmit = async () => {
         if (!magicValue) return;
         triggerHaptic('medium');
@@ -69,7 +73,7 @@ export default function SmartAddPage() {
             setTimeout(() => {
                 setShowSuccess(false);
                 router.push('/home');
-            }, 1500);
+            }, 1200);
         }
     };
 
@@ -93,22 +97,22 @@ export default function SmartAddPage() {
         }
     };
 
-    // 3. Derived Visual Data
     const activeTx = multiParsedData.length > 0 ? multiParsedData[focusedIndex] : parsedData;
     const isAnalyzing = pageState === 'ANALYZING';
+    const hasData = !!activeTx || isAnalyzing;
 
     return (
-        <div className="flex flex-col h-dvh bg-zinc-50 dark:bg-black relative overflow-hidden">
+        <div className="flex flex-col h-dvh bg-zinc-50 dark:bg-black relative overflow-hidden text-zinc-900 dark:text-zinc-100">
             
-            {/* 1. Header Premium */}
-            <div className="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-30">
+            {/* 1. Compact Header */}
+            <div className="p-4 md:p-6 flex justify-between items-center z-30 shrink-0">
                 <Button 
                     variant="ghost" 
                     size="icon" 
                     onClick={() => router.back()}
-                    className="h-12 w-12 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
+                    className="h-10 w-10 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
                 >
-                    <ArrowLeft className="h-5 w-5" />
+                    <ArrowLeft className="h-4 w-4" />
                 </Button>
                 
                 <div className="flex gap-2">
@@ -116,31 +120,32 @@ export default function SmartAddPage() {
                         <Button 
                             variant="ghost" 
                             size="icon" 
-                            onClick={() => { triggerHaptic('light'); resetFlow(); }}
-                            className="h-12 w-12 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
+                            onClick={() => { triggerHaptic('light'); resetFlow(); setFocusedIndex(0); }}
+                            className="h-10 w-10 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
                         >
-                            <RotateCcw className="h-5 w-5 text-zinc-500" />
+                            <RotateCcw className="h-4 w-4 text-zinc-500" />
                         </Button>
                     )}
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800">
-                        <Sparkles className={cn("h-4 w-4 text-primary", isAnalyzing && "animate-pulse")} />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Lemon Intelligence</span>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800">
+                        <Sparkles className={cn("h-3.5 w-3.5 text-primary", isAnalyzing && "animate-pulse")} />
+                        <span className="text-[9px] font-medium uppercase tracking-widest text-zinc-500">Smart Add</span>
                     </div>
                 </div>
             </div>
 
-            {/* 2. Liquid Power Stage */}
-            <div className="flex-1 flex flex-col items-center justify-center relative z-10 -mt-10">
-                
+            {/* 2. Liquid Stage (Flexible Spacing) */}
+            <div className={cn(
+                "flex-1 flex flex-col items-center relative z-10 transition-all duration-500",
+                hasData ? "justify-start pt-2 md:pt-8" : "justify-center -mt-12"
+            )}>
                 <AnimatePresence mode="wait">
-                    {/* State: Idle / Suggestions */}
                     {pageState === 'IDLE' && !magicValue && (
                         <motion.div 
                             key="idle-view"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="w-full"
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="w-full overflow-y-auto no-scrollbar max-h-full pb-32"
                         >
                             <DynamicSuggestions onSuggestionClick={(text) => {
                                 setMagicValue(text);
@@ -150,67 +155,57 @@ export default function SmartAddPage() {
                         </motion.div>
                     )}
 
-                    {/* State: Analyzing / Results */}
-                    {(activeTx || isAnalyzing) && (
+                    {hasData && (
                         <motion.div 
                             key="result-view"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="flex flex-col items-center w-full"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col items-center w-full px-6"
                         >
-                            {/* Hero Amount (Dynamic from Focused Transaction) */}
                             <HeroAmount 
                                 amount={activeTx?.amount || 0} 
                                 type={activeTx?.type || 'expense'} 
+                                compact={true}
                             />
 
-                            {/* Multi-Transaction Indicator */}
-                            {multiParsedData.length > 1 && (
-                                <div className="flex gap-1.5 mb-6">
-                                    {multiParsedData.map((_, i) => (
-                                        <motion.div 
-                                            key={i}
-                                            animate={{ 
-                                                width: i === focusedIndex ? 24 : 6,
-                                                backgroundColor: i === focusedIndex ? 'var(--primary)' : 'rgba(161, 161, 170, 0.3)'
-                                            }}
-                                            className="h-1.5 rounded-full"
-                                        />
-                                    ))}
-                                </div>
-                            )}
-
                             {/* Metadata Orbits */}
-                            <div className="min-h-[100px] flex flex-col items-center justify-center gap-3 w-full px-8">
+                            <div className="min-h-[120px] w-full flex flex-col items-center justify-center gap-4 mt-2">
                                 <AnimatePresence mode="popLayout">
                                     {isAnalyzing ? (
-                                        <motion.div key="analyzing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-2">
-                                            <Loader2 className="h-8 w-8 text-primary animate-spin" strokeWidth={1.5} />
-                                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Menganalisis...</p>
+                                        <motion.div key="analyzing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-3">
+                                            <div className="relative">
+                                                <Loader2 className="h-10 w-10 text-primary animate-spin" strokeWidth={1.5} />
+                                                <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
+                                            </div>
+                                            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-primary">Menganalisis...</p>
                                         </motion.div>
                                     ) : activeTx && (
-                                        <motion.div key="tx-data" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-3">
-                                            <div className="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-full shadow-xl shadow-primary/20">
-                                                <Tag className="h-4 w-4 fill-white/20" />
-                                                <span className="text-[10px] font-black uppercase tracking-[0.15em]">{activeTx.category}</span>
-                                            </div>
+                                        <motion.div key="tx-data" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 w-full">
                                             
-                                            <div className="flex flex-wrap justify-center gap-2">
+                                            {/* Category & Sub */}
+                                            <div className="flex flex-col items-center gap-2">
+                                                <div className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
+                                                    <Tag className="h-3 w-3 fill-white/20" />
+                                                    <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{activeTx.category}</span>
+                                                </div>
                                                 {activeTx.subCategory && (
-                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-4 py-1.5 rounded-2xl border border-primary/10">
-                                                        <CornerDownRight className="h-3.5 w-3.5 opacity-50" />
-                                                        <span className="text-[11px] font-bold">{activeTx.subCategory}</span>
-                                                    </div>
-                                                )}
-                                                {activeTx.location && (
-                                                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white dark:bg-zinc-900 px-4 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                                                        <MapPin className="h-3.5 w-3.5 text-rose-500" />
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider">{activeTx.location}</span>
+                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-xl border border-primary/10">
+                                                        <CornerDownRight className="h-3 w-3 opacity-50" />
+                                                        <span className="text-[10px] font-medium">{activeTx.subCategory}</span>
                                                     </div>
                                                 )}
                                             </div>
-                                            
-                                            <p className="text-sm font-medium text-zinc-400 italic">"{activeTx.description}"</p>
+
+                                            {/* Location & Description */}
+                                            <div className="flex flex-col items-center gap-3 w-full">
+                                                {activeTx.location && (
+                                                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                                                        <MapPin className="h-3 w-3 text-rose-500" />
+                                                        <span className="text-[9px] font-medium uppercase tracking-wider">{activeTx.location}</span>
+                                                    </div>
+                                                )}
+                                                <p className="text-sm font-medium text-zinc-400 italic text-center max-w-[280px]">"{activeTx.description}"</p>
+                                            </div>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -220,108 +215,102 @@ export default function SmartAddPage() {
                 </AnimatePresence>
             </div>
 
-            {/* 3. Interaction Zone */}
-            <div className="w-full max-w-md mx-auto px-6 pb-safe mb-8 relative z-20 space-y-6">
+            {/* 3. Bottom Control Center (Fixed & Compact) */}
+            <div className="w-full max-w-md mx-auto px-6 pb-6 md:pb-10 relative z-20 space-y-4 shrink-0">
                 
-                {/* Magic Bar with OCR and Voice */}
+                {/* Magic Bar Zone */}
                 <div className="relative">
                     <MagicBar 
                         value={magicValue}
                         onChange={setMagicValue}
                         onReturn={handleMagicSubmit}
                         isProcessing={isAnalyzing}
-                        placeholder="Ketik, suara, atau upload struk..."
+                        placeholder={pageState === 'IDLE' ? "Ketik atau bicara..." : "Koreksi transaksi..."}
                         onClear={() => setMagicValue('')}
                     />
                     
-                    {/* OCR Quick Trigger */}
-                    <div className="absolute -top-12 right-4 flex gap-2">
-                        <Button 
-                            variant="secondary" 
-                            size="sm" 
-                            onClick={() => fileInputRef.current?.click()}
-                            className="rounded-full bg-white dark:bg-zinc-900 shadow-lg border border-zinc-200/50 dark:border-zinc-800 h-10 px-4 gap-2 text-[10px] font-black uppercase tracking-widest hover:text-primary transition-colors"
-                        >
-                            <Camera className="h-4 w-4" />
-                            Scan Struk
-                        </Button>
-                    </div>
+                    {pageState === 'IDLE' && (
+                        <div className="absolute -top-10 right-2">
+                            <Button 
+                                variant="secondary" 
+                                size="sm" 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800 h-8 px-3 gap-2 text-[9px] font-medium uppercase tracking-widest hover:text-primary transition-all"
+                            >
+                                <Camera className="h-3.5 w-3.5" />
+                                Scan Struk
+                            </Button>
+                        </div>
+                    )}
                 </div>
 
-                {/* Navigation for Multi-Transaction */}
-                {multiParsedData.length > 1 && (
-                    <div className="flex justify-between items-center px-2">
+                {/* Multi-Nav Center */}
+                {multiParsedData.length > 1 && !isAnalyzing && (
+                    <div className="flex items-center justify-between bg-zinc-100/50 dark:bg-zinc-900/50 p-1.5 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
                         <Button 
                             variant="ghost" 
+                            size="icon"
                             disabled={focusedIndex === 0}
                             onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f - 1); }}
-                            className="text-zinc-400"
+                            className="h-9 w-9 rounded-xl"
                         >
-                            Sebelumnya
+                            <ChevronLeft className="h-4 w-4" />
                         </Button>
-                        <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest">
-                            {focusedIndex + 1} dari {multiParsedData.length}
-                        </span>
+                        <div className="flex flex-col items-center">
+                            <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-tighter">Transaksi</span>
+                            <span className="text-xs font-medium tabular-nums">{focusedIndex + 1} <span className="opacity-30">/</span> {multiParsedData.length}</span>
+                        </div>
                         <Button 
                             variant="ghost" 
+                            size="icon"
                             disabled={focusedIndex === multiParsedData.length - 1}
                             onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f + 1); }}
-                            className="text-primary font-bold"
+                            className="h-9 w-9 rounded-xl text-primary"
                         >
-                            Berikutnya
+                            <ChevronRight className="h-4 w-4" />
                         </Button>
                     </div>
                 )}
 
-                {/* Global Confirm Actions */}
+                {/* Final Confirmation */}
                 <AnimatePresence>
-                    {(parsedData || multiParsedData.length > 0) && !isAnalyzing && (
+                    {activeTx && !isAnalyzing && (
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 20 }}
+                            exit={{ opacity: 0, y: 10 }}
                             className="flex flex-col gap-3"
                         >
                             <Button 
                                 onClick={handleConfirmSave} 
                                 disabled={isSubmitting}
-                                className="w-full h-16 rounded-[2rem] text-lg font-black tracking-tight shadow-2xl shadow-primary/30 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
+                                className="w-full h-14 rounded-2xl text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
                             >
                                 {isSubmitting ? (
-                                    <Loader2 className="h-6 w-6 animate-spin" />
+                                    <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
                                     <>
-                                        <CheckCircle2 className="h-6 w-6 text-emerald-500" />
-                                        <span>Simpan {multiParsedData.length > 0 ? `${multiParsedData.length} Transaksi` : 'Transaksi'}</span>
+                                        <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                                        <span>Simpan {multiParsedData.length > 1 ? `${multiParsedData.length} Transaksi` : 'Transaksi'}</span>
                                     </>
                                 )}
                             </Button>
                             
-                            <Button 
-                                variant="ghost" 
-                                onClick={() => { triggerHaptic('medium'); resetFlow(); }}
-                                className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 hover:text-rose-500 transition-colors"
+                            <button 
+                                onClick={() => { triggerHaptic('medium'); resetFlow(); setFocusedIndex(0); }}
+                                className="text-[9px] font-medium uppercase tracking-[0.2em] text-zinc-400 hover:text-rose-500 transition-colors py-1"
                             >
-                                <Trash2 className="h-3 w-3 mr-2" />
-                                Batalkan Semua
-                            </Button>
+                                Batalkan & Mulai Ulang
+                            </button>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </div>
 
-            {/* Hidden File Input */}
-            <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileSelect} 
-                className="hidden" 
-                accept="image/*" 
-            />
-
-            {/* Background Decor */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+            {/* Hidden Input & Decorations */}
+            <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
             </div>
 
             {showSuccess && <SuccessAnimation />}

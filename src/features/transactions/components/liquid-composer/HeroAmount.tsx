@@ -8,9 +8,10 @@ interface HeroAmountProps {
     amount: number;
     type: 'income' | 'expense' | 'transfer';
     onAmountClick?: () => void;
+    compact?: boolean; // New prop for space optimization
 }
 
-export const HeroAmount = ({ amount, type, onAmountClick }: HeroAmountProps) => {
+export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: HeroAmountProps) => {
     // Separate currency symbol and value for more precise styling
     const formatted = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -30,43 +31,49 @@ export const HeroAmount = ({ amount, type, onAmountClick }: HeroAmountProps) => 
     return (
         <div 
             onClick={onAmountClick}
-            className="flex flex-col items-center justify-center py-10 cursor-pointer active:scale-95 transition-transform group"
+            className={cn(
+                "flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all duration-500 group",
+                compact ? "py-4" : "py-10"
+            )}
         >
             <motion.div 
+                layout
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-baseline gap-2"
             >
                 <span className={cn(
-                    "text-2xl font-black opacity-40 tracking-tighter",
+                    "font-medium opacity-40 tracking-tighter transition-all duration-500",
+                    compact ? "text-lg" : "text-2xl",
                     typeColors[type]
                 )}>
                     {symbol}
                 </span>
                 
                 <div className="relative">
-                    {/* Rolling Number Animation Effect would go here in full implementation */}
                     <span className={cn(
-                        "text-6xl md:text-8xl font-black tracking-tighter tabular-nums leading-none",
+                        "font-medium tracking-tighter tabular-nums leading-none transition-all duration-500",
+                        compact ? "text-4xl md:text-5xl" : "text-6xl md:text-8xl",
                         typeColors[type]
                     )}>
                         {valueStr}
                     </span>
                     
-                    {/* Visual underline glow */}
                     <motion.div 
                         layoutId="activeUnderline"
                         className={cn(
-                            "absolute -bottom-2 left-0 right-0 h-1.5 rounded-full blur-sm opacity-20",
-                            type === 'expense' ? 'bg-rose-500' : 'bg-emerald-500'
+                            "absolute -bottom-1 left-0 right-0 h-1 rounded-full blur-sm opacity-20",
+                            type === 'expense' ? "bg-rose-500" : "bg-emerald-500"
                         )}
                     />
                 </div>
             </motion.div>
             
-            <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 group-hover:text-primary transition-colors">
-                Ketuk untuk ubah nominal
-            </p>
+            {!compact && (
+                <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.3em] text-zinc-400 group-hover:text-primary transition-colors">
+                    Ketuk untuk ubah nominal
+                </p>
+            )}
         </div>
     );
 };

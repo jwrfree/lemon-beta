@@ -30,6 +30,7 @@ import { getWalletVisuals } from '@/lib/wallet-visuals';
 import type { Wallet, Transaction, Reminder, Debt } from '@/types/models';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { SmartAddOverlay } from '@/features/transactions/components/smart-add-overlay';
+import { SpendingTrendChart } from './spending-trend-chart';
 
 interface MobileDashboardProps {
     userData: any;
@@ -284,7 +285,10 @@ export const MobileDashboard = ({
                 </div>
             </div>
 
-            {/* 5. Recent Transactions */}
+            {/* 5. Spending Trend (14 Days) */}
+            <SpendingTrendChart transactions={transactions} days={14} />
+
+            {/* 6. Recent Transactions */}
             <div className="space-y-3 px-5">
                 <div className="flex items-center justify-between">
                     <h2 className="text-base font-bold flex items-center gap-2">
