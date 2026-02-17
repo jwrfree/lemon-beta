@@ -13,14 +13,11 @@ import {
     Sparkles,
     ArrowRightLeft,
     HandCoins,
-    MoreHorizontal,
     Search
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
@@ -116,7 +113,7 @@ export const MobileDashboard = ({
         }
     ];
 
-    if (isLoading) return null; // Parent handles skeleton currently
+    if (isLoading) return null;
 
     return (
         <main className="flex-1 pb-24 space-y-6">
@@ -125,13 +122,13 @@ export const MobileDashboard = ({
                 <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10 border-2 border-background shadow-sm cursor-pointer" onClick={() => router.push('/settings')}>
                         <AvatarImage src={userData?.photoURL} />
-                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                        <AvatarFallback className="bg-primary/10 text-primary font-medium">
                             {firstName[0]}
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                         <span className="text-xs text-muted-foreground font-medium">{timeBasedGreeting},</span>
-                        <h1 className="text-lg font-bold leading-tight">{firstName}</h1>
+                        <h1 className="text-lg font-medium leading-tight tracking-tight">{firstName}</h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -161,42 +158,42 @@ export const MobileDashboard = ({
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-teal-100 text-sm font-medium">Total Saldo</span>
+                                    <span className="text-teal-100 text-[10px] uppercase font-medium tracking-widest opacity-80">Total Saldo</span>
                                     <div className="bg-white/10 backdrop-blur-md rounded-full px-2 py-0.5">
                                         <BalanceVisibilityToggle className="h-4 w-4 text-teal-100 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
-                                <div className="text-3xl font-bold tracking-tight">
+                                <div className="text-4xl font-medium tracking-tighter">
                                     <AnimatedCounter value={totalBalance} />
                                 </div>
                             </div>
 
                             {/* Income/Expense Pill */}
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-3 flex flex-col justify-between h-20">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-3 flex flex-col justify-between h-20 border border-white/5">
                                     <div className="flex items-center gap-1.5 text-teal-200">
                                         <div className="p-1 rounded-full bg-teal-500/20">
                                             <ArrowUpRight className="h-3 w-3" />
                                         </div>
-                                        <span className="text-[10px] uppercase font-bold tracking-wider opacity-80">Pemasukan</span>
+                                        <span className="text-[9px] uppercase font-medium tracking-widest opacity-70">Pemasukan</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyIncome} className="font-semibold text-sm" />
-                                        <p className="text-[10px] text-teal-200/70 mt-0.5">
+                                        <AnimatedCounter value={monthlyIncome} className="font-medium text-sm tracking-tight" />
+                                        <p className="text-[10px] text-teal-200/50 mt-0.5 font-medium">
                                             {incomeDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(incomeDiff))}
                                         </p>
                                     </div>
                                 </div>
-                                <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-3 flex flex-col justify-between h-20">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-3 flex flex-col justify-between h-20 border border-white/5">
                                     <div className="flex items-center gap-1.5 text-rose-200">
                                         <div className="p-1 rounded-full bg-rose-500/20">
                                             <ArrowDownLeft className="h-3 w-3" />
                                         </div>
-                                        <span className="text-[10px] uppercase font-bold tracking-wider opacity-80">Pengeluaran</span>
+                                        <span className="text-[9px] uppercase font-medium tracking-widest opacity-70">Pengeluaran</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyExpense} className="font-semibold text-sm" />
-                                        <p className="text-[10px] text-rose-200/70 mt-0.5">
+                                        <AnimatedCounter value={monthlyExpense} className="font-medium text-sm tracking-tight" />
+                                        <p className="text-[10px] text-rose-200/50 mt-0.5 font-medium">
                                             {expenseDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(expenseDiff))}
                                         </p>
                                     </div>
@@ -215,12 +212,12 @@ export const MobileDashboard = ({
                             key={idx}
                             whileTap={{ scale: 0.95 }}
                             onClick={action.onClick}
-                            className="flex flex-col items-center gap-2"
+                            className="flex flex-col items-center gap-2 group"
                         >
-                            <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center shadow-sm border border-border/50", action.bg)}>
-                                <action.icon className={cn("h-6 w-6", action.color)} strokeWidth={2.5} />
+                            <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center shadow-sm border border-border/50 transition-all group-active:scale-90", action.bg)}>
+                                <action.icon className={cn("h-6 w-6", action.color)} strokeWidth={1.5} />
                             </div>
-                            <span className="text-[11px] font-medium text-muted-foreground text-center leading-tight">
+                            <span className="text-[10px] font-medium text-muted-foreground text-center leading-tight uppercase tracking-wide">
                                 {action.label}
                             </span>
                         </motion.button>
@@ -231,11 +228,11 @@ export const MobileDashboard = ({
             {/* 4. Horizontal Wallets (Snap Scroll) */}
             <div className="space-y-3">
                 <div className="px-5 flex items-center justify-between">
-                    <h2 className="text-base font-bold flex items-center gap-2">
-                        <WalletIcon className="h-4 w-4 text-primary" />
+                    <h2 className="text-sm font-medium flex items-center gap-2 tracking-tight">
+                        <WalletIcon className="h-4 w-4 text-primary opacity-70" />
                         Dompet Kamu
                     </h2>
-                    <Button size="sm" className="h-8 text-xs hover:bg-transparent hover:text-primary px-0" onClick={() => router.push('/wallets')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-primary px-0" onClick={() => router.push('/wallets')}>
                         Lihat Semua
                     </Button>
                 </div>
@@ -251,20 +248,19 @@ export const MobileDashboard = ({
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: idx * 0.05 }}
                             >
-                                <div className="w-40 h-24 rounded-2xl bg-card border border-border shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-3 flex flex-col justify-between relative overflow-hidden group">
-                                    {/* Subtle background decoration */}
-                                    <div className={cn("absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-10 bg-current", textColor)}></div>
+                                <div className="w-40 h-24 rounded-2xl bg-card border border-border/60 shadow-sm p-3 flex flex-col justify-between relative overflow-hidden group">
+                                    <div className={cn("absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-5 bg-current", textColor)}></div>
 
                                     <div className="flex items-start justify-between relative z-10">
                                         <div className={cn("p-1.5 rounded-lg bg-muted", textColor)}>
                                             <Icon className="h-4 w-4" />
                                         </div>
-                                        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{wallet.type || 'Cash'}</span>
+                                        <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider">{wallet.type || 'Cash'}</span>
                                     </div>
 
                                     <div className="relative z-10">
-                                        <p className="text-xs font-medium text-muted-foreground truncate mb-0.5">{wallet.name}</p>
-                                        <p className="text-sm font-bold text-foreground truncate">
+                                        <p className="text-[11px] font-medium text-muted-foreground truncate mb-0.5">{wallet.name}</p>
+                                        <p className="text-sm font-medium text-foreground truncate tracking-tight">
                                             {formatCurrency(wallet.balance)}
                                         </p>
                                     </div>
@@ -273,29 +269,28 @@ export const MobileDashboard = ({
                         );
                     })}
 
-                    {/* Add Wallet Placehoder */}
                     <div className="snap-center shrink-0">
                         <button
                             onClick={() => router.push('/wallets')}
-                            className="w-12 h-24 rounded-2xl border border-dashed border-muted-foreground/30 flex items-center justify-center hover:bg-muted/50 transition-colors"
+                            className="w-12 h-24 rounded-2xl border border-dashed border-muted-foreground/20 flex items-center justify-center hover:bg-muted/50 transition-colors"
                         >
-                            <Plus className="h-5 w-5 text-muted-foreground" />
+                            <Plus className="h-5 w-5 text-muted-foreground/40" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* 5. Spending Trend (14 Days) */}
+            {/* 5. Spending Trend */}
             <SpendingTrendChart transactions={transactions} days={14} />
 
             {/* 6. Recent Transactions */}
             <div className="space-y-3 px-5">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-base font-bold flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-primary" />
+                    <h2 className="text-sm font-medium flex items-center gap-2 tracking-tight">
+                        <TrendingUp className="h-4 w-4 text-primary opacity-70" />
                         Aktivitas Terakhir
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs hover:bg-transparent hover:text-primary px-0" onClick={() => router.push('/transactions')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-primary px-0" onClick={() => router.push('/transactions')}>
                         Lihat Semua
                     </Button>
                 </div>

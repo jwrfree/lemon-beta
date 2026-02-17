@@ -231,8 +231,16 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 )}
 
                                 <div className="space-y-2">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1 flex items-center gap-1">
+                                        <MapPin className="h-3 w-3" />
+                                        Lokasi
+                                    </p>
+                                    <Input {...form.register('location')} placeholder="Mis: Grand Indonesia, Starbucks..." className="h-12 rounded-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700/50" />
+                                </div>
+
+                                <div className="space-y-2">
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Deskripsi</p>
-                                    <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800" />
+                                    <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700/50" />
                                 </div>
                             </motion.div>
                         )}

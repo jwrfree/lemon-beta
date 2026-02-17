@@ -67,14 +67,23 @@ export default function SmartAddPage() {
 
     const handleConfirmSave = async () => {
         triggerHaptic('success');
-        const success = multiParsedData.length > 0 ? await saveMultiTransactions() : await saveTransaction();
-        if (success) {
-            setShowSuccess(true);
-            setTimeout(() => {
-                setShowSuccess(false);
-                router.push('/home');
-            }, 1200);
-        }
+        
+        // 1. Jalankan proses simpan di background (Optimistic)
+        const savePromise = multiParsedData.length > 0 ? saveMultiTransactions() : saveTransaction();
+        
+        // 2. Langsung tampilkan sukses & pindah halaman (Instant Feedback)
+        setShowSuccess(true);
+        
+        // Timer lebih singkat untuk transisi yang terasa "snappy"
+        setTimeout(() => {
+            setShowSuccess(false);
+            router.push('/home');
+        }, 800); 
+
+        // 3. Tangani hasil di background jika perlu
+        savePromise.then((success) => {
+            if (!success) showToast('Gagal sinkronisasi data.', 'error');
+        });
     };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
