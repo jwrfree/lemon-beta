@@ -14,7 +14,9 @@ import {
     ArrowDownLeft,
     Pencil,
     Trash2,
-    CornerDownRight
+    CornerDownRight,
+    MapPin,
+    Sparkles
 } from 'lucide-react';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -93,10 +95,10 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
     return (
         <div className="space-y-6">
             <div className="flex justify-end">
-                <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleExportCSV} 
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportCSV}
                     className="gap-2 h-10 rounded-xl px-4 border-zinc-200/60 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all font-bold text-[10px] uppercase tracking-widest"
                 >
                     <Download className="h-3.5 w-3.5" />
@@ -144,6 +146,12 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                             <span className="uppercase tracking-wider text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-lg border border-black/5 dark:border-white/5">
                                                 {t.category}
                                             </span>
+                                            {isExpense && t.isNeed === false && (
+                                                <span className="flex items-center gap-1 uppercase tracking-wider text-pink-500 bg-pink-50 dark:bg-pink-900/20 px-2 py-0.5 rounded-lg border border-pink-100 dark:border-pink-900/30">
+                                                    <Sparkles className="h-3 w-3 fill-current" />
+                                                    Keinginan
+                                                </span>
+                                            )}
                                             {t.subCategory && (
                                                 <span className="flex items-center gap-1 text-zinc-400">
                                                     <CornerDownRight className="w-3 h-3" />
@@ -153,8 +161,17 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                             <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-700" />
                                             <span className="text-zinc-400 flex items-center gap-1.5">
                                                 <div className={cn("w-1.5 h-1.5 rounded-full", wallet?.color || 'bg-zinc-300')} />
-                                                {wallet?.name}
+                                                {wallet?.name || '-'}
                                             </span>
+                                            {t.location && (
+                                                <>
+                                                    <span className="w-1 h-1 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+                                                    <span className="text-zinc-400 flex items-center gap-1.5">
+                                                        <MapPin className="h-3 w-3 opacity-70" />
+                                                        {t.location}
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
                                     </td>
                                     <td className={cn(

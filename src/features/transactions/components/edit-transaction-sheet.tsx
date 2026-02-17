@@ -197,11 +197,11 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={errors.walletId?.message} />
+                                    <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={(errors as any).walletId?.message} />
                                     <DatePicker control={control} name="date" error={errors.date?.message} />
                                 </div>
 
-                                <CategorySelector control={control} name="category" categories={activeCategories} error={errors.category?.message} onSubCategoryChange={(val) => setValue('subCategory', val)} />
+                                <CategorySelector control={control} name="category" categories={activeCategories} error={(errors as any).category?.message} onSubCategoryChange={(val) => setValue('subCategory', val)} />
 
                                 {type === 'expense' && (
                                     <div className="flex gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-700/50">
