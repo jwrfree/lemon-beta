@@ -39,11 +39,24 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
     const daysInMonthValue = daysInMonth(now);
     const daysLeft = daysInMonthValue - now.getDate();
 
+    const daysPassedPercentage = (now.getDate() / daysInMonthValue) * 100;
+
+    // Smart Color Logic: Compare spending progress vs time progress
+    // If spending is significantly ahead of time -> Warning/Danger
     let progressBarColor = 'bg-primary';
-    if (progress > 80 && progress <= 100) {
-        progressBarColor = 'bg-yellow-500';
-    } else if (progress > 100) {
+    const variance = progress - daysPassedPercentage;
+
+    if (progress > 100) {
         progressBarColor = 'bg-destructive';
+    } else if (variance > 10) {
+        // Spending is >10% ahead of time passed (e.g. 60% spent on day 15/50%)
+        progressBarColor = 'bg-yellow-500';
+    } else if (variance < -10) {
+        // Spending is >10% behind time passed (Safely saving)
+        progressBarColor = 'bg-emerald-500';
+    } else {
+        // Roughly on track (+/- 10%)
+        progressBarColor = 'bg-teal-600 dark:bg-teal-500';
     }
 
     const firstCategory = budget.categories[0] || 'Lainnya';
@@ -79,13 +92,29 @@ const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Tr
                     </div>
 
                     <div className="space-y-3">
-                        <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
+                        <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden relative">
+                            {/* Marker Hari Ini */}
+                            <div
+                                className="absolute top-0 bottom-0 w-0.5 bg-foreground/30 z-10"
+                                style={{ left: `${Math.min(daysPassedPercentage, 100)}%` }}
+                                title="Posisi Hari Ini"
+                            />
+
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${Math.min(progress, 100)}%` }}
                                 transition={{ duration: 1, ease: "easeOut" }}
-                                className={cn("h-full rounded-full shadow-sm", progressBarColor)}
-                            />
+                                className={cn("h-full rounded-full shadow-sm relative", progressBarColor)}
+                            >
+                                {/* Pattern overlay for texture */}
+                                <div className="absolute inset-0 bg-white/10 dark:bg-black/10 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }} />
+                            </motion.div>
+                        </div>
+                        {/* Legend for Marker if needed, or just let user intuit */}
+                        <div className="flex justify-between text-[9px] text-muted-foreground/50 px-0.5 mt-1">
+                            <span>0%</span>
+                            <span style={{ marginLeft: `${Math.max(0, Math.min(daysPassedPercentage - 10, 80))}%` }} className="hidden sm:inline-block transition-all">Hari ke-{now.getDate()}</span>
+                            <span>100%</span>
                         </div>
                         <div className="flex justify-between items-end">
                             <div>
@@ -190,8 +219,11 @@ export default function BudgetingPage() {
                             <HandCoins className="h-12 w-12 text-primary" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl font-bold tracking-tight">Belum Ada Anggaran</h2>
-                        <p className="text-muted-foreground mt-2 mb-8 max-w-xs">Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.</p>
-                        <Button onClick={() => setIsBudgetModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
+                        <p className="text-muted-foreground mt-2 mb-8 max-w-xs leading-relaxed">
+                            Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.
+                            <br /><span className="text-xs text-muted-foreground/70 block mt-2">(Contoh: Makanan, Transportasi, Hiburan)</span>
+                        </p>
+                        <Button onClick={() => setIsBudgetModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
                             <PlusCircle className="mr-2 h-5 w-5" />
                             Buat Anggaran Pertama
                         </Button>
