@@ -285,7 +285,10 @@ export const useSmartAddFlow = () => {
         setMessages(prev => [...prev, { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }]);
 
         try {
-            const availableCategories = [...expenseCategories.map(c => c.name), ...incomeCategories.map(c => c.name)];
+            const availableCategories = [
+                ...expenseCategories.map(c => `${c.name} (${(c.sub_categories || []).join(', ')})`),
+                ...incomeCategories.map(c => `${c.name} (${(c.sub_categories || []).join(', ')})`)
+            ];
             const availableWallets = wallets.map(w => w.name);
 
             if (isRefinement && typeof input === 'string') {

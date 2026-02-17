@@ -16,9 +16,10 @@ import { useActions } from '@/providers/action-provider';
 import { useCategories } from '../hooks/use-transactions';
 import { Transaction } from '@/types/models';
 import { unifiedTransactionSchema, UnifiedTransactionFormValues } from '../schemas/transaction-schema';
-import { cn } from '@/lib/utils';
+import { cn, triggerHaptic } from '@/lib/utils';
 import { parseISO } from 'date-fns';
 import { z } from 'zod';
+import { SuccessAnimation } from '@/components/success-animation';
 
 // Partials
 import { AmountInput } from './form-partials/amount-input';
@@ -26,7 +27,9 @@ import { TransactionTypeTabs } from './form-partials/type-tabs';
 import { DatePicker } from './form-partials/date-picker';
 import { CategorySelector } from './form-partials/category-selector';
 import { WalletSelector } from './form-partials/wallet-selector';
+import { BudgetStatusPill } from './form-partials/budget-status-pill';
 import { useAiCategorySuggestion } from '../hooks/use-ai-category-suggestion';
+import { getCategoryColorHex } from '../utils/category-colors';
 
 interface TransactionComposerProps {
     onClose: (data?: Transaction | any) => void;
@@ -39,6 +42,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
     const { showToast } = useUI();
+    const [showSuccess, setShowSuccess] = useState(false);
     const defaultWallet = wallets.find(w => w.isDefault);
 
     const isEditMode = !!initialData && 'id' in initialData;
@@ -89,6 +93,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
     const activeCategories = type === 'expense' ? expenseCategories : incomeCategories;
 
     const handleTypeChange = (newType: 'expense' | 'income' | 'transfer') => {
+        triggerHaptic('light');
         setValue('type', newType);
         // Reset category if switching between expense and income
         if (newType !== type && newType !== 'transfer') {
@@ -111,7 +116,6 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     description: validData.description,
                     date: validData.date.toISOString(),
                 });
-                showToast("Transfer berhasil dicatat", 'success');
             } else {
                 const transactionData = {
                     ...validData,
@@ -120,15 +124,23 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
 
                 if (isEditMode && initialData && 'id' in initialData) {
                     await updateTransaction((initialData as Transaction).id, initialData as Transaction, transactionData);
-                    showToast("Transaksi berhasil diperbarui", 'success');
                 } else {
                     await addTransaction(transactionData);
-                    showToast("Transaksi berhasil ditambahkan", 'success');
                 }
             }
-            onClose({ ...validData, date: validData.date.toISOString() });
+
+            // Premium Success Experience
+            triggerHaptic('success');
+            setShowSuccess(true);
+
+            // Brief delay to allow animation to be seen
+            setTimeout(() => {
+                onClose({ ...validData, date: validData.date.toISOString() });
+            }, 1200);
+
         } catch (error) {
             const err = error as Error;
+            triggerHaptic('error');
             showToast(`Gagal: ${err.message}`, 'error');
         }
     };
@@ -144,14 +156,11 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
         return (errors as any)[field]?.message;
     }
 
-    const { budgets } = useBudgets();
     const categoryVisuals = category ? expenseCategories.find(c => c.name === category) || incomeCategories.find(c => c.name === category) : null;
     const accentColor = categoryVisuals?.color.split(' ')[0] || 'text-primary';
     const accentBg = categoryVisuals?.bg_color || 'bg-primary/5';
 
-    const relevantBudget = category ? budgets.find(b => b.categories.includes(category)) : null;
-    const remainingBudget = relevantBudget ? relevantBudget.targetAmount - (relevantBudget.spent || 0) : null;
-    const isOverBudget = remainingBudget !== null && remainingBudget <= 0;
+    // Budget logic moved to BudgetStatusPill component
 
     return (
         <motion.div
@@ -223,21 +232,14 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 </form>
 
                 <div className="p-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-3">
-                    {relevantBudget && remainingBudget !== null && (
-                        <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className={cn("flex items-center justify-between px-3 py-2 rounded-xl text-[11px] font-medium border", isOverBudget ? "bg-destructive/5 text-destructive border-destructive/20" : "bg-emerald-500/5 text-emerald-600 border-emerald-500/20")}>
-                            <span>Sisa Anggaran {category}:</span>
-                            <span className="font-bold tabular-nums">Rp {new Intl.NumberFormat('id-ID').format(remainingBudget)}</span>
-                        </motion.div>
-                    )}
+                    <BudgetStatusPill category={category} />
 
                     <Button
                         onClick={handleSubmit(onSubmit)}
-                        className={cn(
-                            "w-full h-12 text-base rounded-2xl font-bold transition-all duration-300 shadow-lg active:scale-[0.98]",
-                            categoryVisuals
-                                ? cn(accentColor.replace('text-', 'bg-').split(' ')[0], "text-white hover:brightness-110 shadow-lg", accentColor.replace('text-', 'shadow-').split(' ')[0] + "/20")
-                                : "bg-primary text-primary-foreground"
-                        )}
+                        className="w-full h-12 text-base rounded-2xl font-bold transition-all duration-300 shadow-lg active:scale-[0.98] text-white hover:brightness-110 bg-primary"
+                        style={categoryVisuals ? {
+                            backgroundColor: getCategoryColorHex(categoryVisuals)
+                        } : undefined}
                         size="lg"
                         disabled={isSubmitting}
                     >

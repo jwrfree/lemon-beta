@@ -20,9 +20,14 @@ interface ToastState {
 interface UIContextType {
     isTxModalOpen: boolean;
     setIsTxModalOpen: (isOpen: boolean) => void;
+    isEditTxSheetOpen: boolean;
+    setIsEditTxSheetOpen: (isOpen: boolean) => void;
     transactionToEdit: Transaction | null;
     setTransactionToEdit: (transaction: Transaction | null) => void;
     openEditTransactionModal: (transaction: Transaction) => void;
+
+    deferredPrompt: any;
+    setDeferredPrompt: (prompt: any) => void;
 
     isWalletModalOpen: boolean;
     setIsWalletModalOpen: (isOpen: boolean) => void;
@@ -89,7 +94,9 @@ export const useUI = () => {
 
 export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [isTxModalOpen, setIsTxModalOpen] = useState(false);
+    const [isEditTxSheetOpen, setIsEditTxSheetOpen] = useState(false);
     const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
     const [isEditBudgetModalOpen, setIsEditBudgetModalOpen] = useState(false);
@@ -150,7 +157,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
         setTransactionToEdit(transaction);
-        setIsTxModalOpen(true);
+        setIsEditTxSheetOpen(true);
     };
 
     const openEditGoalModal = (goal: Goal) => {
@@ -176,9 +183,13 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const contextValue = useMemo(() => ({
         isTxModalOpen,
         setIsTxModalOpen,
+        isEditTxSheetOpen,
+        setIsEditTxSheetOpen,
         transactionToEdit,
         setTransactionToEdit,
         openEditTransactionModal,
+        deferredPrompt,
+        setDeferredPrompt,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -226,6 +237,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         hideToast,
     }), [
         isTxModalOpen,
+        isEditTxSheetOpen,
         transactionToEdit,
         isWalletModalOpen,
         isBudgetModalOpen,

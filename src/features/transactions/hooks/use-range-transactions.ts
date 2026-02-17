@@ -12,7 +12,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
 
     const fetchRange = useCallback(async () => {
         if (!user) return;
-        
+
         const start = format(startDate, 'yyyy-MM-dd');
         const end = format(endDate, 'yyyy-MM-dd');
 
@@ -44,7 +44,13 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                 setTransactions(mapped);
             }
         } catch (err) {
-            console.error("Error fetching range transactions:", err);
+            console.error("Error fetching range transactions:", JSON.stringify(err, null, 2));
+            console.error("Error details:", {
+                message: (err as any)?.message,
+                code: (err as any)?.code,
+                details: (err as any)?.details,
+                hint: (err as any)?.hint
+            });
         } finally {
             setIsLoading(false);
         }
@@ -61,11 +67,11 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
 
         const channel = supabase
             .channel('range-transactions-changes')
-            .on('postgres_changes', { 
-                event: '*', 
-                schema: 'public', 
-                table: 'transactions', 
-                filter: `user_id=eq.${user.id}` 
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'transactions',
+                filter: `user_id=eq.${user.id}`
             }, () => fetchRange())
             .subscribe();
 

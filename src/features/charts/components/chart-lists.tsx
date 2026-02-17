@@ -6,7 +6,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Transaction } from '@/types/models';
 import { format, parseISO } from 'date-fns';
 
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Trophy } from 'lucide-react';
 
 export function CategoryPilla({ category, amount, total, budgetAmount, color, onClick }: {
     category: string,
@@ -19,58 +19,74 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
     // If budget exists, percentage is based on budget. Else, based on total expense.
     const percentage = budgetAmount ? (amount / budgetAmount) * 100 : (total > 0 ? (amount / total) * 100 : 0);
     const isOverBudget = budgetAmount ? amount > budgetAmount : false;
-    const displayColor = isOverBudget ? 'bg-rose-500' : color;
+    
+    // Extract background color from tailwind class if possible, or use a default
+    const getGradientColor = () => {
+        if (isOverBudget) return 'from-rose-500 to-rose-600';
+        const colorName = color.replace('bg-', '').replace('-500', '');
+        return `from-${colorName}-500 to-${colorName}-600`;
+    };
 
     return (
         <button
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden bg-white dark:bg-zinc-900 rounded-2xl p-4 md:p-5 border shadow-sm hover:shadow-md transition-all text-left w-full",
-                isOverBudget ? "border-rose-500/50 dark:border-rose-500/30 ring-1 ring-rose-500/20" : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700"
+                "group relative overflow-hidden bg-white dark:bg-zinc-900 rounded-[2rem] p-5 border transition-all text-left w-full premium-shadow",
+                isOverBudget 
+                    ? "border-rose-500/30 ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]" 
+                    : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover-glow"
             )}
         >
-            <div className="flex justify-between items-end relative z-10">
-                <div className="flex-1 min-w-0 pr-4">
-                    <div className="flex items-center gap-2">
-                        <p className={cn("font-semibold text-sm md:text-base truncate", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-zinc-900 dark:text-zinc-100")}>
-                            {category}
-                        </p>
-                        {isOverBudget && <AlertTriangle className="w-4 h-4 text-rose-500 animate-pulse" />}
-                    </div>
-                    {budgetAmount ? (
-                        <div className="flex items-center gap-1 mt-1 text-xs font-medium text-zinc-500 tabular-nums">
-                            <span className={isOverBudget ? "text-rose-500 font-bold" : ""}>{percentage.toFixed(0)}%</span>
-                            <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                            <span>Limit: {formatCurrency(budgetAmount)}</span>
+            <div className="relative z-10">
+                <div className="flex justify-between items-start mb-4">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                            <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-rose-500" : color)} />
+                            <p className={cn("font-bold text-sm uppercase tracking-wider", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-zinc-500 dark:text-zinc-400")}>
+                                {category}
+                            </p>
                         </div>
-                    ) : (
-                        <p className="text-xs text-zinc-500 font-medium tabular-nums mt-1">{percentage.toFixed(1)}% dari total</p>
+                        <p className={cn("text-xl md:text-2xl font-bold tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-zinc-900 dark:text-zinc-100")}>
+                            {formatCurrency(amount)}
+                        </p>
+                    </div>
+                    {isOverBudget && (
+                        <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-xl">
+                            <AlertTriangle className="w-5 h-5" />
+                        </div>
                     )}
                 </div>
-                <p className={cn("font-semibold text-base md:text-lg tabular-nums", isOverBudget && "text-rose-600 dark:text-rose-400")}>
-                    {formatCurrency(amount)}
-                </p>
+
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                        <div className="flex items-center gap-2">
+                            <span className={isOverBudget ? "text-rose-500" : "text-zinc-400"}>
+                                {percentage.toFixed(0)}% Terpakai
+                            </span>
+                        </div>
+                        {budgetAmount && (
+                            <span className="text-zinc-400">Limit: {formatCurrency(budgetAmount)}</span>
+                        )}
+                    </div>
+                    
+                    <div className="relative h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${Math.min(percentage, 100)}%` }}
+                            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                            className={cn(
+                                "absolute inset-y-0 left-0 rounded-full bg-gradient-to-r shadow-[0_0_10px_rgba(0,0,0,0.1)]",
+                                getGradientColor()
+                            )}
+                        />
+                    </div>
+                </div>
             </div>
 
-            {/* Background Bars */}
-            <div className="absolute bottom-0 left-0 w-full h-1.5 bg-zinc-100 dark:bg-zinc-800" />
-
-            <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${Math.min(percentage, 100)}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                className={cn("absolute bottom-0 left-0 h-1.5", displayColor)}
-            />
-
-            {/* Glitch/Over-budget Indicator Line */}
-            {isOverBudget && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: [0, 1, 0, 1] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="absolute bottom-0 right-0 w-full h-1.5 bg-rose-500/30 blur-sm"
-                />
-            )}
+            {/* Subtle background pattern for premium feel */}
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+                <Trophy className="h-20 w-20 -rotate-12" />
+            </div>
         </button>
     );
 }

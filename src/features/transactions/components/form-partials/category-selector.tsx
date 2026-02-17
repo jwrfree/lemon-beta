@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Control, Controller, FieldValues, Path } from 'react-hook-form';
+import { Control, Controller, FieldValues, Path, useWatch } from 'react-hook-form';
 import { Category } from '@/lib/categories';
 import { CategoryGrid } from '../category-grid';
 import { SubCategorySheet } from '../sub-category-sheet';
@@ -36,10 +36,14 @@ export function CategorySelector<T extends FieldValues>({
     const [isSubCategorySheetOpen, setIsSubCategorySheetOpen] = useState(false);
     const [selectedCategoryForSub, setSelectedCategoryForSub] = useState<Category | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [localSubCategory, setLocalSubCategory] = useState<string>(''); // Track locally
 
     const handleCategoryClick = (cat: Category, onChange: (value: string) => void) => {
         onChange(cat.name);
-        if (onSubCategoryChange) onSubCategoryChange(''); // Reset subcategory
+        if (onSubCategoryChange) {
+            onSubCategoryChange(''); // Reset subcategory in form
+            setLocalSubCategory(''); // Reset local state
+        }
 
         if (cat.sub_categories && cat.sub_categories.length > 0) {
             setSelectedCategoryForSub(cat);
@@ -47,6 +51,15 @@ export function CategorySelector<T extends FieldValues>({
         } else {
             setSelectedCategoryForSub(null);
         }
+    };
+
+    const handleSubCategorySelect = (val: string) => {
+        console.log('[CategorySelector] Sub-category selected:', val); // Debug log
+        setLocalSubCategory(val); // Update local state
+        if (onSubCategoryChange) {
+            onSubCategoryChange(val); // Update form
+        }
+        setIsSubCategorySheetOpen(false);
     };
 
     return (
@@ -97,7 +110,11 @@ export function CategorySelector<T extends FieldValues>({
                                             </div>
                                             <div className="flex flex-col text-left">
                                                 <span className="font-bold text-sm tracking-tight">{selectedCategory.name}</span>
-                                                <span className="text-[10px] text-muted-foreground font-medium">Klik untuk ganti kategori</span>
+                                                {localSubCategory ? (
+                                                    <span className="text-[10px] text-primary font-medium">• {localSubCategory}</span>
+                                                ) : (
+                                                    <span className="text-[10px] text-muted-foreground font-medium">Klik untuk ganti kategori</span>
+                                                )}
                                             </div>
                                         </>
                                     ) : (
@@ -145,11 +162,8 @@ export function CategorySelector<T extends FieldValues>({
                             {isSubCategorySheetOpen && selectedCategoryForSub && onSubCategoryChange && (
                                 <SubCategorySheet
                                     category={selectedCategoryForSub}
-                                    selectedValue={""}
-                                    onSelect={(val) => {
-                                        onSubCategoryChange(val);
-                                        setIsSubCategorySheetOpen(false);
-                                    }}
+                                    selectedValue={localSubCategory}
+                                    onSelect={handleSubCategorySelect}
                                     onClose={() => setIsSubCategorySheetOpen(false)}
                                 />
                             )}

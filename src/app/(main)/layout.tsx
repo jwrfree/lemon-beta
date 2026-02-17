@@ -16,9 +16,11 @@ import { GoalForm } from '@/features/goals/components/goal-form';
 import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
+import { EditTransactionSheet } from '@/features/transactions/components/edit-transaction-sheet';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
+import { SIDEBAR_NAV_ITEMS } from '@/lib/sidebar-config';
 
 const pageVariants = {
     initial: {
@@ -40,6 +42,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const {
         isTxModalOpen,
         setIsTxModalOpen,
+        isEditTxSheetOpen,
+        setIsEditTxSheetOpen,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -114,14 +118,15 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     };
 
 
-    const mainPagesForNav = ['/home', '/charts', '/transactions', '/settings', '/budgeting', '/plan'];
-    const showBottomNav = mainPagesForNav.includes(pathname);
+    const showBottomNav = SIDEBAR_NAV_ITEMS.some(item => 
+        item.href === '/home' ? pathname === '/home' : pathname.startsWith(item.href)
+    ) || pathname === '/add-smart';
 
     return (
         <div className="w-full h-dvh bg-slate-100 dark:bg-slate-950 relative flex flex-col md:flex-row overflow-hidden">
             <Sidebar />
             <div className={cn(
-                "flex-1 flex flex-col relative w-full h-full max-w-md md:max-w-none mx-auto overflow-hidden transition-all duration-300",
+                "flex-1 flex flex-col relative w-full h-full max-w-lg md:max-w-none mx-auto overflow-hidden transition-all duration-300",
                 isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
             )}>
                 <div
@@ -140,6 +145,17 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
                 <AnimatePresence mode="wait">
                     {isTxModalOpen && <TransactionComposer key="transaction-composer" initialData={transactionToEdit} onClose={handleCloseTxModal} />}
+                    {isEditTxSheetOpen && (
+                        <EditTransactionSheet 
+                            key="edit-transaction-sheet" 
+                            isOpen={isEditTxSheetOpen} 
+                            onClose={() => {
+                                setIsEditTxSheetOpen(false);
+                                setTransactionToEdit(null);
+                            }} 
+                            transaction={transactionToEdit} 
+                        />
+                    )}
                     {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}
                     {isBudgetModalOpen && <AddBudgetModal key="add-budget-modal" onClose={() => setIsBudgetModalOpen(false)} />}
                     {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal key="edit-budget-modal" budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}

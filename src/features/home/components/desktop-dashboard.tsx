@@ -33,7 +33,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
-import { DashboardSmartInsight } from '@/features/home/components/dashboard-smart-insight';
+// AI Insights Removed
 
 // Import Analyst Charts Components
 import { FinancialPulse } from '@/features/charts/components/financial-pulse';
@@ -365,15 +365,6 @@ export const DesktopDashboard = () => {
 
                         {/* RIGHT COLUMN (Sidebar Metrics) - Span 3 */}
                         <div className="col-span-12 lg:col-span-3 space-y-6">
-                            <ErrorBoundary>
-                                <DashboardSmartInsight
-                                    transactions={filteredTransactions}
-                                    income={currentMonthData.income}
-                                    expense={currentMonthData.expense}
-                                    net={currentMonthData.net}
-                                    hasTransactions={filteredTransactions.length > 0}
-                                />
-                            </ErrorBoundary>
 
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
 

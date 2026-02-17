@@ -45,7 +45,10 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                             <button
                                 key={subCat}
                                 type="button"
-                                onClick={() => onSelect(subCat)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onSelect(subCat);
+                                }}
                                 className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-accent text-left"
                             >
                                 <span className={cn(selectedValue === subCat && "font-semibold text-primary")}>

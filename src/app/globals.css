@@ -134,7 +134,13 @@
     --input: hsl(var(--gray-200));
     --ring: hsl(var(--gray-950));
     
-    --radius: 0.75rem;
+    --radius: 0.875rem; /* 14px for mobile */
+
+    @media (min-width: 768px) {
+      :root {
+        --radius: 0.5rem; /* 8px for desktop */
+      }
+    }
 
     /* Chart Colors */
     --chart-1: hsl(var(--teal-600));

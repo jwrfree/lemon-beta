@@ -86,10 +86,63 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals }: Re
                                             categories={parsedData.type === 'income' ? categories.income : categories.expense}
                                             selectedCategory={parsedData.category}
                                             onCategorySelect={(cat) => {
-                                                setParsedData({ ...parsedData, category: cat.name });
+                                                setParsedData({ ...parsedData, category: cat.name, subCategory: '' }); // Reset sub when cat changes
                                                 setIsCatOpen(false);
                                             }}
                                         />
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+
+                            {/* Sub Category Display/Edit */}
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <button className="mt-1 ml-1 px-2 py-0.5 rounded-md text-[10px] font-medium text-muted-foreground/80 hover:bg-muted/50 transition-colors flex items-center gap-1">
+                                        {parsedData.subCategory ? (
+                                            <>
+                                                <span className="opacity-50">•</span>
+                                                <span>{parsedData.subCategory}</span>
+                                            </>
+                                        ) : (
+                                            <span className="opacity-50 text-[9px]">+ Sub</span>
+                                        )}
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-60 p-2" align="start">
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-semibold text-muted-foreground px-1">Sub Kategori</p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {(() => {
+                                                const catList = parsedData.type === 'income' ? categories.income : categories.expense;
+                                                const currentCat = catList.find(c => c.name === parsedData.category);
+                                                const subs = currentCat?.sub_categories || [];
+
+                                                if (subs.length === 0) return <p className="text-[10px] text-muted-foreground italic px-1">Tidak ada sub-kategori khusus.</p>;
+
+                                                return subs.map(sub => (
+                                                    <button
+                                                        key={sub}
+                                                        onClick={() => setParsedData({ ...parsedData, subCategory: sub })}
+                                                        className={cn(
+                                                            "text-[10px] px-2 py-1 rounded-full border transition-colors",
+                                                            parsedData.subCategory === sub
+                                                                ? "bg-primary/10 border-primary text-primary font-medium"
+                                                                : "bg-transparent border-border hover:bg-muted"
+                                                        )}
+                                                    >
+                                                        {sub}
+                                                    </button>
+                                                ));
+                                            })()}
+                                        </div>
+                                        <div className="pt-2 border-t mt-2">
+                                            <Input
+                                                placeholder="Custom Sub..."
+                                                className="h-7 text-xs"
+                                                value={parsedData.subCategory || ''}
+                                                onChange={(e) => setParsedData({ ...parsedData, subCategory: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
                                 </PopoverContent>
                             </Popover>

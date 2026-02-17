@@ -2,7 +2,8 @@
 
 import React, { useMemo, Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoaderCircle, Flame, Calendar, Info, Layers, Zap, ArrowUpRight } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { LoaderCircle, Flame, Calendar, Info, Layers, Zap, ArrowUpRight, Trophy, PieChart } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { parseISO, startOfMonth, endOfMonth, subMonths, format, differenceInDays, eachDayOfInterval, subDays } from 'date-fns';
@@ -10,20 +11,53 @@ import { Badge } from '@/components/ui/badge';
 import type { MonthData, DailyMetric, MonthlyMetric } from '@/features/charts/types';
 import { useUI } from '@/components/ui-provider';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { 
+    AnalyticsPageSkeleton, 
+    FinancialPulseSkeleton, 
+    TrendAnalyticsSkeleton, 
+    MetricCardSkeleton, 
+    CategoryPieSkeleton 
+} from '@/features/charts/components/chart-skeleton';
+import { NetWorthTrend } from '@/features/charts/components/advanced-stats/net-worth-trend';
+import { BehaviorAnalytics } from '@/features/charts/components/advanced-stats/behavior-analytics';
+import { SavingPotential } from '@/features/charts/components/advanced-stats/saving-potential';
+import { SubscriptionAudit } from '@/features/charts/components/advanced-stats/subscription-audit';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useReminders } from '@/features/reminders/hooks/use-reminders';
 
-// Components
-import { FinancialPulse } from '@/features/charts/components/financial-pulse';
-import { TrendAnalytics } from '@/features/charts/components/trend-analytics';
-import { HealthGauge, MetricCard } from '@/features/charts/components/financial-health';
-import { HistoryChart } from '@/features/charts/components/history-chart';
+// Dynamically import heavy chart components
+const FinancialPulse = dynamic(() => import('@/features/charts/components/financial-pulse').then(mod => mod.FinancialPulse), { 
+    ssr: false,
+    loading: () => <FinancialPulseSkeleton />
+});
+const TrendAnalytics = dynamic(() => import('@/features/charts/components/trend-analytics').then(mod => mod.TrendAnalytics), { 
+    ssr: false,
+    loading: () => <TrendAnalyticsSkeleton />
+});
+const HealthGauge = dynamic(() => import('@/features/charts/components/financial-health').then(mod => mod.HealthGauge), { 
+    ssr: false,
+    loading: () => <div className="h-[150px] w-full animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
+});
+const HistoryChart = dynamic(() => import('@/features/charts/components/history-chart').then(mod => mod.HistoryChart), { 
+    ssr: false,
+    loading: () => <div className="h-[250px] w-full animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
+});
+const CategoryPie = dynamic(() => import('@/features/charts/components/category-pie').then(mod => mod.CategoryPie), { 
+    ssr: false,
+    loading: () => <CategoryPieSkeleton />
+});
+
+// Regular components
+import { MetricCard } from '@/features/charts/components/financial-health';
 import { CategoryPilla, TopTransactionItem } from '@/features/charts/components/chart-lists';
-import { AIInsights } from '@/features/charts/components/ai-insights';
-import { CategoryPie } from '@/features/charts/components/category-pie';
+import { isWeekend } from 'date-fns';
 
 function ChartContent() {
     const router = useRouter();
     const { setIsTxModalOpen, setTransactionToEdit } = useUI();
     const { budgets } = useBudgets();
+    const { wallets } = useWallets();
+    const { reminders } = useReminders();
     const [categoryView, setCategoryView] = useState<'expense' | 'income'>('expense');
 
     // ==========================================
@@ -47,8 +81,140 @@ function ChartContent() {
     const { transactions: allTransactions, isLoading } = useRangeTransactions(fetchStart, fetchEnd);
 
     // ==========================================
-    // DATA PROCESSING (Client Side)
+    // ADVANCED DATA PROCESSING
     // ==========================================
+
+    // 1. Net Worth Simulation
+    const netWorthData = useMemo(() => {
+        const totalWalletBalance = wallets.reduce((sum, w) => sum + (w.balance || 0), 0);
+        // Simplified trend: current balance is the end point, previous months are current - (income - expense)
+        const history = [];
+        let runningBalance = totalWalletBalance;
+
+        for (let i = 0; i < 6; i++) {
+            const date = subMonths(now, i);
+            const monthLabel = format(date, 'MMM');
+            
+            // Calculate this month's net change
+            const monthTx = allTransactions.filter(t => {
+                const d = parseISO(t.date);
+                return d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear();
+            });
+            
+            const income = monthTx.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const expense = monthTx.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            
+            history.push({
+                month: monthLabel,
+                assets: runningBalance, // Simplified
+                liabilities: 0, // Would need actual liability data
+                netWorth: runningBalance
+            });
+
+            runningBalance -= (income - expense);
+        }
+
+        return history.reverse();
+    }, [wallets, allTransactions, now]);
+
+    // 2. Behavior Analysis (Weekend vs Weekday)
+    const behaviorData = useMemo(() => {
+        const last30 = allTransactions.filter(t => parseISO(t.date) >= last30DaysStart);
+        const expenses = last30.filter(t => t.type === 'expense');
+        
+        const weekdays = expenses.filter(t => !isWeekend(parseISO(t.date)));
+        const weekends = expenses.filter(t => isWeekend(parseISO(t.date)));
+        
+        const weekdayTotal = weekdays.reduce((sum, t) => sum + t.amount, 0);
+        const weekendTotal = weekends.reduce((sum, t) => sum + t.amount, 0);
+        
+        // Find top categories
+        const getTopCat = (txs: any[]) => {
+            const cats: any = {};
+            txs.forEach(t => cats[t.category] = (cats[t.category] || 0) + t.amount);
+            return Object.entries(cats).sort(([,a],[,b]) => (b as number)-(a as number))[0]?.[0] || 'N/A';
+        };
+
+        // Payday Drain simulation: find last big income
+        const incomes = last30.filter(t => t.type === 'income').sort((a,b) => b.amount - a.amount);
+        const topIncome = incomes[0];
+        let drainDays = 15; // Default fallback
+
+        if (topIncome) {
+            const payday = parseISO(topIncome.date);
+            let cumulativeAfterPayday = 0;
+            const threshold = topIncome.amount * 0.5;
+            
+            const expensesAfterPayday = expenses
+                .filter(t => parseISO(t.date) >= payday)
+                .sort((a,b) => a.date.localeCompare(b.date));
+            
+            for (let i = 0; i < expensesAfterPayday.length; i++) {
+                cumulativeAfterPayday += expensesAfterPayday[i].amount;
+                if (cumulativeAfterPayday >= threshold) {
+                    drainDays = differenceInDays(parseISO(expensesAfterPayday[i].date), payday);
+                    break;
+                }
+            }
+        }
+
+        return {
+            weekdayAvg: weekdayTotal / 22, // Approx weekdays in month
+            weekendAvg: weekendTotal / 8,   // Approx weekends in month
+            paydayDrainDays: drainDays,
+            topWeekdayCategory: getTopCat(weekdays),
+            topWeekendCategory: getTopCat(weekends)
+        };
+    }, [allTransactions, last30DaysStart]);
+
+    // 3. Saving Potential
+    const savingData = useMemo(() => {
+        const currentMonthExp = allTransactions.filter(t => {
+            const d = parseISO(t.date);
+            return d >= currentMonthStart && d <= currentMonthEnd && t.type === 'expense';
+        });
+        
+        const currentMonthInc = allTransactions.filter(t => {
+            const d = parseISO(t.date);
+            return d >= currentMonthStart && d <= currentMonthEnd && t.type === 'income';
+        }).reduce((sum, t) => sum + t.amount, 0);
+
+        const fixedCosts = currentMonthExp
+            .filter(t => t.category.toLowerCase().includes('tagihan') || t.category.toLowerCase().includes('cicilan') || t.category.toLowerCase().includes('kost'))
+            .reduce((sum, t) => sum + t.amount, 0);
+            
+        const variableSpending = currentMonthExp.reduce((sum, t) => sum + t.amount, 0) - fixedCosts;
+        const actualSavings = Math.max(0, currentMonthInc - (fixedCosts + variableSpending));
+        
+        // Potential = Income - Fixed - (Planned Budgets)
+        const plannedVariable = budgets.reduce((sum, b) => sum + b.targetAmount, 0);
+        const potentialSavings = Math.max(actualSavings, currentMonthInc - (fixedCosts + plannedVariable));
+
+        return {
+            income: currentMonthInc,
+            fixedCosts,
+            variableSpending,
+            actualSavings,
+            potentialSavings: potentialSavings || (currentMonthInc * 0.3) // Fallback to 30% if no budgets
+        };
+    }, [allTransactions, currentMonthStart, currentMonthEnd, budgets]);
+
+    // 4. Subscriptions Audit
+    const subscriptionData = useMemo(() => {
+        const subs = reminders
+            .filter(r => r.repeatRule?.frequency !== 'none' && r.amount)
+            .map(r => ({
+                id: r.id,
+                name: r.title,
+                amount: r.amount || 0,
+                category: r.category || 'Subscription',
+                isDueSoon: r.dueDate ? differenceInDays(parseISO(r.dueDate), now) <= 3 : false
+            }));
+
+        const totalMonthly = subs.reduce((sum, s) => sum + s.amount, 0);
+        return { items: subs.slice(0, 5), totalMonthly };
+    }, [reminders, now]);
+
 
     // 1. Filter Transactions by Period
     const { currentMonthTx, prevMonthTx, last30DaysTx, last6MonthsTx } = useMemo(() => {
@@ -191,11 +357,7 @@ function ChartContent() {
     ];
 
     if (isLoading) {
-        return (
-            <div className="h-screen flex items-center justify-center bg-zinc-50 dark:bg-black">
-                <LoaderCircle className="w-10 h-10 animate-spin text-zinc-900 dark:text-white" />
-            </div>
-        );
+        return <AnalyticsPageSkeleton />;
     }
 
     return (
@@ -225,8 +387,15 @@ function ChartContent() {
                 projectedExpense={projectedExpense}
             />
 
-            <div className="px-4 mt-6">
-                <AIInsights transactions={currentMonthTx} />
+            {/* ADVANCED STATS GRID */}
+            <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <NetWorthTrend data={netWorthData} />
+                <SavingPotential data={savingData} />
+            </div>
+
+            <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <BehaviorAnalytics data={behaviorData} />
+                <SubscriptionAudit items={subscriptionData.items} totalMonthly={subscriptionData.totalMonthly} />
             </div>
 
             <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -294,8 +463,17 @@ function ChartContent() {
                                 />
                             ))
                         ) : (
-                            <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
-                                Belum ada pengeluaran.
+                            <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] premium-shadow relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-8 opacity-[0.02]">
+                                    <Layers className="h-32 w-32" />
+                                </div>
+                                <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-3xl mb-4">
+                                    <Info className="w-8 h-8 text-zinc-400" />
+                                </div>
+                                <h3 className="text-lg font-bold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
+                                <p className="text-sm text-muted-foreground max-w-[250px]">
+                                    Semua transaksi besarmu akan dianalisis secara otomatis di sini.
+                                </p>
                             </div>
                         )}
                     </div>
@@ -358,9 +536,18 @@ function ChartContent() {
                                     );
                                 })
                             ) : (
-                                <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
-                                    Belum ada pengeluaran.
-                                </div>
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] premium-shadow relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
+                                            <Trophy className="h-32 w-32" />
+                                        </div>
+                                        <div className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
+                                            <PieChart className="w-8 h-8 text-zinc-400" />
+                                        </div>
+                                        <h3 className="text-lg font-bold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
+                                        <p className="text-sm text-muted-foreground max-w-[250px]">
+                                            Mulai catat pengeluaranmu untuk melihat breakdown kategori secara mendalam.
+                                        </p>
+                                    </div>
                             )
                         ) : (
                             currentMonthData.incomeCategories.length > 0 ? (
@@ -375,9 +562,18 @@ function ChartContent() {
                                     />
                                 ))
                             ) : (
-                                <div className="py-8 text-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
-                                    Belum ada pemasukan.
-                                </div>
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] premium-shadow relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
+                                            <Trophy className="h-32 w-32" />
+                                        </div>
+                                        <div className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
+                                            <PieChart className="w-8 h-8 text-zinc-400" />
+                                        </div>
+                                        <h3 className="text-lg font-bold tracking-tight mb-1">Belum Ada Pemasukan</h3>
+                                        <p className="text-sm text-muted-foreground max-w-[250px]">
+                                            Catat setiap pendapatanmu untuk melihat analisis sumber keuangan yang komprehensif.
+                                        </p>
+                                    </div>
                             )
                         )}
                     </div>

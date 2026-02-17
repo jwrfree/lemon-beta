@@ -39,7 +39,12 @@ const TransactionListItemContent = ({
             <div className="flex-1 overflow-hidden">
                 <div className="font-semibold text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
-                    <span>{transaction.subCategory || transaction.category}</span>
+                    <span className="capitalize">
+                        {transaction.category}
+                        {transaction.subCategory && (
+                            <span className="font-normal opacity-70"> • {transaction.subCategory}</span>
+                        )}
+                    </span>
                     {transaction.location && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
                     {transaction.location && <span className="truncate">{transaction.location}</span>}
                     {wallet && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}

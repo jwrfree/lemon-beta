@@ -3,7 +3,7 @@ import React from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, PieChart, Sparkles, NotebookPen, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, triggerHaptic } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
 import Link from 'next/link';
 
@@ -56,7 +56,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-0 left-0 right-0 z-40"
                 >
                     <div
-                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-card shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none bottom-nav-container pb-[env(safe-area-inset-bottom)] min-h-[calc(4rem+env(safe-area-inset-bottom))]"
+                        className="w-full max-w-lg mx-auto grid grid-cols-5 items-center bg-card shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none bottom-nav-container pb-[env(safe-area-inset-bottom)] min-h-[calc(4rem+env(safe-area-inset-bottom))]"
                     >
                         {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
@@ -68,6 +68,7 @@ export const BottomNavigation = () => {
                                             <Link
                                                 href={item.href}
                                                 prefetch={false}
+                                                onClick={() => triggerHaptic('medium')}
                                                 className={cn(
                                                     'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
                                                 )}
@@ -87,6 +88,7 @@ export const BottomNavigation = () => {
                                     key={item.id}
                                     href={item.href}
                                     prefetch={false}
+                                    onClick={() => triggerHaptic('light')}
                                     className={cn(
                                         'flex flex-col items-center justify-center h-full w-full rounded-none transition-all active:scale-95 group relative',
                                         isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'

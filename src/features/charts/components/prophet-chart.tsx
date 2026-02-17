@@ -16,8 +16,9 @@ import {
 import { formatCurrency, cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
 import { AlertCircle, BrainCircuit } from 'lucide-react';
-import { generateForecast } from '@/lib/prediction-engine';
+import { generateForecast, DataPoint } from '@/lib/prediction-engine';
 import { Transaction } from '@/types/models';
+import { Scatter } from 'recharts';
 
 interface ProphetChartProps {
     transactions: Transaction[];
@@ -43,6 +44,8 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
     const finalPrediction = data[data.length - 1];
     const predictedChange = finalPrediction && lastActual ? finalPrediction.forecast! - lastActual.actual! : 0;
     const isPositive = predictedChange >= 0;
+
+    const anomalies = useMemo(() => data.filter(d => d.anomaly && d.actual !== undefined), [data]);
 
     return (
         <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
@@ -214,6 +217,16 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                             dot={{ r: 3, fill: '#10b981' }}
                             name="Historical Data"
                         />
+
+                        {/* Anomaly Points */}
+                        <Scatter
+                            data={anomalies}
+                            fill="#ef4444"
+                            shape="star"
+                            r={6}
+                            name="Anomaly"
+                            animationBegin={1000}
+                        />
                     </ComposedChart>
                 </ResponsiveContainer>
             </div>
@@ -221,7 +234,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
             <div className="flex items-start gap-2 mt-4 p-3 bg-purple-50 dark:bg-purple-900/10 rounded-xl text-xs text-purple-700 dark:text-purple-300 border border-purple-100 dark:border-purple-800/20">
                 <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                 <p>
-                    Model menggunakan Double Exponential Smoothing (Holt's Linear) untuk mendeteksi tren jangka pendek. Garis putus-putus adalah probabilitas arah cashflow Anda jika pola belanja saat ini berlanjut.
+                    Model menggunakan <strong>Holt-Winters (Triple Exponential Smoothing)</strong> untuk mendeteksi tren dan pola musiman (seasonality) dari kebiasaan belanja Anda. Titik merah menandakan anomali pengeluaran historis.
                 </p>
             </div>
         </div>
