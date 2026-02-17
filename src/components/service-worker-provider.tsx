@@ -1,9 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
+import { useUI } from "./ui-provider";
 
 export function ServiceWorkerProvider() {
+  const { setDeferredPrompt } = useUI();
+
   useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
     if (process.env.NODE_ENV !== "production") {
       return;
     }

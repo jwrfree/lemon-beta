@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="#FCD34D"/>
+  
+  <!-- Lemon Slice Design -->
+  <g transform="translate(256, 256)">
+    <!-- Outer Ring -->
+    <circle cx="0" cy="0" r="180" fill="#FBBF24" stroke="#F59E0B" stroke-width="8"/>
+    
+    <!-- Inner White Circle -->
+    <circle cx="0" cy="0" r="120" fill="#FEF3C7"/>
+    
+    <!-- Lemon Segments (8 segments) -->
+    <g opacity="0.6">
+      <!-- Segment 1 -->
+      <path d="M 0,-120 L 0,0 L 85,-85 Z" fill="#FCD34D"/>
+      <!-- Segment 2 -->
+      <path d="M 0,-120 L 0,0 L -85,-85 Z" fill="#FCD34D"/>
+      <!-- Segment 3 -->
+      <path d="M 120,0 L 0,0 L 85,85 Z" fill="#FCD34D"/>
+      <!-- Segment 4 -->
+      <path d="M 120,0 L 0,0 L 85,-85 Z" fill="#FCD34D"/>
+      <!-- Segment 5 -->
+      <path d="M 0,120 L 0,0 L 85,85 Z" fill="#FCD34D"/>
+      <!-- Segment 6 -->
+      <path d="M 0,120 L 0,0 L -85,85 Z" fill="#FCD34D"/>
+      <!-- Segment 7 -->
+      <path d="M -120,0 L 0,0 L -85,85 Z" fill="#FCD34D"/>
+      <!-- Segment 8 -->
+      <path d="M -120,0 L 0,0 L -85,-85 Z" fill="#FCD34D"/>
+    </g>
+    
+    <!-- Center Dot -->
+    <circle cx="0" cy="0" r="20" fill="#F59E0B"/>
+    
+    <!-- Subtle Shine Effect -->
+    <ellipse cx="-60" cy="-60" rx="40" ry="60" fill="white" opacity="0.3" transform="rotate(-45 -60 -60)"/>
+  </g>
+  
+  <!-- Optional: Small leaf accent -->
+  <g transform="translate(380, 140)">
+    <ellipse cx="0" cy="0" rx="30" ry="50" fill="#10B981" transform="rotate(30)"/>
+    <path d="M 0,-40 Q 5,-20 0,0 Q -5,-20 0,-40" fill="#059669" opacity="0.5"/>
+  </g>
+</svg>

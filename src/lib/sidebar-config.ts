@@ -14,5 +14,5 @@ export const SIDEBAR_CONFIG = {
     collapsedWidth: 'w-16',
     expandedWidth: 'w-64',
     appName: 'Lemon',
-    appVersion: 'Beta',
+    appVersion: 'v2.2.0',
 } as const;

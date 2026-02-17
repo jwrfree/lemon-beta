@@ -1,3 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <path fill="#000" d="M20 10h10v34h22v10H20z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- Safari Pinned Tab - Monochrome version -->
+  <circle cx="8" cy="8" r="7" fill="currentColor"/>
+  <circle cx="8" cy="8" r="4.5" fill="none" stroke="white" stroke-width="0.5"/>
+  <g opacity="0.7">
+    <path d="M 8,3.5 L 8,8 L 11.2,4.8 Z" fill="white"/>
+    <path d="M 8,3.5 L 8,8 L 4.8,4.8 Z" fill="white"/>
+    <path d="M 12.5,8 L 8,8 L 11.2,11.2 Z" fill="white"/>
+    <path d="M 12.5,8 L 8,8 L 11.2,4.8 Z" fill="white"/>
+    <path d="M 8,12.5 L 8,8 L 11.2,11.2 Z" fill="white"/>
+    <path d="M 8,12.5 L 8,8 L 4.8,11.2 Z" fill="white"/>
+    <path d="M 3.5,8 L 8,8 L 4.8,11.2 Z" fill="white"/>
+    <path d="M 3.5,8 L 8,8 L 4.8,4.8 Z" fill="white"/>
+  </g>
+  <circle cx="8" cy="8" r="0.8" fill="white"/>
 </svg>

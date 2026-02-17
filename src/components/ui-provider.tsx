@@ -238,6 +238,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     }), [
         isTxModalOpen,
         isEditTxSheetOpen,
+        deferredPrompt,
         transactionToEdit,
         isWalletModalOpen,
         isBudgetModalOpen,

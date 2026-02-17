@@ -8,10 +8,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Wallet, Wrench, Target, Landmark, LogOut,
     BellRing, Calculator, Moon, Sun, User as UserIcon,
-    ShieldCheck, Smartphone, Monitor, ChevronRight
+    ShieldCheck, Smartphone, Monitor, ChevronRight,
+    Download, Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/providers/auth-provider';
-import { cn } from '@/lib/utils';
+import { useUI } from '@/components/ui-provider';
+import { cn, triggerHaptic } from '@/lib/utils';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -59,6 +61,7 @@ function SettingsContent() {
     const router = useRouter();
     const { user, userData, handleSignOut } = useAuth();
     const { theme, setTheme } = useTheme();
+    const { deferredPrompt, setDeferredPrompt } = useUI();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -66,7 +69,24 @@ function SettingsContent() {
     }, []);
 
     const toggleTheme = () => {
+        triggerHaptic('light');
         setTheme(theme === 'dark' ? 'light' : 'dark');
+    };
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        
+        triggerHaptic('medium');
+        
+        // Show the install prompt
+        deferredPrompt.prompt();
+        
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        
+        // We've used the prompt, and can't use it again, throw it away
+        setDeferredPrompt(null);
     };
 
     return (
@@ -186,8 +206,39 @@ function SettingsContent() {
                 </div>
 
                 {/* BARIS 3: List Menu (Settings Detail) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <BentoItem delay={0.35} className="p-2 flex flex-col gap-1">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* App Installation - Premium CTA */}
+                    <AnimatePresence>
+                        {deferredPrompt && (
+                            <BentoItem 
+                                onClick={handleInstallClick}
+                                className="col-span-1 md:col-span-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-none p-6 flex items-center justify-between group overflow-hidden relative"
+                                delay={0.32}
+                            >
+                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+                                <div className="relative z-10 flex items-center gap-6">
+                                    <div className="h-16 w-16 rounded-[1.5rem] bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                                        <Download className="h-8 w-8 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-black tracking-tight flex items-center gap-2">
+                                            Instal Lemon
+                                            <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
+                                        </h3>
+                                        <p className="text-white/70 text-sm font-medium">Akses lebih cepat & mode luring penuh</p>
+                                    </div>
+                                </div>
+                                <div className="relative z-10 bg-white text-teal-700 font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
+                                    Pasang Sekarang
+                                </div>
+                                
+                                {/* Decor */}
+                                <div className="absolute -right-4 -bottom-4 h-32 w-32 bg-white/10 blur-3xl rounded-full" />
+                            </BentoItem>
+                        )}
+                    </AnimatePresence>
+
+                    <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1">
                         <div className="px-4 py-3 text-xs font-bold uppercase tracking-widest text-zinc-400">Pengaturan Lanjutan</div>
                         {[
                             { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },

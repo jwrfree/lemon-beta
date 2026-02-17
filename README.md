@@ -1,21 +1,19 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.1.0** · Released · January 2026
+> **v2.2.0** · Released · February 2026
 
-Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis v2.1.0 memperkenalkan fitur pelacakan kekayaan bersih (Net Worth) yang komprehensif serta alat bantu estimasi biaya AI bagi developer.
+Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis v2.2.0 menghadirkan standar **"Premium Fidelity"** dengan statistik tingkat lanjut dan pengalaman PWA yang setara dengan aplikasi asli.
 
 ## ✨ Sorotan Utama & Peningkatan Terbaru
-- **AI Smart Add 2.0 (Powered by DeepSeek V3):** Pencatatan super cepat dengan bahasa alami yang kini mendukung deteksi banyak transaksi sekaligus (bulk add), identifikasi sumber dana (wallet), dan deteksi pembayaran hutang secara otomatis dengan akurasi tinggi dari DeepSeek V3.
-- **Peringatan Saldo & Budget Real-time:** Analisis instan yang memberikan peringatan jika transaksi akan membuat saldo dompet minus atau melampaui sisa anggaran kategori.
-- **Overhaul UI/UX Desktop (Aset & Dompet):** Desain ulang halaman manajemen aset pada desktop dengan kartu ringkasan gradien, daftar dompet modern, dan hierarki visual yang lebih baik.
-- **Tracking Kekayaan Bersih:** Monitor aset (investasi, properti) & liabilitas (hutang, cicilan) dalam satu dashboard untuk melihat Net Worth secara real-time.
-- **Visual Transaksi Konsisten:** Indikator warna merah (`rose-600`) yang konsisten untuk semua pengeluaran dan ikon yang seragam di seluruh aplikasi.
-- **Kalkulator Token AI:** Alat bantu developer untuk estimasi biaya token DeepSeek V3 dan runway budget API.
-- **Landing yang terstruktur & edukatif:** navigasi anchor, skip link, copy hero baru, serta CTA ganda (daftar & masuk) membuat pengguna cepat memahami nilai produk.
-- **Autentikasi kaya kendali:** bottom sheet login/sign-up/forgot-password dengan pesan error inline, dukungan biometrik, dan `prefers-reduced-motion` untuk menjaga kenyamanan.
-- **Ekosistem fitur lengkap:** pencatatan transaksi manual & AI, manajemen dompet, budgeting progresif, pengingat pintar, tracking hutang/piutang, dan insight AI.
-- **Motion inklusif:** animasi 0.28 s ease-out yang otomatis dinonaktifkan ketika pengguna memilih reduced motion.
-- **Dokumentasi mutakhir:** design audit, blueprint, changelog, serta README diperbarui agar tim lintas fungsi mendapat konteks rilis yang jelas.
+- **Analisis Finansial Mendalam:** 4 layer data baru: *Net Worth Trend* (6 bulan), *Saving Potential* (Efisiensi tabungan), *Behavior Analytics* (Weekday vs Weekend), dan *Subscription Audit*.
+- **Premium UI/UX Fidelity:** Penggunaan *Skeleton Screens*, *Haptic Feedback*, dan animasi perayaan sukses yang memberikan sensasi aplikasi "High-End".
+- **Optimistic Updates:** Respons UI instan (zero-latency) saat mencatat transaksi—angka saldo diperbarui sebelum konfirmasi server selesai.
+- **PWA Elite Experience:** Dukungan instalasi mandiri melalui modul "Instal Lemon" yang mewah di pengaturan dan mode luring yang lebih tangguh.
+- **Arsitektur Modular (Clean Code):** Refaktorisasi besar-besaran modul transaksi ke dalam *Service Layer* dan *Custom Hooks* untuk keandalan jangka panjang.
+- **AI Smart Add 2.0:** Pencatatan super cepat dengan bahasa alami yang kini mendukung deteksi banyak transaksi sekaligus (bulk add) dan kategori granular (Sub-Kategori).
+- **Overhaul UI/UX Desktop (Aset & Dompet):** Desain ulang halaman manajemen aset pada desktop dengan kartu ringkasan gradien dan hierarki visual enterprise.
+
+*Untuk detail teknis lengkap, silakan lihat [CHANGELOG.md](./CHANGELOG.md).*
 
 ## 🧭 Alur Pengguna Utama
 | Alur | Ringkasan |

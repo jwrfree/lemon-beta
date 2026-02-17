@@ -2,6 +2,42 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.2.0] - 16 February 2026
+
+This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lemon from a simple tracker to a professional wealth management tool.
+
+### ✨ New Features
+
+- **Advanced Financial Analytics**: 4 new data layers for deep financial storytelling.
+  - **Net Worth Trend**: Historical 6-month tracking of total wealth (Assets vs. Liabilities).
+  - **Saving Potential & Efficiency**: Visual comparison of maximum saving capacity vs. actual performance.
+  - **Behavior Analytics**: Deep dive into spending habits (Weekday vs. Weekend) and "Payday Drain" velocity.
+  - **Subscription & Fixed Cost Audit**: Centralized tracker for recurring bills with due-date alerts.
+- **Premium PWA Experience**: 
+  - **Custom Install Prompt**: New elegant "Install Lemon" module in Settings with one-tap installation.
+  - **OLED Optimized Palette**: Synchronized brand colors (Teal 600) across manifest and UI.
+  - **Offline Resilience**: Improved "Luring" mode with premium visual feedback and smart caching.
+
+### 🎨 Visual & UX Enhancements ("Premium Fidelity")
+
+- **Standardized Component Radius**: Professional 8px radius for desktop and touch-friendly 14px for mobile devices.
+- **Haptic Feedback Engine**: Subtle physical vibrations for navigation, Smart Add, and successful transactions.
+- **Success Celebrations**: New high-end checkmark animations and particle effects when saving transactions.
+- **Skeleton Loading Screens**: Replaced generic spinners with contextual skeletons for Home and Statistics pages.
+- **Premium Empty States**: Beautiful silhouettes and aspirational typography for empty lists and charts.
+- **Progress Track Design**: Overhauled category list items with smooth gradients and integrated budget indicators.
+- **Fluid Layout**: Increased maximum mobile width to `max-w-lg` for better appearance on modern wide phones and foldables.
+
+### 🛠 Technical & Robustness
+
+- **Clean Architecture Refactor**:
+  - **Service Layer**: Isolated database logic into `TransactionService` for better testability.
+  - **Controller Hooks**: Unified form logic into `useTransactionForm` custom hook.
+  - **Modular UI**: Extracted edit logic into a standalone premium `EditTransactionSheet`.
+- **Optimistic Updates**: Zero-latency UI response—wallet balances and lists update instantly before server confirmation.
+- **Database Schema Sync**: Added `sub_category` column support across database triggers, RPC functions, and frontend forms.
+- **Performance Optimization**: Implemented `next/dynamic` lazy loading for heavy chart components to reduce initial bundle size.
+
 ## [Unreleased] - February 2026
 
 ### 🛠 Codebase Refactoring & Quality Audit
