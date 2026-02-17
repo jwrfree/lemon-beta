@@ -182,3 +182,41 @@ export const getNetCashflowData = (transactions: Transaction[], monthsCount: num
         };
     });
 };
+
+/**
+ * Group transactions by sub-category for a specific category
+ */
+export const groupTransactionsBySubCategory = (transactions: Transaction[], type: 'expense' | 'income', categoryName: string) => {
+    // Filter by main category AND type first
+    const relevantTx = transactions.filter((t) => t.category === categoryName && t.type === type);
+    const total = relevantTx.reduce((sum, t) => sum + t.amount, 0);
+
+    const subMap: Record<string, number> = {};
+
+    relevantTx.forEach((t) => {
+        // Handle empty subCategory as "Umum" or "Lainnya" based on context, or just "Lainnya"
+        const sub = (t.subCategory && t.subCategory.trim() !== '') ? t.subCategory : 'Lainnya';
+        subMap[sub] = (subMap[sub] || 0) + t.amount;
+    });
+
+    const parentDetails = categoryDetails(categoryName);
+
+    // Cycle colors using CSS variables (theme aware)
+    const getSubColor = (index: number) => `var(--chart-${(index % 5) + 1})`;
+
+    const chartData = Object.entries(subMap)
+        .map(([name, value], index) => {
+            return {
+                name,
+                value,
+                icon: undefined, // Sub-categories use generic dot or no icon
+                fill: getSubColor(index),
+                categoryColor: parentDetails.color,
+                categoryBgColor: parentDetails.bg_color,
+                percentage: total > 0 ? (value / total) * 100 : 0,
+            };
+        })
+        .sort((a, b) => b.value - a.value);
+
+    return { chartData, total };
+};

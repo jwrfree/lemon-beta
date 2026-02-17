@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, TrendingDown, TrendingUp } from 'lucide-react';
+import { ChevronRight, TrendingDown, TrendingUp, ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { ChartConfig } from '@/components/ui/chart';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, cn } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
-import { groupTransactionsByCategory, getMonthlyTransactions } from '../lib/chart-utils';
+import { groupTransactionsByCategory, groupTransactionsBySubCategory } from '../lib/chart-utils';
 import { PlaceholderContent } from './placeholder-content';
 import dynamic from 'next/dynamic';
 
@@ -25,40 +26,70 @@ import { useIsMobile } from '@/hooks/use-mobile';
 export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'expense' | 'income', transactions: Transaction[], isLoading?: boolean }) => {
     const router = useRouter();
     const isMobile = useIsMobile();
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     const handleCategoryClick = (category: string) => {
-        router.push(`/transactions?category=${encodeURIComponent(category)}`);
+        if (selectedCategory) {
+            // If already in sub-category view, verify if clicking does anything.
+            // Maybe nothing for now, or filter transaction list?
+        } else {
+            setSelectedCategory(category);
+        }
     };
 
-    const { chartData, chartConfig, total } = useMemo(() => {
+    const handleBack = () => {
+        setSelectedCategory(null);
+    };
+
+    const { chartData, chartConfig, total, isSubCategoryView } = useMemo(() => {
         // Assume transactions are already filtered by date
-        const relevantTransactions = transactions.filter(t => t.type === type);
+        // But for sub-category view, we rely on the utility to filter further by category name
 
-        if (relevantTransactions.length === 0) {
-            return { chartData: [], chartConfig: {}, total: 0 };
+        if (selectedCategory) {
+            const { chartData, total } = groupTransactionsBySubCategory(transactions, type, selectedCategory);
+
+            // Dynamic config for sub-categories
+            const chartConfig = Object.fromEntries(
+                chartData.map((item) => [
+                    item.name,
+                    {
+                        label: item.name,
+                        color: item.fill,
+                        icon: undefined,
+                    },
+                ])
+            ) as ChartConfig;
+
+            return { chartData, chartConfig, total, isSubCategoryView: true };
+        } else {
+            const relevantTransactions = transactions.filter(t => t.type === type);
+
+            if (relevantTransactions.length === 0) {
+                return { chartData: [], chartConfig: {}, total: 0, isSubCategoryView: false };
+            }
+
+            const { chartData, total } = groupTransactionsByCategory(relevantTransactions, type);
+
+            const chartConfig = Object.fromEntries(
+                chartData.map((item) => [
+                    item.name,
+                    {
+                        label: item.name,
+                        color: item.fill,
+                        icon: item.icon,
+                    },
+                ])
+            ) as ChartConfig;
+
+            return { chartData, chartConfig, total, isSubCategoryView: false };
         }
-
-        const { chartData, total } = groupTransactionsByCategory(relevantTransactions, type);
-
-        const chartConfig = Object.fromEntries(
-            chartData.map((item) => [
-                item.name,
-                {
-                    label: item.name,
-                    color: item.fill,
-                    icon: item.icon,
-                },
-            ])
-        ) as ChartConfig;
-
-        return { chartData, chartConfig, total };
-    }, [transactions, type]);
+    }, [transactions, type, selectedCategory]);
 
     if (isLoading) {
         return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
     }
 
-    if (chartData.length === 0) {
+    if (chartData.length === 0 && !selectedCategory) {
         return (
             <PlaceholderContent
                 label={`Distribusi ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
@@ -69,44 +100,66 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     }
 
     const sectionLabel = type === 'expense' ? 'Pengeluaran' : 'Pemasukan';
+    const title = selectedCategory ? `Detail ${selectedCategory}` : 'Distribusi per Kategori';
+    const subTitle = selectedCategory ? 'Breakdown sub-kategori' : `Top 5 ${sectionLabel.toLowerCase()} kamu.`;
+    const parentVisuals = selectedCategory ? categoryDetails(selectedCategory) : null;
 
     return (
-        <Card className="shadow-sm border-none rounded-xl sm:rounded-2xl overflow-hidden bg-card">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
-                <div className="space-y-0.5 sm:space-y-1">
-                    <CardTitle className="text-base sm:text-lg font-bold tracking-tight">Distribusi per Kategori</CardTitle>
-                    <CardDescription className="text-[10px] sm:text-xs">
-                        {`Top 5 ${sectionLabel.toLowerCase()} kamu.`}
-                    </CardDescription>
+        <Card className="shadow-sm border-none rounded-xl sm:rounded-2xl overflow-hidden bg-card transition-all duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6 space-y-0">
+                <div className="flex items-center gap-2">
+                    {selectedCategory && (
+                        <Button variant="ghost" size="icon" className="h-8 w-8 -ml-2 rounded-full" onClick={handleBack}>
+                            <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                    )}
+                    <div className="space-y-0.5 sm:space-y-1">
+                        <CardTitle className="text-base sm:text-lg font-bold tracking-tight flex items-center gap-2">
+                            {title}
+                        </CardTitle>
+                        <CardDescription className="text-[10px] sm:text-xs">
+                            {subTitle}
+                        </CardDescription>
+                    </div>
                 </div>
                 <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-bold tabular-nums text-[10px] sm:text-xs px-2 py-0.5">
                     {formatCurrency(total)}
                 </Badge>
             </CardHeader>
             <CardContent className="space-y-6 sm:space-y-8 p-4 sm:p-6 pt-0">
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 relative">
+                    {/* Back button overlay on chart center? No, header back button is better. */}
                     <CategoryPieChart chartData={chartData} chartConfig={chartConfig} />
                 </div>
+
                 <div className="space-y-2 sm:space-y-3">
                     {chartData.slice(0, 5).map((item) => {
                         const IconComponent = item.icon as React.ElementType | undefined;
+                        // Use item color or parent color for sub-cats
+                        const itemColor = isSubCategoryView ? item.fill : item.categoryColor;
+
                         return (
                             <button
                                 key={item.name}
                                 type="button"
-                                className="group w-full rounded-xl border-none bg-muted/30 p-2.5 sm:p-3 text-left transition hover:bg-muted/50 active:scale-[0.98]"
+                                className={cn(
+                                    "group w-full rounded-xl border-none bg-muted/30 p-2.5 sm:p-3 text-left transition hover:bg-muted/50 active:scale-[0.98]",
+                                    isSubCategoryView && "cursor-default active:scale-100 hover:bg-muted/30"
+                                )}
                                 onClick={() => handleCategoryClick(item.name)}
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex flex-1 items-center gap-2 sm:gap-3">
                                         <div
                                             className={cn(
-                                                "flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg shadow-sm transition-all duration-300 group-hover:scale-110",
+                                                "flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg shadow-sm transition-all duration-300",
+                                                !isSubCategoryView && "group-hover:scale-110",
                                                 item.categoryBgColor,
                                                 item.categoryColor
                                             )}
+                                            style={isSubCategoryView ? { backgroundColor: item.fill + '20', color: item.fill } : undefined}
                                         >
-                                            {IconComponent ? <IconComponent className="h-4 w-4 sm:h-5 sm:w-5" /> : null}
+                                            {IconComponent ? <IconComponent className="h-4 w-4 sm:h-5 sm:w-5" /> : <div className="h-2 w-2 rounded-full bg-current" />}
                                         </div>
                                         <div className="min-w-0">
                                             <p className="truncate text-xs sm:text-sm font-bold leading-tight">{item.name}</p>
@@ -120,7 +173,8 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                 <Progress
                                     value={item.percentage}
                                     className="mt-2 sm:mt-3 h-1 bg-muted/50"
-                                    indicatorClassName={item.categoryColor.replace(/text-/g, 'bg-')}
+                                    indicatorClassName={item.categoryColor?.replace(/text-/g, 'bg-')}
+                                    style={isSubCategoryView ? { backgroundColor: item.fill } : undefined}
                                 />
                             </button>
                         );
