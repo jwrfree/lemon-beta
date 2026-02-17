@@ -74,6 +74,10 @@ interface UIContextType {
     setDebtForPayment: (debt: Debt | null) => void;
     openDebtPaymentModal: (debt: Debt) => void;
 
+    isSmartAddOpen: boolean;
+    setIsSmartAddOpen: (isOpen: boolean) => void;
+
+
     isSidebarCollapsed: boolean;
     setIsSidebarCollapsed: (isCollapsed: boolean) => void;
 
@@ -115,8 +119,9 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [debtToEdit, setDebtToEdit] = useState<Debt | null>(null);
     const [isDebtPaymentModalOpen, setIsDebtPaymentModalOpen] = useState(false);
     const [debtForPayment, setDebtForPayment] = useState<Debt | null>(null);
+    const [isSmartAddOpen, setIsSmartAddOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-    
+
     const [toastState, setToastState] = useState<ToastState>({
         show: false,
         message: '',
@@ -130,7 +135,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const hideToast = () => {
         setToastState(prev => ({ ...prev, show: false }));
     };
-    
+
     const openDeleteModal = (transaction: Transaction) => {
         setTransactionToDelete(transaction);
         setIsDeleteModalOpen(true);
@@ -230,6 +235,8 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         debtForPayment,
         setDebtForPayment,
         openDebtPaymentModal,
+        isSmartAddOpen,
+        setIsSmartAddOpen,
         isSidebarCollapsed,
         setIsSidebarCollapsed,
         toastState,
@@ -258,9 +265,10 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         debtToEdit,
         isDebtPaymentModalOpen,
         debtForPayment,
+        isSmartAddOpen,
         isSidebarCollapsed,
         toastState
     ]);
-    
+
     return <UIContext.Provider value={contextValue}>{children}</UIContext.Provider>
 }

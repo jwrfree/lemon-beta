@@ -55,13 +55,14 @@ export const MobileDashboard = ({
     isLoading
 }: MobileDashboardProps) => {
     const router = useRouter();
-    const [showSmartAdd, setShowSmartAdd] = React.useState(false);
     const {
         setIsTxModalOpen,
         setTransactionToEdit,
         setIsTransferModalOpen,
         setIsDebtModalOpen,
-        setDebtToEdit
+        setDebtToEdit,
+        setIsSmartAddOpen,
+        isSmartAddOpen
     } = useUI();
 
     const timeBasedGreeting = useMemo(() => {
@@ -82,7 +83,7 @@ export const MobileDashboard = ({
             icon: Sparkles,
             color: 'text-amber-500',
             bg: 'bg-amber-100 dark:bg-amber-900/40',
-            onClick: () => setShowSmartAdd(true)
+            onClick: () => setIsSmartAddOpen(true)
         },
         {
             label: 'Manual',
@@ -304,7 +305,7 @@ export const MobileDashboard = ({
                 </Card>
             </div>
 
-            <SmartAddOverlay isOpen={showSmartAdd} onClose={() => setShowSmartAdd(false)} />
+            <SmartAddOverlay isOpen={isSmartAddOpen} onClose={() => setIsSmartAddOpen(false)} />
         </main>
     );
 };

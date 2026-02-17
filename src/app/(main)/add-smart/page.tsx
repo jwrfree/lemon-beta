@@ -25,6 +25,49 @@ import { DynamicSuggestions } from './dynamic-suggestions';
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
+// --- Sub-component for Typing Effect ---
+const TypewriterText = ({ text }: { text: string }) => {
+    const letters = Array.from(text);
+    const container = {
+        hidden: { opacity: 0 },
+        visible: (i = 1) => ({
+            opacity: 1,
+            transition: { staggerChildren: 0.02, delayChildren: 0.04 * i },
+        }),
+    };
+
+    const child = {
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                damping: 12,
+                stiffness: 200,
+            },
+        },
+        hidden: {
+            opacity: 0,
+            y: 5,
+        },
+    };
+
+    return (
+        <motion.span
+            style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}
+            variants={container}
+            initial="hidden"
+            animate="visible"
+        >
+            {letters.map((letter, index) => (
+                <motion.span variants={child} key={index}>
+                    {letter === " " ? "\u00A0" : letter}
+                </motion.span>
+            ))}
+        </motion.span>
+    );
+};
+
 export default function SmartAddPage() {
     const router = useRouter();
     const { wallets } = useWallets();
@@ -205,7 +248,7 @@ export default function SmartAddPage() {
                                                 )}
                                             </div>
 
-                                            {/* Location & Description */}
+                                            {/* Location & Description with Ghost Typing */}
                                             <div className="flex flex-col items-center gap-3 w-full">
                                                 {activeTx.location && (
                                                     <div className="flex items-center gap-1.5 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
@@ -213,7 +256,9 @@ export default function SmartAddPage() {
                                                         <span className="text-[9px] font-medium uppercase tracking-wider">{activeTx.location}</span>
                                                     </div>
                                                 )}
-                                                <p className="text-sm font-medium text-zinc-400 italic text-center max-w-[280px]">"{activeTx.description}"</p>
+                                                <div className="text-sm font-medium text-zinc-400 italic text-center max-w-[280px] min-h-[1.5em]">
+                                                    <TypewriterText text={`"${activeTx.description}"`} />
+                                                </div>
                                             </div>
                                         </motion.div>
                                     )}

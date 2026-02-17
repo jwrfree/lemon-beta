@@ -20,6 +20,7 @@ export const BottomNavigation = () => {
         isReminderModalOpen,
         isDebtModalOpen,
         isDebtPaymentModalOpen,
+        isSmartAddOpen,
     } = useUI();
 
     const navItems = [
@@ -41,7 +42,8 @@ export const BottomNavigation = () => {
         isGoalModalOpen ||
         isReminderModalOpen ||
         isDebtModalOpen ||
-        isDebtPaymentModalOpen;
+        isDebtPaymentModalOpen ||
+        isSmartAddOpen;
 
     const isVisible = !isModalOpen;
 
@@ -56,7 +58,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-0 left-0 right-0 z-40"
                 >
                     <div
-                        className="w-full max-w-lg mx-auto grid grid-cols-5 items-center bg-card shadow-[0_-2px_15px_rgba(0,0,0,0.08)] border-t border-border/50 md:rounded-b-lg md:rounded-t-none bottom-nav-container pb-[env(safe-area-inset-bottom)] min-h-[calc(4rem+env(safe-area-inset-bottom))]"
+                        className="w-full max-w-lg mx-auto grid grid-cols-5 items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.04)] border-t border-white/20 dark:border-zinc-800/50 md:rounded-b-lg md:rounded-t-none pb-[env(safe-area-inset-bottom)] min-h-[calc(4rem+env(safe-area-inset-bottom))]"
                     >
                         {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
