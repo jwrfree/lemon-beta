@@ -6,18 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Check, X, Pencil, ArrowRight } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CategoryGrid } from '@/features/transactions/components/category-grid'; // Reuse existing
-import { categories } from '@/lib/categories'; // Reuse existing
+import { CategoryGrid } from '@/features/transactions/components/category-grid';
+import { Category } from '@/lib/categories';
 
 interface ResultCardProps {
     parsedData: any;
     setParsedData: (data: any) => void;
     getCategoryVisuals: (cat: string) => any;
+    incomeCategories: Category[];
+    expenseCategories: Category[];
 }
 
-export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals }: ResultCardProps) => {
+export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, incomeCategories, expenseCategories }: ResultCardProps) => {
     const [editDesc, setEditDesc] = useState('');
     const [editAmount, setEditAmount] = useState('');
     const [isCatOpen, setIsCatOpen] = useState(false);
@@ -83,7 +86,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals }: Re
                                     <div className="p-3 max-h-[300px] overflow-y-auto">
                                         <p className="text-xs font-semibold mb-2 px-1 text-muted-foreground">Pilih Kategori</p>
                                         <CategoryGrid
-                                            categories={parsedData.type === 'income' ? categories.income : categories.expense}
+                                            categories={parsedData.type === 'income' ? incomeCategories : expenseCategories}
                                             selectedCategory={parsedData.category}
                                             onCategorySelect={(cat) => {
                                                 setParsedData({ ...parsedData, category: cat.name, subCategory: '' }); // Reset sub when cat changes
@@ -113,7 +116,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals }: Re
                                         <p className="text-xs font-semibold text-muted-foreground px-1">Sub Kategori</p>
                                         <div className="flex flex-wrap gap-1.5">
                                             {(() => {
-                                                const catList = parsedData.type === 'income' ? categories.income : categories.expense;
+                                                const catList = parsedData.type === 'income' ? incomeCategories : expenseCategories;
                                                 const currentCat = catList.find(c => c.name === parsedData.category);
                                                 const subs = currentCat?.sub_categories || [];
 

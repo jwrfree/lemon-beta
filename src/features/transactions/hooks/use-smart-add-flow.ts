@@ -12,6 +12,7 @@ import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { startOfMonth, parseISO } from 'date-fns';
 import type { TransactionExtractionOutput, SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
 import type { ScanReceiptOutput } from '@/ai/flows/scan-receipt-flow';
+import { resolveSubCategory } from '@/features/transactions/utils/smart-add-utils';
 
 // Unified type for AI processing results
 type AIResult = TransactionExtractionOutput | ScanReceiptOutput;
@@ -213,8 +214,6 @@ export const useSmartAddFlow = () => {
             }
 
             if (!finalCategory) {
-                if (incomeCategories.some(c => c.name === normalizedCategory)) transactionType = 'income';
-                else if (expenseCategories.some(c => c.name === normalizedCategory)) transactionType = 'expense';
                 finalCategory = normalizedCategory || 'Lain-lain';
             } else {
                 // Set type based on the matched category
@@ -222,12 +221,15 @@ export const useSmartAddFlow = () => {
                 else transactionType = 'expense';
             }
 
+            // 3. Sub-Category Resolution
+            const finalSubCategory = resolveSubCategory(finalCategory || undefined, subCategory || undefined, allCategories);
+
             return {
                 type: transactionType,
                 amount: Math.abs(amount || 0),
                 description: description || (isReceipt ? 'Transaksi dari struk' : 'Transaksi baru'),
                 category: finalCategory,
-                subCategory: subCategory || '',
+                subCategory: finalSubCategory,
                 walletId,
                 location: location || merchant || '',
                 date: date ? new Date(date).toISOString() : new Date().toISOString(),

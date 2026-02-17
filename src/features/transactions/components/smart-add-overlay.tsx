@@ -30,7 +30,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
         setParsedData
     } = useSmartAddFlow();
 
-    const { getCategoryVisuals } = useCategories();
+    const { getCategoryVisuals, expenseCategories, incomeCategories } = useCategories();
 
     // Local UI State
     const [inputValue, setInputValue] = useState('');
@@ -179,6 +179,8 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                             parsedData={parsedData}
                                             setParsedData={setParsedData}
                                             getCategoryVisuals={getCategoryVisuals}
+                                            incomeCategories={incomeCategories}
+                                            expenseCategories={expenseCategories}
                                         />
                                     )}
                                 </div>
