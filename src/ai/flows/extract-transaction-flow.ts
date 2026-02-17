@@ -44,6 +44,7 @@ const SingleTransactionSchema = z.object({
   sourceWallet: z.string().optional().nullable(),
   destinationWallet: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
+  merchant: z.string().optional().nullable(),
   date: z.string().nullable().transform(v => v || new Date().toISOString().slice(0, 10)),
   type: z.enum(['income', 'expense']).nullable().transform(v => v || 'expense'),
   // Debt integration

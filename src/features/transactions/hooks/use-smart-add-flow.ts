@@ -12,7 +12,7 @@ import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { startOfMonth, parseISO } from 'date-fns';
 import type { TransactionExtractionOutput, SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
 import type { ScanReceiptOutput } from '@/ai/flows/scan-receipt-flow';
-import { resolveSubCategory } from '@/features/transactions/utils/smart-add-utils';
+import { resolveSubCategory, quickParseTransaction } from '@/features/transactions/utils/smart-add-utils';
 
 // Unified type for AI processing results
 type AIResult = TransactionExtractionOutput | ScanReceiptOutput;
@@ -24,6 +24,7 @@ type AIProcessedTransaction = Partial<SingleTransactionOutput> & Partial<ScanRec
     date?: string;
     wallet?: string;
     isNeed?: boolean;
+    merchant?: string | null;
 };
 
 export type PageState = 'IDLE' | 'ANALYZING' | 'CONFIRMING' | 'EDITING' | 'MULTI_CONFIRMING';
@@ -166,7 +167,7 @@ export const useSmartAddFlow = () => {
         if ('transactions' in result && result.transactions) {
             rawTransactions = result.transactions;
         } else if ('amount' in result && result.amount) {
-            rawTransactions = [result as unknown as AIProcessedTransaction];
+            rawTransactions = [result as any];
         }
 
         if (rawTransactions.length === 0 && !('clarificationQuestion' in result && result.clarificationQuestion)) {
@@ -289,13 +290,47 @@ export const useSmartAddFlow = () => {
         setPageState('ANALYZING');
         setMessages(prev => [...prev, { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }]);
 
-        try {
-            const availableCategories = [
-                ...expenseCategories.map(c => `${c.name} (${(c.sub_categories || []).join(', ')})`),
-                ...incomeCategories.map(c => `${c.name} (${(c.sub_categories || []).join(', ')})`)
-            ];
-            const availableWallets = wallets.map(w => w.name);
+        const availableCategories = [
+            ...expenseCategories.map(c => `${c.name} (${(c.sub_categories || []).join(', ')})`),
+            ...incomeCategories.map(c => `${c.name} (${(c.sub_categories || []).join(', ')})`)
+        ];
+        const availableWallets = wallets.map(w => w.name);
 
+        // --- OPTIMISTIC / QUICK PARSE START ---
+        if (typeof input === 'string' && !isRefinement) {
+            try {
+                // Run local regex parser
+                const quickResult = quickParseTransaction(input, { expense: expenseCategories, income: incomeCategories }, availableWallets);
+
+                if (quickResult.confidence !== 'low') {
+                    // Resolve Wallet ID
+                    const walletName = quickResult.walletName || '';
+                    let matchingWallet = wallets.find(w => w.name.toLowerCase() === walletName.toLowerCase());
+                    const walletId = matchingWallet?.id || (walletName ? wallets.find(w => w.name.toLowerCase().includes(walletName.toLowerCase()))?.id : (wallets.find(w => w.isDefault)?.id || wallets[0]?.id)) || wallets[0]?.id;
+
+                    const optimisticData: SmartTransactionData = {
+                        amount: quickResult.amount,
+                        description: quickResult.description,
+                        category: quickResult.category,
+                        subCategory: quickResult.subCategory,
+                        walletId: walletId,
+                        location: '',
+                        date: quickResult.date,
+                        type: quickResult.type,
+                        isNeed: quickResult.isNeed
+                    };
+
+                    setParsedData(optimisticData);
+                    // Show result immediately, but keep 'ai-thinking' message to show refinement is active
+                    setPageState('CONFIRMING');
+                }
+            } catch (e) {
+                console.warn("Quick parse failed, falling back to full AI", e);
+            }
+        }
+        // --- OPTIMISTIC / QUICK PARSE END ---
+
+        try {
             if (isRefinement && typeof input === 'string') {
                 // Prepare current data for refinement
                 const currentTransactions = multiParsedData.length > 0 ? multiParsedData : (parsedData ? [parsedData] : []);

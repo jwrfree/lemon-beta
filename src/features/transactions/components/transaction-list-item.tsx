@@ -9,7 +9,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
-import { getMerchantVisuals } from '@/lib/merchant-utils';
+import { getMerchantVisuals, getMerchantLogoUrl } from '@/lib/merchant-utils';
 
 interface TransactionListItemProps {
     transaction: Transaction;
@@ -30,6 +30,12 @@ const TransactionListItemContent = ({
     // Merchant Intelligence Logic
     const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
     const categoryVisuals = getCategoryVisuals(transaction.category);
+    
+    // Multi-tier Fallback State
+    const [logoSource, setLogoSource] = React.useState<'clearbit' | 'google' | 'icon'>('clearbit');
+
+    const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+    const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
 
     const Icon = merchantVisuals?.icon || categoryVisuals.icon;
     const iconColor = merchantVisuals?.color || categoryVisuals.color;
@@ -40,11 +46,32 @@ const TransactionListItemContent = ({
 
     return (
         <div className="flex items-center gap-4 p-3.5">
-            <div className={cn("flex-shrink-0 p-2.5 rounded-xl shadow-sm transition-colors duration-500", iconBg)}>
-                <Icon className={cn("h-5 w-5", iconColor)} />
+            <div className={cn(
+                "flex-shrink-0 h-10 w-10 rounded-xl shadow-sm flex items-center justify-center transition-all duration-500 overflow-hidden border border-white/10", 
+                iconBg
+            )}>
+                {primaryLogo && logoSource === 'clearbit' && (
+                    <img 
+                        src={primaryLogo} 
+                        alt="" 
+                        className="h-full w-full object-cover"
+                        onError={() => setLogoSource('google')}
+                    />
+                )}
+                {backupLogo && logoSource === 'google' && (
+                    <img 
+                        src={backupLogo} 
+                        alt="" 
+                        className="h-6 w-6 object-contain"
+                        onError={() => setLogoSource('icon')}
+                    />
+                )}
+                {logoSource === 'icon' || (!primaryLogo && !backupLogo) ? (
+                    <Icon className={cn("h-5 w-5", iconColor)} />
+                ) : null}
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-medium text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>
+                <div className="font-medium text-foreground text-sm leading-tight mb-0.5 tracking-tight">{transaction.description || transaction.category}</div>
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
