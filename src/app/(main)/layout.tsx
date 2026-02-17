@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { Sidebar } from '@/components/sidebar';
 import { TransactionComposer } from '@/features/transactions/components/transaction-composer';
@@ -22,31 +22,7 @@ import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
 import { SIDEBAR_NAV_ITEMS } from '@/lib/sidebar-config';
 
-const pageVariants = {
-    initial: {
-        opacity: 0,
-        y: 10,
-        scale: 0.99
-    },
-    enter: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { 
-            duration: 0.4, 
-            ease: [0.23, 1, 0.32, 1] 
-        },
-    },
-    exit: {
-        opacity: 0,
-        y: -10,
-        scale: 0.99,
-        transition: { 
-            duration: 0.2, 
-            ease: 'easeIn' 
-        },
-    },
-};
+
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -130,7 +106,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     };
 
 
-    const showBottomNav = SIDEBAR_NAV_ITEMS.some(item => 
+    const showBottomNav = SIDEBAR_NAV_ITEMS.some(item =>
         item.href === '/home' ? pathname === '/home' : pathname.startsWith(item.href)
     ) || pathname === '/add-smart';
 
@@ -149,18 +125,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     )}
                 >
                     <div className="flex-1 flex flex-col min-h-full">
-                        <AnimatePresence mode="wait" initial={false}>
-                            <motion.div
-                                key={pathname}
-                                variants={pageVariants}
-                                initial="initial"
-                                animate="enter"
-                                exit="exit"
-                                className="flex-1 flex flex-col"
-                            >
-                                {children}
-                            </motion.div>
-                        </AnimatePresence>
+                        {children}
                     </div>
                 </div>
 
@@ -169,14 +134,14 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 <AnimatePresence mode="wait">
                     {isTxModalOpen && <TransactionComposer key="transaction-composer" initialData={transactionToEdit} onClose={handleCloseTxModal} />}
                     {isEditTxSheetOpen && (
-                        <EditTransactionSheet 
-                            key="edit-transaction-sheet" 
-                            isOpen={isEditTxSheetOpen} 
+                        <EditTransactionSheet
+                            key="edit-transaction-sheet"
+                            isOpen={isEditTxSheetOpen}
                             onClose={() => {
                                 setIsEditTxSheetOpen(false);
                                 setTransactionToEdit(null);
-                            }} 
-                            transaction={transactionToEdit} 
+                            }}
+                            transaction={transactionToEdit}
                         />
                     )}
                     {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}

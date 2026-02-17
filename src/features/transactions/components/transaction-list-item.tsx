@@ -9,6 +9,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
+import { getMerchantVisuals } from '@/lib/merchant-utils';
 
 interface TransactionListItemProps {
     transaction: Transaction;
@@ -26,15 +27,21 @@ const TransactionListItemContent = ({
     const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
 
-    const { icon: CategoryIcon, color, bgColor } = getCategoryVisuals(transaction.category);
+    // Merchant Intelligence Logic
+    const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
+    const categoryVisuals = getCategoryVisuals(transaction.category);
+
+    const Icon = merchantVisuals?.icon || categoryVisuals.icon;
+    const iconColor = merchantVisuals?.color || categoryVisuals.color;
+    const iconBg = merchantVisuals?.bgColor || categoryVisuals.bgColor;
 
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-destructive' : 'text-teal-600 dark:text-teal-500';
 
     return (
         <div className="flex items-center gap-4 p-3.5">
-            <div className={cn("flex-shrink-0 p-2.5 rounded-xl shadow-sm", bgColor)}>
-                <CategoryIcon className={cn("h-5 w-5", color)} />
+            <div className={cn("flex-shrink-0 p-2.5 rounded-xl shadow-sm transition-colors duration-500", iconBg)}>
+                <Icon className={cn("h-5 w-5", iconColor)} />
             </div>
             <div className="flex-1 overflow-hidden">
                 <div className="font-medium text-foreground text-sm leading-tight mb-0.5">{transaction.description || transaction.category}</div>

@@ -37,6 +37,7 @@ const SingleTransactionSchema = z.object({
     return isNaN(num) ? 0 : num;
   }).default(0),
   description: z.string().nullable().transform(v => v || "Transaksi Baru"),
+  merchant: z.string().optional().nullable(), // New field for brand intelligence
   category: z.string().nullable().transform(v => v || "Lain-lain"),
   subCategory: z.string().optional().nullable(),
   wallet: z.string().nullable().transform(v => v || "Tunai"),
@@ -149,13 +150,12 @@ Jam sekarang: ${currentTime}
       "type": "income|expense",
       "category": "...",
       "subCategory": "...",
+      "merchant": "...",
       "description": "...",
       "amount": number,
       "date": "YYYY-MM-DD",
       "wallet": "...",
       "sourceWallet": "...",
-      "destinationWallet": "...",
-      "isDebtPayment": boolean,
       "destinationWallet": "...",
       "isDebtPayment": boolean,
       "counterparty": "...",
@@ -165,8 +165,9 @@ Jam sekarang: ${currentTime}
   "clarificationQuestion": "string (optional)"
 }
 
-### ATURAN SUB-CATEGORY / DETAIL:
-- Jika Input User: "Makan di McD 50rb" -> Category: "Makanan", Description: "Makan di McD", SubCategory: "Restoran & Kafe" (jika relevan).
+### ATURAN SUB-CATEGORY / MERCHANT / DETAIL:
+- **MERCHANT DETECTION**: Ekstrak nama brand/toko/merchant jika ada (misal: "Netflix", "Starbucks", "BCA", "Gojek", "Tokopedia"). Masukkan ke field 'merchant'.
+- Jika Input User: "Makan di McD 50rb" -> Category: "Makanan", Merchant: "McDonalds", Description: "Makan di McD", SubCategory: "Restoran & Kafe".
 - Jika user secara eksplisit menyebut sub-kategori yang ada di daftar (misal: "Beli Bensin"), masukkan ke 'subCategory'.
 - Format input kategori di sistem ini adalah "Nama Kategori (Sub1, Sub2, ...)" -> Gunakan ini sebagai referensi.
 

@@ -113,6 +113,7 @@ export interface Transaction extends BaseRecord {
   amount: number;
   category: string;
   subCategory?: string;
+  merchant?: string | null;
   walletId: string;
   description: string;
   location?: string;
@@ -146,6 +147,7 @@ export interface TransactionRow {
   amount: number;
   category: string;
   sub_category?: string | null;
+  merchant?: string | null;
   date: string;
   description: string;
   type: TransactionType;
