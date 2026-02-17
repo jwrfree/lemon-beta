@@ -125,11 +125,16 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         // Success Flow
         triggerHaptic('success');
         
-        // Let the UI component handle the animation/close
-        if (onSuccess) onSuccess();
-        
-        // Optional: Refresh router to update server components if any
+        // IMPORTANT: Refresh router before closing to ensure data sync
         router.refresh();
+        
+        // Let the UI component handle the animation/close
+        if (onSuccess) {
+            // Small delay to let Next.js start the refresh process
+            setTimeout(() => {
+                onSuccess();
+            }, 100);
+        }
 
     }, [user, isEditMode, initialData, showToast, onSuccess, router]);
 
@@ -149,8 +154,13 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
         triggerHaptic('success');
         showToast("Transaksi berhasil dihapus", 'success');
-        if (onSuccess) onSuccess();
+        
         router.refresh();
+        if (onSuccess) {
+            setTimeout(() => {
+                onSuccess();
+            }, 100);
+        }
 
     }, [user, initialData, showToast, onSuccess, router]);
 

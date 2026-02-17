@@ -22,9 +22,10 @@ const itemCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textColor
   // Assets
   'investment': { name: 'Investasi', Icon: TrendingUp },
   'property': { name: 'Properti', Icon: Home },
-  // Liabilities
+  // Liabilities & Paylater
   'loan': { name: 'Pinjaman', Icon: Building },
   'credit-card': { name: 'Kartu Kredit', Icon: Smartphone },
+  'paylater': { name: 'Paylater', Icon: Smartphone },
   // Default / Other
   'other': { name: 'Lainnya', Icon: CircleDollarSign },
 };
@@ -38,33 +39,46 @@ const defaultVisuals: WalletVisuals = {
 
 const brandGradients: Record<string, { gradient: Gradient; textColor: string }> = {
     // E-Wallets
-    'gopay': { gradient: { from: '#06b6d4', to: '#0284c7' }, textColor: 'text-white' }, // cyan-500 to sky-600
-    'ovo': { gradient: { from: '#8b5cf6', to: '#5b21b6' }, textColor: 'text-white' }, // purple-500 to purple-800
-    'dana': { gradient: { from: '#38bdf8', to: '#2563eb' }, textColor: 'text-white' }, // sky-400 to blue-600
-    'linkaja': { gradient: { from: '#ef4444', to: '#b91c1c' }, textColor: 'text-white' }, // red-500 to red-700
-    'shopeepay': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // orange-500 to orange-600
-    'paypal': { gradient: { from: '#0ea5e9', to: '#0284c7' }, textColor: 'text-white' }, // sky-500 to sky-600
+    'gopay': { gradient: { from: '#06b6d4', to: '#0284c7' }, textColor: 'text-white' },
+    'ovo': { gradient: { from: '#8b5cf6', to: '#5b21b6' }, textColor: 'text-white' },
+    'dana': { gradient: { from: '#38bdf8', to: '#2563eb' }, textColor: 'text-white' },
+    'linkaja': { gradient: { from: '#ef4444', to: '#b91c1c' }, textColor: 'text-white' },
+    'shopeepay': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' },
+    'paypal': { gradient: { from: '#0ea5e9', to: '#0284c7' }, textColor: 'text-white' },
     
     // Banks
-    'bca': { gradient: { from: '#1e40af', to: '#1e3a8a' }, textColor: 'text-white' }, // blue-800 to blue-900
-    'mandiri': { gradient: { from: '#1e3a8a', to: '#facc15' }, textColor: 'text-white' }, // blue-900 to yellow-400
-    'bni': { gradient: { from: '#f97316', to: '#14b8a6' }, textColor: 'text-white' }, // orange-500 to teal-500
-    'bri': { gradient: { from: '#1d4ed8', to: '#3b82f6' }, textColor: 'text-white' }, // blue-700 to blue-500
-    'cimb niaga': { gradient: { from: '#dc2626', to: '#881337' }, textColor: 'text-white' }, // red-600 to rose-800
+    'bca': { gradient: { from: '#1e40af', to: '#1e3a8a' }, textColor: 'text-white' },
+    'mandiri': { gradient: { from: '#1e3a8a', to: '#facc15' }, textColor: 'text-white' },
+    'bni': { gradient: { from: '#f97316', to: '#14b8a6' }, textColor: 'text-white' },
+    'bri': { gradient: { from: '#1d4ed8', to: '#3b82f6' }, textColor: 'text-white' },
+    'cimb niaga': { gradient: { from: '#dc2626', to: '#881337' }, textColor: 'text-white' },
+    'bsi': { gradient: { from: '#047857', to: '#fbbf24' }, textColor: 'text-white' }, // Green & Gold
+    'bank syariah indonesia': { gradient: { from: '#047857', to: '#fbbf24' }, textColor: 'text-white' },
     
     // Digital Banks
-    'bank neo': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' }, // orange-500 to amber-500
-    'bank neo e-commerce': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' },
-    'seabank': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' }, // Same as ShopeePay
-    'superbank': { gradient: { from: '#a3e635', to: '#4d7c0f' }, textColor: 'text-white' }, // lime-400 to green-800
-    'blue by bca': { gradient: { from: '#38bdf8', to: '#3b82f6' }, textColor: 'text-white' }, // sky-400 to blue-500
-    'jenius': { gradient: { from: '#38bdf8', to: '#0284c7' }, textColor: 'text-white' }, // sky-400 to sky-600
-    'bank jago': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' }, // orange-500 to amber-500
-    'jago': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' }, // orange-500 to amber-500
+    'bank neo': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' },
+    'seabank': { gradient: { from: '#f97316', to: '#ea580c' }, textColor: 'text-white' },
+    'superbank': { gradient: { from: '#a3e635', to: '#4d7c0f' }, textColor: 'text-white' },
+    'blu': { gradient: { from: '#38bdf8', to: '#3b82f6' }, textColor: 'text-white' },
+    'blu by bca': { gradient: { from: '#38bdf8', to: '#3b82f6' }, textColor: 'text-white' },
+    'jenius': { gradient: { from: '#38bdf8', to: '#0284c7' }, textColor: 'text-white' },
+    'jago': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' },
+    'bank jago': { gradient: { from: '#f97316', to: '#f59e0b' }, textColor: 'text-white' },
+
+    // Paylater
+    'spaylater': { gradient: { from: '#f97316', to: '#fb923c' }, textColor: 'text-white' },
+    'gopaylater': { gradient: { from: '#06b6d4', to: '#22d3ee' }, textColor: 'text-white' },
+    'kredivo': { gradient: { from: '#facc15', to: '#eab308' }, textColor: 'text-white' },
+    'akulaku': { gradient: { from: '#ef4444', to: '#f87171' }, textColor: 'text-white' },
+
+    // Investment
+    'bibit': { gradient: { from: '#16a34a', to: '#22c55e' }, textColor: 'text-white' },
+    'ajaib': { gradient: { from: '#4f46e5', to: '#8b5cf6' }, textColor: 'text-white' },
+    'pluang': { gradient: { from: '#fbbf24', to: '#d97706' }, textColor: 'text-white' },
 
     // Cash
-    'tunai': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' }, // green-500 to green-700
-    'cash': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' }, // green-500 to green-700
+    'tunai': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' },
+    'cash': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' },
 };
 
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -73,8 +73,16 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
         setMagicValue('');
     };
 
-    // Auto-trigger AI on specific keywords or debounced could be added here
-    // For now, we trigger via MagicBar's intended action or enter key
+    // --- GHOST TYPING (Auto-Process Logic) ---
+    useEffect(() => {
+        if (!magicValue || magicValue.length < 3) return;
+
+        const timer = setTimeout(() => {
+            handleMagicSubmit();
+        }, 1200); // 1.2s delay
+
+        return () => clearTimeout(timer);
+    }, [magicValue]);
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
