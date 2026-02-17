@@ -34,8 +34,8 @@ export default function BudgetDetailPage() {
     const budgetDetails = useMemo(() => {
         if (!budget) return null;
 
-        const budgetTransactions = transactions.filter(t => 
-            t.type === 'expense' && 
+        const budgetTransactions = transactions.filter(t =>
+            t.type === 'expense' &&
             budget.categories.includes(t.category)
         );
 
@@ -68,10 +68,10 @@ export default function BudgetDetailPage() {
 
     if (!budget) {
         return (
-             <div className="h-full bg-zinc-50 dark:bg-black">
+            <div className="h-full bg-zinc-50 dark:bg-black">
                 <PageHeader title="Detail Anggaran" />
                 <main className="flex justify-center text-center p-8 pt-20">
-                     <div className="max-w-xs flex flex-col items-center">
+                    <div className="max-w-xs flex flex-col items-center">
                         <div className="p-5 bg-rose-500/10 rounded-[2rem] mb-6">
                             <AlertCircle className="h-12 w-12 text-rose-500" strokeWidth={1.5} />
                         </div>
@@ -88,7 +88,7 @@ export default function BudgetDetailPage() {
     }
 
     const { budgetTransactions, spent, remaining, progress, daysLeft, daysPassedPercentage, daysToZero, safeDailyLimit } = budgetDetails!;
-    
+
     // Visual Configuration
     const isOver = remaining < 0;
     const barColor = isOver ? 'bg-rose-600' : (progress > 80 ? 'bg-yellow-400' : 'bg-primary');
@@ -101,7 +101,7 @@ export default function BudgetDetailPage() {
 
     return (
         <div className="flex flex-col h-full bg-zinc-50 dark:bg-black">
-            <PageHeader 
+            <PageHeader
                 title="Detail Anggaran"
                 actionButton={{
                     icon: Pencil,
@@ -111,9 +111,9 @@ export default function BudgetDetailPage() {
             />
 
             <main className="flex-1 overflow-y-auto px-4 md:px-8 space-y-8 pb-32 pt-4">
-                
+
                 {/* 1. Identity & Health Card */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
@@ -121,7 +121,7 @@ export default function BudgetDetailPage() {
                         <div className="p-8 space-y-10">
                             {/* Title & Icon */}
                             <div className="flex flex-col items-center text-center gap-4">
-                                <div className={cn("p-5 rounded-[2rem] border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bg_color)}>
+                                <div className={cn("p-5 rounded-[2rem] border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>
                                     <CategoryIcon className={cn("h-10 w-10", visuals.color)} strokeWidth={1.5} />
                                 </div>
                                 <div className="space-y-1">
@@ -144,7 +144,7 @@ export default function BudgetDetailPage() {
                                     <span>{progress.toFixed(1)}%</span>
                                 </div>
                                 <div className="relative h-4 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                                    <div 
+                                    <div
                                         className="absolute top-0 bottom-0 w-1 bg-zinc-400/30 z-20"
                                         style={{ left: `${Math.min(daysPassedPercentage, 100)}%` }}
                                     />
@@ -211,7 +211,7 @@ export default function BudgetDetailPage() {
                 </motion.div>
 
                 {/* 2. List Transactions */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
@@ -224,9 +224,9 @@ export default function BudgetDetailPage() {
                         </div>
                         <Badge variant="outline" className="rounded-lg font-normal text-[10px] uppercase">{budgetTransactions.length} Transaksi</Badge>
                     </div>
-                    
-                    <TransactionList 
-                        transactions={budgetTransactions} 
+
+                    <TransactionList
+                        transactions={budgetTransactions}
                         isLoading={isTransactionsLoading}
                     />
                 </motion.div>

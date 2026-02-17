@@ -38,16 +38,16 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
         const today = new Date();
         const start = startOfMonth(today);
         const daysElapsed = differenceInDays(today, start) + 1;
-        
-        if (spent === 0 || daysElapsed === 0) return { status: 'stable', daysToZero: Infinity };
-        
+
+        if (spent === 0 || daysElapsed === 0) return { status: 'stable' as const, daysToZero: Infinity };
+
         const dailyRate = spent / daysElapsed;
         const daysToZero = Math.floor(remaining / dailyRate);
-        
+
         let status: 'stable' | 'warning' | 'critical' = 'stable';
         if (daysToZero <= 3 && remaining > 0) status = 'critical';
         else if (daysToZero <= 7) status = 'warning';
-        
+
         return { status, daysToZero, dailyRate };
     }, [spent, remaining]);
 
@@ -140,7 +140,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                 <span>{Math.min(progress, 100).toFixed(0)}%</span>
                             </div>
                             <div className="relative h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                                <div 
+                                <div
                                     className="absolute top-0 bottom-0 w-0.5 bg-zinc-400/30 z-20"
                                     style={{ left: `${Math.min(daysPassedPercentage, 100)}%` }}
                                 />
