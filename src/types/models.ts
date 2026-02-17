@@ -99,14 +99,14 @@ export interface Liability extends BaseRecord {
   notes?: string;
 }
 
-  export interface Goal extends BaseRecord {
-    name: string;
-    icon?: string | null;
-    targetAmount: number;
-    currentAmount: number;
-    targetDate?: string;
-    notes?: string | null;
-  }
+export interface Goal extends BaseRecord {
+  name: string;
+  icon?: string | null;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate?: string;
+  notes?: string | null;
+}
 
 export interface Transaction extends BaseRecord {
   type: TransactionType;
@@ -119,6 +119,7 @@ export interface Transaction extends BaseRecord {
   date: string;
   linkedDebtId?: string | null;
   tags?: string[];
+  isNeed?: boolean;
 }
 
 export interface UserProfile extends BaseRecord {
@@ -150,6 +151,7 @@ export interface TransactionRow {
   type: TransactionType;
   location?: string | null;
   wallet_id: string;
+  is_need?: boolean;
   user_id: string;
   created_at: string;
   updated_at: string;

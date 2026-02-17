@@ -60,6 +60,7 @@ const expenseIncomeBase = baseSchema.extend({
   subCategory: z.string().optional(),
   walletId: z.string().min(1, { message: 'Dompet wajib dipilih' }),
   location: z.string().optional(),
+  isNeed: z.boolean().default(true).optional(),
 });
 
 const transferBase = baseSchema.extend({

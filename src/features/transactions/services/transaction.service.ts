@@ -50,6 +50,14 @@ class TransactionService {
                     console.error('[TransactionService] Create RPC Error:', error);
                     throw error;
                 }
+
+                // Update is_need column separately since RPC signature is frozen
+                if (data.isNeed !== undefined && result?.id) {
+                    await this.supabase.from('transactions')
+                        .update({ is_need: data.isNeed })
+                        .eq('id', result.id);
+                }
+
                 return { data: result?.id || 'Success', error: null };
             }
         } catch (err: any) {
@@ -96,6 +104,13 @@ class TransactionService {
                 console.error('[TransactionService] RPC Error Hint:', error.hint);
                 console.error('[TransactionService] Full Error JSON:', JSON.stringify(error));
                 throw error;
+            }
+
+            // Update is_need separately
+            if (data.isNeed !== undefined) {
+                await this.supabase.from('transactions')
+                    .update({ is_need: data.isNeed })
+                    .eq('id', transactionId);
             }
 
             return { data: true, error: null };

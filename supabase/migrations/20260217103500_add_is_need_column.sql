@@ -1,0 +1,3 @@
+
+ALTER TABLE transactions
+ADD COLUMN is_need BOOLEAN DEFAULT TRUE;

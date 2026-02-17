@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Trash2, Save, CalendarIcon, ArrowRightLeft, Tag, MapPin, CornerDownRight, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { Loader2, Trash2, Save, CalendarIcon, ArrowRightLeft, Tag, MapPin, CornerDownRight, ChevronDown, ChevronUp, Sparkles, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -36,21 +36,21 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
     const { expenseCategories, incomeCategories } = useCategories();
     const [magicValue, setMagicValue] = useState('');
     const [showManualForm, setShowAllFields] = useState(false);
-    
+
     // Context for AI logic
     const aiContext = useMemo(() => ({
         wallets,
         categories: [...expenseCategories, ...incomeCategories].map(c => c.name)
     }), [wallets, expenseCategories, incomeCategories]);
 
-    const { 
-        form, 
-        isSubmitting, 
-        handleSubmit, 
-        handleDelete, 
-        isAiProcessing, 
-        aiExplanation, 
-        applyLiquidPatch 
+    const {
+        form,
+        isSubmitting,
+        handleSubmit,
+        handleDelete,
+        isAiProcessing,
+        aiExplanation,
+        applyLiquidPatch
     } = useTransactionForm({
         initialData: transaction,
         onSuccess: onClose,
@@ -63,6 +63,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
     const category = watch('category');
     const subCategory = watch('subCategory');
     const location = watch('location');
+    const isNeed = watch('isNeed');
     const activeCategories = type === 'expense' ? expenseCategories : incomeCategories;
 
     if (!transaction) return null;
@@ -91,12 +92,12 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                     <SheetTitle>Edit Transaksi</SheetTitle>
                     <SheetDescription>Gunakan Magic Bar atau formulir manual untuk mengubah detail transaksi.</SheetDescription>
                 </SheetHeader>
-                
+
                 {/* 1. Liquid Header (The Star) */}
                 <div className="relative pt-8 pb-4 bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900 shadow-sm">
-                    <HeroAmount 
-                        amount={Number(amount.toString().replace(/[^0-9]/g, ''))} 
-                        type={type} 
+                    <HeroAmount
+                        amount={Number(amount.toString().replace(/[^0-9]/g, ''))}
+                        type={type}
                         onAmountClick={() => setShowAllFields(true)}
                     />
 
@@ -104,9 +105,9 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                     <div className="min-h-[60px] flex flex-col items-center justify-center gap-2 mb-4">
                         <AnimatePresence mode="popLayout">
                             {category && (
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 5 }} 
-                                    animate={{ opacity: 1, y: 0 }} 
+                                <motion.div
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
                                     className="flex flex-col items-center gap-1.5"
                                 >
                                     <div className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
@@ -114,9 +115,9 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                         <span className="text-[10px] font-black uppercase tracking-[0.1em]">{category}</span>
                                     </div>
                                     {subCategory && (
-                                        <motion.div 
-                                            initial={{ opacity: 0, x: -5 }} 
-                                            animate={{ opacity: 1, x: 0 }} 
+                                        <motion.div
+                                            initial={{ opacity: 0, x: -5 }}
+                                            animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.2 }}
                                             className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-xl border border-primary/10"
                                         >
@@ -127,9 +128,9 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 </motion.div>
                             )}
                             {location && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.8 }} 
-                                    animate={{ opacity: 1, scale: 1 }} 
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
                                     className="flex items-center gap-1 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm"
                                 >
                                     <MapPin className="h-3 w-3 text-rose-500" />
@@ -141,7 +142,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
                     {/* Magic Input */}
                     <div className="px-6 mb-2">
-                        <MagicBar 
+                        <MagicBar
                             value={magicValue}
                             onChange={setMagicValue}
                             onReturn={handleMagicSubmit}
@@ -150,9 +151,9 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                         />
                         <AnimatePresence>
                             {aiExplanation && (
-                                <motion.div 
-                                    initial={{ opacity: 0, y: -5 }} 
-                                    animate={{ opacity: 1, y: 0 }} 
+                                <motion.div
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
                                     className="flex items-center justify-center gap-1.5 mt-3 text-emerald-600 dark:text-emerald-400"
                                 >
                                     <Sparkles className="h-3 w-3 fill-current" />
@@ -165,9 +166,9 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
                 {/* 2. Manual Toggle & Form */}
                 <div className="flex-1 overflow-y-auto px-6 pb-6 pt-4">
-                    <Button 
-                        variant="ghost" 
-                        size="sm" 
+                    <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setShowAllFields(!showManualForm)}
                         className="w-full text-zinc-400 hover:text-zinc-600 flex items-center justify-center gap-2 mb-4"
                     >
@@ -179,7 +180,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
                     <AnimatePresence>
                         {showManualForm && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
@@ -201,7 +202,34 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 </div>
 
                                 <CategorySelector control={control} name="category" categories={activeCategories} error={errors.category?.message} onSubCategoryChange={(val) => setValue('subCategory', val)} />
-                                
+
+                                {type === 'expense' && (
+                                    <div className="flex gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-700/50">
+                                        <button
+                                            type="button"
+                                            onClick={() => setValue('isNeed', true, { shouldDirty: true })}
+                                            className={cn(
+                                                "flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                                isNeed !== false ? "bg-white dark:bg-zinc-900 shadow-sm text-emerald-600 dark:text-emerald-400 ring-1 ring-zinc-200 dark:ring-zinc-700" : "text-zinc-400 hover:bg-white/50 dark:hover:bg-zinc-700/50"
+                                            )}
+                                        >
+                                            <Heart className={cn("h-3.5 w-3.5", isNeed !== false ? "fill-emerald-600 dark:fill-emerald-400" : "opacity-50")} />
+                                            Kebutuhan
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setValue('isNeed', false, { shouldDirty: true })}
+                                            className={cn(
+                                                "flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                                isNeed === false ? "bg-white dark:bg-zinc-900 shadow-sm text-pink-500 ring-1 ring-zinc-200 dark:ring-zinc-700" : "text-zinc-400 hover:bg-white/50 dark:hover:bg-zinc-700/50"
+                                            )}
+                                        >
+                                            <Sparkles className={cn("h-3.5 w-3.5", isNeed === false ? "fill-pink-500" : "opacity-50")} />
+                                            Keinginan
+                                        </button>
+                                    </div>
+                                )}
+
                                 <div className="space-y-2">
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Deskripsi</p>
                                     <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800" />
@@ -213,16 +241,16 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
                 {/* 3. Global Actions */}
                 <div className="p-6 border-t bg-white dark:bg-zinc-950 flex gap-3 pb-safe">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={handleDelete}
                         className="h-14 w-14 rounded-2xl text-rose-500 hover:bg-rose-500/10 shrink-0 border border-rose-500/10"
                     >
                         <Trash2 className="h-6 w-6" />
                     </Button>
-                    <Button 
-                        onClick={handleSubmit} 
+                    <Button
+                        onClick={handleSubmit}
                         disabled={isSubmitting}
                         className="flex-1 h-14 rounded-2xl text-base font-bold shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.98] transition-all"
                     >

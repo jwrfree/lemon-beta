@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
@@ -26,6 +26,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
   const { isBalanceVisible } = useBalanceVisibility();
 
   const paginate = (newDirection: number) => {
+    triggerHaptic('light');
     setActiveIndex(prevIndex => (prevIndex + newDirection + wallets.length) % wallets.length);
   };
 
@@ -40,90 +41,93 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center">
-      <div className="relative w-full h-48 flex items-center justify-center">
-        <AnimatePresence initial={false}>
+    <div className="relative w-full py-10 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative w-full h-56 flex items-center justify-center">
+        <AnimatePresence initial={false} mode="popLayout">
           {wallets.map((wallet, i) => {
             const isActive = i === activeIndex;
-            const isNext = i === (activeIndex + 1) % wallets.length;
+            
+            // Calculate relative position for 3D effect
+            const diff = i - activeIndex;
+            const absDiff = Math.abs(diff);
+            
+            // Only show active and nearby cards for performance
+            if (absDiff > 2) return null;
 
             const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon || undefined);
 
             return (
               <motion.div
                 key={wallet.id}
+                layout
                 drag={isActive ? "y" : false}
                 onDragEnd={onDragEnd}
                 dragConstraints={{ top: 0, bottom: 0 }}
-                dragElastic={0.2}
-                onClick={() => !isActive && setActiveIndex(i)}
+                dragElastic={0.4}
+                onClick={() => !isActive && (triggerHaptic('light'), setActiveIndex(i))}
                 className={cn(
-                  "absolute w-[90%] max-w-sm h-48 rounded-xl text-white shadow-lg overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white/70",
-                  isActive ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+                  "absolute w-[88%] max-w-sm h-52 rounded-[2.5rem] text-white shadow-2xl overflow-hidden premium-shadow",
+                  isActive ? "cursor-grab active:cursor-grabbing z-30" : "cursor-pointer grayscale-[0.2]"
                 )}
                 style={{
-                  backgroundImage: `linear-gradient(to right, ${gradient.from}, ${gradient.to})`
-                }}
-                initial={{
-                  scale: i === activeIndex ? 1 : 0.85,
-                  y: (i - activeIndex) * 30,
-                  opacity: i === activeIndex ? 1 : (i === (activeIndex + 1) % wallets.length ? 1 : 0),
+                  backgroundImage: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`
                 }}
                 animate={{
-                  scale: isActive ? 1 : 0.85,
-                  y: isActive ? 0 : (isNext ? 30 : -30),
-                  zIndex: wallets.length - Math.abs(activeIndex - i),
-                  opacity: isActive || isNext ? 1 : 0,
+                  scale: isActive ? 1 : 1 - absDiff * 0.08,
+                  y: diff * 45,
+                  rotateX: isActive ? 0 : diff * -5,
+                  zIndex: 30 - absDiff,
+                  opacity: 1 - absDiff * 0.3,
+                  filter: isActive ? 'blur(0px)' : `blur(${absDiff * 1}px)`,
                 }}
                 transition={{
                   type: 'spring',
-                  stiffness: 250,
-                  damping: 25,
-                }}
-                role="button"
-                aria-pressed={isActive}
-                aria-label={isActive ? `${wallet.name}, dompet aktif` : `Pilih dompet ${wallet.name}`}
-                tabIndex={isActive ? 0 : -1}
-                onKeyDown={(event) => {
-                  if (event.key === 'ArrowRight') {
-                    event.preventDefault();
-                    paginate(1);
-                  }
-                  if (event.key === 'ArrowLeft') {
-                    event.preventDefault();
-                    paginate(-1);
-                  }
+                  stiffness: 300,
+                  damping: 30,
                 }}
               >
-                {/* Ornaments */}
-                <div className="absolute -top-1/4 -left-1/4 w-48 h-48 bg-white/10 rounded-full" />
-                <div className="absolute -bottom-1/4 -right-10 w-40 h-40 bg-white/5 rounded-full" />
-
-                <div className="relative p-5 flex flex-col h-full">
+                {/* Premium Texture Overlay */}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.08] pointer-events-none" />
+                
+                {/* Animated Ornaments */}
+                <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl" 
+                />
+                
+                <div className="relative p-7 flex flex-col h-full">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <Icon className={cn("h-8 w-8", textColor, "opacity-80")} />
-                      <p className="font-semibold text-lg drop-shadow-md">{wallet.name}</p>
-                      {wallet.isDefault && (
-                        <div className="text-xs font-semibold bg-white/20 text-white px-2 py-0.5 rounded-md">
-                          Utama
-                        </div>
-                      )}
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+                        <Icon className={cn("h-6 w-6", textColor)} />
+                      </div>
+                      <div>
+                        <p className="font-black text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
+                        {wallet.isDefault && (
+                            <div className="flex items-center gap-1 mt-0.5">
+                                <ShieldCheck className="h-3 w-3 text-white/60" />
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Dompet Utama</span>
+                            </div>
+                        )}
+                      </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-white hover:bg-white/20 h-8 w-8 rounded-md relative z-10"
-                      onClick={(e) => { e.stopPropagation(); openEditWalletModal(wallet); }}
-                      aria-label={`Kelola dompet ${wallet.name}`}
+                      className="text-white hover:bg-white/20 h-10 w-10 rounded-2xl relative z-10 backdrop-blur-sm border border-white/10"
+                      onClick={(e) => { e.stopPropagation(); triggerHaptic('medium'); openEditWalletModal(wallet); }}
                     >
                       <MoreVertical className="h-5 w-5" />
-                      <span className="sr-only">Kelola dompet {wallet.name}</span>
                     </Button>
                   </div>
 
-                  <div className="flex-1 flex items-end">
-                    <p className={cn("text-3xl font-bold drop-shadow-lg", textColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}>
+                  <div className="flex-1 flex flex-col justify-end">
+                    <div className="flex items-center gap-2 mb-1 opacity-60">
+                        <Sparkles className="h-3 w-3" />
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Saldo Tersedia</span>
+                    </div>
+                    <p className={cn("text-4xl font-black tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
                       {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
                     </p>
                   </div>
@@ -133,21 +137,21 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
           })}
         </AnimatePresence>
       </div>
-      <div className="flex justify-center gap-2 mt-4">
-        {wallets.map((wallet, i) => (
+      
+      {/* Premium Pagination Dots */}
+      <div className="flex justify-center gap-3 mt-12 bg-zinc-100 dark:bg-zinc-900/50 p-2 rounded-full border border-zinc-200/50 dark:border-zinc-800/50">
+        {wallets.map((_, i) => (
           <button
-            key={wallet.id ?? i}
-            type="button"
-            onClick={() => setActiveIndex(i)}
-            className="relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            aria-label={`Pilih dompet ${wallet.name}`}
-            aria-pressed={i === activeIndex ? "true" : "false"}
+            key={i}
+            onClick={() => { triggerHaptic('light'); setActiveIndex(i); }}
+            className="group relative h-2 w-2"
           >
-            <span
-              className={cn(
-                'h-2 w-2 rounded-sm',
-                i === activeIndex ? 'bg-primary' : 'bg-muted-foreground/30'
-              )}
+            <motion.span
+              animate={{ 
+                width: i === activeIndex ? 24 : 8,
+                backgroundColor: i === activeIndex ? 'var(--primary)' : 'rgba(161, 161, 170, 0.3)'
+              }}
+              className="absolute inset-0 rounded-full transition-colors"
             />
           </button>
         ))}

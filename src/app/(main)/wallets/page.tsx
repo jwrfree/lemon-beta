@@ -41,18 +41,26 @@ export default function WalletsPage() {
           />
           
           {wallets.length === 0 ? (
-            <main className="flex-1 flex items-center justify-center p-4">
-              <div className="flex flex-col items-center justify-center text-center">
-                 <div className="p-3 bg-primary/10 rounded-full mb-3">
-                    <Wallet className="h-8 w-8 text-primary" strokeWidth={1.5} />
+            <main className="flex-1 flex flex-col items-center justify-center p-6 bg-zinc-50 dark:bg-black">
+              <div className="relative mb-8">
+                <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150 opacity-50" />
+                <div className="relative flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200/60 dark:border-zinc-800/60">
+                  <Wallet className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-xl font-semibold">Belum Ada Dompet</h2>
-                <p className="text-muted-foreground mt-2 mb-6">Yuk, buat dompet pertamamu untuk memulai!</p>
-                <Button onClick={() => setIsWalletModalOpen(true)}>
-                  <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
-                  Buat Dompet
-                </Button>
               </div>
+              <div className="max-w-[280px] text-center space-y-3">
+                <h2 className="text-2xl font-bold tracking-tighter">Belum Ada Dompet</h2>
+                <p className="text-sm font-medium text-muted-foreground leading-relaxed">
+                  Semua harta dan sumber dana kamu akan terorganisir rapi di sini.
+                </p>
+              </div>
+              <Button 
+                onClick={() => setIsWalletModalOpen(true)}
+                className="mt-10 rounded-2xl h-12 px-8 shadow-lg shadow-primary/20 active:scale-95 transition-all font-bold"
+              >
+                <PlusCircle className="mr-2 h-5 w-5" />
+                Buat Dompet Pertama
+              </Button>
             </main>
           ) : (
             <main className="flex-1 overflow-y-auto pb-24">
@@ -108,17 +116,25 @@ export default function WalletsPage() {
         />
         <div className="flex-1 overflow-hidden">
           {wallets.length === 0 ? (
-            <main className="flex h-full items-center justify-center p-4">
-              <div className="flex flex-col items-center justify-center text-center max-w-md mx-auto p-8 bg-card rounded-lg shadow-sm border">
-                <div className="p-4 bg-primary/10 rounded-full mb-4">
-                  <Wallet className="h-12 w-12 text-primary" strokeWidth={1.5} />
+            <main className="flex h-full items-center justify-center p-8 bg-zinc-50 dark:bg-black">
+              <div className="max-w-md w-full p-12 bg-white dark:bg-zinc-900 rounded-[3rem] shadow-2xl border border-zinc-200/60 dark:border-zinc-800/60 text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
+                    <Wallet className="h-40 w-40" />
                 </div>
-                <h2 className="text-2xl font-semibold">Belum Ada Dompet</h2>
-                <p className="text-muted-foreground mt-2 mb-8 text-lg">Yuk, buat dompet pertamamu untuk memulai mencatat keuanganmu dengan lebih rapi!</p>
-                <Button size="lg" onClick={() => setIsWalletModalOpen(true)} className="w-full">
-                  <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
-                  Buat Dompet Baru
-                </Button>
+                
+                <div className="relative z-10 flex flex-col items-center">
+                    <div className="p-5 bg-primary/10 rounded-[2rem] mb-6">
+                        <Wallet className="h-12 w-12 text-primary" strokeWidth={1.5} />
+                    </div>
+                    <h2 className="text-3xl font-black tracking-tighter mb-4">Mulai Kelola Asetmu</h2>
+                    <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
+                        Dompet adalah sumber dana transaksi. Buat dompet seperti Kas, Bank, atau E-Wallet untuk mencatat keuangan lebih rapi.
+                    </p>
+                    <Button size="lg" onClick={() => setIsWalletModalOpen(true)} className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20">
+                        <PlusCircle className="mr-2 h-6 w-6" />
+                        Buat Dompet Baru
+                    </Button>
+                </div>
               </div>
             </main>
           ) : (
