@@ -37,16 +37,32 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
                 ) : (
                     <div className="space-y-3">
                         {wallets.slice(0, 4).map(wallet => {
-                            const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
+                            const { Icon, textColor, logo } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                             return (
-                                <Link 
+                                <Link
                                     href="/wallets"
-                                    key={wallet.id} 
+                                    key={wallet.id}
                                     className="flex items-center justify-between p-3 rounded-md hover:bg-primary/5 transition-all group border border-transparent hover:border-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className={cn("p-2.5 rounded-md bg-primary/10", textColor.replace('text-white', 'text-primary'))}>
-                                            <Icon className="h-5 w-5" />
+                                        <div className={cn("p-2.5 rounded-md bg-primary/10 overflow-hidden flex items-center justify-center", textColor.replace('text-white', 'text-primary'))}>
+                                            {logo ? (
+                                                <>
+                                                    <img
+                                                        src={logo}
+                                                        alt={wallet.name}
+                                                        className="h-5 w-5 object-contain rounded-full"
+                                                        onError={(e) => {
+                                                            e.currentTarget.style.display = 'none';
+                                                            const icon = e.currentTarget.nextElementSibling;
+                                                            if (icon) icon.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                    <Icon className="h-5 w-5 hidden" />
+                                                </>
+                                            ) : (
+                                                <Icon className="h-5 w-5" />
+                                            )}
                                         </div>
                                         <div>
                                             <p className="font-medium text-sm text-foreground">{wallet.name}</p>

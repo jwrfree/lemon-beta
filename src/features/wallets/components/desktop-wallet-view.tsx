@@ -27,16 +27,16 @@ interface DesktopWalletViewProps {
 export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: DesktopWalletViewProps) => {
     const { openEditWalletModal } = useUI();
     const { isBalanceVisible } = useBalanceVisibility();
-    
+
     // For 30-day overview (all wallets)
     const thirtyDaysAgo = useMemo(() => subDays(new Date(), 30), []);
     const { transactions: recentTransactions } = useRangeTransactions(thirtyDaysAgo, new Date());
-    
+
     const activeWallet = wallets[activeIndex];
-    
+
     // For the specific wallet's transaction list (paginated)
-    const { 
-        transactions: walletTransactions, 
+    const {
+        transactions: walletTransactions,
         isLoading: isTransactionsLoading,
         hasMore,
         loadMore
@@ -88,7 +88,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         if (!activeWallet) return { income30: 0, expense30: 0 };
         let income = 0;
         let expense = 0;
-        
+
         // Use recentTransactions which already contains the last 30 days
         recentTransactions.filter(t => t.walletId === activeWallet.id).forEach(t => {
             if (t.type === 'income') income += t.amount;
@@ -103,10 +103,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         if (wallet.balance < 500000) return { label: 'Perlu Perhatian', variant: 'secondary' as const };
         return { label: 'Sehat', variant: 'success' as const };
     };
-    
+
     // Helper for badge className since variant='success' might not be standard in our Badge component yet
     const getHealthBadgeClass = (variant: string) => {
-        switch(variant) {
+        switch (variant) {
             case 'destructive': return "bg-destructive/10 text-destructive hover:bg-destructive/20 border-destructive/20";
             case 'success': return "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-500/20";
             case 'secondary': return "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20";
@@ -196,7 +196,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                     <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                         {filteredWallets.map((wallet) => {
-                            const { Icon } = getWalletVisuals(wallet.name, wallet.icon || undefined);
+                            const { Icon, logo } = getWalletVisuals(wallet.name, wallet.icon || undefined);
                             const isActive = wallets.indexOf(wallet) === activeIndex;
                             const health = getHealth(wallet);
 
@@ -206,8 +206,8 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     onClick={() => setActiveIndex(wallets.indexOf(wallet))}
                                     className={cn(
                                         "w-full text-left p-3 rounded-xl transition-all border flex items-center justify-between group",
-                                        isActive 
-                                            ? "bg-card border-primary/20 shadow-sm ring-1 ring-primary/10" 
+                                        isActive
+                                            ? "bg-card border-primary/20 shadow-sm ring-1 ring-primary/10"
                                             : "bg-transparent border-transparent hover:bg-muted/50"
                                     )}
                                     whileHover={{ scale: 0.99 }}
@@ -215,17 +215,33 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className={cn(
-                                            "p-2.5 rounded-lg transition-colors", 
+                                            "p-2.5 rounded-lg transition-colors flex items-center justify-center overflow-hidden",
                                             isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground group-hover:bg-muted/80"
                                         )}>
-                                            <Icon className="h-5 w-5" />
+                                            {logo ? (
+                                                <>
+                                                    <img
+                                                        src={logo}
+                                                        alt={wallet.name}
+                                                        className="h-5 w-5 object-contain rounded-full"
+                                                        onError={(e) => {
+                                                            e.currentTarget.style.display = 'none';
+                                                            const icon = e.currentTarget.nextElementSibling;
+                                                            if (icon) icon.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                    <Icon className="h-5 w-5 hidden" />
+                                                </>
+                                            ) : (
+                                                <Icon className="h-5 w-5" />
+                                            )}
                                         </div>
                                         <div className="flex flex-col overflow-hidden">
                                             <span className={cn("text-sm font-medium truncate", isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
                                                 {wallet.name}
                                             </span>
                                             <span className={cn(
-                                                "text-sm font-medium tracking-tight", 
+                                                "text-sm font-medium tracking-tight",
                                                 isActive ? "text-primary" : "text-foreground",
                                                 !isBalanceVisible && "blur-sm"
                                             )}>
@@ -250,13 +266,29 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <div className="flex justify-between items-start mb-6">
                                     <div className="flex items-center gap-4">
                                         {activeWalletVisuals && (
-                                            <div 
-                                                className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm bg-[image:var(--wallet-gradient)]"
-                                                style={{ 
-                                                    '--wallet-gradient': `linear-gradient(to bottom right, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})` 
+                                            <div
+                                                className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm bg-[image:var(--wallet-gradient)] overflow-hidden"
+                                                style={{
+                                                    '--wallet-gradient': `linear-gradient(to bottom right, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})`
                                                 } as React.CSSProperties}
                                             >
-                                                <activeWalletVisuals.Icon className={cn("h-7 w-7", activeWalletVisuals.textColor)} />
+                                                {activeWalletVisuals.logo ? (
+                                                    <>
+                                                        <img
+                                                            src={activeWalletVisuals.logo}
+                                                            alt={activeWallet.name}
+                                                            className="h-8 w-8 object-contain rounded-full bg-white/90 p-0.5"
+                                                            onError={(e) => {
+                                                                e.currentTarget.style.display = 'none';
+                                                                const icon = e.currentTarget.nextElementSibling;
+                                                                if (icon) icon.classList.remove('hidden');
+                                                            }}
+                                                        />
+                                                        <activeWalletVisuals.Icon className={cn("h-7 w-7 hidden", activeWalletVisuals.textColor)} />
+                                                    </>
+                                                ) : (
+                                                    <activeWalletVisuals.Icon className={cn("h-7 w-7", activeWalletVisuals.textColor)} />
+                                                )}
                                             </div>
                                         )}
                                         <div>
@@ -287,15 +319,15 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             <div className="flex-1 min-h-0 bg-background/50">
                                 <TabsContent value="transactions" className="h-full m-0 p-0 relative">
                                     <div className="absolute inset-0 overflow-y-auto custom-scrollbar px-6 py-4">
-                                        <TransactionList 
-                                            transactions={walletTransactions} 
+                                        <TransactionList
+                                            transactions={walletTransactions}
                                             isLoading={isTransactionsLoading}
                                             hasMore={hasMore}
                                             loadMore={loadMore}
                                         />
                                     </div>
                                 </TabsContent>
-                                
+
                                 <TabsContent value="analytics" className="h-full m-0 p-6 overflow-y-auto custom-scrollbar">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <Card className="bg-emerald-500/5 border-emerald-500/20 shadow-none">
@@ -323,7 +355,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                             </CardContent>
                                         </Card>
-                                        
+
                                         <Card className="col-span-full border-dashed bg-muted/20 shadow-none">
                                             <CardContent className="p-8 flex flex-col items-center justify-center text-center space-y-3">
                                                 <div className="p-3 bg-background rounded-full shadow-sm">
@@ -345,7 +377,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 <h3 className="text-lg font-medium">Pengaturan Dompet</h3>
                                                 <p className="text-sm text-muted-foreground">Ubah informasi dasar atau hapus dompet ini.</p>
                                             </div>
-                                            
+
                                             <Card>
                                                 <CardContent className="p-5 space-y-4">
                                                     <div className="flex items-center justify-between">

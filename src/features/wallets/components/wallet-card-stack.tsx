@@ -46,15 +46,15 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
         <AnimatePresence initial={false} mode="popLayout">
           {wallets.map((wallet, i) => {
             const isActive = i === activeIndex;
-            
+
             // Calculate relative position for 3D effect
             const diff = i - activeIndex;
             const absDiff = Math.abs(diff);
-            
+
             // Only show active and nearby cards for performance
             if (absDiff > 2) return null;
 
-            const { Icon, gradient, textColor } = getWalletVisuals(wallet.name, wallet.icon || undefined);
+            const { Icon, gradient, textColor, logo } = getWalletVisuals(wallet.name, wallet.icon || undefined);
 
             return (
               <motion.div
@@ -88,27 +88,43 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
               >
                 {/* Premium Texture Overlay */}
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.08] pointer-events-none" />
-                
+
                 {/* Animated Ornaments */}
-                <motion.div 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl" 
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"
                 />
-                
+
                 <div className="relative p-7 flex flex-col h-full">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
-                        <Icon className={cn("h-6 w-6", textColor)} />
+                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
+                        {logo ? (
+                          <>
+                            <img
+                              src={logo}
+                              alt={wallet.name}
+                              className="h-6 w-6 object-contain rounded-full bg-white/90 p-0.5"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const icon = e.currentTarget.nextElementSibling;
+                                if (icon) icon.classList.remove('hidden');
+                              }}
+                            />
+                            <Icon className={cn("h-6 w-6 hidden", textColor)} />
+                          </>
+                        ) : (
+                          <Icon className={cn("h-6 w-6", textColor)} />
+                        )}
                       </div>
                       <div>
                         <p className="font-medium text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
                         {wallet.isDefault && (
-                            <div className="flex items-center gap-1 mt-0.5">
-                                <ShieldCheck className="h-3 w-3 text-white/60" />
-                                <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">Dompet Utama</span>
-                            </div>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <ShieldCheck className="h-3 w-3 text-white/60" />
+                            <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">Dompet Utama</span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -124,8 +140,8 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
 
                   <div className="flex-1 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-1 opacity-60">
-                        <Sparkles className="h-3 w-3" />
-                        <span className="text-[9px] font-medium uppercase tracking-[0.2em]">Saldo Tersedia</span>
+                      <Sparkles className="h-3 w-3" />
+                      <span className="text-[9px] font-medium uppercase tracking-[0.2em]">Saldo Tersedia</span>
                     </div>
                     <p className={cn("text-4xl font-medium tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
                       {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
@@ -137,7 +153,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
           })}
         </AnimatePresence>
       </div>
-      
+
       {/* Premium Pagination Dots */}
       <div className="flex justify-center gap-3 mt-12 bg-zinc-100 dark:bg-zinc-900/50 p-2 rounded-full border border-zinc-200/50 dark:border-zinc-800/50">
         {wallets.map((_, i) => (
@@ -147,7 +163,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
             className="group relative h-2 w-2"
           >
             <motion.span
-              animate={{ 
+              animate={{
                 width: i === activeIndex ? 24 : 8,
                 backgroundColor: i === activeIndex ? 'var(--primary)' : 'rgba(161, 161, 170, 0.3)'
               }}

@@ -240,7 +240,7 @@ export const MobileDashboard = ({
 
                 <div className="flex gap-4 overflow-x-auto px-5 pb-4 snap-x snap-mandatory scrollbar-hide">
                     {wallets.slice(0, 5).map((wallet, idx) => {
-                        const { Icon, textColor } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
+                        const { Icon, textColor, logo } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                         return (
                             <motion.div
                                 key={wallet.id}
@@ -253,8 +253,24 @@ export const MobileDashboard = ({
                                     <div className={cn("absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-5 bg-current", textColor)}></div>
 
                                     <div className="flex items-start justify-between relative z-10">
-                                        <div className={cn("p-1.5 rounded-lg bg-muted", textColor)}>
-                                            <Icon className="h-4 w-4" />
+                                        <div className={cn("p-1.5 rounded-lg bg-muted flex items-center justify-center overflow-hidden h-7 w-7", textColor)}>
+                                            {logo ? (
+                                                <>
+                                                    <img
+                                                        src={logo}
+                                                        alt={wallet.name}
+                                                        className="h-full w-full object-contain rounded-full"
+                                                        onError={(e) => {
+                                                            e.currentTarget.style.display = 'none';
+                                                            const icon = e.currentTarget.nextElementSibling;
+                                                            if (icon) icon.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                    <Icon className="h-4 w-4 hidden" />
+                                                </>
+                                            ) : (
+                                                <Icon className="h-4 w-4" />
+                                            )}
                                         </div>
                                         <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider">{wallet.type || 'Cash'}</span>
                                     </div>

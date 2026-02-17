@@ -28,11 +28,27 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
     return (
         <div className="space-y-1">
             {items.map(item => {
-                const { Icon } = getWalletVisuals(item.name, item.categoryKey);
+                const { Icon, logo } = getWalletVisuals(item.name, item.categoryKey);
                 return (
                     <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
-                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors shadow-sm relative">
-                            <Icon className="h-5 w-5 text-muted-foreground" />
+                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors shadow-sm relative flex items-center justify-center overflow-hidden">
+                            {logo ? (
+                                <>
+                                    <img
+                                        src={logo}
+                                        alt={item.name}
+                                        className="h-5 w-5 object-contain rounded-full"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                            const icon = e.currentTarget.nextElementSibling;
+                                            if (icon) icon.classList.remove('hidden');
+                                        }}
+                                    />
+                                    <Icon className="h-5 w-5 text-muted-foreground hidden" />
+                                </>
+                            ) : (
+                                <Icon className="h-5 w-5 text-muted-foreground" />
+                            )}
                             {item.categoryKey === 'gold' && goldPrice && (
                                 <div className="absolute -top-1 -right-1 bg-teal-500 rounded-full p-0.5 border-2 border-background">
                                     <TrendingUp className="h-2 w-2 text-white" />
