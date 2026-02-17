@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction, TransactionRow } from '@/types/models';
+import { transactionEvents } from '@/lib/transaction-events';
 
 const PAGE_SIZE = 20;
 
@@ -20,7 +21,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
     const [page, setPage] = useState(0); // 0-indexed for Supabase range
     const [error, setError] = useState<string | null>(null);
     const supabase = createClient();
-    
+
     // Ref for AbortController
     const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -32,7 +33,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
 
     const fetchTransactions = useCallback(async (pageIndex: number, isReset: boolean = false) => {
         if (!user) return;
-        
+
         // Abort previous request if exists
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -42,10 +43,10 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
         const controller = new AbortController();
         abortControllerRef.current = controller;
         const signal = controller.signal;
-        
+
         setIsLoading(true);
         setError(null);
-        
+
         try {
             let query = supabase
                 .from('transactions')
@@ -75,7 +76,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
             }
 
             const { data, error, count } = await query;
-            
+
             // If aborted, stop here
             if (signal.aborted) return;
 
@@ -135,12 +136,12 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
     // Reset and fetch when filters change
     useEffect(() => {
         if (!user) return;
-        
+
         setPage(0);
         setHasMore(true);
         setTransactions([]); // Clear current list to show loading state or empty state correctly
         fetchTransactions(0, true);
-        
+
         // Cleanup function to abort request on unmount or dependency change
         return () => {
             if (abortControllerRef.current) {
@@ -148,6 +149,40 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
             }
         };
     }, [user, fetchTransactions]);
+
+    // Optimistic Updates Subscription
+    useEffect(() => {
+        const handleCreated = (newTx: Transaction) => {
+            // Only add if it matches current filters (basic check)
+            // Note: complex filters like date range or amount range might need more logic
+            // For now we assume if user adds it, they want to see it if it matches wallet/category
+            const matchesWallet = !filters.walletId?.length || filters.walletId.includes(newTx.walletId);
+            const matchesCategory = !filters.category?.length || filters.category.includes(newTx.category);
+            const matchesType = !filters.type || filters.type === 'all' || filters.type === newTx.type;
+
+            if (matchesWallet && matchesCategory && matchesType) {
+                setTransactions(prev => [newTx, ...prev]);
+            }
+        };
+
+        const handleUpdated = (updatedTx: Transaction) => {
+            setTransactions(prev => prev.map(t => t.id === updatedTx.id ? updatedTx : t));
+        };
+
+        const handleDeleted = (deletedId: string) => {
+            setTransactions(prev => prev.filter(t => t.id !== deletedId));
+        };
+
+        transactionEvents.on('transaction.created', handleCreated);
+        transactionEvents.on('transaction.updated', handleUpdated);
+        transactionEvents.on('transaction.deleted', handleDeleted);
+
+        return () => {
+            transactionEvents.off('transaction.created', handleCreated);
+            transactionEvents.off('transaction.updated', handleUpdated);
+            transactionEvents.off('transaction.deleted', handleDeleted);
+        };
+    }, [filters]);
 
     const loadMore = useCallback(() => {
         if (!isLoading && hasMore) {

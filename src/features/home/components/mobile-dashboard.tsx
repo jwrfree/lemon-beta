@@ -272,7 +272,9 @@ export const MobileDashboard = ({
                                                 <Icon className="h-4 w-4" />
                                             )}
                                         </div>
-                                        <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider">{wallet.type || 'Cash'}</span>
+                                        <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider">
+                                            {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : wallet.icon || 'Cash'}
+                                        </span>
                                     </div>
 
                                     <div className="relative z-10">

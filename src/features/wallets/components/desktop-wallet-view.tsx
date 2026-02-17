@@ -49,6 +49,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState<'name' | 'balance'>('name');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+    const [filter, setFilter] = useState<string>('all');
     const [panelTab, setPanelTab] = useState<'transactions' | 'analytics' | 'settings'>('transactions');
 
     const totalBalance = useMemo(
@@ -58,7 +59,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
     const filteredWallets = useMemo(() => {
         const term = search.toLowerCase();
-        const list = wallets.filter(w => w.name.toLowerCase().includes(term));
+        let list = wallets.filter(w => w.name.toLowerCase().includes(term));
+
+        if (filter !== 'all') {
+            list = list.filter(w => w.icon === filter);
+        }
+
         return list.sort((a, b) => {
             if (sort === 'name') {
                 return sortDir === 'asc'
@@ -67,7 +73,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
             }
             return sortDir === 'asc' ? a.balance - b.balance : b.balance - a.balance;
         });
-    }, [wallets, search, sort, sortDir]);
+    }, [wallets, search, sort, sortDir, filter]);
 
     const { income30, expense30 } = useMemo(() => {
         let income = 0;
@@ -191,6 +197,29 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="pl-9 bg-muted/50 border-none h-9 text-sm"
                             />
+                        </div>
+
+                        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+                            {[
+                                { id: 'all', label: 'Semua' },
+                                { id: 'bank', label: 'Bank' },
+                                { id: 'e-wallet', label: 'E-Wallet' },
+                                { id: 'cash', label: 'Tunai' },
+                                { id: 'investment', label: 'Investasi' },
+                            ].map((f) => (
+                                <button
+                                    key={f.id}
+                                    onClick={() => setFilter(f.id)}
+                                    className={cn(
+                                        "px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap box-border border flex-shrink-0",
+                                        filter === f.id
+                                            ? "bg-primary text-primary-foreground border-primary"
+                                            : "bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                                    )}
+                                >
+                                    {f.label}
+                                </button>
+                            ))}
                         </div>
                     </div>
 

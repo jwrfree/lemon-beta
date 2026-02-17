@@ -119,7 +119,12 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                         )}
                       </div>
                       <div>
-                        <p className="font-medium text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <p className="font-medium text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
+                          <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-sm border border-white/10 uppercase tracking-tighter">
+                            {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : 'Tunai'}
+                          </span>
+                        </div>
                         {wallet.isDefault && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <ShieldCheck className="h-3 w-3 text-white/60" />
@@ -154,23 +159,50 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
         </AnimatePresence>
       </div>
 
-      {/* Premium Pagination Dots */}
-      <div className="flex justify-center gap-3 mt-12 bg-zinc-100 dark:bg-zinc-900/50 p-2 rounded-full border border-zinc-200/50 dark:border-zinc-800/50">
-        {wallets.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => { triggerHaptic('light'); setActiveIndex(i); }}
-            className="group relative h-2 w-2"
-          >
-            <motion.span
-              animate={{
-                width: i === activeIndex ? 24 : 8,
-                backgroundColor: i === activeIndex ? 'var(--primary)' : 'rgba(161, 161, 170, 0.3)'
-              }}
-              className="absolute inset-0 rounded-full transition-colors"
-            />
-          </button>
-        ))}
+      {/* Premium Quick Navigator (Logo-based) */}
+      <div className="w-full mt-10 px-6">
+        <div className="flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+          {wallets.map((wallet, i) => {
+            const isActive = i === activeIndex;
+            const { Icon, logo, textColor } = getWalletVisuals(wallet.name, wallet.icon || undefined);
+
+            return (
+              <button
+                key={wallet.id}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setActiveIndex(i);
+                  // Optional: Smooth scroll the button into view
+                  document.getElementById(`nav-wallet-${wallet.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }}
+                id={`nav-wallet-${wallet.id}`}
+                className="flex flex-col items-center gap-2 shrink-0 snap-center transition-all duration-300"
+                style={{ opacity: isActive ? 1 : 0.4, transform: isActive ? 'scale(1.1)' : 'scale(0.9)' }}
+              >
+                <div className={cn(
+                  "h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm border-2 transition-all",
+                  isActive ? "border-primary bg-card" : "border-transparent bg-muted"
+                )}>
+                  {logo ? (
+                    <img
+                      src={logo}
+                      alt={wallet.name}
+                      className="h-7 w-7 object-contain rounded-full"
+                    />
+                  ) : (
+                    <Icon className={cn("h-6 w-6", isActive ? "text-primary" : "text-muted-foreground")} />
+                  )}
+                </div>
+                <span className={cn(
+                  "text-[9px] font-bold uppercase tracking-tighter max-w-[50px] truncate",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}>
+                  {wallet.name.split(' ')[0]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

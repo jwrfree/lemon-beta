@@ -3,6 +3,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction, TransactionRow } from '@/types/models';
 import { format, parseISO } from 'date-fns';
+import { transactionEvents } from '@/lib/transaction-events';
 
 export const useRangeTransactions = (startDate: Date, endDate: Date) => {
     const { user, isLoading: authLoading } = useAuth();
@@ -70,10 +71,38 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             }, () => fetchRange())
             .subscribe();
 
+        // Optimistic Updates
+        const handleCreated = (newTx: Transaction) => {
+            const txDate = new Date(newTx.date);
+            // Check if within range
+            if (txDate >= startDate && txDate <= endDate) {
+                setTransactions(prev => {
+                    const exists = prev.find(t => t.id === newTx.id);
+                    if (exists) return prev;
+                    return [newTx, ...prev].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                });
+            }
+        };
+
+        const handleUpdated = (updatedTx: Transaction) => {
+            setTransactions(prev => prev.map(t => t.id === updatedTx.id ? updatedTx : t));
+        };
+
+        const handleDeleted = (deletedId: string) => {
+            setTransactions(prev => prev.filter(t => t.id !== deletedId));
+        };
+
+        transactionEvents.on('transaction.created', handleCreated);
+        transactionEvents.on('transaction.updated', handleUpdated);
+        transactionEvents.on('transaction.deleted', handleDeleted);
+
         return () => {
             supabase.removeChannel(channel);
+            transactionEvents.off('transaction.created', handleCreated);
+            transactionEvents.off('transaction.updated', handleUpdated);
+            transactionEvents.off('transaction.deleted', handleDeleted);
         };
-    }, [user, supabase, fetchRange]);
+    }, [user, supabase, fetchRange, startDate, endDate]);
 
     return {
         transactions,

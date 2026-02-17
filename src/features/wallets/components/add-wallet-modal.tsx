@@ -16,8 +16,8 @@ import { walletSchema, WalletFormValues } from '../schemas/wallet-schema';
 import { cn } from '@/lib/utils';
 
 const popularWallets: Record<string, string[]> = {
-  'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay'],
-  'bank': ['BCA', 'Mandiri', 'BNI', 'BRI', 'Jenius', 'Bank Jago'],
+  'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay', 'PayPal'],
+  'bank': ['BCA', 'Mandiri', 'BNI', 'BRI', 'CIMB Niaga', 'Jenius', 'Bank Jago', 'Blu', 'Seabank'],
 };
 
 const walletCategories = [

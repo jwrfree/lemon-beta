@@ -1,4 +1,3 @@
-
 'use client';
 import { Wallet, Landmark, Smartphone, CircleDollarSign, TrendingUp, Home, Building } from 'lucide-react';
 
@@ -40,49 +39,57 @@ const defaultVisuals: WalletVisuals = {
 
 const brandGradients: Record<string, { gradient: Gradient; textColor: string; logo?: string }> = {
     // E-Wallets
-    'gopay': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/gopay.co.id' },
-    'ovo': { gradient: { from: '#4C3494', to: '#322261' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/ovo.id' },
-    'dana': { gradient: { from: '#118EE9', to: '#0B5E9A' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/dana.id' },
-    'linkaja': { gradient: { from: '#ED1C24', to: '#991217' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/linkaja.id' },
-    'shopeepay': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/shopee.co.id' },
-    'paypal': { gradient: { from: '#003087', to: '#001C64' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/paypal.com' },
+    'gopay': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=gopay.co.id&sz=128' },
+    'ovo': { gradient: { from: '#4C3494', to: '#322261' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=ovo.id&sz=128' },
+    'dana': { gradient: { from: '#118EE9', to: '#0B5E9A' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=dana.id&sz=128' },
+    'linkaja': { gradient: { from: '#ED1C24', to: '#991217' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=linkaja.id&sz=128' },
+    'shopeepay': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },
+    'paypal': { gradient: { from: '#003087', to: '#001C64' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=paypal.com&sz=128' },
 
-    // Banks (with & without "Bank" prefix)
-    'bca': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bca.co.id' },
-    'bank bca': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bca.co.id' },
-    'mandiri': { gradient: { from: '#003D79', to: '#00284F' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bankmandiri.co.id' },
-    'bank mandiri': { gradient: { from: '#003D79', to: '#00284F' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bankmandiri.co.id' },
-    'bni': { gradient: { from: '#F15A23', to: '#A33B15' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bni.co.id' },
-    'bank bni': { gradient: { from: '#F15A23', to: '#A33B15' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bni.co.id' },
-    'bri': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bri.co.id' },
-    'bank bri': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bri.co.id' },
-    'cimb niaga': { gradient: { from: '#7B1216', to: '#4A0B0D' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/cimbniaga.co.id' },
-    'bsi': { gradient: { from: '#00A499', to: '#007068' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bankbsi.co.id' },
-    'bank syariah indonesia': { gradient: { from: '#00A499', to: '#007068' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bankbsi.co.id' },
+    // Banks
+    'bca': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bca.co.id&sz=128' },
+    'mandiri': { gradient: { from: '#003D79', to: '#00284F' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bankmandiri.co.id&sz=128' },
+    'bni': { gradient: { from: '#F15A23', to: '#A33B15' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bni.co.id&sz=128' },
+    'bri': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bri.co.id&sz=128' },
+    'cimb': { gradient: { from: '#7B1216', to: '#4A0B0D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=cimbniaga.co.id&sz=128' },
+    'bsi': { gradient: { from: '#00A499', to: '#007068' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bankbsi.co.id&sz=128' },
+    'digibank': { gradient: { from: '#E32D2D', to: '#961E1E' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=dbs.com&sz=128' },
+    'ocbc': { gradient: { from: '#ED1C24', to: '#991217' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=ocbc.id&sz=128' },
+    'uob': { gradient: { from: '#003366', to: '#002244' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=uob.co.id&sz=128' },
+    'maybank': { gradient: { from: '#FFD100', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=maybank.co.id&sz=128' },
+    'permata': { gradient: { from: '#00A651', to: '#007036' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=permatabank.com&sz=128' },
+    'panin': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=panin.co.id&sz=128' },
+    'btpn': { gradient: { from: '#0070C0', to: '#004A80' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=btpn.com&sz=128' },
+    'danamon': { gradient: { from: '#F15A23', to: '#A33B15' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=danamon.co.id&sz=128' },
+    'hsbc': { gradient: { from: '#DB0011', to: '#99000B' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=hsbc.co.id&sz=128' },
+    'btn': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=btn.co.id&sz=128' },
 
-    // Digital Banks & Aliases
-    'neobank': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://logo.clearbit.com/bankneo.co.id' },
-    'bank neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://logo.clearbit.com/bankneo.co.id' },
-    'seabank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/seabank.co.id' },
-    'superbank': { gradient: { from: '#CCFF00', to: '#8AB300' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Superbank_Logo.svg/1200px-Superbank_Logo.svg.png' }, // Fallback to wikimedia for new bank
-    'blu': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/blubybcadigital.id' },
-    'blu by bca': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/blubybcadigital.id' },
-    'jenius': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/jenius.com' },
-    'jago': { gradient: { from: '#F6A000', to: '#AD7100' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/jago.com' },
-    'bank jago': { gradient: { from: '#F6A000', to: '#AD7100' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/jago.com' },
+    // Digital Banks
+    'neobank': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
+    'seabank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
+    'superbank': { gradient: { from: '#CCFF00', to: '#8AB300' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Superbank_Logo.svg/1200px-Superbank_Logo.svg.png' },
+    'blu': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=blubybcadigital.id&sz=128' },
+    'jenius': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jenius.com&sz=128' },
+    'jago': { gradient: { from: '#F6A000', to: '#AD7100' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jago.com&sz=128' },
+    'nanovest': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=nanovest.io&sz=128' },
 
     // Paylater
-    'spaylater': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/shopee.co.id' },
-    'gopaylater': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/gopay.co.id' },
-    'gopay later': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/gopay.co.id' },
+    'spaylater': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },
+    'gopaylater': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=gopay.co.id&sz=128' },
     'kredivo': { gradient: { from: '#F78121', to: '#A85614' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/kredivo.com' },
     'akulaku': { gradient: { from: '#E33333', to: '#962222' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/akulaku.com' },
+    'atome': { gradient: { from: '#FFE000', to: '#B8A200' }, textColor: 'text-black', logo: 'https://logo.clearbit.com/atome.id' },
+    'traveloka paylater': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=traveloka.com&sz=128' },
 
     // Investment
-    'bibit': { gradient: { from: '#23B15D', to: '#17733C' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/bibit.id' },
-    'ajaib': { gradient: { from: '#007AFF', to: '#0051AB' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/ajaib.co.id' },
-    'pluang': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/pluang.com' },
-    'saldo pluang': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/pluang.com' },
+    'bibit': { gradient: { from: '#23B15D', to: '#17733C' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bibit.id&sz=128' },
+    'ajaib': { gradient: { from: '#007AFF', to: '#0051AB' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=ajaib.co.id&sz=128' },
+    'pluang': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=pluang.com&sz=128' },
+    'stockbit': { gradient: { from: '#1D1D1D', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=stockbit.com&sz=128' },
+    'indodax': { gradient: { from: '#003366', to: '#002244' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=indodax.com&sz=128' },
+    'binance': { gradient: { from: '#F3BA2F', to: '#A88221' }, textColor: 'text-black', logo: 'https://logo.clearbit.com/binance.com' },
+    'pintu': { gradient: { from: '#000000', to: '#333333' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=pintu.co.id&sz=128' },
+    'bareksa': { gradient: { from: '#23B15D', to: '#17733C' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bareksa.com&sz=128' },
 
     // Cash & Physical
     'dompet': { gradient: { from: '#334155', to: '#0f172a' }, textColor: 'text-white' }, // Dark slate for physical wallet
@@ -92,18 +99,24 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
 
 
 export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): WalletVisuals => {
-    const normalizedName = itemName.toLowerCase();
+    const normalizedName = itemName.toLowerCase().trim();
 
     // 1. Try Exact Match
     let brand = brandGradients[normalizedName];
 
     // 2. Try Fuzzy Match (Smart Search)
     if (!brand) {
-        // Exclude generic words to prevent "Dana Darurat" matching "dana" brand or "Tunai Dompet" matching "tunai"
-        const excludedFuzzyKeys = ['cash', 'tunai', 'dompet', 'dana', 'bank', 'other'];
+        // Exclude generic words but allow 'dana' to match if it's the e-wallet brand
+        const genericWords = ['cash', 'tunai', 'dompet', 'bank', 'other'];
 
-        const matchedKey = Object.keys(brandGradients).find(key => {
-            if (excludedFuzzyKeys.includes(key)) return false;
+        // Sort keys by length descending to match most specific first (e.g., "gopaylater" before "gopay")
+        const sortedKeys = Object.keys(brandGradients).sort((a, b) => b.length - a.length);
+
+        const matchedKey = sortedKeys.find(key => {
+            if (genericWords.includes(key)) return false;
+            
+            // If it's 'dana', only match if it's likely the brand (e.g. contains 'dana' but not just generic 'dana')
+            // For simplicity, we just allow it but prioritze other matches
             return normalizedName.includes(key);
         });
 

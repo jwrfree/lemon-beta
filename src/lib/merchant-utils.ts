@@ -48,8 +48,18 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     // --- FINANCE ---
     'bca': { icon: CreditCard, color: 'text-blue-800', bgColor: 'bg-blue-50', domain: 'bca.co.id' },
     'mandiri': { icon: CreditCard, color: 'text-blue-900', bgColor: 'bg-yellow-50', domain: 'bankmandiri.co.id' },
+    'bni': { icon: CreditCard, color: 'text-orange-700', bgColor: 'bg-orange-50', domain: 'bni.co.id' },
+    'bri': { icon: CreditCard, color: 'text-blue-700', bgColor: 'bg-blue-50', domain: 'bri.co.id' },
+    'cimb': { icon: CreditCard, color: 'text-rose-700', bgColor: 'bg-rose-50', domain: 'cimbniaga.co.id' },
+    'bsi': { icon: CreditCard, color: 'text-teal-700', bgColor: 'bg-teal-50', domain: 'bankbsi.co.id' },
     'dana': { icon: Smartphone, color: 'text-blue-500', bgColor: 'bg-blue-50', domain: 'dana.id' },
     'ovo': { icon: Smartphone, color: 'text-purple-700', bgColor: 'bg-purple-50', domain: 'ovo.id' },
+    'gopay': { icon: Smartphone, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'gopay.co.id' },
+    'linkaja': { icon: Smartphone, color: 'text-rose-600', bgColor: 'bg-rose-50', domain: 'linkaja.id' },
+    'shopeepay': { icon: Smartphone, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'shopee.co.id' },
+    'jenius': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'jenius.com' },
+    'jago': { icon: CreditCard, color: 'text-amber-500', bgColor: 'bg-amber-50', domain: 'jago.com' },
+    'blu': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'blubybcadigital.id' },
 };
 
 /**

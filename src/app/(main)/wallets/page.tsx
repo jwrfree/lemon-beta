@@ -12,12 +12,15 @@ import { PageHeader } from '@/components/page-header';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 import { DesktopWalletView } from '@/features/wallets/components/desktop-wallet-view';
 import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
+import { WalletAnalyticsMobile } from '@/features/wallets/components/wallet-analytics-mobile';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 export default function WalletsPage() {
   const { wallets } = useWallets();
   const router = useRouter();
   const { setIsWalletModalOpen } = useUI();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mobileTab, setMobileTab] = useState<'mutasi' | 'analitik'>('mutasi');
 
   // Derive the effectively active index (clamped to range)
   const safeActiveIndex = wallets.length > 0
@@ -73,20 +76,38 @@ export default function WalletsPage() {
             />
 
             <div className="mt-4">
-              <div className="px-5 flex items-center justify-between mb-4">
-                <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-widest">Mutasi Rekening <span className="opacity-50">(10 Terakhir)</span></h2>
-                <Button variant="link" size="sm" className="text-[10px] font-medium uppercase tracking-widest text-primary" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
-              </div>
+              <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as any)} className="w-full">
+                <div className="px-5 mb-6">
+                  <TabsList className="bg-muted p-1 rounded-2xl h-12 w-full grid grid-cols-2">
+                    <TabsTrigger value="mutasi" className="h-full rounded-xl font-medium text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
+                    <TabsTrigger value="analitik" className="h-full rounded-xl font-medium text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
+                  </TabsList>
+                </div>
 
-              <div className="w-full">
-                {activeWallet && (
-                  <TransactionList
-                    transactions={walletTransactions}
-                    isLoading={isTransactionsLoading}
-                    limit={10}
-                  />
-                )}
-              </div>
+                <TabsContent value="mutasi" className="mt-0">
+                  <div className="px-5 flex items-center justify-between mb-4">
+                    <h2 className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">10 Transaksi Terakhir</h2>
+                    <Button variant="link" size="sm" className="text-[10px] font-medium uppercase tracking-widest text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
+                  </div>
+                  <div className="w-full">
+                    {activeWallet && (
+                      <TransactionList
+                        transactions={walletTransactions}
+                        isLoading={isTransactionsLoading}
+                        limit={10}
+                      />
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="analitik" className="mt-0">
+                  {activeWallet && (
+                    <WalletAnalyticsMobile 
+                      transactions={walletTransactions} 
+                    />
+                  )}
+                </TabsContent>
+              </Tabs>
             </div>
           </main>
         )}
