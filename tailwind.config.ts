@@ -60,6 +60,14 @@ export default {
           DEFAULT: 'var(--success)',
           foreground: 'var(--success-foreground)',
         },
+        warning: {
+          DEFAULT: 'var(--warning)',
+          foreground: 'var(--warning-foreground)',
+        },
+        info: {
+          DEFAULT: 'var(--info)',
+          foreground: 'var(--info-foreground)',
+        },
         border: 'var(--border)',
         input: 'var(--input)',
         ring: 'var(--ring)',
@@ -144,6 +152,9 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'toast-enter': 'toast-enter 0.4s ease-out',
         'toast-exit': 'toast-exit 0.4s ease-in',
+      },
+      boxShadow: {
+        card: '0 2px 8px -2px rgba(0, 0, 0, 0.1), 0 1px 4px -2px rgba(0, 0, 0, 0.06)',
       },
     },
   },

@@ -205,18 +205,18 @@ export const DesktopDashboard = () => {
 
     if (!mounted || isTxLoading) return <DashboardSkeleton />;
 
-    const colorPalette = ['bg-rose-500', 'bg-orange-500', 'bg-amber-500', 'bg-emerald-500', 'bg-cyan-500', 'bg-blue-500'];
+    const colorPalette = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4', 'bg-chart-5'];
 
     return (
         <TooltipProvider>
-            <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950/50 pb-20 text-zinc-900 dark:text-zinc-100">
+            <div className="min-h-screen bg-background pb-20 text-foreground">
                 <div className="max-w-[1920px] mx-auto p-4 lg:p-6 space-y-6">
 
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h1 className="text-2xl font-medium tracking-tight flex items-center gap-2">
-                                <Activity className="w-6 h-6 text-indigo-500" />
+                                <Activity className="w-6 h-6 text-primary" />
                                 Financial Command Center
                             </h1>
                             <p className="text-sm text-muted-foreground mt-1 font-medium">Real-time data analysis & portfolio tracking.</p>
@@ -224,7 +224,7 @@ export const DesktopDashboard = () => {
 
                         <div className="flex items-center gap-3">
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-900 border-none shadow-sm rounded-xl h-9 text-xs font-medium">
+                                <SelectTrigger className="w-[180px] bg-card border-none shadow-card rounded-lg h-9 text-xs font-medium">
                                     <SelectValue placeholder="Pilih Dompet" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -236,7 +236,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className={cn("h-9 w-9 rounded-xl border-none shadow-sm bg-white dark:bg-zinc-900", isPending && "animate-spin")}
+                                className={cn("h-9 w-9 rounded-lg border-none shadow-card bg-card", isPending && "animate-spin")}
                                 onClick={handleRefresh}
                             >
                                 <RefreshCw className="h-4 w-4" />
@@ -289,10 +289,10 @@ export const DesktopDashboard = () => {
                             {/* ROW 2: Category Matrix */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Pie Chart */}
-                                <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+                                <div className="bg-card rounded-lg p-6 shadow-card border border-border">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
-                                            <PieIcon className="w-5 h-5 text-indigo-500" />
+                                            <PieIcon className="w-5 h-5 text-primary" />
                                             <h3 className="font-medium">Allocation Radar</h3>
                                         </div>
                                     </div>
@@ -304,12 +304,12 @@ export const DesktopDashboard = () => {
                                 </div>
 
                                 {/* List Breakdown */}
-                                <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+                                <div className="bg-card rounded-lg p-6 shadow-card border border-border">
                                     <div className="flex items-center gap-2 mb-6">
-                                        <ArrowUpRight className="w-5 h-5 text-rose-500" />
+                                        <ArrowUpRight className="w-5 h-5 text-destructive" />
                                         <h3 className="font-medium">Top Spenders</h3>
                                     </div>
-                                    <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
+                                    <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin scrollbar-thumb-muted dark:scrollbar-thumb-muted-foreground/20">
                                         {currentMonthData.expenseCategories.map((cat, idx) => {
                                             const budget = budgets.find(b => b.categories.includes(cat.name));
                                             return (
@@ -324,7 +324,7 @@ export const DesktopDashboard = () => {
                                             );
                                         })}
                                         {currentMonthData.expenseCategories.length === 0 && (
-                                            <p className="text-zinc-400 text-sm text-center py-8 font-medium">No data available for analysis.</p>
+                                            <p className="text-muted-foreground text-sm text-center py-8 font-medium">No data available for analysis.</p>
                                         )}
                                     </div>
                                 </div>
@@ -341,16 +341,16 @@ export const DesktopDashboard = () => {
                     </div>
 
                     {/* FULL WIDTH Mutasi Rekening */}
-                    <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+                    <div className="bg-card rounded-lg p-6 shadow-card border border-border">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-medium flex items-center gap-2">
-                                <ListTodo className="w-5 h-5 text-indigo-500" />
+                                <ListTodo className="w-5 h-5 text-primary" />
                                 Mutasi Rekening <span className="opacity-50 font-normal">(10 Terakhir)</span>
                             </h3>
                             <Button 
                                 variant="ghost" 
                                 size="sm" 
-                                className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-primary"
+                                className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary"
                                 onClick={() => router.push('/transactions')}
                             >
                                 Lihat Semua Transaksi

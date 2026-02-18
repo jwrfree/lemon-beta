@@ -129,6 +129,12 @@
 
     --success: hsl(var(--emerald-600));
     --success-foreground: hsl(0 0% 100%);
+
+    --warning: hsl(var(--yellow-600));
+    --warning-foreground: hsl(0 0% 100%);
+
+    --info: hsl(var(--blue-600));
+    --info-foreground: hsl(0 0% 100%);
     
     --border: hsl(var(--gray-200));
     --input: hsl(var(--gray-200));
@@ -179,6 +185,12 @@
 
     --success: hsl(var(--emerald-500));
     --success-foreground: hsl(var(--emerald-900));
+
+    --warning: hsl(var(--yellow-500));
+    --warning-foreground: hsl(var(--yellow-900));
+
+    --info: hsl(var(--blue-500));
+    --info-foreground: hsl(0 0% 100%);
     
     --border: hsl(var(--gray-800));
     --input: hsl(var(--gray-800));

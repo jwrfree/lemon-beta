@@ -38,6 +38,19 @@ This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lem
 - **Database Schema Sync**: Added `sub_category` column support across database triggers, RPC functions, and frontend forms.
 - **Performance Optimization**: Implemented `next/dynamic` lazy loading for heavy chart components to reduce initial bundle size.
 
+## [Unreleased] - February 2026
+
+### 🎨 Visual & UI Consistency
+
+- **Design System Standardization**:
+  - **Semantic Tokens**: Introduced `warning` and `info` semantic tokens to the global design system for better consistency.
+  - **Sharpened Shadows**: Added a custom `shadow-card` utility for a more professional, enterprise-grade look.
+  - **Radius Consistency**: Refactored `Card` components to use the standardized `rounded-lg` radius, ensuring consistency with the design system.
+- **Component Refactoring**:
+  - **NetWorthCard**: Updated to use semantic text colors (`text-success`, `text-warning`, `text-destructive`) instead of hardcoded palette values.
+  - **DesktopDashboard**: Removed hardcoded colors and border radii, aligning the dashboard with the global theme and responsive design tokens.
+- **Testing**: Added `visual-regression.test.tsx` to verify component structure and class usage.
+
 ## [Version 2.3.0] - 18 February 2026
 
 ### 🛡 Security & Performance Audit Fixes

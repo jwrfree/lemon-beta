@@ -23,7 +23,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
     }).slice(0, 3);
 
     return (
-        <Card className="border-none shadow-sm bg-card rounded-lg">
+        <Card className="border border-border shadow-card bg-card rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium">Status Anggaran</CardTitle>
@@ -37,7 +37,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
             </CardHeader>
             <CardContent className="space-y-4">
                 {sortedBudgets.length === 0 ? (
-                    <div className="text-center py-4 text-xs text-muted-foreground bg-muted/30 rounded-lg border border-dashed border-muted">
+                    <div className="text-center py-4 text-xs text-muted-foreground bg-muted/30 rounded-lg border border-dashed border-border">
                         <p>Belum ada anggaran dibuat.</p>
                         <Button variant="link" size="sm" asChild className="px-0 h-auto text-xs mt-1">
                             <Link href="/budgeting">Buat Anggaran</Link>
@@ -48,7 +48,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                         const spent = budget.spent ?? 0;
                         const percent = Math.min((spent / budget.targetAmount) * 100, 100);
                         const isOver = spent > budget.targetAmount;
-                        const isWarning = percent > 80;
+                        const isWarning = (percent > 80) && !isOver;
                         
                         return (
                             <div key={budget.id} className="space-y-1.5">
@@ -69,7 +69,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                                     className="h-2" 
                                     indicatorClassName={cn(
                                         isOver ? "bg-destructive" :
-                                        isWarning ? "bg-amber-500" : "bg-emerald-500"
+                                        isWarning ? "bg-warning" : "bg-success"
                                     )}
                                 />
                             </div>

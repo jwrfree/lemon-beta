@@ -22,9 +22,9 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
     const [displayNetWorth, setDisplayNetWorth] = useState(0);
 
     const getStatusColor = (ratio: number) => {
-        if (ratio <= 30) return { text: "text-emerald-600", bar: "bg-gradient-to-r from-emerald-500 to-emerald-400" };
-        if (ratio <= 60) return { text: "text-yellow-600", bar: "bg-gradient-to-r from-yellow-500 to-yellow-400" };
-        return { text: "text-rose-600", bar: "bg-gradient-to-r from-rose-500 to-rose-400" };
+        if (ratio <= 30) return { text: "text-success", bar: "bg-gradient-to-r from-success to-success/80" };
+        if (ratio <= 60) return { text: "text-warning", bar: "bg-gradient-to-r from-warning to-warning/80" };
+        return { text: "text-destructive", bar: "bg-gradient-to-r from-destructive to-destructive/80" };
     };
 
     const { text: textColor, bar: barColor } = getStatusColor(debtRatio);
@@ -48,12 +48,12 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                     <AnimatedCounter value={displayNetWorth} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary/10">
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
                     <div className="space-y-1">
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Wallet className="h-3 w-3" /> Aset
                         </p>
-                        <p className="text-sm font-medium text-emerald-600">
+                        <p className="text-sm font-medium text-success">
                             {formatCurrency(totalAssets)}
                         </p>
                     </div>
@@ -61,7 +61,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <TrendingDown className="h-3 w-3" /> Kewajiban
                         </p>
-                        <p className="text-sm font-medium text-rose-600">
+                        <p className="text-sm font-medium text-destructive">
                             {formatCurrency(totalLiabilities)}
                         </p>
                     </div>
