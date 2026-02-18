@@ -40,7 +40,8 @@ const defaultVisuals: WalletVisuals = {
 const brandGradients: Record<string, { gradient: Gradient; textColor: string; logo?: string }> = {
     // E-Wallets
     'gopay': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=gopay.co.id&sz=128' },
-    'ovo': { gradient: { from: '#4C3494', to: '#322261' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=ovo.id&sz=128' },
+    'ovo': { gradient: { from: '#4C3494', to: '#322261' }, textColor: 'text-white', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/512px-Logo_ovo_purple.svg.png' },
+    'ovo cash': { gradient: { from: '#4C3494', to: '#322261' }, textColor: 'text-white', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/512px-Logo_ovo_purple.svg.png' },
     'dana': { gradient: { from: '#118EE9', to: '#0B5E9A' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=dana.id&sz=128' },
     'linkaja': { gradient: { from: '#ED1C24', to: '#991217' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=linkaja.id&sz=128' },
     'shopeepay': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },

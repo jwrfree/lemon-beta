@@ -33,9 +33,8 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
             className={cn(
                 "group relative overflow-hidden bg-white dark:bg-zinc-900 rounded-xl p-5 border-none shadow-sm transition-all text-left w-full",
                 isOverBudget
-                    ? "border-rose-500/30 ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
-                        ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
-                        : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                    ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
+                    : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
             )}
         >
             <div className="relative z-10">
