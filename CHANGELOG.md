@@ -49,6 +49,8 @@ This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lem
 - **Component Refactoring**:
   - **NetWorthCard**: Updated to use semantic text colors (`text-success`, `text-warning`, `text-destructive`) instead of hardcoded palette values.
   - **DesktopDashboard**: Removed hardcoded colors and border radii, aligning the dashboard with the global theme and responsive design tokens.
+- **Brand Intelligence**:
+  - **SeaBank Integration**: Added SeaBank to merchant and wallet visual maps, ensuring the logo and brand colors appear correctly in transaction lists and wallet stacks.
 - **Testing**: Added `visual-regression.test.tsx` to verify component structure and class usage.
 
 ## [Version 2.3.0] - 18 February 2026

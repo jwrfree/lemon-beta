@@ -66,7 +66,11 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
 
     // Digital Banks
     'neobank': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
+    'neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
+    'bnc': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
+    'bank neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
     'seabank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
+    'sea bank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
     'superbank': { gradient: { from: '#CCFF00', to: '#8AB300' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Superbank_Logo.svg/1200px-Superbank_Logo.svg.png' },
     'blu': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=blubybcadigital.id&sz=128' },
     'jenius': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jenius.com&sz=128' },
@@ -114,7 +118,7 @@ export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): Wa
 
         const matchedKey = sortedKeys.find(key => {
             if (genericWords.includes(key)) return false;
-            
+
             // If it's 'dana', only match if it's likely the brand (e.g. contains 'dana' but not just generic 'dana')
             // For simplicity, we just allow it but prioritze other matches
             return normalizedName.includes(key);

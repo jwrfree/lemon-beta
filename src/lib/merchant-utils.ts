@@ -60,6 +60,8 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'jenius': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'jenius.com' },
     'jago': { icon: CreditCard, color: 'text-amber-500', bgColor: 'bg-amber-50', domain: 'jago.com' },
     'blu': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'blubybcadigital.id' },
+    'seabank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'seabank.co.id' },
+    'sea bank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'seabank.co.id' },
 };
 
 /**
