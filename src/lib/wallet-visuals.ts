@@ -66,10 +66,10 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
     'btn': { gradient: { from: '#00529C', to: '#003666' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=btn.co.id&sz=128' },
 
     // Digital Banks
-    'neobank': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
-    'neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
-    'bnc': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
-    'bank neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
+    'neobank': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+    'neo bank': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+    'bank neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+    'bnc': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
     'seabank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
     'sea bank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
     'superbank': { gradient: { from: '#CCFF00', to: '#8AB300' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=superbank.id&sz=128' },

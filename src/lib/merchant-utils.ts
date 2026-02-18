@@ -64,6 +64,8 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'blu': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'blubybcadigital.id' },
     'seabank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'seabank.co.id' },
     'sea bank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'seabank.co.id' },
+    'neobank': { icon: CreditCard, color: 'text-yellow-600', bgColor: 'bg-yellow-50', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+    'neo bank': { icon: CreditCard, color: 'text-yellow-600', bgColor: 'bg-yellow-50', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
 };
 
 /**
