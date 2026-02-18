@@ -15,8 +15,8 @@ interface NetWorthCardProps {
 export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProps) => {
     const netWorth = totalAssets - totalLiabilities;
     const isPositive = netWorth >= 0;
-    const debtRatio = totalAssets > 0 
-        ? (totalLiabilities / totalAssets) * 100 
+    const debtRatio = totalAssets > 0
+        ? (totalLiabilities / totalAssets) * 100
         : (totalLiabilities > 0 ? 100 : 0);
     const [progress, setProgress] = useState(0);
     const [displayNetWorth, setDisplayNetWorth] = useState(0);
@@ -36,7 +36,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
     }, [debtRatio, netWorth]);
 
     return (
-        <Card className="shadow-sm border-border/60">
+        <Card className="border-none shadow-card bg-card rounded-lg">
             <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <PiggyBank className="h-4 w-4" />
@@ -78,7 +78,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                         </span>
                     </div>
                     <div className="h-2 w-full bg-muted rounded-full overflow-hidden border border-border">
-                        <div 
+                        <div
                             className={cn("h-full rounded-full transition-all duration-1000 ease-out", barColor)}
                             style={{ width: `${Math.min(progress, 100)}%` }}
                         />

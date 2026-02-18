@@ -99,7 +99,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 <div className="relative p-7 flex flex-col h-full">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-lg border border-white/20 shadow-inner flex items-center justify-center">
+                      <div className="p-1.5 bg-white/20 backdrop-blur-md rounded-lg border border-white/20 shadow-inner flex items-center justify-center">
                         {logo ? (
                           <>
                             <img

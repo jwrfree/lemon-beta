@@ -178,34 +178,20 @@ function SettingsContent() {
                     </BentoItem>
                 </div>
 
-                {/* BARIS 2: Core Actions (Grid 3) */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                        <div className="p-4 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                {/* BARIS 2: Core Actions (Grid 2) */}
+                <div className="grid grid-cols-2 gap-4">
+                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                        <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
                             <Wallet className="w-6 h-6" />
                         </div>
                         <span className="font-medium text-sm text-center">Dompet</span>
                     </BentoItem>
 
-                    <BentoItem onClick={() => router.push('/categories')} delay={0.2} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                        <div className="p-4 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
-                            <Wrench className="w-6 h-6" />
-                        </div>
-                        <span className="font-medium text-sm text-center">Kategori</span>
-                    </BentoItem>
-
-                    <BentoItem onClick={() => router.push('/goals')} delay={0.25} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                        <div className="p-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                        <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                             <Target className="w-6 h-6" />
                         </div>
                         <span className="font-medium text-sm text-center">Target</span>
-                    </BentoItem>
-
-                    <BentoItem onClick={() => router.push('/token-calculator')} delay={0.3} className="md:aspect-square flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                        <div className="p-4 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
-                            <Calculator className="w-6 h-6" />
-                        </div>
-                        <span className="font-medium text-sm text-center">AI Calc</span>
                     </BentoItem>
                 </div>
 

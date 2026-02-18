@@ -17,12 +17,12 @@ interface SavingPotentialData {
 
 export function SavingPotential({ data }: { data: SavingPotentialData }) {
     const efficiency = (data.actualSavings / data.potentialSavings) * 100;
-    
+
     return (
-        <Card className="p-6 border-border rounded-lg bg-card text-foreground shadow-card overflow-hidden relative">
+        <Card className="p-6 border-none rounded-lg bg-card text-foreground shadow-card overflow-hidden relative">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-success/10 blur-[100px] rounded-full -mr-20 -mt-20" />
-            
+
             <div className="relative z-10">
                 <div className="flex justify-between items-start mb-8">
                     <div className="space-y-1">
@@ -55,7 +55,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
                             <span>{efficiency.toFixed(0)}%</span>
                         </div>
                         <div className="relative h-3 w-full bg-muted rounded-full overflow-hidden border border-border">
-                            <motion.div 
+                            <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${Math.min(efficiency, 100)}%` }}
                                 transition={{ duration: 1.5, ease: "circOut" }}

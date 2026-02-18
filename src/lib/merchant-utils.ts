@@ -11,7 +11,8 @@ export interface MerchantVisuals {
     color: string;
     bgColor: string;
     brandColor?: string;
-    domain?: string; // Added for real logo fetching
+    domain?: string;
+    logo?: string; // Local first logo path
 }
 
 export const MERCHANT_MAP: Record<string, MerchantVisuals> = {

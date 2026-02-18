@@ -294,7 +294,7 @@ export const DesktopDashboard = () => {
                             {/* ROW 2: Category Matrix */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Pie Chart */}
-                                <div className="bg-card rounded-lg p-6 shadow-card border border-border">
+                                <div className="bg-card rounded-lg p-6 shadow-card">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
                                             <PieIcon className="w-5 h-5 text-primary" />
@@ -309,7 +309,7 @@ export const DesktopDashboard = () => {
                                 </div>
 
                                 {/* List Breakdown */}
-                                <div className="bg-card rounded-lg p-6 shadow-card border border-border">
+                                <div className="bg-card rounded-lg p-6 shadow-card">
                                     <div className="flex items-center gap-2 mb-6">
                                         <ArrowUpRight className="w-5 h-5 text-destructive" />
                                         <h3 className="font-medium">Top Spenders</h3>
@@ -346,15 +346,15 @@ export const DesktopDashboard = () => {
                     </div>
 
                     {/* FULL WIDTH Mutasi Rekening */}
-                    <div className="bg-card rounded-lg p-6 shadow-card border border-border">
+                    <div className="bg-card rounded-lg p-6 shadow-card">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-medium flex items-center gap-2">
                                 <ListTodo className="w-5 h-5 text-primary" />
                                 Mutasi Rekening <span className="opacity-50 font-normal">(10 Terakhir)</span>
                             </h3>
-                            <Button 
-                                variant="ghost" 
-                                size="sm" 
+                            <Button
+                                variant="ghost"
+                                size="sm"
                                 className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary"
                                 onClick={() => router.push('/transactions')}
                             >
@@ -363,7 +363,7 @@ export const DesktopDashboard = () => {
                         </div>
                         {filteredTransactions.length > 0 ? (
                             <DashboardRecentTransactions
-                                transactions={recentTransactions} 
+                                transactions={recentTransactions}
                                 wallets={wallets}
                             />
                         ) : (

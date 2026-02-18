@@ -59,7 +59,7 @@ export const DeepSeekUsageCard = () => {
     };
 
     return (
-        <Card className="border-none shadow-sm bg-gradient-to-br from-indigo-950 via-slate-900 to-black text-white overflow-hidden relative group">
+        <Card className="border-none shadow-card bg-gradient-to-br from-indigo-950 via-slate-900 to-black text-white overflow-hidden relative group rounded-lg">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none" />
 
             <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">

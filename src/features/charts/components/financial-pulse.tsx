@@ -43,7 +43,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground p-8 md:p-10 shadow-card mx-4 mt-4 border border-primary/20">
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground p-8 md:p-10 shadow-card mx-4 mt-4">
             {/* Background Chart */}
             {mounted && dataPoints.length > 0 && (
                 <div className="absolute inset-x-0 bottom-0 h-48 opacity-10 pointer-events-none">

@@ -29,7 +29,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         .slice(0, 3);
 
     return (
-        <Card className="border-none shadow-sm bg-card rounded-lg">
+        <Card className="border-none shadow-card bg-card rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -47,9 +47,9 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
                 {activeGoals.length === 0 ? (
                     <div className="text-center py-4 text-xs text-muted-foreground bg-muted/30 rounded-lg border border-dashed border-muted">
                         <p>Belum ada target aktif.</p>
-                        <Button 
-                            variant="link" 
-                            size="sm" 
+                        <Button
+                            variant="link"
+                            size="sm"
                             className="px-0 h-auto text-xs mt-1"
                             onClick={() => {
                                 setGoalToEdit(null);
@@ -62,7 +62,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
                 ) : (
                     activeGoals.map(goal => {
                         const percent = Math.min(((goal.currentAmount || 0) / goal.targetAmount) * 100, 100);
-                        
+
                         return (
                             <div key={goal.id} className="space-y-1.5">
                                 <div className="flex justify-between text-xs">

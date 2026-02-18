@@ -14,10 +14,17 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
     const fetchRange = useCallback(async () => {
         if (!user) return;
 
-        const start = format(startDate, 'yyyy-MM-dd');
-        const end = format(endDate, 'yyyy-MM-dd');
+        // Ensure valid dates
+        if (!(startDate instanceof Date) || isNaN(startDate.getTime()) || !(endDate instanceof Date) || isNaN(endDate.getTime())) {
+            console.warn("Invalid date range provided to useRangeTransactions", { startDate, endDate });
+            setIsLoading(false);
+            return;
+        }
 
         try {
+            const start = format(startDate, 'yyyy-MM-dd');
+            const end = format(endDate, 'yyyy-MM-dd');
+
             const { data, error } = await supabase
                 .from('transactions')
                 .select('*')
@@ -26,7 +33,10 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                 .lte('date', end)
                 .order('date', { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error("Supabase error fetching transactions:", error.message, error.details || '', error.hint || '');
+                throw error;
+            }
 
             if (data) {
                 const mapped: Transaction[] = (data as TransactionRow[]).map((t) => ({
@@ -45,8 +55,8 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                 }));
                 setTransactions(mapped);
             }
-        } catch (err) {
-            console.error("Error fetching range transactions:", err);
+        } catch (err: any) {
+            console.error("Error fetching range transactions:", err.message || err);
         } finally {
             setIsLoading(false);
         }

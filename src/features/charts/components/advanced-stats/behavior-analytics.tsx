@@ -25,7 +25,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
     const isWeekendHeavy = data.weekendAvg > data.weekdayAvg;
 
     return (
-        <Card className="p-6 border-border rounded-lg bg-card shadow-card">
+        <Card className="p-6 border-none rounded-lg bg-card shadow-card">
             <h3 className="text-xl font-medium tracking-tight mb-6 flex items-center gap-2">
                 <CalendarDays className="w-5 h-5 text-primary" />
                 Analisis Perilaku
@@ -42,14 +42,14 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
                             </p>
                         </div>
                     </div>
-                    
+
                     <div className="h-[180px] w-full">
                         <ChartContainer config={{ value: { label: 'Rata-rata', color: 'hsl(var(--chart-2))' } }}>
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                    <XAxis 
-                                        dataKey="name" 
-                                        axisLine={false} 
+                                    <XAxis
+                                        dataKey="name"
+                                        axisLine={false}
                                         tickLine={false}
                                         style={{ fontSize: '11px', fontWeight: 600, fill: 'hsl(var(--muted-foreground))' }}
                                     />

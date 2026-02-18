@@ -71,7 +71,7 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
     'bank neo': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=bankneo.co.id&sz=128' },
     'seabank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
     'sea bank': { gradient: { from: '#FF5400', to: '#A83700' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=seabank.co.id&sz=128' },
-    'superbank': { gradient: { from: '#CCFF00', to: '#8AB300' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Superbank_Logo.svg/1200px-Superbank_Logo.svg.png' },
+    'superbank': { gradient: { from: '#CCFF00', to: '#8AB300' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=superbank.id&sz=128' },
     'blu': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=blubybcadigital.id&sz=128' },
     'jenius': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jenius.com&sz=128' },
     'jago': { gradient: { from: '#F6A000', to: '#AD7100' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jago.com&sz=128' },
@@ -80,9 +80,9 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
     // Paylater
     'spaylater': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },
     'gopaylater': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=gopay.co.id&sz=128' },
-    'kredivo': { gradient: { from: '#F78121', to: '#A85614' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/kredivo.com' },
-    'akulaku': { gradient: { from: '#E33333', to: '#962222' }, textColor: 'text-white', logo: 'https://logo.clearbit.com/akulaku.com' },
-    'atome': { gradient: { from: '#FFE000', to: '#B8A200' }, textColor: 'text-black', logo: 'https://logo.clearbit.com/atome.id' },
+    'kredivo': { gradient: { from: '#F78121', to: '#A85614' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=kredivo.id&sz=128' },
+    'akulaku': { gradient: { from: '#E33333', to: '#962222' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=akulaku.com&sz=128' },
+    'atome': { gradient: { from: '#FFE000', to: '#B8A200' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=atome.id&sz=128' },
     'traveloka paylater': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=traveloka.com&sz=128' },
 
     // Investment
@@ -91,12 +91,12 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
     'pluang': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=pluang.com&sz=128' },
     'stockbit': { gradient: { from: '#1D1D1D', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=stockbit.com&sz=128' },
     'indodax': { gradient: { from: '#003366', to: '#002244' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=indodax.com&sz=128' },
-    'binance': { gradient: { from: '#F3BA2F', to: '#A88221' }, textColor: 'text-black', logo: 'https://logo.clearbit.com/binance.com' },
+    'binance': { gradient: { from: '#F3BA2F', to: '#A88221' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=binance.com&sz=128' },
     'pintu': { gradient: { from: '#000000', to: '#333333' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=pintu.co.id&sz=128' },
     'bareksa': { gradient: { from: '#23B15D', to: '#17733C' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bareksa.com&sz=128' },
 
     // Cash & Physical
-    'dompet': { gradient: { from: '#334155', to: '#0f172a' }, textColor: 'text-white' }, // Dark slate for physical wallet
+    'dompet': { gradient: { from: '#334155', to: '#0f172a' }, textColor: 'text-white' },
     'tunai': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' },
     'cash': { gradient: { from: '#22c55e', to: '#15803d' }, textColor: 'text-white' },
 };
@@ -110,17 +110,11 @@ export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): Wa
 
     // 2. Try Fuzzy Match (Smart Search)
     if (!brand) {
-        // Exclude generic words but allow 'dana' to match if it's the e-wallet brand
         const genericWords = ['cash', 'tunai', 'dompet', 'bank', 'other'];
-
-        // Sort keys by length descending to match most specific first (e.g., "gopaylater" before "gopay")
         const sortedKeys = Object.keys(brandGradients).sort((a, b) => b.length - a.length);
 
         const matchedKey = sortedKeys.find(key => {
             if (genericWords.includes(key)) return false;
-
-            // If it's 'dana', only match if it's likely the brand (e.g. contains 'dana' but not just generic 'dana')
-            // For simplicity, we just allow it but prioritze other matches
             return normalizedName.includes(key);
         });
 
@@ -139,18 +133,14 @@ export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): Wa
     }
 
     const categoryDefaultGradients: Record<string, Gradient> = {
-        // Wallets
-        'e-wallet': { from: '#0ea5e9', to: '#0369a1' }, // sky-500 to sky-700
-        'bank': { from: '#10b981', to: '#047857' }, // emerald-500 to emerald-700
-        'cash': { from: '#f97316', to: '#c2410c' }, // orange-500 to orange-700
-        // Assets
-        'investment': { from: '#10b981', to: '#047857' }, // emerald
-        'property': { from: '#2563eb', to: '#1e3a8a' }, // blue
-        // Liabilities
-        'loan': { from: '#ef4444', to: '#991b1b' }, // red
-        'credit-card': { from: '#f97316', to: '#9a3412' }, // orange
-        // Default
-        'other': { from: '#4338ca', to: '#312e81' }, // indigo-700 to indigo-900
+        'e-wallet': { from: '#0ea5e9', to: '#0369a1' },
+        'bank': { from: '#10b981', to: '#047857' },
+        'cash': { from: '#f97316', to: '#c2410c' },
+        'investment': { from: '#10b981', to: '#047857' },
+        'property': { from: '#2563eb', to: '#1e3a8a' },
+        'loan': { from: '#ef4444', to: '#991b1b' },
+        'credit-card': { from: '#f97316', to: '#9a3412' },
+        'other': { from: '#4338ca', to: '#312e81' },
     };
 
     return {

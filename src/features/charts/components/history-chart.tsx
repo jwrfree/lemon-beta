@@ -19,7 +19,7 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
     }
 
     return (
-        <Card className="p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
+        <Card className="p-6 bg-card border-none rounded-lg shadow-card">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h3 className="text-lg font-medium tracking-tight flex items-center gap-2">

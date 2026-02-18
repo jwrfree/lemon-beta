@@ -19,7 +19,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
     // If budget exists, percentage is based on budget. Else, based on total expense.
     const percentage = budgetAmount ? (amount / budgetAmount) * 100 : (total > 0 ? (amount / total) * 100 : 0);
     const isOverBudget = budgetAmount ? amount > budgetAmount : false;
-    
+
     // Extract background color from tailwind class if possible, or use a default
     const getGradientColor = () => {
         if (isOverBudget) return 'from-rose-500 to-rose-600';
@@ -31,10 +31,11 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
         <button
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden bg-white dark:bg-zinc-900 rounded-[2rem] p-5 border transition-all text-left w-full premium-shadow",
-                isOverBudget 
-                    ? "border-rose-500/30 ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]" 
-                    : "border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover-glow"
+                "group relative overflow-hidden bg-white dark:bg-zinc-900 rounded-xl p-5 border-none shadow-sm transition-all text-left w-full",
+                isOverBudget
+                    ? "border-rose-500/30 ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
+                        ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
+                        : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
             )}
         >
             <div className="relative z-10">
@@ -68,7 +69,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                             <span className="text-zinc-400">Limit: {formatCurrency(budgetAmount)}</span>
                         )}
                     </div>
-                    
+
                     <div className="relative h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                         <motion.div
                             initial={{ width: 0 }}
@@ -95,7 +96,7 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
     return (
         <button
             onClick={onClick}
-            className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all w-full text-left active:scale-[0.98]"
+            className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all w-full text-left active:scale-[0.98]"
         >
             <div className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-black font-medium text-sm">
                 {rank}

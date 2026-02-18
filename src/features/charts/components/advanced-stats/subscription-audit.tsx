@@ -21,7 +21,7 @@ interface SubscriptionAuditProps {
 
 export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProps) {
     return (
-        <Card className="p-6 border-border rounded-lg bg-card shadow-card">
+        <Card className="p-6 border-none rounded-lg bg-card shadow-card">
             <div className="flex justify-between items-center mb-6">
                 <div className="space-y-1">
                     <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">
@@ -41,12 +41,12 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
             <div className="space-y-3">
                 {items.length > 0 ? (
                     items.map((item) => (
-                        <div 
-                            key={item.id} 
+                        <div
+                            key={item.id}
                             className={cn(
                                 "flex items-center justify-between p-4 rounded-lg border transition-all",
-                                item.isDueSoon 
-                                    ? "bg-warning/5 border-warning/20" 
+                                item.isDueSoon
+                                    ? "bg-warning/5 border-warning/20"
                                     : "bg-secondary border-border"
                             )}
                         >

@@ -23,7 +23,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
     }).slice(0, 3);
 
     return (
-        <Card className="border border-border shadow-card bg-card rounded-lg">
+        <Card className="border-none shadow-card bg-card rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium">Status Anggaran</CardTitle>
@@ -49,7 +49,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                         const percent = Math.min((spent / budget.targetAmount) * 100, 100);
                         const isOver = spent > budget.targetAmount;
                         const isWarning = (percent > 80) && !isOver;
-                        
+
                         return (
                             <div key={budget.id} className="space-y-1.5">
                                 <div className="flex justify-between text-xs">
@@ -64,12 +64,12 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                                         {formatCurrency(spent)} <span className="text-[10px] text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
                                     </span>
                                 </div>
-                                <Progress 
-                                    value={percent} 
-                                    className="h-2" 
+                                <Progress
+                                    value={percent}
+                                    className="h-2"
                                     indicatorClassName={cn(
                                         isOver ? "bg-destructive" :
-                                        isWarning ? "bg-warning" : "bg-success"
+                                            isWarning ? "bg-warning" : "bg-success"
                                     )}
                                 />
                             </div>
