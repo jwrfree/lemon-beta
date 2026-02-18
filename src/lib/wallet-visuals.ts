@@ -80,13 +80,28 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
     'tiktok paylater': { gradient: { from: '#000000', to: '#25F4EE' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=tiktok.com&sz=128' },
     'nanovest': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=nanovest.io&sz=128' },
 
-    // Paylater
+    // Paylater & Loans
     'spaylater': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },
+    'sp pinjam': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },
+    'shopee pinjam': { gradient: { from: '#EE4D2D', to: '#9E331D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=shopee.co.id&sz=128' },
+
     'gopaylater': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=gopay.co.id&sz=128' },
+    'gopay pinjam': { gradient: { from: '#00AED6', to: '#0083A0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=gopay.co.id&sz=128' },
+
+    'flexi cash': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jenius.com&sz=128' },
+    'jenius flexi': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jenius.com&sz=128' },
+
+    'neo pinjam': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+    'neo bank pinjam': { gradient: { from: '#FACD00', to: '#B89600' }, textColor: 'text-black', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+
     'kredivo': { gradient: { from: '#F78121', to: '#A85614' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=kredivo.id&sz=128' },
     'akulaku': { gradient: { from: '#E33333', to: '#962222' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=akulaku.com&sz=128' },
     'atome': { gradient: { from: '#FFE000', to: '#B8A200' }, textColor: 'text-black', logo: 'https://www.google.com/s2/favicons?domain=atome.id&sz=128' },
     'traveloka paylater': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=traveloka.com&sz=128' },
+    'indodana': { gradient: { from: '#24C0A6', to: '#15806D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=indodana.id&sz=128' },
+    'home credit': { gradient: { from: '#E30613', to: '#99040D' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=homecredit.co.id&sz=128' },
+    'easycash': { gradient: { from: '#FF4D00', to: '#A83200' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=easy-cash.id&sz=128' },
+    'adakami': { gradient: { from: '#00A89D', to: '#007068' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=cs.adakami.id&sz=128' },
 
     // Investment
     'bibit': { gradient: { from: '#23B15D', to: '#17733C' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=bibit.id&sz=128' },
