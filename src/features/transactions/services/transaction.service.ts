@@ -44,18 +44,12 @@ class TransactionService {
                     p_date: data.date.toISOString(),
                     p_description: data.description,
                     p_type: data.type,
+                    p_is_need: data.isNeed ?? true,
                 });
 
                 if (error) {
                     console.error('[TransactionService] Create RPC Error:', error);
                     throw error;
-                }
-
-                // Update is_need column separately since RPC signature is frozen
-                if (data.isNeed !== undefined && result?.id) {
-                    await this.supabase.from('transactions')
-                        .update({ is_need: data.isNeed })
-                        .eq('id', result.id);
                 }
 
                 return { data: result?.id || 'Success', error: null };
@@ -94,7 +88,8 @@ class TransactionService {
                 p_new_date: data.date.toISOString(),
                 p_new_description: data.description,
                 p_new_type: data.type,
-                p_new_wallet_id: (data as any).walletId
+                p_new_wallet_id: (data as any).walletId,
+                p_new_is_need: data.isNeed ?? true,
             });
 
             if (error) {
@@ -104,13 +99,6 @@ class TransactionService {
                 console.error('[TransactionService] RPC Error Hint:', error.hint);
                 console.error('[TransactionService] Full Error JSON:', JSON.stringify(error));
                 throw error;
-            }
-
-            // Update is_need separately
-            if (data.isNeed !== undefined) {
-                await this.supabase.from('transactions')
-                    .update({ is_need: data.isNeed })
-                    .eq('id', transactionId);
             }
 
             return { data: true, error: null };

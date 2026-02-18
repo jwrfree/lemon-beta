@@ -40,6 +40,19 @@ This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lem
 
 ## [Unreleased] - February 2026
 
+### 🛡 Security & Performance Audit Fixes
+
+- **Database Performance & Integrity**:
+  - **Added Missing Indexes**: Created B-tree indexes for `user_id`, `wallet_id`, `date`, and `category` across all core tables (`transactions`, `wallets`, `budgets`, `debts`, `goals`, `reminders`) to ensure $O(log n)$ query speed.
+  - **Unique Email Constraint**: Enforced a `UNIQUE` constraint on `profiles.email` to guarantee reliable biometric login and profile lookups.
+- **Functional Fixes**:
+  - **Resolved Wallet Double-Counting**: Fixed a critical bug where transactions were being counted twice in wallet balances by removing redundant manual balance updates from RPCs and delegating solely to the database trigger.
+- **Security Hardening**:
+  - **Atomic Ownership Verification**: Updated all financial RPCs (`create_transaction_v1`, `update_transaction_v1`, `delete_transaction_v1`, `create_transfer_v1`, `pay_debt_v1`) to verify resource ownership using `auth.uid()` before execution.
+  - **Client Parameter Isolation**: Hardened RPCs against ID spoofing by overriding any client-provided `p_user_id` with the actual authenticated session ID.
+- **Architecture & DX**:
+  - **Unified RPC Signature**: Simplified `TransactionService` to handle `sub_category` and `is_need` flags directly within atomic database calls, reducing network round-trips.
+
 ### 🛠 Codebase Refactoring & Quality Audit
 
 - **Form Management Overhaul**: Refactored Debt, Wallet, and Transaction forms to use `React Hook Form` and `Zod` for robust validation and improved UX.

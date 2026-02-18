@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useMotionValue, useTransform, useAnimation, animate } from 'framer-motion';
+import { RefreshCw, ArrowDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface PullToRefreshProps {
   onRefresh: () => Promise<void>;
@@ -10,31 +11,42 @@ interface PullToRefreshProps {
   className?: string;
 }
 
-export const PullToRefresh: React.FC<PullToRefreshProps> = ({ 
-  onRefresh, 
-  children, 
-  className 
+export const PullToRefresh: React.FC<PullToRefreshProps> = ({
+  onRefresh,
+  children,
+  className
 }) => {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const startY = useRef(0);
-  const isPulling = useRef(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Motion values for high-performance animation (no react re-renders on drag)
+  const y = useMotionValue(0);
+  const rotate = useTransform(y, [0, 80], [0, 180]);
+  const opacity = useTransform(y, [0, 40, 80], [0, 0.5, 1]);
+  const scale = useTransform(y, [0, 80], [0.5, 1]);
+
+  // Refs for logic
+  const startY = useRef(0);
+  const startX = useRef(0);
+  const isPulling = useRef(false);
   const PULL_THRESHOLD = 80;
-  const MAX_PULL = 120;
+  const MAX_PULL = 130;
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const isAtTop = () => {
-      if (!containerRef.current) return true;
-      return containerRef.current.scrollTop <= 0;
+      if (typeof window !== 'undefined' && window.scrollY > 5) return false;
+      if (container.scrollTop > 0) return false;
+      return true;
     };
 
     const handleTouchStart = (e: TouchEvent) => {
-      if (!isAtTop()) return;
+      if (!isAtTop() || isRefreshing) return;
+
       startY.current = e.touches[0].clientY;
+      startX.current = e.touches[0].clientX;
       isPulling.current = true;
     };
 
@@ -42,33 +54,59 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
       if (!isPulling.current || isRefreshing) return;
 
       const currentY = e.touches[0].clientY;
-      const distance = currentY - startY.current;
+      const currentX = e.touches[0].clientX;
 
-      if (distance > 0 && isAtTop()) {
-        e.preventDefault();
-        const pullAmount = Math.min(distance * 0.5, MAX_PULL);
-        setPullDistance(pullAmount);
+      const dy = currentY - startY.current;
+      const dx = currentX - startX.current;
+
+      // Ignore scroll up or horizontal swipes
+      if (dy < 0) {
+        isPulling.current = false;
+        return;
+      }
+      if (Math.abs(dx) > Math.abs(dy)) {
+        isPulling.current = false;
+        return;
+      }
+
+      // Pulling logic
+      if (dy > 0 && isAtTop()) {
+        if (e.cancelable) e.preventDefault();
+
+        // Logarithmic damping for "rubber band" feel
+        const pull = Math.min(Math.pow(dy, 0.85), MAX_PULL);
+        y.set(pull);
       }
     };
 
     const handleTouchEnd = async () => {
       if (!isPulling.current || isRefreshing) return;
-
       isPulling.current = false;
 
-      if (pullDistance >= PULL_THRESHOLD) {
+      const currentY = y.get();
+
+      if (currentY >= PULL_THRESHOLD) {
+        // Trigger Refresh
         setIsRefreshing(true);
+        if (navigator.vibrate) navigator.vibrate(20);
+
+        // Snap to threshold
+        animate(y, PULL_THRESHOLD, { type: "spring", stiffness: 300, damping: 20 });
+
         try {
           await onRefresh();
         } finally {
+          // Success/Finish animation
           setIsRefreshing(false);
-          setPullDistance(0);
+          animate(y, 0, { type: "spring", stiffness: 300, damping: 30 });
         }
       } else {
-        setPullDistance(0);
+        // Cancel/Reset
+        animate(y, 0, { type: "spring", stiffness: 300, damping: 30 });
       }
     };
 
+    // Add passive: false to allow e.preventDefault()
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
     container.addEventListener('touchmove', handleTouchMove, { passive: false });
     container.addEventListener('touchend', handleTouchEnd);
@@ -78,43 +116,35 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
       container.removeEventListener('touchmove', handleTouchMove);
       container.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [onRefresh, pullDistance, isRefreshing]);
-
-  const refreshProgress = Math.min(pullDistance / PULL_THRESHOLD, 1);
+  }, [isRefreshing, onRefresh, y]); // Removed manual deps as motion value is stable
 
   return (
-    <div ref={containerRef} className={className}>
-      <AnimatePresence>
-        {pullDistance > 20 && (
-          <motion.div
-            className="absolute top-0 left-0 right-0 z-50 flex justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-full p-3 shadow-lg"
-              style={{ 
-                transform: `translateY(${Math.max(pullDistance - 40, 0)}px) scale(${0.8 + refreshProgress * 0.4})`,
-                rotate: isRefreshing ? 360 : refreshProgress * 180
-              }}
-              animate={isRefreshing ? { rotate: 360 } : {}}
-              transition={{ 
-                rotate: { duration: 1, repeat: isRefreshing ? Infinity : 0, ease: "linear" }
-              }}
-            >
-              <RefreshCw className="h-6 w-6 text-primary" />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
+    <div
+      ref={containerRef}
+      className={cn("relative touch-pan-y overscroll-y-contain", className)}
+      style={{ overscrollBehaviorY: 'contain' }} // Inline fallback
+    >
+      {/* Loading Indicator */}
       <motion.div
-        style={{ 
-          transform: pullDistance > 0 ? `translateY(${pullDistance}px)` : '',
-          transition: isPulling.current ? 'none' : 'transform 0.3s ease-out'
-        }}
+        style={{ y, opacity, scale, rotate: isRefreshing ? 0 : rotate }}
+        className="absolute top-0 left-0 right-0 z-40 flex justify-center pointer-events-none"
       >
+        <div className="relative -top-10 bg-white dark:bg-zinc-800 text-primary shadow-lg rounded-full p-2.5 flex items-center justify-center border border-zinc-100 dark:border-zinc-700">
+          <motion.div
+            animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
+            transition={isRefreshing ? { repeat: Infinity, duration: 1, ease: "linear" } : {}}
+          >
+            {isRefreshing ? (
+              <RefreshCw className="h-5 w-5" />
+            ) : (
+              <ArrowDown className="h-5 w-5" />
+            )}
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Content */}
+      <motion.div style={{ y }}>
         {children}
       </motion.div>
     </div>
