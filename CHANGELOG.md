@@ -38,7 +38,7 @@ This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lem
 - **Database Schema Sync**: Added `sub_category` column support across database triggers, RPC functions, and frontend forms.
 - **Performance Optimization**: Implemented `next/dynamic` lazy loading for heavy chart components to reduce initial bundle size.
 
-## [Unreleased] - February 2026
+## [Version 2.3.0] - 18 February 2026
 
 ### 🛡 Security & Performance Audit Fixes
 
