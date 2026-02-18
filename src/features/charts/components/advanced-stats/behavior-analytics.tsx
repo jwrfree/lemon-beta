@@ -18,8 +18,8 @@ interface BehaviorData {
 
 export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
     const chartData = [
-        { name: 'Hari Kerja', value: data.weekdayAvg, color: 'hsl(var(--chart-2))' },
-        { name: 'Akhir Pekan', value: data.weekendAvg, color: 'hsl(var(--chart-3))' },
+        { name: 'Hari Kerja', value: data.weekdayAvg, color: 'var(--chart-2)' },
+        { name: 'Akhir Pekan', value: data.weekendAvg, color: 'var(--chart-3)' },
     ];
 
     const isWeekendHeavy = data.weekendAvg > data.weekdayAvg;

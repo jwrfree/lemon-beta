@@ -76,6 +76,8 @@ const brandGradients: Record<string, { gradient: Gradient; textColor: string; lo
     'blu': { gradient: { from: '#00D1FF', to: '#008CBA' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=blubybcadigital.id&sz=128' },
     'jenius': { gradient: { from: '#00B5E0', to: '#007FA0' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jenius.com&sz=128' },
     'jago': { gradient: { from: '#F6A000', to: '#AD7100' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=jago.com&sz=128' },
+    'tiktok': { gradient: { from: '#000000', to: '#25F4EE' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=tiktok.com&sz=128' },
+    'tiktok paylater': { gradient: { from: '#000000', to: '#25F4EE' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=tiktok.com&sz=128' },
     'nanovest': { gradient: { from: '#1A1A1A', to: '#000000' }, textColor: 'text-white', logo: 'https://www.google.com/s2/favicons?domain=nanovest.io&sz=128' },
 
     // Paylater

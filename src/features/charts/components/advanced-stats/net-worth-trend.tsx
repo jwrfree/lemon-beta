@@ -51,17 +51,17 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
             <div className="h-[300px] w-full mt-4">
                 <ChartContainer
                     config={{
-                        netWorth: { label: 'Kekayaan Bersih', color: 'hsl(var(--chart-1))' },
-                        assets: { label: 'Total Aset', color: 'hsl(var(--chart-2))' },
-                        liabilities: { label: 'Total Liabilitas', color: 'hsl(var(--chart-4))' },
+                        netWorth: { label: 'Kekayaan Bersih', color: 'var(--chart-1)' },
+                        assets: { label: 'Total Aset', color: 'var(--chart-2)' },
+                        liabilities: { label: 'Total Liabilitas', color: 'var(--chart-4)' },
                     }}
                 >
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
@@ -81,7 +81,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                             <Area
                                 type="monotone"
                                 dataKey="netWorth"
-                                stroke="hsl(var(--chart-1))"
+                                stroke="var(--chart-1)"
                                 strokeWidth={4}
                                 fillOpacity={1}
                                 fill="url(#netWorthGradient)"
