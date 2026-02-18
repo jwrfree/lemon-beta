@@ -88,11 +88,14 @@ export const DesktopDashboard = () => {
             return date >= currentMonthStart && date <= currentMonthEnd;
         });
 
-        const income = txs.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
-        const expense = txs.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
+        // Filter out internal transfers from income/expense track
+        const nonTransferTxs = txs.filter(t => t.category !== 'Transfer');
+
+        const income = nonTransferTxs.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+        const expense = nonTransferTxs.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
 
         const cats: Record<string, number> = {};
-        txs.filter(t => t.type === 'expense').forEach(t => {
+        nonTransferTxs.filter(t => t.type === 'expense').forEach(t => {
             cats[t.category] = (cats[t.category] || 0) + t.amount;
         });
         const expenseCategories = Object.entries(cats)
@@ -108,8 +111,10 @@ export const DesktopDashboard = () => {
             return date >= prevMonthStart && date <= prevMonthEnd;
         });
 
-        const income = txs.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
-        const expense = txs.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
+        const nonTransferTxs = txs.filter(t => t.category !== 'Transfer');
+
+        const income = nonTransferTxs.filter(t => t.type === 'income').reduce((acc, t) => acc + t.amount, 0);
+        const expense = nonTransferTxs.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
         return { income, expense, net: income - expense };
     }, [filteredTransactions, prevMonthStart, prevMonthEnd]);
 

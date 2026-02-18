@@ -56,9 +56,9 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
             </div>
 
             <div className="flex flex-col items-center justify-center flex-1 relative z-10">
-                <div className="relative w-48 h-24">
+                <div className="relative w-48 h-28 mb-4">
                     {/* SVG Gauge */}
-                    <svg className="w-full h-full" viewBox="0 0 200 100">
+                    <svg className="w-full h-full overflow-visible" viewBox="0 0 200 110">
                         {/* Definitions for gradients */}
                         <defs>
                             <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -66,47 +66,55 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
                                 <stop offset="50%" stopColor="#f59e0b" />  {/* Amber */}
                                 <stop offset="100%" stopColor="#10b981" /> {/* Emerald */}
                             </linearGradient>
+                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
                         </defs>
 
                         {/* Background Track (Grey) */}
                         <path
                             d="M 20 100 A 80 80 0 0 1 180 100"
                             fill="none"
-                            stroke="#e4e4e7" /* zinc-200 */
-                            strokeWidth="24"
+                            stroke="#f4f4f5" /* zinc-100 */
+                            strokeWidth="16"
                             strokeLinecap="round"
                             className="dark:stroke-zinc-800"
                         />
 
-                        {/* Semantic Segments (Optional: replacing gradient with distinct zones if requested, but gradient is nicer) */}
-                        {/* Let's use a dynamic arc that follows the value or just a static colored track */}
-                        {/* Design Decision: Static colored track looks best for 'gauge' context */}
+                        {/* Gradient Track */}
                         <path
                             d="M 20 100 A 80 80 0 0 1 180 100"
                             fill="none"
                             stroke="url(#gaugeGradient)"
-                            strokeWidth="24"
+                            strokeWidth="16"
                             strokeLinecap="round"
-                            strokeOpacity="0.3"
+                            strokeOpacity="0.8"
+                            filter="url(#glow)"
                         />
-
-                        {/* Active Arc (Progress) - Optional, but let's stick to Needle for speedometer look */}
 
                         {/* Needle */}
                         <g className="transition-transform duration-1000 ease-out origin-bottom" style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '100px 100px' }}>
-                            <path d="M 100 100 L 70 100 L 100 20 L 130 100 Z" fill="currentColor" className="text-zinc-800 dark:text-zinc-100 opacity-0" /> {/* Hidden visual helper */}
-                            <circle cx="100" cy="100" r="6" className="fill-zinc-800 dark:fill-zinc-100" />
-                            <path d="M 100 100 L 100 15" stroke="currentColor" strokeWidth="4" strokeLinecap="round" className="text-zinc-800 dark:text-zinc-100" />
+                            {/* Needle Body */}
+                            <path d="M 100 100 L 97 100 L 100 35 L 103 100 Z" fill="currentColor" className="text-zinc-800 dark:text-zinc-100" />
+                            {/* Center Cap */}
+                            <circle cx="100" cy="100" r="8" className="fill-zinc-800 dark:fill-zinc-100" />
+                            <circle cx="100" cy="100" r="3" className="fill-white dark:fill-zinc-900" />
                         </g>
+
+                        {/* Center Tick helper */}
+                        <line x1="100" y1="20" x2="100" y2="10" stroke="#e4e4e7" strokeWidth="1" strokeDasharray="2 2" className="dark:stroke-zinc-700 opacity-50" />
                     </svg>
 
-                    {/* Value readout overlay */}
-                    <div className="absolute -bottom-6 left-0 w-full text-center">
-                        <span className={cn("text-3xl font-bold tracking-tighter tabular-nums", colorClass)}>
-                            {rotation > 0 && rotation < 180 ? '' : ''}{/* spacer */}
+                    {/* Value readout overlay - Moved down to avoid needle overlap */}
+                    <div className="absolute -bottom-4 left-0 w-full text-center">
+                        <span className={cn("text-3xl font-bold tracking-tighter tabular-nums drop-shadow-sm", colorClass)}>
                             {savingsRate > 999 || savingsRate < -999 ?
-                                (savingsRate / 100).toFixed(1) + 'x' : // Show multiplier for extreme values
-                                savingsRate.toFixed(1) + '%'
+                                (savingsRate / 100).toFixed(1) + 'x' :
+                                (Math.abs(savingsRate) >= 10 ? savingsRate.toFixed(0) : savingsRate.toFixed(1)) + '%'
                             }
                         </span>
                     </div>

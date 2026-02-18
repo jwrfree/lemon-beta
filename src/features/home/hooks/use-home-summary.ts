@@ -7,8 +7,8 @@ export const useHomeSummary = (transactions: Transaction[]) => {
         const now = new Date();
         const lastMonth = subMonths(now, 1);
 
-        const currentMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), now));
-        const lastMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), lastMonth));
+        const currentMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), now) && t.category !== 'Transfer');
+        const lastMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), lastMonth) && t.category !== 'Transfer');
 
         const monthlyIncome = currentMonthTransactions
             .filter(t => t.type === 'income')

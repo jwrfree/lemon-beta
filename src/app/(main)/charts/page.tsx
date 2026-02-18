@@ -117,124 +117,245 @@ function ChartContent() {
         return history.reverse();
     }, [wallets, allTransactions, now]);
 
-    // 2. Behavior Analysis (Weekend vs Weekday)
-    const behaviorData = useMemo(() => {
-        const last30 = allTransactions.filter(t => parseISO(t.date) >= last30DaysStart);
-        const expenses = last30.filter(t => t.type === 'expense');
-        
-        const weekdays = expenses.filter(t => !isWeekend(parseISO(t.date)));
-        const weekends = expenses.filter(t => isWeekend(parseISO(t.date)));
-        
-        const weekdayTotal = weekdays.reduce((sum, t) => sum + t.amount, 0);
-        const weekendTotal = weekends.reduce((sum, t) => sum + t.amount, 0);
-        
-        // Find top categories
-        const getTopCat = (txs: any[]) => {
-            const cats: any = {};
-            txs.forEach(t => cats[t.category] = (cats[t.category] || 0) + t.amount);
-            return Object.entries(cats).sort(([,a],[,b]) => (b as number)-(a as number))[0]?.[0] || 'N/A';
-        };
+        // 2. Behavior Analysis (Weekend vs Weekday)
 
-        // Payday Drain simulation: find last big income
-        const incomes = last30.filter(t => t.type === 'income').sort((a,b) => b.amount - a.amount);
-        const topIncome = incomes[0];
-        let drainDays = 15; // Default fallback
+        const behaviorData = useMemo(() => {
 
-        if (topIncome) {
-            const payday = parseISO(topIncome.date);
-            let cumulativeAfterPayday = 0;
-            const threshold = topIncome.amount * 0.5;
+            const last30 = allTransactions.filter(t => parseISO(t.date) >= last30DaysStart && t.category !== 'Transfer');
+
+            const expenses = last30.filter(t => t.type === 'expense');
+
             
-            const expensesAfterPayday = expenses
-                .filter(t => parseISO(t.date) >= payday)
-                .sort((a,b) => a.date.localeCompare(b.date));
+
+            const weekdays = expenses.filter(t => !isWeekend(parseISO(t.date)));
+
+            const weekends = expenses.filter(t => isWeekend(parseISO(t.date)));
+
             
-            for (let i = 0; i < expensesAfterPayday.length; i++) {
-                cumulativeAfterPayday += expensesAfterPayday[i].amount;
-                if (cumulativeAfterPayday >= threshold) {
-                    drainDays = differenceInDays(parseISO(expensesAfterPayday[i].date), payday);
-                    break;
+
+            const weekdayTotal = weekdays.reduce((sum, t) => sum + t.amount, 0);
+
+            const weekendTotal = weekends.reduce((sum, t) => sum + t.amount, 0);
+
+            
+
+            // Find top categories
+
+            const getTopCat = (txs: any[]) => {
+
+                const cats: any = {};
+
+                txs.forEach(t => cats[t.category] = (cats[t.category] || 0) + t.amount);
+
+                return Object.entries(cats).sort(([,a],[,b]) => (b as number)-(a as number))[0]?.[0] || 'N/A';
+
+            };
+
+    
+
+            // Payday Drain simulation: find last big income
+
+            const incomes = last30.filter(t => t.type === 'income').sort((a,b) => b.amount - a.amount);
+
+            const topIncome = incomes[0];
+
+            let drainDays = 15; // Default fallback
+
+    
+
+            if (topIncome) {
+
+                const payday = parseISO(topIncome.date);
+
+                let cumulativeAfterPayday = 0;
+
+                const threshold = topIncome.amount * 0.5;
+
+                
+
+                const expensesAfterPayday = expenses
+
+                    .filter(t => parseISO(t.date) >= payday)
+
+                    .sort((a,b) => a.date.localeCompare(b.date));
+
+                
+
+                for (let i = 0; i < expensesAfterPayday.length; i++) {
+
+                    cumulativeAfterPayday += expensesAfterPayday[i].amount;
+
+                    if (cumulativeAfterPayday >= threshold) {
+
+                        drainDays = differenceInDays(parseISO(expensesAfterPayday[i].date), payday);
+
+                        break;
+
+                    }
+
                 }
+
             }
-        }
 
-        return {
-            weekdayAvg: weekdayTotal / 22, // Approx weekdays in month
-            weekendAvg: weekendTotal / 8,   // Approx weekends in month
-            paydayDrainDays: drainDays,
-            topWeekdayCategory: getTopCat(weekdays),
-            topWeekendCategory: getTopCat(weekends)
-        };
-    }, [allTransactions, last30DaysStart]);
+    
 
-    // 3. Saving Potential
-    const savingData = useMemo(() => {
-        const currentMonthExp = allTransactions.filter(t => {
-            const d = parseISO(t.date);
-            return d >= currentMonthStart && d <= currentMonthEnd && t.type === 'expense';
-        });
-        
-        const currentMonthInc = allTransactions.filter(t => {
-            const d = parseISO(t.date);
-            return d >= currentMonthStart && d <= currentMonthEnd && t.type === 'income';
-        }).reduce((sum, t) => sum + t.amount, 0);
+            return {
 
-        const fixedCosts = currentMonthExp
-            .filter(t => t.category.toLowerCase().includes('tagihan') || t.category.toLowerCase().includes('cicilan') || t.category.toLowerCase().includes('kost'))
-            .reduce((sum, t) => sum + t.amount, 0);
+                weekdayAvg: weekdayTotal / 22, // Approx weekdays in month
+
+                weekendAvg: weekendTotal / 8,   // Approx weekends in month
+
+                paydayDrainDays: drainDays,
+
+                topWeekdayCategory: getTopCat(weekdays),
+
+                topWeekendCategory: getTopCat(weekends)
+
+            };
+
+        }, [allTransactions, last30DaysStart]);
+
+    
+
+        // 3. Saving Potential
+
+        const savingData = useMemo(() => {
+
+            const currentMonthNonTransfer = allTransactions.filter(t => {
+
+                const d = parseISO(t.date);
+
+                return d >= currentMonthStart && d <= currentMonthEnd && t.category !== 'Transfer';
+
+            });
+
+    
+
+            const currentMonthExp = currentMonthNonTransfer.filter(t => t.type === 'expense');
+
             
-        const variableSpending = currentMonthExp.reduce((sum, t) => sum + t.amount, 0) - fixedCosts;
-        const actualSavings = Math.max(0, currentMonthInc - (fixedCosts + variableSpending));
-        
-        // Potential = Income - Fixed - (Planned Budgets)
-        const plannedVariable = budgets.reduce((sum, b) => sum + b.targetAmount, 0);
-        const potentialSavings = Math.max(actualSavings, currentMonthInc - (fixedCosts + plannedVariable));
 
-        return {
-            income: currentMonthInc,
-            fixedCosts,
-            variableSpending,
-            actualSavings,
-            potentialSavings: potentialSavings || (currentMonthInc * 0.3) // Fallback to 30% if no budgets
-        };
-    }, [allTransactions, currentMonthStart, currentMonthEnd, budgets]);
+            const currentMonthInc = currentMonthNonTransfer.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
 
-    // 4. Subscriptions Audit
-    const subscriptionData = useMemo(() => {
-        const subs = reminders
-            .filter(r => r.repeatRule?.frequency !== 'none' && r.amount)
-            .map(r => ({
-                id: r.id,
-                name: r.title,
-                amount: r.amount || 0,
-                category: r.category || 'Subscription',
-                isDueSoon: r.dueDate ? differenceInDays(parseISO(r.dueDate), now) <= 3 : false
-            }));
+    
 
-        const totalMonthly = subs.reduce((sum, s) => sum + s.amount, 0);
-        return { items: subs.slice(0, 5), totalMonthly };
-    }, [reminders, now]);
+            const fixedCosts = currentMonthExp
 
+                .filter(t => t.category.toLowerCase().includes('tagihan') || t.category.toLowerCase().includes('cicilan') || t.category.toLowerCase().includes('kost'))
 
-    // 1. Filter Transactions by Period
-    const { currentMonthTx, prevMonthTx, last30DaysTx, last6MonthsTx } = useMemo(() => {
-        const current = allTransactions.filter(t => {
-            const date = parseISO(t.date);
-            return date >= currentMonthStart && date <= currentMonthEnd;
-        });
+                .reduce((sum, t) => sum + t.amount, 0);
 
-        const prev = allTransactions.filter(t => {
-            const date = parseISO(t.date);
-            return date >= prevMonthStart && date <= prevMonthEnd;
-        });
+                
 
-        const last30 = allTransactions.filter(t => {
-            const date = parseISO(t.date);
-            return date >= last30DaysStart && date <= now;
-        });
+            const variableSpending = currentMonthExp.reduce((sum, t) => sum + t.amount, 0) - fixedCosts;
 
-        return { currentMonthTx: current, prevMonthTx: prev, last30DaysTx: last30, last6MonthsTx: allTransactions };
-    }, [allTransactions, currentMonthStart, currentMonthEnd, prevMonthStart, prevMonthEnd, last30DaysStart, now]);
+            const actualSavings = Math.max(0, currentMonthInc - (fixedCosts + variableSpending));
+
+            
+
+            // Potential = Income - Fixed - (Planned Budgets)
+
+            const plannedVariable = budgets.reduce((sum, b) => sum + b.targetAmount, 0);
+
+            const potentialSavings = Math.max(actualSavings, currentMonthInc - (fixedCosts + plannedVariable));
+
+    
+
+            return {
+
+                income: currentMonthInc,
+
+                fixedCosts,
+
+                variableSpending,
+
+                actualSavings,
+
+                potentialSavings: potentialSavings || (currentMonthInc * 0.3) // Fallback to 30% if no budgets
+
+            };
+
+        }, [allTransactions, currentMonthStart, currentMonthEnd, budgets]);
+
+    
+
+    
+
+        // 4. Subscriptions Audit
+
+        const subscriptionData = useMemo(() => {
+
+            const subs = reminders
+
+                .filter(r => r.repeatRule?.frequency !== 'none' && r.amount)
+
+                .map(r => ({
+
+                    id: r.id,
+
+                    name: r.title,
+
+                    amount: r.amount || 0,
+
+                    category: r.category || 'Subscription',
+
+                    isDueSoon: r.dueDate ? differenceInDays(parseISO(r.dueDate), now) <= 3 : false
+
+                }));
+
+    
+
+            const totalMonthly = subs.reduce((sum, s) => sum + s.amount, 0);
+
+            return { items: subs.slice(0, 5), totalMonthly };
+
+        }, [reminders, now]);
+
+    
+
+    
+
+        // 1. Filter Transactions by Period
+
+        const { currentMonthTx, prevMonthTx, last30DaysTx, last6MonthsTx } = useMemo(() => {
+
+            const nonTransfers = allTransactions.filter(t => t.category !== 'Transfer');
+
+    
+
+            const current = nonTransfers.filter(t => {
+
+                const date = parseISO(t.date);
+
+                return date >= currentMonthStart && date <= currentMonthEnd;
+
+            });
+
+    
+
+            const prev = nonTransfers.filter(t => {
+
+                const date = parseISO(t.date);
+
+                return date >= prevMonthStart && date <= prevMonthEnd;
+
+            });
+
+    
+
+            const last30 = nonTransfers.filter(t => {
+
+                const date = parseISO(t.date);
+
+                return date >= last30DaysStart && date <= now;
+
+            });
+
+    
+
+            return { currentMonthTx: current, prevMonthTx: prev, last30DaysTx: last30, last6MonthsTx: nonTransfers };
+
+        }, [allTransactions, currentMonthStart, currentMonthEnd, prevMonthStart, prevMonthEnd, last30DaysStart, now]);
 
     // 2. Compute Current Month Metrics
     const currentMonthData: MonthData = useMemo(() => {
