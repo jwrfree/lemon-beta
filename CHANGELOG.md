@@ -47,6 +47,7 @@ This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lem
   - **Unique Email Constraint**: Enforced a `UNIQUE` constraint on `profiles.email` to guarantee reliable biometric login and profile lookups.
 - **Functional Fixes**:
   - **Resolved Wallet Double-Counting**: Fixed a critical bug where transactions were being counted twice in wallet balances by removing redundant manual balance updates from RPCs and delegating solely to the database trigger.
+  - **Atomic Debt Payment Deletion**: Moved complex payment removal logic from the client to a robust SQL RPC (`delete_debt_payment_v1`), preventing race conditions and ensuring $100\%$ balance integrity.
 - **Security Hardening**:
   - **Atomic Ownership Verification**: Updated all financial RPCs (`create_transaction_v1`, `update_transaction_v1`, `delete_transaction_v1`, `create_transfer_v1`, `pay_debt_v1`) to verify resource ownership using `auth.uid()` before execution.
   - **Client Parameter Isolation**: Hardened RPCs against ID spoofing by overriding any client-provided `p_user_id` with the actual authenticated session ID.

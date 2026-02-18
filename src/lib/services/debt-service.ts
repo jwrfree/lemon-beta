@@ -98,5 +98,14 @@ export const debtService = {
             p_user_id: userId
         });
         if (error) throw error;
+    },
+
+    async deleteDebtPayment(userId: string, debtId: string, paymentId: string) {
+        const { error } = await supabase.rpc('delete_debt_payment_v1', {
+            p_debt_id: debtId,
+            p_payment_id: paymentId,
+            p_user_id: userId
+        });
+        if (error) throw error;
     }
 };

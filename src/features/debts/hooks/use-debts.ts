@@ -118,37 +118,14 @@ export const useDebts = () => {
 
     const deleteDebtPayment = useCallback(async (debtId: string, paymentId: string) => {
         if (!user) throw new Error("User not authenticated.");
-        
-        const { data: debt, error: fetchError } = await supabase.from('debts').select('*').eq('id', debtId).single();
-        if (fetchError || !debt) {
-            showToast("Gagal mengambil data hutang.", 'error');
-            return;
-        }
-
-        const payments = (debt.payments || []) as DebtPayment[];
-        const paymentToRemove = payments.find(p => p.id === paymentId);
-        if (!paymentToRemove) {
-            showToast("Pembayaran tidak ditemukan.", 'error');
-            return;
-        }
-
-        const remainingPayments = payments.filter(p => p.id !== paymentId);
-        const newOutstanding = (debt.outstanding_balance || 0) + paymentToRemove.amount;
-
-        const { error: updateError } = await supabase.from('debts').update({
-            payments: remainingPayments,
-            outstanding_balance: newOutstanding,
-            status: 'active'
-        }).eq('id', debtId);
-
-        if (updateError) {
+        try {
+            await debtService.deleteDebtPayment(user.id, debtId, paymentId);
+            showToast("Pencatatan pembayaran dihapus.", 'info');
+            fetchDebts();
+        } catch (err) {
             showToast("Gagal menghapus pembayaran.", 'error');
-            return;
         }
-
-        showToast("Pencatatan pembayaran dihapus.", 'info');
-        setDebts(prev => prev.map(d => d.id === debtId ? { ...d, payments: remainingPayments, outstandingBalance: newOutstanding, status: 'active' } : d));
-    }, [user, supabase, showToast]);
+    }, [user, showToast, fetchDebts]);
 
     return {
         debts,
