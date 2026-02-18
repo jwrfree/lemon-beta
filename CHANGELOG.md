@@ -150,24 +150,24 @@ This release introduces comprehensive net worth tracking and developer tools for
 **Status:** Ready to launch
 
 ### 🔍 Experience Audit & Navigation
-- Menyelesaikan audit desain menyeluruh mencakup landing, autentikasi, dan alur utama aplikasi dengan dokumentasi heuristik baru.
-- Menambahkan skip link dan navigasi anchor pada landing sehingga pengguna dapat menjangkau section fitur, keamanan, dan CTA akhir tanpa menggulir jauh.
-- Memperbarui copy hero dan daftar manfaat agar proposisi nilai Lemon mudah dipahami dalam beberapa detik.
+- Completed a comprehensive design audit covering landing, authentication, and core app flows with new heuristic documentation.
+- Added skip links and anchor navigation on the landing page so users can reach features, security, and final CTA sections without excessive scrolling.
+- Updated hero copy and benefits list to make Lemon's value proposition easy to understand in seconds.
 
 ### 🎨 Visual, Motion & Accessibility
-- Menstandarkan seluruh animasi ke durasi 0.28 s `ease-out` serta menambahkan dukungan `prefers-reduced-motion` di landing dan semua modal autentikasi.
-- Memperkuat hierarchy visual dengan grid 4/8 px, radius 16–32 px, dan fokus ring kontras tinggi untuk navigasi keyboard.
-- Menandai ilustrasi dekoratif sebagai `aria-hidden` dan memberikan outline fokus pada anchor nav untuk menjaga aksesibilitas.
+- Standardized all animations to 0.28s `ease-out` duration and added `prefers-reduced-motion` support on the landing page and all authentication modals.
+- Strengthened visual hierarchy with a 4/8 px grid, 16–32 px radii, and high-contrast focus rings for keyboard navigation.
+- Marked decorative illustrations as `aria-hidden` and provided focus outlines on anchor nav to maintain accessibility.
 
 ### 🔐 Authentication & Recovery
-- Memperbarui bottom sheet login, sign up, dan lupa password dengan latar belakang solid yang bersih, transisi konsisten, serta alert error inline yang mudah dibaca.
-- Menjaga tombol aksi alternatif (Google, biometrik) tetap tersedia sambil menyajikan status loading yang jelas bagi setiap metode.
-- Menambahkan pesan sukses permanen pada alur lupa password agar pengguna yakin email reset telah dikirim.
+- Updated login, sign up, and forgot password bottom sheets with clean solid backgrounds, consistent transitions, and easy-to-read inline error alerts.
+- Kept alternative action buttons (Google, biometric) available while presenting clear loading statuses for each method.
+- Added permanent success messages in the forgot password flow to assure users that the reset email has been sent.
 
 ### 📚 Documentation & Alignment
-- Menulis ulang **Design Audit** untuk memuat temuan heuristik, sistem desain, dan evaluasi alur lengkap menjelang rilis 2.0.0.
-- Memperbarui **Product Blueprint** dengan snapshot rilis, prinsip pengalaman terbaru, spesifikasi motion, serta roadmap prioritas.
-- Menyegarkan **README** dengan sorotan rilis, alur utama, komitmen desain & aksesibilitas, serta tautan dokumentasi penting.
+- Rewrote the **Design Audit** to include heuristic findings, design systems, and full flow evaluations ahead of the 2.0.0 release.
+- Updated the **Product Blueprint** with release snapshots, latest experience principles, motion specs, and priority roadmaps.
+- Refreshed the **README** with release highlights, key flows, design & accessibility commitments, and important documentation links.
 
 ## [Version 1.5.0] - December 2025
 

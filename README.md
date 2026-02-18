@@ -2,55 +2,55 @@
 
 > **v2.2.0** · Released · February 2026
 
-Lemon adalah pendamping keuangan modern yang membantu pekerja digital Indonesia mengendalikan pemasukan, pengeluaran, hutang, dan tujuan finansial dalam satu genggaman. Rilis v2.2.0 menghadirkan standar **"Premium Fidelity"** dengan statistik tingkat lanjut dan pengalaman PWA yang setara dengan aplikasi asli.
+Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.2.0 introduces **"Premium Fidelity"** standards with advanced analytics and a PWA experience indistinguishable from native apps.
 
-## ✨ Sorotan Utama & Peningkatan Terbaru
-- **Analisis Finansial Mendalam:** 4 layer data baru: *Net Worth Trend* (6 bulan), *Saving Potential* (Efisiensi tabungan), *Behavior Analytics* (Weekday vs Weekend), dan *Subscription Audit*.
-- **Premium UI/UX Fidelity:** Penggunaan *Skeleton Screens*, *Haptic Feedback*, dan animasi perayaan sukses yang memberikan sensasi aplikasi "High-End".
-- **Optimistic Updates:** Respons UI instan (zero-latency) saat mencatat transaksi—angka saldo diperbarui sebelum konfirmasi server selesai.
-- **PWA Elite Experience:** Dukungan instalasi mandiri melalui modul "Instal Lemon" yang mewah di pengaturan dan mode luring yang lebih tangguh.
-- **Arsitektur Modular (Clean Code):** Refaktorisasi besar-besaran modul transaksi ke dalam *Service Layer* dan *Custom Hooks* untuk keandalan jangka panjang.
-- **AI Smart Add 2.0:** Pencatatan super cepat dengan bahasa alami yang kini mendukung deteksi banyak transaksi sekaligus (bulk add) dan kategori granular (Sub-Kategori).
-- **Overhaul UI/UX Desktop (Aset & Dompet):** Desain ulang halaman manajemen aset pada desktop dengan kartu ringkasan gradien dan hierarki visual enterprise.
+## ✨ Key Highlights & Recent Updates
+- **Deep Financial Analytics:** 4 new data layers: *Net Worth Trend* (6-month tracking), *Saving Potential* (Efficiency metrics), *Behavior Analytics* (Weekday vs Weekend patterns), and *Subscription Audit*.
+- **Premium UI/UX Fidelity:** Implementation of *Skeleton Screens*, *Haptic Feedback*, and success celebration animations providing a "High-End" app sensation.
+- **Optimistic Updates:** Instant UI response (zero-latency) when recording transactions—balance numbers update before server confirmation completes.
+- **Elite PWA Experience:** Self-install support via an elegant "Install Lemon" module in settings and a robust offline mode.
+- **Modular Architecture (Clean Code):** Major refactoring of transaction modules into *Service Layers* and *Custom Hooks* for long-term reliability.
+- **AI Smart Add 2.0:** Super-fast recording with natural language now supports bulk transaction detection and granular categories (Sub-Categories).
+- **Desktop UI/UX Overhaul (Assets & Wallets):** Redesigned desktop asset management page with gradient summary cards and enterprise-grade visual hierarchy.
 
-*Untuk detail teknis lengkap, silakan lihat [CHANGELOG.md](./CHANGELOG.md).*
+*For complete technical details, please see [CHANGELOG.md](./CHANGELOG.md).*
 
-## 🧭 Alur Pengguna Utama
-| Alur | Ringkasan |
+## 🧭 Key User Flows
+| Flow | Summary |
 | --- | --- |
-| **Onboarding & Aktivasi** | Landing → CTA → modal Sign Up/Login → verifikasi email → optional biometric → Dashboard. |
-| **Catat Transaksi Cepat** | Quick action "Catat" → pilih Manual/AI → isi detail → simpan → toast + counter saldo memperbarui. |
-| **Smart Reminders** | Buat pengingat dari quick action/tab → pilih frekuensi & kanal → Reminder Center → notifikasi & snooze. |
-| **Debt & IOU** | Form hutang/piutang lengkap → timeline pembayaran → integrasi dengan reminders & insight Debt Health. |
-| **Budgeting** | Progress ring kategori, rekomendasi AI, dan penyesuaian target real-time. |
-| **Insights** | Ringkasan mingguan AI, tren kategori, distribusi pengeluaran, dan rekomendasi tindakan. |
+| **Onboarding & Activation** | Landing → CTA → Sign Up/Login modal → Email verification → Optional biometric setup → Dashboard. |
+| **Quick Transaction Entry** | "Record" quick action → Select Manual/AI → Fill details → Save → Toast notification + Balance counter update. |
+| **Smart Reminders** | Create reminder from quick action/tab → Select frequency & channel → Reminder Center → Notifications & snooze. |
+| **Debt & IOU** | comprehensive Debt/Receivable forms → Payment timeline → Integration with reminders & Debt Health insights. |
+| **Budgeting** | Category ring progress, AI recommendations, and real-time target adjustments. |
+| **Insights** | AI Weekly Digest, category trends, expense distribution, and actionable recommendations. |
 
-## 🎨 Prinsip Desain & Aksesibilitas
-- Skala tipografi dan warna konsisten (teal/lemon) dengan rasio kontras AA.
-- Spacing 4/8 px, radius 16–32 px, dan shadow lembut menjaga hierarki tanpa clutter.
-- Fokus ring jelas, skip link, serta anchor nav mendukung navigasi keyboard.
-- Semua animasi memakai standar 0.28 s ease-out dan menghormati preferensi reduced motion.
-- Alert error & sukses menggunakan `aria-live`, ilustrasi dekoratif diberi `aria-hidden`.
+## 🎨 Design Principles & Accessibility
+- Consistent typography scale and color palette (teal/lemon) with AA contrast ratios.
+- 4/8 px spacing system, 16–32 px radii, and soft shadows to maintain hierarchy without clutter.
+- Clear focus rings, skip links, and nav anchors support keyboard navigation.
+- All animations use a standard 0.28s ease-out and respect `reduced-motion` preferences.
+- Error & success alerts use `aria-live`, decorative illustrations are marked `aria-hidden`.
 
-## 📚 Dokumentasi
-- [Design Audit](./docs/design-audit.md) – rangkuman heuristik, sistem desain, dan evaluasi alur lengkap.
-- [Product Blueprint](./docs/blueprint.md) – referensi arsitektur informasi, flow detail, motion spec, dan roadmap.
-- [Changelog](./CHANGELOG.md) – riwayat pembaruan fitur dan peningkatan teknis.
-- [UX Writing Guide](./UX_WRITING_GUIDE.md) – panduan gaya penulisan microcopy.
+## 📚 Documentation
+- [Design Audit](./docs/design-audit.md) – Heuristic summary, design system, and full flow evaluation.
+- [Product Blueprint](./docs/blueprint.md) – Information architecture reference, detailed flows, motion specs, and roadmap.
+- [Changelog](./CHANGELOG.md) – History of feature updates and technical improvements.
+- [UX Writing Guide](./UX_WRITING_GUIDE.md) – Style guide for microcopy.
 
 ## 🛠️ Tech Stack
 - **Framework:** Next.js (App Router)
 - **UI:** Tailwind CSS & shadcn/ui
 - **Backend:** Supabase (Auth, Database, Realtime)
 - **AI:** DeepSeek V3 (Core Extraction), Google Gemini & Genkit (Insights)
-- **Form & Validasi:** React Hook Form & Zod
-- **Animasi:** Framer Motion (dengan dukungan `prefers-reduced-motion`)
+- **Form & Validation:** React Hook Form & Zod
+- **Animations:** Framer Motion (with `prefers-reduced-motion` support)
 
-## 🚀 Menjalankan Secara Lokal
-1. Clone repositori ini.
-2. Instal dependensi: `npm install`
-3. Jalankan server pengembangan: `npm run dev`
-4. Buka [http://localhost:3000](http://localhost:3000) di browser.
-5. Siapkan konfigurasi Firebase Anda sendiri pada variabel lingkungan sebelum menguji autentikasi.
+## 🚀 Running Locally
+1. Clone this repository.
+2. Install dependencies: `npm install`
+3. Run the development server: `npm run dev`
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Set up your own Firebase configuration in environment variables before testing authentication.
 
-Selamat merapikan keuangan! Jangan ragu membuka issue atau pull request untuk ide lanjutan.
+Happy financial tidying! Feel free to open an issue or pull request for further ideas.

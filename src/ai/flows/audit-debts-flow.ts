@@ -57,7 +57,7 @@ export async function auditDebtsFlow(summary: DebtAuditSummary) {
             model: deepseek('deepseek-chat'),
             prompt: prompt,
             temperature: 0.6,
-            maxTokens: 150,
+            // maxTokens: 150,
         });
 
         return text.trim();

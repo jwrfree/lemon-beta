@@ -1,97 +1,97 @@
-# Panduan UX Writing untuk Aplikasi Lemon
+# UX Writing Guide for Lemon App
 
-Dokumen ini adalah panduan untuk menulis semua teks (copy) yang ada di dalam aplikasi Lemon. Tujuannya adalah untuk menciptakan pengalaman pengguna yang konsisten, bersahabat, dan jelas.
+This document serves as a guide for writing all copy (text) within the Lemon app. The goal is to create a consistent, friendly, and clear user experience.
 
-## Prinsip Utama
+## Core Principles
 
-Gaya bahasa Lemon didasarkan pada tiga prinsip utama:
+Lemon's tone of voice is based on three main principles:
 
-1.  **Bersahabat & Personal**
-    Nada bicara kita akrab, seolah-olah teman baik sedang membantu mengelola keuangan. Kita tidak kaku atau terlalu formal, tapi juga tidak "lebay" atau terlalu gaul.
-    - **Gunakan sapaan "kamu"**, bukan "Anda".
-    - Buat pengguna merasa didukung dan tidak dihakimi.
+1.  **Friendly & Personal**
+    Our tone is familiar, like a good friend helping manage finances. We aren't stiff or overly formal, but also not "cringe" or excessively slangy.
+    - **Use "you"**, not third-person terms.
+    - Make the user feel supported, not judged.
 
-2.  **Jelas & Ringkas**
-    Setiap teks harus mudah dimengerti dalam sekali baca. Hindari jargon keuangan yang rumit dan istilah teknis.
-    - Langsung ke intinya.
-    - Gunakan kalimat aktif dan sederhana.
+2.  **Clear & Concise**
+    Every piece of text must be easily understood at a glance. Avoid complicated financial jargon and technical terms.
+    - Get straight to the point.
+    - Use active and simple sentences.
 
-3.  **Membantu & Memotivasi**
-    Teks kita harus memandu pengguna, terutama saat mereka baru memulai atau menghadapi kesulitan.
-    - Berikan instruksi yang jelas.
-    - Pada layar kosong (empty state), berikan ajakan bertindak (call to action) yang memotivasi.
-    - Saat terjadi error, jelaskan apa yang salah dan bagaimana cara memperbaikinya dengan tenang.
+3.  **Helpful & Motivating**
+    Our text should guide users, especially when they are just starting or facing difficulties.
+    - Provide clear instructions.
+    - On empty states, provide a motivating call to action.
+    - When errors occur, explain what went wrong and how to fix it calmly.
 
-## Gaya Bahasa & Nada
+## Tone & Style
 
-### Sapaan
-- **Gunakan**: `kamu`, `milikmu`.
-- **Hindari**: `Anda`, `milik Anda`.
+### Addressing the User
+- **Use**: `you`, `your`.
+- **Avoid**: `user`, `one's`.
 
-**Contoh**:
-- 👍: "Lihat semua dompet kamu."
-- 👎: "Lihat semua dompet Anda."
+**Example**:
+- 👍: "See all your wallets."
+- 👎: "View user wallets."
 
-### Pesan Aksi (Tombol & Link)
-Gunakan kata kerja yang jelas dan spesifik.
+### Action Messages (Buttons & Links)
+Use clear and specific verbs.
 
-- **Gunakan**: "Buat Anggaran Baru", "Simpan Transaksi", "Lihat Semua", "Hapus".
-- **Hindari**: "Kirim", "Oke", "Submit".
+- **Use**: "Create New Budget", "Save Transaction", "View All", "Delete".
+- **Avoid**: "Send", "Okay", "Submit".
 
-### Judul Halaman & Modal
-Harus deskriptif dan langsung menjelaskan isinya.
+### Page & Modal Titles
+Must be descriptive and immediately explain the content.
 
-- **Contoh**: "Tambah Transaksi Baru", "Edit Dompet", "Konfirmasi Hapus".
+- **Example**: "Add New Transaction", "Edit Wallet", "Confirm Deletion".
 
-### Pesan Konfirmasi (Toasts & Alerts)
-Singkat, jelas, dan memberikan rasa lega.
+### Confirmation Messages (Toasts & Alerts)
+Brief, clear, and reassuring.
 
-- **Contoh Sukses**: "Transaksi berhasil ditambahkan!", "Anggaran berhasil dibuat!", "Perubahan berhasil disimpan."
-- **Contoh Info**: "Kamu berhasil keluar."
+- **Success Examples**: "Transaction added successfully!", "Budget created!", "Changes saved."
+- **Info Example**: "You have successfully logged out."
 
-### Pesan Error
-Jelaskan masalahnya dari perspektif pengguna dan tawarkan solusi. Jangan menyalahkan.
+### Error Messages
+Explain the problem from the user's perspective and offer a solution. Do not blame.
 
-- **Gunakan**: "Nama anggaran tidak boleh kosong.", "Dompet asal dan tujuan tidak boleh sama."
-- **Hindari**: "Error: Input tidak valid.", "Proses gagal."
+- **Use**: "Budget name cannot be empty.", "Source and destination wallets cannot be the same."
+- **Avoid**: "Error: Invalid input.", "Process failed."
 
-### Layar Kosong (Empty States)
-Jadikan sebagai kesempatan untuk memandu dan memotivasi pengguna.
+### Empty States
+Use this as an opportunity to guide and motivate the user.
 
-- **Contoh**:
-    - "Belum ada transaksi di sini. Yuk, tambahkan transaksi pertamamu!"
-    - "Mulai lacak pengeluaranmu dengan membuat anggaran pertama."
-    - "Kamu belum punya dompet. Yuk, buat dompet pertamamu untuk memulai!"
+- **Examples**:
+    - "No transactions here yet. Let's add your first one!"
+    - "Start tracking your spending by creating your first budget."
+    - "You don't have any wallets yet. Let's create your first wallet to get started!"
 
-## Terminologi Konsisten
+## Consistent Terminology
 
-Untuk menjaga konsistensi, gunakan istilah-istilah berikut di seluruh aplikasi:
+To maintain consistency, use the following terms throughout the app (English / Bahasa Indonesia context):
 
-| Istilah yang Digunakan | Alternatif yang Dihindari |
-| :-------------------- | :-------------------------- |
-| **Dompet**            | Akun, Rekening, Kantong     |
-| **Transaksi**         | Entri, Catatan              |
-| **Anggaran**          | Budget                      |
-| **Target**            | Goal, Sasaran, Impian       |
-| **Pemasukan**         | Income, Pendapatan          |
-| **Pengeluaran**       | Expense, Biaya, Beban       |
-| **Kategori**          | Jenis, Tipe                 |
-| **Transfer**          | Pindah Dana, Kirim Uang     |
-| **Kelola**            | Atur, Manajemen             |
-| **Simpan**            | Submit, Kirim, Ok           |
-| **Catat Cepat**       | Smart Add, Input Cerdas     |
+| Term Used | Alternatives to Avoid |
+| :--- | :--- |
+| **Wallet** | Account, Bank, Pocket |
+| **Transaction** | Entry, Record |
+| **Budget** | Limit, Cap |
+| **Goal** | Target, Dream |
+| **Income** | Revenue, Earnings |
+| **Expense** | Cost, Burden |
+| **Category** | Type, Kind |
+| **Transfer** | Move Funds, Send Money |
+| **Manage** | Organize, Admin |
+| **Save** | Submit, Send, Ok |
+| **Smart Add** | Quick Input, AI Input |
 
-## Percakapan AI (Conversational Refinement)
+## AI Conversations (Conversational Refinement)
 
-Fitur Catat Cepat (Smart Add) kini mendukung interaksi dua arah. Gunakan prinsip berikut saat AI berinteraksi dengan pengguna:
+The Smart Add feature now supports two-way interaction. Use the following principles when the AI interacts with the user:
 
-### Klarifikasi Ambigu
-Saat AI tidak yakin dengan input pengguna, ajukan pertanyaan yang membantu namun tetap santai.
-- **Gunakan**: "Ini masuk ke kategori 'Kebutuhan' atau 'Gaya Hidup' (Lifestyle) nih?", "Pesanannya mau dimasukkan ke dompet BCA atau Tunai?"
-- **Hindari**: "Input tidak jelas. Pilih kategori.", "Data tidak lengkap."
+### Clarifying Ambiguity
+When the AI is unsure about user input, ask helpful but casual questions.
+- **Use**: "Does this go under 'Needs' or 'Lifestyle'?", "Should this order go to BCA or Cash wallet?"
+- **Avoid**: "Input unclear. Select category.", "Incomplete data."
 
-### Koreksi Lewat Chat
-Berikan respon yang menunjukkan AI mengerti koreksi pengguna.
-- **Contoh Input Pengguna**: "Eh salah, tadi pakai kartu kredit BCA."
-- **Contoh Respon AI (Implicit)**: AI langsung memperbarui data di layar tanpa pesan tambahan yang panjang, atau cukup dengan "Oke, sudah aku ganti ke kartu kredit BCA ya!"
+### corrections via Chat
+Provide responses that show the AI understands the user's correction.
+- **User Input Example**: "Oops wrong one, used BCA credit card instead."
+- **AI Response (Implicit)**: AI immediately updates the data on screen without long extra messages, or simply "Okay, I've switched it to BCA credit card!"
 
