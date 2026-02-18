@@ -94,18 +94,17 @@ export const ExpenseTrendChart = ({
     const isMobile = useIsMobile();
     return (
         <ChartContainer
-            config={{ total: { label: 'Pengeluaran', color: 'var(--chart-2)' } }}
+            config={{ total: { label: 'Pengeluaran', color: '#2563eb' } }}
             className="h-full w-full"
         >
             {chartType === 'area' ? (
                 <RechartsAreaChart data={filteredData} margin={{ left: -20, right: 10, bottom: 0, top: 10 }}>
                     <defs>
                         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.9} />
-                            <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0.1} />
+                            <stop offset="0%" stopColor="var(--color-total)" stopOpacity={0.9} />
+                            <stop offset="100%" stopColor="var(--color-total)" stopOpacity={0.1} />
                         </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
                     <XAxis
                         dataKey="shortLabel"
                         tickLine={false}
@@ -133,15 +132,14 @@ export const ExpenseTrendChart = ({
                     <Area
                         type="monotone"
                         dataKey="total"
-                        stroke="var(--chart-2)"
+                        stroke="var(--color-total)"
                         fill={`url(#${gradientId})`}
                         strokeWidth={2.5}
-                        activeDot={{ r: 4, strokeWidth: 2, fill: 'var(--chart-2)' }}
+                        activeDot={{ r: 4, strokeWidth: 2, fill: 'var(--color-total)' }}
                     />
                 </RechartsAreaChart>
             ) : (
                 <RechartsBarChart data={filteredData} barCategoryGap={isMobile ? 4 : 8} margin={{ left: -20, right: 10, bottom: 0, top: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.15} />
                     <XAxis
                         dataKey="shortLabel"
                         tickLine={false}
@@ -170,7 +168,7 @@ export const ExpenseTrendChart = ({
                         {filteredData.map((item) => (
                             <Cell
                                 key={item.key}
-                                fill="var(--chart-2)"
+                                fill="var(--color-total)"
                                 fillOpacity={peakDayKey === item.key ? 1 : 0.6}
                             />
                         ))}
@@ -215,7 +213,6 @@ export const MonthlyBarChart = ({
                         <stop offset="100%" stopColor="var(--color-total)" stopOpacity={0.3} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
                 <XAxis
                     dataKey="shortLabel"
                     tickLine={false}
@@ -293,7 +290,6 @@ export const NetCashflowComposedChart = ({
                     }
                 }}
             >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
                 <XAxis
                     dataKey="shortLabel"
                     tickLine={false}
