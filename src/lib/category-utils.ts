@@ -29,8 +29,8 @@ export const resolveCategoryVisuals = (categoryName: string, allCategories: { na
         return {
             name: found.name,
             icon: typeof found.icon === 'string' ? getCategoryIcon(found.icon) : (found.icon || Wrench),
-            color: found.color || 'text-gray-600',
-            bgColor: found.bgColor || found.bg_color || 'bg-gray-100'
+            color: found.color || 'text-muted-foreground',
+            bgColor: found.bgColor || found.bg_color || 'bg-muted'
         };
     }
 
@@ -38,7 +38,7 @@ export const resolveCategoryVisuals = (categoryName: string, allCategories: { na
     return {
         name: categoryName,
         icon: Wrench,
-        color: 'text-gray-600',
-        bgColor: 'bg-gray-100'
+        color: 'text-muted-foreground',
+        bgColor: 'bg-muted'
     };
 };

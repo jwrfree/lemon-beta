@@ -43,7 +43,7 @@ export const LiquidPreview = () => {
     }, [text]);
 
     return (
-        <div className="w-full max-w-lg mx-auto bg-zinc-50 dark:bg-black rounded-[3rem] overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50 shadow-2xl p-8 space-y-8">
+        <div className="w-full max-w-lg mx-auto bg-background rounded-lg overflow-hidden border border-border shadow-card p-8 space-y-8">
             
             {/* 1. The Hero Header */}
             <HeroAmount 
@@ -63,8 +63,8 @@ export const LiquidPreview = () => {
                             className="flex flex-col items-center gap-2"
                         >
                             {/* Main Category Chip */}
-                            <div className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
-                                <Tag className="h-3 w-3 fill-white/20" />
+                            <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg">
+                                <Tag className="h-3 w-3 fill-primary-foreground/20" />
                                 <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{metadata.category}</span>
                             </div>
 
@@ -74,7 +74,7 @@ export const LiquidPreview = () => {
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.2 }}
-                                    className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-xl border border-primary/10"
+                                    className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10"
                                 >
                                     <CornerDownRight className="h-3 w-3 opacity-50" />
                                     <span className="text-[10px] font-medium">{metadata.subCategory}</span>
@@ -88,9 +88,9 @@ export const LiquidPreview = () => {
                             initial={{ opacity: 0, scale: 0.5 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ type: 'spring', delay: 0.4 }}
-                            className="flex items-center gap-1 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm"
+                            className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm"
                         >
-                            <MapPin className="h-3 w-3 text-rose-500" />
+                            <MapPin className="h-3 w-3 text-destructive" />
                             <span className="text-[9px] font-medium uppercase tracking-wider">{metadata.location}</span>
                         </motion.div>
                     )}
@@ -100,7 +100,7 @@ export const LiquidPreview = () => {
                             key="idle"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.3 }}
-                            className="text-[10px] font-medium text-zinc-400 uppercase tracking-[0.2em] animate-pulse"
+                            className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.2em] animate-pulse"
                         >
                             Ceritakan transaksimu...
                         </motion.div>
@@ -110,18 +110,18 @@ export const LiquidPreview = () => {
 
             {/* 3. Budget Impact Visualizer */}
             <div className="px-10 py-2">
-                <div className="flex justify-between text-[8px] font-medium text-zinc-400 uppercase mb-1 tracking-widest">
+                <div className="flex justify-between text-[8px] font-medium text-muted-foreground uppercase mb-1 tracking-widest">
                     <span>Sisa Anggaran</span>
-                    <span className={cn(metadata.category ? "text-rose-500" : "")}>
+                    <span className={cn(metadata.category ? "text-destructive" : "")}>
                         {metadata.category ? 'Hampir Habis' : 'Aman'}
                     </span>
                 </div>
-                <div className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                     <motion.div 
                         animate={{ width: metadata.category ? '92%' : '35%' }}
                         className={cn(
                             "h-full rounded-full transition-colors duration-700",
-                            metadata.category ? "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]" : "bg-emerald-500"
+                            metadata.category ? "bg-destructive" : "bg-success"
                         )}
                     />
                 </div>

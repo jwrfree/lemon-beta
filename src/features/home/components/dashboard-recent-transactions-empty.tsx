@@ -10,8 +10,8 @@ export const DashboardRecentTransactionsEmpty = () => {
     const { setIsTxModalOpen } = useUI();
 
     return (
-        <Card className="h-full border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-sm overflow-hidden relative group">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+        <Card className="h-full border-border rounded-lg bg-card shadow-card overflow-hidden relative group">
+            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-foreground">
                 <Receipt className="h-32 w-32 -rotate-12" />
             </div>
             
@@ -25,7 +25,7 @@ export const DashboardRecentTransactionsEmpty = () => {
             <CardContent className="flex flex-col items-center justify-center py-12 text-center min-h-[350px] relative z-10">
                 <div className="relative mb-8">
                     <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 opacity-50" />
-                    <div className="relative p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-[2rem] border border-primary/10 shadow-inner">
+                    <div className="relative p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border border-primary/10 shadow-inner">
                         <Receipt className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
                     <div className="absolute -bottom-2 -right-2 p-2 bg-background rounded-full border border-border shadow-sm">
@@ -41,7 +41,7 @@ export const DashboardRecentTransactionsEmpty = () => {
                 <Button 
                     onClick={() => setIsTxModalOpen(true)} 
                     size="lg" 
-                    className="gap-2 rounded-2xl px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 transition-all"
+                    className="gap-2 rounded-lg px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 transition-all"
                 >
                     <Plus className="h-5 w-5" />
                     Catat Sekarang

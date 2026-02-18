@@ -43,7 +43,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white p-8 md:p-10 shadow-2xl mx-4 mt-4 border border-zinc-800">
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground p-8 md:p-10 shadow-card mx-4 mt-4 border border-primary/20">
             {/* Background Chart */}
             {mounted && dataPoints.length > 0 && (
                 <div className="absolute inset-x-0 bottom-0 h-48 opacity-10 pointer-events-none">
@@ -51,14 +51,14 @@ export function FinancialPulse({
                         <AreaChart data={dataPoints}>
                             <defs>
                                 <linearGradient id="chartPulseGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#fff" stopOpacity={0.5} />
-                                    <stop offset="100%" stopColor="#fff" stopOpacity={0} />
+                                    <stop offset="0%" stopColor="hsl(var(--primary-foreground))" stopOpacity={0.5} />
+                                    <stop offset="100%" stopColor="hsl(var(--primary-foreground))" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <Area
                                 type="monotone"
                                 dataKey="expense"
-                                stroke="#fff"
+                                stroke="hsl(var(--primary-foreground))"
                                 strokeWidth={2}
                                 fill="url(#chartPulseGradient)"
                                 isAnimationActive={false}
@@ -73,11 +73,11 @@ export function FinancialPulse({
                 {/* Left: Net Value */}
                 <div className="text-center md:text-left space-y-2">
                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                        <p className="text-xs md:text-sm font-medium text-white/60 uppercase tracking-widest">Sisa Uang (Cashflow)</p>
+                        <p className="text-xs md:text-sm font-medium text-primary-foreground/60 uppercase tracking-widest">Sisa Uang (Cashflow)</p>
                         {netChange !== 0 && (
                             <Badge className={cn(
                                 "text-[10px] font-medium px-1.5 py-0.5 h-5",
-                                netChange > 0 ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                                netChange > 0 ? "bg-white/20 text-white border-white/30" : "bg-destructive/20 text-destructive-foreground border-destructive/30"
                             )}>
                                 {netChange > 0 ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
                                 {Math.abs(netChange).toFixed(1)}%
@@ -87,39 +87,39 @@ export function FinancialPulse({
                     <h1 className="text-5xl md:text-7xl font-medium tracking-tighter tabular-nums leading-none">
                         {formatCurrency(net)}
                     </h1>
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 text-xs mt-2">
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-primary-foreground/40 text-xs mt-2">
                         <span>Estimasi Pengeluaran Akhir Bulan:</span>
-                        <span className="text-white/80 font-medium tabular-nums">{formatCurrency(projectedExpense)}</span>
+                        <span className="text-primary-foreground/80 font-medium tabular-nums">{formatCurrency(projectedExpense)}</span>
                     </div>
                 </div>
 
                 {/* Right: Quick Stats */}
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                        <div className="flex items-center gap-2 text-emerald-400 mb-1">
+                    <div className="p-4 rounded-lg bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <div className="flex items-center gap-2 text-white/80 mb-1">
                             <TrendingUp className="w-4 h-4" />
                             <span className="text-[10px] font-medium uppercase tracking-wider">Pemasukan</span>
                         </div>
                         <p className="text-lg md:text-xl font-medium tabular-nums">{formatCurrency(income)}</p>
                         <div className="w-full bg-white/10 h-1 mt-2 mb-2 rounded-full overflow-hidden">
-                            <div className="bg-emerald-500 h-full rounded-full" style={{ width: '100%' }} />
+                            <div className="bg-white/80 h-full rounded-full" style={{ width: '100%' }} />
                         </div>
-                        <div className={cn("text-[10px] font-medium flex items-center gap-1 flex-wrap", incomeChange >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                        <div className={cn("text-[10px] font-medium flex items-center gap-1 flex-wrap", incomeChange >= 0 ? "text-white" : "text-white/60")}>
                             {incomeChange >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                             <span>{formatCurrency(Math.abs(incomeDiff))}</span>
                             <span className="opacity-70">({Math.abs(incomeChange).toFixed(0)}%)</span>
                         </div>
                     </div>
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                        <div className="flex items-center gap-2 text-rose-400 mb-1">
+                    <div className="p-4 rounded-lg bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <div className="flex items-center gap-2 text-white/80 mb-1">
                             <TrendingDown className="w-4 h-4" />
                             <span className="text-[10px] font-medium uppercase tracking-wider">Pengeluaran</span>
                         </div>
                         <p className="text-lg md:text-xl font-medium tabular-nums">{formatCurrency(expense)}</p>
                         <div className="w-full bg-white/10 h-1 mt-2 mb-2 rounded-full overflow-hidden">
-                            <div className="bg-rose-500 h-full rounded-full" style={{ width: `${income > 0 ? Math.min((expense / income) * 100, 100) : 100}%` }} />
+                            <div className="bg-white/80 h-full rounded-full" style={{ width: `${income > 0 ? Math.min((expense / income) * 100, 100) : 100}%` }} />
                         </div>
-                        <div className={cn("text-[10px] font-medium flex items-center gap-1 flex-wrap", expenseChange <= 0 ? "text-emerald-400" : "text-rose-400")}>
+                        <div className={cn("text-[10px] font-medium flex items-center gap-1 flex-wrap", expenseChange <= 0 ? "text-white" : "text-white/60")}>
                             {expenseChange <= 0 ? <ArrowDownRight className="w-3 h-3" /> : <ArrowUpRight className="w-3 h-3" />}
                             <span>{formatCurrency(Math.abs(expenseDiff))}</span>
                             <span className="opacity-70">({Math.abs(expenseChange).toFixed(0)}%)</span>

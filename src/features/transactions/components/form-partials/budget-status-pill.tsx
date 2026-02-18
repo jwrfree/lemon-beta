@@ -30,10 +30,10 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
                 className={cn(
-                    "flex items-center justify-between px-3 py-2 rounded-xl text-[11px] font-medium border w-full",
+                    "flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium border w-full",
                     isOverBudget
                         ? "bg-destructive/5 text-destructive border-destructive/20"
-                        : "bg-emerald-500/5 text-emerald-600 border-emerald-500/20"
+                        : "bg-success/5 text-success border-success/20"
                 )}
             >
                 <span>Sisa Anggaran {category}:</span>

@@ -42,7 +42,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
             animate={{ opacity: 1, scale: 1 }}
             className="w-full"
         >
-            <div className="bg-card rounded-3xl p-4 shadow-lg border border-border/60 relative overflow-hidden group">
+            <div className="bg-card rounded-lg p-4 shadow-card border border-border relative overflow-hidden group">
                 {/* Decorative Gradient Bar */}
                 <div className={cn("absolute top-0 left-0 w-1.5 h-full opacity-80", visuals.color.replace('text-', 'bg-'))} />
 
@@ -159,7 +159,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                             className={cn(
                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
                                 parsedData.isNeed !== false
-                                    ? "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-900/30 shadow-sm"
+                                    ? "bg-success/15 text-success border-success/20 shadow-sm"
                                     : "bg-transparent text-muted-foreground border-transparent hover:bg-muted"
                             )}
                         >
@@ -171,7 +171,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                             className={cn(
                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
                                 parsedData.isNeed === false
-                                    ? "bg-pink-50 text-pink-500 border-pink-200 dark:bg-pink-900/20 dark:border-pink-900/30 shadow-sm"
+                                    ? "bg-pink-500/15 text-pink-600 border-pink-200 dark:bg-pink-900/20 dark:border-pink-900/30 shadow-sm"
                                     : "bg-transparent text-muted-foreground border-transparent hover:bg-muted"
                             )}
                         >
@@ -181,7 +181,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                     </div>
 
                     {/* Description */}
-                    <div className="bg-muted/30 rounded-xl p-3 flex items-start justify-between gap-2 group/desc hover:bg-muted/50 transition-colors cursor-pointer relative">
+                    <div className="bg-secondary rounded-lg p-3 flex items-start justify-between gap-2 group/desc hover:bg-muted/50 transition-colors cursor-pointer relative">
                         <Popover>
                             <PopoverTrigger asChild>
                                 <div className="flex-1">

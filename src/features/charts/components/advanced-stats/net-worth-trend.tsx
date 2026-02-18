@@ -21,15 +21,15 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const growth = previousNetWorth !== 0 ? ((currentNetWorth - previousNetWorth) / Math.abs(previousNetWorth)) * 100 : 0;
 
     return (
-        <Card className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-sm overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 pointer-events-none">
+        <Card className="p-6 border-border rounded-lg bg-card shadow-card overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 pointer-events-none text-foreground">
                 <Landmark className="h-40 w-40" />
             </div>
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 relative z-10">
                 <div className="space-y-1">
                     <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-emerald-500" />
+                        <ShieldCheck className="w-5 h-5 text-success" />
                         Kekayaan Bersih (Net Worth)
                     </h3>
                     <p className="text-sm text-muted-foreground">Tren akumulasi aset dikurangi beban</p>
@@ -40,7 +40,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                     </p>
                     <Badge
                         variant={growth >= 0 ? "default" : "destructive"}
-                        className={cn("mt-1 rounded-lg", growth >= 0 && "bg-emerald-500 hover:bg-emerald-600")}
+                        className={cn("mt-1 rounded-md", growth >= 0 && "bg-success hover:bg-success/90")}
                     >
                         <TrendingUp className={cn("w-3 h-3 mr-1", growth < 0 && "rotate-180")} />
                         {growth >= 0 ? '+' : ''}{growth.toFixed(1)}%
@@ -51,26 +51,26 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
             <div className="h-[300px] w-full mt-4">
                 <ChartContainer
                     config={{
-                        netWorth: { label: 'Kekayaan Bersih', color: 'var(--chart-1)' },
-                        assets: { label: 'Total Aset', color: 'var(--chart-2)' },
-                        liabilities: { label: 'Total Liabilitas', color: 'var(--chart-4)' },
+                        netWorth: { label: 'Kekayaan Bersih', color: 'hsl(var(--chart-1))' },
+                        assets: { label: 'Total Aset', color: 'hsl(var(--chart-2))' },
+                        liabilities: { label: 'Total Liabilitas', color: 'hsl(var(--chart-4))' },
                     }}
                 >
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
                             <XAxis
                                 dataKey="month"
                                 axisLine={false}
                                 tickLine={false}
                                 tickMargin={10}
-                                style={{ fontSize: '12px', fontWeight: 500 }}
+                                style={{ fontSize: '12px', fontWeight: 500, fill: 'hsl(var(--muted-foreground))' }}
                             />
                             <YAxis
                                 hide
@@ -81,7 +81,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                             <Area
                                 type="monotone"
                                 dataKey="netWorth"
-                                stroke="var(--chart-1)"
+                                stroke="hsl(var(--chart-1))"
                                 strokeWidth={4}
                                 fillOpacity={1}
                                 fill="url(#netWorthGradient)"
@@ -92,16 +92,16 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                 </ChartContainer>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-6 border-t border-zinc-100 dark:border-zinc-800 pt-6">
+            <div className="grid grid-cols-2 gap-4 mt-6 border-t border-border pt-6">
                 <div className="space-y-1">
-                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400">Total Aset</p>
-                    <p className="text-lg font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
+                    <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Total Aset</p>
+                    <p className="text-lg font-medium tabular-nums text-success">
                         {formatCurrency(data[data.length - 1]?.assets || 0)}
                     </p>
                 </div>
                 <div className="space-y-1 text-right">
-                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400">Total Liabilitas</p>
-                    <p className="text-lg font-medium tabular-nums text-rose-600 dark:text-rose-400">
+                    <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Total Liabilitas</p>
+                    <p className="text-lg font-medium tabular-nums text-destructive">
                         {formatCurrency(data[data.length - 1]?.liabilities || 0)}
                     </p>
                 </div>

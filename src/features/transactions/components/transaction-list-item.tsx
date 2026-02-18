@@ -48,12 +48,12 @@ const TransactionListItemContent = ({
     const iconBg = merchantVisuals?.bgColor || categoryVisuals.bgColor;
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-destructive' : 'text-teal-600 dark:text-teal-500';
+    const amountColor = isExpense ? 'text-destructive' : 'text-success';
 
     return (
         <div className="flex items-center gap-4 p-3.5">
             <div className={cn(
-                "flex-shrink-0 h-10 w-10 rounded-xl shadow-sm flex items-center justify-center transition-all duration-500 overflow-hidden border border-white/10", 
+                "flex-shrink-0 h-10 w-10 rounded-lg shadow-sm flex items-center justify-center transition-all duration-500 overflow-hidden border border-border/50", 
                 iconBg
             )}>
                 {primaryLogo && logoSource === 'clearbit' && (
@@ -80,7 +80,7 @@ const TransactionListItemContent = ({
                 <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-pink-500 bg-pink-50 dark:bg-pink-900/20 px-1.5 py-0.5 rounded-md text-[9px] font-medium uppercase tracking-wider shadow-sm border border-pink-100 dark:border-pink-900/30">
+                        <span className="flex items-center gap-1 text-accent-foreground bg-accent px-1.5 py-0.5 rounded-md text-[9px] font-medium uppercase tracking-wider shadow-sm border border-border">
                             <Sparkles className="h-2 w-2 fill-current" />
                             Want
                         </span>
@@ -222,19 +222,19 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
     };
 
     return (
-        <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden">
+        <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden shadow-sm border border-border/40">
             {/* Delete Action BG */}
             <motion.div
                 style={{ opacity: deleteOpacity }}
-                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-white pr-6 w-full"
+                className="absolute inset-y-0 right-0 flex items-center justify-end bg-destructive text-destructive-foreground pr-6 w-full"
             >
                 <motion.div
-                    className="absolute right-6 h-10 w-10 bg-pink-800/80 rounded-full z-0"
+                    className="absolute right-6 h-10 w-10 bg-destructive-foreground/20 rounded-full z-0"
                     animate={deleteRippleControls}
                     initial={{ scale: 0, opacity: 0 }}
                 />
                 <motion.div animate={deleteIconControls} className="relative z-10">
-                    <Trash2 className="h-6 w-6 text-white" />
+                    <Trash2 className="h-6 w-6" />
                 </motion.div>
             </motion.div>
             {/* Edit Action BG */}
@@ -248,7 +248,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                     initial={{ scale: 0, opacity: 0 }}
                 />
                 <motion.div animate={editIconControls} className="relative z-10">
-                    <Pencil className="h-6 w-6 text-primary-foreground" />
+                    <Pencil className="h-6 w-6" />
                 </motion.div>
             </motion.div>
 

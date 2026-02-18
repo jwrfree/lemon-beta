@@ -23,8 +23,8 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
                     ? getCategoryIcon(cat.icon)
                     : (cat.icon || getCategoryIcon('Wrench'));
 
-                const color = cat.color || 'text-gray-600';
-                const bgColor = cat.bg_color || 'bg-gray-100';
+                const color = cat.color || 'text-muted-foreground';
+                const bgColor = cat.bg_color || 'bg-muted';
 
                 return (
                     <button
@@ -32,11 +32,11 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
                         key={cat.id}
                         onClick={() => onCategorySelect(cat)}
                         className={cn(
-                            "p-2 text-center border rounded-xl flex flex-col items-center justify-center gap-1 aspect-square transition-all active:scale-95",
-                            isSelected ? 'border-primary bg-primary/10 ring-1 ring-primary' : 'border-transparent bg-muted/30'
+                            "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1 aspect-square transition-all active:scale-95",
+                            isSelected ? 'border-primary bg-primary/10 ring-1 ring-primary' : 'border-transparent bg-secondary'
                         )}
                     >
-                        <div className={cn("p-2.5 rounded-xl shadow-sm", isSelected ? 'bg-primary text-white shadow-sm' : bgColor)}>
+                        <div className={cn("p-2.5 rounded-lg shadow-card", isSelected ? 'bg-primary text-white shadow-sm' : bgColor)}>
                             <CategoryIcon className={cn("h-5 w-5", isSelected ? 'text-white' : color)} />
                         </div>
                         <span className="text-[10px] font-medium text-center leading-tight truncate w-full">{cat.name}</span>

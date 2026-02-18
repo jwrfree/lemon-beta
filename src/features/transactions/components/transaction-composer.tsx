@@ -181,7 +181,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 animate={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }) : {}}
                 exit={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }) : {}}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="w-full max-w-lg bg-background rounded-t-[2.5rem] md:rounded-2xl shadow-2xl flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border/50 overflow-hidden relative pb-safe"
+                className="w-full max-w-lg bg-background rounded-t-lg md:rounded-lg shadow-2xl flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border overflow-hidden relative pb-safe"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="md:hidden w-12 h-1.5 bg-muted rounded-full mx-auto mt-3 mb-1 shrink-0 opacity-40" />
@@ -220,7 +220,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     </AnimatePresence>
 
                     <div className="space-y-2">
-                        <Input {...form.register('description')} id="description" placeholder="Deskripsi (makan siang, bensin, dll...)" className={cn("h-12 rounded-2xl bg-muted/20 border-border/50 shrink-0 focus-visible:ring-primary/30", errors.description && "border-destructive")} />
+                        <Input {...form.register('description')} id="description" placeholder="Deskripsi (makan siang, bensin, dll...)" className={cn("h-12 rounded-lg bg-secondary border-border shrink-0 focus-visible:ring-primary/30", errors.description && "border-destructive")} />
                         {errors.description && <p className="text-sm font-medium text-destructive">{errors.description.message}</p>}
                     </div>
 
@@ -236,7 +236,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
 
                     <Button
                         onClick={handleSubmit(onSubmit)}
-                        className="w-full h-12 text-base rounded-2xl font-medium transition-all duration-300 shadow-lg active:scale-[0.98] text-white hover:brightness-110 bg-primary"
+                        className="w-full h-12 text-base rounded-lg font-medium transition-all duration-300 shadow-card active:scale-[0.98] text-white hover:brightness-110 bg-primary"
                         style={categoryVisuals ? {
                             backgroundColor: getCategoryColorHex(categoryVisuals)
                         } : undefined}

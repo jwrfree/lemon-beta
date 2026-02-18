@@ -108,12 +108,12 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 onClick={handleCardClick}
                 className="w-full h-full text-left focus:outline-none group"
             >
-                <Card className="h-full overflow-hidden border border-zinc-200/60 dark:border-zinc-800/60 bg-white dark:bg-zinc-900 rounded-[2rem] shadow-sm hover:shadow-lg transition-all duration-500 premium-shadow">
+                <Card className="h-full overflow-hidden border-border bg-card rounded-lg shadow-card hover:shadow-lg transition-all duration-500">
                     <div className="p-6 flex flex-col h-full space-y-6">
                         {/* Header: Identity & Status */}
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-4">
-                                <div className={cn("p-3 rounded-2xl border transition-colors", currentHealth.bg, "border-black/5 dark:border-white/5")}>
+                                <div className={cn("p-3 rounded-md border transition-colors", currentHealth.bg, "border-black/5 dark:border-white/5")}>
                                     <CategoryIcon className={cn("h-6 w-6", currentHealth.text)} />
                                 </div>
                                 <div className="space-y-0.5">
@@ -128,7 +128,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="h-10 w-10 rounded-md bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 <ChevronRight className="h-5 w-5 text-zinc-400" />
                             </div>
                         </div>
@@ -196,7 +196,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
 
                             {/* Safe Limit Badge */}
                             {remaining > 0 && (
-                                <div className={cn("flex items-center justify-between p-3 rounded-2xl border bg-zinc-50/50 dark:bg-black/20", "border-zinc-100 dark:border-zinc-800")}>
+                                <div className={cn("flex items-center justify-between p-3 rounded-lg border bg-secondary/50", "border-border")}>
                                     <div className="flex items-center gap-2">
                                         <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                         <span className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest">Jatah Aman Per Hari</span>

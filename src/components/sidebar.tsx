@@ -27,7 +27,7 @@ export const Sidebar = () => {
             )}
         >
             <div className={cn('flex items-center transition-[padding] duration-300', isSidebarCollapsed ? 'justify-center px-1' : 'px-3 py-4')}>
-                <div className="h-9 w-9 rounded-xl bg-primary shadow-sm flex items-center justify-center shrink-0">
+                <div className="h-9 w-9 rounded-lg bg-primary shadow-card flex items-center justify-center shrink-0">
                     <div className="text-primary-foreground font-medium text-lg leading-none">L</div>
                 </div>
                 <div 
@@ -53,8 +53,8 @@ export const Sidebar = () => {
                 <Button
                     onClick={() => router.push('/add-smart')}
                     className={cn(
-                        'shadow-sm active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] bg-primary text-primary-foreground hover:bg-primary/90',
-                        isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-xl px-4'
+                        'shadow-card active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] bg-primary text-primary-foreground hover:bg-primary/90',
+                        isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-lg px-4'
                     )}
                     size="default" 
                 >
@@ -82,7 +82,7 @@ export const Sidebar = () => {
                             prefetch={false}
                             aria-current={isActive ? 'page' : undefined}
                             className={cn(
-                                'group flex items-center gap-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-300 relative overflow-hidden',
+                                'group flex items-center gap-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden',
                                 isSidebarCollapsed ? 'justify-center px-0 w-11 mx-auto' : 'px-3 w-full',
                                 isActive
                                     ? 'text-primary bg-gradient-to-r from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent'
@@ -125,14 +125,14 @@ export const Sidebar = () => {
             <div className="mt-auto border-t pt-4 space-y-3">
                 <div
                     className={cn(
-                        'flex flex-col items-center rounded-2xl bg-muted border border-border transition-all duration-300',
+                        'flex flex-col items-center rounded-lg bg-muted border border-border transition-all duration-300',
                         isSidebarCollapsed ? 'p-1.5 w-11 mx-auto' : 'p-2 w-full'
                     )}
                 >
                     <BalanceVisibilityToggle
                         variant="ghost"
                         className={cn(
-                            'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-xl transition-all duration-300',
+                            'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-lg transition-all duration-300',
                             isSidebarCollapsed ? 'w-full h-8 p-0 justify-center' : 'w-full justify-start gap-3 px-3'
                         )}
                         showLabel={!isSidebarCollapsed}
@@ -142,7 +142,7 @@ export const Sidebar = () => {
                         size={isSidebarCollapsed ? 'icon' : 'default'}
                         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                         className={cn(
-                            'rounded-xl hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary transition-all duration-300',
+                            'rounded-lg hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary transition-all duration-300',
                             isSidebarCollapsed ? 'w-full h-8 p-0' : 'w-full justify-start gap-3 px-3'
                         )}
                         aria-label={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
@@ -161,7 +161,7 @@ export const Sidebar = () => {
                      <Button
                         variant="ghost"
                         className={cn(
-                            'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-300',
+                            'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all duration-300',
                             isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3 px-3'
                         )}
                         onClick={handleSignOut}

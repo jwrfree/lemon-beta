@@ -28,8 +28,8 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
     const [name, setName] = useState(initialData?.name || '');
     const [type, setType] = useState<'expense' | 'income'>(initialData?.type || 'expense');
     const [selectedIcon, setSelectedIcon] = useState(initialData?.icon || 'Wrench');
-    const [selectedColor, setSelectedColor] = useState(initialData?.color || 'text-gray-600');
-    const [selectedBg, setSelectedBg] = useState(initialData?.bg_color || 'bg-gray-100');
+    const [selectedColor, setSelectedColor] = useState(initialData?.color || 'text-muted-foreground');
+    const [selectedBg, setSelectedBg] = useState(initialData?.bg_color || 'bg-muted');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -61,7 +61,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 initial={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                 animate={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }}
                 exit={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
-                className="w-full max-w-md bg-background rounded-t-xl md:rounded-xl shadow-xl flex flex-col max-h-[90vh] overflow-hidden"
+                className="w-full max-w-md bg-background rounded-t-lg md:rounded-lg shadow-card flex flex-col max-h-[90vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-6 border-b flex items-center justify-between bg-background">
@@ -109,8 +109,8 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                                         onClick={() => setSelectedIcon(opt.name)}
                                         aria-label={`Pilih ikon ${opt.name}`}
                                         className={cn(
-                                            "p-3 rounded-xl transition-all border-2",
-                                            isSelected ? "border-primary bg-primary/10" : "border-transparent bg-muted/50 hover:bg-muted"
+                                            "p-3 rounded-lg transition-all border-2",
+                                            isSelected ? "border-primary bg-primary/10" : "border-transparent bg-secondary hover:bg-muted"
                                         )}
                                     >
                                         <Icon className={cn("h-5 w-5", isSelected ? "text-primary" : "text-muted-foreground")} />
@@ -134,7 +134,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                                             setSelectedBg(opt.bg);
                                         }}
                                         className={cn(
-                                            "h-10 w-full rounded-xl transition-all border-2 flex items-center justify-center",
+                                            "h-10 w-full rounded-lg transition-all border-2 flex items-center justify-center",
                                             opt.bg,
                                             isSelected ? "border-primary shadow-inner" : "border-transparent"
                                         )}
@@ -148,7 +148,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 </form>
 
                 <div className="p-6 border-t bg-background">
-                    <Button type="submit" className="w-full h-12 rounded-xl text-base font-medium" disabled={isSubmitting}>
+                    <Button type="submit" className="w-full h-12 rounded-lg text-base font-medium" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : 'Simpan Kategori'}
                     </Button>
                 </div>

@@ -80,8 +80,8 @@ export function CategorySelector<T extends FieldValues>({
                                     </motion.div>
                                 )}
                                 {!isSuggesting && isAiSuggested && (
-                                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-1 text-[10px] text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
-                                        <Sparkles className="h-2.5 w-2.5 fill-amber-600" />
+                                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1 text-[10px] text-warning font-medium bg-warning/10 px-2 py-0.5 rounded-md border border-warning/20">
+                                        <Sparkles className="h-2.5 w-2.5 fill-warning" />
                                         Disarankan AI
                                     </motion.div>
                                 )}
@@ -93,7 +93,7 @@ export function CategorySelector<T extends FieldValues>({
                                 type="button"
                                 variant="outline"
                                 className={cn(
-                                    "flex w-full items-center justify-between rounded-2xl p-4 h-auto border-border/50 bg-muted/20 transition-all active:scale-[0.99]",
+                                    "flex w-full items-center justify-between rounded-lg p-4 h-auto border-border bg-secondary transition-all active:scale-[0.99]",
                                     isExpanded && "ring-2 ring-primary/20 border-primary/30 bg-background",
                                     error && "border-destructive hover:bg-destructive/5"
                                 )}
@@ -102,7 +102,7 @@ export function CategorySelector<T extends FieldValues>({
                                 <div className="flex items-center gap-3">
                                     {selectedCategory ? (
                                         <>
-                                            <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shadow-sm", selectedCategory.bg_color, selectedCategory.color)}>
+                                            <div className={cn("h-10 w-10 rounded-lg flex items-center justify-center shadow-card", selectedCategory.bg_color, selectedCategory.color)}>
                                                 {(() => {
                                                     const Icon = getCategoryIcon(selectedCategory.icon);
                                                     return <Icon size={20} />;
@@ -119,7 +119,7 @@ export function CategorySelector<T extends FieldValues>({
                                         </>
                                     ) : (
                                         <>
-                                            <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border border-dashed border-muted-foreground/30">
+                                            <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center border border-dashed border-border">
                                                 <Sparkles className="h-5 w-5 text-muted-foreground/40" />
                                             </div>
                                             <span className="text-muted-foreground font-medium text-sm">Pilih Kategori</span>

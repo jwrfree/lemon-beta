@@ -67,12 +67,12 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
 
     const DefaultIcon = merchantVisuals?.icon || CategoryIcon;
     const iconColor = merchantVisuals?.color || categoryData.color;
-    const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-zinc-100";
+    const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-secondary";
 
     return (
-        <tr className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/30 transition-all group">
+        <tr className="hover:bg-muted/50 transition-all group">
             {/* 1. Tanggal */}
-            <td className="p-4 pl-8 text-xs font-medium text-zinc-400 whitespace-nowrap align-middle">
+            <td className="p-4 pl-8 text-xs font-medium text-muted-foreground whitespace-nowrap align-middle">
                 {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
             </td>
 
@@ -80,7 +80,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             <td className="p-4 align-middle">
                 <div className="flex items-center gap-3">
                     <div className={cn(
-                        "h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-sm overflow-hidden transition-transform group-hover:scale-105",
+                        "h-10 w-10 rounded-lg flex items-center justify-center shrink-0 border border-border shadow-sm overflow-hidden transition-transform group-hover:scale-105",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'clearbit' && (
@@ -106,11 +106,11 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                         )}
                     </div>
                     <div className="overflow-hidden">
-                        <div className="font-medium text-zinc-900 dark:text-zinc-100 text-sm leading-tight truncate max-w-[200px] md:max-w-[300px]">
+                        <div className="font-medium text-foreground text-sm leading-tight truncate max-w-[200px] md:max-w-[300px]">
                             {t.description || t.category}
                         </div>
                         {t.location && (
-                            <div className="flex items-center gap-1 text-[10px] text-zinc-400 mt-0.5">
+                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
                                 <MapPin className="h-2.5 w-2.5" />
                                 <span className="truncate">{t.location}</span>
                             </div>
@@ -122,11 +122,11 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             {/* 3. Kategori (Terpisah) */}
             <td className="p-4">
                 <div className="flex flex-col">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-lg w-fit border border-black/5 dark:border-white/5">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-secondary px-2 py-0.5 rounded-lg w-fit border border-border">
                         {t.category}
                     </span>
                     {t.subCategory && (
-                        <div className="flex items-center gap-1 text-[10px] text-zinc-400 mt-1 ml-1">
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1 ml-1">
                             <CornerDownRight className="w-2.5 h-2.5" />
                             <span>{t.subCategory}</span>
                         </div>
@@ -137,8 +137,8 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             {/* 4. Metode (Wallet) */}
             <td className="p-4">
                 <div className="flex items-center gap-2">
-                    <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-zinc-300')} />
-                    <span className="font-medium text-zinc-600 dark:text-zinc-400 text-xs uppercase tracking-wider whitespace-nowrap">
+                    <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-muted')} />
+                    <span className="font-medium text-muted-foreground text-xs uppercase tracking-wider whitespace-nowrap">
                         {wallet?.name || '-'}
                     </span>
                 </div>
@@ -147,14 +147,14 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             {/* 5. Nominal */}
             <td className={cn(
                 "p-4 text-right font-medium text-sm tabular-nums tracking-tight",
-                isExpense ? "text-rose-600 dark:text-rose-500" : "text-emerald-600 dark:text-emerald-500"
+                isExpense ? "text-destructive" : "text-success"
             )}>
                 <div className="flex items-center justify-end gap-1.5">
                     {isExpense ? <ArrowDownLeft className="h-3.5 w-3.5" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
                     {formatCurrency(t.amount)}
                 </div>
                 {isExpense && t.isNeed === false && (
-                    <span className="text-[9px] font-bold text-pink-500 uppercase tracking-tighter block mt-0.5">
+                    <span className="text-[9px] font-bold text-accent-foreground/70 uppercase tracking-tighter block mt-0.5">
                         Gaya Hidup
                     </span>
                 )}
@@ -166,7 +166,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg text-zinc-400 hover:text-primary hover:bg-primary/10"
+                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10"
                         onClick={() => { triggerHaptic('light'); openEditTransactionModal(t); }}
                     >
                         <Pencil className="h-3.5 w-3.5" />
@@ -174,7 +174,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg text-zinc-400 hover:text-destructive hover:bg-destructive/10"
+                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                         onClick={() => { triggerHaptic('medium'); openDeleteModal(t); }}
                     >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -255,15 +255,15 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="gap-2 h-10 rounded-xl px-4 border-zinc-200/60 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all font-medium text-[10px] uppercase tracking-widest"
+                    className="gap-2 h-10 rounded-lg px-4 border-border hover:bg-muted transition-all font-medium text-[10px] uppercase tracking-widest"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-[2rem] bg-white dark:bg-zinc-900 premium-shadow border border-zinc-200/60 dark:border-zinc-800/60">
+            <div className="overflow-hidden rounded-lg bg-card shadow-card border border-border">
                 <table className="w-full text-sm text-left table-fixed">
-                    <thead className="bg-zinc-50/50 dark:bg-zinc-800/50 text-zinc-400 font-medium border-b border-zinc-100 dark:border-zinc-800">
+                    <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
                         <tr>
                             <th className="p-4 pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em] w-32" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
@@ -298,7 +298,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                             <th className="p-4 text-right pr-8 font-medium text-[10px] uppercase tracking-[0.15em] w-24">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
+                    <tbody className="divide-y divide-border">
                         {sortedTransactions.map((t) => (
                             <TransactionRow
                                 key={t.id}

@@ -37,11 +37,11 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-background rounded-t-xl shadow-lg flex flex-col h-fit md:h-auto"
+                className="w-full max-w-md bg-background rounded-t-lg shadow-card flex flex-col h-fit md:h-auto"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl">
+                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-lg">
                     <h2 className="text-xl font-medium text-destructive tracking-tight">Konfirmasi Hapus</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
@@ -50,8 +50,8 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 </div>
                 <div className="p-4 space-y-4">
                     <p className="text-sm text-muted-foreground">Yakin mau menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
-                    <div className="flex items-center gap-3 rounded-xl border-none bg-muted/30 p-3.5">
-                        <div className={cn("flex-shrink-0 p-2.5 rounded-xl shadow-sm", bgColor)}>
+                    <div className="flex items-center gap-3 rounded-lg border-none bg-secondary p-3.5">
+                        <div className={cn("flex-shrink-0 p-2.5 rounded-lg shadow-card", bgColor)}>
                             <CategoryIcon className={cn("h-5 w-5", details.color)} />
                         </div>
                         <div className="flex-1 overflow-hidden">

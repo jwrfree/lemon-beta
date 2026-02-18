@@ -66,7 +66,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.4}
                 onClick={() => !isActive && (triggerHaptic('light'), setActiveIndex(i))}
                 className={cn(
-                  "absolute w-[88%] max-w-sm h-52 rounded-[2.5rem] text-white shadow-2xl overflow-hidden premium-shadow",
+                  "absolute w-[88%] max-w-sm h-52 rounded-lg text-white shadow-card overflow-hidden",
                   isActive ? "cursor-grab active:cursor-grabbing z-30" : "cursor-pointer grayscale-[0.2]"
                 )}
                 style={{
@@ -99,7 +99,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 <div className="relative p-7 flex flex-col h-full">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
+                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-lg border border-white/20 shadow-inner flex items-center justify-center">
                         {logo ? (
                           <>
                             <img
@@ -136,7 +136,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-white hover:bg-white/20 h-10 w-10 rounded-2xl relative z-10 backdrop-blur-sm border border-white/10"
+                      className="text-white hover:bg-white/20 h-10 w-10 rounded-lg relative z-10 backdrop-blur-sm border border-white/10"
                       onClick={(e) => { e.stopPropagation(); triggerHaptic('medium'); openEditWalletModal(wallet); }}
                     >
                       <MoreVertical className="h-5 w-5" />
@@ -180,7 +180,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 style={{ opacity: isActive ? 1 : 0.4, transform: isActive ? 'scale(1.1)' : 'scale(0.9)' }}
               >
                 <div className={cn(
-                  "h-12 w-12 rounded-2xl flex items-center justify-center shadow-sm border-2 transition-all",
+                  "h-12 w-12 rounded-lg flex items-center justify-center shadow-card border-2 transition-all",
                   isActive ? "border-primary bg-card" : "border-transparent bg-muted"
                 )}>
                   {logo ? (

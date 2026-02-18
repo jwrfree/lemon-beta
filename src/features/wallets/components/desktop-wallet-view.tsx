@@ -114,8 +114,8 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
     const getHealthBadgeClass = (variant: string) => {
         switch (variant) {
             case 'destructive': return "bg-destructive/10 text-destructive hover:bg-destructive/20 border-destructive/20";
-            case 'success': return "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-500/20";
-            case 'secondary': return "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20";
+            case 'success': return "bg-success/10 text-success hover:bg-success/20 border-success/20";
+            case 'secondary': return "bg-warning/10 text-warning hover:bg-warning/20 border-warning/20";
             default: return "";
         }
     };
@@ -138,14 +138,14 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="shadow-card">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pemasukan (30 Hari)</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-emerald-500/10 rounded-md">
-                                <TrendingUp className="h-4 w-4 text-emerald-600" />
+                            <div className="p-1.5 bg-success/10 rounded-lg">
+                                <TrendingUp className="h-4 w-4 text-success" />
                             </div>
                             <div className="text-2xl font-medium tracking-tight text-foreground">
                                 {formatCurrency(income30)}
@@ -154,14 +154,14 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="shadow-card">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pengeluaran (30 Hari)</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-rose-500/10 rounded-md">
-                                <TrendingDown className="h-4 w-4 text-rose-600" />
+                            <div className="p-1.5 bg-destructive/10 rounded-lg">
+                                <TrendingDown className="h-4 w-4 text-destructive" />
                             </div>
                             <div className="text-2xl font-medium tracking-tight text-foreground">
                                 {formatCurrency(expense30)}
@@ -173,7 +173,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-[350px,1fr] gap-6 min-h-0">
                 {/* Left Side: Wallet List */}
-                <Card className="flex flex-col border-none shadow-sm bg-background/50 backdrop-blur-sm h-full overflow-hidden">
+                <Card className="flex flex-col border-none shadow-card bg-background/50 backdrop-blur-sm h-full overflow-hidden">
                     <div className="p-4 border-b space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-medium tracking-tight flex items-center gap-2">
@@ -234,7 +234,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     key={wallet.id}
                                     onClick={() => setActiveIndex(wallets.indexOf(wallet))}
                                     className={cn(
-                                        "w-full text-left p-3 rounded-xl transition-all border flex items-center justify-between group",
+                                        "w-full text-left p-3 rounded-lg transition-all border flex items-center justify-between group",
                                         isActive
                                             ? "bg-card border-primary/20 shadow-sm ring-1 ring-primary/10"
                                             : "bg-transparent border-transparent hover:bg-muted/50"
@@ -288,7 +288,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 </Card>
 
                 {/* Right Side: Detail & Transactions */}
-                <Card className="flex flex-col border-none shadow-sm overflow-hidden bg-card/80 backdrop-blur-sm h-full">
+                <Card className="flex flex-col border-none shadow-card overflow-hidden bg-card/80 backdrop-blur-sm h-full">
                     {activeWallet ? (
                         <Tabs value={panelTab} onValueChange={(v) => setPanelTab(v as 'transactions' | 'analytics' | 'settings')} className="flex flex-col h-full">
                             <div className="p-6 border-b bg-card/50">
@@ -296,7 +296,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     <div className="flex items-center gap-4">
                                         {activeWalletVisuals && (
                                             <div
-                                                className="w-14 h-14 rounded-xl flex items-center justify-center shadow-sm bg-[image:var(--wallet-gradient)] overflow-hidden"
+                                                className="w-14 h-14 rounded-lg flex items-center justify-center shadow-sm bg-[image:var(--wallet-gradient)] overflow-hidden"
                                                 style={{
                                                     '--wallet-gradient': `linear-gradient(to bottom right, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})`
                                                 } as React.CSSProperties}
@@ -338,10 +338,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </div>
                                 </div>
 
-                                <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full lg:w-fit grid grid-cols-3">
-                                    <TabsTrigger value="transactions" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Riwayat</TabsTrigger>
-                                    <TabsTrigger value="analytics" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Insight</TabsTrigger>
-                                    <TabsTrigger value="settings" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Pengaturan</TabsTrigger>
+                                <TabsList className="bg-muted p-1 rounded-lg h-14 w-full lg:w-fit grid grid-cols-3">
+                                    <TabsTrigger value="transactions" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Riwayat</TabsTrigger>
+                                    <TabsTrigger value="analytics" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Insight</TabsTrigger>
+                                    <TabsTrigger value="settings" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Pengaturan</TabsTrigger>
                                 </TabsList>
                             </div>
 
@@ -359,33 +359,33 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                 <TabsContent value="analytics" className="h-full m-0 p-6 overflow-y-auto custom-scrollbar">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <Card className="bg-emerald-500/5 border-emerald-500/20 shadow-none">
+                                        <Card className="bg-success/5 border-success/20 shadow-none">
                                             <CardContent className="p-4 flex items-center gap-4">
-                                                <div className="p-3 bg-emerald-500/10 rounded-lg">
-                                                    <TrendingUp className="h-5 w-5 text-emerald-600" />
+                                                <div className="p-3 bg-success/10 rounded-lg">
+                                                    <TrendingUp className="h-5 w-5 text-success" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-medium text-emerald-600/80 uppercase tracking-wider">Pemasukan</p>
-                                                    <p className="text-xl font-medium text-emerald-700 dark:text-emerald-500">{formatCurrency(activeAnalytics.income30)}</p>
+                                                    <p className="text-xs font-medium text-success/80 uppercase tracking-wider">Pemasukan</p>
+                                                    <p className="text-xl font-medium text-foreground">{formatCurrency(activeAnalytics.income30)}</p>
                                                     <p className="text-[10px] text-muted-foreground">30 Hari terakhir</p>
                                                 </div>
                                             </CardContent>
                                         </Card>
 
-                                        <Card className="bg-rose-500/5 border-rose-500/20 shadow-none">
+                                        <Card className="bg-destructive/5 border-destructive/20 shadow-none">
                                             <CardContent className="p-4 flex items-center gap-4">
-                                                <div className="p-3 bg-rose-500/10 rounded-lg">
-                                                    <TrendingDown className="h-5 w-5 text-rose-600" />
+                                                <div className="p-3 bg-destructive/10 rounded-lg">
+                                                    <TrendingDown className="h-5 w-5 text-destructive" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-medium text-rose-600/80 uppercase tracking-wider">Pengeluaran</p>
-                                                    <p className="text-xl font-medium text-rose-700 dark:text-rose-500">{formatCurrency(activeAnalytics.expense30)}</p>
+                                                    <p className="text-xs font-medium text-destructive/80 uppercase tracking-wider">Pengeluaran</p>
+                                                    <p className="text-xl font-medium text-foreground">{formatCurrency(activeAnalytics.expense30)}</p>
                                                     <p className="text-[10px] text-muted-foreground">30 Hari terakhir</p>
                                                 </div>
                                             </CardContent>
                                         </Card>
 
-                                        <Card className="col-span-full border-dashed bg-muted/20 shadow-none">
+                                        <Card className="col-span-full border-dashed bg-muted/20 shadow-none border-border">
                                             <CardContent className="p-8 flex flex-col items-center justify-center text-center space-y-3">
                                                 <div className="p-3 bg-background rounded-full shadow-sm">
                                                     <Target className="h-6 w-6 text-primary" />

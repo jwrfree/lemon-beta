@@ -9,8 +9,8 @@ export const DashboardGoalsEmpty = () => {
     const { setIsGoalModalOpen } = useUI();
 
     return (
-        <Card className="border-zinc-200/60 dark:border-zinc-800/60 rounded-3xl bg-white dark:bg-zinc-900 shadow-sm overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-6 opacity-[0.03] rotate-12">
+        <Card className="border-border rounded-lg bg-card shadow-card overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-6 opacity-[0.03] rotate-12 text-foreground">
                 <Trophy className="h-24 w-24" />
             </div>
 
@@ -21,10 +21,10 @@ export const DashboardGoalsEmpty = () => {
 
             <CardContent className="flex flex-col items-center justify-center py-8 text-center relative z-10">
                 <div className="relative mb-6">
-                    <div className="p-4 bg-orange-500/10 rounded-2xl border border-orange-500/10">
-                        <Target className="h-8 w-8 text-orange-500" strokeWidth={1.5} />
+                    <div className="p-4 bg-warning/10 rounded-lg border border-warning/20">
+                        <Target className="h-8 w-8 text-warning" strokeWidth={1.5} />
                     </div>
-                    <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] text-white font-medium shadow-sm">
+                    <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-warning text-[10px] text-warning-foreground font-medium shadow-sm">
                         !
                     </div>
                 </div>
@@ -38,7 +38,7 @@ export const DashboardGoalsEmpty = () => {
                     onClick={() => setIsGoalModalOpen(true)} 
                     size="sm" 
                     variant="outline" 
-                    className="gap-2 rounded-xl h-9 text-xs font-medium border-orange-500/20 hover:bg-orange-500/5 hover:text-orange-500 transition-colors w-full max-w-[160px]"
+                    className="gap-2 rounded-lg h-9 text-xs font-medium border-warning/20 hover:bg-warning/5 hover:text-warning transition-colors w-full max-w-[160px]"
                 >
                     <Plus className="h-3.5 w-3.5" />
                     Buat Target Baru

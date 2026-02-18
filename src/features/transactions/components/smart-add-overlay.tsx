@@ -137,7 +137,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
                             className={cn(
-                                "pointer-events-auto relative w-full max-w-md bg-background rounded-t-3xl shadow-2xl overflow-hidden flex flex-col transition-all duration-500 will-change-transform",
+                                "pointer-events-auto relative w-full max-w-md bg-background rounded-t-lg shadow-card overflow-hidden flex flex-col transition-all duration-500 will-change-transform",
                                 isResultMode ? "h-[85vh]" : "max-h-[85vh]"
                             )}
                         >
@@ -190,7 +190,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                     {/* Input Mode: IDLE or ANALYZING */}
                                     {!isResultMode ? (
                                         <div className="flex flex-col gap-4">
-                                            <div className="relative bg-muted/30 rounded-2xl p-3 border border-border/50 focus-within:border-primary/50 transition-colors">
+                                            <div className="relative bg-secondary rounded-lg p-3 border border-border focus-within:border-primary/50 transition-colors">
                                                 <textarea
                                                     ref={textareaRef}
                                                     value={inputValue}
@@ -209,10 +209,10 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                                             else toggleListening();
                                                         }}
                                                         className={cn(
-                                                            "h-10 w-10 rounded-xl flex items-center justify-center shadow-sm transition-all",
+                                                            "h-10 w-10 rounded-lg flex items-center justify-center shadow-sm transition-all",
                                                             inputValue.trim()
                                                                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                                                : isListening ? "bg-rose-500 text-white" : "bg-muted text-muted-foreground hover:bg-primary/20 hover:text-primary"
+                                                                : isListening ? "bg-destructive text-destructive-foreground" : "bg-muted text-muted-foreground hover:bg-primary/20 hover:text-primary"
                                                         )}
                                                         whileTap={{ scale: 0.95 }}
                                                     >
@@ -243,13 +243,13 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                         <div className="flex gap-3">
                                             <Button
                                                 variant="outline"
-                                                className="flex-1 h-12 rounded-2xl border-muted-foreground/20 text-muted-foreground hover:text-foreground"
+                                                className="flex-1 h-12 rounded-lg border-border text-muted-foreground hover:text-foreground"
                                                 onClick={() => resetFlow()}
                                             >
                                                 Batal
                                             </Button>
                                             <Button
-                                                className="flex-[2] h-12 rounded-2xl font-medium text-base shadow-lg shadow-primary/20"
+                                                className="flex-[2] h-12 rounded-lg font-medium text-base shadow-card"
                                                 onClick={handleConfirm}
                                             >
                                                 <CheckCircle2 className="h-5 w-5 mr-2" />

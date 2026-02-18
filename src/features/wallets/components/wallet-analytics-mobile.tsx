@@ -43,13 +43,13 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-3xl bg-emerald-500/5 border border-emerald-500/10"
+                    className="p-4 rounded-lg bg-success/5 border border-success/10"
                 >
-                    <div className="flex items-center gap-2 text-emerald-600 mb-1">
+                    <div className="flex items-center gap-2 text-success mb-1">
                         <TrendingUp className="h-3 w-3" />
                         <span className="text-[9px] font-bold uppercase tracking-wider">Pemasukan</span>
                     </div>
-                    <p className="text-lg font-medium tracking-tight text-emerald-700 dark:text-emerald-400">
+                    <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(income)}
                     </p>
                 </motion.div>
@@ -58,13 +58,13 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="p-4 rounded-3xl bg-rose-500/5 border border-rose-500/10"
+                    className="p-4 rounded-lg bg-destructive/5 border border-destructive/10"
                 >
-                    <div className="flex items-center gap-2 text-rose-600 mb-1">
+                    <div className="flex items-center gap-2 text-destructive mb-1">
                         <TrendingDown className="h-3 w-3" />
                         <span className="text-[9px] font-bold uppercase tracking-wider">Pengeluaran</span>
                     </div>
-                    <p className="text-lg font-medium tracking-tight text-rose-700 dark:text-rose-400">
+                    <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(expense)}
                     </p>
                 </motion.div>
@@ -77,7 +77,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                     <h2 className="text-sm font-medium tracking-tight">Alokasi Pengeluaran</h2>
                 </div>
 
-                <div className="bg-card border border-border/50 rounded-[2.5rem] p-4 overflow-hidden shadow-sm">
+                <div className="bg-card border border-border/50 rounded-lg p-4 overflow-hidden shadow-card">
                     <CategoryPie data={topCategories} total={expense} type="expense" />
                     
                     {/* Legend-ish List */}
@@ -85,7 +85,9 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                         {topCategories.slice(0, 3).map((cat, idx) => (
                             <div key={cat.name} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className={cn("h-1.5 w-1.5 rounded-full", idx === 0 ? "bg-rose-500" : idx === 1 ? "bg-orange-500" : "bg-amber-500")} />
+                                    <div className={cn("h-1.5 w-1.5 rounded-full", 
+                                        idx === 0 ? "bg-chart-1" : idx === 1 ? "bg-chart-2" : "bg-chart-3"
+                                    )} />
                                     <span className="text-[11px] font-medium text-muted-foreground">{cat.name}</span>
                                 </div>
                                 <div className="flex items-center gap-2">

@@ -85,7 +85,7 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative flex items-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2rem] shadow-xl transition-all duration-500 overflow-hidden px-5 py-3",
+                "relative flex items-center bg-card border border-border rounded-lg shadow-card transition-all duration-500 overflow-hidden px-5 py-3",
                 (isProcessing || isListening) ? "border-primary/50 ring-4 ring-primary/10" : "group-focus-within:border-primary/30 group-focus-within:ring-4 group-focus-within:ring-primary/5"
             )}>
                 <div className="mr-3 shrink-0">
@@ -94,7 +94,7 @@ export const MagicBar = ({
                     ) : (
                         <Sparkles className={cn(
                             "h-5 w-5 transition-colors",
-                            value ? "text-primary fill-primary/20" : "text-zinc-400"
+                            value ? "text-primary fill-primary/20" : "text-muted-foreground"
                         )} />
                     )}
                 </div>
@@ -106,7 +106,7 @@ export const MagicBar = ({
                     onChange={(e) => onChange(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={isListening ? "Mendengarkan..." : placeholder}
-                    className="flex-1 bg-transparent border-none focus:ring-0 text-sm md:text-base font-medium placeholder:text-zinc-400 resize-none py-1"
+                    className="flex-1 bg-transparent border-none focus:ring-0 text-sm md:text-base font-medium placeholder:text-muted-foreground/40 resize-none py-1 text-foreground"
                 />
 
                 <div className="ml-3 flex items-center gap-2 shrink-0">
@@ -118,7 +118,7 @@ export const MagicBar = ({
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 onClick={onClear}
-                                className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"
+                                className="p-2 rounded-full hover:bg-secondary text-muted-foreground"
                             >
                                 <X className="h-4 w-4" />
                             </motion.button>
@@ -130,10 +130,10 @@ export const MagicBar = ({
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 onClick={toggleListening}
                                 className={cn(
-                                    "p-3 rounded-full shadow-lg transition-all active:scale-90",
+                                    "p-3 rounded-full shadow-card transition-all active:scale-90",
                                     isListening 
-                                        ? "bg-rose-500 text-white animate-pulse" 
-                                        : "bg-primary text-white shadow-primary/20 hover:scale-110"
+                                        ? "bg-destructive text-destructive-foreground animate-pulse" 
+                                        : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
                                 )}
                             >
                                 {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}

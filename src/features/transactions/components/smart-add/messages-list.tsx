@@ -25,21 +25,21 @@ export const MessagesList = ({ messages, loadingMessage }: MessagesListProps) =>
                 >
                     {msg.type === 'user' && (
                         <div className="flex justify-end">
-                            <div className="py-2 px-4 bg-primary text-primary-foreground rounded-2xl rounded-tr-sm text-sm font-medium shadow-sm max-w-[85%]">
+                            <div className="py-2 px-4 bg-primary text-primary-foreground rounded-lg rounded-tr-sm text-sm font-medium shadow-sm max-w-[85%]">
                                 {String(msg.content)}
                             </div>
                         </div>
                     )}
                     {msg.type === 'user-image' && (
                         <div className="flex justify-end">
-                            <Card className="p-1 bg-muted max-w-[180px] border-border overflow-hidden rounded-2xl">
-                                <Image src={String(msg.content)} alt="Receipt" width={200} height={300} className="rounded-xl w-full h-auto object-cover" />
+                            <Card className="p-1 bg-muted max-w-[180px] border-border overflow-hidden rounded-lg">
+                                <Image src={String(msg.content)} alt="Receipt" width={200} height={300} className="rounded-lg w-full h-auto object-cover" />
                             </Card>
                         </div>
                     )}
                     {msg.type === 'ai-thinking' && (
                         <div className="flex justify-start">
-                            <div className="py-2 px-3 bg-muted/50 rounded-2xl rounded-tl-sm flex items-center gap-3 border border-border/40">
+                            <div className="py-2 px-3 bg-muted/50 rounded-lg rounded-tl-sm flex items-center gap-3 border border-border/40">
                                 <div className="relative flex items-center justify-center w-4 h-4">
                                     <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
                                 </div>
@@ -51,8 +51,8 @@ export const MessagesList = ({ messages, loadingMessage }: MessagesListProps) =>
                     )}
                     {msg.type === 'ai-clarification' && (
                         <div className="flex justify-start">
-                            <div className="py-3 px-4 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-200 rounded-2xl rounded-tl-sm max-w-[85%] text-sm border border-amber-200/50 dark:border-amber-800/50 shadow-sm">
-                                <p className="leading-snug">
+                            <div className="py-3 px-4 bg-warning/10 text-warning rounded-lg rounded-tl-sm max-w-[85%] text-sm border border-warning/20 shadow-sm">
+                                <p className="leading-snug font-medium">
                                     &quot;{String(msg.content)}&quot;
                                 </p>
                             </div>
