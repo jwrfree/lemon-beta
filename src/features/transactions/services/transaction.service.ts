@@ -55,7 +55,7 @@ class TransactionService {
                 return { data: result?.id || 'Success', error: null };
             }
         } catch (err: any) {
-            console.error('[TransactionService] Create Exception:', err);
+            console.error('[TransactionService] Create Exception:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
             return {
                 data: null,
                 error: this.formatError(err)
