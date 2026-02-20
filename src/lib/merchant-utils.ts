@@ -109,6 +109,15 @@ export function getBackupLogoUrl(domain?: string): string | null {
     return `https://logo.clearbit.com/${domain}?size=128`;
 }
 
+/**
+ * Last resort logo service.
+ * Uses Google Favicons (reliable but lower quality).
+ */
+export function getGoogleFaviconUrl(domain?: string): string | null {
+    if (!domain) return null;
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+}
+
 export function getMerchantVisuals(merchantName?: string | null): MerchantVisuals | null {
     if (!merchantName) return null;
 

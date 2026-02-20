@@ -9,7 +9,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
-import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl } from '@/lib/merchant-utils';
+import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl } from '@/lib/merchant-utils';
 
 interface TransactionListItemProps {
     transaction: Transaction;
@@ -31,16 +31,17 @@ const TransactionListItemContent = ({
     const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
     const categoryVisuals = getCategoryVisuals(transaction.category);
 
-    // Multi-tier Fallback State
-    const [logoSource, setLogoSource] = React.useState<'clearbit' | 'google' | 'icon'>('clearbit');
+    // Multi-tier Fallback State: clearbit -> logodev -> google -> icon
+    const [logoSource, setLogoSource] = React.useState<'clearbit' | 'logodev' | 'google' | 'icon'>('clearbit');
 
     // CRITICAL: Reset state when transaction changes to avoid carrying over errors from previous items in the list
     React.useEffect(() => {
         setLogoSource('clearbit');
     }, [transaction.id, transaction.merchant, transaction.description]);
 
-    const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
-    const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
+    const clearbitLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
+    const logoDevLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
 
     // Hierarchy: Merchant Icon (e.g., TV for Netflix) > Category Icon (e.g., Game for Entertainment)
     const DefaultIcon = merchantVisuals?.icon || categoryVisuals.icon;
@@ -56,17 +57,25 @@ const TransactionListItemContent = ({
                 "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden",
                 iconBg
             )}>
-                {primaryLogo && logoSource === 'clearbit' && (
+                {clearbitLogo && logoSource === 'clearbit' && (
                     <img
-                        src={primaryLogo}
+                        src={clearbitLogo}
                         alt=""
-                        className="h-full w-full object-cover animate-in fade-in duration-500"
+                        className="h-full w-full object-contain animate-in fade-in duration-500"
+                        onError={() => setLogoSource('logodev')}
+                    />
+                )}
+                {logoDevLogo && logoSource === 'logodev' && (
+                    <img
+                        src={logoDevLogo}
+                        alt=""
+                        className="h-full w-full object-cover animate-in zoom-in-50 duration-300"
                         onError={() => setLogoSource('google')}
                     />
                 )}
-                {backupLogo && logoSource === 'google' && (
+                {googleLogo && logoSource === 'google' && (
                     <img
-                        src={backupLogo}
+                        src={googleLogo}
                         alt=""
                         className="h-6 w-6 object-contain animate-in zoom-in-50 duration-300"
                         onError={() => setLogoSource('icon')}
