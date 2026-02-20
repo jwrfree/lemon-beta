@@ -1,7 +1,7 @@
 import {
     Tv, Music, Coffee, ShoppingBag, Car,
     CreditCard, Utensils,
-    Gamepad2, Plane, Smartphone, Zap, Droplets, Wifi
+    Gamepad2, Plane, Smartphone, Zap, Droplets, Wifi, Train
 } from 'lucide-react';
 
 export interface MerchantVisuals {
@@ -83,6 +83,8 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'listrik': { icon: Zap, color: 'text-yellow-500', bgColor: 'bg-yellow-50', domain: 'pln.co.id' },
     'token': { icon: Zap, color: 'text-yellow-500', bgColor: 'bg-yellow-50', domain: 'pln.co.id' },
     'pdam': { icon: Droplets, color: 'text-blue-500', bgColor: 'bg-blue-50', domain: 'pdam.co.id' },
+    'kai': { icon: Train, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'kai.id' },
+    'kereta': { icon: Train, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'kai.id' },
 };
 
 /**
