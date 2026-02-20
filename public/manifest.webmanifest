@@ -1,0 +1,47 @@
+{
+    "name": "Lemon - Financial Co-Pilot",
+    "short_name": "Lemon",
+    "description": "Proactive financial intelligence and record keeping.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "icons": [
+        {
+            "src": "/api/pwa-icon?size=192",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/api/pwa-icon?size=512",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/api/pwa-icon?size=512&maskable=1",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "categories": [
+        "finance"
+    ],
+    "shortcuts": [
+        {
+            "name": "Catat Cepat",
+            "short_name": "Catat",
+            "description": "Tambah transaksi baru dengan cepat",
+            "url": "/transactions?action=add",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "any"
+                }
+            ]
+        }
+    ],
+    "orientation": "portrait"
+}
