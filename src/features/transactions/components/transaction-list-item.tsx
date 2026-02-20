@@ -30,7 +30,7 @@ const TransactionListItemContent = ({
     // Merchant Intelligence Logic
     const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
     const categoryVisuals = getCategoryVisuals(transaction.category);
-    
+
     // Multi-tier Fallback State
     const [logoSource, setLogoSource] = React.useState<'clearbit' | 'google' | 'icon'>('clearbit');
 
@@ -53,21 +53,21 @@ const TransactionListItemContent = ({
     return (
         <div className="flex items-center gap-4 p-3.5">
             <div className={cn(
-                "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden", 
+                "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden",
                 iconBg
             )}>
                 {primaryLogo && logoSource === 'clearbit' && (
-                    <img 
-                        src={primaryLogo} 
-                        alt="" 
+                    <img
+                        src={primaryLogo}
+                        alt=""
                         className="h-full w-full object-cover animate-in fade-in duration-500"
                         onError={() => setLogoSource('google')}
                     />
                 )}
                 {backupLogo && logoSource === 'google' && (
-                    <img 
-                        src={backupLogo} 
-                        alt="" 
+                    <img
+                        src={backupLogo}
+                        alt=""
                         className="h-6 w-6 object-contain animate-in zoom-in-50 duration-300"
                         onError={() => setLogoSource('icon')}
                     />
@@ -222,7 +222,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
     };
 
     return (
-        <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden shadow-sm border border-border/40">
+        <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden shadow-sm">
             {/* Delete Action BG */}
             <motion.div
                 style={{ opacity: deleteOpacity }}
