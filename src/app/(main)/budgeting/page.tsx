@@ -14,6 +14,7 @@ import { useRangeTransactions } from '@/features/transactions/hooks/use-range-tr
 import { PageHeader } from '@/components/page-header';
 import { BudgetCard } from '@/features/budgets/components/budget-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ChartContainer } from '@/components/ui/chart';
 
 function BudgetingPageSkeleton() {
     return (
@@ -35,7 +36,7 @@ function BudgetingPageSkeleton() {
 export default function BudgetingPage() {
     const { budgets, isLoading } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();
-    
+
     // Use mounting pattern without useEffect to avoid cascading renders
     const [isMounted] = useState(() => {
         // This runs only once during initial render
@@ -74,11 +75,11 @@ export default function BudgetingPage() {
     return (
         <div className="flex flex-col h-full relative bg-background">
             <PageHeader title="Manajemen Anggaran" />
-            
+
             <main className="flex-1 overflow-y-auto pb-32">
                 <AnimatePresence mode="wait">
                     {budgets.length === 0 ? (
-                        <motion.div 
+                        <motion.div
                             key="empty"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -97,9 +98,9 @@ export default function BudgetingPage() {
                                     Atur batas pengeluaran untuk setiap pos agar uangmu tidak "numpang lewat".
                                 </p>
                             </div>
-                            <Button 
-                                onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }} 
-                                size="lg" 
+                            <Button
+                                onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }}
+                                size="lg"
                                 className="mt-10 rounded-lg h-14 px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all font-medium text-lg"
                             >
                                 <PlusCircle className="mr-2 h-6 w-6" />
@@ -108,10 +109,10 @@ export default function BudgetingPage() {
                         </motion.div>
                     ) : (
                         <div className="max-w-7xl mx-auto w-full p-4 md:p-8 space-y-10">
-                            
+
                             <div className="grid grid-cols-12 gap-8 items-start">
                                 {/* 1. Premium Overview Card */}
-                                <motion.div 
+                                <motion.div
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     className="col-span-12 lg:col-span-4"
@@ -120,7 +121,7 @@ export default function BudgetingPage() {
                                         <div className="absolute top-0 right-0 p-6 opacity-[0.03] -rotate-12">
                                             <TrendingUp className="h-32 w-32" />
                                         </div>
-                                        
+
                                         <CardContent className="p-8 space-y-8 relative z-10">
                                             <div className="space-y-1">
                                                 <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-primary">Status Global</h2>
@@ -134,7 +135,7 @@ export default function BudgetingPage() {
                                                     </p>
                                                     <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mt-1">Terpakai</p>
                                                 </div>
-                                                
+
                                                 <ChartContainer config={{}} className="aspect-square h-full">
                                                     <PieChart>
                                                         <Pie
@@ -189,10 +190,10 @@ export default function BudgetingPage() {
                                             </div>
                                             <h2 className="text-xl font-medium tracking-tighter">Pos Anggaran</h2>
                                         </div>
-                                        <Button 
-                                            onClick={() => { triggerHaptic('light'); setIsBudgetModalOpen(true); }} 
-                                            variant="ghost" 
-                                            size="sm" 
+                                        <Button
+                                            onClick={() => { triggerHaptic('light'); setIsBudgetModalOpen(true); }}
+                                            variant="ghost"
+                                            size="sm"
                                             className="rounded-lg h-9 text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                                         >
                                             <Plus className="h-4 w-4 mr-2" />
@@ -200,7 +201,7 @@ export default function BudgetingPage() {
                                         </Button>
                                     </div>
 
-                                    <motion.div 
+                                    <motion.div
                                         initial="hidden"
                                         animate="show"
                                         variants={{
@@ -226,7 +227,7 @@ export default function BudgetingPage() {
             {/* Floating Action Button */}
             <AnimatePresence>
                 {budgets.length > 0 && (
-                    <motion.div 
+                    <motion.div
                         initial={{ scale: 0, y: 20 }}
                         animate={{ scale: 1, y: 0 }}
                         exit={{ scale: 0, y: 20 }}

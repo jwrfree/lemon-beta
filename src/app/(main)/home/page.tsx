@@ -19,10 +19,18 @@ import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useHomeSummary } from '@/features/home/hooks/use-home-summary';
-import { DesktopDashboard } from '@/features/home/components/desktop-dashboard';
-import { MobileDashboard } from '@/features/home/components/mobile-dashboard';
+import dynamic from 'next/dynamic';
 import { AIInsightCard } from '@/features/home/components/ai-insight-card';
 import { HomeSkeleton } from '@/features/home/components/home-skeleton';
+
+const DesktopDashboard = dynamic(() => import('@/features/home/components/desktop-dashboard').then(mod => mod.DesktopDashboard), {
+    loading: () => <HomeSkeleton />,
+    ssr: false
+});
+const MobileDashboard = dynamic(() => import('@/features/home/components/mobile-dashboard').then(mod => mod.MobileDashboard), {
+    loading: () => <HomeSkeleton />,
+    ssr: false
+});
 import { QuickAddWidget } from '@/features/home/components/quick-add-widget';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 import { motion, AnimatePresence } from 'framer-motion';

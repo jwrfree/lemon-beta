@@ -25,16 +25,16 @@ function TransactionsPageContent() {
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
     const { debts } = useDebts();
-    
+
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
-    
+
     // Optimize: Initialize state from URL params directly to avoid double fetch
     const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
         const categoryFromURL = searchParams.get('category');
         return categoryFromURL ? [categoryFromURL] : [];
     });
-    
+
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllWallets, setShowAllWallets] = useState(false);
@@ -45,20 +45,20 @@ function TransactionsPageContent() {
         if (categoryFromURL) {
             const isExpense = expenseCategories.some(c => c.name === categoryFromURL);
             if (isExpense) {
-              setActiveTab('expense');
+                setActiveTab('expense');
             } else {
-              const isIncome = incomeCategories.some(c => c.name === categoryFromURL);
-              if (isIncome) setActiveTab('income');
+                const isIncome = incomeCategories.some(c => c.name === categoryFromURL);
+                if (isIncome) setActiveTab('income');
             }
         }
     }, [searchParams, expenseCategories, incomeCategories]);
 
     // Use server-side pagination hook
-    const { 
-        transactions: filteredTransactions, 
-        isLoading, 
-        loadMore, 
-        hasMore 
+    const {
+        transactions: filteredTransactions,
+        isLoading,
+        loadMore,
+        hasMore
     } = usePaginatedTransactions({
         searchQuery,
         type: activeTab,
@@ -77,7 +77,7 @@ function TransactionsPageContent() {
 
         return [...expenseCategories, ...incomeCategories].sort((a, b) => a.name.localeCompare(b.name));
     }, [activeTab, expenseCategories, incomeCategories]);
-    
+
     const handleCategoryToggle = (categoryName: string) => {
         setSelectedCategories(prev =>
             prev.includes(categoryName)
@@ -85,7 +85,7 @@ function TransactionsPageContent() {
                 : [...prev, categoryName]
         );
     };
-    
+
     const handleWalletToggle = (walletId: string) => {
         setSelectedWallets(prev =>
             prev.includes(walletId)
@@ -100,10 +100,10 @@ function TransactionsPageContent() {
     };
 
     const handleTabChange = (value: string) => {
-      setActiveTab(value);
-      // Don't reset filters when changing tabs
+        setActiveTab(value);
+        // Don't reset filters when changing tabs
     };
-    
+
     const activeFilterCount = selectedCategories.length + selectedWallets.length;
 
     const displayedCategories = showAllCategories ? categoriesForFilter : categoriesForFilter.slice(0, 8);
@@ -111,8 +111,8 @@ function TransactionsPageContent() {
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            <PageHeader 
-                title="Transaksi" 
+            <PageHeader
+                title="Transaksi"
                 showBackButton={true}
                 extraActions={
                     <div className="flex items-center gap-2 flex-1 ml-2">
@@ -127,7 +127,7 @@ function TransactionsPageContent() {
                                 onChange={e => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <Sheet suppressHydrationWarning>
+                        <Sheet>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="outline"
@@ -177,7 +177,7 @@ function TransactionsPageContent() {
                     </div>
                 }
             />
-            
+
             <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
                 <div className="w-full">
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" suppressHydrationWarning>
@@ -188,9 +188,9 @@ function TransactionsPageContent() {
                                 { value: 'income', label: 'Pemasukan' },
                                 { value: 'debt', label: 'Hutang' }
                             ].map((tab) => (
-                                <TabsTrigger 
-                                    key={tab.value} 
-                                    value={tab.value} 
+                                <TabsTrigger
+                                    key={tab.value}
+                                    value={tab.value}
                                     className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
                                 >
                                     {tab.label}
@@ -199,7 +199,7 @@ function TransactionsPageContent() {
                         </TabsList>
                     </Tabs>
                 </div>
-                
+
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap items-center gap-2">
                         {selectedCategories.map(category => (
@@ -215,7 +215,7 @@ function TransactionsPageContent() {
                                 </button>
                             </Badge>
                         ))}
-                         {selectedWallets.map(walletId => {
+                        {selectedWallets.map(walletId => {
                             const wallet = wallets.find(w => w.id === walletId);
                             return wallet && (
                                 <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
@@ -271,9 +271,9 @@ function TransactionsPageContent() {
                         )}
                     </div>
                 ) : (
-                    <TransactionList 
-                        transactions={filteredTransactions} 
-                        loadMore={loadMore} 
+                    <TransactionList
+                        transactions={filteredTransactions}
+                        loadMore={loadMore}
                         hasMore={hasMore}
                         isLoading={isLoading}
                     />

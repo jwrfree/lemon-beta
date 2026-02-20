@@ -108,7 +108,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
     const showBottomNav = SIDEBAR_NAV_ITEMS.some(item =>
         item.href === '/home' ? pathname === '/home' : pathname.startsWith(item.href)
-    ) || pathname === '/add-smart' || pathname === '/plan';
+    ) || pathname === '/plan';
 
     return (
         <div className="w-full h-dvh bg-slate-100 dark:bg-slate-950 relative flex flex-col md:flex-row overflow-hidden">
