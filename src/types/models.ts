@@ -135,7 +135,9 @@ export interface SpendingRisk {
   score: number;
   burnRate: number;
   velocity: number;
-  insight: string;
+  balance: number;
+  survivalDays: number;
+  insight?: string;
 }
 
 export interface MonthlySummary extends BaseRecord {

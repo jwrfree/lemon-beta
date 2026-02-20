@@ -14,6 +14,8 @@ export const mapMonthlySummaryFromDb = (row: MonthlySummaryRow): MonthlySummary 
     updatedAt: row.updated_at
 });
 
+import { generateSpendingInsight } from '@/features/insights/logic';
+
 class InsightService {
     /**
      * Get current month's risk score and insights.
@@ -33,12 +35,18 @@ class InsightService {
             return null;
         }
 
-        return {
+        const riskData: SpendingRisk = {
             level: data.level,
             score: data.score,
             burnRate: Number(data.burn_rate),
             velocity: Number(data.velocity),
-            insight: data.insight
+            balance: Number(data.balance),
+            survivalDays: Number(data.survival_days)
+        };
+
+        return {
+            ...riskData,
+            insight: generateSpendingInsight(riskData)
         };
     }
 

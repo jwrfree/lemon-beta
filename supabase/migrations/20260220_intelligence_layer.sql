@@ -138,21 +138,13 @@ BEGIN
     ELSE v_risk_level := 'Low';
     END IF;
 
-    -- Insight Generation
-    IF v_risk_level = 'Critical' THEN
-        v_insight := 'Velocity pengeluaran sangat tinggi. Saldo diprediksi habis dalam ' || ROUND(v_total_balance / GREATEST(v_burn_rate, 1)) || ' hari.';
-    ELSIF v_risk_level = 'Moderate' THEN
-        v_insight := 'Pengeluaranmu ' || ROUND((COALESCE(v_velocity, 1) - 1) * 100) || '% lebih cepat. Kurangi belanja impulsif.';
-    ELSE
-        v_insight := 'Momentum keuangan stabil. Pertahankan pola ini.';
-    END IF;
-
     RETURN jsonb_build_object(
         'level', v_risk_level,
         'score', v_risk_score,
         'burn_rate', v_burn_rate,
         'velocity', COALESCE(v_velocity, 1),
-        'insight', v_insight
+        'balance', v_total_balance,
+        'survival_days', ROUND(v_total_balance / GREATEST(v_burn_rate, 1))
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
