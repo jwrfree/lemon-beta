@@ -33,6 +33,8 @@ function BudgetingPageSkeleton() {
     );
 }
 
+import { calculateGlobalBudgetOverview } from '@/features/budgets/logic';
+
 export default function BudgetingPage() {
     const { budgets, isLoading } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();
@@ -50,22 +52,14 @@ export default function BudgetingPage() {
     const { transactions, isLoading: isTransactionsLoading } = useRangeTransactions(start, end);
 
     const overview = useMemo(() => {
-        const totalBudget = budgets.reduce((acc, b) => acc + b.targetAmount, 0);
-        const relevantCategories = Array.from(new Set(budgets.flatMap(b => b.categories)));
-
-        const totalSpent = transactions
-            .filter(t => t.type === 'expense' && relevantCategories.includes(t.category))
-            .reduce((acc, t) => acc + t.amount, 0);
-
-        const totalRemaining = totalBudget - totalSpent;
-        const percentUsed = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
+        const stats = calculateGlobalBudgetOverview(budgets, transactions);
 
         const chartData = [
-            { name: 'Terpakai', value: totalSpent, color: 'var(--chart-2)' },
-            { name: 'Sisa', value: Math.max(0, totalRemaining), color: 'var(--primary)' },
+            { name: 'Terpakai', value: stats.totalSpent, color: 'var(--chart-2)' },
+            { name: 'Sisa', value: Math.max(0, stats.totalRemaining), color: 'var(--primary)' },
         ];
 
-        return { totalBudget, totalSpent, totalRemaining, percentUsed, chartData };
+        return { ...stats, chartData };
     }, [budgets, transactions]);
 
     if (isLoading || isTransactionsLoading || !isMounted) {
@@ -117,23 +111,23 @@ export default function BudgetingPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     className="col-span-12 lg:col-span-4"
                                 >
-                                    <Card className="border border-border rounded-lg bg-card shadow-sm overflow-hidden relative">
-                                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] -rotate-12">
-                                            <TrendingUp className="h-32 w-32" />
+                                    <Card className="border-none rounded-2xl bg-[#064e4b] text-white shadow-xl shadow-primary/10 overflow-hidden relative">
+                                        <div className="absolute top-0 right-0 p-6 opacity-[0.05] -rotate-12">
+                                            <TrendingUp className="h-40 w-40" />
                                         </div>
 
                                         <CardContent className="p-8 space-y-8 relative z-10">
                                             <div className="space-y-1">
-                                                <h2 className="text-[10px] font-medium uppercase tracking-[0.2em] text-primary">Status Global</h2>
-                                                <p className="text-2xl font-medium tracking-tight">Kesehatan Anggaran</p>
+                                                <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">Ringkasan Bulan Ini</h2>
+                                                <p className="text-2xl font-bold tracking-tight">Kesehatan Anggaran</p>
                                             </div>
 
-                                            <div className="h-56 flex justify-center items-center relative">
-                                                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                                    <p className="text-4xl font-medium tracking-tighter tabular-nums">
+                                            <div className="h-60 flex justify-center items-center relative">
+                                                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                                    <p className="text-5xl font-bold tracking-tighter tabular-nums text-white">
                                                         {Math.round(overview.percentUsed)}%
                                                     </p>
-                                                    <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mt-1">Terpakai</p>
+                                                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mt-1">Total Terpakai</p>
                                                 </div>
 
                                                 <ChartContainer config={{}} className="aspect-square h-full">
@@ -141,40 +135,42 @@ export default function BudgetingPage() {
                                                         <Pie
                                                             data={overview.chartData}
                                                             dataKey="value"
-                                                            innerRadius={70}
-                                                            outerRadius={95}
+                                                            innerRadius={75}
+                                                            outerRadius={100}
                                                             strokeWidth={0}
-                                                            paddingAngle={8}
-                                                            cornerRadius={12}
+                                                            paddingAngle={6}
+                                                            cornerRadius={10}
                                                             startAngle={90}
                                                             endAngle={450}
                                                         >
                                                             {overview.chartData.map((entry, index) => (
-                                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                                                <Cell
+                                                                    key={`cell-${index}`}
+                                                                    fill={index === 0 ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.9)'}
+                                                                />
                                                             ))}
                                                         </Pie>
                                                     </PieChart>
                                                 </ChartContainer>
                                             </div>
 
-                                            <div className="space-y-4">
-                                                <div className="p-5 rounded-lg bg-muted/50 border border-border/50 flex justify-between items-end">
-                                                    <div>
-                                                        <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Total Sisa</p>
-                                                        <p className="text-xl font-medium text-success tabular-nums">
-                                                            {formatCurrency(overview.totalRemaining)}
-                                                        </p>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Dari Total</p>
-                                                        <p className="text-sm font-medium text-muted-foreground tabular-nums">
-                                                            {formatCurrency(overview.totalBudget)}
-                                                        </p>
+                                            <div className="space-y-5">
+                                                <div className="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex justify-between items-center">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-10 w-10 rounded-lg bg-white p-2 flex items-center justify-center shrink-0">
+                                                            <Sparkles className="h-5 w-5 text-[#064e4b]" />
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mb-0.5">Sisa Dana Aman</p>
+                                                            <p className="text-xl font-bold text-white tabular-nums truncate">
+                                                                {formatCurrency(overview.totalRemaining)}
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-2 px-2 text-[10px] font-medium text-muted-foreground">
-                                                    <Sparkles className="h-3 w-3 text-warning" />
-                                                    <span>Tips: Kamu masih punya sisa {Math.round(100 - overview.percentUsed)}% dana menganggur.</span>
+
+                                                <div className="px-1 text-[11px] font-medium leading-relaxed text-white/80">
+                                                    Kamu masih punya <b>{Math.round(100 - overview.percentUsed)}%</b> budget untuk dialokasikan. Pertahankan disiplin belanjamu!
                                                 </div>
                                             </div>
                                         </CardContent>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
@@ -19,7 +20,8 @@ import {
     ArrowUpRight,
     CalendarRange,
     Activity,
-    ListTodo
+    ListTodo,
+    TrendingUp
 } from 'lucide-react';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays, endOfMonth, subDays, eachDayOfInterval, format, isSameDay } from 'date-fns';
 
@@ -33,6 +35,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
+import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
 
 // Import Analyst Charts Components
 import { FinancialPulse } from '@/features/charts/components/financial-pulse';
@@ -68,6 +71,7 @@ export const DesktopDashboard = () => {
     useEffect(() => setMounted(true), []);
 
     const [selectedWalletId, setSelectedWalletId] = useState<string>('all');
+    const [isAnalystView, setIsAnalystView] = useState(false);
     const [isPending, startTransition] = useTransition();
 
     const handleRefresh = () => {
@@ -251,124 +255,161 @@ export const DesktopDashboard = () => {
                         </div>
                     </div>
 
-                    {/* HERO ROW: The Pulse */}
-                    <FinancialPulse
-                        net={currentMonthData.net}
-                        income={currentMonthData.income}
-                        expense={currentMonthData.expense}
-                        dataPoints={trendData}
-                        prevMonthNet={prevMonthData.net}
-                        prevMonthIncome={prevMonthData.income}
-                        prevMonthExpense={prevMonthData.expense}
-                        projectedExpense={projectedExpense}
-                    />
+                    {/* MAIN GRID 70:30 RATIO */}
+                    <div className="grid grid-cols-12 gap-6 items-start">
 
-                    {/* AI PREDICTION ROW */}
-                    <ProphetChart
-                        transactions={transactions}
-                        historyStart={fetchStart}
-                        historyEnd={now}
-                        forecastDays={30}
-                    />
-
-                    {/* ANALYST GRID */}
-                    <div className="grid grid-cols-12 gap-6">
-
-                        {/* LEFT COLUMN (Deep Dive Analysis) - Span 9 */}
-                        <div className="col-span-12 lg:col-span-9 space-y-6">
-
-                            {/* ROW 1: Cashflow Trend + Heatmap */}
-                            <div className="grid grid-cols-12 gap-6">
-                                <div className="col-span-12 lg:col-span-8">
-                                    <CashflowComposedChart data={cashflowData} />
-                                </div>
-                                <div className="col-span-12 lg:col-span-4">
-                                    <ExpenseHeatmap
-                                        transactions={heatmapTransactions}
-                                        start={currentMonthStart}
-                                        end={currentMonthEnd}
-                                    />
+                        {/* LEFT COLUMN (70%) - PRIMARY AREA */}
+                        <div className="col-span-12 lg:col-span-8 space-y-6">
+                            {/* HERO ROW: The Pulse (Primary Insight) */}
+                            <div className="relative group">
+                                <FinancialPulse
+                                    net={currentMonthData.net}
+                                    income={currentMonthData.income}
+                                    expense={currentMonthData.expense}
+                                    dataPoints={trendData}
+                                    prevMonthNet={prevMonthData.net}
+                                    prevMonthIncome={prevMonthData.income}
+                                    prevMonthExpense={prevMonthData.expense}
+                                    projectedExpense={projectedExpense}
+                                />
+                                <div className="absolute top-8 right-12 z-20">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className={cn(
+                                            "bg-white/10 border-white/20 text-white hover:bg-white/20 h-8 text-[10px] uppercase tracking-widest font-medium transition-all",
+                                            isAnalystView && "bg-white/30 border-white/40"
+                                        )}
+                                        onClick={() => setIsAnalystView(!isAnalystView)}
+                                    >
+                                        <Activity className="w-3 h-3 mr-2" />
+                                        {isAnalystView ? 'Standard View' : 'Analyst View'}
+                                    </Button>
                                 </div>
                             </div>
 
-                            {/* ROW 2: Category Matrix */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Pie Chart */}
-                                <div className="bg-card rounded-lg p-6 shadow-card">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center gap-2">
-                                            <PieIcon className="w-5 h-5 text-primary" />
-                                            <h3 className="font-medium">Allocation Radar</h3>
+                            {isAnalystView ? (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="space-y-6"
+                                >
+                                    {/* AI PREDICTION ROW */}
+                                    <ProphetChart
+                                        transactions={transactions}
+                                        historyStart={fetchStart}
+                                        historyEnd={now}
+                                        forecastDays={30}
+                                    />
+
+                                    {/* Deep Dive (Cashflow) */}
+                                    <CashflowComposedChart data={cashflowData} />
+
+                                    {/* ROW 2: Category Matrix */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Pie Chart */}
+                                        <div className="bg-card rounded-lg p-6 shadow-card">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-2">
+                                                    <PieIcon className="w-5 h-5 text-primary" />
+                                                    <h3 className="font-medium text-sm">Allocation Radar</h3>
+                                                </div>
+                                            </div>
+                                            <CategoryPie
+                                                data={currentMonthData.expenseCategories}
+                                                total={currentMonthData.expense}
+                                                type="expense"
+                                            />
+                                        </div>
+
+                                        {/* List Breakdown */}
+                                        <div className="bg-card rounded-lg p-6 shadow-card">
+                                            <div className="flex items-center gap-2 mb-6">
+                                                <ArrowUpRight className="w-5 h-5 text-destructive" />
+                                                <h3 className="font-medium text-sm">Top Spenders</h3>
+                                            </div>
+                                            <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin scrollbar-thumb-muted dark:scrollbar-thumb-muted-foreground/20">
+                                                {currentMonthData.expenseCategories.map((cat, idx) => {
+                                                    const budget = budgets.find(b => b.categories.includes(cat.name));
+                                                    return (
+                                                        <CategoryPilla
+                                                            key={cat.name}
+                                                            category={cat.name}
+                                                            amount={cat.value}
+                                                            total={currentMonthData.expense}
+                                                            budgetAmount={budget?.targetAmount}
+                                                            color={colorPalette[idx % colorPalette.length]}
+                                                        />
+                                                    );
+                                                })}
+                                                {currentMonthData.expenseCategories.length === 0 && (
+                                                    <p className="text-muted-foreground text-xs text-center py-8 font-medium">No data available for analysis.</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                    <CategoryPie
-                                        data={currentMonthData.expenseCategories}
-                                        total={currentMonthData.expense}
-                                        type="expense"
-                                    />
-                                </div>
-
-                                {/* List Breakdown */}
-                                <div className="bg-card rounded-lg p-6 shadow-card">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <ArrowUpRight className="w-5 h-5 text-destructive" />
-                                        <h3 className="font-medium">Top Spenders</h3>
+                                </motion.div>
+                            ) : (
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="bg-card rounded-lg p-8 border border-border shadow-sm flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                        <div className="p-4 rounded-full bg-primary/5 text-primary">
+                                            <PieIcon className="w-8 h-8" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h4 className="font-medium">Analysis Ready</h4>
+                                            <p className="text-xs text-muted-foreground max-w-[200px]">Aktifkan Analyst View untuk melihat prediksi AI dan rincian alokasi.</p>
+                                        </div>
+                                        <Button variant="outline" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
                                     </div>
-                                    <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin scrollbar-thumb-muted dark:scrollbar-thumb-muted-foreground/20">
-                                        {currentMonthData.expenseCategories.map((cat, idx) => {
-                                            const budget = budgets.find(b => b.categories.includes(cat.name));
-                                            return (
-                                                <CategoryPilla
-                                                    key={cat.name}
-                                                    category={cat.name}
-                                                    amount={cat.value}
-                                                    total={currentMonthData.expense}
-                                                    budgetAmount={budget?.targetAmount}
-                                                    color={colorPalette[idx % colorPalette.length]}
-                                                />
-                                            );
-                                        })}
-                                        {currentMonthData.expenseCategories.length === 0 && (
-                                            <p className="text-muted-foreground text-sm text-center py-8 font-medium">No data available for analysis.</p>
-                                        )}
+                                    <div className="bg-card rounded-lg p-8 border border-border shadow-sm flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                        <div className="p-4 rounded-full bg-primary/5 text-primary">
+                                            <TrendingUp className="w-8 h-8" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h4 className="font-medium">Predictive Insights</h4>
+                                            <p className="text-xs text-muted-foreground max-w-[200px]">Gunakan DeepSeek V3 untuk memproyeksikan pengeluaranmu.</p>
+                                        </div>
+                                        <Button variant="outline" size="sm" onClick={() => setIsAnalystView(true)}>Lihat Prediksi</Button>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
-                        {/* RIGHT COLUMN (Sidebar Metrics) - Span 3 */}
-                        <div className="col-span-12 lg:col-span-3 space-y-6">
+                        {/* RIGHT COLUMN (30%) - SECONDARY AREA */}
+                        <div className="col-span-12 lg:col-span-4 space-y-6">
+                            <RiskScoreCard />
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
+
+                            {/* Recent Activity (Moved to Sidebar) */}
+                            <div className="bg-card rounded-lg p-5 shadow-card">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-sm font-medium flex items-center gap-2">
+                                        <ListTodo className="w-4 h-4 text-primary" />
+                                        Mutasi Terbaru
+                                    </h3>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-7 text-[9px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary px-2"
+                                        onClick={() => router.push('/transactions')}
+                                    >
+                                        Semua
+                                    </Button>
+                                </div>
+                                {filteredTransactions.length > 0 ? (
+                                    <DashboardRecentTransactions
+                                        transactions={recentTransactions.slice(0, 5)}
+                                        wallets={wallets}
+                                    />
+                                ) : (
+                                    <DashboardRecentTransactionsEmpty />
+                                )}
+                            </div>
+
+                            <DashboardAlerts reminderSummary={reminderSummary} debtSummary={debtSummary} />
                             <DashboardBudgetStatus budgets={activeBudgets} />
                             {activeGoals.length > 0 && <DashboardGoals goals={activeGoals} />}
-                            <DashboardAlerts reminderSummary={reminderSummary} debtSummary={debtSummary} />
                         </div>
-                    </div>
-
-                    {/* FULL WIDTH Mutasi Rekening */}
-                    <div className="bg-card rounded-lg p-6 shadow-card">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="font-medium flex items-center gap-2">
-                                <ListTodo className="w-5 h-5 text-primary" />
-                                Mutasi Rekening <span className="opacity-50 font-normal">(10 Terakhir)</span>
-                            </h3>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary"
-                                onClick={() => router.push('/transactions')}
-                            >
-                                Lihat Semua Transaksi
-                            </Button>
-                        </div>
-                        {filteredTransactions.length > 0 ? (
-                            <DashboardRecentTransactions
-                                transactions={recentTransactions}
-                                wallets={wallets}
-                            />
-                        ) : (
-                            <DashboardRecentTransactionsEmpty />
-                        )}
                     </div>
                 </div>
             </div>

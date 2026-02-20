@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/client';
 import { useUI } from '@/components/ui-provider';
+import { useWalletData } from '@/providers/wallet-provider';
+import { transactionService } from '../services/transaction.service';
+import { UnifiedTransactionFormValues } from '../schemas/transaction-schema';
 
 interface TransferPayload {
     fromWalletId: string;
@@ -13,54 +15,40 @@ interface TransferPayload {
 
 export const useTransferActions = (user: User | null) => {
     const ui = useUI();
-    const supabase = createClient();
+    const { updateWalletOptimistically, refreshWallets } = useWalletData();
 
     const addTransfer = useCallback(async (data: TransferPayload) => {
         if (!user) throw new Error("User not authenticated.");
-        
+
         const { fromWalletId, toWalletId, amount, date, description } = data;
 
-        // Create expense transaction
-        const { error: expError } = await supabase.from('transactions').insert({
-            type: 'expense',
+        // 1. Optimistic Update (UI reacts instantly)
+        updateWalletOptimistically(fromWalletId, amount, 'expense');
+        updateWalletOptimistically(toWalletId, amount, 'income');
+
+        // 2. Prepare RPC Payload
+        const payload: UnifiedTransactionFormValues = {
+            type: 'transfer',
+            fromWalletId,
+            toWalletId,
             amount,
-            category: 'Transfer',
-            wallet_id: fromWalletId,
-            description: `Transfer (Keluar): ${description}`,
-            date,
-            user_id: user.id,
-        });
+            date: new Date(date),
+            description
+        };
 
-        if (expError) {
-            console.error("Transfer error (expense):", expError);
-            const message = expError.message?.includes('Saldo tidak mencukupi') 
-                ? "Gagal: Saldo dompet asal tidak mencukupi untuk transfer ini." 
-                : "Gagal mencatat pengeluaran transfer.";
-            ui.showToast(message, 'error');
-            return;
-        }
+        const result = await transactionService.createTransaction(user.id, payload);
 
-        // Create income transaction
-        const { error: incError } = await supabase.from('transactions').insert({
-            type: 'income',
-            amount,
-            category: 'Transfer',
-            wallet_id: toWalletId,
-            description: `Transfer (Masuk): ${description}`,
-            date,
-            user_id: user.id,
-        });
-
-        if (incError) {
-            console.error("Transfer error (income):", incError);
-            ui.showToast("Gagal mencatat pemasukan transfer.", 'error');
+        if (result.error) {
+            ui.showToast(result.error, 'error');
+            // Authority Sync: Recompute balances from server if atomic transfer fails
+            await refreshWallets();
             return;
         }
 
         ui.showToast("Transfer berhasil dicatat!", 'success');
         ui.setIsTransferModalOpen(false);
 
-    }, [user, ui, supabase]);
+    }, [user, ui, updateWalletOptimistically, refreshWallets]);
 
     return {
         addTransfer

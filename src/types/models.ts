@@ -130,6 +130,22 @@ export interface UserProfile extends BaseRecord {
   photoURL?: string;
 }
 
+export interface SpendingRisk {
+  level: 'Low' | 'Moderate' | 'Critical';
+  score: number;
+  burnRate: number;
+  velocity: number;
+  insight: string;
+}
+
+export interface MonthlySummary extends BaseRecord {
+  monthDate: string;
+  totalIncome: number;
+  totalExpense: number;
+  netCashflow: number;
+  velocityScore: number;
+}
+
 // Database Row Types (Raw from Supabase)
 export interface WalletRow {
   id: string;
@@ -159,6 +175,18 @@ export interface TransactionRow {
   updated_at: string;
 }
 
+export interface DebtPaymentRow {
+  id: string;
+  debt_id: string;
+  user_id: string;
+  amount: number;
+  payment_date: string;
+  wallet_id: string | null;
+  method: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
 export interface DebtRow {
   id: string;
   title: string;
@@ -175,7 +203,6 @@ export interface DebtRow {
   payment_frequency: PaymentFrequency;
   custom_interval: number | null;
   next_payment_date: string | null;
-  payments: DebtPayment[];
   user_id: string;
   created_at: string;
   updated_at: string;
@@ -224,6 +251,17 @@ export interface GoalRow {
   icon: string | null;
   user_id: string;
   created_at: string;
+}
+
+export interface MonthlySummaryRow {
+  id: string;
+  user_id: string;
+  month_date: string;
+  total_income: number;
+  total_expense: number;
+  net_cashflow: number;
+  velocity_score: number;
+  updated_at: string;
 }
 
 export interface ReminderRow {

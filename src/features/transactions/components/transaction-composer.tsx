@@ -30,6 +30,7 @@ import { WalletSelector } from './form-partials/wallet-selector';
 import { BudgetStatusPill } from './form-partials/budget-status-pill';
 import { useAiCategorySuggestion } from '../hooks/use-ai-category-suggestion';
 import { getCategoryColorHex } from '../utils/category-colors';
+import { PocketCoPilot } from '@/features/insights/components/pocket-copilot';
 
 interface TransactionComposerProps {
     onClose: (data?: Transaction | any) => void;
@@ -231,7 +232,8 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     )}
                 </form>
 
-                <div className="p-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-3">
+                <div className="p-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-4">
+                    {type === 'expense' && <PocketCoPilot />}
                     <BudgetStatusPill category={category} />
 
                     <Button

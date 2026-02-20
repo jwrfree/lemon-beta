@@ -43,6 +43,10 @@ export const DashboardHero = ({
                         <div className="text-3xl font-medium tracking-tight">
                             <AnimatedCounter value={totalBalance} />
                         </div>
+                        <div className="mt-1 text-[11px] text-primary-foreground/70 font-medium max-w-[300px]">
+                            <TrendingDown className="h-3 w-3 inline mr-1 opacity-70" />
+                            Potensi menabungmu bulan ini meningkat 15%.
+                        </div>
                     </div>
                     <div className="flex flex-col items-end gap-1 text-xs">
                         <span className="px-2 py-1 rounded-md bg-primary-foreground/15 text-primary-foreground/90 border border-primary-foreground/20">

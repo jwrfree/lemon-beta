@@ -11,47 +11,19 @@ import { differenceInDays, startOfMonth } from 'date-fns';
 import { Flame, AlertCircle, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
 import type { Budget, Transaction } from '@/types/models';
 
+import { calculateBudgetStats } from '@/features/budgets/logic';
+
 export const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Transaction[] }) => {
     const { getCategoryVisuals } = useCategories();
     const router = useRouter();
 
-    // 1. Core Logic
-    const spent = useMemo(() => {
-        return transactions
-            .filter(t =>
-                t.type === 'expense' &&
-                budget.categories.includes(t.category)
-            )
-            .reduce((acc, t) => acc + t.amount, 0);
-    }, [transactions, budget.categories]);
-
-    const remaining = budget.targetAmount - spent;
-    const progress = (spent / budget.targetAmount) * 100;
+    // 1. Core Logic (Centralized)
+    const stats = useMemo(() => calculateBudgetStats(budget, transactions), [budget, transactions]);
+    const { spent, remaining, progress, daysToZero, safeDailyLimit, healthStatus } = stats;
 
     const now = new Date();
     const daysInMonthValue = daysInMonth(now);
-    const daysLeft = daysInMonthValue - now.getDate() + 1;
     const daysPassedPercentage = (now.getDate() / daysInMonthValue) * 100;
-
-    // 2. Burn Rate & Safe Limit Logic
-    const projection = useMemo(() => {
-        const today = new Date();
-        const start = startOfMonth(today);
-        const daysElapsed = differenceInDays(today, start) + 1;
-
-        if (spent === 0 || daysElapsed === 0) return { status: 'stable' as const, daysToZero: Infinity };
-
-        const dailyRate = spent / daysElapsed;
-        const daysToZero = Math.floor(remaining / dailyRate);
-
-        let status: 'stable' | 'warning' | 'critical' = 'stable';
-        if (daysToZero <= 3 && remaining > 0) status = 'critical';
-        else if (daysToZero <= 7) status = 'warning';
-
-        return { status, daysToZero, dailyRate };
-    }, [spent, remaining]);
-
-    const safeDailyLimit = remaining > 0 && daysLeft > 0 ? remaining / daysLeft : 0;
 
     // 3. Visual Configuration (Minimalist Weight)
     const healthStyles = {
@@ -83,9 +55,9 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
             bg: 'bg-rose-600/10',
             label: 'Overbudget'
         }
-    };
+    } as const;
 
-    const currentHealth = remaining < 0 ? healthStyles.over : healthStyles[projection.status];
+    const currentHealth = healthStyles[healthStatus];
 
     const firstCategory = budget.categories[0] || 'Lainnya';
     const visuals = getCategoryVisuals(firstCategory);
@@ -180,9 +152,9 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                         {remaining > 0 ? (
                                             <>
                                                 <span className={cn("text-xs font-medium", currentHealth.text)}>
-                                                    {projection.daysToZero === Infinity ? '∞' : `${projection.daysToZero} Hari Lagi`}
+                                                    {daysToZero === Infinity ? '∞' : `${daysToZero} Hari Lagi`}
                                                 </span>
-                                                <Flame className={cn("h-3.5 w-3.5", projection.daysToZero <= 5 ? "text-orange-500 animate-pulse" : "text-zinc-300")} />
+                                                <Flame className={cn("h-3.5 w-3.5", daysToZero <= 5 ? "text-orange-500 animate-pulse" : "text-zinc-300")} />
                                             </>
                                         ) : (
                                             <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">

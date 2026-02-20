@@ -110,123 +110,151 @@ function TransactionsPageContent() {
     const displayedWallets = showAllWallets ? wallets : wallets.slice(0, 8);
 
     return (
-        <div className="flex flex-col h-full overflow-hidden">
-            <PageHeader
-                title="Transaksi"
-                showBackButton={true}
-                extraActions={
-                    <div className="flex items-center gap-2 flex-1 ml-2">
-                        <div className="relative flex-1">
-                            <Label htmlFor="transaction-search" className="sr-only">Cari transaksi</Label>
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                id="transaction-search"
-                                placeholder="Cari..."
-                                className="pl-9 h-9 text-sm"
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                            />
-                        </div>
-                        <Sheet>
-                            <SheetTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="shrink-0 relative h-9 w-9"
-                                    aria-label="Buka filter transaksi"
-                                >
-                                    <ListFilter className="h-4 w-4" />
-                                    {activeFilterCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px]">
-                                            {activeFilterCount}
-                                        </span>
-                                    )}
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="bottom" className="rounded-t-xl max-h-[80vh] flex flex-col">
-                                <SheetHeader className="text-left">
-                                    <SheetTitle>Filter Transaksi</SheetTitle>
-                                </SheetHeader>
-                                <div className="space-y-4 py-4 overflow-y-auto">
-                                    <div>
-                                        <Label className="text-sm font-medium">Kategori</Label>
-                                        <div className="flex flex-wrap gap-2 mt-2">
-                                            {displayedCategories.map(c => (
-                                                <Button key={c.id} variant={selectedCategories.includes(c.name) ? 'default' : 'outline'} size="sm" onClick={() => handleCategoryToggle(c.name)}>{c.name}</Button>
-                                            ))}
-                                            {categoriesForFilter.length > 8 && !showAllCategories && (
-                                                <Button variant="link" size="sm" onClick={() => setShowAllCategories(true)}>Lihat Semua</Button>
-                                            )}
-                                        </div>
+        <div className="flex flex-col h-full overflow-hidden bg-background">
+            <div className="px-4 py-3 flex flex-col gap-3 bg-card border-b z-20 sticky top-0 shadow-sm">
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 -ml-2 rounded-full">
+                        <X className="h-5 w-5" />
+                    </Button>
+                    <div className="relative flex-1 group">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <Input
+                            placeholder="Cari transaksi..."
+                            className="pl-10 h-10 text-sm bg-muted/30 border-none focus-visible:ring-1 focus-visible:ring-primary/20 rounded-xl"
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className={cn(
+                                    "shrink-0 h-10 rounded-xl gap-2 border-border/50",
+                                    activeFilterCount > 0 && "bg-primary/5 text-primary border-primary/20"
+                                )}
+                            >
+                                <ListFilter className="h-4 w-4" />
+                                {activeFilterCount > 0 && (
+                                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold shadow-sm">
+                                        {activeFilterCount}
+                                    </span>
+                                )}
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="bottom" className="rounded-t-[2rem] max-h-[85vh] flex flex-col border-t-0 shadow-2xl">
+                            <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4 shrink-0" />
+                            <SheetHeader className="text-left mb-6">
+                                <SheetTitle className="text-xl font-bold tracking-tight">Atur Tampilan</SheetTitle>
+                                <p className="text-xs text-muted-foreground">Fokuskan data pada kategori atau dompet tertentu.</p>
+                            </SheetHeader>
+                            <div className="space-y-8 py-2 overflow-y-auto pb-10">
+                                <div>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Pilih Kategori</Label>
+                                        {selectedCategories.length > 0 && (
+                                            <button onClick={() => setSelectedCategories([])} className="text-[10px] font-bold text-destructive uppercase tracking-wide">Bersihkan</button>
+                                        )}
                                     </div>
-                                    <div>
-                                        <Label className="text-sm font-medium">Dompet</Label>
-                                        <div className="flex flex-wrap gap-2 mt-2">
-                                            {displayedWallets.map(w => (
-                                                <Button key={w.id} variant={selectedWallets.includes(w.id) ? 'default' : 'outline'} size="sm" onClick={() => handleWalletToggle(w.id)}>{w.name}</Button>
-                                            ))}
-                                            {wallets.length > 8 && !showAllWallets && (
-                                                <Button variant="link" size="sm" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
-                                            )}
-                                        </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {displayedCategories.map(c => (
+                                            <Button
+                                                key={c.id}
+                                                variant={selectedCategories.includes(c.name) ? 'default' : 'outline'}
+                                                size="sm"
+                                                className="rounded-lg h-8 text-[11px] font-medium"
+                                                onClick={() => handleCategoryToggle(c.name)}
+                                            >
+                                                {c.name}
+                                            </Button>
+                                        ))}
+                                        {categoriesForFilter.length > 8 && !showAllCategories && (
+                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-bold" onClick={() => setShowAllCategories(true)}>+ {categoriesForFilter.length - 8} Lainnya</Button>
+                                        )}
                                     </div>
                                 </div>
-                                {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="w-full text-destructive mt-auto" onClick={resetFilters}>Reset Filter</Button>}
-                            </SheetContent>
-                        </Sheet>
-                    </div>
-                }
-            />
-
-            <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
-                <div className="w-full">
-                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" suppressHydrationWarning>
-                        <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-4" suppressHydrationWarning>
-                            {[
-                                { value: 'all', label: 'Semua' },
-                                { value: 'expense', label: 'Pengeluaran' },
-                                { value: 'income', label: 'Pemasukan' },
-                                { value: 'debt', label: 'Hutang' }
-                            ].map((tab) => (
-                                <TabsTrigger
-                                    key={tab.value}
-                                    value={tab.value}
-                                    className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
-                                >
-                                    {tab.label}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                    </Tabs>
+                                <div className="border-t border-border/50 pt-6">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Pilih Dompet</Label>
+                                        {selectedWallets.length > 0 && (
+                                            <button onClick={() => setSelectedWallets([])} className="text-[10px] font-bold text-destructive uppercase tracking-wide">Bersihkan</button>
+                                        )}
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {displayedWallets.map(w => (
+                                            <Button
+                                                key={w.id}
+                                                variant={selectedWallets.includes(w.id) ? 'default' : 'outline'}
+                                                size="sm"
+                                                className="rounded-lg h-8 text-[11px] font-medium"
+                                                onClick={() => handleWalletToggle(w.id)}
+                                            >
+                                                {w.name}
+                                            </Button>
+                                        ))}
+                                        {wallets.length > 8 && !showAllWallets && (
+                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-bold" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-auto grid grid-cols-2 gap-3 pt-6 border-t border-border">
+                                <Button variant="outline" className="h-12 rounded-xl text-sm font-bold" onClick={resetFilters}>Reset Semua</Button>
+                                <SheetTrigger asChild>
+                                    <Button className="h-12 rounded-xl text-sm font-bold shadow-lg shadow-primary/20">Terapkan</Button>
+                                </SheetTrigger>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
                 </div>
 
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" suppressHydrationWarning>
+                    <TabsList className="bg-muted/50 p-1 rounded-xl h-10 w-full grid grid-cols-4" suppressHydrationWarning>
+                        {[
+                            { value: 'all', label: 'Semua' },
+                            { value: 'expense', label: 'Keluar' },
+                            { value: 'income', label: 'Masuk' },
+                            { value: 'debt', label: 'Hutang' }
+                        ].map((tab) => (
+                            <TabsTrigger
+                                key={tab.value}
+                                value={tab.value}
+                                className="h-full rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                            >
+                                {tab.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                </Tabs>
+
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         {selectedCategories.map(category => (
-                            <Badge key={category} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
+                            <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-[10px] font-bold bg-primary/5 text-primary border-primary/20 rounded-md">
                                 {category}
                                 <button
                                     type="button"
                                     onClick={() => handleCategoryToggle(category)}
-                                    className="ml-1 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/10 text-xs font-medium transition-colors hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                                    className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-primary/10 transition-colors"
                                     aria-label={`Hapus filter kategori ${category}`}
                                 >
-                                    <X className="h-4 w-4" />
+                                    <X className="h-3 w-3" />
                                 </button>
                             </Badge>
                         ))}
                         {selectedWallets.map(walletId => {
                             const wallet = wallets.find(w => w.id === walletId);
                             return wallet && (
-                                <Badge key={walletId} variant="secondary" className="gap-1.5 pl-2.5 pr-1 py-1">
+                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-[10px] font-bold bg-primary/5 text-primary border-primary/20 rounded-md">
                                     {wallet.name}
                                     <button
                                         type="button"
                                         onClick={() => handleWalletToggle(walletId)}
-                                        className="ml-1 inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-black/10 text-xs font-medium transition-colors hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20"
+                                        className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-primary/10 transition-colors"
                                         aria-label={`Hapus filter dompet ${wallet.name}`}
                                     >
-                                        <X className="h-4 w-4" />
+                                        <X className="h-3 w-3" />
                                     </button>
                                 </Badge>
                             )
@@ -250,21 +278,16 @@ function TransactionsPageContent() {
                                     <Card key={debt.id} className="p-4 space-y-2">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="font-medium">{debt.title}</p>
+                                                <p className="font-medium text-sm">{debt.title}</p>
                                                 <p className="text-xs text-muted-foreground">{debt.counterparty}</p>
                                             </div>
-                                            <span className="text-sm font-medium">{formatCurrency(outstanding)}</span>
+                                            <span className="text-sm font-bold italic tracking-tight">{formatCurrency(outstanding)}</span>
                                         </div>
                                         {dueDate && (
-                                            <p className="text-xs text-muted-foreground">
-                                                Jatuh tempo {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
+                                            <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                                                Tempo: {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
                                             </p>
                                         )}
-                                        <div className="flex gap-2">
-                                            <Button size="sm" variant="outline" onClick={() => router.push(`/debts/${debt.id}`)}>
-                                                Lihat Detail
-                                            </Button>
-                                        </div>
                                     </Card>
                                 );
                             })

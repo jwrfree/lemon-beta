@@ -31,8 +31,8 @@ const TransactionListItemContent = ({
     const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
     const categoryVisuals = getCategoryVisuals(transaction.category);
 
-    // Multi-tier Fallback State: clearbit -> logodev -> google -> icon
-    const [logoSource, setLogoSource] = React.useState<'clearbit' | 'logodev' | 'google' | 'icon'>('clearbit');
+    // Multi-tier Fallback State: clearbit -> logodev -> icon
+    const [logoSource, setLogoSource] = React.useState<'clearbit' | 'logodev' | 'icon'>('clearbit');
 
     // CRITICAL: Reset state when transaction changes to avoid carrying over errors from previous items in the list
     React.useEffect(() => {
@@ -41,7 +41,6 @@ const TransactionListItemContent = ({
 
     const clearbitLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
     const logoDevLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
-    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
 
     // Hierarchy: Merchant Icon (e.g., TV for Netflix) > Category Icon (e.g., Game for Entertainment)
     const DefaultIcon = merchantVisuals?.icon || categoryVisuals.icon;
@@ -52,11 +51,15 @@ const TransactionListItemContent = ({
     const amountColor = isExpense ? 'text-destructive' : 'text-success';
 
     return (
-        <div className="flex items-center gap-4 p-3.5">
+        <div className={cn(
+            "flex items-center gap-4 p-3.5 transition-colors",
+            isExpense && transaction.amount >= 1000000 && "bg-destructive/[0.03]"
+        )}>
             <div className={cn(
-                "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden",
+                "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm",
                 iconBg
             )}>
+                {/* Logo rendering logic... */}
                 {clearbitLogo && logoSource === 'clearbit' && (
                     <img
                         src={clearbitLogo}
@@ -70,56 +73,54 @@ const TransactionListItemContent = ({
                         src={logoDevLogo}
                         alt=""
                         className="h-full w-full object-cover animate-in zoom-in-50 duration-300"
-                        onError={() => setLogoSource('google')}
-                    />
-                )}
-                {googleLogo && logoSource === 'google' && (
-                    <img
-                        src={googleLogo}
-                        alt=""
-                        className="h-6 w-6 object-contain animate-in zoom-in-50 duration-300"
                         onError={() => setLogoSource('icon')}
                     />
                 )}
                 {(logoSource === 'icon' || !merchantVisuals?.domain) && (
                     <DefaultIcon className={cn("h-5 w-5", iconColor)} />
                 )}
-            </div>            <div className="flex-1 overflow-hidden">
-                <div className="font-medium text-foreground text-sm leading-tight mb-0.5 tracking-tight">{transaction.description || transaction.category}</div>
-                <div className="text-[11px] font-medium text-muted-foreground/70 flex items-center gap-1.5 flex-wrap">
+            </div>
+            <div className="flex-1 overflow-hidden">
+                <div className="font-bold text-foreground text-sm leading-tight mb-1 tracking-tight">
+                    {transaction.description || transaction.category}
+                </div>
+                <div className="text-[10px] font-bold text-muted-foreground/60 flex items-center gap-1.5 flex-wrap uppercase tracking-wider">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-accent-foreground bg-accent px-1.5 py-0.5 rounded-md text-[9px] font-medium uppercase tracking-wider shadow-sm border border-border">
+                        <span className="flex items-center gap-1 text-accent-foreground bg-accent px-1.5 py-0.5 rounded text-[8px] font-bold shadow-sm border border-border">
                             <Sparkles className="h-2 w-2 fill-current" />
                             Want
                         </span>
                     )}
-                    <span className="capitalize">
+                    <span className="truncate max-w-[80px]">
                         {transaction.category}
-                        {transaction.subCategory && (
-                            <span className="font-normal opacity-70"> • {transaction.subCategory}</span>
-                        )}
                     </span>
-                    {transaction.location && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
-                    {transaction.location && <span className="truncate">{transaction.location}</span>}
-                    {wallet && <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />}
-                    {wallet && <span>{wallet?.name || '-'}</span>}
-                    {!hideDate && (
-                        <>
-                            <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-                            <span>{format(parseISO(transaction.date), 'EEE, d MMM', { locale: dateFnsLocaleId })}</span>
-                        </>
+                    {transaction.subCategory && <span className="opacity-40">•</span>}
+                    {transaction.subCategory && (
+                        <span className="truncate max-w-[80px]">{transaction.subCategory}</span>
                     )}
+                    {wallet && <span className="opacity-40">•</span>}
+                    {wallet && <span>{wallet?.name || '-'}</span>}
                 </div>
             </div>
-            <div
-                className={cn("text-sm font-medium tracking-tight tabular-nums", amountColor, !isBalanceVisible && 'blur-sm transition-all duration-300')}
-                aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
-            >
-                <span aria-hidden="true">
-                    {isExpense ? '- ' : '+ '}
-                    {isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
-                </span>
+            <div className="flex flex-col items-end gap-1">
+                <div
+                    className={cn(
+                        "text-sm font-bold tracking-tight tabular-nums",
+                        amountColor,
+                        !isBalanceVisible && 'blur-sm transition-all duration-300',
+                        isExpense && transaction.amount >= 1000000 && "text-base"
+                    )}
+                    aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
+                >
+                    <span aria-hidden="true">
+                        {isExpense ? '- ' : '+ '}
+                        {isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
+                    </span>
+                </div>
+                {isExpense && transaction.amount >= 1000000 && (
+                    <span className="text-[8px] font-bold bg-destructive/10 text-destructive px-1 rounded uppercase tracking-widest">Large</span>
+                )}
             </div>
         </div>
     );

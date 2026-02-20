@@ -28,6 +28,7 @@ import type { Wallet, Transaction, Reminder, Debt } from '@/types/models';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { SmartAddOverlay } from '@/features/transactions/components/smart-add-overlay';
 import { SpendingTrendChart } from './spending-trend-chart';
+import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
 
 interface MobileDashboardProps {
     userData: any;
@@ -150,7 +151,7 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                 >
-                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-card">
+                    <div className="relative overflow-hidden rounded-2xl bg-[#064e4b] text-white shadow-lg border border-white/5">
                         {/* Decorative Patterns */}
                         <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
                         <div className="absolute bottom-0 left-0 -ml-8 -mb-8 h-32 w-32 rounded-full bg-primary-foreground/10 blur-2xl"></div>
@@ -159,13 +160,29 @@ export const MobileDashboard = ({
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-primary-foreground/80 text-[10px] uppercase font-medium tracking-widest">Total Saldo</span>
+                                    <span className="text-white/80 text-[10px] uppercase font-medium tracking-widest">Total Saldo</span>
                                     <div className="bg-white/10 backdrop-blur-md rounded-full px-2 py-0.5">
-                                        <BalanceVisibilityToggle className="h-4 w-4 text-primary-foreground/80 hover:text-primary-foreground" variant="ghost" size="icon" />
+                                        <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
                                 <div className="text-4xl font-medium tracking-tighter">
                                     <AnimatedCounter value={totalBalance} />
+                                </div>
+                                <div className="mt-3 flex flex-col gap-2">
+                                    <div className="text-[11px] text-white/70 font-medium leading-relaxed max-w-[280px]">
+                                        <Sparkles className="h-3 w-3 inline mr-1 opacity-70" />
+                                        {expenseDiff > 0
+                                            ? `Pengeluaranmu naik ${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}% dari bulan lalu. Ayo lebih hemat!`
+                                            : 'Pengeluaranmu bulan ini lebih terkontrol. Kerja bagus!'}
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="w-fit h-6 px-2 text-[9px] bg-white/10 hover:bg-white/20 text-white border-white/10"
+                                        onClick={() => router.push('/charts')}
+                                    >
+                                        Lihat Analitik
+                                    </Button>
                                 </div>
                             </div>
 
@@ -203,6 +220,11 @@ export const MobileDashboard = ({
                         </div>
                     </div>
                 </motion.div>
+            </div>
+
+            {/* 2.5 Risk Insight */}
+            <div className="px-4">
+                <RiskScoreCard />
             </div>
 
             {/* 3. Quick Actions Grid */}
@@ -317,7 +339,7 @@ export const MobileDashboard = ({
                 <Card className="border-none shadow-none bg-transparent">
                     <TransactionList
                         transactions={transactions}
-                        limit={4}
+                        limit={2}
                         isLoading={false}
                     />
                 </Card>

@@ -1,7 +1,9 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useInsights } from '@/features/insights/hooks/use-insights';
+import { AlertCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
 
 interface BudgetStatusPillProps {
     category: string;
@@ -9,19 +11,17 @@ interface BudgetStatusPillProps {
 
 export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
     const { budgets } = useBudgets();
+    const { risk } = useInsights();
 
-    // Only proceed if category is selected
     if (!category) return null;
 
     const relevantBudget = budgets.find(b => b.categories.includes(category));
-
-    // Only proceed if a budget exists for this category
     if (!relevantBudget) return null;
 
     const spent = relevantBudget.spent || 0;
     const remainingBudget = relevantBudget.targetAmount - spent;
-    // Over budget if remaining is 0 or less (though exact 0 is "at limit", usually treated as warning)
     const isOverBudget = remainingBudget <= 0;
+    const isHighVelocity = (risk?.velocity || 1) > 1.1;
 
     return (
         <AnimatePresence>
@@ -29,17 +29,34 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
-                className={cn(
-                    "flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium border w-full",
-                    isOverBudget
-                        ? "bg-destructive/5 text-destructive border-destructive/20"
-                        : "bg-success/5 text-success border-success/20"
-                )}
+                className="space-y-2"
             >
-                <span>Sisa Anggaran {category}:</span>
-                <span className="font-medium tabular-nums">
-                    Rp {new Intl.NumberFormat('id-ID').format(remainingBudget)}
-                </span>
+                <div className={cn(
+                    "flex items-center justify-between px-4 py-3 rounded-xl text-[11px] font-bold border transition-colors duration-500",
+                    isOverBudget
+                        ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
+                        : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                )}
+                >
+                    <div className="flex items-center gap-2">
+                        {isOverBudget ? <AlertCircle className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+                        <span className="uppercase tracking-widest">Sisa {category}:</span>
+                    </div>
+                    <span className="tabular-nums text-sm font-black">
+                        {formatCurrency(remainingBudget)}
+                    </span>
+                </div>
+
+                {isHighVelocity && !isOverBudget && (
+                    <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex items-center gap-2 px-1 text-[10px] font-bold text-amber-600"
+                    >
+                        <TrendingUp className="h-3 w-3" />
+                        <span className="uppercase tracking-[0.1em]">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>
+                    </motion.div>
+                )}
             </motion.div>
         </AnimatePresence>
     );

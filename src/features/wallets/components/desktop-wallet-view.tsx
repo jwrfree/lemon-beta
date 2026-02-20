@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wallet as WalletIcon, ArrowUpDown, ArrowUp, ArrowDown, TrendingUp, TrendingDown, Target, Search } from 'lucide-react';
+import { Wallet as WalletIcon, ArrowUpDown, ArrowUp, ArrowDown, TrendingUp, TrendingDown, Target, Search, Sparkles } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
@@ -123,83 +123,90 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
     return (
         <div className="flex flex-col h-full space-y-6 p-6 md:p-8 max-w-[1600px] mx-auto w-full">
             {/* Summary Header */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-gradient-to-br from-primary to-primary/80 border-none text-primary-foreground shadow-lg shadow-primary/20">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium opacity-90 uppercase tracking-wider">Total Aset</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-medium tracking-tight">
-                            {isBalanceVisible ? formatCurrency(totalBalance) : "Rp •••••••••"}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <Card className="col-span-1 md:col-span-2 bg-[#064e4b] border-none text-white shadow-xl shadow-primary/10 overflow-hidden relative rounded-2xl p-6">
+                    <div className="absolute top-0 right-0 p-6 opacity-10 -rotate-12">
+                        <WalletIcon className="h-24 w-24" />
+                    </div>
+                    <div className="relative z-10 flex flex-col justify-between h-full space-y-4">
+                        <div className="space-y-1">
+                            <CardTitle className="text-[10px] font-bold opacity-70 uppercase tracking-[0.2em]">Total Kekayaan Bersih</CardTitle>
+                            <div className="text-4xl font-bold tracking-tight py-1 transition-all">
+                                {isBalanceVisible ? formatCurrency(totalBalance) : "Rp •••••••••"}
+                            </div>
                         </div>
-                        <p className="text-xs opacity-75 mt-1 font-medium">
-                            {wallets.length} Dompet Aktif
-                        </p>
-                    </CardContent>
+
+                        <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
+                            <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                                <Sparkles className="h-4 w-4 text-white" />
+                            </div>
+                            <p className="text-xs font-medium leading-relaxed">
+                                Asetmu tumbuh <b>4.2%</b> bulan ini. Kamu punya <b>{wallets.length} dompet</b> yang terapung aman.
+                            </p>
+                        </div>
+                    </div>
                 </Card>
 
-                <Card className="shadow-card">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pemasukan (30 Hari)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                <Card className="shadow-sm border-border/50 rounded-2xl p-6 flex flex-col justify-between bg-card/50">
+                    <div className="space-y-1">
+                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Pemasukan</CardTitle>
                         <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-success/10 rounded-lg">
-                                <TrendingUp className="h-4 w-4 text-success" />
-                            </div>
-                            <div className="text-2xl font-medium tracking-tight text-foreground">
+                            <TrendingUp className="h-4 w-4 text-success" />
+                            <div className="text-2xl font-bold tracking-tight text-foreground">
                                 {formatCurrency(income30)}
                             </div>
                         </div>
-                    </CardContent>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">30 Hari Terakhir</p>
+                    </div>
                 </Card>
 
-                <Card className="shadow-card">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Pengeluaran (30 Hari)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                <Card className="shadow-sm border-border/50 rounded-2xl p-6 flex flex-col justify-between bg-card/50">
+                    <div className="space-y-1">
+                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Pengeluaran</CardTitle>
                         <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-destructive/10 rounded-lg">
-                                <TrendingDown className="h-4 w-4 text-destructive" />
-                            </div>
-                            <div className="text-2xl font-medium tracking-tight text-foreground">
+                            <TrendingDown className="h-4 w-4 text-destructive" />
+                            <div className="text-2xl font-bold tracking-tight text-foreground">
                                 {formatCurrency(expense30)}
                             </div>
                         </div>
-                    </CardContent>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-border/50">
+                        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">30 Hari Terakhir</p>
+                    </div>
                 </Card>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-[350px,1fr] gap-6 min-h-0">
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-[400px,1fr] gap-8 min-h-0">
                 {/* Left Side: Wallet List */}
-                <Card className="flex flex-col border-none shadow-card bg-background/50 backdrop-blur-sm h-full overflow-hidden">
-                    <div className="p-4 border-b space-y-4">
+                <Card className="flex flex-col border border-border/50 shadow-sm bg-card/30 backdrop-blur-md h-full overflow-hidden rounded-2xl">
+                    <div className="p-6 border-b space-y-6 bg-card/50">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-medium tracking-tight flex items-center gap-2">
-                                Dompet Saya
-                                <Badge variant="secondary" className="rounded-md px-1.5 py-0 text-xs">{filteredWallets.length}</Badge>
+                            <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
+                                Dompet
+                                <Badge variant="secondary" className="rounded-full px-2 py-0 text-[10px] font-bold bg-primary/10 text-primary border-none">{filteredWallets.length}</Badge>
                             </h2>
                             <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/5 hover:text-primary transition-colors" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
                                     {sortDir === 'asc' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
                                 </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSort(prev => prev === 'name' ? 'balance' : 'name')}>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/5 hover:text-primary transition-colors" onClick={() => setSort(prev => prev === 'name' ? 'balance' : 'name')}>
                                     <ArrowUpDown className="h-4 w-4" />
                                 </Button>
                             </div>
                         </div>
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <div className="relative group">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Cari aset..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="pl-9 bg-muted/50 border-none h-9 text-sm"
+                                className="pl-10 bg-muted/30 border-none h-10 text-sm rounded-xl focus-visible:ring-1 focus-visible:ring-primary/20"
                             />
                         </div>
 
-                        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+                        <div className="flex gap-2 overflow-x-auto pb-1 -mx-2 px-2 scrollbar-hide">
                             {[
                                 { id: 'all', label: 'Semua' },
                                 { id: 'bank', label: 'Bank' },
@@ -211,10 +218,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     key={f.id}
                                     onClick={() => setFilter(f.id)}
                                     className={cn(
-                                        "px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap box-border border flex-shrink-0",
+                                        "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap border shrink-0",
                                         filter === f.id
-                                            ? "bg-primary text-primary-foreground border-primary"
-                                            : "bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                                            ? "bg-primary text-white border-primary shadow-md shadow-primary/10"
+                                            : "bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                                     )}
                                 >
                                     {f.label}
@@ -223,7 +230,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                         {filteredWallets.map((wallet) => {
                             const { Icon, logo } = getWalletVisuals(wallet.name, wallet.icon || undefined);
                             const isActive = wallets.indexOf(wallet) === activeIndex;
@@ -234,53 +241,59 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     key={wallet.id}
                                     onClick={() => setActiveIndex(wallets.indexOf(wallet))}
                                     className={cn(
-                                        "w-full text-left p-3 rounded-lg transition-all border flex items-center justify-between group",
+                                        "w-full text-left p-4 rounded-xl transition-all border flex items-center justify-between group h-20",
                                         isActive
-                                            ? "bg-card border-primary/20 shadow-sm ring-1 ring-primary/10"
-                                            : "bg-transparent border-transparent hover:bg-muted/50"
+                                            ? "bg-card border-primary/30 shadow-md shadow-primary/5 ring-1 ring-primary/5"
+                                            : "bg-transparent border-transparent hover:bg-muted/30"
                                     )}
-                                    whileHover={{ scale: 0.99 }}
+                                    whileHover={{ scale: 0.992 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <div className={cn(
-                                            "p-2.5 rounded-lg transition-colors flex items-center justify-center overflow-hidden",
-                                            isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground group-hover:bg-muted/80"
+                                            "flex-shrink-0 h-12 w-12 rounded-xl transition-all flex items-center justify-center overflow-hidden shadow-sm",
+                                            isActive ? "bg-primary text-white scale-105" : "bg-muted text-muted-foreground group-hover:bg-muted-foreground/10 group-hover:text-foreground"
                                         )}>
                                             {logo ? (
-                                                <>
+                                                <div className="p-2 w-full h-full flex items-center justify-center bg-white">
                                                     <img
                                                         src={logo}
                                                         alt={wallet.name}
-                                                        className="h-5 w-5 object-contain rounded-full"
+                                                        className="h-full w-full object-contain"
                                                         onError={(e) => {
                                                             e.currentTarget.style.display = 'none';
                                                             const icon = e.currentTarget.nextElementSibling;
                                                             if (icon) icon.classList.remove('hidden');
                                                         }}
                                                     />
-                                                    <Icon className="h-5 w-5 hidden" />
-                                                </>
+                                                    <Icon className="h-6 w-6 hidden" />
+                                                </div>
                                             ) : (
-                                                <Icon className="h-5 w-5" />
+                                                <Icon className="h-6 w-6" />
                                             )}
                                         </div>
-                                        <div className="flex flex-col overflow-hidden">
-                                            <span className={cn("text-sm font-medium truncate", isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>
+                                        <div className="flex flex-col min-w-0 flex-1">
+                                            <span className={cn("text-xs font-bold uppercase tracking-widest truncate mb-1", isActive ? "text-primary" : "text-muted-foreground/60")}>
                                                 {wallet.name}
                                             </span>
                                             <span className={cn(
-                                                "text-sm font-medium tracking-tight",
-                                                isActive ? "text-primary" : "text-foreground",
+                                                "text-xl font-bold tracking-tight tabular-nums",
+                                                isActive ? "text-foreground" : "text-foreground/80",
                                                 !isBalanceVisible && "blur-sm"
                                             )}>
                                                 {isBalanceVisible ? formatCurrency(wallet.balance) : "Rp ••••••"}
                                             </span>
                                         </div>
                                     </div>
-                                    <Badge variant="outline" className={cn("text-[10px] px-1.5 h-5 border font-medium", getHealthBadgeClass(health.variant))}>
-                                        {health.label}
-                                    </Badge>
+                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                        <div className={cn(
+                                            "h-2 w-2 rounded-full animate-pulse",
+                                            health.variant === 'success' ? 'bg-success' : health.variant === 'destructive' ? 'bg-destructive' : 'bg-warning'
+                                        )} />
+                                        <span className={cn("text-[9px] font-bold uppercase tracking-widest opacity-50")}>
+                                            {health.label}
+                                        </span>
+                                    </div>
                                 </motion.button>
                             );
                         })}

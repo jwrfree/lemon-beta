@@ -1,17 +1,17 @@
 # Lemon Mobile Blueprint
 
-## 0. Release Snapshot – v2.1.0 (January 2026)
-- **Status:** In Progress.
+## 0. Release Snapshot – v2.2.0 (February 2026)
+- **Status:** Released.
+- **Fokus rilis:** Mencapai standar "Premium Fidelity" melalui optimasi performa, analitik mendalam, dan pengalaman PWA yang setara aplikasi native.
+- **Highlight baru:** Analytics layer (Net Worth Trend, Saving Potential), update optimistik (zero-latency), skeleton screens, haptic feedback, dan overhaul UI desktop.
+
+## 0.1 Previous Snapshot – v2.1.0 (January 2026)
+- **Status:** Integrated.
 - **Fokus rilis:** Memperkuat kecerdasan buatan (AI) untuk efisiensi pencatatan, pemantauan kesehatan hutang yang lebih mendalam, serta optimalisasi UI desktop.
 - **Highlight baru:** Smart Add 2.0 didukung DeepSeek V3 (bulk add, wallet detection), dashboard Net Worth real-time, dan kalkulator estimasi biaya AI bagi developer.
 
-## 0.1 Previous Snapshot – v2.0.0 (22 September 2025)
-- **Status:** Released.
-- **Fokus rilis:** menuntaskan audit desain menyeluruh, memoles landing & modal autentikasi, memastikan setiap alur utama siap produksi, dan memperbarui dokumentasi agar seluruh tim selaras.
-- **Highlight baru:** navigasi anchor pada landing, dukungan `prefers-reduced-motion` di seluruh animasi, copy hero edukatif, serta penegasan jalur pemulihan akun yang jelas.
-
 ## 1. Product Vision
-Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku usaha mandiri. Tujuannya: membuat keputusan finansial terasa ringan, informatif, dan dapat diandalkan melalui pencatatan cepat, pengingat proaktif, serta insight yang bisa ditindaklanjuti. Setiap interaksi dirancang agar dapat dilakukan dengan satu tangan, mudah dipahami, dan konsisten di seluruh ekosistem.
+Lemon adalah pendamping keuangan mobile-first yang mengutamakan kualitas "Premium Fidelity". Tujuannya: membuat keputusan finansial terasa ringan, informatif, dan dapat diandalkan melalui pencatatan instan tanpa latensi, pengingat proaktif, serta insight yang bisa ditindaklanjuti. Setiap interaksi dirancang untuk memberikan sensasi aplikasi high-end yang konsisten di seluruh ekosistem.
 
 ## 2. Experience Principles
 1. **Thumb-friendly layout:** tindakan utama berada di area 44–56 px pada paruh bawah layar, dilengkapi quick actions yang selalu terlihat.
@@ -19,7 +19,9 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
 3. **Predictable navigation:** 5 tab bawah (Home, Transactions, Budgets, Insights, More) dipadukan dengan segmented control, breadcrumbs, dan anchor nav di permukaan web.
 4. **Contextual guidance:** copy microcopy menjelaskan dampak setiap aksi; snackbar/alert inline memberi arahan perbaikan.
 5. **Inclusive motion:** animasi 0.28 s ease-out dengan fallback instan untuk pengguna `prefers-reduced-motion` dan perangkat low-power.
-6. **Trust by default:** keamanan (biometrik, enkripsi) dan dokumentasi (FAQ, blueprint) selalu terlihat sehingga pengguna yakin untuk melanjutkan.
+6. **Trust & Speed:** Keamanan biometrik dan **optimistic updates** untuk respon instan (zero-latency).
+7. **Premium PWA:** Pengalaman instalasi mandiri dan dukungan offline yang setara aplikasi native.
+8. **Complexity Control:** Seluruh permukaan produk wajib mematuhi [Complexity Control Guide](./complexity-control-guide.md) menggunakan model pengungkapan 3-lapis.
 
 ## 3. Information Architecture
 1. **Landing & Onboarding**
@@ -34,7 +36,12 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
 4. **Budgets**
    - Ringkasan bulanan, progress ring per kategori, rekomendasi AI, serta detail kategori dengan riwayat transaksi.
 5. **Insights**
-   - Insight mingguan AI, tren kategori, distribusi pengeluaran, widget Debt Health, highlight pengingat.
+   - **Financial Analytics Layers:**
+     - *Net Worth Trend:* Visualisasi pelacakan kekayaan bersih 6 bulan.
+     - *Saving Potential:* Metrik efisiensi pengeluaran.
+     - *Behavior Analytics:* Pola transaksi (Hari kerja vs Akhir pekan).
+     - *Subscription Audit:* Analisis pengeluaran berulang.
+   - Insight mingguan AI, tren kategori, widget Debt Health.
 6.3. **More**
    - Assets & Liabilities (Net Worth): Pelacakan kekayaan bersih dengan dashboard khusus. Desktop version menyajikan visualisasi kartu gradien dan manajemen dompet yang dioptimalkan untuk layar lebar.
    - AI Token Calculator, Profil, Security (biometrik), Reminders calendar, Data (impor/ekspor), Bantuan, Feedback, serta log perubahan.
@@ -85,10 +92,12 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
 - Profil (nama, foto, preferensi bahasa), Security (biometrik, 2FA), Data (impor CSV, ekspor PDF/JSON), Bantuan (FAQ, live chat, changelog), Feedback (kirim saran, request fitur).
 
 ## 5. Interaction & Motion Specs
-- **Durasi & easing:** 0.28 s ease-out standar; overlay/modal 0.24 s; daftar animasi 0.28 s dengan delay 0.08 s per item.
+- **Durasi & easing:** 0.28 s ease-out standar; overlay/modal 0.24 s.
+- **Skeleton Screens:** Digunakan untuk transisi loading guna mempertahankan layout dan persepsi kecepatan.
+- **Haptics:** Vibrasi ringan (iOS/Android) untuk aksi sukses (pencatatan), peringatan, dan konfirmasi.
+- **Success Celebrations:** Animasi mikro saat target budget tercapai atau hutang lunas.
 - **Reduced motion:** setiap komponen `motion.*` memeriksa `useReducedMotion` dan mematikan animasi ketika preferensi aktif.
-- **Haptics:** vibrasi ringan (iOS/Android) untuk aksi berhasil, peringatan, dan swipe to dismiss.
-- **Gestur:** swipe down menutup bottom sheet; drag handle tersedia visualnya; long-press pada transaksi membuka konteks menu.
+- **Gestur:** swipe down menutup bottom sheet; long-press pada transaksi membuka konteks menu.
 
 ## 6. Visual System
 - **Warna:**
@@ -99,7 +108,10 @@ Lemon adalah pendamping keuangan mobile-first untuk pekerja digital dan pelaku u
   - Token diekspos via CSS variable & Tailwind alias.
 - **Tipografi:** Satoshi/Inter, skala 12–40 px, berat 400/500/600/700. Heading ≤ 64 karakter, paragraf ≤ 90 karakter untuk keterbacaan.
 - **Spacing:** basis 4 px; layout section 24–48 px; card gap 24 px; form vertical rhythm 16 px.
-- **Radius & elevation:** Card radius 16 px, modal 24–32 px, bottom sheet `rounded-t-2xl`; shadow lembut + solid background untuk depth yang bersih.
+- **Radius & elevation:** 
+  - **Desktop:** Card radius diperkecil menjadi 8 px dengan shadow yang lebih tajam (Enterprise Look).
+  - **Mobile:** Card radius 16 px, modal 24–32 px (Touch Friendly).
+  - Shadow lembut + solid background untuk depth yang bersih.
 - **Ikon & ilustrasi:** lucide-react 24 px, stroke 1.5 px; ilustrasi hero menggunakan path animasi dengan fallback statis.
 
 ## 7. Data Model Considerations

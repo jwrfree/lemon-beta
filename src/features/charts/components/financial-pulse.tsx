@@ -43,7 +43,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground p-8 md:p-10 shadow-card mx-4 mt-4">
+        <div className="relative overflow-hidden rounded-2xl bg-[#064e4b] text-white p-8 md:p-12 shadow-2xl mx-4 mt-4 border border-white/10">
             {/* Background Chart */}
             {mounted && dataPoints.length > 0 && (
                 <div className="absolute inset-x-0 bottom-0 h-48 opacity-10 pointer-events-none">
@@ -73,7 +73,7 @@ export function FinancialPulse({
                 {/* Left: Net Value */}
                 <div className="text-center md:text-left space-y-2">
                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                        <p className="text-xs md:text-sm font-medium text-primary-foreground/60 uppercase tracking-widest">Sisa Uang (Cashflow)</p>
+                        <p className="text-xs md:text-sm font-medium text-white/60 uppercase tracking-widest">Sisa Uang (Cashflow)</p>
                         {netChange !== 0 && (
                             <Badge className={cn(
                                 "text-[10px] font-medium px-1.5 py-0.5 h-5",
@@ -87,9 +87,18 @@ export function FinancialPulse({
                     <h1 className="text-5xl md:text-7xl font-medium tracking-tighter tabular-nums leading-none">
                         {formatCurrency(net)}
                     </h1>
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-primary-foreground/40 text-xs mt-2">
+
+                    {/* Layer 1 AI Insight Sentence */}
+                    <div className="mt-4 flex items-center gap-2 text-white/80 md:text-sm text-xs font-medium bg-white/10 w-fit px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm">
+                        <TrendingUp className="w-3 h-3 text-white" />
+                        <span>Keuanganmu bulan ini <b>12% lebih stabil</b> dibanding bulan lalu.</span>
+                        <div className="h-3 w-px bg-white/20 mx-1" />
+                        <button className="underline decoration-white/30 hover:decoration-white font-bold">Lihat Analitik</button>
+                    </div>
+
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 text-[10px] md:text-xs mt-4">
                         <span>Estimasi Pengeluaran Akhir Bulan:</span>
-                        <span className="text-primary-foreground/80 font-medium tabular-nums">{formatCurrency(projectedExpense)}</span>
+                        <span className="text-white/80 font-medium tabular-nums">{formatCurrency(projectedExpense)}</span>
                     </div>
                 </div>
 

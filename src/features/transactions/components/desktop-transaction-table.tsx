@@ -173,17 +173,25 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             {/* 5. Nominal */}
             <TableCell className={cn(
                 "text-right font-medium text-sm tabular-nums tracking-tight",
-                isExpense ? "text-destructive" : "text-success"
+                isExpense ? "text-destructive" : "text-success",
+                t.amount >= 1000000 && isExpense && "bg-destructive/5 font-bold"
             )}>
                 <div className="flex items-center justify-end gap-1.5">
                     {isExpense ? <ArrowDownLeft className="h-3.5 w-3.5" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
                     {formatCurrency(t.amount)}
                 </div>
-                {isExpense && t.isNeed === false && (
-                    <span className="text-[9px] font-bold text-accent-foreground/70 uppercase tracking-tighter block mt-0.5">
-                        Gaya Hidup
-                    </span>
-                )}
+                <div className="flex flex-col items-end gap-0.5 mt-0.5">
+                    {t.amount >= 1000000 && isExpense && (
+                        <span className="text-[8px] font-bold text-destructive uppercase tracking-widest px-1 bg-destructive/10 rounded">
+                            Transaksi Besar
+                        </span>
+                    )}
+                    {isExpense && t.isNeed === false && (
+                        <span className="text-[8px] font-bold text-accent-foreground/70 uppercase tracking-tighter">
+                            Gaya Hidup
+                        </span>
+                    )}
+                </div>
             </TableCell>
 
             {/* 6. Aksi */}

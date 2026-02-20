@@ -1,10 +1,20 @@
 import { createClient } from '@/lib/supabase/client';
 import { normalizeDateInput } from '@/lib/utils';
-import type { Debt, DebtInput, DebtPaymentInput, DebtRow } from '@/types/models';
+import type { Debt, DebtInput, DebtPaymentInput, DebtRow, DebtPayment, DebtPaymentRow } from '@/types/models';
 
 const supabase = createClient();
 
-export const mapDebtFromDb = (d: DebtRow): Debt => ({
+export const mapDebtPaymentFromDb = (p: DebtPaymentRow): DebtPayment => ({
+    id: p.id,
+    amount: p.amount,
+    paymentDate: p.payment_date,
+    walletId: p.wallet_id,
+    method: p.method,
+    notes: p.notes,
+    createdAt: p.created_at
+});
+
+export const mapDebtFromDb = (d: any): Debt => ({
     id: d.id,
     title: d.title,
     counterparty: d.counterparty,
@@ -20,7 +30,7 @@ export const mapDebtFromDb = (d: DebtRow): Debt => ({
     paymentFrequency: d.payment_frequency,
     customInterval: d.custom_interval,
     nextPaymentDate: d.next_payment_date,
-    payments: d.payments || [],
+    payments: (d.payments || []).map(mapDebtPaymentFromDb),
     userId: d.user_id,
     createdAt: d.created_at,
     updatedAt: d.updated_at
@@ -30,7 +40,7 @@ export const debtService = {
     async getDebts(userId: string) {
         const { data, error } = await supabase
             .from('debts')
-            .select('*')
+            .select('*, payments:debt_payments(*)')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
 
@@ -54,7 +64,6 @@ export const debtService = {
             next_payment_date: normalizeDateInput(debtData.nextPaymentDate),
             notes: debtData.notes || '',
             status: debtData.status || 'active',
-            payments: debtData.payments || [],
             user_id: userId
         });
         if (error) throw error;
