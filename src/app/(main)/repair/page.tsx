@@ -117,12 +117,12 @@ export default function RepairPage() {
 
     return (
         <div className="container max-w-2xl mx-auto py-10 px-4 min-h-screen flex items-center justify-center">
-            <Card className="border-indigo-100 dark:border-indigo-900 shadow-xl w-full">
-                <CardHeader className="text-center pb-6 border-b border-zinc-100 dark:border-zinc-800">
-                    <div className="mx-auto w-14 h-14 bg-indigo-100 dark:bg-indigo-900/50 rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                        <Wrench className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+            <Card className="border-border shadow-xl w-full">
+                <CardHeader className="text-center pb-6 border-b border-border">
+                    <div className="mx-auto w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4 shadow-inner">
+                        <Wrench className="w-7 h-7 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl font-medium text-indigo-900 dark:text-indigo-100">Database Repair Tool</CardTitle>
+                    <CardTitle className="text-2xl font-medium text-foreground">Database Repair Tool</CardTitle>
                     <CardDescription>
                         Memerbaiki data <strong>Sub-Kategori</strong> yang hilang pada transaksi lama.
                     </CardDescription>
@@ -130,22 +130,22 @@ export default function RepairPage() {
 
                 <CardContent className="flex flex-col gap-6 pt-6">
                     {result ? (
-                        <div className="bg-emerald-50 dark:bg-emerald-900/20 p-6 rounded-xl border border-emerald-100 dark:border-emerald-800 text-center animate-in zoom-in-95 duration-300">
-                            <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                            <h3 className="text-xl font-medium text-emerald-700 dark:text-emerald-400 mb-1">Perbaikan Selesai!</h3>
-                            <p className="text-emerald-600 dark:text-emerald-300 mb-6 font-medium">
-                                Berhasil memperbaiki <span className="text-2xl font-medium">{result.fixed}</span> item.
+                        <div className="bg-success/10 p-6 rounded-lg border border-success/20 text-center animate-in zoom-in-95 duration-300">
+                            <CheckCircle className="w-12 h-12 text-success mx-auto mb-3" />
+                            <h3 className="text-xl font-medium text-success mb-1">Perbaikan Selesai!</h3>
+                            <p className="text-muted-foreground mb-6 font-medium">
+                                Berhasil memperbaiki <span className="text-2xl font-medium text-success">{result.fixed}</span> item.
                             </p>
-                            <Button size="lg" onClick={() => window.location.href = '/home'} className="bg-emerald-600 hover:bg-emerald-700 w-full shadow-lg shadow-emerald-200 dark:shadow-none">
+                            <Button size="lg" onClick={() => window.location.href = '/home'} className="w-full shadow-lg shadow-primary/20">
                                 Kembali ke Dashboard
                             </Button>
                         </div>
                     ) : (
                         <>
-                            <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg flex gap-3 items-start border border-blue-100 dark:border-blue-800">
-                                <AlertTriangle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                                <div className="text-sm text-blue-800 dark:text-blue-200">
-                                    <p className="font-medium mb-1">Cara Kerja:</p>
+                            <div className="bg-info/10 p-4 rounded-lg flex gap-3 items-start border border-info/20">
+                                <AlertTriangle className="w-5 h-5 text-info shrink-0 mt-0.5" />
+                                <div className="text-sm text-foreground/80">
+                                    <p className="font-medium mb-1 text-info">Cara Kerja:</p>
                                     <p className="leading-relaxed opacity-90">Tool ini akan men-scan semua transaksi Anda. Jika ada yang sub-kategori-nya kosong, sistem akan otomatis mengisinya dengan default kategori atau menebak berdasarkan deskripsi.</p>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@ export default function RepairPage() {
                                 onClick={handleFixData}
                                 disabled={isLoading}
                                 size="lg"
-                                className="w-full h-14 text-lg font-medium bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-200 dark:shadow-none transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                className="w-full h-14 text-lg font-medium shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 {isLoading ? (
                                     <div className="flex items-center gap-2">
@@ -172,15 +172,15 @@ export default function RepairPage() {
                     )}
 
                     {/* Console Log Area */}
-                    <div className="bg-zinc-950 rounded-lg p-4 font-mono text-[10px] text-green-400 h-48 overflow-y-auto w-full shadow-inner border border-zinc-800">
+                    <div className="bg-slate-950 rounded-lg p-4 font-mono text-[10px] text-emerald-400 h-48 overflow-y-auto w-full shadow-inner border border-border/50">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-zinc-500 uppercase font-medium tracking-wider">System Log</span>
-                            {logs.length > 0 && <span className="text-zinc-500 cursor-pointer hover:text-white" onClick={() => setLogs([])}>Clear</span>}
+                            <span className="text-slate-500 uppercase font-medium tracking-wider">System Log</span>
+                            {logs.length > 0 && <span className="text-slate-500 cursor-pointer hover:text-white" onClick={() => setLogs([])}>Clear</span>}
                         </div>
                         {logs.length === 0 ? (
-                            <span className="text-zinc-700 italic">Ready to scan...</span>
+                            <span className="text-slate-700 italic">Ready to scan...</span>
                         ) : (
-                            logs.map((log, i) => <div key={i} className="border-l-2 border-zinc-800 pl-2 mb-1">{log}</div>)
+                            logs.map((log, i) => <div key={i} className="border-l-2 border-slate-800 pl-2 mb-1">{log}</div>)
                         )}
                         {isLoading && <span className="animate-pulse">_</span>}
                     </div>

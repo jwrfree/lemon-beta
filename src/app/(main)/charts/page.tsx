@@ -36,11 +36,11 @@ const TrendAnalytics = dynamic(() => import('@/features/charts/components/trend-
 });
 const HealthGauge = dynamic(() => import('@/features/charts/components/financial-health').then(mod => mod.HealthGauge), { 
     ssr: false,
-    loading: () => <div className="h-[150px] w-full animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
+    loading: () => <div className="h-[150px] w-full animate-pulse bg-muted rounded-lg" />
 });
 const HistoryChart = dynamic(() => import('@/features/charts/components/history-chart').then(mod => mod.HistoryChart), { 
     ssr: false,
-    loading: () => <div className="h-[250px] w-full animate-pulse bg-zinc-100 dark:bg-zinc-900 rounded-3xl" />
+    loading: () => <div className="h-[250px] w-full animate-pulse bg-muted rounded-lg" />
 });
 const CategoryPie = dynamic(() => import('@/features/charts/components/category-pie').then(mod => mod.CategoryPie), { 
     ssr: false,
@@ -482,9 +482,9 @@ function ChartContent() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-black pb-40">
+        <div className="min-h-screen bg-background pb-40">
             {/* STICKY HEADER */}
-            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-zinc-50/80 dark:bg-black/80 backdrop-blur-xl z-30 border-b border-zinc-200/50 dark:border-zinc-800/50">
+            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/50">
                 <div className="flex justify-between items-center py-3">
                     <h2 className="text-xl font-medium tracking-tight">Financial Analytics</h2>
                     <div className="flex items-center gap-2">
@@ -584,12 +584,12 @@ function ChartContent() {
                                 />
                             ))
                         ) : (
-                            <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] premium-shadow relative overflow-hidden">
+                            <div className="py-16 flex flex-col items-center justify-center text-center bg-card border border-border rounded-lg premium-shadow relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-8 opacity-[0.02]">
                                     <Layers className="h-32 w-32" />
                                 </div>
-                                <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-3xl mb-4">
-                                    <Info className="w-8 h-8 text-zinc-400" />
+                                <div className="p-4 bg-muted rounded-full mb-4">
+                                    <Info className="w-8 h-8 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-lg font-medium tracking-tight mb-1">Belum Ada Pengeluaran</h3>
                                 <p className="text-sm text-muted-foreground max-w-[250px]">
@@ -606,14 +606,14 @@ function ChartContent() {
                         <h3 className="text-lg font-medium tracking-tight">Breakdown Kategori</h3>
 
                         {/* Toggle Expense / Income */}
-                        <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-lg">
+                        <div className="flex bg-muted p-1 rounded-lg">
                             <button
                                 onClick={() => setCategoryView('expense')}
                                 className={cn(
                                     "px-3 py-1 text-xs font-medium rounded-md transition-all",
                                     categoryView === 'expense'
-                                        ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
-                                        : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                                        ? "bg-background text-foreground shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
                                 Pengeluaran
@@ -623,8 +623,8 @@ function ChartContent() {
                                 className={cn(
                                     "px-3 py-1 text-xs font-medium rounded-md transition-all",
                                     categoryView === 'income'
-                                        ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
-                                        : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300"
+                                        ? "bg-background text-foreground shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
                                 Pemasukan
@@ -657,12 +657,12 @@ function ChartContent() {
                                     );
                                 })
                             ) : (
-                                <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] premium-shadow relative overflow-hidden">
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card border border-border rounded-lg premium-shadow relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
                                             <Trophy className="h-32 w-32" />
                                         </div>
-                                        <div className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
-                                            <PieChart className="w-8 h-8 text-zinc-400" />
+                                        <div className="p-4 bg-muted rounded-full mb-4">
+                                            <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-medium tracking-tight mb-1">Belum Ada Pengeluaran</h3>
                                         <p className="text-sm text-muted-foreground max-w-[250px]">
@@ -683,12 +683,12 @@ function ChartContent() {
                                     />
                                 ))
                             ) : (
-                                <div className="py-16 flex flex-col items-center justify-center text-center bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] premium-shadow relative overflow-hidden">
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card border border-border rounded-lg premium-shadow relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
                                             <Trophy className="h-32 w-32" />
                                         </div>
-                                        <div className="p-4 bg-zinc-100 dark:bg-zinc-900 rounded-3xl mb-4">
-                                            <PieChart className="w-8 h-8 text-zinc-400" />
+                                        <div className="p-4 bg-muted rounded-full mb-4">
+                                            <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-medium tracking-tight mb-1">Belum Ada Pemasukan</h3>
                                         <p className="text-sm text-muted-foreground max-w-[250px]">
@@ -706,7 +706,7 @@ function ChartContent() {
 
 export default function ChartsPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-zinc-50 dark:bg-black" />}>
+        <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <ChartContent />
         </Suspense>
     );

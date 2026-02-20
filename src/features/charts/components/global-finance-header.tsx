@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { isSameMonth, parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { formatCurrency } from '@/lib/utils';
-import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownLeft, Scale, Download } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownLeft, Scale } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { DateRangeFilter } from '@/features/insights/components/date-range-filter';
@@ -42,7 +42,7 @@ export const GlobalFinanceHeader = ({
     }, [transactions, manualLabel]);
 
     return (
-        <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6 bg-background border-b">
+        <div className="px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6 bg-background">
             <div className="max-w-7xl mx-auto w-full">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 sm:mb-6">
                     <div className="flex flex-col gap-1">
@@ -60,7 +60,7 @@ export const GlobalFinanceHeader = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                     {/* Arus Kas Card (Main Highlight) */}
                     <Card className={cn(
-                        "relative overflow-hidden border-none shadow-lg transition-all hover:shadow-xl",
+                        "relative overflow-hidden border-none shadow-lg transition-all hover:shadow-xl rounded-xl sm:rounded-2xl",
                         summary.isPositive ? "bg-emerald-500" : "bg-rose-500"
                     )}>
                         <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -88,7 +88,7 @@ export const GlobalFinanceHeader = ({
                     </Card>
 
                     {/* Pemasukan Card */}
-                    <Card className="border-none shadow-md bg-white dark:bg-zinc-900 transition-all hover:shadow-lg">
+                    <Card className="border-none shadow-md bg-white dark:bg-zinc-900 transition-all hover:shadow-lg rounded-xl sm:rounded-2xl">
                         <CardContent className="p-4 sm:p-5">
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Pemasukan</p>
@@ -103,7 +103,7 @@ export const GlobalFinanceHeader = ({
                     </Card>
 
                     {/* Pengeluaran Card */}
-                    <Card className="border-none shadow-md bg-white dark:bg-zinc-900 transition-all hover:shadow-lg">
+                    <Card className="border-none shadow-md bg-white dark:bg-zinc-900 transition-all hover:shadow-lg rounded-xl sm:rounded-2xl">
                         <CardContent className="p-4 sm:p-5">
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wider">Pengeluaran</p>

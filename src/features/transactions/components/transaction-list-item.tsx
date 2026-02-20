@@ -53,7 +53,7 @@ const TransactionListItemContent = ({
     return (
         <div className="flex items-center gap-4 p-3.5">
             <div className={cn(
-                "flex-shrink-0 h-10 w-10 rounded-lg shadow-sm flex items-center justify-center transition-all duration-500 overflow-hidden border border-border/50", 
+                "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden", 
                 iconBg
             )}>
                 {primaryLogo && logoSource === 'clearbit' && (

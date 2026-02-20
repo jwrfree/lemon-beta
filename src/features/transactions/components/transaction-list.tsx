@@ -39,7 +39,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
 
     if (finalTransactions.length === 0 && !isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center text-center py-12 px-4 border-2 border-dashed rounded-xl bg-muted/30">
+            <div className="flex flex-col items-center justify-center text-center py-12 px-4 border-2 border-dashed rounded-lg bg-muted/30">
                 <div className="p-4 bg-primary/10 rounded-full mb-4 animate-in zoom-in duration-300">
                     <ReceiptText className="h-8 w-8 text-primary/80" strokeWidth={1.5} />
                 </div>

@@ -38,6 +38,7 @@ const SingleTransactionSchema = z.object({
   }).default(0),
   description: z.string().nullable().transform(v => v || "Transaksi Baru"),
   merchant: z.string().optional().nullable(), // New field for brand intelligence
+  merchantDomain: z.string().optional().nullable(), // AI guesses domain for free logo APIs
   category: z.string().nullable().transform(v => v || "Lain-lain"),
   subCategory: z.string().optional().nullable(),
   wallet: z.string().nullable().transform(v => v || "Tunai"),
@@ -89,7 +90,7 @@ export async function extractTransaction(text: string, context?: ExtractionConte
   const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
   const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
-  const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi';
+  const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi, Keluarga, Sosial';
 
   const systemPrompt = `## INSTRUKSI PARSING TRANSAKSI LEMON AI ##
 Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap makna implisit!
@@ -103,6 +104,8 @@ Jam sekarang: ${currentTime}
 ### ATURAN DETEKSI OTOMATIS:
 1. **MULTI-TRANSACTION SUPPORT:**
    - Jika user menyebutkan beberapa transaksi sekaligus (misal: "beli bensin 50rb dan makan 30rb"), pecah menjadi beberapa objek transaksi dalam array 'transactions'.
+   - **Mixed Types**: Dukung input campuran Pemasukan dan Pengeluaran (misal: "Dapat gaji 5jt dan bayar listrik 500rb").
+   - **Bulk Transfer**: Jika user transfer ke banyak orang (misal: "Transfer 50rb ke Budi dan 100rb ke Ani"), pecah jadi transaksi expense terpisah.
 
 2. **DETEKSI JENIS & TIPE:**
    - **Expense**: beli, bayar, jajan, keluar, makan, isi pulsa.
@@ -121,10 +124,15 @@ Jam sekarang: ${currentTime}
    - Gunakan kategori dari daftar tersedia jika memungkinkan: ${categoryList}.
 
 6. **LOGIKA TRANSFER (KHUSUS):**
-   - Jika mendeteksi transfer:
-     - 'sourceWallet': Dompet asal (dari ...).
-     - 'destinationWallet': Dompet tujuan (ke ...).
-     - 'type': 'expense' (sebagai trigger sistem).
+   - **Internal Transfer**: Jika tujuan adalah salah satu dari **Dompet Tersedia** (misal: "Transfer dari BCA ke GoPay").
+     - Set 'category': 'Transfer'.
+     - 'sourceWallet': Dompet asal.
+     - 'destinationWallet': Dompet tujuan.
+   - **External Transfer**: Jika tujuan adalah ORANG atau PIHAK LAIN (misal: "Transfer ke Adik", "Kirim ke Ortu", "Tf ke Budi").
+     - Set 'type': 'expense'.
+     - Set 'category': 'Keluarga & Anak' atau 'Sosial & Donasi' atau 'Lain-lain'.
+     - JANGAN isi 'destinationWallet'.
+     - Masukkan nama penerima ke 'description' (misal: "Transfer ke Adik").
 
 7. **DETEKSI SUMBER DANA (NON-TRANSFER):**
    - 'pakai', 'via', 'dari' -> masukkan ke field 'wallet'. Pilih dari: ${walletList}.
@@ -156,6 +164,7 @@ Jam sekarang: ${currentTime}
       "category": "...",
       "subCategory": "...",
       "merchant": "...",
+      "merchantDomain": "example.com",
       "description": "...",
       "amount": number,
       "date": "YYYY-MM-DD",
@@ -172,6 +181,7 @@ Jam sekarang: ${currentTime}
 
 ### ATURAN SUB-CATEGORY / MERCHANT / DETAIL:
 - **MERCHANT DETECTION**: Ekstrak nama brand/toko/merchant jika ada (misal: "Netflix", "Starbucks", "BCA", "Gojek", "Tokopedia"). Masukkan ke field 'merchant'.
+- **DOMAIN GUESS**: Jika merchant terdeteksi, tebak domain resminya (misal: "Starbucks" -> "starbucks.co.id", "Tokopedia" -> "tokopedia.com"). Masukkan ke 'merchantDomain'.
 - Jika Input User: "Makan di McD 50rb" -> Category: "Makanan", Merchant: "McDonalds", Description: "Makan di McD", SubCategory: "Restoran & Kafe".
 - Jika user secara eksplisit menyebut sub-kategori yang ada di daftar (misal: "Beli Bensin"), masukkan ke 'subCategory'.
 - Format input kategori di sistem ini adalah "Nama Kategori (Sub1, Sub2, ...)" -> Gunakan ini sebagai referensi.
@@ -266,7 +276,7 @@ export async function refineTransaction(
   const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
   const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
-  const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi';
+  const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi, Keluarga, Sosial';
 
   const systemPrompt = `## INSTRUKSI REFINEMENT TRANSAKSI LEMON AI ##
 Anda adalah asisten keuangan yang membantu memperbaiki data transaksi berdasarkan feedback user.

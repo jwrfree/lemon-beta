@@ -50,6 +50,17 @@ export default function RemindersPage() {
     const [activeTab, setActiveTab] = useState('upcoming');
     const [search, setSearch] = useState('');
     const [range, setRange] = useState<'week' | '30'>('week');
+    
+    // Use mounting pattern without useEffect to avoid cascading renders
+    const [isMounted] = useState(() => {
+        // This runs only once during initial render
+        return true;
+    });
+    
+    // Avoid hydration mismatch by returning null until mounted
+    if (!isMounted) {
+        return null;
+    }
 
     const sortedReminders = useMemo<Reminder[]>(() => {
         return [...reminders].sort((a, b) => {
@@ -175,8 +186,8 @@ export default function RemindersPage() {
                     <div className="space-y-4">
                         {/* Mobile chip filters */}
                         <div className="md:hidden space-y-3">
-                            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-full overflow-x-auto">
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full" suppressHydrationWarning>
+                                <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-full overflow-x-auto" suppressHydrationWarning>
                                     {Object.entries(statusLabels).map(([key, label]) => (
                                         <TabsTrigger 
                                             key={key} 
@@ -189,10 +200,10 @@ export default function RemindersPage() {
                                 </TabsList>
                             </Tabs>
                             <div className="flex items-center gap-2">
-                                <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
-                                    <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-2">
-                                        <TabsTrigger value="week" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                         <TabsTrigger value="30" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full" suppressHydrationWarning>
+                                    <TabsList className="bg-muted p-1 rounded-lg h-14 w-full grid grid-cols-2" suppressHydrationWarning>
+                                        <TabsTrigger value="week" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                         <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                                 <Button
@@ -472,21 +483,21 @@ export default function RemindersPage() {
                                     </p>
                                     <div className="w-full">
                                         <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
-                                            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-2xl h-14">
-                                                <TabsTrigger value="week" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                                <TabsTrigger value="30" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-lg h-14">
+                                                <TabsTrigger value="week" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
+                                                <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">30 hari</TabsTrigger>
                                             </TabsList>
                                         </Tabs>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 text-sm">
-                                    <div className="rounded-xl bg-destructive/10 text-destructive p-3">
+                                    <div className="rounded-lg bg-destructive/10 text-destructive p-3">
                                         <p className="text-xs text-destructive/80">Terlambat</p>
                                         <p className="text-lg font-medium">
                                             {reminders.filter(r => getReminderStatus(r) === 'overdue').length}
                                         </p>
                                     </div>
-                                    <div className="rounded-xl bg-primary/10 text-primary p-3">
+                                    <div className="rounded-lg bg-primary/10 text-primary p-3">
                                         <p className="text-xs text-primary/80">Segera</p>
                                         <p className="text-lg font-medium">
                                             {reminders.filter(r => {

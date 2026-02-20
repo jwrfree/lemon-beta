@@ -127,7 +127,7 @@ function TransactionsPageContent() {
                                 onChange={e => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <Sheet>
+                        <Sheet suppressHydrationWarning>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="outline"
@@ -180,8 +180,8 @@ function TransactionsPageContent() {
             
             <div className="p-2 flex flex-col gap-2 bg-background border-b z-10 shrink-0">
                 <div className="w-full">
-                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                        <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-4">
+                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" suppressHydrationWarning>
+                        <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-4" suppressHydrationWarning>
                             {[
                                 { value: 'all', label: 'Semua' },
                                 { value: 'expense', label: 'Pengeluaran' },

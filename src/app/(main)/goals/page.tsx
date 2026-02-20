@@ -176,7 +176,7 @@ interface GoalRow {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="lg:col-span-2 bg-gradient-to-br from-teal-600 to-teal-700 rounded-3xl p-6 md:p-8 text-white shadow-lg shadow-teal-900/20 relative overflow-hidden"
+            className="lg:col-span-2 bg-gradient-to-br from-teal-600 to-teal-700 rounded-lg p-6 md:p-8 text-white shadow-lg shadow-teal-900/20 relative overflow-hidden"
           >
             {/* Elemen Dekoratif */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
@@ -185,7 +185,7 @@ interface GoalRow {
             <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 opacity-90">
-                  <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+                  <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     <Wallet className="w-5 h-5 text-white" strokeWidth={1.5} />
                   </div>
                   <span className="text-sm font-medium tracking-wider uppercase">Total Tabungan Terkumpul</span>
@@ -230,10 +230,10 @@ interface GoalRow {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="hidden lg:flex flex-col justify-center bg-card border border-border/50 rounded-3xl p-6 shadow-sm"
+            className="hidden lg:flex flex-col justify-center bg-card border border-border/50 rounded-lg p-6 shadow-sm"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                 <Trophy className="w-6 h-6 text-primary" />
               </div>
               <div>
@@ -242,7 +242,7 @@ interface GoalRow {
                   Kamu telah mengumpulkan <strong>{totalProgress}%</strong> dari total targetmu. Sedikit lagi menuju impian!
                 </p>
               </div>
-              <Button variant="outline" className="w-full rounded-xl border-dashed" onClick={() => router.push('/goals/new')}>
+              <Button variant="outline" className="w-full rounded-lg border-dashed" onClick={() => router.push('/goals/new')}>
                 <Plus className="w-4 h-4 mr-2" />
                 Tambah Target Baru
               </Button>
@@ -258,11 +258,11 @@ interface GoalRow {
               <p className="text-sm text-muted-foreground">Kelola dan pantau progres setiap target keuanganmu</p>
             </div>
             
-            <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full md:w-[320px] grid grid-cols-2">
-              <TabsTrigger value="active" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
+            <TabsList className="bg-muted p-1 rounded-lg h-14 w-full md:w-[320px] grid grid-cols-2">
+              <TabsTrigger value="active" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
                 Aktif
               </TabsTrigger>
-              <TabsTrigger value="completed" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
+              <TabsTrigger value="completed" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
                 Selesai
               </TabsTrigger>
             </TabsList>
@@ -273,7 +273,7 @@ interface GoalRow {
               {loading ? (
                  // Skeleton Loading State
                  Array.from({ length: 3 }).map((_, i) => (
-                   <div key={i} className="h-48 rounded-2xl bg-muted/50 animate-pulse" />
+                   <div key={i} className="h-48 rounded-lg bg-muted/50 animate-pulse" />
                  ))
               ) : goals.filter(g => g.currentAmount < g.targetAmount).length > 0 ? (
                 goals.filter(g => g.currentAmount < g.targetAmount).map((goal, index) => (
@@ -285,13 +285,13 @@ interface GoalRow {
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Card className="group hover:bg-card hover:shadow-md hover:border-primary/20 border-border/50 rounded-2xl shadow-sm transition-all cursor-pointer relative overflow-hidden h-full">
+                  <Card className="group hover:bg-card hover:shadow-md hover:border-primary/20 border-border/50 rounded-lg shadow-sm transition-all cursor-pointer relative overflow-hidden h-full">
                     <CardContent className="p-5 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
+                        <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">
+                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-md uppercase tracking-wider font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
@@ -375,10 +375,10 @@ interface GoalRow {
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Card className="group hover:bg-card hover:shadow-md hover:border-primary/20 border-border/50 rounded-2xl shadow-sm transition-all cursor-pointer relative overflow-hidden h-full">
+                  <Card className="group hover:bg-card hover:shadow-md hover:border-primary/20 border-border/50 rounded-lg shadow-sm transition-all cursor-pointer relative overflow-hidden h-full">
                     <CardContent className="p-5 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
+                        <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
                         <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">

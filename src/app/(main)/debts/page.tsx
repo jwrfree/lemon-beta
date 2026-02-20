@@ -57,7 +57,7 @@ const getDebtDueStatus = (debt: Debt) => {
     
     if (diff < 0) {
         return (
-            <span className="text-[10px] text-destructive font-medium flex items-center gap-1 bg-destructive/5 px-1.5 py-0.5 rounded w-fit mt-1">
+            <span className="text-[10px] text-destructive font-medium flex items-center gap-1 bg-destructive/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
                 <CalendarClock className="h-3 w-3" /> 
                 Telat {Math.abs(diff)} hari
             </span>
@@ -65,7 +65,7 @@ const getDebtDueStatus = (debt: Debt) => {
     }
     if (diff === 0) {
         return (
-            <span className="text-[10px] text-amber-600 font-medium flex items-center gap-1 bg-amber-500/10 px-1.5 py-0.5 rounded w-fit mt-1">
+            <span className="text-[10px] text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
                 <CalendarClock className="h-3 w-3" /> 
                 Hari ini
             </span>
@@ -73,14 +73,14 @@ const getDebtDueStatus = (debt: Debt) => {
     }
     if (diff <= 7) {
         return (
-            <span className="text-[10px] text-amber-600 font-medium flex items-center gap-1 bg-amber-500/10 px-1.5 py-0.5 rounded w-fit mt-1">
+            <span className="text-[10px] text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
                 <CalendarClock className="h-3 w-3" /> 
                 {diff} hari lagi
             </span>
         );
     }
     return (
-        <span className="text-[10px] text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded w-fit mt-1">
+        <span className="text-[10px] text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded-md w-fit mt-1">
             <CalendarClock className="h-3 w-3" /> 
             {diff} hari lagi
         </span>
@@ -142,7 +142,7 @@ export default function DebtsPage() {
                 showBackButton={true}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-xs bg-background shadow-sm border-input/60">
+                        <SelectTrigger className="w-[140px] h-9 text-xs bg-background shadow-sm border-input">
                             <ArrowUpDown className="w-3 h-3 mr-2 text-muted-foreground" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
@@ -158,7 +158,7 @@ export default function DebtsPage() {
             <main className="flex-1 overflow-y-auto pb-24">
                 <div className="p-4 space-y-6">
                     {/* Summary Card - Enhanced Visuals */}
-                    <Card className="shadow-sm border-border/60 bg-gradient-to-br from-card to-muted/20">
+                    <Card className="shadow-sm border-border bg-card">
                         <CardHeader className="pb-3">
                             <CardTitle className="flex items-center gap-2 text-base font-medium">
                                 <HandCoins className="h-5 w-5 text-primary" />
@@ -174,9 +174,9 @@ export default function DebtsPage() {
                             </div>
                             <div>
                                 <p className="text-muted-foreground flex items-center gap-1">
-                                    <ArrowDownRight className="h-4 w-4 text-emerald-600" /> Piutang
+                                    <ArrowDownRight className="h-4 w-4 text-success" /> Piutang
                                 </p>
-                                <p className="text-lg font-medium text-emerald-600">{formatCurrency(totals.totalOwing)}</p>
+                                <p className="text-lg font-medium text-success">{formatCurrency(totals.totalOwing)}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -184,9 +184,9 @@ export default function DebtsPage() {
                     <DebtAnalyticsCard debts={debts} />
 
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                        <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-4">
+                        <TabsList className="bg-muted p-1 rounded-lg h-14 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">
+                                <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
                                     {label}
                                 </TabsTrigger>
                             ))}
@@ -200,7 +200,7 @@ export default function DebtsPage() {
                             visibleDebts.map((debt: Debt) => (
                                 <Card
                                     key={debt.id}
-                                    className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer border-none shadow-sm"
+                                    className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer border-border shadow-sm"
                                     onClick={() => router.push(`/debts/${debt.id}`)}
                                 >
                                     <CardContent className="p-4">
@@ -220,7 +220,7 @@ export default function DebtsPage() {
                                                 </p>
                                                 <p className={cn(
                                                     "text-base font-medium tabular-nums",
-                                                    debt.direction === 'owed' ? "text-destructive" : "text-emerald-600"
+                                                    debt.direction === 'owed' ? "text-destructive" : "text-success"
                                                 )}>
                                                     {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
                                                 </p>

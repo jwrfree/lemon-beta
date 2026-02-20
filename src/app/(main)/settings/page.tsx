@@ -51,7 +51,7 @@ function BentoItem({
             whileTap={{ scale: 0.95 }}
             onClick={onClick}
             className={cn(
-                "relative overflow-hidden rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all cursor-pointer group select-none",
+                "relative overflow-hidden rounded-lg bg-card border border-border shadow-sm hover:shadow-xl transition-all cursor-pointer group select-none",
                 className
             )}
         >
@@ -93,18 +93,18 @@ function SettingsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50/50 dark:bg-black text-zinc-900 dark:text-zinc-100 pb-32">
+        <div className="min-h-screen bg-background text-foreground pb-32">
 
             {/* Header Bersih */}
             <PageHeader
                 title="Profil"
                 showBackButton={true}
                 extraActions={
-                    <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden border-2 border-zinc-100 dark:border-zinc-700">
+                    <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-border">
                         {userData?.photoURL ? (
                             <Image src={userData.photoURL} alt="User" width={40} height={40} className="object-cover" />
                         ) : (
-                            <UserIcon className="w-full h-full p-2 text-zinc-400" />
+                            <UserIcon className="w-full h-full p-2 text-muted-foreground" />
                         )}
                     </div>
                 }
@@ -143,7 +143,7 @@ function SettingsContent() {
                     {/* Theme Switcher - Visual */}
                     <BentoItem
                         onClick={toggleTheme}
-                        className="col-span-12 md:col-span-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black p-6 flex flex-col justify-center items-center relative gap-4"
+                        className="col-span-12 md:col-span-4 bg-foreground text-background dark:bg-foreground dark:text-background p-6 flex flex-col justify-center items-center relative gap-4"
                         delay={0.1}
                     >
                         <div className="relative">
@@ -180,14 +180,14 @@ function SettingsContent() {
 
                 {/* BARIS 2: Core Actions (Grid 2) */}
                 <div className="grid grid-cols-2 gap-4">
-                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50">
                         <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
                             <Wallet className="w-6 h-6" />
                         </div>
                         <span className="font-medium text-sm text-center">Dompet</span>
                     </BentoItem>
 
-                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50">
                         <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                             <Target className="w-6 h-6" />
                         </div>
@@ -210,7 +210,7 @@ function SettingsContent() {
                             >
                                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
                                 <div className="relative z-10 flex items-center gap-6">
-                                    <div className="h-16 w-16 rounded-[1.5rem] bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                                    <div className="h-16 w-16 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
                                         <Download className="h-8 w-8 text-white" />
                                     </div>
                                     <div>
@@ -232,7 +232,7 @@ function SettingsContent() {
                     </AnimatePresence>
 
                     <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1">
-                        <div className="px-4 py-3 text-xs font-medium uppercase tracking-widest text-zinc-400">Pengaturan Lanjutan</div>
+                        <div className="px-4 py-3 text-xs font-medium uppercase tracking-widest text-muted-foreground">Pengaturan Lanjutan</div>
                         {[
                             { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
                             { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts' },
@@ -241,27 +241,27 @@ function SettingsContent() {
                             <div
                                 key={idx}
                                 onClick={() => router.push(item.path)}
-                                className="flex items-center justify-between p-4 rounded-2xl hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer group"
+                                className="flex items-center justify-between p-4 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
                             >
                                 <div className="flex items-center gap-4">
-                                    <item.icon className="w-5 h-5 text-zinc-500 group-hover:text-black dark:group-hover:text-white transition-colors" />
+                                    <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                                     <span className="font-medium text-sm">{item.name}</span>
                                 </div>
-                                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-600 dark:text-zinc-700 dark:group-hover:text-zinc-400" />
+                                <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-muted-foreground" />
                             </div>
                         ))}
                     </BentoItem>
 
-                    <BentoItem delay={0.4} className="p-6 flex flex-col justify-center gap-4 bg-zinc-50 dark:bg-zinc-900/50 border-dashed border-2">
+                    <BentoItem delay={0.4} className="p-6 flex flex-col justify-center gap-4 bg-muted/50 border-dashed border-2 border-border">
                         <div className="flex items-center gap-3 opacity-50">
                             <Monitor className="w-5 h-5" />
                             <span className="text-sm font-medium">Versi Web Desktop (Beta)</span>
                         </div>
-                        <div className="h-px bg-zinc-200 dark:bg-zinc-800 w-full" />
+                        <div className="h-px bg-border w-full" />
 
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <div className="flex items-center gap-3 text-red-500 cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-lg">
+                                <div className="flex items-center gap-3 text-destructive cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-lg">
                                     <LogOut className="w-5 h-5" />
                                     <span className="font-medium text-sm">Keluar dari Akun</span>
                                 </div>
@@ -275,7 +275,7 @@ function SettingsContent() {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleSignOut} className="bg-red-500 hover:bg-red-600">Keluar</AlertDialogAction>
+                                    <AlertDialogAction onClick={handleSignOut} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">Keluar</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>

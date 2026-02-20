@@ -1,13 +1,11 @@
 import { 
     Tv, Music, Coffee, ShoppingBag, Car, 
-    CreditCard, Zap, Heart, Utensils,
-    Gamepad2, Plane, GraduationCap, Globe,
-    Smartphone, Film, ShoppingCart, Train,
-    Shield, Briefcase, Plus, Minus
+    CreditCard, Utensils,
+    Gamepad2, Plane, Smartphone
 } from 'lucide-react';
 
 export interface MerchantVisuals {
-    icon: any;
+    icon: React.ComponentType<{ className?: string }>;
     color: string;
     bgColor: string;
     brandColor?: string;
@@ -54,37 +52,42 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'cimb': { icon: CreditCard, color: 'text-rose-700', bgColor: 'bg-rose-50', domain: 'cimbniaga.co.id' },
     'bsi': { icon: CreditCard, color: 'text-teal-700', bgColor: 'bg-teal-50', domain: 'bankbsi.co.id' },
     'dana': { icon: Smartphone, color: 'text-blue-500', bgColor: 'bg-blue-50', domain: 'dana.id' },
-    'ovo': { icon: Smartphone, color: 'text-purple-700', bgColor: 'bg-purple-50', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/512px-Logo_ovo_purple.svg.png' },
-    'ovo cash': { icon: Smartphone, color: 'text-purple-700', bgColor: 'bg-purple-50', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/512px-Logo_ovo_purple.svg.png' },
+    'ovo': { icon: Smartphone, color: 'text-purple-700', bgColor: 'bg-purple-50', domain: 'tokopedia.com' },
+    'ovo cash': { icon: Smartphone, color: 'text-purple-700', bgColor: 'bg-purple-50', domain: 'tokopedia.com' },
     'gopay': { icon: Smartphone, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'gopay.co.id' },
     'linkaja': { icon: Smartphone, color: 'text-rose-600', bgColor: 'bg-rose-50', domain: 'linkaja.id' },
     'shopeepay': { icon: Smartphone, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'shopee.co.id' },
     'jenius': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'jenius.com' },
     'jago': { icon: CreditCard, color: 'text-amber-500', bgColor: 'bg-amber-50', domain: 'jago.com' },
     'blu': { icon: CreditCard, color: 'text-blue-400', bgColor: 'bg-blue-50', domain: 'blubybcadigital.id' },
-    'seabank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/SeaBank_logo.svg/512px-SeaBank_logo.svg.png' },
-    'sea bank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/SeaBank_logo.svg/512px-SeaBank_logo.svg.png' },
-    'neobank': { icon: CreditCard, color: 'text-yellow-600', bgColor: 'bg-yellow-50', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
-    'neo bank': { icon: CreditCard, color: 'text-yellow-600', bgColor: 'bg-yellow-50', logo: 'https://upload.wikimedia.org/wikipedia/id/thumb/1/10/Bank_Neo_Commerce_logo.svg/512px-Bank_Neo_Commerce_logo.svg.png' },
+    'superbank': { icon: CreditCard, color: 'text-purple-600', bgColor: 'bg-purple-50', domain: 'superbank.id' },
+    'seabank': { icon: CreditCard, color: 'text-orange-600', bgColor: 'bg-orange-50', domain: 'seabank.co.id' },
+    'neobank': { icon: CreditCard, color: 'text-yellow-600', bgColor: 'bg-yellow-50', domain: 'bankneocommerce.co.id' },
+    'neo bank': { icon: CreditCard, color: 'text-yellow-600', bgColor: 'bg-yellow-50', domain: 'bankneocommerce.co.id' },
     'tiktok': { icon: Smartphone, color: 'text-zinc-900', bgColor: 'bg-zinc-100', domain: 'tiktok.com' },
     'tiktok paylater': { icon: CreditCard, color: 'text-zinc-900', bgColor: 'bg-zinc-100', domain: 'tiktok.com' },
 };
 
 /**
  * Gets real-world logo URL.
- * Uses Clearbit as primary (High Res) and Google as fallback (Reliable).
+ * Uses Logo.dev via our API proxy as primary, Clearbit as secondary.
  */
-export function getMerchantLogoUrl(domain?: string, size: number = 64): string | null {
+export function getMerchantLogoUrl(domain?: string): string | null {
     if (!domain) return null;
-    return `https://logo.clearbit.com/${domain}?size=${size}`;
+    
+    // Use our Logo API route as primary - it will redirect to the actual logo
+    return `/api/logo/${domain}`;
 }
 
 /**
- * Fallback logo service if Clearbit fails.
+ * Fallback logo service if primary fails.
+ * Uses Clearbit as secondary fallback.
  */
 export function getBackupLogoUrl(domain?: string): string | null {
     if (!domain) return null;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    
+    // Use Clearbit as secondary fallback
+    return `https://logo.clearbit.com/${domain}?size=128`;
 }
 
 export function getMerchantVisuals(merchantName?: string | null): MerchantVisuals | null {

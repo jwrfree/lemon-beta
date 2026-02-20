@@ -21,22 +21,42 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             return;
         }
 
-        try {
-            const start = format(startDate, 'yyyy-MM-dd');
-            const end = format(endDate, 'yyyy-MM-dd');
+        const fetchWithRetry = async (retries = 3) => {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const start = format(startDate, 'yyyy-MM-dd');
+                    const end = format(endDate, 'yyyy-MM-dd');
 
-            const { data, error } = await supabase
-                .from('transactions')
-                .select('*')
-                .eq('user_id', user.id)
-                .gte('date', start)
-                .lte('date', end)
-                .order('date', { ascending: false });
+                    console.log(`Fetching transactions (attempt ${i + 1}) for user:`, user.id, "range:", start, "to", end);
 
-            if (error) {
-                console.error("Supabase error fetching transactions:", error.message, error.details || '', error.hint || '');
-                throw error;
+                    const { data, error } = await supabase
+                        .from('transactions')
+                        .select('*')
+                        .eq('user_id', user.id)
+                        .gte('date', start)
+                        .lte('date', end)
+                        .order('date', { ascending: false });
+
+                    if (error) {
+                        console.error(`Supabase error (attempt ${i + 1}):`, error.message, error.details || '', error.hint || '');
+                        if (i === retries - 1) throw error; // Last attempt, throw error
+                        continue; // Retry
+                    }
+
+                    console.log("Transactions fetched successfully, count:", data?.length || 0);
+                    return data;
+                } catch (err: any) {
+                    console.error(`Fetch attempt ${i + 1} failed:`, err.message);
+                    if (i === retries - 1) throw err; // Last attempt, throw error
+                    
+                    // Wait before retry (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                }
             }
+        };
+
+        try {
+            const data = await fetchWithRetry();
 
             if (data) {
                 const mapped: Transaction[] = (data as TransactionRow[]).map((t) => ({
@@ -57,6 +77,17 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             }
         } catch (err: any) {
             console.error("Error fetching range transactions:", err.message || err);
+            console.error("Error type:", err.constructor.name);
+            console.error("Error stack:", err.stack);
+            
+            // Check if it's a network error
+            if (err.message?.includes('Failed to fetch')) {
+                console.error("Network error detected - possible causes:");
+                console.error("1. CORS issues with Supabase");
+                console.error("2. Network connectivity problems");
+                console.error("3. Supabase service down");
+                console.error("4. Invalid Supabase URL or key");
+            }
         } finally {
             setIsLoading(false);
         }

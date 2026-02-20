@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
     ArrowLeft, Sparkles, Tag, MapPin, CornerDownRight, 
-    Loader2, Save, RotateCcw, Camera, Mic, X, Trash2,
-    CheckCircle2, ChevronLeft, ChevronRight
+    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
@@ -82,10 +81,8 @@ export default function SmartAddPage() {
     // Otak Multi-Transaction & OCR
     const {
         pageState,
-        setPageState,
         parsedData,
         multiParsedData,
-        removeMultiTransaction,
         processInput,
         saveTransaction,
         saveMultiTransactions,
@@ -142,7 +139,7 @@ export default function SmartAddPage() {
                 return;
             }
             processInput({ type: 'image', dataUrl: compressedDataUrl });
-        } catch (error) { 
+        } catch { 
             showToast('Gagal memproses gambar.', 'error'); 
         } finally { 
             e.target.value = ''; 
@@ -154,7 +151,7 @@ export default function SmartAddPage() {
     const hasData = !!activeTx || isAnalyzing;
 
     return (
-        <div className="flex flex-col h-dvh bg-zinc-50 dark:bg-black relative overflow-hidden text-zinc-900 dark:text-zinc-100">
+        <div className="flex flex-col h-dvh bg-background relative overflow-hidden text-foreground">
             
             {/* 1. Compact Header */}
             <div className="p-4 md:p-6 flex justify-between items-center z-30 shrink-0">
@@ -162,7 +159,7 @@ export default function SmartAddPage() {
                     variant="ghost" 
                     size="icon" 
                     onClick={() => router.back()}
-                    className="h-10 w-10 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
+                    className="h-10 w-10 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50"
                 >
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
@@ -173,14 +170,14 @@ export default function SmartAddPage() {
                             variant="ghost" 
                             size="icon" 
                             onClick={() => { triggerHaptic('light'); resetFlow(); setFocusedIndex(0); }}
-                            className="h-10 w-10 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800"
+                            className="h-10 w-10 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50"
                         >
-                            <RotateCcw className="h-4 w-4 text-zinc-500" />
+                            <RotateCcw className="h-4 w-4 text-muted-foreground" />
                         </Button>
                     )}
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50">
                         <Sparkles className={cn("h-3.5 w-3.5 text-primary", isAnalyzing && "animate-pulse")} />
-                        <span className="text-[9px] font-medium uppercase tracking-widest text-zinc-500">Smart Add</span>
+                        <span className="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">Smart Add</span>
                     </div>
                 </div>
             </div>
@@ -236,12 +233,12 @@ export default function SmartAddPage() {
                                             
                                             {/* Category & Sub */}
                                             <div className="flex flex-col items-center gap-2">
-                                                <div className="flex items-center gap-2 bg-primary text-white px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
-                                                    <Tag className="h-3 w-3 fill-white/20" />
+                                                <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
+                                                    <Tag className="h-3 w-3 fill-primary-foreground/20" />
                                                     <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{activeTx.category}</span>
                                                 </div>
                                                 {activeTx.subCategory && (
-                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-xl border border-primary/10">
+                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
                                                         <CornerDownRight className="h-3 w-3 opacity-50" />
                                                         <span className="text-[10px] font-medium">{activeTx.subCategory}</span>
                                                     </div>
@@ -251,12 +248,12 @@ export default function SmartAddPage() {
                                             {/* Location & Description with Ghost Typing */}
                                             <div className="flex flex-col items-center gap-3 w-full">
                                                 {activeTx.location && (
-                                                    <div className="flex items-center gap-1.5 text-zinc-500 bg-white dark:bg-zinc-900 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                                                        <MapPin className="h-3 w-3 text-rose-500" />
+                                                    <div className="flex items-center gap-1.5 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
+                                                        <MapPin className="h-3 w-3 text-destructive" />
                                                         <span className="text-[9px] font-medium uppercase tracking-wider">{activeTx.location}</span>
                                                     </div>
                                                 )}
-                                                <div className="text-sm font-medium text-zinc-400 italic text-center max-w-[280px] min-h-[1.5em]">
+                                                <div className="text-sm font-medium text-muted-foreground italic text-center max-w-[280px] min-h-[1.5em]">
                                                     <TypewriterText text={`"${activeTx.description}"`} />
                                                 </div>
                                             </div>
@@ -270,7 +267,7 @@ export default function SmartAddPage() {
             </div>
 
             {/* 3. Bottom Control Center (Fixed & Compact) */}
-            <div className="w-full max-w-md mx-auto px-6 pb-6 md:pb-10 relative z-20 space-y-4 shrink-0">
+            <div className="w-full max-w-md mx-auto px-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-10 relative z-20 space-y-4 shrink-0">
                 
                 {/* Magic Bar Zone */}
                 <div className="relative">
@@ -362,7 +359,8 @@ export default function SmartAddPage() {
             </div>
 
             {/* Hidden Input & Decorations */}
-            <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
+            <label htmlFor="file-input" className="hidden">Upload Receipt Image</label>
+            <input id="file-input" type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*" />
             <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
                 <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
             </div>

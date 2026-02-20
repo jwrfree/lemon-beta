@@ -26,15 +26,16 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
 
     // Merchant Logic
     const merchantVisuals = getMerchantVisuals(t.merchant || t.description);
-    const [logoSource, setLogoSource] = useState<'clearbit' | 'google' | 'icon'>('clearbit');
+    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>('primary');
 
     // Reset state when transaction changes (important for list re-renders)
     useEffect(() => {
-        setLogoSource('clearbit');
+        setLogoSource('primary');
     }, [t.id, t.merchant, t.description]);
 
     const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
     const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
+    const googleLogo = merchantVisuals?.domain ? `https://www.google.com/s2/favicons?domain=${merchantVisuals.domain}&sz=128` : null;
 
     const DefaultIcon = merchantVisuals?.icon || CategoryIcon;
     const iconColor = merchantVisuals?.color || categoryData.color;
@@ -51,17 +52,25 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                         "w-11 h-11 rounded-md flex items-center justify-center shrink-0 shadow-sm border border-border transition-all group-hover:scale-110 overflow-hidden",
                         iconBg
                     )}>
-                        {primaryLogo && logoSource === 'clearbit' && (
+                        {primaryLogo && logoSource === 'primary' && (
                             <img
                                 src={primaryLogo}
                                 alt=""
                                 className="h-full w-full object-cover"
-                                onError={() => setLogoSource('google')}
+                                onError={() => setLogoSource('secondary')}
                             />
                         )}
-                        {backupLogo && logoSource === 'google' && (
+                        {backupLogo && logoSource === 'secondary' && (
                             <img
                                 src={backupLogo}
+                                alt=""
+                                className="h-full w-full object-cover"
+                                onError={() => setLogoSource('tertiary')}
+                            />
+                        )}
+                        {googleLogo && logoSource === 'tertiary' && (
+                            <img
+                                src={googleLogo}
                                 alt=""
                                 className="h-6 w-6 object-contain"
                                 onError={() => setLogoSource('icon')}

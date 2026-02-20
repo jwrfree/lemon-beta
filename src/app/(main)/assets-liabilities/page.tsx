@@ -116,7 +116,7 @@ export default function AssetsLiabilitiesPage() {
             <main className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
                 <div className="max-w-6xl mx-auto space-y-6">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <Card className="lg:col-span-2 bg-primary text-primary-foreground border-none shadow-lg shadow-primary/30 rounded-3xl overflow-hidden relative min-h-[200px] flex flex-col justify-between p-8">
+                        <Card className="lg:col-span-2 bg-primary text-primary-foreground border-none shadow-lg shadow-primary/30 rounded-lg overflow-hidden relative min-h-[200px] flex flex-col justify-between p-8">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
                             <div className="relative z-10">
                                 <p className="text-xs font-medium uppercase tracking-widest text-primary-foreground/80">Total Kekayaan Bersih</p>
@@ -134,7 +134,7 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                         </Card>
 
-                        <Card className="border-none shadow-sm rounded-3xl bg-card border border-white/20 p-6 flex flex-col items-center justify-center min-h-[200px]">
+                        <Card className="border-none shadow-sm rounded-lg bg-card border border-border p-6 flex flex-col items-center justify-center min-h-[200px]">
                             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-4 self-start">Distribusi Aset</p>
                             <div className="w-full h-[180px]">
                                 {totals.chartData.length > 0 ? (
@@ -192,20 +192,20 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                             <h2 className="text-2xl font-medium tracking-tight">Lacak Kekayaan Bersih Anda</h2>
                             <p className="text-muted-foreground mt-2 mb-8 max-w-sm">Mulai dengan menambahkan aset atau liabilitas pertama Anda.</p>
-                            <Button onClick={() => handleOpenForm()} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
+                            <Button onClick={() => handleOpenForm()} size="lg" className="rounded-lg px-8 shadow-lg shadow-primary/20">
                                 <PlusCircle className="mr-2 h-5 w-5" strokeWidth={1.75} />
                                 Tambah Entri Baru
                             </Button>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card className="border-none shadow-sm rounded-3xl h-full overflow-hidden bg-card border border-white/20">
+                            <Card className="border-none shadow-sm rounded-lg h-full overflow-hidden bg-card border border-border">
                                 <Tabs defaultValue="all" className="h-full flex flex-col">
                                     <CardHeader className="flex flex-col gap-4 pb-2">
                                         <div className="flex flex-row items-center justify-between">
                                             <div className="space-y-1">
                                                 <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
-                                                    <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-xl">
+                                                    <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
                                                         <TrendingUp className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                                                     </div>
                                                     Aset
@@ -217,22 +217,22 @@ export default function AssetsLiabilitiesPage() {
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-10 w-10 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-900/20 text-teal-600"
+                                                className="h-10 w-10 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 text-teal-600"
                                                 onClick={() => handleOpenForm({ type: 'asset' })}
                                             >
                                                 <Plus className="h-5 w-5" />
                                             </Button>
                                         </div>
-                                        <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-3">
-                                            <TabsTrigger value="all" className="h-full rounded-xl text-xs font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Semua</TabsTrigger>
-                                            <TabsTrigger value="productive" className="h-full rounded-xl text-xs font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Produktif</TabsTrigger>
-                                            <TabsTrigger value="consumptive" className="h-full rounded-xl text-xs font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Konsumtif</TabsTrigger>
+                                        <TabsList className="bg-muted p-1 rounded-lg h-11 w-full grid grid-cols-3">
+                                            <TabsTrigger value="all" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Semua</TabsTrigger>
+                                            <TabsTrigger value="productive" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Produktif</TabsTrigger>
+                                            <TabsTrigger value="consumptive" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Konsumtif</TabsTrigger>
                                         </TabsList>
                                     </CardHeader>
                                     <CardContent className="px-0 flex-1 overflow-hidden">
                                         <TabsContent value="all" className="mt-0 h-full">
                                             <div className="px-4 mb-2">
-                                                <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+                                                <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
                                                             <WalletCards className="h-4 w-4" />
@@ -259,7 +259,7 @@ export default function AssetsLiabilitiesPage() {
                                                 <p className="text-lg font-medium text-teal-600">{formatCurrency(totals.realAssetsValue)}</p>
                                             </div>
                                             <div className="px-4 mb-2">
-                                                <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+                                                <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
                                                             <WalletCards className="h-4 w-4" />
@@ -295,11 +295,11 @@ export default function AssetsLiabilitiesPage() {
                                 </Tabs>
                             </Card>
 
-                            <Card className="border-none shadow-sm rounded-3xl h-full overflow-hidden bg-card border border-white/20">
+                            <Card className="border-none shadow-sm rounded-lg h-full overflow-hidden bg-card border border-border">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="space-y-1">
                                         <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
-                                            <div className="p-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-xl">
+                                            <div className="p-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-lg">
                                                 <MinusCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                                             </div>
                                             Liabilitas
@@ -311,7 +311,7 @@ export default function AssetsLiabilitiesPage() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-10 w-10 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600"
+                                        className="h-10 w-10 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600"
                                         onClick={() => handleOpenForm({ type: 'liability' })}
                                     >
                                         <Plus className="h-5 w-5" />
@@ -344,7 +344,7 @@ export default function AssetsLiabilitiesPage() {
                             animate={isMobile ? { y: 0 } : { scale: 1, opacity: 1 }}
                             exit={isMobile ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
-                            className="w-full max-w-md bg-background rounded-t-xl md:rounded-xl shadow-xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh]"
+                            className="w-full max-w-md bg-background rounded-t-xl md:rounded-lg shadow-xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <AssetLiabilityForm onClose={handleCloseForm} initialData={formInitialData} />

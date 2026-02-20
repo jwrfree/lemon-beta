@@ -1,13 +1,12 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, HandCoins, Plus, Sparkles, TrendingUp, Target } from 'lucide-react';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
-import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { formatCurrency, triggerHaptic } from '@/lib/utils';
 import { Pie, PieChart, Cell } from "recharts"
 import { useUI } from '@/components/ui-provider';
 import { startOfMonth, endOfMonth } from 'date-fns';
@@ -18,15 +17,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 function BudgetingPageSkeleton() {
     return (
-        <div className="flex flex-col h-full bg-zinc-50 dark:bg-black p-6 space-y-8">
+        <div className="flex flex-col h-full bg-background p-6 space-y-8">
             <div className="flex justify-between items-center mb-4">
-                <Skeleton className="h-10 w-48 rounded-xl" />
+                <Skeleton className="h-10 w-48 rounded-lg" />
                 <Skeleton className="h-10 w-10 rounded-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Skeleton className="md:col-span-1 h-[300px] rounded-[2.5rem]" />
+                <Skeleton className="md:col-span-1 h-[300px] rounded-lg" />
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-48 rounded-[2rem]" />)}
+                    {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-48 rounded-lg" />)}
                 </div>
             </div>
         </div>
@@ -36,6 +35,12 @@ function BudgetingPageSkeleton() {
 export default function BudgetingPage() {
     const { budgets, isLoading } = useBudgets();
     const { setIsBudgetModalOpen } = useUI();
+    
+    // Use mounting pattern without useEffect to avoid cascading renders
+    const [isMounted] = useState(() => {
+        // This runs only once during initial render
+        return true;
+    });
 
     const now = useMemo(() => new Date(), []);
     const start = useMemo(() => startOfMonth(now), [now]);
@@ -62,12 +67,12 @@ export default function BudgetingPage() {
         return { totalBudget, totalSpent, totalRemaining, percentUsed, chartData };
     }, [budgets, transactions]);
 
-    if (isLoading || isTransactionsLoading) {
+    if (isLoading || isTransactionsLoading || !isMounted) {
         return <BudgetingPageSkeleton />;
     }
 
     return (
-        <div className="flex flex-col h-full relative bg-zinc-50 dark:bg-black">
+        <div className="flex flex-col h-full relative bg-background">
             <PageHeader title="Manajemen Anggaran" />
             
             <main className="flex-1 overflow-y-auto pb-32">
@@ -82,7 +87,7 @@ export default function BudgetingPage() {
                         >
                             <div className="relative mb-8">
                                 <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150 opacity-50" />
-                                <div className="relative flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200/60 dark:border-zinc-800/60">
+                                <div className="relative flex h-24 w-24 items-center justify-center rounded-lg bg-card shadow-xl border border-border">
                                     <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
                                 </div>
                             </div>
@@ -95,7 +100,7 @@ export default function BudgetingPage() {
                             <Button 
                                 onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }} 
                                 size="lg" 
-                                className="mt-10 rounded-2xl h-14 px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all font-medium text-lg"
+                                className="mt-10 rounded-lg h-14 px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all font-medium text-lg"
                             >
                                 <PlusCircle className="mr-2 h-6 w-6" />
                                 Buat Anggaran Pertama
@@ -111,7 +116,7 @@ export default function BudgetingPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     className="col-span-12 lg:col-span-4"
                                 >
-                                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-sm overflow-hidden relative">
+                                    <Card className="border border-border rounded-lg bg-card shadow-sm overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-6 opacity-[0.03] -rotate-12">
                                             <TrendingUp className="h-32 w-32" />
                                         </div>
@@ -127,7 +132,7 @@ export default function BudgetingPage() {
                                                     <p className="text-4xl font-medium tracking-tighter tabular-nums">
                                                         {Math.round(overview.percentUsed)}%
                                                     </p>
-                                                    <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest mt-1">Terpakai</p>
+                                                    <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mt-1">Terpakai</p>
                                                 </div>
                                                 
                                                 <ChartContainer config={{}} className="aspect-square h-full">
@@ -152,22 +157,22 @@ export default function BudgetingPage() {
                                             </div>
 
                                             <div className="space-y-4">
-                                                <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-700/50 flex justify-between items-end">
+                                                <div className="p-5 rounded-lg bg-muted/50 border border-border/50 flex justify-between items-end">
                                                     <div>
-                                                        <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest mb-1">Total Sisa</p>
-                                                        <p className="text-xl font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                                        <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Total Sisa</p>
+                                                        <p className="text-xl font-medium text-success tabular-nums">
                                                             {formatCurrency(overview.totalRemaining)}
                                                         </p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-[9px] font-medium text-zinc-400 uppercase tracking-widest mb-1">Dari Total</p>
-                                                        <p className="text-sm font-medium text-zinc-500 tabular-nums">
+                                                        <p className="text-[9px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Dari Total</p>
+                                                        <p className="text-sm font-medium text-muted-foreground tabular-nums">
                                                             {formatCurrency(overview.totalBudget)}
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-2 px-2 text-[10px] font-medium text-zinc-400">
-                                                    <Sparkles className="h-3 w-3 text-amber-500" />
+                                                <div className="flex items-center gap-2 px-2 text-[10px] font-medium text-muted-foreground">
+                                                    <Sparkles className="h-3 w-3 text-warning" />
                                                     <span>Tips: Kamu masih punya sisa {Math.round(100 - overview.percentUsed)}% dana menganggur.</span>
                                                 </div>
                                             </div>
@@ -179,7 +184,7 @@ export default function BudgetingPage() {
                                 <div className="col-span-12 lg:col-span-8 space-y-6">
                                     <div className="flex items-center justify-between px-2">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
                                                 <Target className="h-4 w-4" />
                                             </div>
                                             <h2 className="text-xl font-medium tracking-tighter">Pos Anggaran</h2>
@@ -188,7 +193,7 @@ export default function BudgetingPage() {
                                             onClick={() => { triggerHaptic('light'); setIsBudgetModalOpen(true); }} 
                                             variant="ghost" 
                                             size="sm" 
-                                            className="rounded-xl h-9 text-[10px] font-medium uppercase tracking-widest text-zinc-400 hover:text-primary transition-colors"
+                                            className="rounded-lg h-9 text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                                         >
                                             <Plus className="h-4 w-4 mr-2" />
                                             Tambah Baru
@@ -230,7 +235,7 @@ export default function BudgetingPage() {
                         <Button
                             onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }}
                             size="icon"
-                            className="h-16 w-16 rounded-[2rem] shadow-2xl shadow-primary/40 hover:scale-110 transition-all active:scale-95 bg-primary text-white"
+                            className="h-16 w-16 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-all active:scale-95 bg-primary text-white"
                             aria-label="Tambah anggaran"
                         >
                             <Plus className="h-8 w-8" strokeWidth={2.5} />
@@ -241,4 +246,5 @@ export default function BudgetingPage() {
         </div>
     );
 }
+
 

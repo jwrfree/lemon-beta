@@ -4,24 +4,25 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Sparkles, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, LogOut, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
 import { useAuth } from '@/providers/auth-provider';
-import { BalanceVisibilityToggle } from './balance-visibility-toggle';
+import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { SIDEBAR_NAV_ITEMS, SIDEBAR_CONFIG } from '@/lib/sidebar-config';
 
 export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useAuth();
-    const { setIsTxModalOpen, isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
+    const { isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
+    const { isBalanceVisible, toggleBalanceVisibility } = useBalanceVisibility();
     const router = useRouter();
 
     return (
         <aside
             className={cn(
-                'hidden md:flex flex-col h-full fixed top-0 left-0 z-50 border-r transition-[width,padding] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]',
+                'hidden md:flex flex-col h-full fixed top-0 left-0 z-50 border-r transition-[width,padding] duration-300 ease-in-out',
                 'bg-card',
                 isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-2 py-4 gap-3') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 gap-4')
             )}
@@ -32,7 +33,7 @@ export const Sidebar = () => {
                 </div>
                 <div 
                     className={cn(
-                        "flex flex-col overflow-hidden whitespace-nowrap transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+                        "flex flex-col overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
                         isSidebarCollapsed ? "w-0 opacity-0 ml-0 translate-x-[-10px]" : "w-[120px] opacity-100 ml-3 translate-x-0"
                     )}
                 >
@@ -53,7 +54,7 @@ export const Sidebar = () => {
                 <Button
                     onClick={() => router.push('/add-smart')}
                     className={cn(
-                        'shadow-card active:scale-95 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] bg-primary text-primary-foreground hover:bg-primary/90',
+                        'shadow-card active:scale-95 transition-all duration-300 ease-in-out bg-primary text-primary-foreground hover:bg-primary/90',
                         isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-lg px-4'
                     )}
                     size="default" 
@@ -71,9 +72,15 @@ export const Sidebar = () => {
             </div>
 
             <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar" aria-label="Navigasi utama">
-                                  <p className="text-[10px] font-medium text-muted-foreground/60 px-1 mb-2 transition-all duration-300">
-                                    Menu Utama
-                                  </p>                {SIDEBAR_NAV_ITEMS.map((item) => {
+                <p 
+                    className={cn(
+                        'text-[10px] font-medium text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
+                        isSidebarCollapsed ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100 h-4'
+                    )}
+                >
+                    Menu Utama
+                </p>
+                {SIDEBAR_NAV_ITEMS.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
                     return (
                         <Link
@@ -111,7 +118,7 @@ export const Sidebar = () => {
                             </span>
                             <span 
                                 className={cn(
-                                    "truncate flex-1 whitespace-nowrap overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+                                    "truncate flex-1 whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out",
                                     isSidebarCollapsed ? "w-0 opacity-0 translate-x-[-10px]" : "w-auto opacity-100 translate-x-0"
                                 )}
                             >
@@ -129,14 +136,30 @@ export const Sidebar = () => {
                         isSidebarCollapsed ? 'p-1.5 w-11 mx-auto' : 'p-2 w-full'
                     )}
                 >
-                    <BalanceVisibilityToggle
+                    <Button
                         variant="ghost"
+                        onClick={toggleBalanceVisibility}
                         className={cn(
                             'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-lg transition-all duration-300',
                             isSidebarCollapsed ? 'w-full h-8 p-0 justify-center' : 'w-full justify-start gap-3 px-3'
                         )}
-                        showLabel={!isSidebarCollapsed}
-                    />
+                        aria-label={isBalanceVisible ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
+                        size={isSidebarCollapsed ? 'icon' : 'default'}
+                    >
+                        {isBalanceVisible ? (
+                            <Eye className="h-5 w-5 shrink-0" />
+                        ) : (
+                            <EyeOff className="h-5 w-5 shrink-0" />
+                        )}
+                        <span 
+                            className={cn(
+                                "truncate whitespace-nowrap overflow-hidden transition-all duration-300",
+                                isSidebarCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+                            )}
+                        >
+                            {isBalanceVisible ? 'Sembunyikan' : 'Tampilkan'}
+                        </span>
+                    </Button>
                     <Button
                         variant="ghost"
                         size={isSidebarCollapsed ? 'icon' : 'default'}

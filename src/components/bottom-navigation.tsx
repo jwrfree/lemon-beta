@@ -55,10 +55,10 @@ export const BottomNavigation = () => {
                     animate={{ y: 0 }}
                     exit={{ y: 100 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="fixed bottom-0 left-0 right-0 z-40"
+                    className="fixed bottom-6 left-4 right-4 z-40 md:bottom-8"
                 >
                     <div
-                        className="w-full max-w-lg mx-auto grid grid-cols-5 items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.04)] border-t border-white/20 dark:border-zinc-800/50 md:rounded-b-lg md:rounded-t-none pb-[env(safe-area-inset-bottom)] min-h-[calc(4rem+env(safe-area-inset-bottom))]"
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-popover/80 backdrop-blur-2xl shadow-2xl border border-border/50 rounded-full h-16 px-1.5 py-1"
                     >
                         {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
@@ -66,13 +66,13 @@ export const BottomNavigation = () => {
                             if (item.primary) {
                                 return (
                                     <div key={item.id} className="flex justify-center items-center relative">
-                                        <div className="absolute -top-7 bg-background rounded-full p-1.5 shadow-lg ring-2 ring-background/50 fab-position">
+                                        <div className="absolute -top-8 rounded-full shadow-lg">
                                             <Link
                                                 href={item.href}
                                                 prefetch={false}
                                                 onClick={() => triggerHaptic('medium')}
                                                 className={cn(
-                                                    'flex items-center justify-center rounded-full h-14 w-14 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
+                                                    'flex items-center justify-center rounded-full h-12 w-12 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
                                                 )}
                                                 aria-label={item.name}
                                             >
@@ -92,19 +92,20 @@ export const BottomNavigation = () => {
                                     prefetch={false}
                                     onClick={() => triggerHaptic('light')}
                                     className={cn(
-                                        'flex flex-col items-center justify-center h-full w-full rounded-none transition-all active:scale-95 group relative',
-                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                                    )}
+                                                        'flex flex-col items-center justify-center h-10 w-10 rounded-full transition-all active:scale-95 group relative',
+                                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+                                                    )}
+                                    aria-label={item.name}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="nav-pill"
-                                            className="absolute top-1 w-8 h-1 bg-primary rounded-full opacity-80"
+                                            className="absolute inset-0 m-auto w-9 h-7 rounded-full bg-primary/10 dark:bg-primary/20 -z-10"
                                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         />
                                     )}
-                                    <item.icon className={cn("h-6 w-6 mb-1 transition-transform", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
-                                    <span className={cn('text-[10px] font-medium transition-colors', isActive ? 'font-medium' : '')}>{item.name}</span>
+                                    <item.icon className={cn("h-5 w-5 transition-transform z-10", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
+                                    <span className="sr-only">{item.name}</span>
                                 </Link>
                             );
                         })}
@@ -114,4 +115,3 @@ export const BottomNavigation = () => {
         </AnimatePresence>
     );
 };
-

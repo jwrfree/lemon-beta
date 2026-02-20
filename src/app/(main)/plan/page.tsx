@@ -36,7 +36,7 @@ export default function PlanPage() {
                 </header>
 
                 {/* Tab Navigation */}
-                <div className="flex p-1 bg-muted/50 rounded-2xl overflow-x-auto scrollbar-hide mb-2">
+                <div className="flex p-1 bg-muted/50 rounded-lg overflow-x-auto scrollbar-hide mb-2">
                     {tabs.map((tab) => {
                         const isActive = activeTab === tab.id;
                         return (
@@ -44,14 +44,14 @@ export default function PlanPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={cn(
-                                    "flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-medium transition-all relative min-w-[90px]",
+                                    "flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all relative min-w-[90px]",
                                     isActive ? "text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
                                         layoutId="active-tab-bg"
-                                        className="absolute inset-0 bg-primary rounded-xl"
+                                        className="absolute inset-0 bg-primary rounded-md"
                                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}
