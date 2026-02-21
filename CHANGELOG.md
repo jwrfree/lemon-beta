@@ -2,6 +2,16 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.2] - 21 February 2026
+
+### 🎨 Design System Standardization
+
+- **New Design System Document**: 
+  - Created `docs/DESIGN_SYSTEM.md` to formalize the **"Apple-Inspired Premium Fidelity"** aesthetic.
+  - Defined core visual pillars: **Glassmorphism**, **Visual Depth** (no borders), **Typography-First**, and **Liquid Intelligence**.
+  - Established standards for components (Magic Bar, Result Cards), charts (Monotone, Shadcn), and interactions (Haptics, Optimistic UI).
+- **Goal**: To serve as the Single Source of Truth for maintaining visual consistency and high-quality UX across the entire application ecosystem.
+
 ## [Version 2.4.1] - 21 February 2026
 
 ### 🧠 Smart Add 2.0 "Liquid Intelligence"
