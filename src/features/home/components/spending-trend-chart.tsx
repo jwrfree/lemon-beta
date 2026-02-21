@@ -61,7 +61,11 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
                 </span>
             </CardHeader>
             <CardContent className="px-5">
-                <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                <ChartContainer 
+                    config={chartConfig} 
+                    className="h-[200px] w-full"
+                    onTouchStart={() => triggerHaptic('light')}
+                >
                     <AreaChart
                         accessibilityLayer
                         data={data}
@@ -77,7 +81,6 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
                                 // Only trigger if index changed
                             }
                         }}
-                        onTouchStart={() => triggerHaptic('light')}
                     >
                         <CartesianGrid vertical={false} />
                         <XAxis
