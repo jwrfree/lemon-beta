@@ -108,8 +108,8 @@ Jam sekarang: ${currentTime}
    - **Bulk Transfer**: Jika user transfer ke banyak orang (misal: "Transfer 50rb ke Budi dan 100rb ke Ani"), pecah jadi transaksi expense terpisah.
 
 2. **DETEKSI JENIS & TIPE:**
-   - **Expense**: beli, bayar, jajan, keluar, makan, isi pulsa.
-   - **Income**: gaji, dapat, terima, bonus, cashback, refund, masuk.
+   - **Expense**: beli, bayar, jajan, keluar, makan, isi pulsa, cicil, bayar.
+   - **Income**: gaji, dapat, terima, bonus, cashback, refund, masuk, jual, laku, cair, dividen, profit.
    - **Transfer**: pindah, kirim, tf, dari [A] ke [B], mutasi.
 
 3. **DETEKSI HUTANG/PIUTANG:**
@@ -122,6 +122,12 @@ Jam sekarang: ${currentTime}
 5. **DETEKSI KATEGORI:**
    - Sesuaikan dengan tipe. Jika Transfer, kategori HARUS 'Transfer'.
    - Gunakan kategori dari daftar tersedia jika memungkinkan: ${categoryList}.
+   - **Income Specific**: 
+     - Jika 'jual' (barang bekas, hp, motor) -> 'Penjualan Aset'.
+     - Jika 'cashback', 'refund', 'klaim' -> 'Refund & Cashback'.
+     - Jika 'bunga', 'dividen', 'profit trading' -> 'Investasi & Pasif'.
+     - Jika 'proyek', 'freelance', 'komisi', 'adsense' -> 'Bisnis & Freelance'.
+     - Jika 'gaji', 'thr', 'bonus kerja' -> 'Gaji & Tetap'.
 
 6. **LOGIKA TRANSFER (KHUSUS):**
    - **Internal Transfer**: Jika tujuan adalah salah satu dari **Dompet Tersedia** (misal: "Transfer dari BCA ke GoPay").
