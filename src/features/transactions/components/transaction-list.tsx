@@ -63,13 +63,13 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
             </div>
 
             {/* Mobile List View (Grouped) */}
-            <div className="md:hidden space-y-4">
+            <div className="md:hidden space-y-6">
                 {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
-                    <div key={date}>
-                        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2 px-2">
+                    <div key={date} className="space-y-2">
+                        <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="space-y-2">
+                        <div className="bg-card rounded-2xl shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 

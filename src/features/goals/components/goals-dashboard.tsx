@@ -21,28 +21,37 @@ export const GoalsDashboard = () => {
     if (goals.length === 0) {
         return (
             <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="p-4 bg-primary/10 rounded-full mb-4">
-                    <Target className="h-12 w-12 text-primary" strokeWidth={1.5} />
+                <div className="max-w-[320px] w-full p-10 bg-card rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
+                        <Target className="h-40 w-40" />
+                    </div>
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="p-5 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-6">
+                            <Target className="h-10 w-10 text-purple-600 dark:text-purple-400" strokeWidth={1.5} />
+                        </div>
+                        <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Target</h2>
+                        <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
+                            Mulailah menabung untuk impianmu hari ini.
+                        </p>
+                        <Button onClick={() => setIsGoalModalOpen(true)} className="w-full rounded-full h-12 shadow-lg shadow-purple-500/20 bg-purple-600 hover:bg-purple-700 active:scale-95 transition-all font-bold text-xs uppercase tracking-widest text-white">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Buat Target Baru
+                        </Button>
+                    </div>
                 </div>
-                <h2 className="text-2xl font-medium tracking-tight">Belum Ada Target</h2>
-                <p className="text-muted-foreground mt-2 mb-8 max-w-xs">Mulailah menabung untuk impianmu hari ini.</p>
-                <Button onClick={() => setIsGoalModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
-                    <Plus className="mr-2 h-5 w-5" />
-                    Buat Target Baru
-                </Button>
             </div>
         );
     }
 
     return (
-        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in pb-24">
+        <div className="w-full space-y-8 animate-in slide-in-from-bottom-2 duration-500 fade-in pb-24">
             {/* Summary Cards could go here */}
 
             {/* List */}
             <div>
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground px-1">Daftar Impian</h2>
-                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-medium uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+                <div className="flex items-center justify-between mb-4 px-2">
+                    <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Daftar Impian</h2>
+                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-purple-500/10 hover:text-purple-600">
                         <Plus className="h-3.5 w-3.5 mr-1" />
                         Tambah
                     </Button>
@@ -55,10 +64,10 @@ export const GoalsDashboard = () => {
                 <Button
                     onClick={() => setIsGoalModalOpen(true)}
                     size="icon"
-                    className="h-14 w-14 rounded-full shadow-lg shadow-purple-500/20 bg-purple-600 hover:bg-purple-700 hover:scale-110 transition-transform active:scale-95"
+                    className="h-14 w-14 rounded-full shadow-2xl shadow-purple-500/40 bg-purple-600 hover:bg-purple-700 hover:scale-110 transition-transform active:scale-95"
                     aria-label="Tambah target"
                 >
-                    <Plus className="h-7 w-7" />
+                    <Plus className="h-7 w-7 text-white" />
                 </Button>
             </div>
         </div>

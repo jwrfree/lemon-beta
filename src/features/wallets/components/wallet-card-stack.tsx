@@ -66,7 +66,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.4}
                 onClick={() => !isActive && (triggerHaptic('light'), setActiveIndex(i))}
                 className={cn(
-                  "absolute w-[88%] max-w-sm h-52 rounded-lg text-white shadow-card overflow-hidden",
+                  "absolute w-[88%] max-w-sm h-52 rounded-[32px] text-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] overflow-hidden",
                   isActive ? "cursor-grab active:cursor-grabbing z-30" : "cursor-pointer grayscale-[0.2]"
                 )}
                 style={{
@@ -99,7 +99,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 <div className="relative p-7 flex flex-col h-full">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-1.5 bg-white/20 backdrop-blur-md rounded-lg border border-white/20 shadow-inner flex items-center justify-center">
+                      <div className="p-1.5 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
                         {logo ? (
                           <>
                             <img
@@ -120,15 +120,15 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                       </div>
                       <div>
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className="font-medium text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
-                          <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-sm border border-white/10 uppercase tracking-tighter">
+                          <p className="font-semibold text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
+                          <span className="text-[8px] font-bold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/10 uppercase tracking-widest">
                             {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : 'Tunai'}
                           </span>
                         </div>
                         {wallet.isDefault && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <ShieldCheck className="h-3 w-3 text-white/60" />
-                            <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">Dompet Utama</span>
+                            <span className="text-[9px] font-bold uppercase tracking-widest text-white/60">Dompet Utama</span>
                           </div>
                         )}
                       </div>
@@ -136,7 +136,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-white hover:bg-white/20 h-10 w-10 rounded-lg relative z-10 backdrop-blur-sm border border-white/10"
+                      className="text-white hover:bg-white/20 h-10 w-10 rounded-full relative z-10 backdrop-blur-sm border border-white/10"
                       onClick={(e) => { e.stopPropagation(); triggerHaptic('medium'); openEditWalletModal(wallet); }}
                     >
                       <MoreVertical className="h-5 w-5" />
@@ -146,9 +146,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   <div className="flex-1 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-1 opacity-60">
                       <Sparkles className="h-3 w-3" />
-                      <span className="text-[9px] font-medium uppercase tracking-[0.2em]">Saldo Tersedia</span>
+                      <span className="text-[9px] font-bold uppercase tracking-[0.3em]">Saldo Tersedia</span>
                     </div>
-                    <p className={cn("text-4xl font-medium tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
+                    <p className={cn("text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
                       {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
                     </p>
                   </div>
@@ -180,7 +180,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 style={{ opacity: isActive ? 1 : 0.4, transform: isActive ? 'scale(1.1)' : 'scale(0.9)' }}
               >
                 <div className={cn(
-                  "h-12 w-12 rounded-lg flex items-center justify-center shadow-card border-2 transition-all",
+                  "h-12 w-12 rounded-2xl flex items-center justify-center shadow-card border-2 transition-all",
                   isActive ? "border-primary bg-card" : "border-transparent bg-muted"
                 )}>
                   {logo ? (
@@ -194,7 +194,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   )}
                 </div>
                 <span className={cn(
-                  "text-[9px] font-bold uppercase tracking-tighter max-w-[50px] truncate",
+                  "text-[9px] font-bold uppercase tracking-widest max-w-[50px] truncate",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}>
                   {wallet.name.split(' ')[0]}

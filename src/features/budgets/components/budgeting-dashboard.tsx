@@ -56,32 +56,41 @@ export const BudgetingDashboard = () => {
     if (budgets.length === 0) {
         return (
             <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="p-4 bg-primary/10 rounded-full mb-4">
-                    <HandCoins className="h-12 w-12 text-primary" strokeWidth={1.5} />
+                <div className="max-w-[320px] w-full p-10 bg-card rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
+                        <HandCoins className="h-40 w-40" />
+                    </div>
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="p-5 bg-primary/10 rounded-2xl mb-6">
+                            <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                        </div>
+                        <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Anggaran</h2>
+                        <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
+                            Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.
+                        </p>
+                        <Button onClick={() => setIsBudgetModalOpen(true)} className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-bold text-xs uppercase tracking-widest">
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Buat Anggaran Baru
+                        </Button>
+                    </div>
                 </div>
-                <h2 className="text-2xl font-medium tracking-tight">Belum Ada Anggaran</h2>
-                <p className="text-muted-foreground mt-2 mb-8 max-w-xs">Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.</p>
-                <Button onClick={() => setIsBudgetModalOpen(true)} size="lg" className="rounded-xl px-8 shadow-lg shadow-primary/20">
-                    <PlusCircle className="mr-2 h-5 w-5" />
-                    Buat Anggaran Pertama
-                </Button>
             </div>
         );
     }
 
     return (
-        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in">
+        <div className="w-full space-y-8 animate-in slide-in-from-bottom-2 duration-500 fade-in">
             <div className="grid grid-cols-12 gap-6">
 
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
-                    <h2 className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground px-1">Ringkasan Bulan Ini</h2>
-                    <Card className="border-none shadow-sm rounded-xl bg-card overflow-hidden">
-                        <CardContent className="p-6 space-y-8">
+                    <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
+                    <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[32px] bg-card overflow-hidden">
+                        <CardContent className="p-8 space-y-8">
                             <div className="h-48 flex justify-center relative">
                                 <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
-                                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Sisa</p>
-                                    <p className="text-lg font-medium">{Math.round((overview.totalRemaining / overview.totalBudget) * 100)}%</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Sisa</p>
+                                    <p className="text-2xl font-bold tracking-tighter tabular-nums text-primary">{Math.round((overview.totalRemaining / overview.totalBudget) * 100)}%</p>
                                 </div>
                                 <ChartContainer config={{}} className="aspect-square h-full relative z-10">
                                     <PieChart>
@@ -89,8 +98,8 @@ export const BudgetingDashboard = () => {
                                             data={overview.chartData}
                                             dataKey="value"
                                             nameKey="name"
-                                            innerRadius={60}
-                                            outerRadius={80}
+                                            innerRadius={65}
+                                            outerRadius={85}
                                             strokeWidth={0}
                                             cornerRadius={10}
                                             paddingAngle={5}
@@ -100,9 +109,9 @@ export const BudgetingDashboard = () => {
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
-                                <div className="p-4 rounded-lg bg-background/40 shadow-inner">
-                                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mb-1">Total Limit</p>
-                                    <p className="text-xl font-medium">{formatCurrency(overview.totalBudget)}</p>
+                                <div className="p-5 rounded-2xl bg-muted/30 border border-border/20 shadow-inner">
+                                    <p className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1">Total Limit Anggaran</p>
+                                    <p className="text-2xl font-semibold tracking-tighter tabular-nums">{formatCurrency(overview.totalBudget)}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -111,9 +120,9 @@ export const BudgetingDashboard = () => {
 
                 {/* BUDGETS LIST */}
                 <div className="col-span-12 lg:col-span-8 space-y-4">
-                    <div className="flex items-center justify-between px-1">
-                        <h2 className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">Pos Anggaran</h2>
-                        <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-lg text-[10px] font-medium uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+                    <div className="flex items-center justify-between px-2">
+                        <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Pos Anggaran</h2>
+                        <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
                             <Plus className="h-3.5 w-3.5 mr-1" />
                             Tambah
                         </Button>
@@ -126,17 +135,15 @@ export const BudgetingDashboard = () => {
                 </div>
             </div>
 
-            {/* Floating Action Button - Only show on desktop or if not handled by parent (Plan Page handles FAB differently usually) 
-                But for now let's keep it here but adjust position if needed.
-            */}
+            {/* Floating Action Button */}
             <div className="fixed bottom-24 right-6 z-40 md:bottom-8 md:right-8 lg:hidden">
                 <Button
                     onClick={() => setIsBudgetModalOpen(true)}
                     size="icon"
-                    className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform active:scale-95"
+                    className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 bg-primary hover:bg-primary/90 hover:scale-110 transition-transform active:scale-95"
                     aria-label="Tambah anggaran"
                 >
-                    <Plus className="h-7 w-7" />
+                    <Plus className="h-7 w-7 text-primary-foreground" />
                 </Button>
             </div>
         </div>

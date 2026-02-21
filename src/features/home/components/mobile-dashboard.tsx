@@ -166,67 +166,67 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                 >
-                    <div className="relative overflow-hidden rounded-lg bg-teal-900 text-white shadow-lg border border-white/5">
+                    <div className="relative overflow-hidden rounded-[32px] bg-teal-900 text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.2)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]">
                         {/* Decorative Patterns */}
                         <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
                         <div className="absolute bottom-0 left-0 -ml-8 -mb-8 h-32 w-32 rounded-full bg-primary-foreground/10 blur-2xl"></div>
 
-                        <div className="relative p-6 space-y-6">
+                        <div className="relative p-7 space-y-6">
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-white/80 text-[10px] uppercase font-medium tracking-widest">Total Saldo</span>
+                                    <span className="text-white/60 text-[10px] uppercase font-bold tracking-[0.2em]">Total Saldo</span>
                                     <div className="bg-white/10 backdrop-blur-md rounded-full px-2 py-0.5">
                                         <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
-                                <div className="text-4xl font-medium tracking-tighter">
+                                <div className="text-4xl md:text-5xl font-semibold tracking-tighter tabular-nums">
                                     <AnimatedCounter value={totalBalance} />
                                 </div>
-                                <div className="mt-3 flex flex-col gap-2">
+                                <div className="mt-4 flex flex-col gap-2">
                                     <div className="text-[11px] text-white/70 font-medium leading-relaxed max-w-[280px]">
                                         <Sparkles className="h-3 w-3 inline mr-1 opacity-70" />
                                         {expenseDiff > 0
-                                            ? `Pengeluaranmu naik ${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}% dari bulan lalu. Ayo lebih hemat!`
+                                            ? `Pengeluaranmu naik ${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}% dari bulan lalu.`
                                             : 'Pengeluaranmu bulan ini lebih terkontrol. Kerja bagus!'}
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="w-fit h-6 px-2 text-[9px] bg-white/10 hover:bg-white/20 text-white border-white/10"
+                                        className="w-fit h-7 px-3 text-[9px] font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10"
                                         onClick={() => router.push('/charts')}
                                     >
-                                        Lihat Analitik
+                                        Analitik Detail
                                     </Button>
                                 </div>
                             </div>
 
                             {/* Income/Expense Pill */}
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3 flex flex-col justify-between h-20 border border-white/5">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-3.5 flex flex-col justify-between h-20 border border-white/5">
                                     <div className="flex items-center gap-1.5 text-white/80">
                                         <div className="p-1 rounded-full bg-white/10">
                                             <ArrowUpRight className="h-3 w-3" />
                                         </div>
-                                        <span className="text-[9px] uppercase font-medium tracking-widest opacity-70">Pemasukan</span>
+                                        <span className="text-[9px] uppercase font-bold tracking-widest opacity-70">Pemasukan</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyIncome} className="font-medium text-sm tracking-tight text-white" />
-                                        <p className="text-[10px] text-white/50 mt-0.5 font-medium">
+                                        <AnimatedCounter value={monthlyIncome} className="font-semibold text-sm tracking-tight text-white" />
+                                        <p className="text-[10px] text-white/40 mt-0.5 font-medium tracking-tighter">
                                             {incomeDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(incomeDiff))}
                                         </p>
                                     </div>
                                 </div>
-                                <div className="bg-black/20 backdrop-blur-sm rounded-lg p-3 flex flex-col justify-between h-20 border border-white/5">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-3.5 flex flex-col justify-between h-20 border border-white/5">
                                     <div className="flex items-center gap-1.5 text-white/80">
                                         <div className="p-1 rounded-full bg-white/10">
                                             <ArrowDownLeft className="h-3 w-3" />
                                         </div>
-                                        <span className="text-[9px] uppercase font-medium tracking-widest opacity-70">Pengeluaran</span>
+                                        <span className="text-[9px] uppercase font-bold tracking-widest opacity-70">Pengeluaran</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyExpense} className="font-medium text-sm tracking-tight text-white" />
-                                        <p className="text-[10px] text-white/50 mt-0.5 font-medium">
+                                        <AnimatedCounter value={monthlyExpense} className="font-semibold text-sm tracking-tight text-white" />
+                                        <p className="text-[10px] text-white/40 mt-0.5 font-medium tracking-tighter">
                                             {expenseDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(expenseDiff))}
                                         </p>
                                     </div>
@@ -252,10 +252,10 @@ export const MobileDashboard = ({
                             onClick={action.onClick}
                             className="flex flex-col items-center gap-2 group"
                         >
-                            <div className={cn("h-14 w-14 rounded-lg flex items-center justify-center shadow-sm border border-border/50 transition-all group-active:scale-90", action.bg)}>
+                            <div className={cn("h-14 w-14 rounded-full flex items-center justify-center shadow-md border border-border/40 transition-all group-active:scale-90 bg-card", action.bg.replace('/10', '/5'))}>
                                 <action.icon className={cn("h-6 w-6", action.color)} strokeWidth={1.5} />
                             </div>
-                            <span className="text-[10px] font-medium text-muted-foreground text-center leading-tight uppercase tracking-wide">
+                            <span className="text-[9px] font-bold text-muted-foreground/80 text-center leading-tight uppercase tracking-widest">
                                 {action.label}
                             </span>
                         </motion.button>
@@ -265,12 +265,12 @@ export const MobileDashboard = ({
 
             {/* 4. Horizontal Wallets (Snap Scroll) */}
             <div className="space-y-3">
-                <div className="px-5 flex items-center justify-between">
-                    <h2 className="text-sm font-medium flex items-center gap-2 tracking-tight">
-                        <WalletIcon className="h-4 w-4 text-primary opacity-70" />
+                <div className="px-6 flex items-center justify-between">
+                    <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                        <WalletIcon className="h-3 w-3" />
                         Dompet Kamu
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary px-0" onClick={() => router.push('/wallets')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest text-primary px-0" onClick={() => router.push('/wallets')}>
                         Lihat Semua
                     </Button>
                 </div>
@@ -286,11 +286,11 @@ export const MobileDashboard = ({
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: idx * 0.05 }}
                             >
-                                <div className="w-40 h-24 rounded-lg bg-card border border-border/60 shadow-card p-3 flex flex-col justify-between relative overflow-hidden group">
+                                <div className="w-40 h-24 rounded-2xl bg-card border border-border/40 shadow-sm p-3.5 flex flex-col justify-between relative overflow-hidden group">
                                     <div className={cn("absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-5 bg-current", textColor)}></div>
 
                                     <div className="flex items-start justify-between relative z-10">
-                                        <div className={cn("p-1.5 rounded-lg bg-muted flex items-center justify-center overflow-hidden h-7 w-7", textColor)}>
+                                        <div className={cn("p-1.5 rounded-xl bg-muted flex items-center justify-center overflow-hidden h-7 w-7 shadow-inner", textColor)}>
                                             {logo ? (
                                                 <>
                                                     <img
@@ -309,14 +309,14 @@ export const MobileDashboard = ({
                                                 <Icon className="h-4 w-4" />
                                             )}
                                         </div>
-                                        <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider">
+                                        <span className="text-[8px] font-bold text-muted-foreground/50 uppercase tracking-widest">
                                             {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : wallet.icon || 'Cash'}
                                         </span>
                                     </div>
 
                                     <div className="relative z-10">
-                                        <p className="text-[11px] font-medium text-muted-foreground truncate mb-0.5">{wallet.name}</p>
-                                        <p className="text-sm font-medium text-foreground truncate tracking-tight">
+                                        <p className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-tight truncate mb-0.5">{wallet.name}</p>
+                                        <p className="text-sm font-semibold text-foreground truncate tracking-tighter tabular-nums">
                                             {formatCurrency(wallet.balance)}
                                         </p>
                                     </div>
@@ -328,7 +328,7 @@ export const MobileDashboard = ({
                     <div className="snap-center shrink-0">
                         <button
                             onClick={() => router.push('/wallets')}
-                            className="w-12 h-24 rounded-lg border border-dashed border-border flex items-center justify-center hover:bg-muted/50 transition-colors"
+                            className="w-12 h-24 rounded-2xl border border-dashed border-border/60 flex items-center justify-center hover:bg-muted/50 transition-colors"
                         >
                             <Plus className="h-5 w-5 text-muted-foreground/40" />
                         </button>
@@ -340,24 +340,24 @@ export const MobileDashboard = ({
             <SpendingTrendChart transactions={transactions} days={14} />
 
             {/* 6. Recent Transactions */}
-            <div className="space-y-3 px-5">
+            <div className="space-y-3 px-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-medium flex items-center gap-2 tracking-tight">
-                        <TrendingUp className="h-4 w-4 text-primary opacity-70" />
+                    <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                        <TrendingUp className="h-3 w-3" />
                         Aktivitas Terakhir
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary px-0" onClick={() => router.push('/transactions')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-widest text-primary px-0" onClick={() => router.push('/transactions')}>
                         Lihat Semua
                     </Button>
                 </div>
 
-                <Card className="border-none shadow-none bg-transparent">
+                <div className="border-none shadow-none bg-transparent pb-10">
                     <TransactionList
                         transactions={transactions}
                         limit={2}
                         isLoading={false}
                     />
-                </Card>
+                </div>
             </div>
         </main>
     );

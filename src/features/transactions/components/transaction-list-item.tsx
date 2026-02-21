@@ -81,13 +81,13 @@ const TransactionListItemContent = ({
                 )}
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-bold text-foreground text-sm leading-tight mb-1 tracking-tight">
+                <div className="font-semibold text-foreground text-sm leading-tight mb-1 tracking-tight">
                     {transaction.description || transaction.category}
                 </div>
-                <div className="text-[10px] font-bold text-muted-foreground/60 flex items-center gap-1.5 flex-wrap uppercase tracking-wider">
+                <div className="text-[9px] font-bold text-muted-foreground/50 flex items-center gap-1.5 flex-wrap uppercase tracking-widest">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-accent-foreground bg-accent px-1.5 py-0.5 rounded text-[8px] font-bold shadow-sm border border-border">
+                        <span className="flex items-center gap-1 text-primary bg-primary/10 px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold">
                             <ShoppingBag className="h-2 w-2 fill-current" />
                             Want
                         </span>
@@ -106,7 +106,7 @@ const TransactionListItemContent = ({
             <div className="flex flex-col items-end gap-1">
                 <div
                     className={cn(
-                        "text-sm font-bold tracking-tight tabular-nums",
+                        "text-sm font-semibold tracking-tighter tabular-nums",
                         amountColor,
                         !isBalanceVisible && 'blur-sm transition-all duration-300',
                         isExpense && transaction.amount >= 1000000 && "text-base"
@@ -232,7 +232,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
     };
 
     return (
-        <div ref={itemRef} className="relative bg-card rounded-lg overflow-hidden shadow-sm">
+        <div ref={itemRef} className="relative overflow-hidden">
             {/* Delete Action BG */}
             <motion.div
                 style={{ opacity: deleteOpacity }}
@@ -268,7 +268,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                 onDragEnd={onDragEnd}
                 style={{ x }}
                 className="relative bg-card z-20"
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.99, backgroundColor: "var(--muted)" }}
                 onTap={() => {
                     // Only open edit modal if we haven't dragged significantly
                     if (Math.abs(x.get()) < 5) {

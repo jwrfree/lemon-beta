@@ -27,16 +27,16 @@ export default function PlanPage() {
     return (
         <main className="pb-40 bg-background min-h-screen">
             {/* Header Area */}
-            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/90 backdrop-blur-md z-30 transition-all border-b border-transparent data-[scrolled=true]:border-border/50">
-                <header className="flex items-center justify-between mb-4 mt-4">
+            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/50">
+                <header className="flex items-center justify-between mb-4 mt-4 px-1">
                     <div>
-                        <h1 className="text-2xl font-medium tracking-tight">Rencana Keuangan</h1>
-                        <p className="text-sm text-muted-foreground">Kelola masa depan finansialmu.</p>
+                        <h1 className="text-xl font-semibold tracking-tight text-foreground">Rencana Keuangan</h1>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mt-0.5">Masa Depan Finansial</p>
                     </div>
                 </header>
 
-                {/* Tab Navigation */}
-                <div className="flex p-1 bg-muted/50 rounded-lg overflow-x-auto scrollbar-hide mb-2">
+                {/* Tab Navigation (Segmented Control) */}
+                <div className="flex p-1 bg-muted/50 rounded-full overflow-x-auto scrollbar-hide mb-2">
                     {tabs.map((tab) => {
                         const isActive = activeTab === tab.id;
                         return (
@@ -44,21 +44,19 @@ export default function PlanPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={cn(
-                                    "flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md text-sm font-medium transition-all relative min-w-[90px]",
-                                    isActive ? "text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                    "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all relative min-w-[90px]",
+                                    isActive ? "text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
                                         layoutId="active-tab-bg"
-                                        className="absolute inset-0 bg-primary rounded-md"
+                                        className="absolute inset-0 bg-card rounded-full"
                                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}
-                                <tab.icon className={cn("h-4 w-4 relative z-10", isActive && "text-primary-foreground")} />
-                                <span className={cn("relative z-10 truncate hidden sm:inline", isActive && "text-primary-foreground")}>{tab.label}</span>
-                                {/* Mobile Label specific handling to save space if needed, using hidden sm:inline for now but let's just truncate */}
-                                <span className={cn("relative z-10 truncate sm:hidden", isActive && "text-primary-foreground")}>{tab.label}</span>
+                                <tab.icon className={cn("h-3.5 w-3.5 relative z-10", isActive && "text-primary")} />
+                                <span className={cn("relative z-10 truncate", isActive && "text-primary")}>{tab.label}</span>
                             </button>
                         );
                     })}

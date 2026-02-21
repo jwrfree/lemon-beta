@@ -111,7 +111,7 @@ function TransactionsPageContent() {
 
     return (
         <div className="flex flex-col h-full overflow-hidden bg-background">
-            <div className="px-4 py-3 flex flex-col gap-3 bg-card border-b z-20 sticky top-0 shadow-sm">
+            <div className="px-4 py-3 flex flex-col gap-3 bg-card/80 backdrop-blur-xl border-b z-20 sticky top-0 shadow-sm">
                 <div className="flex items-center gap-3">
                     <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 -ml-2 rounded-full">
                         <X className="h-5 w-5" />
@@ -120,7 +120,7 @@ function TransactionsPageContent() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder="Cari transaksi..."
-                            className="pl-10 h-10 text-sm bg-muted/30 border-none focus-visible:ring-1 focus-visible:ring-primary/20 rounded-xl"
+                            className="pl-10 h-10 text-sm bg-muted/50 border-none focus-visible:ring-4 focus-visible:ring-primary/5 rounded-2xl transition-all"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                         />
@@ -131,19 +131,21 @@ function TransactionsPageContent() {
                             <Button
                                 variant="outline"
                                 className={cn(
-                                    "shrink-0 h-10 rounded-xl gap-2 border-border/50",
+                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 border-border/50 shadow-sm",
                                     activeFilterCount > 0 && "bg-primary/5 text-primary border-primary/20"
                                 )}
                             >
-                                <ListFilter className="h-4 w-4" />
-                                {activeFilterCount > 0 && (
-                                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold shadow-sm">
-                                        {activeFilterCount}
-                                    </span>
-                                )}
+                                <div className="relative">
+                                    <ListFilter className="h-4 w-4" />
+                                    {activeFilterCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[8px] font-bold shadow-sm">
+                                            {activeFilterCount}
+                                        </span>
+                                    )}
+                                </div>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom" className="rounded-t-[2rem] max-h-[85vh] flex flex-col border-t-0 shadow-2xl">
+                        <SheetContent side="bottom" className="rounded-t-[2.5rem] max-h-[85vh] flex flex-col border-t-0 shadow-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
                             <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4 shrink-0" />
                             <SheetHeader className="text-left mb-6">
                                 <SheetTitle className="text-xl font-bold tracking-tight">Atur Tampilan</SheetTitle>
@@ -163,14 +165,14 @@ function TransactionsPageContent() {
                                                 key={c.id}
                                                 variant={selectedCategories.includes(c.name) ? 'default' : 'outline'}
                                                 size="sm"
-                                                className="rounded-lg h-8 text-[11px] font-medium"
+                                                className="rounded-full h-8 px-4 text-[11px] font-semibold transition-all"
                                                 onClick={() => handleCategoryToggle(c.name)}
                                             >
                                                 {c.name}
                                             </Button>
                                         ))}
                                         {categoriesForFilter.length > 8 && !showAllCategories && (
-                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-bold" onClick={() => setShowAllCategories(true)}>+ {categoriesForFilter.length - 8} Lainnya</Button>
+                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-bold rounded-full" onClick={() => setShowAllCategories(true)}>+ {categoriesForFilter.length - 8} Lainnya</Button>
                                         )}
                                     </div>
                                 </div>
@@ -187,22 +189,22 @@ function TransactionsPageContent() {
                                                 key={w.id}
                                                 variant={selectedWallets.includes(w.id) ? 'default' : 'outline'}
                                                 size="sm"
-                                                className="rounded-lg h-8 text-[11px] font-medium"
+                                                className="rounded-full h-8 px-4 text-[11px] font-semibold transition-all"
                                                 onClick={() => handleWalletToggle(w.id)}
                                             >
                                                 {w.name}
                                             </Button>
                                         ))}
                                         {wallets.length > 8 && !showAllWallets && (
-                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-bold" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
+                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-bold rounded-full" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
                                         )}
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-auto grid grid-cols-2 gap-3 pt-6 border-t border-border">
-                                <Button variant="outline" className="h-12 rounded-xl text-sm font-bold" onClick={resetFilters}>Reset Semua</Button>
+                                <Button variant="outline" className="h-12 rounded-full text-sm font-bold" onClick={resetFilters}>Reset Semua</Button>
                                 <SheetTrigger asChild>
-                                    <Button className="h-12 rounded-xl text-sm font-bold shadow-lg shadow-primary/20">Terapkan</Button>
+                                    <Button className="h-12 rounded-full text-sm font-bold shadow-lg shadow-primary/20">Terapkan</Button>
                                 </SheetTrigger>
                             </div>
                         </SheetContent>
@@ -210,7 +212,7 @@ function TransactionsPageContent() {
                 </div>
 
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full" suppressHydrationWarning>
-                    <TabsList className="bg-muted/50 p-1 rounded-xl h-10 w-full grid grid-cols-4" suppressHydrationWarning>
+                    <TabsList className="bg-muted/50 p-1 rounded-full h-10 w-full grid grid-cols-4" suppressHydrationWarning>
                         {[
                             { value: 'all', label: 'Semua' },
                             { value: 'expense', label: 'Keluar' },
@@ -220,7 +222,7 @@ function TransactionsPageContent() {
                             <TabsTrigger
                                 key={tab.value}
                                 value={tab.value}
-                                className="h-full rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                                className="h-full rounded-full font-bold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
                             >
                                 {tab.label}
                             </TabsTrigger>

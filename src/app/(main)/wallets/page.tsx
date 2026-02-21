@@ -47,25 +47,27 @@ export default function WalletsPage() {
 
         {wallets.length === 0 ? (
           <main className="flex-1 flex flex-col items-center justify-center p-6 bg-background">
-            <div className="relative mb-8">
-              <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150 opacity-50" />
-              <div className="relative flex h-24 w-24 items-center justify-center rounded-lg bg-card shadow-xl border border-border">
-                <Wallet className="h-10 w-10 text-primary" strokeWidth={1.5} />
+            <div className="max-w-[320px] w-full p-10 bg-card rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
+                <Wallet className="h-40 w-40" />
+              </div>
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="p-5 bg-primary/10 rounded-2xl mb-6">
+                  <Wallet className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                </div>
+                <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Dompet</h2>
+                <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
+                  Semua harta dan sumber dana kamu akan terorganisir rapi di sini.
+                </p>
+                <Button
+                  onClick={() => setIsWalletModalOpen(true)}
+                  className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-bold text-xs uppercase tracking-widest"
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Buat Dompet Pertama
+                </Button>
               </div>
             </div>
-            <div className="max-w-[280px] text-center space-y-3">
-              <h2 className="text-2xl font-medium tracking-tighter">Belum Ada Dompet</h2>
-              <p className="text-sm font-medium text-muted-foreground leading-relaxed">
-                Semua harta dan sumber dana kamu akan terorganisir rapi di sini.
-              </p>
-            </div>
-            <Button
-              onClick={() => setIsWalletModalOpen(true)}
-              className="mt-10 rounded-lg h-12 px-8 shadow-lg shadow-primary/20 active:scale-95 transition-all font-medium"
-            >
-              <PlusCircle className="mr-2 h-5 w-5" />
-              Buat Dompet Pertama
-            </Button>
           </main>
         ) : (
           <main className="flex-1 overflow-y-auto pb-24">
@@ -78,16 +80,16 @@ export default function WalletsPage() {
             <div className="mt-4">
               <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as any)} className="w-full">
                 <div className="px-5 mb-6">
-                  <TabsList className="bg-muted p-1 rounded-lg h-12 w-full grid grid-cols-2">
-                    <TabsTrigger value="mutasi" className="h-full rounded-md font-medium text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
-                    <TabsTrigger value="analitik" className="h-full rounded-md font-medium text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
+                  <TabsList className="bg-muted/50 p-1 rounded-full h-11 w-full grid grid-cols-2">
+                    <TabsTrigger value="mutasi" className="h-full rounded-full font-bold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
+                    <TabsTrigger value="analitik" className="h-full rounded-full font-bold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
                   </TabsList>
                 </div>
 
                 <TabsContent value="mutasi" className="mt-0">
-                  <div className="px-5 flex items-center justify-between mb-4">
-                    <h2 className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">10 Transaksi Terakhir</h2>
-                    <Button variant="link" size="sm" className="text-[10px] font-medium uppercase tracking-widest text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
+                  <div className="px-6 flex items-center justify-between mb-4">
+                    <h2 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">10 Transaksi Terakhir</h2>
+                    <Button variant="link" size="sm" className="text-[10px] font-bold uppercase tracking-widest text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                   </div>
                   <div className="w-full">
                     {activeWallet && (
