@@ -2,6 +2,27 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.7] - 21 February 2026
+
+### 🎨 Dynamic DNA UI & Immersive Experience
+
+- **"Dynamic DNA" Visual Engine**:
+  - Implemented a sophisticated color extraction system that transforms category/wallet colors into high-fidelity visual profiles (Mesh Gradients, Ambient Glows, and Branded Shadows).
+  - **Dashboard Overhaul**: Hero card now features a dynamic animated mesh background.
+  - **Branded Wallet Stack**: Wallet cards now automatically adopt their brand's visual identity with glassmorphism insets for balance protection.
+  - **Transaction List Fidelity**: Added **DNA Stripes** (vertical color indicators) to each transaction row for instant visual categorization.
+- **Universal Borderless Depth**:
+  - Replaced all remaining hard borders with layered shadows and elevation (Visual Depth principle).
+  - Standardized "Inset Group" backgrounds for detail sections inside cards.
+
+### 📊 Precision Budgeting & Sub-categories
+
+- **Sub-category Budgets**:
+  - Enabled the ability to set budgets for specific sub-categories (e.g., "Kopi" instead of just "Makanan").
+  - **Atomic Sync**: Updated database triggers and backend logic to calculate "Spent" totals respecting sub-category filters.
+  - **Refined Modals**: Added a multi-step selection flow in Add/Edit Budget modals for granular control.
+  - **Smart Insights**: Budget recommendations now factor in historical sub-category spending.
+
 ## [Version 2.4.6] - 21 February 2026
 
 ### 🏗 Architecture & Engineering Standardization
