@@ -15,6 +15,7 @@ const mapBudgetFromDb = (b: BudgetRow): Budget => ({
     targetAmount: b.amount,
     spent: b.spent,
     categories: b.category ? [b.category] : [],
+    subCategory: b.sub_category || undefined,
     period: b.period,
     userId: b.user_id,
     createdAt: b.created_at
@@ -68,7 +69,10 @@ export const useBudgets = () => {
             if (!isCurrentMonth) return; // Only update if tx is in current month (assuming monthly budgets)
 
             setBudgets(prev => prev.map(b => {
-                if (b.categories.includes(tx.category)) {
+                const categoryMatches = b.categories.includes(tx.category);
+                const subCategoryMatches = !b.subCategory || b.subCategory === tx.subCategory;
+                
+                if (categoryMatches && subCategoryMatches) {
                     return { ...b, spent: (b.spent || 0) + tx.amount };
                 }
                 return b;
@@ -124,6 +128,7 @@ export const useBudgets = () => {
             targetAmount: budgetData.targetAmount,
             spent: 0,
             categories: budgetData.categories || [],
+            subCategory: budgetData.subCategory,
             period: budgetData.period || 'monthly',
             userId: user.id,
             createdAt: new Date().toISOString()
@@ -137,6 +142,7 @@ export const useBudgets = () => {
             amount: budgetData.targetAmount,
             spent: 0,
             category: budgetData.categories?.[0] || '',
+            sub_category: budgetData.subCategory || null,
             period: budgetData.period,
             user_id: user.id
         }).select().single();
@@ -161,7 +167,8 @@ export const useBudgets = () => {
                 return {
                     ...b,
                     ...budgetData,
-                    categories: budgetData.categories || b.categories
+                    categories: budgetData.categories || b.categories,
+                    subCategory: budgetData.subCategory !== undefined ? budgetData.subCategory : b.subCategory
                 };
             }
             return b;
@@ -172,6 +179,7 @@ export const useBudgets = () => {
         if (budgetData.name) updateData.name = budgetData.name;
         if (budgetData.targetAmount !== undefined) updateData.amount = budgetData.targetAmount;
         if (budgetData.categories !== undefined) updateData.category = budgetData.categories[0];
+        if (budgetData.subCategory !== undefined) updateData.sub_category = budgetData.subCategory || null;
         if (budgetData.period) updateData.period = budgetData.period;
 
         const { error } = await supabase.from('budgets').update(updateData).eq('id', budgetId);

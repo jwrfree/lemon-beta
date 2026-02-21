@@ -26,14 +26,16 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
   const [budgetName, setBudgetName] = useState(budget.name);
   const [targetAmount, setTargetAmount] = useState(budget.targetAmount);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(budget.categories);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(budget.subCategory || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleCategoryToggle = (categoryName: string) => {
-    // Current MVP only supports single category per budget for simplicity in update
-    // But UI supports multiple selection visual.
-    // Let's stick to single select behavior for now if backend only supports string
+  const selectedCategoryData = expenseCategories.find(c => c.name === selectedCategories[0]);
+  const hasSubCategories = selectedCategoryData && selectedCategoryData.sub_categories && selectedCategoryData.sub_categories.length > 0;
+
+  const handleCategorySelect = (categoryName: string) => {
     setSelectedCategories([categoryName]);
+    setSelectedSubCategory(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +49,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
       return;
     }
     if (selectedCategories.length === 0) {
-      showToast("Pilih minimal satu kategori untuk anggaran ini.", 'error');
+      showToast("Pilih minimal satu kategori.", 'error');
       return;
     }
     setIsSubmitting(true);
@@ -56,6 +58,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         name: budgetName,
         targetAmount: targetAmount,
         categories: [selectedCategories[0]],
+        subCategory: selectedSubCategory || undefined,
       });
     } catch {
       // error handled by provider
@@ -78,6 +81,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
   const hasChanges =
     budgetName !== budget.name ||
     targetAmount !== budget.targetAmount ||
+    selectedSubCategory !== (budget.subCategory || null) ||
     JSON.stringify(selectedCategories) !== JSON.stringify(budget.categories);
 
   return (
@@ -87,94 +91,123 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-popover rounded-t-2xl shadow-lg flex flex-col h-fit max-h-[85vh]"
+        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-[2.5rem] shadow-2xl flex flex-col h-fit max-h-[90vh] border-none overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
-          <h2 className="text-xl font-medium text-center">Edit Anggaran</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 bg-black/10 dark:bg-white/10 rounded-full">
+        <div className="p-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/10">
+          <h2 className="text-xl font-bold tracking-tighter">Adjust Budget</h2>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
             <X className="h-5 w-5" />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-6 overflow-y-auto">
-          <div className="space-y-2">
-            <Label htmlFor="budget-name">Nama Anggaran</Label>
-            <Input id="budget-name" placeholder="Contoh: Belanja Bulanan" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} required />
+        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-8 overflow-y-auto">
+          <div className="space-y-3">
+            <Label htmlFor="budget-name" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
+            <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required />
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="space-y-2 text-center">
-              <Label htmlFor="target-amount" className="text-sm">Target Pengeluaran per Bulan</Label>
+              <Label htmlFor="target-amount" className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Monthly Target</Label>
               <Input
                 id="target-amount"
                 value={formatCurrency(targetAmount)}
                 onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                className="text-4xl font-medium border-none focus-visible:ring-0 text-center bg-transparent"
+                className="text-5xl font-black border-none focus-visible:ring-0 text-center bg-transparent h-auto p-0 tracking-tighter tabular-nums"
                 size="lg"
                 inputMode="numeric"
               />
             </div>
-            <Slider
-              value={[targetAmount]}
-              onValueChange={(value) => setTargetAmount(value[0])}
-              max={10000000}
-              step={50000}
-            />
-            <div className="grid grid-cols-4 gap-2">
+            <div className="px-4">
+                <Slider
+                value={[targetAmount]}
+                onValueChange={(value) => setTargetAmount(value[0])}
+                max={10000000}
+                step={100000}
+                className="py-4"
+                />
+            </div>
+            <div className="grid grid-cols-4 gap-3">
               {budgetSteps.map(val => (
-                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)}>
-                  {formatCurrency(val / 1000)}k
+                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-bold text-[10px]", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                  {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                 </Button>
               ))}
             </div>
           </div>
 
-          <div className="space-y-3">
-            <Label>Kategori</Label>
-            <p className="text-sm text-muted-foreground">Pilih satu atau lebih kategori yang masuk dalam anggaran ini.</p>
+          <div className="space-y-4">
+            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Main Category</Label>
             <ScrollArea className="h-48">
-              <div className="grid grid-cols-4 gap-2 pr-4">
-
+              <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
                 {expenseCategories.map(cat => {
                   const Icon = getCategoryIcon(cat.icon);
+                  const isSelected = selectedCategories.includes(cat.name);
                   return (
-                    <button type="button" key={cat.id} onClick={() => handleCategoryToggle(cat.name)}
+                    <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
                       className={cn(
-                        "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1.5 aspect-square transition-colors",
-                        selectedCategories.includes(cat.name) ? 'border-primary bg-primary/10' : 'hover:bg-accent'
+                        "p-3 text-center border-2 rounded-[20px] flex flex-col items-center justify-center gap-2 aspect-square transition-all",
+                        isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                       )}>
-                      <Icon className={cn("h-6 w-6", selectedCategories.includes(cat.name) ? 'text-primary' : 'text-muted-foreground')} />
-                      <span className="text-xs text-center leading-tight">{cat.name}</span>
+                      <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
+                      <span className={cn("text-[9px] text-center leading-tight font-bold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
                     </button>
                   );
                 })}
               </div>
             </ScrollArea>
           </div>
+
+          {hasSubCategories && (
+            <div className="space-y-4 pt-2">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Sub-Category (Optional)</Label>
+                <div className="flex flex-wrap gap-2">
+                <Button 
+                    type="button" 
+                    variant={selectedSubCategory === null ? 'default' : 'outline'}
+                    onClick={() => setSelectedSubCategory(null)}
+                    className="rounded-full h-10 px-5 text-xs font-bold uppercase tracking-widest"
+                >
+                    All {selectedCategories[0]}
+                </Button>
+                {selectedCategoryData.sub_categories?.map(sub => (
+                    <Button 
+                        key={sub}
+                        type="button" 
+                        variant={selectedSubCategory === sub ? 'default' : 'outline'}
+                        onClick={() => setSelectedSubCategory(sub)}
+                        className="rounded-full h-10 px-5 text-xs font-bold uppercase tracking-widest"
+                    >
+                        {sub}
+                    </Button>
+                ))}
+                </div>
+            </div>
+          )}
         </form>
 
-        <div className="p-4 border-t sticky bottom-0 bg-popover flex gap-2">
-          <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting || !hasChanges}>
-            {isSubmitting ? 'Menyimpan...' : 'Simpan Perubahan'}
+        <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md flex gap-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <Button type="submit" onClick={handleSubmit} className="flex-1 h-14 rounded-full font-bold text-xs uppercase tracking-widest shadow-xl shadow-primary/20 bg-primary active:scale-95" disabled={isSubmitting || !hasChanges}>
+            {isSubmitting ? 'Updating...' : 'Save Changes'}
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
-                <Trash2 className="h-5 w-5" />
+              <Button type="button" variant="ghost" className="h-14 w-14 rounded-full bg-rose-500/10 text-rose-600 hover:bg-rose-500/20" disabled={isDeleting}>
+                <Trash2 className="h-6 w-6" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
               <AlertDialogHeader>
-                <AlertDialogTitle>Yakin mau menghapus anggaran ini?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Tindakan ini tidak dapat dibatalkan dan akan menghapus anggaran &apos;{budget.name}&apos; secara permanen.
+                <AlertDialogTitle className="text-2xl font-bold tracking-tighter">Delete Budget?</AlertDialogTitle>
+                <AlertDialogDescription className="text-sm font-medium text-muted-foreground">
+                  This will permanently remove the budget for &apos;{budget.name}&apos;.
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Batal</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
-                  {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
+              <AlertDialogFooter className="mt-6 flex-row gap-3">
+                <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-bold text-xs uppercase tracking-widest mt-0">Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-bold text-xs uppercase tracking-widest">
+                  {isDeleting ? 'Deleting...' : 'Delete'}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

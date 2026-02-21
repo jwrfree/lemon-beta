@@ -34,10 +34,11 @@ export default function BudgetDetailPage() {
     const budgetDetails = useMemo(() => {
         if (!budget) return null;
 
-        const budgetTransactions = transactions.filter(t =>
-            t.type === 'expense' &&
-            budget.categories.includes(t.category)
-        );
+        const budgetTransactions = transactions.filter(t => {
+            const categoryMatches = budget.categories.includes(t.category);
+            const subCategoryMatches = !budget.subCategory || budget.subCategory === t.subCategory;
+            return t.type === 'expense' && categoryMatches && subCategoryMatches;
+        });
 
         const spent = budgetTransactions.reduce((acc, t) => acc + t.amount, 0);
         const remaining = budget.targetAmount - spent;
@@ -128,7 +129,7 @@ export default function BudgetDetailPage() {
                                     <h2 className="text-3xl font-medium tracking-tighter">{budget.name}</h2>
                                     <div className="flex items-center justify-center gap-2">
                                         <Badge variant="outline" className="text-[10px] font-normal uppercase tracking-widest px-2.5 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
-                                            {budget.categories.length} Kategori
+                                            {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : `${budget.categories.length} Kategori`}
                                         </Badge>
                                         <span className={cn("text-[10px] font-medium uppercase tracking-widest", textColor)}>
                                             {isOver ? 'Overbudget' : (progress > 80 ? 'Hampir Habis' : 'Sehat')}

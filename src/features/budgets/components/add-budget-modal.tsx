@@ -28,36 +28,38 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const [budgetName, setBudgetName] = useState('');
   const [targetAmount, setTargetAmount] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [recommendation, setRecommendation] = useState<{ avg: number; max: number } | null>(null);
   const [loadingRec, setLoadingRec] = useState(false);
 
-  // Fetch recommendation when entering amount step (Step 3)
+  const selectedCategoryData = expenseCategories.find(c => c.name === selectedCategories[0]);
+  const hasSubCategories = selectedCategoryData && selectedCategoryData.sub_categories && selectedCategoryData.sub_categories.length > 0;
+
+  // Fetch recommendation when entering amount step
   useEffect(() => {
-    if (step === 3 && selectedCategories.length > 0 && user) {
+    // Determine the amount step index (it's either 3 or 4)
+    const amountStep = hasSubCategories ? 4 : 3;
+    
+    if (step === amountStep && selectedCategories.length > 0 && user) {
       setLoadingRec(true);
       setRecommendation(null);
-      transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0])
+      
+      // Get stats for category (and sub-category if selected)
+      transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0], selectedSubCategory || undefined)
         .then((res) => {
           if (res.data) {
             setRecommendation(res.data);
-            // Optional: Auto-set target if current is 0? 
-            if (targetAmount === 0 && res.data.avg > 0) {
-              // setTargetAmount(Math.ceil(res.data.avg)); // Maybe too intrusive? Let's just suggest.
-            }
           }
         })
         .finally(() => setLoadingRec(false));
     }
-  }, [step, selectedCategories, user]);
+  }, [step, selectedCategories, selectedSubCategory, user, hasSubCategories]);
 
-  const handleCategoryToggle = (categoryName: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(categoryName)
-        ? prev.filter(c => c !== categoryName)
-        : [...prev, categoryName]
-    );
+  const handleCategorySelect = (categoryName: string) => {
+    setSelectedCategories([categoryName]);
+    setSelectedSubCategory(null); // Reset sub when main changes
   };
 
   const handleNext = () => {
@@ -65,21 +67,30 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
       showToast("Nama anggaran tidak boleh kosong.", 'error');
       return;
     }
-    // Step 2 is now Category
     if (step === 2 && selectedCategories.length === 0) {
       showToast("Pilih minimal satu kategori.", 'error');
       return;
     }
-    // Step 3 is Amount (Validation on Submit or Next if there was a Step 4)
-    if (step === 3 && targetAmount <= 0) {
-      showToast("Target anggaran harus lebih besar dari nol.", 'error');
-      return;
+    
+    // Logic to skip sub-category step if not applicable
+    if (step === 2 && !hasSubCategories) {
+        setStep(3); // Go directly to target amount
+        return;
     }
-    setStep(s => s + 1);
+
+    if (step === 3 && targetAmount <= 0 && !hasSubCategories) {
+        // This was the amount step, but we skipped sub step
+        // This case should be handled by the next condition
+    }
+
     setStep(s => s + 1);
   };
 
   const handleBack = () => {
+    if (step === 3 && !hasSubCategories) {
+        setStep(2);
+        return;
+    }
     setStep(s => s - 1);
   };
 
@@ -95,8 +106,9 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         targetAmount: targetAmount,
         period: 'monthly',
         categories: [selectedCategories[0]],
+        subCategory: selectedSubCategory || undefined,
       });
-      onClose(); // Explicitly close on success
+      onClose();
     } catch {
       // error handled by provider
     } finally {
@@ -104,7 +116,14 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  const stepTitles = ["Beri Nama Anggaran", "Pilih Kategori", "Tentukan Target"];
+  const stepTitles = [
+    "Beri Nama Anggaran", 
+    "Pilih Kategori", 
+    hasSubCategories ? "Pilih Sub-Kategori" : "Tentukan Target",
+    "Tentukan Target"
+  ];
+
+  const totalSteps = hasSubCategories ? 4 : 3;
 
   const slideVariants = {
     enter: (direction: number) => ({
@@ -130,27 +149,27 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-popover rounded-t-2xl flex flex-col h-fit max-h-[85vh]"
+        className="w-full max-w-md bg-popover rounded-t-[2.5rem] flex flex-col h-fit max-h-[85vh] shadow-2xl border-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-popover rounded-t-2xl z-10">
+        <div className="p-6 flex items-center justify-between sticky top-0 z-10">
           <div className="w-11">
             {step > 1 && (
-              <Button variant="ghost" size="icon" onClick={handleBack}>
+              <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
                 <ArrowLeft className="h-5 w-5" />
                 <span className="sr-only">Kembali</span>
               </Button>
             )}
           </div>
-          <h2 className="text-xl font-medium text-center">{stepTitles[step - 1]}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/10 dark:bg-white/10 rounded-full">
+          <h2 className="text-xl font-semibold tracking-tighter text-center">{stepTitles[step - 1]}</h2>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
             <X className="h-5 w-5" />
             <span className="sr-only">Tutup</span>
           </Button>
         </div>
 
-        <div className="flex-1 p-6 relative overflow-y-auto">
-          <AnimatePresence initial={false} custom={direction}>
+        <div className="flex-1 px-6 pb-6 relative overflow-y-auto">
+          <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
               key={step}
               custom={direction}
@@ -161,30 +180,27 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               {step === 1 && (
-                <div className="space-y-2">
-                  <Label htmlFor="budget-name">Nama Anggaran</Label>
-                  <Input id="budget-name" placeholder="Contoh: Belanja Bulanan" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} required autoFocus />
+                <div className="space-y-4 pt-2">
+                  <Label htmlFor="budget-name" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Nama Anggaran</Label>
+                  <Input id="budget-name" placeholder="Contoh: Makan Siang Kantor" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required autoFocus />
                 </div>
               )}
               {step === 2 && (
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">Pilih kategori untuk anggaran &apos;{budgetName}&apos;.</p>
-                  <ScrollArea className="h-64">
-                    <div className="grid grid-cols-4 gap-2 pr-4">
+                <div className="space-y-4 pt-2">
+                  <p className="text-xs font-medium text-muted-foreground ml-1">Pilih kategori utama untuk anggaran &apos;{budgetName}&apos;.</p>
+                  <ScrollArea className="h-72">
+                    <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
                       {expenseCategories.map(cat => {
                         const Icon = getCategoryIcon(cat.icon);
                         const isSelected = selectedCategories.includes(cat.name);
                         return (
-                          <button type="button" key={cat.id} onClick={() => {
-                            // Single select logic for MVP recommendation
-                            setSelectedCategories([cat.name]);
-                          }}
+                          <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
                             className={cn(
-                              "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1.5 aspect-square transition-all",
-                              isSelected ? 'border-primary bg-primary/10 scale-95 ring-2 ring-primary/20' : 'hover:bg-accent hover:border-foreground/20'
+                              "p-3 text-center border-2 rounded-[20px] flex flex-col items-center justify-center gap-2 aspect-square transition-all",
+                              isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                             )}>
-                            <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground')} />
-                            <span className="text-xs text-center leading-tight font-medium">{cat.name}</span>
+                            <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
+                            <span className={cn("text-[9px] text-center leading-tight font-bold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
                           </button>
                         );
                       })}
@@ -193,56 +209,84 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                 </div>
               )}
 
-              {step === 3 && (
-                <div className="space-y-6">
+              {step === 3 && hasSubCategories && (
+                <div className="space-y-4 pt-2">
+                  <p className="text-xs font-medium text-muted-foreground ml-1">Ingin mempersempit ke sub-kategori tertentu?</p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Button 
+                        type="button" 
+                        variant={selectedSubCategory === null ? 'default' : 'outline'}
+                        onClick={() => setSelectedSubCategory(null)}
+                        className="rounded-full h-10 px-5 text-xs font-bold uppercase tracking-widest"
+                    >
+                        Semua {selectedCategories[0]}
+                    </Button>
+                    {selectedCategoryData.sub_categories?.map(sub => (
+                        <Button 
+                            key={sub}
+                            type="button" 
+                            variant={selectedSubCategory === sub ? 'default' : 'outline'}
+                            onClick={() => setSelectedSubCategory(sub)}
+                            className="rounded-full h-10 px-5 text-xs font-bold uppercase tracking-widest"
+                        >
+                            {sub}
+                        </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {((step === 3 && !hasSubCategories) || step === 4) && (
+                <div className="space-y-8 pt-2">
                   {/* Recommendation Card */}
                   {loadingRec ? (
-                    <div className="h-24 w-full animate-pulse bg-muted rounded-xl" />
+                    <div className="h-24 w-full animate-pulse bg-muted/50 rounded-3xl" />
                   ) : recommendation && recommendation.avg > 0 ? (
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl flex items-start gap-3">
-                      <div className="bg-emerald-500/20 p-2 rounded-full">
-                        <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-[2rem] flex items-start gap-4 shadow-sm">
+                      <div className="bg-emerald-500/10 p-2.5 rounded-2xl">
+                        <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-xs font-medium uppercase tracking-wider text-emerald-700 dark:text-emerald-400 mb-1">Smart Insight</h4>
-                        <p className="text-xs text-emerald-900 dark:text-emerald-100 leading-relaxed">
-                          Rata-rata pengeluaranmu di <span className="font-medium">{selectedCategories[0]}</span> adalah <span className="font-medium">{formatCurrency(recommendation.avg)}</span> per bulan.
+                        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
+                        <p className="text-xs text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed font-medium">
+                          Rata-rata pengeluaranmu di <span className="font-bold text-emerald-700">{selectedSubCategory || selectedCategories[0]}</span> adalah <span className="font-bold text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
                         </p>
                         <Button
                           size="sm"
-                          variant="link"
-                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-medium text-xs mt-2"
+                          variant="ghost"
+                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] uppercase tracking-widest mt-3 hover:bg-transparent hover:underline"
                           onClick={() => setTargetAmount(Math.ceil(recommendation.avg))}
                         >
-                          Gunakan {formatCurrency(Math.ceil(recommendation.avg))}
+                          Apply {formatCurrency(Math.ceil(recommendation.avg))}
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-muted/30 p-4 rounded-xl flex items-center gap-3 text-muted-foreground">
-                      <TrendingUp className="h-4 w-4" />
-                      <p className="text-xs">Belum ada data historis cukup untuk rekomendasi.</p>
+                    <div className="bg-muted/30 p-5 rounded-[2rem] flex items-center gap-4 text-muted-foreground/60 shadow-inner">
+                      <TrendingUp className="h-5 w-5 opacity-40" />
+                      <p className="text-[10px] font-bold uppercase tracking-widest">No historical data for insights yet.</p>
                     </div>
                   )}
 
-                  <div className="space-y-2 text-center pt-2">
-                    <Label htmlFor="target-amount" className="text-sm font-medium text-muted-foreground">Tentukan Target Maksimal</Label>
-                    <Input
-                      id="target-amount"
-                      value={formatCurrency(targetAmount)}
-                      onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                      className="text-4xl font-medium border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/20"
-                      placeholder="Rp 0"
-                      size="lg"
-                      inputMode="numeric"
-                      autoFocus
-                    />
+                  <div className="space-y-3 text-center">
+                    <Label htmlFor="target-amount" className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Target Allowance</Label>
+                    <div className="flex items-center justify-center gap-2">
+                        <Input
+                        id="target-amount"
+                        value={formatCurrency(targetAmount)}
+                        onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
+                        className="text-5xl font-black border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/10 h-auto p-0 tracking-tighter"
+                        placeholder="Rp 0"
+                        inputMode="numeric"
+                        autoFocus
+                        />
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-3 pt-4">
                     {budgetSteps.map(val => (
-                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn(targetAmount === val && "border-primary bg-primary/5")}>
-                        {formatCurrency(val / 1000)}k
+                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-bold tabular-nums text-[10px]", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                        {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                       </Button>
                     ))}
                   </div>
@@ -252,11 +296,13 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           </AnimatePresence>
         </div>
 
-        <div className="p-4 border-t sticky bottom-0 bg-popover">
-          {step < 3 ? (
-            <Button onClick={handleNext} className="w-full" type="button">Lanjut</Button>
+        <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md z-10 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          {step < totalSteps ? (
+            <Button onClick={handleNext} className="w-full h-14 rounded-full font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 transition-all active:scale-95" type="button">Next Step</Button>
           ) : (
-            <Button onClick={handleSubmit} className="w-full" disabled={isSubmitting}>{isSubmitting ? 'Memproses...' : 'Simpan Anggaran'}</Button>
+            <Button onClick={handleSubmit} className="w-full h-14 rounded-full font-bold text-xs uppercase tracking-widest shadow-xl shadow-primary/20 bg-primary transition-all active:scale-95" disabled={isSubmitting}>
+                {isSubmitting ? 'Syncing...' : 'Confirm & Save'}
+            </Button>
           )}
         </div>
 

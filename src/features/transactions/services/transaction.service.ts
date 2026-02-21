@@ -138,19 +138,25 @@ class TransactionService {
      * Get monthly statistics for a category (last 3 months).
      * Used for budget recommendations.
      */
-    async getCategoryMonthlyStats(userId: string, category: string): Promise<ServiceResult<{ avg: number; max: number }>> {
+    async getCategoryMonthlyStats(userId: string, category: string, subCategory?: string): Promise<ServiceResult<{ avg: number; max: number }>> {
         try {
             const threeMonthsAgo = new Date();
             threeMonthsAgo.setDate(1); // Start from the first day
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
-            const { data, error } = await this.supabase
+            let query = this.supabase
                 .from('transactions') // Table name is plural 'transactions'
                 .select('amount, date')
                 .eq('user_id', userId)
                 .eq('category', category)
                 .eq('type', 'expense')
                 .gte('date', threeMonthsAgo.toISOString());
+
+            if (subCategory) {
+                query = query.eq('sub_category', subCategory);
+            }
+
+            const { data, error } = await query;
 
             if (error) throw error;
 

@@ -105,7 +105,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                     <h3 className="font-bold text-lg tracking-tight leading-tight group-hover:underline decoration-white/30">{budget.name}</h3>
                                     <div className="flex items-center gap-2">
                                         <span className={cn("text-[9px] font-bold uppercase tracking-[0.2em] text-white/50")}>
-                                            {currentHealth.label}
+                                            {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : currentHealth.label}
                                         </span>
                                     </div>
                                 </div>

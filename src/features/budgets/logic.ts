@@ -28,10 +28,11 @@ export function calculateBudgetStats(budget: Budget, transactions: Transaction[]
 
     // 1. Calculate Spent
     const spent = transactions
-        .filter(t =>
-            t.type === 'expense' &&
-            budget.categories.includes(t.category)
-        )
+        .filter(t => {
+            const categoryMatches = budget.categories.includes(t.category);
+            const subCategoryMatches = !budget.subCategory || budget.subCategory === t.subCategory;
+            return t.type === 'expense' && categoryMatches && subCategoryMatches;
+        })
         .reduce((acc, t) => acc + t.amount, 0);
 
     // 2. Core Metrics
@@ -80,7 +81,15 @@ export function calculateGlobalBudgetOverview(budgets: Budget[], transactions: T
     const relevantCategories = Array.from(new Set(budgets.flatMap(b => b.categories)));
 
     const totalSpent = transactions
-        .filter(t => t.type === 'expense' && relevantCategories.includes(t.category))
+        .filter(t => {
+            if (t.type !== 'expense') return false;
+            // Check if transaction matches ANY budget's category + subCategory
+            return budgets.some(b => {
+                const categoryMatches = b.categories.includes(t.category);
+                const subCategoryMatches = !b.subCategory || b.subCategory === t.subCategory;
+                return categoryMatches && subCategoryMatches;
+            });
+        })
         .reduce((acc, t) => acc + t.amount, 0);
 
     const totalRemaining = totalBudget - totalSpent;

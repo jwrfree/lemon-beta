@@ -12,6 +12,7 @@ import { useUI } from '@/components/ui-provider';
 import { startOfMonth, endOfMonth } from 'date-fns';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { BudgetCard } from './budget-card';
+import { calculateGlobalBudgetOverview } from '../logic';
 
 export const BudgetingDashboard = () => {
     const { budgets, isLoading } = useBudgets();
@@ -24,25 +25,14 @@ export const BudgetingDashboard = () => {
     const { transactions, isLoading: isTransactionsLoading } = useRangeTransactions(start, end);
 
     const overview = useMemo(() => {
-        const totalBudget = budgets.reduce((acc, b) => acc + b.targetAmount, 0);
-
-        const relevantCategories = Array.from(new Set(budgets.flatMap(b => b.categories)));
-
-        const totalSpent = transactions
-            .filter(t =>
-                t.type === 'expense' &&
-                relevantCategories.includes(t.category)
-            )
-            .reduce((acc, t) => acc + t.amount, 0);
-
-        const totalRemaining = totalBudget - totalSpent;
+        const stats = calculateGlobalBudgetOverview(budgets, transactions);
 
         const chartData = [
-            { name: 'Terpakai', value: totalSpent, fill: 'var(--destructive)' },
-            { name: 'Sisa', value: Math.max(0, totalRemaining), fill: 'var(--primary)' },
+            { name: 'Terpakai', value: stats.totalSpent, fill: 'var(--destructive)' },
+            { name: 'Sisa', value: Math.max(0, stats.totalRemaining), fill: 'var(--primary)' },
         ];
 
-        return { totalBudget, totalSpent, totalRemaining, chartData };
+        return { ...stats, chartData };
     }, [budgets, transactions]);
 
     if (isLoading || isTransactionsLoading) {

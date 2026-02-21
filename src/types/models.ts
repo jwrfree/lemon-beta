@@ -78,6 +78,7 @@ export interface Budget extends BaseRecord {
   name: string;
   targetAmount: number;
   categories: string[];
+  subCategory?: string;
   spent?: number;
   period?: string;
   startDate?: string | null;
@@ -239,6 +240,7 @@ export interface BudgetRow {
   amount: number;
   spent: number;
   category: string;
+  sub_category?: string | null;
   period: string;
   user_id: string;
   created_at: string;
