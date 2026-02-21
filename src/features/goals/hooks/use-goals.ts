@@ -52,28 +52,56 @@ export const useGoals = () => {
 
     const addGoal = useCallback(async (goalData: GoalInput) => {
         if (!user) throw new Error("User not authenticated.");
-        
-        const { error } = await supabase.from('goals').insert({
+
+        // Optimistic Add
+        const tempId = `temp-${Date.now()}`;
+        const newGoal: Goal = {
+            id: tempId,
+            name: goalData.name,
+            targetAmount: goalData.targetAmount,
+            currentAmount: goalData.currentAmount || 0,
+            targetDate: goalData.targetDate ? new Date(goalData.targetDate).toISOString() : undefined,
+            icon: goalData.icon,
+            userId: user.id,
+            createdAt: new Date().toISOString()
+        };
+
+        setGoals(prev => [...prev, newGoal]);
+        setIsGoalModalOpen(false);
+
+        const { data, error } = await supabase.from('goals').insert({
             name: goalData.name,
             target_amount: goalData.targetAmount,
             current_amount: goalData.currentAmount || 0,
             target_date: goalData.targetDate,
             icon: goalData.icon,
             user_id: user.id
-        });
+        }).select().single();
 
         if (error) {
+             setGoals(prev => prev.filter(g => g.id !== tempId)); // Revert
              showToast("Gagal membuat target.", 'error');
              return;
         }
 
+        // Replace temp with real
+        setGoals(prev => prev.map(g => g.id === tempId ? mapGoalFromDb(data) : g));
         showToast("Target berhasil dibuat!", 'success');
-        setIsGoalModalOpen(false);
     }, [user, supabase, showToast, setIsGoalModalOpen]);
 
     const updateGoal = useCallback(async (goalId: string, goalData: Partial<Goal>) => {
         if (!user) throw new Error("User not authenticated.");
-        
+
+        // Optimistic Update
+        const previousGoals = [...goals];
+        setGoals(prev => prev.map(g => {
+            if (g.id === goalId) {
+                return { ...g, ...goalData };
+            }
+            return g;
+        }));
+        setIsGoalModalOpen(false); // Assuming reuse of modal state or dedicated edit modal logic
+
         const dbPayload: Partial<GoalRow> = {};
         if (goalData.name) dbPayload.name = goalData.name;
         if (goalData.targetAmount !== undefined) dbPayload.target_amount = goalData.targetAmount;
@@ -84,27 +112,32 @@ export const useGoals = () => {
         const { error } = await supabase.from('goals').update(dbPayload).eq('id', goalId);
 
         if (error) {
+             setGoals(previousGoals); // Revert
              showToast("Gagal memperbarui target.", 'error');
              return;
         }
 
         showToast("Target berhasil diperbarui!", 'success');
-        setIsGoalModalOpen(false);
-    }, [user, supabase, showToast, setIsGoalModalOpen]);
+    }, [user, goals, supabase, showToast, setIsGoalModalOpen]);
 
     const deleteGoal = useCallback(async (goalId: string) => {
         if (!user) throw new Error("User not authenticated.");
-        
+
+        // Optimistic Delete
+        const previousGoals = [...goals];
+        setGoals(prev => prev.filter(g => g.id !== goalId));
+        setIsGoalModalOpen(false);
+
         const { error } = await supabase.from('goals').delete().eq('id', goalId);
-        
+
         if (error) {
+             setGoals(previousGoals); // Revert
              showToast("Gagal menghapus target.", 'error');
              return;
         }
 
         showToast("Target berhasil dihapus.", 'success');
-        setIsGoalModalOpen(false);
-    }, [user, supabase, showToast, setIsGoalModalOpen]);
+    }, [user, goals, supabase, showToast, setIsGoalModalOpen]);
 
     return {
         goals,

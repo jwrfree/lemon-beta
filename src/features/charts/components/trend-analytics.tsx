@@ -4,10 +4,22 @@ import React, { useState, useEffect } from 'react';
 import { Activity } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
-import { Area, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Bar } from 'recharts';
+import { Area, ComposedChart, XAxis, YAxis, CartesianGrid, Bar } from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import type { DailyMetric } from '../types';
+
+const chartConfig = {
+    expense: {
+        label: "Pengeluaran",
+        color: "var(--primary)",
+    },
+    count: {
+        label: "Frekuensi",
+        color: "var(--muted)",
+    },
+} satisfies ChartConfig;
 
 export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
     const [mounted, setMounted] = useState(false);
@@ -35,18 +47,17 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
                 </div>
             </div>
 
-            <ResponsiveContainer width="100%" height={300}>
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
                 <ComposedChart data={data}>
                     <defs>
                         <linearGradient id="expenseTrendFill" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.2} />
-                            <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
+                            <stop offset="0%" stopColor="var(--color-expense)" stopOpacity={0.2} />
+                            <stop offset="100%" stopColor="var(--color-expense)" stopOpacity={0} />
                         </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" className="dark:stroke-zinc-800" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
                     <XAxis
                         dataKey="date"
-                        stroke="#9ca3af"
                         fontSize={10}
                         tickFormatter={(value) => format(parseISO(value), 'd')}
                         tickMargin={10}
@@ -55,7 +66,6 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
                     />
                     <YAxis
                         yAxisId="left"
-                        stroke="#9ca3af"
                         fontSize={10}
                         tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
                         axisLine={false}
@@ -65,41 +75,29 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
                     <YAxis
                         yAxisId="right"
                         orientation="right"
-                        stroke="#9ca3af"
                         fontSize={10}
                         axisLine={false}
                         tickLine={false}
                         width={20}
                     />
-                    <Tooltip
-                        contentStyle={{
-                            backgroundColor: '#18181b',
-                            border: '1px solid #27272a',
-                            borderRadius: '12px',
-                            color: '#fff',
-                            fontSize: '12px'
-                        }}
-                        formatter={(value: any, name: string) => [
-                            name === 'expense' ? formatCurrency(value) : value,
-                            name === 'expense' ? 'Pengeluaran' : 'Frekuensi'
-                        ]}
+                    <ChartTooltip
+                        content={<ChartTooltipContent indicator="dot" />}
                         labelFormatter={(label) => format(parseISO(label as string), 'dd MMM yyyy')}
                     />
                     {/* Volume Bars (Frequency) */}
-                    <Bar yAxisId="right" dataKey="count" name="count" fill="#e4e4e7" barSize={8} radius={[2, 2, 0, 0]} className="dark:fill-zinc-800" />
+                    <Bar yAxisId="right" dataKey="count" fill="var(--color-count)" barSize={8} radius={[2, 2, 0, 0]} />
 
                     {/* Price Line (Amount) */}
                     <Area
                         yAxisId="left"
                         type="monotone"
                         dataKey="expense"
-                        name="expense"
-                        stroke="#3b82f6"
+                        stroke="var(--color-expense)"
                         strokeWidth={3}
                         fill="url(#expenseTrendFill)"
                     />
                 </ComposedChart>
-            </ResponsiveContainer>
+            </ChartContainer>
         </Card>
     );
 }

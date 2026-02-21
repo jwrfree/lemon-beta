@@ -8,13 +8,11 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    Tooltip,
     Legend,
-    ResponsiveContainer,
-    Area
 } from 'recharts';
 import { formatCurrency, cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 interface CashflowData {
     date: string;
@@ -27,6 +25,21 @@ interface CashflowData {
 interface CashflowComposedChartProps {
     data: CashflowData[];
 }
+
+const chartConfig = {
+    income: {
+        label: "Pemasukan",
+        color: "var(--success)",
+    },
+    expense: {
+        label: "Pengeluaran",
+        color: "var(--destructive)",
+    },
+    accumulatedNet: {
+        label: "Saldo Berjalan",
+        color: "var(--primary)",
+    },
+} satisfies ChartConfig;
 
 export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
     if (data.length === 0) {
@@ -49,26 +62,24 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
             </div>
 
             <div className="h-[350px] w-full text-xs">
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer config={chartConfig} className="h-full w-full">
                     <ComposedChart
                         data={data}
                         margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} opacity={0.5} />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.5} />
                         <XAxis
                             dataKey="date"
                             tickFormatter={(str) => {
                                 const date = parseISO(str);
                                 return format(date, 'd MMM');
                             }}
-                            stroke="#71717a"
                             tickLine={false}
                             axisLine={false}
                             dy={10}
                         />
                         <YAxis
                             yAxisId="left"
-                            stroke="#71717a"
                             tickFormatter={(value) => `${value / 1000}k`}
                             tickLine={false}
                             axisLine={false}
@@ -77,63 +88,32 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
                         <YAxis
                             yAxisId="right"
                             orientation="right"
-                            stroke="#3b82f6"
                             tickFormatter={(value) => `${value / 1000}k`}
                             tickLine={false}
                             axisLine={false}
                             dx={10}
                         />
-                        <Tooltip
-                            content={({ active, payload, label }) => {
-                                if (active && payload && payload.length) {
-                                    return (
-                                        <div className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-800 text-sm">
-                                            <p className="font-medium mb-2">{format(parseISO(label), 'EEEE, d MMMM yyyy')}</p>
-                                            <div className="space-y-1">
-                                                <div className="flex justify-between gap-8 text-emerald-600">
-                                                    <span>Income:</span>
-                                                    <span className="font-mono font-medium">
-                                                        +{formatCurrency(payload.find(p => p.dataKey === 'income')?.value as number || 0)}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between gap-8 text-rose-500">
-                                                    <span>Expense:</span>
-                                                    <span className="font-mono font-medium">
-                                                        -{formatCurrency(payload.find(p => p.dataKey === 'expense')?.value as number || 0)}
-                                                    </span>
-                                                </div>
-                                                <div className="border-t border-zinc-200 dark:border-zinc-800 my-2 pt-2 flex justify-between gap-8 text-blue-500">
-                                                    <span>Net Balance:</span>
-                                                    <span className="font-mono font-medium">
-                                                        {formatCurrency(payload.find(p => p.dataKey === 'accumulatedNet')?.value as number || 0)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                                return null;
-                            }}
+                        <ChartTooltip
+                            content={<ChartTooltipContent indicator="dot" />}
                         />
                         <Legend wrapperStyle={{ paddingTop: '20px' }} />
 
                         {/* Bars for Flow */}
-                        <Bar yAxisId="left" dataKey="income" name="Pemasukan" fill="#10b981" radius={[4, 4, 0, 0]} barSize={20} fillOpacity={0.8} />
-                        <Bar yAxisId="left" dataKey="expense" name="Pengeluaran" fill="#f43f5e" radius={[4, 4, 0, 0]} barSize={20} fillOpacity={0.8} />
+                        <Bar yAxisId="left" dataKey="income" fill="var(--color-income)" radius={[4, 4, 0, 0]} barSize={20} fillOpacity={0.8} />
+                        <Bar yAxisId="left" dataKey="expense" fill="var(--color-expense)" radius={[4, 4, 0, 0]} barSize={20} fillOpacity={0.8} />
 
                         {/* Line for Stock (Net Worth Trend) */}
                         <Line
                             yAxisId="right"
                             type="monotone"
                             dataKey="accumulatedNet"
-                            name="Saldo Berjalan"
-                            stroke="#3b82f6"
+                            stroke="var(--color-accumulatedNet)"
                             strokeWidth={3}
                             dot={false}
-                            activeDot={{ r: 6, strokeWidth: 0 }}
+                            activeDot={{ r: 6, strokeWidth: 0, fill: "var(--color-accumulatedNet)" }}
                         />
                     </ComposedChart>
-                </ResponsiveContainer>
+                </ChartContainer>
             </div>
         </div>
     );

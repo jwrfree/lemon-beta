@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Wallet } from '@/types/models';
+import { transactionEvents } from '@/lib/transaction-events';
+import type { Transaction, Wallet } from '@/types/models';
 import { walletService } from '@/lib/services/wallet-service';
 
 interface WalletContextType {
@@ -58,7 +59,7 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         fetchWallets();
-        
+
         // Listen for real database changes to keep in sync
         const channel = supabase
             .channel('wallets-global-sync')
@@ -69,15 +70,43 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
             )
             .subscribe();
 
-        return () => { supabase.removeChannel(channel); };
-    }, [user, supabase, fetchWallets]);
+        // -----------------------------------------------------
+        // TRANSACTION EVENT LISTENER (Optimistic Sync)
+        // -----------------------------------------------------
+        const handleTxCreated = (tx: Transaction) => {
+            updateWalletOptimistically(tx.walletId, tx.amount, tx.type);
+        };
+
+        const handleTxUpdated = (tx: Transaction) => {
+            // For simplicity, we just refetch wallets to ensure accuracy on updates
+            // as we don't know the delta easily here.
+            fetchWallets();
+        };
+
+        const handleTxDeleted = (txId: string) => {
+            // Similarly for delete, we need to know the amount to revert.
+            // Refetching is safer.
+            fetchWallets();
+        };
+
+        transactionEvents.on('transaction.created', handleTxCreated);
+        transactionEvents.on('transaction.updated', handleTxUpdated);
+        transactionEvents.on('transaction.deleted', handleTxDeleted);
+
+        return () => {
+            supabase.removeChannel(channel);
+            transactionEvents.off('transaction.created', handleTxCreated);
+            transactionEvents.off('transaction.updated', handleTxUpdated);
+            transactionEvents.off('transaction.deleted', handleTxDeleted);
+        };
+    }, [user, supabase, fetchWallets, updateWalletOptimistically]);
 
     return (
-        <WalletContext.Provider value={{ 
-            wallets, 
-            isLoading: isLoading || authLoading, 
+        <WalletContext.Provider value={{
+            wallets,
+            isLoading: isLoading || authLoading,
             updateWalletOptimistically,
-            refreshWallets: fetchWallets 
+            refreshWallets: fetchWallets
         }}>
             {children}
         </WalletContext.Provider>

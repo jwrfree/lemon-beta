@@ -1,10 +1,13 @@
+'use client';
+
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter as useNextRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Debt, DebtInput, DebtPayment, DebtPaymentInput } from '@/types/models';
+import type { Debt, DebtInput, DebtPayment, DebtPaymentInput, Transaction } from '@/types/models';
 import { debtService } from '@/lib/services/debt-service';
+import { transactionEvents } from '@/lib/transaction-events';
 
 export const useDebts = () => {
     const { user, isLoading: appLoading } = useAuth();
@@ -55,73 +58,154 @@ export const useDebts = () => {
 
     const addDebt = useCallback(async (debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");
+        
+        // Optimistic Add
+        const tempId = `temp-${Date.now()}`;
+        const newDebt: Debt = {
+            id: tempId,
+            userId: user.id,
+            ...debtData,
+            status: 'active', // Default
+            payments: [],
+            createdAt: new Date().toISOString()
+        } as Debt;
+
+        setDebts(prev => [newDebt, ...prev]);
+        setIsDebtModalOpen(false);
+
         try {
             await debtService.addDebt(user.id, debtData);
             showToast("Catatan hutang/piutang dibuat!", 'success');
             setDebtToEdit(null);
-            setIsDebtModalOpen(false);
-            fetchDebts();
+            // fetchDebts handled by subscription
         } catch (err) {
+            setDebts(prev => prev.filter(d => d.id !== tempId)); // Revert
             showToast("Gagal membuat catatan hutang/piutang.", 'error');
         }
-    }, [user, showToast, setIsDebtModalOpen, setDebtToEdit, fetchDebts]);
+    }, [user, showToast, setIsDebtModalOpen, setDebtToEdit]);
 
     const updateDebt = useCallback(async (debtId: string, debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");
+
+        // Optimistic Update
+        const previousDebts = [...debts];
+        setDebts(prev => prev.map(d => d.id === debtId ? { ...d, ...debtData } : d));
+        setIsDebtModalOpen(false);
+
         try {
             await debtService.updateDebt(debtId, debtData);
             showToast("Catatan hutang/piutang diperbarui.", 'success');
             setDebtToEdit(null);
-            setIsDebtModalOpen(false);
-            fetchDebts();
+            // fetchDebts handled by subscription
         } catch (err) {
+            setDebts(previousDebts); // Revert
             showToast("Gagal memperbarui catatan.", 'error');
         }
-    }, [user, showToast, setIsDebtModalOpen, setDebtToEdit, fetchDebts]);
+    }, [user, debts, showToast, setIsDebtModalOpen, setDebtToEdit]);
 
     const deleteDebt = useCallback(async (debtId: string) => {
         if (!user) throw new Error("User not authenticated.");
+        
+        // Optimistic Delete
+        const previousDebts = [...debts];
+        setDebts(prev => prev.filter(d => d.id !== debtId));
+        setIsDebtModalOpen(false);
+
         try {
             await debtService.deleteDebt(debtId);
             showToast("Catatan hutang/piutang dihapus.", 'info');
             setDebtToEdit(null);
-            setIsDebtModalOpen(false);
-            setDebts(prev => prev.filter(d => d.id !== debtId));
         } catch (err) {
+            setDebts(previousDebts); // Revert
             showToast("Gagal menghapus catatan.", 'error');
         }
-    }, [user, showToast, setIsDebtModalOpen, setDebtToEdit]);
+    }, [user, debts, showToast, setIsDebtModalOpen, setDebtToEdit]);
 
     const markDebtSettled = useCallback(async (debtId: string) => {
         if (!user) throw new Error("User not authenticated.");
+        
+        // Optimistic Settle
+        const previousDebts = [...debts];
+        setDebts(prev => prev.map(d => d.id === debtId ? { ...d, status: 'settled', outstandingBalance: 0 } : d));
+
         try {
             await debtService.settleDebt(debtId);
             showToast("Hutang/piutang ditandai lunas.", 'success');
-            setDebts(prev => prev.map(d => d.id === debtId ? { ...d, status: 'settled', outstandingBalance: 0 } : d));
         } catch (err) {
+            setDebts(previousDebts); // Revert
             showToast("Gagal update status.", 'error');
         }
-    }, [user, showToast]);
+    }, [user, debts, showToast]);
 
     const logDebtPayment = useCallback(async (debtId: string, paymentData: DebtPaymentInput) => {
         if (!user) throw new Error("User not authenticated.");
+        
+        // 1. Optimistic Debt Update
+        const targetDebt = debts.find(d => d.id === debtId);
+        if (!targetDebt) return;
+
+        const paymentAmount = paymentData.amount;
+        const newOutstanding = Math.max(0, targetDebt.outstandingBalance - paymentAmount);
+        const newStatus = newOutstanding <= 0 ? 'settled' : targetDebt.status;
+        
+        const previousDebts = [...debts];
+        setDebts(prev => prev.map(d => {
+            if (d.id === debtId) {
+                return {
+                    ...d,
+                    outstandingBalance: newOutstanding,
+                    status: newStatus
+                };
+            }
+            return d;
+        }));
+
+        setIsDebtPaymentModalOpen(false);
+
         try {
             await debtService.payDebt(user.id, debtId, paymentData);
             showToast("Pembayaran berhasil dicatat!", 'success');
             setDebtForPayment(null);
-            setIsDebtPaymentModalOpen(false);
-            fetchDebts();
+            
+            // 2. Emit Transaction Event (because payDebt creates a transaction!)
+            // We construct a fake transaction to update the UI immediately
+            if (paymentData.walletId) {
+                const isOwed = targetDebt.direction === 'owed';
+                const type = isOwed ? 'income' : 'expense'; // Paying debt = expense, Receiving owed = income? Wait.
+                // Paying 'owing' (Hutang) -> Expense.
+                // Receiving 'owed' (Piutang) -> Income.
+                // Logic check:
+                // direction 'owing' (Me owe someone) -> I pay -> Expense. Correct.
+                // direction 'owed' (Someone owes me) -> They pay -> I receive -> Income. Correct.
+                
+                const txType = targetDebt.direction === 'owing' ? 'expense' : 'income';
+                
+                const optimisticTx: Transaction = {
+                    id: `temp-pay-${Date.now()}`,
+                    amount: paymentAmount,
+                    category: targetDebt.direction === 'owing' ? 'Bayar Hutang' : 'Terima Piutang',
+                    date: paymentData.paymentDate ? new Date(paymentData.paymentDate).toISOString() : new Date().toISOString(),
+                    description: `Pembayaran ${targetDebt.title}`,
+                    type: txType,
+                    walletId: paymentData.walletId,
+                    userId: user.id
+                };
+                
+                transactionEvents.emit('transaction.created', optimisticTx);
+            }
+
         } catch (err) {
+            setDebts(previousDebts); // Revert
             showToast("Gagal mencatat pembayaran.", 'error');
         }
-    }, [user, showToast, setDebtForPayment, setIsDebtPaymentModalOpen, fetchDebts]);
+    }, [user, debts, showToast, setDebtForPayment, setIsDebtPaymentModalOpen]);
 
     const deleteDebtPayment = useCallback(async (debtId: string, paymentId: string) => {
         if (!user) throw new Error("User not authenticated.");
         try {
             await debtService.deleteDebtPayment(user.id, debtId, paymentId);
             showToast("Pencatatan pembayaran dihapus.", 'info');
-            fetchDebts();
+            fetchDebts(); // Re-fetch is safer here as calculating revert amount needs lookup
         } catch (err) {
             showToast("Gagal menghapus pembayaran.", 'error');
         }

@@ -25,6 +25,7 @@ interface ActionContextType {
     updateWallet: (walletId: string, walletData: Partial<Wallet>) => Promise<void>;
     deleteWallet: (walletId: string) => Promise<void>;
     addTransfer: (data: TransferPayload) => Promise<void>;
+    reconcileWallet: (walletId: string, currentBalance: number, targetBalance: number) => Promise<void>;
     addCategory: (category: Partial<Category>) => Promise<void>;
     updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
@@ -44,32 +45,34 @@ export const ActionProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = useAuth();
 
     const { addTransaction, updateTransaction, deleteTransaction } = useTransactionActions(user);
-    const { addWallet, updateWallet, deleteWallet } = useWalletActions(user);
+    const { addWallet, updateWallet, deleteWallet, reconcileWallet } = useWalletActions(user);
     const { addTransfer } = useTransferActions(user);
     const { addCategory, updateCategory, deleteCategory } = useCategoryActions(user);
 
     const contextValue = useMemo(() => ({
-        addTransaction, 
-        updateTransaction, 
-        deleteTransaction, 
-        addWallet, 
-        updateWallet, 
-        deleteWallet, 
+        addTransaction,
+        updateTransaction,
+        deleteTransaction,
+        addWallet,
+        updateWallet,
+        deleteWallet,
         addTransfer,
         addCategory,
         updateCategory,
-        deleteCategory
+        deleteCategory,
+        reconcileWallet
     }), [
-        addTransaction, 
-        updateTransaction, 
-        deleteTransaction, 
-        addWallet, 
-        updateWallet, 
-        deleteWallet, 
+        addTransaction,
+        updateTransaction,
+        deleteTransaction,
+        addWallet,
+        updateWallet,
+        deleteWallet,
         addTransfer,
         addCategory,
         updateCategory,
-        deleteCategory
+        deleteCategory,
+        reconcileWallet
     ]);
 
     return (

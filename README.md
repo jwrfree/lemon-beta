@@ -1,17 +1,17 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.3.1** · Patch Release · February 2021
+> **v2.4.3** · Massive Merchant Map Expansion · February 2026
 
-Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.3.1 delivers a critical **"Data Integrity & Atomic Sync"** patch.
+Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.4.3 introduces a **comprehensive merchant branding engine** with hundreds of pre-mapped Indonesian and global brands.
 
 ## ✨ Key Highlights & Recent Updates
-- **Security & Balance Integrity:** Moving critical logic to database triggers and RPCs to ensure 100% accurate balances and resource ownership.
-- **Deep Financial Analytics:** 4 new data layers: *Net Worth Trend* (6-month tracking), *Saving Potential* (Efficiency metrics), *Behavior Analytics* (Weekday vs Weekend patterns), and *Subscription Audit*.
-- **Premium UI/UX Fidelity:** Implementation of *Skeleton Screens*, *Haptic Feedback*, and success celebration animations providing a "High-End" app sensation.
+- **Massive Merchant Map Expansion:** Hundreds of Indonesian (Pertamina, Richeese, Erigo, etc.) and global (AWS, OpenAI, Spotify, etc.) brands are now automatically detected with their official logos and colors.
+- **Smart Keyword Recognition:** Not just brands! Lemon now detects product keywords like *"serum"*, *"bensin"*, *"servis motor"*, and *"pajak"* to auto-assign fitting visual branding.
+- **Enterprise Desktop UI:** High-density, borderless "Command Center" aesthetic for the wallet and assets view, optimized for professional efficiency.
+- **Balance Correction Tool:** One-tap reconciliation to sync app balances with real-world values via automated adjustment transactions.
 - **Optimistic Updates:** Instant UI response (zero-latency) when recording transactions—balance numbers update before server confirmation completes.
-- **Elite PWA Experience:** Self-install support via an elegant "Install Lemon" module in settings and a robust offline mode.
-- **Modular Architecture (Clean Code):** Major refactoring of transaction modules into *Service Layers* and *Custom Hooks* for long-term reliability.
-- **AI Smart Add 2.0:** Super-fast recording with natural language now supports bulk transaction detection and granular categories (Sub-Categories).
+- **AI Smart Add 2.0:** Super-fast recording with natural language now supports bulk transaction detection and granular sub-categories.
+
 - **Desktop UI/UX Overhaul (Assets & Wallets):** Redesigned desktop asset management page with gradient summary cards and enterprise-grade visual hierarchy.
 
 *For complete technical details, please see [CHANGELOG.md](./CHANGELOG.md).*

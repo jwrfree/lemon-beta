@@ -16,11 +16,18 @@ import { PageHeader } from '@/components/page-header';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getAssetCategoryInfo } from '@/features/assets/constants';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import type { Asset, Liability } from '@/types/models';
 
 type AssetOrLiabilityWithMeta = (Asset & { type: 'asset' }) | (Liability & { type: 'liability' });
 type AssetOrLiabilityFormInitialData = (Partial<Asset> & { type: 'asset' }) | (Partial<Liability> & { type: 'liability' });
+
+const chartConfig = {
+    assets: {
+        label: "Aset",
+    },
+} satisfies ChartConfig;
 
 export default function AssetsLiabilitiesPage() {
     const { assets, liabilities, goldPrice } = useAssets();
@@ -138,7 +145,7 @@ export default function AssetsLiabilitiesPage() {
                             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-4 self-start">Distribusi Aset</p>
                             <div className="w-full h-[180px]">
                                 {totals.chartData.length > 0 ? (
-                                    <ResponsiveContainer width="100%" height="100%">
+                                    <ChartContainer config={chartConfig} className="h-full w-full">
                                         <PieChart>
                                             <Pie
                                                 data={totals.chartData}
@@ -148,18 +155,19 @@ export default function AssetsLiabilitiesPage() {
                                                 outerRadius={75}
                                                 paddingAngle={5}
                                                 dataKey="value"
+                                                nameKey="name"
                                                 stroke="none"
                                             >
                                                 {totals.chartData.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={entry.color} />
                                                 ))}
                                             </Pie>
-                                            <Tooltip
-                                                formatter={(value: number) => formatCurrency(value)}
-                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                                            <ChartTooltip 
+                                                cursor={false}
+                                                content={<ChartTooltipContent indicator="dot" formatter={(value) => formatCurrency(Number(value))} />}
                                             />
                                         </PieChart>
-                                    </ResponsiveContainer>
+                                    </ChartContainer>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs italic">
                                         Belum ada data

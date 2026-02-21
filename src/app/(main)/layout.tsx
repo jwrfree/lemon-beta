@@ -17,6 +17,7 @@ import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { EditTransactionSheet } from '@/features/transactions/components/edit-transaction-sheet';
+import { SmartAddOverlay } from '@/features/transactions/components/smart-add-overlay';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
@@ -66,6 +67,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         debtForPayment,
         setDebtForPayment,
         isSidebarCollapsed,
+        isSmartAddOpen,
+        setIsSmartAddOpen,
     } = useUI();
 
     const { deleteTransaction } = useActions();
@@ -164,6 +167,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         />
                     )}
                 </AnimatePresence>
+
+                <SmartAddOverlay isOpen={isSmartAddOpen} onClose={() => setIsSmartAddOpen(false)} />
 
                 <div className="md:hidden">
                     {showBottomNav && <BottomNavigation />}

@@ -3,9 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import type { MonthlyMetric } from '../types';
+
+const chartConfig = {
+    income: {
+        label: "Pemasukan",
+        color: "var(--success)",
+    },
+    expense: {
+        label: "Pengeluaran",
+        color: "var(--destructive)",
+    },
+} satisfies ChartConfig;
 
 export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
     const [mounted, setMounted] = useState(false);
@@ -29,38 +41,29 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
                     <p className="text-xs text-muted-foreground">Pemasukan vs Pengeluaran</p>
                 </div>
             </div>
-            <ResponsiveContainer width="100%" height={240}>
+            <ChartContainer config={chartConfig} className="h-[240px] w-full">
                 <BarChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" className="dark:stroke-zinc-800" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
                     <XAxis
                         dataKey="month"
-                        stroke="#9ca3af"
                         fontSize={10}
                         axisLine={false}
                         tickLine={false}
                     />
                     <YAxis
-                        stroke="#9ca3af"
                         fontSize={10}
                         tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
                         axisLine={false}
                         tickLine={false}
                     />
-                    <Tooltip
+                    <ChartTooltip
                         cursor={{ fill: 'transparent' }}
-                        contentStyle={{
-                            backgroundColor: '#18181b',
-                            border: '1px solid #27272a',
-                            borderRadius: '12px',
-                            color: '#fff',
-                            fontSize: '12px'
-                        }}
-                        formatter={(value: any) => formatCurrency(value)}
+                        content={<ChartTooltipContent indicator="dot" />}
                     />
-                    <Bar dataKey="income" name="Pemasukan" fill="#10b981" radius={[4, 4, 0, 0]} barSize={12} />
-                    <Bar dataKey="expense" name="Pengeluaran" fill="#f43f5e" radius={[4, 4, 0, 0]} barSize={12} />
+                    <Bar dataKey="income" fill="var(--color-income)" radius={[4, 4, 0, 0]} barSize={12} />
+                    <Bar dataKey="expense" fill="var(--color-expense)" radius={[4, 4, 0, 0]} barSize={12} />
                 </BarChart>
-            </ResponsiveContainer>
+            </ChartContainer>
         </Card>
     );
 }

@@ -1,20 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction, TransactionRow } from '@/types/models';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 
-export const useMonthTransactions = (date: Date = new Date()) => {
+export const useMonthTransactions = (date?: Date) => {
     const { user, isLoading: authLoading } = useAuth();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
 
+    // Memoize the target date to avoid recreating it on every render if not provided
+    const targetDate = useMemo(() => date || new Date(), [date ? date.getTime() : null]);
+
     const fetchMonthTransactions = useCallback(async () => {
         if (!user) return;
-        
-        const start = format(startOfMonth(date), 'yyyy-MM-dd');
-        const end = format(endOfMonth(date), 'yyyy-MM-dd');
+
+        const start = format(startOfMonth(targetDate), 'yyyy-MM-dd');
+        const end = format(endOfMonth(targetDate), 'yyyy-MM-dd');
 
         try {
             const { data, error } = await supabase
@@ -48,11 +51,11 @@ export const useMonthTransactions = (date: Date = new Date()) => {
         } finally {
             setIsLoading(false);
         }
-    }, [user, date, supabase]);
+    }, [user, targetDate, supabase]);
 
     useEffect(() => {
         if (!user) {
-            setTransactions([]);
+            setTransactions(prev => prev.length > 0 ? [] : prev);
             setIsLoading(false);
             return;
         }
@@ -61,11 +64,11 @@ export const useMonthTransactions = (date: Date = new Date()) => {
 
         const channel = supabase
             .channel('month-transactions-changes')
-            .on('postgres_changes', { 
-                event: '*', 
-                schema: 'public', 
-                table: 'transactions', 
-                filter: `user_id=eq.${user.id}` 
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'transactions',
+                filter: `user_id=eq.${user.id}`
             }, () => fetchMonthTransactions())
             .subscribe();
 

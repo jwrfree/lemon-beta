@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import React from 'react';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, Landmark, ShieldCheck } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 interface NetWorthData {
     month: string;
@@ -14,6 +14,12 @@ interface NetWorthData {
     liabilities: number;
     netWorth: number;
 }
+
+const chartConfig = {
+    netWorth: { label: 'Kekayaan Bersih', color: 'var(--chart-1)' },
+    assets: { label: 'Total Aset', color: 'var(--chart-2)' },
+    liabilities: { label: 'Total Liabilitas', color: 'var(--chart-4)' },
+} satisfies ChartConfig;
 
 export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const currentNetWorth = data.length > 0 ? data[data.length - 1].netWorth : 0;
@@ -39,8 +45,8 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         {formatCurrency(currentNetWorth)}
                     </p>
                     <Badge
-                        variant={growth >= 0 ? "default" : "destructive"}
-                        className={cn("mt-1 rounded-md", growth >= 0 && "bg-success hover:bg-success/90")}
+                        variant={growth >= 0 ? "success" : "destructive"}
+                        className="mt-1 rounded-md"
                     >
                         <TrendingUp className={cn("w-3 h-3 mr-1", growth < 0 && "rotate-180")} />
                         {growth >= 0 ? '+' : ''}{growth.toFixed(1)}%
@@ -49,46 +55,41 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
             </div>
 
             <div className="h-[300px] w-full mt-4">
-                <ChartContainer
-                    config={{
-                        netWorth: { label: 'Kekayaan Bersih', color: 'var(--chart-1)' },
-                        assets: { label: 'Total Aset', color: 'var(--chart-2)' },
-                        liabilities: { label: 'Total Liabilitas', color: 'var(--chart-4)' },
-                    }}
-                >
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
-                            <XAxis
-                                dataKey="month"
-                                axisLine={false}
-                                tickLine={false}
-                                tickMargin={10}
-                                style={{ fontSize: '12px', fontWeight: 500, fill: 'hsl(var(--muted-foreground))' }}
-                            />
-                            <YAxis
-                                hide
-                            />
-                            <Tooltip
-                                content={<ChartTooltipContent formatter={(value) => formatCurrency(Number(value))} />}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="netWorth"
-                                stroke="var(--chart-1)"
-                                strokeWidth={4}
-                                fillOpacity={1}
-                                fill="url(#netWorthGradient)"
-                                animationDuration={1500}
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
+                <ChartContainer config={chartConfig} className="h-full w-full">
+                    <AreaChart
+                        accessibilityLayer
+                        data={data}
+                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                    >
+                        <defs>
+                            <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="var(--color-netWorth)" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="var(--color-netWorth)" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
+                        <XAxis
+                            dataKey="month"
+                            axisLine={false}
+                            tickLine={false}
+                            tickMargin={10}
+                            tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+                        />
+                        <YAxis hide />
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent indicator="line" formatter={(value) => formatCurrency(Number(value))} />}
+                        />
+                        <Area
+                            dataKey="netWorth"
+                            type="monotone"
+                            stroke="var(--color-netWorth)"
+                            strokeWidth={4}
+                            fillOpacity={1}
+                            fill="url(#netWorthGradient)"
+                            activeDot={{ r: 6, strokeWidth: 0, fill: "var(--color-netWorth)" }}
+                        />
+                    </AreaChart>
                 </ChartContainer>
             </div>
 

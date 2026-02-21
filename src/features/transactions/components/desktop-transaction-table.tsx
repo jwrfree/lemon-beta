@@ -148,7 +148,11 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             {/* 3. Kategori (Terpisah) */}
             <TableCell>
                 <div className="flex flex-col">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-secondary px-2 py-0.5 rounded-lg w-fit border border-border">
+                    <span className={cn(
+                        "text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-lg w-fit border border-transparent bg-opacity-50",
+                        categoryData.color,
+                        categoryData.bg_color || "bg-secondary"
+                    )}>
                         {t.category}
                     </span>
                     {t.subCategory && (

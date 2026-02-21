@@ -10,7 +10,7 @@ export const useWalletActions = (user: User | null) => {
 
     const addWallet = useCallback(async (walletData: WalletInput) => {
         if (!user) throw new Error("User not authenticated.");
-        
+
         const { error } = await supabase.from('wallets').insert({
             name: walletData.name,
             balance: walletData.balance || 0,
@@ -21,15 +21,15 @@ export const useWalletActions = (user: User | null) => {
         });
 
         if (error) {
-             ui.showToast("Gagal membuat dompet.", 'error');
-             return;
+            ui.showToast("Gagal membuat dompet.", 'error');
+            return;
         }
 
         ui.showToast("Dompet berhasil dibuat!", 'success');
         ui.setIsWalletModalOpen(false);
     }, [user, ui, supabase]);
 
-     const updateWallet = useCallback(async (walletId: string, walletData: Partial<Wallet>) => {
+    const updateWallet = useCallback(async (walletId: string, walletData: Partial<Wallet>) => {
         if (!user) throw new Error("User not authenticated.");
 
         if (walletData.isDefault === true) {
@@ -41,7 +41,7 @@ export const useWalletActions = (user: User | null) => {
                 return;
             }
         }
-        
+
         const { isDefault, ...rest } = walletData;
         const updateData: Record<string, unknown> = { ...rest };
         if (isDefault !== undefined) updateData.is_default = isDefault;
@@ -52,14 +52,14 @@ export const useWalletActions = (user: User | null) => {
             ui.showToast("Gagal memperbarui dompet.", 'error');
             return;
         }
-        
+
         ui.showToast("Dompet berhasil diperbarui!", 'success');
         ui.setIsEditWalletModalOpen(false);
     }, [user, ui, supabase]);
 
     const deleteWallet = useCallback(async (walletId: string) => {
         if (!user) throw new Error("User not authenticated.");
-        
+
         // 1. Check for Transactions
         const { count: txCount, error: txError } = await supabase
             .from('transactions')
@@ -105,9 +105,42 @@ export const useWalletActions = (user: User | null) => {
         ui.setIsEditWalletModalOpen(false);
     }, [user, ui, supabase]);
 
+    const reconcileWallet = useCallback(async (walletId: string, currentBalance: number, targetBalance: number) => {
+        if (!user) throw new Error("User not authenticated.");
+
+        const difference = targetBalance - currentBalance;
+        if (difference === 0) return;
+
+        const type = difference > 0 ? 'income' : 'expense';
+        const absAmount = Math.abs(difference);
+
+        // Create adjustment transaction via RPC
+        const { error } = await supabase.rpc('create_transaction_v1', {
+            p_user_id: user.id,
+            p_wallet_id: walletId,
+            p_amount: absAmount,
+            p_category: 'Penyesuaian Saldo',
+            p_sub_category: 'Koreksi',
+            p_date: new Date().toISOString(),
+            p_description: `Koreksi Saldo (Target: ${targetBalance})`,
+            p_type: type,
+            p_is_need: false
+        });
+
+        if (error) {
+            console.error("[useWalletActions] Reconcile Error:", error);
+            ui.showToast(`Gagal koreksi saldo: ${error.message}`, 'error');
+            return;
+        }
+
+        ui.showToast("Saldo berhasil dikoreksi!", 'success');
+        ui.setIsEditWalletModalOpen(false);
+    }, [user, ui, supabase]);
+
     return {
         addWallet,
         updateWallet,
-        deleteWallet
+        deleteWallet,
+        reconcileWallet
     };
 };

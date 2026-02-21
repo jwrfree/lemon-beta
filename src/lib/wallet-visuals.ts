@@ -21,6 +21,7 @@ const itemCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textColor
     'cash': { name: 'Tunai', Icon: Wallet },
     // Assets
     'investment': { name: 'Investasi', Icon: TrendingUp },
+    'investasi': { name: 'Investasi', Icon: TrendingUp },
     'property': { name: 'Properti', Icon: Home },
     // Liabilities & Paylater
     'loan': { name: 'Pinjaman', Icon: Building },
@@ -155,6 +156,8 @@ export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): Wa
         'bank': { from: '#10b981', to: '#047857' },
         'cash': { from: '#f97316', to: '#c2410c' },
         'investment': { from: '#10b981', to: '#047857' },
+        'investasi': { from: '#10b981', to: '#047857' },
+        'paylater': { from: '#0ea5e9', to: '#0369a1' },
         'property': { from: '#2563eb', to: '#1e3a8a' },
         'loan': { from: '#ef4444', to: '#991b1b' },
         'credit-card': { from: '#f97316', to: '#9a3412' },

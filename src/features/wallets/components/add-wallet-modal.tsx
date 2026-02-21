@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wallet, Landmark, Smartphone, ArrowLeft, CircleDollarSign, Loader2 } from 'lucide-react';
+import { X, Wallet, Landmark, Smartphone, ArrowLeft, CircleDollarSign, Loader2, TrendingUp } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +23,8 @@ const popularWallets: Record<string, string[]> = {
 const walletCategories = [
   { key: 'e-wallet', name: 'E-Wallet', Icon: Smartphone },
   { key: 'bank', name: 'Bank', Icon: Landmark },
+  { key: 'paylater', name: 'Paylater', Icon: Smartphone },
+  { key: 'investasi', name: 'Investasi', Icon: TrendingUp },
   { key: 'cash', name: 'Tunai', Icon: Wallet },
   { key: 'other', name: 'Lainnya', Icon: CircleDollarSign },
 ];

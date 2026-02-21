@@ -21,12 +21,23 @@ export const BottomNavigation = () => {
         isDebtModalOpen,
         isDebtPaymentModalOpen,
         isSmartAddOpen,
+        setIsSmartAddOpen,
     } = useUI();
 
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'statistik', href: '/charts', icon: PieChart, name: 'Statistik' },
-        { id: 'add', href: '/add-smart', icon: Sparkles, name: 'Smart', primary: true },
+        { 
+            id: 'add', 
+            href: '/add-smart', // Keep for fallback or SEO, but onClick will override
+            icon: Sparkles, 
+            name: 'Smart', 
+            primary: true,
+            onClick: (e: React.MouseEvent) => {
+                e.preventDefault();
+                setIsSmartAddOpen(true);
+            }
+        },
         { id: 'rencana', href: '/plan', icon: NotebookPen, name: 'Rencana' },
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
@@ -70,7 +81,10 @@ export const BottomNavigation = () => {
                                             <Link
                                                 href={item.href}
                                                 prefetch={false}
-                                                onClick={() => triggerHaptic('medium')}
+                                                onClick={(e) => {
+                                                    triggerHaptic('medium');
+                                                    if (item.onClick) item.onClick(e);
+                                                }}
                                                 className={cn(
                                                     'flex items-center justify-center rounded-full h-12 w-12 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
                                                 )}

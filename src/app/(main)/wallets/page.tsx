@@ -102,8 +102,8 @@ export default function WalletsPage() {
 
                 <TabsContent value="analitik" className="mt-0">
                   {activeWallet && (
-                    <WalletAnalyticsMobile 
-                      transactions={walletTransactions} 
+                    <WalletAnalyticsMobile
+                      transactions={walletTransactions}
                     />
                   )}
                 </TabsContent>
@@ -126,7 +126,7 @@ export default function WalletsPage() {
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:flex flex-col h-full">
+      <div className="hidden md:flex flex-col min-h-screen">
         <PageHeader
           title="Dompet Kamu"
           extraActions={
@@ -139,7 +139,7 @@ export default function WalletsPage() {
             </div>
           }
         />
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1">
           {wallets.length === 0 ? (
             <main className="flex h-full items-center justify-center p-8 bg-background">
               <div className="max-w-md w-full p-12 bg-card rounded-lg shadow-2xl border border-border text-center relative overflow-hidden">

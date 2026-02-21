@@ -10,14 +10,12 @@ import { transactionEvents } from '@/lib/transaction-events';
 
 export const useTransactionActions = (user: User | null) => {
     const ui = useUI();
-    const { updateWalletOptimistically, refreshWallets } = useWalletData();
+    const { refreshWallets } = useWalletData();
 
     const addTransaction = useCallback(async (data: TransactionInput) => {
         if (!user) return;
 
-        // 1. Optimistic Update
-        updateWalletOptimistically(data.walletId, data.amount, data.type as 'expense' | 'income');
-
+        // 1. Optimistic Update (Handled by Event Listener in WalletProvider)
         const optimisticTransaction: Transaction = {
             id: `temp-${Date.now()}`,
             amount: Number(data.amount),
@@ -66,15 +64,14 @@ export const useTransactionActions = (user: User | null) => {
 
         ui.setIsTxModalOpen(false);
         ui.showToast("Transaksi berhasil ditambahkan!", 'success');
-    }, [user, ui, updateWalletOptimistically, refreshWallets]);
+    }, [user, ui, refreshWallets]);
 
     const updateTransaction = useCallback(async (transactionId: string, oldData: Transaction, newData: TransactionUpdate) => {
         if (!user) throw new Error("User not authenticated.");
 
-        // 1. Optimistic Revert Old + Apply New
-        updateWalletOptimistically(oldData.walletId, oldData.amount, oldData.type === 'income' ? 'expense' : 'income');
-        updateWalletOptimistically(newData.walletId, newData.amount, newData.type as 'income' | 'expense');
-
+        // 1. Optimistic Update (Handled by Event Listener in WalletProvider)
+        // We emit the new state; the listener handles re-fetching or delta updates.
+        
         const optimisticTransaction: Transaction = {
             ...oldData,
             ...newData,
@@ -111,13 +108,12 @@ export const useTransactionActions = (user: User | null) => {
         ui.setIsTxModalOpen(false);
         ui.setTransactionToEdit(null);
 
-    }, [user, ui, updateWalletOptimistically, refreshWallets]);
+    }, [user, ui, refreshWallets]);
 
     const deleteTransaction = useCallback(async (transaction: Transaction) => {
         if (!user || !transaction) return;
 
-        // 1. Optimistic Revert
-        updateWalletOptimistically(transaction.walletId, transaction.amount, transaction.type === 'income' ? 'expense' : 'income');
+        // 1. Optimistic Revert (Handled by Event Listener)
         transactionEvents.emit('transaction.deleted', transaction.id);
 
         const result = await transactionService.deleteTransaction(user.id, transaction.id);
@@ -137,7 +133,7 @@ export const useTransactionActions = (user: User | null) => {
         });
 
         ui.showToast("Transaksi berhasil dihapus!", 'success');
-    }, [user, ui, updateWalletOptimistically, refreshWallets]);
+    }, [user, ui, refreshWallets]);
 
     return {
         addTransaction,

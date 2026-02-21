@@ -21,8 +21,9 @@ import { z } from 'zod';
 // ...
 
 export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClose: () => void }) => {
-  const { updateWallet, deleteWallet } = useActions();
+  const { reconcileWallet, updateWallet, deleteWallet } = useActions();
   const { showToast } = useUI();
+  const [correctionValue, setCorrectionValue] = useState('');
 
   const form = useForm<z.input<typeof walletSchema>>({
     resolver: zodResolver(walletSchema) as any,
@@ -43,6 +44,19 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
       await updateWallet(wallet.id, { name: values.name, isDefault: values.isDefault });
     } catch (error) {
       showToast("Gagal memperbarui dompet.", 'error');
+      console.error(error);
+    }
+  };
+
+  const handleReconcile = async () => {
+    if (!correctionValue) return;
+    const targetBalance = parseInt(correctionValue.replace(/[^0-9]/g, ''));
+    if (isNaN(targetBalance)) return;
+
+    try {
+      await reconcileWallet(wallet.id, wallet.balance, targetBalance);
+      onClose();
+    } catch (error) {
       console.error(error);
     }
   };
@@ -83,47 +97,47 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
           <h2 className="text-xl font-medium">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="wallet-name" className={cn(errors.name && "text-destructive")}>Nama Dompet</Label>
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  id="wallet-name"
-                  disabled={wallet.name === 'Tunai'}
-                  className={cn(errors.name && "border-destructive")}
-                />
-              )}
-            />
-            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
-          </div>
-
-          <div className="flex items-center justify-between rounded-lg border p-3">
-            <div className="space-y-0.5">
-              <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
-              <p className="text-xs text-muted-foreground">
-                Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
-              </p>
+        <div className="p-4 space-y-6 overflow-y-auto max-h-[80vh]">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="wallet-name" className={cn(errors.name && "text-destructive")}>Nama Dompet</Label>
+              <Controller
+                control={control}
+                name="name"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="wallet-name"
+                    disabled={wallet.name === 'Tunai'}
+                    className={cn(errors.name && "border-destructive")}
+                  />
+                )}
+              />
+              {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
             </div>
-            <Controller
-              control={control}
-              name="isDefault"
-              render={({ field }) => (
-                <Switch
-                  id="is-default"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              )}
-            />
-          </div>
 
-          <p className="text-xs text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div className="space-y-0.5">
+                <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
+                <p className="text-xs text-muted-foreground">
+                  Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
+                </p>
+              </div>
+              <Controller
+                control={control}
+                name="isDefault"
+                render={({ field }) => (
+                  <Switch
+                    id="is-default"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
 
-          <div className="flex flex-col gap-3 pt-4">
+            <p className="text-xs text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
+
             <Button type="submit" className="w-full" disabled={isSubmitting || !hasChanges}>
               {isSubmitting ? (
                 <>
@@ -134,6 +148,43 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                 'Simpan Perubahan'
               )}
             </Button>
+          </form>
+
+          {/* BALANCE CORRECTION SECTION */}
+          <div className="space-y-3 pt-6 border-t border-border">
+            <div className="space-y-1">
+              <Label className="text-sm font-medium text-primary">Koreksi Saldo</Label>
+              <p className="text-[10px] text-muted-foreground leading-normal">
+                Gunakan ini jika saldo di aplikasi berbeda dengan saldo asli. Lemon akan membuat transaksi penyesuaian otomatis.
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  placeholder="Saldo yang benar..."
+                  value={correctionValue}
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                    setCorrectionValue(rawValue ? new Intl.NumberFormat('id-ID').format(parseInt(rawValue)) : '');
+                  }}
+                  className="bg-muted/50 border-none h-11"
+                />
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={!correctionValue || isSubmitting}
+                onClick={handleReconcile}
+                className="h-11 px-6 font-medium"
+              >
+                Koreksi
+              </Button>
+            </div>
+          </div>
+
+          {/* DANGER AREA */}
+          <div className="pt-2">
             {wallet.name !== 'Tunai' && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -167,7 +218,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
               </AlertDialog>
             )}
           </div>
-        </form>
+        </div>
       </motion.div>
     </motion.div>
   );

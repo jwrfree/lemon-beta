@@ -1,11 +1,15 @@
 # Lemon Mobile Blueprint
 
-## 0. Current Status – v2.3.1 (February 2026)
-- **Status:** Hotfix Applied.
-- **Fokus rilis:** Perbaikan bug kritikal *double-counting* saldo dan sinkronisasi atomik penghapusan pembayaran hutang.
-- **Highlight baru:** Arsitektur "Single Source of Truth" untuk balance yang kini 100% bergantung pada database trigger, bukan lagi campuran manual di RPC.
+## 0. Current Status – v2.4.3 (February 2026)
+- **Status:** Integrated.
+- **Fokus rilis:** Ekspansi masif **Merchant Branding Engine** dan visualisasi kategori yang lebih kaya.
+- **Highlight baru:** Ratusan pemetaan brand lokal (Pertamina, Richeese, Erigo) dan global, serta sistem deteksi kata kunci produk (serum, bensin, dll) untuk otomatisasi visual yang lebih presisi.
 
-## 0.1 Release Snapshot – v2.3.0 (February 2026)
+## 0.1 Previous Snapshot – v2.4.1 (February 2026)
+- **Status:** Integrated.
+- **Fokus rilis:** Perluasan ekosistem dompet (**Paylater** & **Investasi**) dan visualisasi "Command Center" di Desktop.
+- **Highlight baru:** Arsitektur filter dompet yang lebih granular, deteksi brand otomatis (Smart Logo/Theme), dan fitur **Koreksi Saldo** untuk rekonsiliasi data yang akurat.
+
 - **Status:** Released.
 - **Fokus rilis:** Memperkuat keamanan dan integritas data melalui validasi sisi server (RPC & Triggers), optimasi indexing database, serta peningkatan kualitas kode (Type Safety).
 - **Highlight baru:** Atomic transaction ownership, pencegahan *double-counting* saldo, indexing $O(log n)$, serta refaktor form menggunakan React Hook Form & Zod.

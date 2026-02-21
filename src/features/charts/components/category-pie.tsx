@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
+import { PieChart, Pie, Cell, Sector, Label } from 'recharts';
 import { formatCurrency, cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 interface MetricData {
     name: string;
@@ -35,6 +36,13 @@ const INCOME_COLORS = [
     '#6ee7b7', // emerald-300
     '#a7f3d0', // emerald-200
 ];
+
+// Config is required for ChartContainer, even if simple
+const chartConfig = {
+    amount: {
+        label: "Jumlah",
+    },
+} satisfies ChartConfig;
 
 const renderActiveShape = (props: any) => {
     const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, value } = props;
@@ -98,8 +106,12 @@ export function CategoryPie({ data, total, type }: CategoryPieProps) {
             animate={{ opacity: 1, scale: 1 }}
             className="h-[300px] w-full relative"
         >
-            <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer config={chartConfig} className="h-full w-full">
                 <PieChart>
+                    <ChartTooltip 
+                        cursor={false} 
+                        content={<ChartTooltipContent hideLabel />} 
+                    />
                     <Pie
                         activeIndex={activeIndex}
                         activeShape={renderActiveShape}
@@ -118,7 +130,7 @@ export function CategoryPie({ data, total, type }: CategoryPieProps) {
                         ))}
                     </Pie>
                 </PieChart>
-            </ResponsiveContainer>
+            </ChartContainer>
         </motion.div>
     );
 }

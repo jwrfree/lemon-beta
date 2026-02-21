@@ -8,9 +8,7 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    Tooltip,
     Legend,
-    ResponsiveContainer,
     ReferenceLine
 } from 'recharts';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -19,6 +17,7 @@ import { AlertCircle, BrainCircuit } from 'lucide-react';
 import { generateForecast, DataPoint } from '@/lib/prediction-engine';
 import { Transaction } from '@/types/models';
 import { Scatter } from 'recharts';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
 
 interface ProphetChartProps {
     transactions: Transaction[];
@@ -26,6 +25,25 @@ interface ProphetChartProps {
     historyEnd: Date;
     forecastDays?: number;
 }
+
+const chartConfig = {
+    actual: {
+        label: "Actual",
+        color: "var(--success)",
+    },
+    forecast: {
+        label: "Forecast",
+        color: "var(--primary)",
+    },
+    upperBound: {
+        label: "Upper Bound",
+        color: "var(--primary)",
+    },
+    lowerBound: {
+        label: "Lower Bound",
+        color: "var(--primary)",
+    },
+} satisfies ChartConfig;
 
 export function ProphetChart({ transactions, historyStart, historyEnd, forecastDays = 30 }: ProphetChartProps) {
     const data = useMemo(() => {
@@ -72,38 +90,36 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
             </div>
 
             <div className="h-[350px] w-full text-xs relative z-10">
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer config={chartConfig} className="h-full w-full">
                     <ComposedChart
                         data={data}
                         margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                     >
                         <defs>
                             <linearGradient id="confidenceGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#a855f7" stopOpacity={0.2} />
-                                <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
+                                <stop offset="5%" stopColor="var(--color-forecast)" stopOpacity={0.2} />
+                                <stop offset="95%" stopColor="var(--color-forecast)" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" vertical={false} opacity={0.3} />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
                         <XAxis
                             dataKey="date"
                             tickFormatter={(str) => {
                                 const date = parseISO(str);
                                 return format(date, 'd MMM');
                             }}
-                            stroke="#71717a"
                             tickLine={false}
                             axisLine={false}
                             dy={10}
                             minTickGap={30}
                         />
                         <YAxis
-                            stroke="#71717a"
                             tickFormatter={(value) => `${value / 1000}k`}
                             tickLine={false}
                             axisLine={false}
                             dx={-10}
                         />
-                        <Tooltip
+                        <ChartTooltip
                             content={({ active, payload, label }) => {
                                 if (active && payload && payload.length) {
                                     const item = payload[0].payload;
@@ -153,30 +169,21 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
 
                         {/* Reference Line for "Today" */}
                         {lastActual && (
-                            <ReferenceLine x={lastActual.date} stroke="#a855f7" strokeDasharray="3 3" label={{ value: 'Today', position: 'top', fill: '#a855f7', fontSize: 10 }} />
+                            <ReferenceLine x={lastActual.date} stroke="var(--color-forecast)" strokeDasharray="3 3" label={{ value: 'Today', position: 'top', fill: 'var(--color-forecast)', fontSize: 10 }} />
                         )}
 
-                        {/* Confidence Interval Area (Only show for forecast range ideally, but Recharts handles nulls well usually) */}
                         <Area
                             type="monotone"
                             dataKey="upperBound"
-                            data={data} // Pass full data, but only points with bounds will render
+                            data={data}
                             stroke="none"
                             fill="url(#confidenceGradient)"
                             fillOpacity={1}
-                            baseLine={-10000000} // Hacky active base line? No, Area chart usually needs range.
-                        // We need a proper Area range chart. Recharts helps with <Area dataKey="range" /> if data is formatted [min, max],
-                        // OR we stack two areas. Let's keep it simple: Just shade below UpperBound? or better: Composed range?
-                        // Recharts doesn't support "RangeArea" easily in ComposedChart without tricks.
-                        // Trick: Area with 'lowerBound' as baseline?
-                        // Recharts <Area> takes `baseValue`.
-                        // Alternative: Use ErrorBar? No.
-                        // Let's just draw the bounds as thin lines for now to avoid complexity or visual clutter.
                         />
                         <Line
                             type="monotone"
                             dataKey="upperBound"
-                            stroke="#a855f7"
+                            stroke="var(--color-upperBound)"
                             strokeWidth={1}
                             strokeDasharray="2 2"
                             dot={false}
@@ -187,7 +194,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                         <Line
                             type="monotone"
                             dataKey="lowerBound"
-                            stroke="#a855f7"
+                            stroke="var(--color-lowerBound)"
                             strokeWidth={1}
                             strokeDasharray="2 2"
                             dot={false}
@@ -200,7 +207,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                         <Line
                             type="monotone"
                             dataKey="forecast"
-                            stroke="#a855f7"
+                            stroke="var(--color-forecast)"
                             strokeWidth={3}
                             strokeDasharray="5 5"
                             dot={false}
@@ -212,9 +219,9 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                         <Line
                             type="monotone"
                             dataKey="actual"
-                            stroke="#10b981" // Emerald for actual positive history visual
+                            stroke="var(--color-actual)"
                             strokeWidth={3}
-                            dot={{ r: 3, fill: '#10b981' }}
+                            dot={{ r: 3, fill: 'var(--color-actual)' }}
                             name="Historical Data"
                         />
 
@@ -228,7 +235,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                             animationBegin={1000}
                         />
                     </ComposedChart>
-                </ResponsiveContainer>
+                </ChartContainer>
             </div>
 
             <div className="flex items-start gap-2 mt-4 p-3 bg-purple-50 dark:bg-purple-900/10 rounded-xl text-xs text-purple-700 dark:text-purple-300 border border-purple-100 dark:border-purple-800/20">

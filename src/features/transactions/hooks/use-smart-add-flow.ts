@@ -377,7 +377,7 @@ export const useSmartAddFlow = () => {
 
     const saveTransaction = useCallback(async (andAddAnother = false) => {
         if (!parsedData) return;
-        setPageState('ANALYZING');
+        // setPageState('ANALYZING'); // Removed to prevent UI jump. Loading handled by caller.
         try {
             // Check if it's a transfer
             if (parsedData.category === 'Transfer' && parsedData.sourceWallet && parsedData.destinationWallet) {
@@ -415,7 +415,7 @@ export const useSmartAddFlow = () => {
 
     const saveMultiTransactions = useCallback(async () => {
         if (multiParsedData.length === 0) return;
-        setPageState('ANALYZING');
+        // setPageState('ANALYZING'); // Removed.
         try {
             for (const tx of multiParsedData) {
                 await addTransaction(tx);

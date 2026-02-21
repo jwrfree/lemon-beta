@@ -2,6 +2,27 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.3] - 21 February 2026
+
+### 🏷️ Massive Merchant Visual Map Extension
+- **Comprehensive Indonesian Branding**: Added hundreds of local favorites across:
+  - **F&B**: Richeese Factory, Waroeng Steak, Mie Gacoan, Kopi Tuku, Point Coffee, Duck/Bebek Kaleyo, etc.
+  - **Fashion**: Erigo, 3Second, Roughneck 1991, The Executive, Cardinal.
+  - **Footwear**: Ventela, Compass, Aerostreet, Brodo.
+  - **Health & Beauty**: Kahf, Azarine, Skintific, Wardah, Somethinc, Avoskin, Scarlett.
+- **Global & Tech Ecosystem**:
+  - **Dev & Infra**: Alibaba Cloud, Hostinger, Vercel, AWS, GitHub, Cloudflare.
+  - **Digital Services**: ChatGPT, Midjourney, Disney+, Noton, Slack.
+  - **Electronics**: Samsung, Sony, Polytron, Intel, NVIDIA, RTX, Ryzen.
+- **Daily Utilities & Public Services**:
+  - **Fuel**: Pertamina (Pertalite/Pertamax), Shell, BP, Vivo.
+  - **Gov**: Samsat (STNK), PBB, BPJS, Pajak, Paspor (using new `ShieldCheck` icon).
+  - **Transport**: MRT, LRT, KRL, TransJakarta, Garuda, AirAsia.
+- **Smart Cataloging**:
+  - Added support for **Generic Keywords**: Automatically brands transactions containing "serum", "facewash", "skincare", "bensin", "bengkel", "obat", etc.
+  - Expanded icon library with 20+ new Lucide icons for high-fidelity visual representation.
+
+
 ## [Version 2.4.2] - 21 February 2026
 
 ### 🎨 Design System Standardization
