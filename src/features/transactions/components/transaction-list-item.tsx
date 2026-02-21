@@ -11,6 +11,8 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
 import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl } from '@/lib/merchant-utils';
 
+import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
+
 interface TransactionListItemProps {
     transaction: Transaction;
     wallets: Wallet[];
@@ -22,7 +24,6 @@ const TransactionListItemContent = ({
     transaction,
     wallets,
     getCategoryVisuals,
-    hideDate
 }: TransactionListItemProps) => {
     const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
@@ -30,6 +31,7 @@ const TransactionListItemContent = ({
     // Merchant Intelligence Logic
     const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
     const categoryVisuals = getCategoryVisuals(transaction.category);
+    const dna = getVisualDNA(extractBaseColor(categoryVisuals.color));
 
     // Multi-tier Fallback State: clearbit -> logodev -> icon
     const [logoSource, setLogoSource] = React.useState<'clearbit' | 'logodev' | 'icon'>('clearbit');
@@ -48,18 +50,23 @@ const TransactionListItemContent = ({
     const iconBg = merchantVisuals?.bgColor || categoryVisuals.bgColor;
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-destructive' : 'text-success';
+    const amountColor = isExpense ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400';
 
     return (
         <div className={cn(
-            "flex items-center gap-4 p-3.5 transition-colors",
-            isExpense && transaction.amount >= 1000000 && "bg-destructive/[0.03]"
+            "flex items-center gap-4 p-4 transition-colors relative overflow-hidden",
+            isExpense && transaction.amount >= 1000000 && "bg-rose-500/[0.03]"
         )}>
+            {/* Dynamic DNA Stripe */}
+            <div 
+                className="absolute left-0 top-0 bottom-0 w-1 opacity-60" 
+                style={{ background: dna.primary }}
+            />
+
             <div className={cn(
-                "flex-shrink-0 h-10 w-10 rounded-lg flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm",
+                "flex-shrink-0 h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm border border-border/20",
                 iconBg
             )}>
-                {/* Logo rendering logic... */}
                 {clearbitLogo && logoSource === 'clearbit' && (
                     <img
                         src={clearbitLogo}
@@ -77,17 +84,17 @@ const TransactionListItemContent = ({
                     />
                 )}
                 {(logoSource === 'icon' || !merchantVisuals?.domain) && (
-                    <DefaultIcon className={cn("h-5 w-5", iconColor)} />
+                    <DefaultIcon className={cn("h-5 w-5", iconColor)} strokeWidth={2.5} />
                 )}
             </div>
             <div className="flex-1 overflow-hidden">
-                <div className="font-semibold text-foreground text-sm leading-tight mb-1 tracking-tight">
+                <div className="font-bold text-foreground text-sm leading-tight mb-1.5 tracking-tight">
                     {transaction.description || transaction.category}
                 </div>
-                <div className="text-[9px] font-bold text-muted-foreground/50 flex items-center gap-1.5 flex-wrap uppercase tracking-widest">
+                <div className="text-[9px] font-bold text-muted-foreground/40 flex items-center gap-2 flex-wrap uppercase tracking-widest">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-primary bg-primary/10 px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold">
+                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-2 py-0.5 rounded-full text-[8px] font-bold border border-primary/10 shadow-sm">
                             <ShoppingBag className="h-2 w-2 fill-current" />
                             Want
                         </span>
@@ -95,21 +102,21 @@ const TransactionListItemContent = ({
                     <span className="truncate max-w-[80px]">
                         {transaction.category}
                     </span>
-                    {transaction.subCategory && <span className="opacity-40">•</span>}
+                    {transaction.subCategory && <span className="opacity-30">•</span>}
                     {transaction.subCategory && (
                         <span className="truncate max-w-[80px]">{transaction.subCategory}</span>
                     )}
-                    {wallet && <span className="opacity-40">•</span>}
+                    {wallet && <span className="opacity-30">•</span>}
                     {wallet && <span>{wallet?.name || '-'}</span>}
                 </div>
             </div>
             <div className="flex flex-col items-end gap-1">
                 <div
                     className={cn(
-                        "text-sm font-semibold tracking-tighter tabular-nums",
+                        "text-[15px] font-bold tracking-tighter tabular-nums",
                         amountColor,
                         !isBalanceVisible && 'blur-sm transition-all duration-300',
-                        isExpense && transaction.amount >= 1000000 && "text-base"
+                        isExpense && transaction.amount >= 1000000 && "text-lg"
                     )}
                     aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
                 >
@@ -119,7 +126,7 @@ const TransactionListItemContent = ({
                     </span>
                 </div>
                 {isExpense && transaction.amount >= 1000000 && (
-                    <span className="text-[8px] font-bold bg-destructive/10 text-destructive px-1 rounded uppercase tracking-widest">Large</span>
+                    <span className="text-[8px] font-bold bg-rose-500/10 text-rose-600 px-1.5 rounded-full uppercase tracking-widest border border-rose-500/10">Large Item</span>
                 )}
             </div>
         </div>

@@ -33,113 +33,114 @@ export const RiskScoreCard = () => {
 
     const levels = {
         Low: {
-            color: 'text-emerald-500',
-            bg: 'bg-emerald-500/10',
-            border: 'border-emerald-500/20',
-            glow: 'shadow-emerald-500/10',
-            desc: 'Kesehatan Aman'
+            color: 'text-emerald-400',
+            bg: 'bg-[#064e3b]',
+            accent: 'bg-emerald-500/20',
+            glow: 'rgba(16, 185, 129, 0.3)',
+            desc: 'Stable Flux'
         },
         Moderate: {
-            color: 'text-amber-500',
-            bg: 'bg-amber-500/10',
-            border: 'border-amber-500/20',
-            glow: 'shadow-amber-500/10',
-            desc: 'Waspada Momentum'
+            color: 'text-amber-400',
+            bg: 'bg-[#451a03]',
+            accent: 'bg-amber-500/20',
+            glow: 'rgba(245, 158, 11, 0.3)',
+            desc: 'Moderate Drift'
         },
         Critical: {
-            color: 'text-rose-500',
-            bg: 'bg-rose-500/10',
-            border: 'border-rose-500/20',
-            glow: 'shadow-rose-500/10',
-            desc: 'Risiko Tinggi'
+            color: 'text-rose-400',
+            bg: 'bg-[#450a0a]',
+            accent: 'bg-rose-500/20',
+            glow: 'rgba(244, 63, 94, 0.3)',
+            desc: 'High Burn Risk'
         }
     };
 
     const config = levels[risk.level];
 
     return (
-        <Card className={cn(
-            "relative overflow-hidden border-none shadow-xl transition-all duration-500",
-            config.bg,
-            config.glow
-        )}>
-            <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 translate-x-4 -translate-y-4">
+        <Card 
+            className={cn(
+                "relative overflow-hidden border-none shadow-2xl transition-all duration-500 rounded-[32px] text-white",
+                config.bg
+            )}
+            style={{ boxShadow: `0 20px 50px -12px ${config.glow}` }}
+        >
+            <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 translate-x-4 -translate-y-4">
                 <Sparkles className="h-40 w-40" />
             </div>
+            <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl"></div>
 
-            <div className="p-6 space-y-6 relative z-10">
+            <div className="p-7 space-y-8 relative z-10">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className={cn("p-2 rounded-xl bg-white dark:bg-zinc-900 border", config.border)}>
-                            <TrendingUp className={cn("h-5 w-5", config.color)} />
+                    <div className="flex items-center gap-4">
+                        <div className={cn("p-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-inner")}>
+                            <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40">Financial Co-Pilot</p>
-                            <h3 className="text-lg font-bold tracking-tight">Status Momentum</h3>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Flux Momentum</p>
+                            <h3 className="text-xl font-bold tracking-tighter text-white">Co-Pilot Insight</h3>
                         </div>
                     </div>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={refreshInsights}
-                        className="h-8 w-8 hover:bg-white/20 rounded-full"
+                        className="h-10 w-10 hover:bg-white/10 rounded-full border border-white/5 backdrop-blur-sm"
                     >
-                        <RefreshCw className="h-3.5 w-3.5 opacity-40" />
+                        <RefreshCw className="h-4 w-4 text-white/40" />
                     </Button>
                 </div>
 
-                <div className="flex items-end justify-between gap-4">
-                    <div className="space-y-4 flex-1">
-                        <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                                <span className={cn("text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br",
-                                    risk.level === 'Low' ? 'from-emerald-400 to-emerald-600' :
-                                        risk.level === 'Moderate' ? 'from-amber-400 to-amber-600' :
-                                            'from-rose-400 to-rose-600'
-                                )}>
+                <div className="flex items-end justify-between gap-6">
+                    <div className="space-y-6 flex-1">
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-3">
+                                <span className={cn("text-5xl font-black tracking-tighter tabular-nums drop-shadow-sm", config.color)}>
                                     {risk.level}
                                 </span>
+                                <div className="h-2 w-2 rounded-full bg-white/20 animate-ping" />
                             </div>
-                            <p className="text-sm font-medium opacity-60 leading-relaxed">
+                            <p className="text-sm font-semibold text-white/70 leading-relaxed italic pr-4">
                                 "{risk.insight}"
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 pt-2">
-                            <div className="p-3 rounded-xl bg-white/40 dark:bg-black/20 border border-white/40 dark:border-white/5">
-                                <p className="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1">Burn Rate</p>
-                                <p className="text-xs font-bold tabular-nums">{formatCurrency(risk.burnRate)}/h</p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 rounded-[24px] bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
+                                <p className="text-[9px] font-bold uppercase tracking-widest text-white/40 mb-1.5">Burn Velocity</p>
+                                <p className="text-sm font-bold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
-                            <div className="p-3 rounded-xl bg-white/40 dark:bg-black/20 border border-white/40 dark:border-white/5">
-                                <p className="text-[9px] font-bold uppercase tracking-widest opacity-40 mb-1">Velocity</p>
-                                <p className="text-xs font-bold tabular-nums">{(risk.velocity * 100).toFixed(0)}% dari normal</p>
+                            <div className="p-4 rounded-[24px] bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
+                                <p className="text-[9px] font-bold uppercase tracking-widest text-white/40 mb-1.5">Momentum</p>
+                                <p className="text-sm font-bold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-[8px] font-medium opacity-40">RATIO</span></p>
                             </div>
                         </div>
                     </div>
 
                     <div className="hidden sm:block shrink-0">
-                        {/* Simple Visual Score Indicator */}
-                        <div className="h-24 w-2 w-2 relative bg-black/10 rounded-full overflow-hidden">
+                        {/* Vertical Score Bar */}
+                        <div className="h-32 w-2 relative bg-white/10 rounded-full overflow-hidden shadow-inner">
                             <motion.div
                                 initial={{ height: 0 }}
                                 animate={{ height: `${risk.score}%` }}
-                                className={cn("absolute bottom-0 left-0 w-full rounded-full transition-all duration-1000",
-                                    risk.level === 'Low' ? 'bg-emerald-500' :
-                                        risk.level === 'Moderate' ? 'bg-amber-500' :
-                                            'bg-rose-500'
+                                className={cn("absolute bottom-0 left-0 w-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(255,255,255,0.3)]",
+                                    risk.level === 'Low' ? 'bg-emerald-400' :
+                                        risk.level === 'Moderate' ? 'bg-amber-400' :
+                                            'bg-rose-400'
                                 )}
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest opacity-40 pt-2 border-t border-black/5">
-                    <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>Real-time Risk Analysis Enabled</span>
+                <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                        <div className="h-1 w-1 rounded-full bg-white/40" />
+                        <span>Adaptive Risk Engine Active</span>
                     </div>
                 </div>
             </div>
         </Card>
+    );
     );
 };

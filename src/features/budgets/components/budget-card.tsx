@@ -13,6 +13,8 @@ import type { Budget, Transaction } from '@/types/models';
 
 import { calculateBudgetStats } from '@/features/budgets/logic';
 
+import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
+
 export const BudgetCard = ({ budget, transactions }: { budget: Budget, transactions: Transaction[] }) => {
     const { getCategoryVisuals } = useCategories();
     const router = useRouter();
@@ -25,43 +27,45 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
     const daysInMonthValue = daysInMonth(now);
     const daysPassedPercentage = (now.getDate() / daysInMonthValue) * 100;
 
-    // 3. Visual Configuration (Minimalist Weight)
+    // 2. DNA Identity
+    const firstCategory = budget.categories[0] || 'Lainnya';
+    const categoryVisuals = getCategoryVisuals(firstCategory);
+    const dna = getVisualDNA(extractBaseColor(categoryVisuals.color));
+    const CategoryIcon = categoryVisuals.icon as React.ElementType;
+
+    // 3. Visual Configuration (Health Overrides)
     const healthStyles = {
         stable: {
-            bar: 'bg-primary',
-            glow: 'shadow-[0_0_15px_rgba(13,148,136,0.2)]',
-            text: 'text-primary',
-            bg: 'bg-primary/5',
-            label: 'Aman'
+            bar: 'bg-white',
+            glow: 'shadow-[0_0_15px_rgba(255,255,255,0.3)]',
+            text: 'text-white',
+            bg: 'bg-white/20',
+            label: 'On Track'
         },
         warning: {
-            bar: 'bg-yellow-400',
-            glow: 'shadow-[0_0_15px_rgba(253,224,71,0.3)]',
-            text: 'text-yellow-600 dark:text-yellow-400',
-            bg: 'bg-yellow-400/5',
-            label: 'Mulai Menipis'
+            bar: 'bg-yellow-300',
+            glow: 'shadow-[0_0_15px_rgba(253,224,71,0.4)]',
+            text: 'text-yellow-300',
+            bg: 'bg-yellow-400/20',
+            label: 'Running Low'
         },
         critical: {
-            bar: 'bg-rose-500',
-            glow: 'shadow-[0_0_15px_rgba(244,63,94,0.3)]',
-            text: 'text-rose-600 dark:text-rose-400',
-            bg: 'bg-rose-500/5',
-            label: 'Bahaya'
+            bar: 'bg-rose-400',
+            glow: 'shadow-[0_0_15px_rgba(244,63,94,0.4)]',
+            text: 'text-rose-300',
+            bg: 'bg-rose-500/20',
+            label: 'Warning'
         },
         over: {
-            bar: 'bg-rose-600',
-            glow: 'shadow-[0_0_20px_rgba(225,29,72,0.4)]',
-            text: 'text-rose-700 dark:text-rose-300',
-            bg: 'bg-rose-600/10',
-            label: 'Overbudget'
+            bar: 'bg-rose-500',
+            glow: 'shadow-[0_0_20px_rgba(225,29,72,0.5)]',
+            text: 'text-rose-200',
+            bg: 'bg-rose-600/30',
+            label: 'Exceeded'
         }
     } as const;
 
     const currentHealth = healthStyles[healthStatus];
-
-    const firstCategory = budget.categories[0] || 'Lainnya';
-    const visuals = getCategoryVisuals(firstCategory);
-    const CategoryIcon = visuals.icon as React.ElementType;
 
     const handleCardClick = () => {
         triggerHaptic('light');
@@ -80,100 +84,84 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 onClick={handleCardClick}
                 className="w-full h-full text-left focus:outline-none group"
             >
-                <Card className="h-full overflow-hidden border-none bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-xl transition-all duration-500">
-                    <div className="p-6 flex flex-col h-full space-y-6">
+                <Card 
+                    className="h-full overflow-hidden border-none rounded-[32px] shadow-2xl transition-all duration-500 relative"
+                    style={{ 
+                        background: dna.gradient,
+                        boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
+                    }}
+                >
+                    {/* Ambient Glows */}
+                    <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-3xl"></div>
+                    
+                    <div className="p-7 flex flex-col h-full space-y-6 relative z-10 text-white">
                         {/* Header: Identity & Status */}
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-4">
-                                <div className={cn("p-3 rounded-2xl border transition-colors", currentHealth.bg, "border-black/5 dark:border-white/5 shadow-sm")}>
-                                    <CategoryIcon className={cn("h-6 w-6", currentHealth.text)} />
+                                <div className={cn("p-3 rounded-[20px] backdrop-blur-xl border border-white/10 shadow-inner transition-all", currentHealth.bg)}>
+                                    <CategoryIcon className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                                 </div>
                                 <div className="space-y-0.5">
-                                    <h3 className="font-semibold text-lg tracking-tight leading-tight group-hover:text-primary transition-colors">{budget.name}</h3>
+                                    <h3 className="font-bold text-lg tracking-tight leading-tight group-hover:underline decoration-white/30">{budget.name}</h3>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border-muted-foreground/10 bg-muted/30">
-                                            {budget.categories.length} Kategori
-                                        </Badge>
-                                        <span className={cn("text-[10px] font-bold uppercase tracking-[0.2em] opacity-80", currentHealth.text)}>
+                                        <span className={cn("text-[9px] font-bold uppercase tracking-[0.2em] text-white/50")}>
                                             {currentHealth.label}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-10 w-10 rounded-full bg-muted/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <ChevronRight className="h-5 w-5 text-zinc-400" />
+                            <div className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10">
+                                <ChevronRight className="h-5 w-5 text-white/60" />
                             </div>
                         </div>
 
-                        {/* Middle: The Living Bar with Markers */}
+                        {/* Middle: The Living Bar */}
                         <div className="space-y-3 flex-1">
-                            <div className="flex justify-between items-end text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
-                                <span>Progres Belanja</span>
-                                <span className="tabular-nums">{Math.min(progress, 100).toFixed(0)}%</span>
+                            <div className="flex justify-between items-end text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+                                <span>Utilization</span>
+                                <span className="tabular-nums text-white/80">{Math.min(progress, 100).toFixed(0)}%</span>
                             </div>
-                            <div className="relative h-2.5 w-full bg-muted/50 rounded-full overflow-hidden">
+                            <div className="relative h-2 w-full bg-white/10 rounded-full overflow-hidden">
                                 <div
-                                    className="absolute top-0 bottom-0 w-0.5 bg-foreground/10 z-20"
+                                    className="absolute top-0 bottom-0 w-0.5 bg-white/20 z-20"
                                     style={{ left: `${Math.min(daysPassedPercentage, 100)}%` }}
                                 />
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${Math.min(progress, 100)}%` }}
                                     transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                                    className={cn("absolute inset-y-0 left-0 rounded-full transition-all duration-1000 z-10 shadow-sm", currentHealth.bar, currentHealth.glow)}
+                                    className={cn("absolute inset-y-0 left-0 rounded-full transition-all duration-1000 z-10", currentHealth.bar, currentHealth.glow)}
                                 >
-                                    <div className="absolute inset-0 opacity-10 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%,transparent)', backgroundSize: '0.8rem 0.8rem' }} />
+                                    <div className="absolute inset-0 opacity-20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.3) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.3) 75%,transparent 75%,transparent)', backgroundSize: '0.8rem 0.8rem' }} />
                                 </motion.div>
-                            </div>
-                            <div className="flex justify-between text-[8px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] px-1">
-                                <span>Start</span>
-                                <span style={{ marginLeft: `${Math.max(0, Math.min(daysPassedPercentage - 15, 70))}%` }}>Hari ke-{now.getDate()}</span>
-                                <span>End</span>
                             </div>
                         </div>
 
-                        {/* Footer: Projection & Numbers */}
-                        <div className="space-y-4">
+                        {/* Footer: Projection & Numbers (Glass Inset) */}
+                        <div className="space-y-4 bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">Status Saldo</p>
-                                    <div className="flex flex-col">
-                                        <p className={cn("text-xl font-bold tracking-tighter tabular-nums", remaining < 0 ? "text-rose-600" : "text-foreground")}>
-                                            {formatCurrency(remaining)}
-                                        </p>
-                                        <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-tight">
-                                            Sisa dari {formatCurrency(budget.targetAmount)}
-                                        </p>
-                                    </div>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-white/40">Residual</p>
+                                    <p className={cn("text-xl font-bold tracking-tighter tabular-nums text-white")}>
+                                        {formatCurrency(remaining)}
+                                    </p>
                                 </div>
                                 <div className="text-right space-y-1">
-                                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">Prediksi Habis</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-white/40">Burn Runway</p>
                                     <div className="flex items-center justify-end gap-1.5">
-                                        {remaining > 0 ? (
-                                            <>
-                                                <span className={cn("text-xs font-bold uppercase tracking-tight", currentHealth.text)}>
-                                                    {daysToZero === Infinity ? '∞' : `${daysToZero} Hari Lagi`}
-                                                </span>
-                                                <Flame className={cn("h-3.5 w-3.5", daysToZero <= 5 ? "text-orange-500 animate-pulse" : "text-muted-foreground/20")} />
-                                            </>
-                                        ) : (
-                                            <div className="flex items-center gap-1.5 text-rose-600">
-                                                <AlertCircle className="h-3.5 w-3.5" />
-                                                <span className="text-[10px] font-bold uppercase tracking-widest">Limit Habis</span>
-                                            </div>
-                                        )}
+                                        <span className={cn("text-xs font-bold uppercase tracking-tight text-white")}>
+                                            {daysToZero === Infinity ? '∞ Days' : `${daysToZero} Days`}
+                                        </span>
+                                        <Flame className={cn("h-3.5 w-3.5", daysToZero <= 5 ? "text-yellow-300 animate-pulse" : "text-white/20")} />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Safe Limit Badge */}
+                            {/* Safe Limit Inset */}
                             {remaining > 0 && (
-                                <div className={cn("flex items-center justify-between p-3.5 rounded-2xl bg-muted/30 border-none shadow-inner transition-all")}>
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">Jatah Aman Harian</span>
-                                    </div>
-                                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">
+                                <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                                    <span className="text-[8px] font-bold text-white/40 uppercase tracking-[0.2em]">Safe Daily Quota</span>
+                                    <span className="text-sm font-bold text-white tabular-nums tracking-tighter">
                                         {formatCurrency(safeDailyLimit)}
                                     </span>
                                 </div>
@@ -181,6 +169,11 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                         </div>
                     </div>
                 </Card>
+            </button>
+        </motion.div>
+    );
+};
+
             </button>
         </motion.div>
     );

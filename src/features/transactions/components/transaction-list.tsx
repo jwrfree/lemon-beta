@@ -39,17 +39,23 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
 
     if (finalTransactions.length === 0 && !isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center text-center py-12 px-4 border-2 border-dashed rounded-lg bg-muted/30">
-                <div className="p-4 bg-primary/10 rounded-full mb-4 animate-in zoom-in duration-300">
-                    <ReceiptText className="h-8 w-8 text-primary/80" strokeWidth={1.5} />
+            <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                {/* Ambient Glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16" />
+                
+                <div className="p-6 bg-primary/10 rounded-[24px] mb-6 relative z-10 shadow-inner">
+                    <ReceiptText className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-lg font-medium tracking-tight">Belum Ada Transaksi</h2>
-                <p className="text-sm text-muted-foreground mt-1 mb-6 max-w-[300px]">
-                    Semua catatan pengeluaran dan pemasukan kamu akan muncul di sini.
+                <h2 className="text-2xl font-bold tracking-tighter mb-2 relative z-10">Kosong Melompong</h2>
+                <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-8 max-w-[240px] leading-relaxed relative z-10">
+                    Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini.
                 </p>
-                <Button onClick={() => router.push('/add-smart')} className="active:scale-95 transition-transform shadow-lg">
-                    <PlusCircle className="mr-2 h-4 w-4" strokeWidth={2} />
-                    Catat Transaksi Pertama
+                <Button 
+                    onClick={() => router.push('/add-smart')} 
+                    className="rounded-full h-12 px-8 font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all relative z-10"
+                >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Mulai Catat
                 </Button>
             </div>
         );

@@ -1,130 +1,88 @@
 # Lemon Design System
-**Version 1.1.0 (Architecture & Apple-Inspired Fidelity)**
+**Version 1.2.0 (Architecture & Dynamic DNA UI)**
 
-Dokumen ini adalah sumber kebenaran (*Single Source of Truth*) untuk bahasa desain dan standar arsitektur aplikasi Lemon. Arah desain saat ini mengadopsi estetika **Apple (iOS/macOS)** dengan fondasi kode yang modular dan skalabel.
+Dokumen ini adalah sumber kebenaran (*Single Source of Truth*) untuk bahasa desain dan standar arsitektur aplikasi Lemon. Arah desain saat ini mengadopsi estetika **Apple Music & Spotify** yang kaya warna, dinamis, dan memiliki kedalaman visual yang imersif.
 
 ---
 
 ## 1. Filosofi Desain & Engineering
 
 ### Modularitas & Skalabilitas
-Setiap fitur harus dibangun sebagai modul independen yang dapat diperluas tanpa merusak fungsionalitas inti. Hindari *tight coupling* antar layer UI dan data.
+Setiap fitur dibangun sebagai modul independen. UI harus atomik (Atoms, Molecules, Organisms) dan logika bisnis terisolasi dalam hooks.
 
-### "Liquid Intelligence"
-Antarmuka harus terasa hidup, responsif, dan cerdas. Bukan sekadar formulir statis, melainkan asisten yang mengalir.
-*   **Fluidity:** Animasi halus (`spring` physics) dan transisi tanpa hambatan.
-*   **Intelligence:** UI beradaptasi dengan konteks (misal: logo merchant muncul otomatis).
-*   **Depth:** Menggunakan cahaya dan bayangan untuk hierarki, bukan garis batas yang kaku.
-
-### Pilar Visual (Apple-Inspired)
-1.  **Glassmorphism & Blur:** Penggunaan `backdrop-blur-xl` dan transparansi (`bg-white/90`) untuk memberikan konteks spasial.
-2.  **Typography-First:** Angka dan informasi utama ditampilkan besar dan tebal (*Hero Content*).
-3.  **Visual Depth:** Menghindari border garis (`border-border`) untuk elemen utama. Gunakan **Deep Shadows** (`shadow-2xl`) dan **Ambient Glow** untuk memisahkan elemen dari latar belakang.
-4.  **Rounded Organic:** Sudut yang sangat tumpul (`rounded-[32px]` atau `rounded-3xl`) untuk kesan ramah dan modern.
+### "Dynamic DNA"
+Setiap item (Wallet, Category, Goal) memiliki identitas visual unik. UI harus beradaptasi secara dinamis berdasarkan data item tersebut, menciptakan antarmuka yang terasa personal dan tidak membosankan.
+*   **Vibrant Fidelity:** Menggunakan warna cerah namun terkontrol dengan pendaran cahaya (*ambient glow*).
+*   **Fluidity:** Animasi transisi antar-elemen yang terasa organik menggunakan *spring physics*.
+*   **Visual Depth:** Menghindari garis batas kaku (borderless), mengandalkan elevasi bayangan dan gradien.
 
 ---
 
-## 2. Token Visual
+## 2. Token Visual & Estetika "Dynamic"
 
-### Warna (Semantic Tokens)
-Menggunakan variabel CSS HSL untuk dukungan mode gelap otomatis.
+### Dynamic Backgrounds (Apple Music Style)
+Kartu utama wajib menggunakan latar belakang dinamis yang mengikuti warna identitas data.
 
-| Token | Deskripsi | Penggunaan |
+| Teknik | Deskripsi | Implementasi Tailwind |
 | :--- | :--- | :--- |
-| `primary` | Teal (`--teal-600`) | Aksi utama, brand identity, elemen aktif. |
-| `destructive` | Rose (`--rose-600`) | Error, penghapusan, pengeluaran (expense). |
-| `success` | Emerald (`--emerald-600`) | Berhasil, pemasukan (income), status positif. |
-| `warning` | Yellow (`--yellow-600`) | Peringatan, status tertunda. |
-| `background` | Slate-50 / Slate-950 | Latar belakang aplikasi utama. |
-| `card` | White / Slate-900 | Kontainer konten (Cards, Modals). |
+| **Mesh Gradients** | Campuran gradien halus dengan lingkaran cahaya tak beraturan. | `bg-gradient-to-br from-color-500 via-color-600 to-color-800` |
+| **Ambient Glow** | Lingkaran cahaya blur di pojok kartu yang memberikan tekstur. | `blur-3xl opacity-20 rounded-full` di dalam `overflow-hidden` |
+| **Contrast Protection** | Lapisan transparan untuk menjaga keterbacaan teks. | `bg-white/5` atau `bg-black/10` dengan `backdrop-blur-md` |
 
-### Tipografi
-*   **Font Family:** `Inter` (UI) & `Geist Mono` (Angka/Data).
-*   **Tracking (Letter Spacing):**
-    *   `tracking-tighter`: Untuk *Hero Numbers* (Saldo, Total Transaksi) agar terlihat padat dan menyatu.
-    *   `tracking-widest`: Untuk *Micro-labels* (KATEGORI, TANGGAL) agar mudah dipindai pada ukuran kecil.
+**Aturan Main:**
+*   **Sync with Data:** Warna kartu "Hiburan" harus Pink, "Investasi" harus Emerald, dsb.
+*   **Colored Shadows:** Bayangan kartu wajib memiliki rona warna yang sama dengan latar belakang kartu (`shadow-color/20`).
+*   **Glass Insets:** Gunakan kontainer internal semi-transparan di dalam kartu untuk mengelompokkan data detail.
 
-### Radius (Shape)
-*   `rounded-full`: Tombol aksi, kapsul kategori, avatar.
-*   `rounded-[32px]` (3xl): Kartu utama (Result Card, Dashboard Card).
-*   `rounded-[24px]` (2xl): Input fields, elemen sekunder.
-*   `rounded-lg`: Elemen kecil di dalam kartu (ikon, badge).
-
-### Shadows & Depth
-Sistem bayangan berlapis untuk menciptakan ilusi ketinggian.
-
-*   **Floating Card:** `shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)]` (Bayangan lembut tapi luas).
-*   **Input Field:** `shadow-sm` saat diam, `ring-4 ring-primary/10` saat fokus (Glow, bukan border tajam).
-*   **Ambient Glow:** Gradien blur (`blur-3xl`) di belakang elemen penting untuk *highlight*.
+### Radius (The Golden Curve)
+*   `rounded-[32px]` (3xl): Kontainer utama, Kartu Hero, dan Modal Bottom Sheet.
+*   `rounded-2xl`: Komponen internal dalam kartu, input fields, dan tombol besar.
+*   `rounded-full`: Badge status, chip kategori, dan avatar.
 
 ---
 
 ## 3. Komponen & Pola Reusable
 
 ### Komponen Atomik (Atoms)
-Komponen dasar yang tidak bisa dipecah lagi dan tidak memiliki *logic* bisnis.
 *   **Atomic:** `Button`, `Badge`, `Input`, `Icons`.
 *   **Molecules:** `MetricCard`, `WalletPill`, `CategorySelector`.
-*   **Organisms:** `DashboardOverview`, `TransactionForm`, `BudgetCard`.
+*   **Organisms:** `DynamicCardList`, `TransactionComposer`, `BudgetHero`.
 
-### Karakteristik Komponen
-1.  **Reusable:** Harus menerima `className` dan `props` standar untuk fleksibilitas.
-2.  **Terukur (Scalable):** Desain harus berfungsi baik pada mobile (small) maupun desktop (expanded).
-3.  **Stateless Preferred:** Sebisa mungkin komponen UI murni menerima data via props untuk memudahkan testing.
-
-### Input Fields ("The Magic Bar")
-Jangan gunakan input standar dengan border abu-abu.
-*   **Style:** `bg-card` atau `bg-secondary/50` + `rounded-2xl` + `shadow-sm`.
-*   **Focus:** Tanpa outline border. Gunakan *colored shadow* atau *ring* transparan.
-*   **Metaphor:** Input bar harus terasa "mengapung" di atas konten.
-
-### Result & Confirmation Cards
-*   **Background:** `bg-white/90` (Light) / `bg-black/40` (Dark) dengan `backdrop-blur-xl`.
-*   **Border:** Tipis transparan (`border-white/20`) untuk definisi tepi yang halus.
-*   **Layout:**
-    *   *Hero Amount* di tengah atas.
-    *   Detail dikelompokkan dalam *Inset Group* (`bg-secondary/30 rounded-2xl`).
-    *   Pemisah menggunakan garis halus (`divide-y` atau `h-px`).
+### Karakteristik Komponen (Borderless Strategy)
+1.  **NO INTERNAL BORDERS:** Dilarang menggunakan garis batas kaku (`border-border`). Pemisahan elemen internal wajib menggunakan **Background Shifts** (perbedaan opasitas latar) atau **Spacing**.
+2.  **Visual Depth:** Gunakan elevasi bayangan untuk memisahkan kartu dari latar belakang aplikasi.
+3.  **Adaptive UI:** Komponen harus terlihat bagus baik dengan latar belakang putih (`light`) maupun latar berwarna dinamis.
 
 ---
 
 ## 4. Pola Interaksi (UX)
 
-### Haptics
-Berikan umpan balik fisik pada setiap interaksi bermakna.
-*   **Light:** Saat menekan tombol navigasi, tab, atau toggle.
-*   **Medium:** Saat sukses menyimpan, menghapus, atau aksi destruktif.
-*   **Success/Error:** Pola getaran khusus untuk notifikasi status.
+### Haptics & Feedback
+*   Memberikan getaran mikro pada setiap interaksi bermakna (sukses simpan, ganti tab).
+*   Gunakan `AnimatePresence` dan `layoutId` untuk transisi elemen yang "mengalir" tanpa *jumping*.
 
 ### Optimistic UI
-Jangan biarkan pengguna menunggu spinner (`isLoading`) untuk aksi sederhana.
-*   **Update Instan:** UI harus berubah *sebelum* request server selesai (misal: tambah transaksi, update budget).
-*   **Rollback:** Kembalikan ke state awal hanya jika server gagal.
+*   Zero-latency updates. UI harus berubah seketika sebelum respon server diterima.
+*   Rollback state otomatis jika terjadi error di sisi server.
 
 ---
 
 ## 5. Standar Engineering & Penamaan
 
 ### Panduan Penamaan (Naming Conventions)
-Konsistensi adalah kunci skalabilitas.
-*   **Files:** `kebab-case.tsx` untuk komponen, `camelCase.ts` untuk utility/hooks.
-*   **Components:** `PascalCase`. (Contoh: `SmartAddOverlay`).
-*   **Hooks:** Awali dengan `use`. (Contoh: `useWallets`).
-*   **CSS Classes:** Gunakan Tailwind dengan urutan: `Layout` -> `Spacing` -> `Typography` -> `Visual` (Colors/Shadows).
+*   **Files:** `kebab-case.tsx` (komponen), `camelCase.ts` (utility/logic).
+*   **Components:** `PascalCase`.
+*   **Hooks:** `useHookName`.
 
 ### Spesifikasi State Management
-1.  **Global State:** Gunakan **React Context** (Providers) untuk data yang diakses banyak fitur (Auth, Wallets, UI State).
-2.  **Server State:** Gunakan custom hooks dengan sinkronisasi *real-time* Supabase (EventEmitter).
-3.  **Local State:** Gunakan `useState` / `useReducer` untuk *form state* atau interaksi UI mikro.
-4.  **Event Driven:** Gunakan `EventEmitter` untuk komunikasi antar-provider (misal: trigger refresh saldo setelah transaksi).
+1.  **Global:** React Context (Providers) untuk data lintas fitur.
+2.  **Server:** Custom hooks dengan listener *real-time* (EventEmitter).
+3.  **Local:** `useState` untuk interaksi mikro.
 
-### Strategi Versioning API (Supabase RPC)
-Selalu gunakan suffix versi pada fungsi database (RPC) untuk menjaga kompatibilitas ke belakang (*backward compatibility*).
-*   Format: `nama_fungsi_v{n}` (Contoh: `create_transaction_v1`).
-*   **V1:** Versi stabil awal.
-*   **V2:** Gunakan jika ada perubahan *breaking changes* pada parameter atau logika bisnis inti yang mempengaruhi client lama.
+### Strategi Versioning API
+*   Wajib menggunakan suffix versi pada RPC Supabase: `nama_fungsi_v{n}` (Contoh: `create_transaction_v1`).
 
 ---
 
 **Catatan Implementasi:**
-Saat membuat fitur baru, selalu rujuk ke prinsip "Apple-Inspired" dan standar engineering ini. Prioritaskan kebersihan visual (sedikit garis, banyak ruang) dan struktur kode yang modular.
+Jangan takut menggunakan warna. Aplikasi Lemon harus terasa seperti asisten yang hidup, bukan sekadar spreadsheet. Prioritaskan kejernihan teks di atas latar belakang yang dinamis.

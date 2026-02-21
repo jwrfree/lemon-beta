@@ -87,6 +87,10 @@ const getDebtDueStatus = (debt: Debt) => {
     );
 };
 
+import { getVisualDNA } from '@/lib/visual-dna';
+
+// ... (existing helper components)
+
 export default function DebtsPage() {
     const router = useRouter();
     const { debts } = useDebts();
@@ -99,6 +103,7 @@ export default function DebtsPage() {
         let totalOwing = 0;
         debts.forEach((debt: Debt) => {
             const outstanding = debt.outstandingBalance ?? debt.principal ?? 0;
+            if (debt.status === 'settled' || outstanding <= 0) return;
             if (debt.direction === 'owed') {
                 totalOwed += outstanding;
             } else if (debt.direction === 'owing') {
@@ -142,41 +147,52 @@ export default function DebtsPage() {
                 showBackButton={true}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-xs bg-background shadow-sm border-input">
-                            <ArrowUpDown className="w-3 h-3 mr-2 text-muted-foreground" />
+                        <SelectTrigger className="w-[140px] h-9 text-[10px] font-bold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none shadow-sm">
+                            <ArrowUpDown className="w-3 h-3 mr-2 text-primary" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
-                        <SelectContent align="end">
-                            <SelectItem value="updated_desc">Terbaru Update</SelectItem>
-                            <SelectItem value="due_soon">Jatuh Tempo</SelectItem>
-                            <SelectItem value="amount_desc">Nominal Tertinggi</SelectItem>
-                            <SelectItem value="amount_asc">Nominal Terendah</SelectItem>
+                        <SelectContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                            <SelectItem value="updated_desc" className="text-xs font-bold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
+                            <SelectItem value="due_soon" className="text-xs font-bold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
+                            <SelectItem value="amount_desc" className="text-xs font-bold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
+                            <SelectItem value="amount_asc" className="text-xs font-bold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
                         </SelectContent>
                     </Select>
                 }
             />
-            <main className="flex-1 overflow-y-auto pb-24">
-                <div className="p-4 space-y-6">
-                    {/* Summary Card - Enhanced Visuals */}
-                    <Card className="shadow-sm border-border bg-card">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-base font-medium">
-                                <HandCoins className="h-5 w-5 text-primary" />
-                                Ringkasan
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-2 gap-4 text-sm">
+            <main className="flex-1 overflow-y-auto pb-32">
+                <div className="p-4 space-y-8">
+                    {/* Summary Hero Card */}
+                    <Card className="border-none rounded-[32px] bg-teal-900 text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] overflow-hidden relative">
+                        <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12">
+                            <HandCoins className="h-40 w-40" />
+                        </div>
+                        <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl"></div>
+
+                        <CardContent className="p-8 space-y-8 relative z-10">
                             <div>
-                                <p className="text-muted-foreground flex items-center gap-1">
-                                    <ArrowUpRight className="h-4 w-4 text-destructive" /> Saya berhutang
-                                </p>
-                                <p className="text-lg font-medium text-destructive">{formatCurrency(totals.totalOwed)}</p>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/50 mb-2">Debt Overview</p>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-4xl font-bold tracking-tighter text-white tabular-nums">
+                                        {formatCurrency(Math.abs(totals.totalOwing - totals.totalOwed))}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Net Liability</span>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-muted-foreground flex items-center gap-1">
-                                    <ArrowDownRight className="h-4 w-4 text-success" /> Piutang
-                                </p>
-                                <p className="text-lg font-medium text-success">{formatCurrency(totals.totalOwing)}</p>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner">
+                                    <p className="text-[9px] font-bold text-rose-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                        <ArrowUpRight className="h-3 w-3" /> Owed
+                                    </p>
+                                    <p className="text-lg font-bold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwed)}</p>
+                                </div>
+                                <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner">
+                                    <p className="text-[9px] font-bold text-emerald-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                        <ArrowDownRight className="h-3 w-3" /> Owing
+                                    </p>
+                                    <p className="text-lg font-bold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwing)}</p>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -184,69 +200,83 @@ export default function DebtsPage() {
                     <DebtAnalyticsCard debts={debts} />
 
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                        <TabsList className="bg-muted p-1 rounded-lg h-14 w-full grid grid-cols-4">
+                        <TabsList className="bg-muted/50 p-1 rounded-full h-12 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
-                                    {label}
+                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-bold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
+                                    {label === 'Semua' ? 'All' : label.split(' ')[0]}
                                 </TabsTrigger>
                             ))}
                         </TabsList>
                     </Tabs>
 
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         {visibleDebts.length === 0 ? (
                             <DebtsEmptyState />
                         ) : (
-                            visibleDebts.map((debt: Debt) => (
-                                <Card
-                                    key={debt.id}
-                                    className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px]"
-                                    onClick={() => router.push(`/debts/${debt.id}`)}
-                                >
-                                    <CardContent className="p-6">
-                                        <div className="flex items-start justify-between gap-4 mb-6">
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-lg tracking-tight truncate">{debt.title}</h3>
-                                                <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-1">{debt.direction === 'owed' ? 'Pihak: ' : 'Dari: '} {debt.counterparty}</p>
-                                                {getDebtDueStatus(debt)}
-                                            </div>
-                                            {getDebtStatusBadge(debt)}
-                                        </div>
+                            visibleDebts.map((debt: Debt) => {
+                                const isOwed = debt.direction === 'owed';
+                                const dna = getVisualDNA(isOwed ? 'rose' : 'emerald');
+                                const progress = Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100));
 
-                                        <div className="flex items-end justify-between">
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">
-                                                    {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
-                                                </p>
-                                                <p className={cn(
-                                                    "text-2xl font-bold tracking-tighter tabular-nums",
-                                                    debt.direction === 'owed' ? "text-rose-600" : "text-emerald-600"
-                                                )}>
-                                                    {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
-                                                </p>
-                                            </div>
-                                            <div className="text-right space-y-2">
-                                                <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] text-right">Lunas</p>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                                                        <motion.div 
-                                                            initial={{ width: 0 }}
-                                                            animate={{ width: `${Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))}%` }}
-                                                            className={cn(
-                                                                "h-full rounded-full transition-all duration-1000",
-                                                                debt.direction === 'owed' ? "bg-rose-500" : "bg-emerald-500"
-                                                            )}
-                                                        />
-                                                    </div>
-                                                    <span className="text-[10px] font-bold tabular-nums">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
+                                return (
+                                    <Card
+                                        key={debt.id}
+                                        className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-2xl rounded-[32px] relative"
+                                        style={{ 
+                                            background: dna.gradient,
+                                            boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
+                                        }}
+                                        onClick={() => router.push(`/debts/${debt.id}`)}
+                                    >
+                                        <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/10 blur-2xl"></div>
+                                        
+                                        <CardContent className="p-7 relative z-10 text-white">
+                                            <div className="flex items-start justify-between gap-4 mb-8">
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="font-bold text-lg tracking-tight truncate">{debt.title}</h3>
+                                                    <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
+                                                    <div className="mt-2">{getDebtDueStatus(debt)}</div>
+                                                </div>
+                                                <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/10 shadow-sm">
+                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-white">
+                                                        {debt.status === 'settled' ? 'Settled' : 'Active'}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))
+
+                                            <div className="flex items-end justify-between gap-6">
+                                                <div className="space-y-2 flex-1">
+                                                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">
+                                                        {isOwed ? 'Principal Owed' : 'Receivable'}
+                                                    </p>
+                                                    <div className="bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-2xl border border-white/5 w-fit">
+                                                        <p className="text-2xl font-bold tracking-tighter tabular-nums text-white">
+                                                            {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right space-y-2 min-w-[80px]">
+                                                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">Recovery</p>
+                                                    <div className="flex items-center gap-3 justify-end">
+                                                        <div className="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
+                                                            <motion.div 
+                                                                initial={{ width: 0 }}
+                                                                animate={{ width: `${progress}%` }}
+                                                                className="h-full rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                                                            />
+                                                        </div>
+                                                        <span className="text-[10px] font-bold tabular-nums text-white">{Math.round(progress)}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })
                         )}
                     </div>
+                </div>
+            </main>
                 </div>
             </main>
 
