@@ -2,12 +2,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo, useAnimation } from 'framer-motion';
-import { Mic, Send, Image as ImageIcon, Sparkles, AudioLines, ChevronDown, CheckCircle2, RotateCcw } from 'lucide-react';
+import { Mic, Send, Image as ImageIcon, Sparkles, AudioLines, ChevronDown, CheckCircle2, RotateCcw, ArrowUp, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useVoiceRecognition } from '@/features/transactions/hooks/use-voice-recognition';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { useCategories } from '@/features/transactions/hooks/use-categories'; // For visuals
+import TextareaAutosize from 'react-textarea-autosize';
 
 // Import new sub-components
 import { MessagesList } from './smart-add/messages-list';
@@ -35,6 +36,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
     // Local UI State
     const [inputValue, setInputValue] = useState('');
     const [loadingMsg, setLoadingMsg] = useState('Menganalisis...');
+    const [isSaving, setIsSaving] = useState(false);
     const controls = useAnimation();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -58,25 +60,52 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
         }
     }, [isOpen, resetFlow]);
 
-    // Auto-resize
+    // Loading Message Typing Effect
     useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
-        }
-    }, [inputValue, isOpen]);
+        if (pageState !== 'ANALYZING') return;
 
-    // Loading Message Rotation
-    useEffect(() => {
-        if (pageState === 'ANALYZING') {
-            const msgs = ["Membaca...", "Memilih kategori...", "Menghitung..."];
-            let i = 0;
-            const interval = setInterval(() => {
-                setLoadingMsg(msgs[i]);
-                i = (i + 1) % msgs.length;
-            }, 1000);
-            return () => clearInterval(interval);
-        }
+        const msgs = [
+            "Menganalisis teks...",
+            "Mendeteksi merchant...",
+            "Mencari kategori...",
+            "Menghitung total...",
+            "Finalisasi..."
+        ];
+        
+        let msgIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let timeoutId: NodeJS.Timeout;
+
+        const type = () => {
+            const currentMsg = msgs[msgIndex];
+
+            if (!isDeleting && charIndex <= currentMsg.length) {
+                // Typing
+                setLoadingMsg(currentMsg.substring(0, charIndex));
+                charIndex++;
+                // Randomize typing speed for realism (30-80ms)
+                timeoutId = setTimeout(type, 30 + Math.random() * 50);
+            } else if (isDeleting && charIndex > 0) {
+                // Deleting (faster)
+                setLoadingMsg(currentMsg.substring(0, charIndex));
+                charIndex--;
+                timeoutId = setTimeout(type, 20);
+            } else if (!isDeleting && charIndex > currentMsg.length) {
+                // Finished typing, wait before deleting
+                isDeleting = true;
+                timeoutId = setTimeout(type, 1000); // Wait 1s
+            } else if (isDeleting && charIndex === 0) {
+                // Finished deleting, next message
+                isDeleting = false;
+                msgIndex = (msgIndex + 1) % msgs.length;
+                timeoutId = setTimeout(type, 200);
+            }
+        };
+
+        type();
+
+        return () => clearTimeout(timeoutId);
     }, [pageState]);
 
     const handleSubmit = async () => {
@@ -89,7 +118,9 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
 
     const handleConfirm = async () => {
         if (navigator.vibrate) navigator.vibrate(50);
+        setIsSaving(true);
         const success = await saveTransaction();
+        setIsSaving(false);
         if (success) {
             // Success Animation or Toast handled by hook
             // Close after brief delay
@@ -102,6 +133,13 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
             onClose();
         } else {
             controls.start({ y: 0 });
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit();
         }
     };
 
@@ -137,8 +175,8 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}
                             className={cn(
-                                "pointer-events-auto relative w-full max-w-md bg-background rounded-t-lg shadow-card overflow-hidden flex flex-col transition-all duration-500 will-change-transform",
-                                isResultMode ? "h-[85vh]" : "max-h-[85vh]"
+                                "pointer-events-auto relative w-full max-w-md bg-background rounded-t-xl sm:rounded-xl shadow-2xl overflow-hidden flex flex-col transition-all duration-500 will-change-transform border border-white/10 pb-safe",
+                                isResultMode ? "h-[85dvh]" : "max-h-[85dvh]"
                             )}
                         >
                             {/* Drag Handle */}
@@ -186,21 +224,33 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                 </div>
 
                                 {/* Bottom Action Area (Fixed) */}
-                                <div className="shrink-0 pt-4 pb-safe">
+                                <div className="shrink-0 pt-4 pb-safe relative group">
+                                    
+                                    {/* Ambient Glow Orb Behind Input */}
+                                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-t from-primary/10 via-primary/5 to-transparent blur-3xl pointer-events-none opacity-50" />
+
                                     {/* Input Mode: IDLE or ANALYZING */}
                                     {!isResultMode ? (
-                                        <div className="flex flex-col gap-4">
-                                            <div className="relative bg-secondary rounded-lg p-3 border border-border focus-within:border-primary/50 transition-colors">
-                                                <textarea
-                                                    ref={textareaRef}
-                                                    value={inputValue}
-                                                    onChange={(e) => setInputValue(e.target.value)}
-                                                    placeholder={isListening ? "Mendengarkan..." : "Misal: Makan siang 25rb... (atau upload struk)"}
-                                                    className="w-full bg-transparent text-xl font-medium text-foreground placeholder:text-muted-foreground/40 focus:outline-none resize-none leading-relaxed min-h-[60px]"
-                                                    rows={2}
-                                                />
-                                                {/* Mic Button Inline */}
-                                                <div className="absolute right-2 bottom-2">
+                                        <div className="flex flex-col gap-4 relative">
+                                            {/* Ambient Glow Effect */}
+                                            <div className={cn(
+                                                "absolute inset-0 bg-primary/10 blur-2xl rounded-full transition-opacity duration-1000",
+                                                (inputValue || isListening) ? "opacity-100" : "opacity-0"
+                                            )} />
+
+                                            <div className="relative bg-card rounded-[28px] p-2 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.5)] transition-all duration-500 hover:shadow-[0_12px_50px_-12px_rgba(0,0,0,0.15)] focus-within:shadow-[0_12px_50px_-12px_rgba(var(--primary-rgb),0.25)]">
+                                                <div className="flex items-end gap-3 px-1">
+                                                    <TextareaAutosize
+                                                        ref={textareaRef}
+                                                        maxRows={4}
+                                                        value={inputValue}
+                                                        onChange={(e) => setInputValue(e.target.value)}
+                                                        onKeyDown={handleKeyDown}
+                                                        placeholder={isListening ? "Mendengarkan..." : "Misal: Makan siang 25rb..."}
+                                                        className="flex-1 bg-transparent text-lg font-medium text-foreground placeholder:text-muted-foreground/40 focus:outline-none resize-none leading-relaxed py-3 pl-3 pr-2"
+                                                    />
+                                                    
+                                                    {/* Mic/Send Button Inline */}
                                                     <motion.button
                                                         layout
                                                         onClick={(e) => {
@@ -209,17 +259,17 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                                             else toggleListening();
                                                         }}
                                                         className={cn(
-                                                            "h-10 w-10 rounded-lg flex items-center justify-center shadow-sm transition-all",
+                                                            "h-12 w-12 rounded-full flex items-center justify-center shadow-sm transition-all shrink-0",
                                                             inputValue.trim()
                                                                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                                                : isListening ? "bg-destructive text-destructive-foreground" : "bg-muted text-muted-foreground hover:bg-primary/20 hover:text-primary"
+                                                                : isListening ? "bg-destructive text-destructive-foreground animate-pulse" : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"
                                                         )}
                                                         whileTap={{ scale: 0.95 }}
                                                     >
                                                         {inputValue.trim() ? (
-                                                            <Send className="h-4 w-4" />
+                                                            <ArrowUp className="h-6 w-6" />
                                                         ) : isListening ? (
-                                                            <AudioLines className="h-5 w-5 animate-pulse" />
+                                                            <AudioLines className="h-5 w-5" />
                                                         ) : (
                                                             <Mic className="h-5 w-5" />
                                                         )}
@@ -243,17 +293,21 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                         <div className="flex gap-3">
                                             <Button
                                                 variant="outline"
-                                                className="flex-1 h-12 rounded-lg border-border text-muted-foreground hover:text-foreground"
+                                                className="flex-1 h-12 rounded-full border-border text-muted-foreground hover:text-foreground"
                                                 onClick={() => resetFlow()}
                                             >
                                                 Batal
                                             </Button>
                                             <Button
-                                                className="flex-[2] h-12 rounded-lg font-medium text-base shadow-card"
+                                                className="flex-[2] h-12 rounded-full font-medium text-base shadow-lg shadow-primary/20"
                                                 onClick={handleConfirm}
+                                                disabled={isSaving}
                                             >
-                                                <CheckCircle2 className="h-5 w-5 mr-2" />
-                                                Simpan
+                                                {isSaving ? (
+                                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                                ) : (
+                                                    "Simpan"
+                                                )}
                                             </Button>
                                         </div>
                                     )}

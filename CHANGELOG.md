@@ -2,6 +2,65 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.1] - 21 February 2026
+
+### 🧠 Smart Add 2.0 "Liquid Intelligence"
+
+- **Visual Overhaul (Apple-Style)**:
+  - **Result Card**: Redesigned with a cleaner, "frosted glass" aesthetic (`bg-white/90` with `backdrop-blur-xl`).
+  - **Typography First**: Transaction amount is now the hero element (large, bold text).
+  - **Intelligent Merchant Detection**: Automatically displays the **real merchant logo** (e.g., Starbucks, Gojek, Netflix) if detected, falling back to category icons.
+  - **Input Bar**: Replaced borders with "Visual Depth" (deep shadows and ambient glow) for a floating, immersive feel.
+  - **Typewriter Effect**: AI status messages now type out character-by-character for a more organic assistant feel.
+- **UX Refinements**:
+  - **Consistent Iconography**: Standardized "Keinginan" (Want) icon to `ShoppingBag` across all forms.
+  - **No UI Jump**: Fixed a glitch where the confirmation card would flash back to the input field during saving.
+  - **Smart Date/Time**: Added a Time Picker (`HH:mm`) to manual entry for precise timestamping.
+
+### 📊 Charts & Analytics Fixes
+
+- **Spending Trend Fix**: 
+  - **Date Boundary Bug**: Fixed an issue where today's transactions were cut off from the chart/list due to timezone/timestamp truncation. Now fetches up to `23:59:59` of the end date.
+  - **Negative Dip Fix**: Changed chart interpolation from `natural` to `monotone` to prevent the area chart from dipping below zero (visual artifact).
+  - **Shadcn UI Migration**: Refactored the chart to use the standardized `ChartContainer` system for consistent theming and tooltips.
+  - **Mobile Interactivity**: Added haptic feedback (`onTouchStart`) and a visible cursor/active dot to improve touch responsiveness.
+- **Activity List Ordering**:
+  - Enforced strict `DESC` sorting by `date` AND `created_at` to ensure the most recently input transaction always appears at the top, even if dates are identical.
+
+## [Version 2.4.1] - 21 February 2026
+
+### 🏦 Enhanced Wallet Ecosystem & "Command Center" UI
+
+This update focuses on deepening the wallet management experience and achieving a professional, high-density desktop aesthetic.
+
+- **New Wallet Categorization**:
+  - Added support for **Paylater** and **Investasi** account types across the entire ecosystem.
+  - **Smart Brand Detection**: New intelligence layer automatically assigns logos and color themes for Indonesian brands like Kredivo, Spaylater, Bibit, Ajaib, etc., during creation.
+- **Enterprise Desktop UI (Wallet View)**:
+  - **Borderless Design**: Achieved a clean, frameless aesthetic by removing all visible borders and relying on background elevation/shadows for separation.
+  - **Optimized Density**: Reduced padding and refined spacing to maximize information density, creating a true "Financial Command Center" feel.
+  - **Typographic Polish**: Removed heavy font weights (Bold/Black) in favor of a cleaner, medium-weight hierarchy.
+- **Balance Correction Utility**:
+  - Introduced a **"Koreksi Saldo"** tool in the wallet settings.
+  - Automatically creates a reconciliation transaction under the new **"Penyesuaian Saldo"** category to sync app records with real-world balances transparently.
+- **Improved Filter System**:
+  - Redesigned the wallet navigator with high-density filter pills for quick switching between Bank, E-Wallet, Paylater, and Investment accounts.
+
+
+### ⚡️ Real-Time & Optimistic UI Overhaul
+
+This release focuses on making the app feel "instant" by eliminating loading states for core actions.
+
+- **Instant Budget Updates**: 
+  - The "Spent" progress bar on budgets now updates immediately when you add a transaction, without needing a page refresh.
+  - Implemented a listener for `transaction.created` events directly in the budget hook to recalculate progress on the fly.
+- **Optimistic Goals & Debts**:
+  - Creating, editing, or deleting **Savings Goals** and **Debts** now reflects instantly in the UI.
+  - **Debt Payments**: Recording a debt payment now instantly updates the debt's outstanding balance and status (e.g., to "Settled") before the server confirms the request.
+- **Unified Event Architecture**:
+  - Refactored `WalletProvider` to listen to global transaction events (`transaction.created/updated/deleted`).
+  - **Prevented Double-Counting**: Removed manual wallet updates from `use-transaction-actions.ts` to rely solely on the global event listener, ensuring a Single Source of Truth for balance updates.
+
 ## [Version 2.3.3] - 21 February 2026
 
 ### 🛡 Type Safety & Stability Improvements

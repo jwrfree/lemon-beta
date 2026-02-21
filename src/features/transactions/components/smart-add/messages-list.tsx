@@ -39,20 +39,22 @@ export const MessagesList = ({ messages, loadingMessage }: MessagesListProps) =>
                     )}
                     {msg.type === 'ai-thinking' && (
                         <div className="flex justify-start">
-                            <div className="py-2 px-3 bg-muted/50 rounded-lg rounded-tl-sm flex items-center gap-3 border border-border/40">
+                            <div className="py-2.5 px-4 bg-card rounded-2xl rounded-tl-none flex items-center gap-3 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]">
                                 <div className="relative flex items-center justify-center w-4 h-4">
                                     <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
                                 </div>
-                                <span className="text-xs font-medium text-muted-foreground animate-pulse">
+                                <span className="text-xs font-medium text-muted-foreground flex items-center">
                                     {loadingMessage || "Sedang memproses..."}
+                                    <span className="ml-0.5 w-1 h-3 bg-primary/50 animate-pulse block" />
                                 </span>
                             </div>
                         </div>
                     )}
                     {msg.type === 'ai-clarification' && (
                         <div className="flex justify-start">
-                            <div className="py-3 px-4 bg-warning/10 text-warning rounded-lg rounded-tl-sm max-w-[85%] text-sm border border-warning/20 shadow-sm">
-                                <p className="leading-snug font-medium">
+                            <div className="py-3 px-5 bg-card text-orange-700 dark:text-orange-400 rounded-2xl rounded-tl-none max-w-[85%] text-sm shadow-[0_4px_12px_-2px_rgba(249,115,22,0.15)] dark:shadow-[0_4px_12px_-2px_rgba(249,115,22,0.1)] relative overflow-hidden">
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500/50" />
+                                <p className="leading-snug font-medium pl-2">
                                     &quot;{String(msg.content)}&quot;
                                 </p>
                             </div>

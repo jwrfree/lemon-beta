@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Check, X, Pencil, ArrowRight, Heart, Sparkles } from 'lucide-react';
+import { Check, Pencil, ChevronRight, Heart, ShoppingBag, Wallet } from 'lucide-react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CategoryGrid } from '@/features/transactions/components/category-grid';
 import { Category } from '@/lib/categories';
+import { getMerchantVisuals, getMerchantLogoUrl } from '@/lib/merchant-utils';
 
 interface ResultCardProps {
     parsedData: any;
@@ -35,181 +36,179 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
     if (!parsedData) return null;
 
     const visuals = getCategoryVisuals(parsedData.category);
+    const merchantVisuals = getMerchantVisuals(parsedData.merchant || parsedData.description);
+    
+    // Logic: Use Merchant Logo -> Merchant Icon -> Category Icon
+    const logoUrl = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+    const DisplayIcon = merchantVisuals?.icon || visuals.icon;
+    const displayColor = merchantVisuals?.color || visuals.color;
+    const displayBg = merchantVisuals?.bgColor || visuals.bgColor;
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
             className="w-full"
         >
-            <div className="bg-card rounded-lg p-4 shadow-card border border-border relative overflow-hidden group">
-                {/* Decorative Gradient Bar */}
-                <div className={cn("absolute top-0 left-0 w-1.5 h-full opacity-80", visuals.color.replace('text-', 'bg-'))} />
+            {/* Apple-style Card Container with Aurora Mesh */}
+            <div className="bg-white/90 dark:bg-black/40 backdrop-blur-xl rounded-[32px] p-6 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.5)] relative overflow-hidden group border border-white/20 dark:border-white/10">
+                
+                {/* 1. HERO AMOUNT (Apple Wallet Style) */}
+                <div className="flex flex-col items-center justify-center mb-8 pt-2 relative z-10">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">Total Transaksi</p>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <button className="text-4xl md:text-5xl font-semibold tracking-tighter text-foreground hover:scale-[1.02] active:scale-95 transition-transform cursor-text decoration-dotted decoration-border/50 underline-offset-8">
+                                {formatCurrency(parsedData.amount)}
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-60 p-4 rounded-2xl shadow-xl border-none bg-popover/90 backdrop-blur-xl" side="bottom">
+                            <div className="space-y-3">
+                                <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Edit Nominal</Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        type="number"
+                                        value={editAmount}
+                                        onChange={e => setEditAmount(e.target.value)}
+                                        autoFocus
+                                        className="h-10 rounded-xl bg-secondary/50 border-transparent text-lg font-semibold tabular-nums"
+                                    />
+                                    <Button size="icon" className="h-10 w-10 rounded-xl shadow-none" onClick={() => setParsedData({ ...parsedData, amount: Number(editAmount) })}>
+                                        <Check className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+                </div>
 
-                <div className="pl-3 space-y-4">
-                    {/* Header: Amount & Category */}
-                    <div className="flex justify-between items-start">
-                        <div className="flex flex-col">
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <button className="text-2xl font-medium tabular-nums text-foreground tracking-tight hover:opacity-70 transition-opacity text-left">
-                                        {formatCurrency(parsedData.amount)}
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-60 p-3" side="bottom" align="start">
-                                    <div className="space-y-2">
-                                        <Label className="text-xs">Ubah Nominal</Label>
-                                        <div className="flex gap-2">
-                                            <Input
-                                                type="number"
-                                                value={editAmount}
-                                                onChange={e => setEditAmount(e.target.value)}
-                                                autoFocus
-                                                className="h-8 text-sm"
+                {/* 2. iOS SEGMENTED CONTROL (Need vs Want) */}
+                <div className="bg-secondary/50 p-1 rounded-full grid grid-cols-2 relative mb-6">
+                    {/* Active Indicator Background */}
+                    <motion.div
+                        className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-background shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] rounded-full z-0"
+                        initial={false}
+                        animate={{
+                            x: parsedData.isNeed !== false ? 4 : '100%',
+                            // left: parsedData.isNeed !== false ? 4 : 'auto',
+                            // right: parsedData.isNeed === false ? 4 : 'auto'
+                        }}
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        style={{ x: parsedData.isNeed !== false ? 4 : 'calc(100% + 4px)' }} 
+                    />
+                    
+                    <button
+                        onClick={() => setParsedData({ ...parsedData, isNeed: true })}
+                        className={cn(
+                            "relative z-10 flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-full transition-colors duration-200",
+                            parsedData.isNeed !== false ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"
+                        )}
+                    >
+                        <Heart className={cn("w-3.5 h-3.5", parsedData.isNeed !== false ? "fill-red-500 text-red-500" : "opacity-50")} />
+                        Kebutuhan
+                    </button>
+                    <button
+                        onClick={() => setParsedData({ ...parsedData, isNeed: false })}
+                        className={cn(
+                            "relative z-10 flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-full transition-colors duration-200",
+                            parsedData.isNeed === false ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"
+                        )}
+                    >
+                        <ShoppingBag className={cn("w-3.5 h-3.5", parsedData.isNeed === false ? "fill-blue-500 text-blue-500" : "opacity-50")} />
+                        Keinginan
+                    </button>
+                </div>
+
+                {/* 3. INSET GROUPED LIST (iOS Settings Style) */}
+                <div className="bg-secondary/30 rounded-2xl overflow-hidden border border-border/20">
+                    
+                    {/* Row 1: Category */}
+                    <Popover open={isCatOpen} onOpenChange={setIsCatOpen}>
+                        <PopoverTrigger asChild>
+                            <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-secondary/50 transition-colors active:bg-secondary/80 group">
+                                <div className="flex items-center gap-3">
+                                    <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shadow-sm text-white overflow-hidden", displayBg.replace('bg-', 'bg-').replace('/10', ''))}>
+                                        {logoUrl ? (
+                                            <img 
+                                                src={logoUrl} 
+                                                alt="Merchant" 
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    // Fallback to icon on error
+                                                    e.currentTarget.style.display = 'none';
+                                                    // We can't easily swap to component here without state, but CSS hiding works to show background.
+                                                    // For a robust solution, we'd need local state, but this is a decent "graceful degradation" 
+                                                    // preserving the colored circle.
+                                                }}
                                             />
-                                            <Button size="sm" onClick={() => setParsedData({ ...parsedData, amount: Number(editAmount) })}>
-                                                <Check className="h-3 w-3" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-
-                            <Popover open={isCatOpen} onOpenChange={setIsCatOpen}>
-                                <PopoverTrigger asChild>
-                                    <button className={cn("mt-1 px-2 py-0.5 rounded-md text-[10px] font-medium uppercase tracking-wider flex items-center gap-1 w-fit transition-colors hover:brightness-90", visuals.bgColor, visuals.color)}>
-                                        {parsedData.category}
-                                        <Pencil className="h-2 w-2 opacity-50" />
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-80 p-0" align="start">
-                                    <div className="p-3 max-h-[300px] overflow-y-auto">
-                                        <p className="text-xs font-medium mb-2 px-1 text-muted-foreground">Pilih Kategori</p>
-                                        <CategoryGrid
-                                            categories={parsedData.type === 'income' ? incomeCategories : expenseCategories}
-                                            selectedCategory={parsedData.category}
-                                            onCategorySelect={(cat) => {
-                                                setParsedData({ ...parsedData, category: cat.name, subCategory: '' }); // Reset sub when cat changes
-                                                setIsCatOpen(false);
-                                            }}
-                                        />
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
-
-                            {/* Sub Category Display/Edit */}
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <button className="mt-1 ml-1 px-2 py-0.5 rounded-md text-[10px] font-medium text-muted-foreground/80 hover:bg-muted/50 transition-colors flex items-center gap-1">
-                                        {parsedData.subCategory ? (
-                                            <>
-                                                <span className="opacity-50">•</span>
-                                                <span>{parsedData.subCategory}</span>
-                                            </>
                                         ) : (
-                                            <span className="opacity-50 text-[9px]">+ Sub</span>
+                                            <DisplayIcon className="w-4 h-4" />
                                         )}
-                                    </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-60 p-2" align="start">
-                                    <div className="space-y-2">
-                                        <p className="text-xs font-medium text-muted-foreground px-1">Sub Kategori</p>
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {(() => {
-                                                const catList = parsedData.type === 'income' ? incomeCategories : expenseCategories;
-                                                const currentCat = catList.find(c => c.name === parsedData.category);
-                                                const subs = currentCat?.sub_categories || [];
-
-                                                if (subs.length === 0) return <p className="text-[10px] text-muted-foreground italic px-1">Tidak ada sub-kategori khusus.</p>;
-
-                                                return subs.map(sub => (
-                                                    <button
-                                                        key={sub}
-                                                        onClick={() => setParsedData({ ...parsedData, subCategory: sub })}
-                                                        className={cn(
-                                                            "text-[10px] px-2 py-1 rounded-full border transition-colors",
-                                                            parsedData.subCategory === sub
-                                                                ? "bg-primary/10 border-primary text-primary font-medium"
-                                                                : "bg-transparent border-border hover:bg-muted"
-                                                        )}
-                                                    >
-                                                        {sub}
-                                                    </button>
-                                                ));
-                                            })()}
-                                        </div>
-                                        <div className="pt-2 border-t mt-2">
-                                            <Input
-                                                placeholder="Custom Sub..."
-                                                className="h-7 text-xs"
-                                                value={parsedData.subCategory || ''}
-                                                onChange={(e) => setParsedData({ ...parsedData, subCategory: e.target.value })}
-                                            />
-                                        </div>
                                     </div>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                    </div>
+                                    <div className="flex flex-col items-start">
+                                        <span className="text-sm font-semibold">{parsedData.merchant || parsedData.category}</span>
+                                        <span className="text-[10px] text-muted-foreground font-medium">
+                                            {parsedData.merchant ? parsedData.category : (parsedData.subCategory || 'Umum')}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-1 text-muted-foreground">
+                                    <span className="text-xs">Ubah</span>
+                                    <ChevronRight className="w-4 h-4 opacity-50" />
+                                </div>
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80 p-0 rounded-2xl shadow-xl border-none overflow-hidden" align="center">
+                            <div className="p-4 bg-popover/95 backdrop-blur-xl max-h-[320px] overflow-y-auto">
+                                <p className="text-xs font-bold text-muted-foreground mb-3 px-1 uppercase tracking-widest">Pilih Kategori</p>
+                                <CategoryGrid
+                                    categories={parsedData.type === 'income' ? incomeCategories : expenseCategories}
+                                    selectedCategory={parsedData.category}
+                                    onCategorySelect={(cat) => {
+                                        setParsedData({ ...parsedData, category: cat.name, subCategory: '' });
+                                        setIsCatOpen(false);
+                                    }}
+                                />
+                            </div>
+                        </PopoverContent>
+                    </Popover>
 
-                    {/* Need vs Want Toggle */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setParsedData({ ...parsedData, isNeed: true })}
-                            className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
-                                parsedData.isNeed !== false
-                                    ? "bg-success/15 text-success border-success/20 shadow-sm"
-                                    : "bg-transparent text-muted-foreground border-transparent hover:bg-muted"
-                            )}
-                        >
-                            <Heart className={cn("w-3 h-3", parsedData.isNeed !== false ? "fill-current" : "opacity-50")} />
-                            Kebutuhan
-                        </button>
-                        <button
-                            onClick={() => setParsedData({ ...parsedData, isNeed: false })}
-                            className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
-                                parsedData.isNeed === false
-                                    ? "bg-pink-500/15 text-pink-600 border-pink-200 dark:bg-pink-900/20 dark:border-pink-900/30 shadow-sm"
-                                    : "bg-transparent text-muted-foreground border-transparent hover:bg-muted"
-                            )}
-                        >
-                            <Sparkles className={cn("w-3 h-3", parsedData.isNeed === false ? "fill-current" : "opacity-50")} />
-                            Keinginan
-                        </button>
-                    </div>
+                    <div className="h-px bg-border/40 mx-4" />
 
-                    {/* Description */}
-                    <div className="bg-secondary rounded-lg p-3 flex items-start justify-between gap-2 group/desc hover:bg-muted/50 transition-colors cursor-pointer relative">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <div className="flex-1">
-                                    <p className="text-xs font-medium text-muted-foreground mb-0.5 uppercase tracking-wide">Keterangan</p>
-                                    <p className="text-sm font-medium leading-snug text-foreground/90 line-clamp-2">
+                    {/* Row 2: Description */}
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <div className="flex items-start justify-between p-4 cursor-pointer hover:bg-secondary/50 transition-colors active:bg-secondary/80">
+                                <div className="flex items-center gap-3 overflow-hidden">
+                                    <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-zinc-500 dark:text-zinc-400 shrink-0">
+                                        <Pencil className="w-4 h-4" />
+                                    </div>
+                                    <span className="text-sm font-medium text-foreground truncate pr-2">
                                         {parsedData.description}
-                                    </p>
+                                    </span>
                                 </div>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-72 p-3" side="top">
-                                <div className="space-y-2">
-                                    <Label className="text-xs">Ubah Keterangan</Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            value={editDesc}
-                                            onChange={e => setEditDesc(e.target.value)}
-                                            autoFocus
-                                            className="h-8 text-sm"
-                                        />
-                                        <Button size="sm" onClick={() => setParsedData({ ...parsedData, description: editDesc })}>
-                                            <Check className="h-3 w-3" />
-                                        </Button>
-                                    </div>
+                                <ChevronRight className="w-4 h-4 text-muted-foreground opacity-50 mt-1 shrink-0" />
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-72 p-4 rounded-2xl shadow-xl border-none bg-popover/90 backdrop-blur-xl" side="top">
+                            <div className="space-y-3">
+                                <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Edit Keterangan</Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        value={editDesc}
+                                        onChange={e => setEditDesc(e.target.value)}
+                                        autoFocus
+                                        className="h-10 rounded-xl bg-secondary/50 border-transparent text-sm"
+                                        placeholder="Tulis keterangan..."
+                                    />
+                                    <Button size="icon" className="h-10 w-10 rounded-xl shadow-none" onClick={() => setParsedData({ ...parsedData, description: editDesc })}>
+                                        <Check className="h-4 w-4" />
+                                    </Button>
                                 </div>
-                            </PopoverContent>
-                        </Popover>
-                        <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover/desc:opacity-100 transition-opacity absolute right-3 top-3" />
-                    </div>
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
                 </div>
             </div>
         </motion.div>

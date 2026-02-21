@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Trash2, Save, CalendarIcon, ArrowRightLeft, Tag, MapPin, CornerDownRight, ChevronDown, ChevronUp, Sparkles, Heart } from 'lucide-react';
+import { Loader2, Trash2, Save, CalendarIcon, ArrowRightLeft, Tag, MapPin, CornerDownRight, ChevronDown, ChevronUp, Sparkles, Heart, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
@@ -224,7 +224,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                                 isNeed === false ? "bg-card shadow-sm text-pink-500 ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
                                             )}
                                         >
-                                            <Sparkles className={cn("h-3.5 w-3.5", isNeed === false ? "fill-pink-500" : "opacity-50")} />
+                                            <ShoppingBag className={cn("h-3.5 w-3.5", isNeed === false ? "fill-pink-500" : "opacity-50")} />
                                             Keinginan
                                         </button>
                                     </div>

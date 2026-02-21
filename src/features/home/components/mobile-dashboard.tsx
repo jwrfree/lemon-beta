@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { format } from 'date-fns';
 import {
     Bell,
     ArrowUpRight,
@@ -26,7 +27,6 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import type { Wallet, Transaction, Reminder, Debt } from '@/types/models';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
-import { SmartAddOverlay } from '@/features/transactions/components/smart-add-overlay';
 import { SpendingTrendChart } from './spending-trend-chart';
 import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
 
@@ -65,6 +65,14 @@ export const MobileDashboard = ({
         setIsSmartAddOpen,
         isSmartAddOpen
     } = useUI();
+
+    const [currentTime, setCurrentTime] = useState<Date | null>(null);
+
+    useEffect(() => {
+        setCurrentTime(new Date());
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const timeBasedGreeting = useMemo(() => {
         const hour = new Date().getHours();
@@ -129,7 +137,14 @@ export const MobileDashboard = ({
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                        <span className="text-xs text-muted-foreground font-medium">{timeBasedGreeting},</span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground font-medium">{timeBasedGreeting},</span>
+                            {currentTime && (
+                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-md tabular-nums">
+                                    {format(currentTime, 'HH:mm')}
+                                </span>
+                            )}
+                        </div>
                         <h1 className="text-lg font-medium leading-tight tracking-tight">{firstName}</h1>
                     </div>
                 </div>
@@ -151,7 +166,7 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                 >
-                    <div className="relative overflow-hidden rounded-2xl bg-[#064e4b] text-white shadow-lg border border-white/5">
+                    <div className="relative overflow-hidden rounded-lg bg-teal-900 text-white shadow-lg border border-white/5">
                         {/* Decorative Patterns */}
                         <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
                         <div className="absolute bottom-0 left-0 -ml-8 -mb-8 h-32 w-32 rounded-full bg-primary-foreground/10 blur-2xl"></div>
@@ -344,8 +359,6 @@ export const MobileDashboard = ({
                     />
                 </Card>
             </div>
-
-            <SmartAddOverlay isOpen={isSmartAddOpen} onClose={() => setIsSmartAddOpen(false)} />
         </main>
     );
 };

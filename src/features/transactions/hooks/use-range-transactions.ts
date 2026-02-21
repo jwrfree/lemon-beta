@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction, TransactionRow } from '@/types/models';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, endOfDay } from 'date-fns';
 import { transactionEvents } from '@/lib/transaction-events';
 
 export const useRangeTransactions = (startDate: Date, endDate: Date) => {
@@ -25,7 +25,8 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             for (let i = 0; i < retries; i++) {
                 try {
                     const start = format(startDate, 'yyyy-MM-dd');
-                    const end = format(endDate, 'yyyy-MM-dd');
+                    // Fix: Ensure we capture the entire end day by setting time to end of day
+                    const end = format(endOfDay(endDate), 'yyyy-MM-dd HH:mm:ss');
 
                     console.log(`Fetching transactions (attempt ${i + 1}) for user:`, user.id, "range:", start, "to", end);
 
@@ -35,7 +36,8 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                         .eq('user_id', user.id)
                         .gte('date', start)
                         .lte('date', end)
-                        .order('date', { ascending: false });
+                        .order('date', { ascending: false })
+                        .order('created_at', { ascending: false });
 
                     if (error) {
                         console.error(`Supabase error (attempt ${i + 1}):`, error.message, error.details || '', error.hint || '');
@@ -48,7 +50,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                 } catch (err: any) {
                     console.error(`Fetch attempt ${i + 1} failed:`, err.message);
                     if (i === retries - 1) throw err; // Last attempt, throw error
-                    
+
                     // Wait before retry (exponential backoff)
                     await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
                 }
@@ -79,7 +81,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             console.error("Error fetching range transactions:", err.message || err);
             console.error("Error type:", err.constructor.name);
             console.error("Error stack:", err.stack);
-            
+
             // Check if it's a network error
             if (err.message?.includes('Failed to fetch')) {
                 console.error("Network error detected - possible causes:");
@@ -95,7 +97,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
 
     useEffect(() => {
         if (!user) {
-            setTransactions([]);
+            setTransactions(prev => prev.length > 0 ? [] : prev);
             setIsLoading(false);
             return;
         }
@@ -115,12 +117,19 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
         // Optimistic Updates
         const handleCreated = (newTx: Transaction) => {
             const txDate = new Date(newTx.date);
-            // Check if within range
-            if (txDate >= startDate && txDate <= endDate) {
+            // Check if within range using timestamps for stable comparison
+            if (txDate.getTime() >= startDate.getTime() && txDate.getTime() <= endDate.getTime()) {
                 setTransactions(prev => {
                     const exists = prev.find(t => t.id === newTx.id);
                     if (exists) return prev;
-                    return [newTx, ...prev].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                    return [newTx, ...prev].sort((a, b) => {
+                        const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+                        if (dateDiff !== 0) return dateDiff;
+                        // Secondary sort by created_at (fallback to ID if created_at missing in optimistic)
+                        const aCreated = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                        const bCreated = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                        return bCreated - aCreated;
+                    });
                 });
             }
         };
@@ -143,7 +152,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             transactionEvents.off('transaction.updated', handleUpdated);
             transactionEvents.off('transaction.deleted', handleDeleted);
         };
-    }, [user, supabase, fetchRange, startDate, endDate]);
+    }, [user, supabase, fetchRange, startDate.getTime(), endDate.getTime()]);
 
     return {
         transactions,

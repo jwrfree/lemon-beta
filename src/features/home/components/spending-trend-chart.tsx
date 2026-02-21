@@ -1,18 +1,26 @@
 'use client';
 
 import { useMemo } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { format, subDays, eachDayOfInterval, isSameDay } from 'date-fns';
+import { AreaChart, Area, XAxis, CartesianGrid } from 'recharts';
+import { format, subDays, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { Transaction } from '@/types/models';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, triggerHaptic } from '@/lib/utils';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 interface SpendingTrendChartProps {
     transactions: Transaction[];
     days?: number;
 }
+
+const chartConfig = {
+    amount: {
+        label: "Pengeluaran",
+        color: "var(--destructive)",
+    },
+} satisfies ChartConfig;
 
 export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendChartProps) => {
     const data = useMemo(() => {
@@ -25,7 +33,7 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
         return dates.map(date => {
             const dayTransactions = transactions.filter(t =>
                 t.type === 'expense' &&
-                isSameDay(new Date(t.date), date)
+                isSameDay(parseISO(t.date), date)
             );
 
             const total = dayTransactions.reduce((sum, t) => sum + t.amount, 0);
@@ -45,61 +53,70 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
         <Card className="border-none shadow-none bg-transparent">
             <CardHeader className="px-5 pb-2 pt-0 flex flex-row items-center justify-between">
                 <CardTitle className="text-base font-medium flex items-center gap-2 text-foreground">
-                    <TrendingDown className="h-4 w-4 text-destructive" />
+                    <TrendingUp className="h-4 w-4 text-destructive" />
                     Tren Pengeluaran
                 </CardTitle>
                 <span className="text-[10px] bg-destructive/10 text-destructive px-2 py-1 rounded-full font-medium">
                     {days} Hari Terakhir
                 </span>
             </CardHeader>
-            <CardContent className="px-5 h-[200px]">
-                <div className="w-full h-full bg-card rounded-lg p-2 border border-border shadow-sm">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <defs>
-                                <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="hsl(var(--destructive))" stopOpacity={0.2} />
-                                    <stop offset="95%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.5} />
-                            <XAxis
-                                dataKey="date"
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                axisLine={false}
-                                tickLine={false}
-                                interval={2}
-                                dy={10}
-                            />
-                            <YAxis
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                axisLine={false}
-                                tickLine={false}
-                                tickFormatter={(value) => new Intl.NumberFormat('id-ID', { notation: "compact" }).format(value)}
-                            />
-                            <Tooltip
-                                contentStyle={{
-                                    borderRadius: '8px',
-                                    border: '1px solid hsl(var(--border))',
-                                    boxShadow: 'var(--shadow-card)',
-                                    backgroundColor: 'hsl(var(--card))',
-                                    color: 'hsl(var(--foreground))'
-                                }}
-                                formatter={(value: number) => [formatCurrency(value), 'Pengeluaran']}
-                                labelStyle={{ color: 'hsl(var(--muted-foreground))', fontSize: '10px', marginBottom: '4px' }}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="amount"
-                                stroke="hsl(var(--destructive))"
-                                strokeWidth={2.5}
-                                fillOpacity={1}
-                                fill="url(#colorAmount)"
-                                activeDot={{ r: 4, strokeWidth: 0, fill: 'hsl(var(--destructive))' }}
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
+            <CardContent className="px-5">
+                <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                    <AreaChart
+                        accessibilityLayer
+                        data={data}
+                        margin={{
+                            left: 12,
+                            right: 12,
+                        }}
+                        onMouseMove={(state) => {
+                            if (state.isTooltipActive) {
+                                // Debounce or throttle could be added if too intense, 
+                                // but light haptic on move feels responsive.
+                                // triggerHaptic('selection'); // Too frequent?
+                                // Only trigger if index changed
+                            }
+                        }}
+                        onTouchStart={() => triggerHaptic('light')}
+                    >
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="date"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            interval={2}
+                            tickFormatter={(value) => value}
+                        />
+                        <ChartTooltip
+                            cursor={{ stroke: 'var(--color-amount)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                            content={<ChartTooltipContent hideLabel indicator="line" formatter={(value) => formatCurrency(Number(value))} />}
+                        />
+                        <defs>
+                            <linearGradient id="fillAmount" x1="0" y1="0" x2="0" y2="1">
+                                <stop
+                                    offset="5%"
+                                    stopColor="var(--color-amount)"
+                                    stopOpacity={0.8}
+                                />
+                                <stop
+                                    offset="95%"
+                                    stopColor="var(--color-amount)"
+                                    stopOpacity={0.1}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <Area
+                            dataKey="amount"
+                            type="monotone"
+                            fill="url(#fillAmount)"
+                            fillOpacity={0.4}
+                            stroke="var(--color-amount)"
+                            stackId="a"
+                            activeDot={{ r: 6, strokeWidth: 0, fill: 'var(--color-amount)' }}
+                        />
+                    </AreaChart>
+                </ChartContainer>
             </CardContent>
         </Card>
     );
