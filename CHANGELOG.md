@@ -2,6 +2,17 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.6] - 21 February 2026
+
+### 🏗 Architecture & Engineering Standardization
+
+- **Design System v1.1.0 Update**:
+  - Formalized **Modularity & Scalability** as core engineering mandates in `docs/DESIGN_SYSTEM.md`.
+  - Defined **Atomic Component** hierarchy: Atoms (basic UI), Molecules (combined logic), and Organisms (feature blocks).
+  - Established strict **Naming Conventions**: `kebab-case` for files, `PascalCase` for components, and `camelCase` for utilities/hooks.
+  - Specified **State Management** tiers: Global (Context), Server (Real-time hooks), and Local (React state).
+  - Defined **API Versioning Strategy** for Supabase RPCs using `_v{n}` suffixes to ensure backward compatibility.
+
 ## [Version 2.4.5] - 21 February 2026
 
 ### 🛠 UI Infrastructure & Accessibility Fixes

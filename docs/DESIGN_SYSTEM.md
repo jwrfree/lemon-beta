@@ -1,11 +1,14 @@
 # Lemon Design System
-**Version 1.0.0 (Apple-Inspired Premium Fidelity)**
+**Version 1.1.0 (Architecture & Apple-Inspired Fidelity)**
 
-Dokumen ini adalah sumber kebenaran (*Single Source of Truth*) untuk bahasa desain aplikasi Lemon. Arah desain saat ini mengadopsi estetika **Apple (iOS/macOS)** yang mengutamakan kejernihan, kedalaman visual, dan interaksi yang organik.
+Dokumen ini adalah sumber kebenaran (*Single Source of Truth*) untuk bahasa desain dan standar arsitektur aplikasi Lemon. Arah desain saat ini mengadopsi estetika **Apple (iOS/macOS)** dengan fondasi kode yang modular dan skalabel.
 
 ---
 
-## 1. Filosofi Desain
+## 1. Filosofi Desain & Engineering
+
+### Modularitas & Skalabilitas
+Setiap fitur harus dibangun sebagai modul independen yang dapat diperluas tanpa merusak fungsionalitas inti. Hindari *tight coupling* antar layer UI dan data.
 
 ### "Liquid Intelligence"
 Antarmuka harus terasa hidup, responsif, dan cerdas. Bukan sekadar formulir statis, melainkan asisten yang mengalir.
@@ -56,7 +59,18 @@ Sistem bayangan berlapis untuk menciptakan ilusi ketinggian.
 
 ---
 
-## 3. Komponen Utama
+## 3. Komponen & Pola Reusable
+
+### Komponen Atomik (Atoms)
+Komponen dasar yang tidak bisa dipecah lagi dan tidak memiliki *logic* bisnis.
+*   **Atomic:** `Button`, `Badge`, `Input`, `Icons`.
+*   **Molecules:** `MetricCard`, `WalletPill`, `CategorySelector`.
+*   **Organisms:** `DashboardOverview`, `TransactionForm`, `BudgetCard`.
+
+### Karakteristik Komponen
+1.  **Reusable:** Harus menerima `className` dan `props` standar untuk fleksibilitas.
+2.  **Terukur (Scalable):** Desain harus berfungsi baik pada mobile (small) maupun desktop (expanded).
+3.  **Stateless Preferred:** Sebisa mungkin komponen UI murni menerima data via props untuk memudahkan testing.
 
 ### Input Fields ("The Magic Bar")
 Jangan gunakan input standar dengan border abu-abu.
@@ -71,17 +85,6 @@ Jangan gunakan input standar dengan border abu-abu.
     *   *Hero Amount* di tengah atas.
     *   Detail dikelompokkan dalam *Inset Group* (`bg-secondary/30 rounded-2xl`).
     *   Pemisah menggunakan garis halus (`divide-y` atau `h-px`).
-
-### Charts (Grafik)
-Menggunakan **Shadcn UI Chart** (Recharts wrapper).
-*   **Warna:** Wajib menggunakan variabel CSS (`var(--destructive)`, `var(--primary)`). Jangan *hardcode* Hex atau `hsl()`.
-*   **Interaksi:** Tooltip harus informatif. Gunakan kursor putus-putus (`cursor={{ strokeDasharray: '4 4' }}`) untuk mobile.
-*   **Interpolasi:** Gunakan `type="monotone"` untuk Area Chart agar kurva tidak *overshoot* ke nilai negatif.
-
-### Segmented Controls (Toggle)
-Jangan gunakan dua tombol terpisah yang kaku.
-*   Gunakan satu kontainer (`bg-secondary/50 rounded-full`).
-*   Gunakan indikator latar belakang bergerak (`motion.div` dengan `layoutId`) untuk menandai pilihan aktif.
 
 ---
 
@@ -98,11 +101,30 @@ Jangan biarkan pengguna menunggu spinner (`isLoading`) untuk aksi sederhana.
 *   **Update Instan:** UI harus berubah *sebelum* request server selesai (misal: tambah transaksi, update budget).
 *   **Rollback:** Kembalikan ke state awal hanya jika server gagal.
 
-### Smart Defaults
-*   Jangan tanya jika bisa ditebak.
-*   Contoh: Input "Makan di McD" -> Otomatis set kategori "Makanan", Merchant "McDonalds", Logo "McD", dan Status "Keinginan".
+---
+
+## 5. Standar Engineering & Penamaan
+
+### Panduan Penamaan (Naming Conventions)
+Konsistensi adalah kunci skalabilitas.
+*   **Files:** `kebab-case.tsx` untuk komponen, `camelCase.ts` untuk utility/hooks.
+*   **Components:** `PascalCase`. (Contoh: `SmartAddOverlay`).
+*   **Hooks:** Awali dengan `use`. (Contoh: `useWallets`).
+*   **CSS Classes:** Gunakan Tailwind dengan urutan: `Layout` -> `Spacing` -> `Typography` -> `Visual` (Colors/Shadows).
+
+### Spesifikasi State Management
+1.  **Global State:** Gunakan **React Context** (Providers) untuk data yang diakses banyak fitur (Auth, Wallets, UI State).
+2.  **Server State:** Gunakan custom hooks dengan sinkronisasi *real-time* Supabase (EventEmitter).
+3.  **Local State:** Gunakan `useState` / `useReducer` untuk *form state* atau interaksi UI mikro.
+4.  **Event Driven:** Gunakan `EventEmitter` untuk komunikasi antar-provider (misal: trigger refresh saldo setelah transaksi).
+
+### Strategi Versioning API (Supabase RPC)
+Selalu gunakan suffix versi pada fungsi database (RPC) untuk menjaga kompatibilitas ke belakang (*backward compatibility*).
+*   Format: `nama_fungsi_v{n}` (Contoh: `create_transaction_v1`).
+*   **V1:** Versi stabil awal.
+*   **V2:** Gunakan jika ada perubahan *breaking changes* pada parameter atau logika bisnis inti yang mempengaruhi client lama.
 
 ---
 
 **Catatan Implementasi:**
-Saat membuat fitur baru, selalu rujuk ke prinsip "Apple-Inspired" ini. Prioritaskan kebersihan visual (sedikit garis, banyak ruang) dan animasi yang memanjakan mata.
+Saat membuat fitur baru, selalu rujuk ke prinsip "Apple-Inspired" dan standar engineering ini. Prioritaskan kebersihan visual (sedikit garis, banyak ruang) dan struktur kode yang modular.
