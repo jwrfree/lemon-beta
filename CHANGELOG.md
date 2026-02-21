@@ -2,6 +2,22 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.8] - 21 February 2026
+
+### 💰 Income Category Overhaul & Precision
+
+- **Comprehensive Income Schema**:
+  - Re-architected income categories to be more descriptive and professional (e.g., "Gaji" -> "Gaji & Tetap", "Investasi" -> "Investasi & Pasif").
+  - **New Specialized Categories**: Introduced "Refund & Cashback" and "Penjualan Aset" (specifically for second-hand items, electronics, and vehicles).
+  - **Modern Sub-categories**: Added support for Affiliate/AdSense income, Royalties, Zakat/Infaq received, and Asset liquidation.
+- **AI Intelligence Upgrade**:
+  - Enhanced the `extract-transaction-flow` engine to recognize high-intent keywords like "jual", "laku", "cair", and "cashback".
+  - Improved mapping logic to automatically assign income to the new specialized categories.
+- **Visual Fidelity**:
+  - Integrated new high-fidelity Lucide icons (`RefreshCw`, `BadgeDollarSign`, `Wallet`, `Code`) with refined Tailwind color palettes for better visual distinction in lists and charts.
+- **Database Integrity & Migration**:
+  - Implemented a safe SQL migration (`20260221120000_refine_income_categories.sql`) to rename default categories and automatically update existing transaction history, ensuring zero data loss during the transition.
+
 ## [Version 2.4.7] - 21 February 2026
 
 ### 🎨 Dynamic DNA UI & Immersive Experience
