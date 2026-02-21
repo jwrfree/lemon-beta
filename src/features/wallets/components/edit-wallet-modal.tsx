@@ -134,27 +134,38 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                 'Simpan Perubahan'
               )}
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
-                  <Trash2 className="h-5 w-5" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Yakin mau menghapus dompet ini?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Tindakan ini tidak dapat dibatalkan. Dompet hanya bisa dihapus jika tidak memiliki riwayat transaksi.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Batal</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
-                    {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            {wallet.name !== 'Tunai' && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button type="button" variant="ghost" className="w-full text-destructive hover:bg-destructive/10" disabled={isDeleting}>
+                    {isDeleting ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="mr-2 h-4 w-4" />
+                    )}
+                    Hapus Dompet
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-[90vw] rounded-2xl md:max-w-md">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Yakin mau menghapus dompet?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Tindakan ini tidak dapat dibatalkan. Dompet hanya bisa dihapus jika <strong>tidak memiliki riwayat transaksi</strong> dan tidak terpaku pada pembayaran hutang.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="flex-row gap-2 pt-2">
+                    <AlertDialogCancel className="flex-1 mt-0 rounded-xl">Batal</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                      className="flex-1 bg-destructive hover:bg-destructive/90 rounded-xl"
+                    >
+                      {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </form>
       </motion.div>

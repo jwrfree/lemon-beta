@@ -1,14 +1,19 @@
 # Lemon Mobile Blueprint
 
-## 0. Release Snapshot – v2.2.0 (February 2026)
+## 0. Current Status – v2.3.1 (February 2026)
+- **Status:** Hotfix Applied.
+- **Fokus rilis:** Perbaikan bug kritikal *double-counting* saldo dan sinkronisasi atomik penghapusan pembayaran hutang.
+- **Highlight baru:** Arsitektur "Single Source of Truth" untuk balance yang kini 100% bergantung pada database trigger, bukan lagi campuran manual di RPC.
+
+## 0.1 Release Snapshot – v2.3.0 (February 2026)
 - **Status:** Released.
+- **Fokus rilis:** Memperkuat keamanan dan integritas data melalui validasi sisi server (RPC & Triggers), optimasi indexing database, serta peningkatan kualitas kode (Type Safety).
+- **Highlight baru:** Atomic transaction ownership, pencegahan *double-counting* saldo, indexing $O(log n)$, serta refaktor form menggunakan React Hook Form & Zod.
+
+## 0.2 Previous Snapshot – v2.2.0 (February 2026)
+- **Status:** Integrated.
 - **Fokus rilis:** Mencapai standar "Premium Fidelity" melalui optimasi performa, analitik mendalam, dan pengalaman PWA yang setara aplikasi native.
 - **Highlight baru:** Analytics layer (Net Worth Trend, Saving Potential), update optimistik (zero-latency), skeleton screens, haptic feedback, dan overhaul UI desktop.
-
-## 0.1 Previous Snapshot – v2.1.0 (January 2026)
-- **Status:** Integrated.
-- **Fokus rilis:** Memperkuat kecerdasan buatan (AI) untuk efisiensi pencatatan, pemantauan kesehatan hutang yang lebih mendalam, serta optimalisasi UI desktop.
-- **Highlight baru:** Smart Add 2.0 didukung DeepSeek V3 (bulk add, wallet detection), dashboard Net Worth real-time, dan kalkulator estimasi biaya AI bagi developer.
 
 ## 1. Product Vision
 Lemon adalah pendamping keuangan mobile-first yang mengutamakan kualitas "Premium Fidelity". Tujuannya: membuat keputusan finansial terasa ringan, informatif, dan dapat diandalkan melalui pencatatan instan tanpa latensi, pengingat proaktif, serta insight yang bisa ditindaklanjuti. Setiap interaksi dirancang untuk memberikan sensasi aplikasi high-end yang konsisten di seluruh ekosistem.

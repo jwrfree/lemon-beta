@@ -9,6 +9,7 @@ import { ThemeTransition } from "@/components/theme-transition";
 import { AppProvider } from "@/providers/app-provider";
 import { UIProvider } from "@/components/ui-provider";
 import { ServiceWorkerProvider } from "@/components/service-worker-provider";
+import { InstallPrompt } from "@/components/install-prompt";
 import { BalanceVisibilityProvider } from "@/providers/balance-visibility-provider";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -58,6 +59,7 @@ export default function RootLayout({
             <AppProvider>
               <BalanceVisibilityProvider>
                 <ServiceWorkerProvider />
+                <InstallPrompt />
                 <Toaster />
                 {children}
               </BalanceVisibilityProvider>

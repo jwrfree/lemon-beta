@@ -33,7 +33,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         resolver: zodResolver(unifiedTransactionSchema) as any,
         defaultValues: {
             type: type || 'expense',
-            amount: '', // String for input handling
+            amount: '' as any, // String for input handling, cast to avoid TS mismatch with schema input
             description: '',
             date: new Date(),
             walletId: '',

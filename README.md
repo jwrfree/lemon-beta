@@ -1,10 +1,11 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.2.0** · Released · February 2026
+> **v2.3.1** · Patch Release · February 2021
 
-Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.2.0 introduces **"Premium Fidelity"** standards with advanced analytics and a PWA experience indistinguishable from native apps.
+Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.3.1 delivers a critical **"Data Integrity & Atomic Sync"** patch.
 
 ## ✨ Key Highlights & Recent Updates
+- **Security & Balance Integrity:** Moving critical logic to database triggers and RPCs to ensure 100% accurate balances and resource ownership.
 - **Deep Financial Analytics:** 4 new data layers: *Net Worth Trend* (6-month tracking), *Saving Potential* (Efficiency metrics), *Behavior Analytics* (Weekday vs Weekend patterns), and *Subscription Audit*.
 - **Premium UI/UX Fidelity:** Implementation of *Skeleton Screens*, *Haptic Feedback*, and success celebration animations providing a "High-End" app sensation.
 - **Optimistic Updates:** Instant UI response (zero-latency) when recording transactions—balance numbers update before server confirmation completes.

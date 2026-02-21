@@ -60,23 +60,44 @@ export const useWalletActions = (user: User | null) => {
     const deleteWallet = useCallback(async (walletId: string) => {
         if (!user) throw new Error("User not authenticated.");
         
-        // Check transactions
-        const { count, error: countError } = await supabase.from('transactions').select('*', { count: 'exact', head: true }).eq('wallet_id', walletId);
+        // 1. Check for Transactions
+        const { count: txCount, error: txError } = await supabase
+            .from('transactions')
+            .select('*', { count: 'exact', head: true })
+            .eq('wallet_id', walletId);
 
-        if (countError) {
-            console.error("Error checking transactions before wallet deletion:", countError);
+        if (txError) {
+            console.error("[useWalletActions] Error checking transactions:", txError);
             ui.showToast("Gagal memeriksa riwayat transaksi.", 'error');
             return;
         }
 
-        if (count && count > 0) {
-            ui.showToast("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
+        if (txCount && txCount > 0) {
+            ui.showToast("Dompet tidak bisa dihapus karena memiliki riwayat transaksi.", 'error');
             return;
         }
 
-        const { error } = await supabase.from('wallets').delete().eq('id', walletId);
+        // 2. Check for Debt Payments (Normalisasi Baru)
+        const { count: paymentCount, error: paymentError } = await supabase
+            .from('debt_payments')
+            .select('*', { count: 'exact', head: true })
+            .eq('wallet_id', walletId);
+
+        if (!paymentError && paymentCount && paymentCount > 0) {
+            ui.showToast("Dompet tidak bisa dihapus karena terkait dengan pembayaran hutang.", 'error');
+            return;
+        }
+
+        // 3. Final Delete Call
+        const { error } = await supabase
+            .from('wallets')
+            .delete()
+            .eq('id', walletId)
+            .eq('user_id', user.id); // Guard with user_id
+
         if (error) {
-            ui.showToast("Gagal menghapus dompet.", 'error');
+            console.error("[useWalletActions] Delete Error:", error);
+            ui.showToast(`Gagal menghapus dompet: ${error.message}`, 'error');
             return;
         }
 

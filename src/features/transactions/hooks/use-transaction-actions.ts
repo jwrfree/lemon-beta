@@ -20,7 +20,7 @@ export const useTransactionActions = (user: User | null) => {
 
         const optimisticTransaction: Transaction = {
             id: `temp-${Date.now()}`,
-            amount: data.amount,
+            amount: Number(data.amount),
             category: data.category,
             subCategory: data.subCategory || undefined,
             date: new Date(data.date).toISOString(),

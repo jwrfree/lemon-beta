@@ -17,7 +17,7 @@ class TransactionService {
     async createTransaction(userId: string, data: UnifiedTransactionFormValues): Promise<ServiceResult<string>> {
         try {
             // Amount is already transformed to number by Zod schema
-            const amount = typeof data.amount === 'number' ? data.amount : Number(String(data.amount).replace(/[^0-9.-]+/g, ""));
+            const amount = typeof data.amount === 'number' ? data.amount : Number(data.amount);
 
             if (data.type === 'transfer') {
                 const { error } = await this.supabase.rpc('create_transfer_v1', {
@@ -77,7 +77,7 @@ class TransactionService {
             }
 
             // Amount is already transformed to number by Zod schema
-            const amount = typeof data.amount === 'number' ? data.amount : Number(String(data.amount).replace(/[^0-9.-]+/g, ""));
+            const amount = typeof data.amount === 'number' ? data.amount : Number(data.amount);
 
             const { error } = await this.supabase.rpc('update_transaction_v1', {
                 p_user_id: userId,

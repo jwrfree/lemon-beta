@@ -2,6 +2,68 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.3.3] - 21 February 2026
+
+### 🛡 Type Safety & Stability Improvements
+
+- **Design System Consistency**:
+  - **Badge Variants**: Added missing `success` (Emerald) and `warning` (Yellow) variants to the `Badge` component, resolving visual regressions in the Net Worth card.
+- **Robust Transaction Handling**:
+  - **Optimistic Type Safety**: Enforced strict number conversion for transaction amounts in `use-transaction-actions`, preventing potential `NaN` or string concatenation errors during optimistic UI updates.
+  - **Service Layer Hardening**: Simplified data processing in `TransactionService` by leveraging Zod-validated types directly, removing redundant and error-prone string manipulation logic.
+  - **Form Initialization**: Fixed a type conflict in `useTransactionForm` where initial empty values clashed with strict schema definitions, ensuring smoother form hydration.
+
+## [Version 2.3.2] - 21 February 2026
+
+### 📲 PWA Installation Experience
+
+- **Global Install Prompt**: 
+  - Introduced a non-intrusive, global installation prompt (`InstallPrompt`) that elegantly suggests installing the app.
+  - The prompt is designed to appear after a short delay to avoid disrupting the initial user experience.
+- **Sidebar Integration**: 
+  - Added a persistent "Install App" button to the desktop sidebar footer.
+  - This button intelligently hides itself once the app is successfully installed or running in standalone mode.
+- **Enhanced Discoverability**: 
+  - Moved the installation trigger from being buried in Settings to prominent, context-aware locations for better user adoption.
+
+## [Version 2.3.1] - 21 February 2026
+
+### 🛡 Data Integrity & Atomic Sync Patch
+
+- **Critical Fix: Double-Counting Balance**: 
+  - Fixed a regressive bug in `create_transaction_v1` and `update_transaction_v1` where wallet balances were being updated twice (both by RPC and Trigger).
+  - Cleaned up RPC logic to rely solely on the database trigger `on_transaction_change` for gold-standard accuracy.
+- **Improved Debt Payment Deletion**:
+  - Linked `debt_payments` to the `transactions` table via `transaction_id`.
+  - Updated `delete_debt_payment_v1` to automatically delete the associated money transaction, ensuring wallet balances are reverted correctly when a payment is deleted.
+- **Atomic Reliability**: Enforced stricter ownership checks across all database functions using `auth.uid()`.
+
+## [Version 2.3.0] - 18 February 2026
+
+### 🛡 Security & Performance Audit Fixes
+
+- **Database Performance & Integrity**:
+  - **Added Missing Indexes**: Created B-tree indexes for `user_id`, `wallet_id`, `date`, and `category` across all core tables (`transactions`, `wallets`, `budgets`, `debts`, `goals`, `reminders`) to ensure $O(log n)$ query speed.
+  - **Unique Email Constraint**: Enforced a `UNIQUE` constraint on `profiles.email` to guarantee reliable biometric login and profile lookups.
+- **Functional Fixes**:
+  - **Resolved Wallet Double-Counting**: Fixed a critical bug where transactions were being counted twice in wallet balances by removing redundant manual balance updates from RPCs and delegating solely to the database trigger.
+  - **Atomic Debt Payment Deletion**: Moved complex payment removal logic from the client to a robust SQL RPC (`delete_debt_payment_v1`), preventing race conditions and ensuring $100\%$ balance integrity.
+- **Security Hardening**:
+  - **Atomic Ownership Verification**: Updated all financial RPCs (`create_transaction_v1`, `update_transaction_v1`, `delete_transaction_v1`, `create_transfer_v1`, `pay_debt_v1`) to verify resource ownership using `auth.uid()` before execution.
+  - **Client Parameter Isolation**: Hardened RPCs against ID spoofing by overriding any client-provided `p_user_id` with the actual authenticated session ID.
+- **Architecture & DX**:
+  - **Unified RPC Signature**: Simplified `TransactionService` to handle `sub_category` and `is_need` flags directly within atomic database calls, reducing network round-trips.
+
+### 🛠 Codebase Refactoring & Quality Audit
+
+- **Form Management Overhaul**: Refactored Debt, Wallet, and Transaction forms to use `React Hook Form` and `Zod` for robust validation and improved UX.
+- **Type Safety Enforcement**: Eliminated 100+ instances of `any` types in critical files ([use-assets.ts](file:///g:/01_projects/lemon-beta/src/features/assets/hooks/use-assets.ts), [lazy-charts.tsx](file:///g:/01_projects/lemon-beta/src/features/charts/components/lazy-charts.tsx), etc.) to improve developer experience and prevent runtime bugs.
+- **Hook Modernization**: Replaced deprecated `useApp` hook with modular `useAuth` and `useActions` across 13+ files, reducing unnecessary re-renders and improving code modularity.
+- **Performance Optimization**: Optimized Context Providers (`AuthProvider`, `ActionProvider`, `UIProvider`) using `useMemo` and `useCallback` for stable state management.
+- **Icon Casing Fix**: Resolved 10 console errors related to incorrect React component casing for Lucide icons in [chart-utils.ts](file:///g:/01_projects/lemon-beta/src/features/charts/lib/chart-utils.ts).
+- **Centralized Actions**: Moved core CRUD operations to `ActionProvider` for better maintainability and state consistency.
+- **Clean Code**: Deleted legacy `use-data.ts` and other redundant files to reduce technical debt.
+
 ## [Version 2.2.0] - 16 February 2026
 
 This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lemon from a simple tracker to a professional wealth management tool.
@@ -52,32 +114,6 @@ This release focuses on "Premium Fidelity" and Advanced Analytics, elevating Lem
 - **Brand Intelligence**:
   - **SeaBank Integration**: Added SeaBank to merchant and wallet visual maps, ensuring the logo and brand colors appear correctly in transaction lists and wallet stacks.
 - **Testing**: Added `visual-regression.test.tsx` to verify component structure and class usage.
-
-## [Version 2.3.0] - 18 February 2026
-
-### 🛡 Security & Performance Audit Fixes
-
-- **Database Performance & Integrity**:
-  - **Added Missing Indexes**: Created B-tree indexes for `user_id`, `wallet_id`, `date`, and `category` across all core tables (`transactions`, `wallets`, `budgets`, `debts`, `goals`, `reminders`) to ensure $O(log n)$ query speed.
-  - **Unique Email Constraint**: Enforced a `UNIQUE` constraint on `profiles.email` to guarantee reliable biometric login and profile lookups.
-- **Functional Fixes**:
-  - **Resolved Wallet Double-Counting**: Fixed a critical bug where transactions were being counted twice in wallet balances by removing redundant manual balance updates from RPCs and delegating solely to the database trigger.
-  - **Atomic Debt Payment Deletion**: Moved complex payment removal logic from the client to a robust SQL RPC (`delete_debt_payment_v1`), preventing race conditions and ensuring $100\%$ balance integrity.
-- **Security Hardening**:
-  - **Atomic Ownership Verification**: Updated all financial RPCs (`create_transaction_v1`, `update_transaction_v1`, `delete_transaction_v1`, `create_transfer_v1`, `pay_debt_v1`) to verify resource ownership using `auth.uid()` before execution.
-  - **Client Parameter Isolation**: Hardened RPCs against ID spoofing by overriding any client-provided `p_user_id` with the actual authenticated session ID.
-- **Architecture & DX**:
-  - **Unified RPC Signature**: Simplified `TransactionService` to handle `sub_category` and `is_need` flags directly within atomic database calls, reducing network round-trips.
-
-### 🛠 Codebase Refactoring & Quality Audit
-
-- **Form Management Overhaul**: Refactored Debt, Wallet, and Transaction forms to use `React Hook Form` and `Zod` for robust validation and improved UX.
-- **Type Safety Enforcement**: Eliminated 100+ instances of `any` types in critical files ([use-assets.ts](file:///g:/01_projects/lemon-beta/src/features/assets/hooks/use-assets.ts), [lazy-charts.tsx](file:///g:/01_projects/lemon-beta/src/features/charts/components/lazy-charts.tsx), etc.) to improve developer experience and prevent runtime bugs.
-- **Hook Modernization**: Replaced deprecated `useApp` hook with modular `useAuth` and `useActions` across 13+ files, reducing unnecessary re-renders and improving code modularity.
-- **Performance Optimization**: Optimized Context Providers (`AuthProvider`, `ActionProvider`, `UIProvider`) using `useMemo` and `useCallback` for stable state management.
-- **Icon Casing Fix**: Resolved 10 console errors related to incorrect React component casing for Lucide icons in [chart-utils.ts](file:///g:/01_projects/lemon-beta/src/features/charts/lib/chart-utils.ts).
-- **Centralized Actions**: Moved core CRUD operations to `ActionProvider` for better maintainability and state consistency.
-- **Clean Code**: Deleted legacy `use-data.ts` and other redundant files to reduce technical debt.
 
 ## [Unreleased] - January 2026
 

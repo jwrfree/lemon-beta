@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Sparkles, LogOut, Eye, EyeOff } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, LogOut, Eye, EyeOff, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
@@ -15,9 +15,18 @@ import { SIDEBAR_NAV_ITEMS, SIDEBAR_CONFIG } from '@/lib/sidebar-config';
 export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useAuth();
-    const { isSidebarCollapsed, setIsSidebarCollapsed } = useUI();
+    const { isSidebarCollapsed, setIsSidebarCollapsed, deferredPrompt, setDeferredPrompt } = useUI();
     const { isBalanceVisible, toggleBalanceVisibility } = useBalanceVisibility();
     const router = useRouter();
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            setDeferredPrompt(null);
+        }
+    };
 
     return (
         <aside
@@ -130,6 +139,29 @@ export const Sidebar = () => {
             </nav>
 
             <div className="mt-auto border-t pt-4 space-y-3">
+                {deferredPrompt && (
+                    <div className={cn("transition-all duration-300", isSidebarCollapsed ? "w-11 mx-auto" : "w-full")}>
+                        <Button
+                            variant="ghost"
+                            className={cn(
+                                'text-primary hover:bg-primary/10 rounded-lg transition-all duration-300',
+                                isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3 px-3'
+                            )}
+                            onClick={handleInstallClick}
+                            size={isSidebarCollapsed ? "icon" : "default"}
+                        >
+                            <Download className={cn("shrink-0", isSidebarCollapsed ? "h-6 w-6" : "h-5 w-5")} />
+                            <span 
+                                className={cn(
+                                    "truncate whitespace-nowrap overflow-hidden transition-all duration-300",
+                                    isSidebarCollapsed ? "w-0 opacity-0" : "w-auto opacity-100 ml-3"
+                                )}
+                            >
+                                Install App
+                            </span>
+                        </Button>
+                    </div>
+                )}
                 <div
                     className={cn(
                         'flex flex-col items-center rounded-lg bg-muted border border-border transition-all duration-300',
