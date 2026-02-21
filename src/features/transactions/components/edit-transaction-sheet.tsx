@@ -35,7 +35,8 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
     const [magicValue, setMagicValue] = useState('');
-    const [showManualForm, setShowAllFields] = useState(false);
+    // Always show manual form for editing
+    const showManualForm = true; 
 
     // Context for AI logic
     const aiContext = useMemo(() => ({
@@ -164,22 +165,8 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                     </div>
                 </div>
 
-                {/* 2. Manual Toggle & Form */}
+                {/* 2. Manual Form (Always Visible) */}
                 <div className="flex-1 overflow-y-auto px-6 pb-6 pt-4">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowAllFields(!showManualForm)}
-                        className="w-full text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 mb-4"
-                    >
-                        <span className="text-[10px] font-medium uppercase tracking-[0.2em]">
-                            {showManualForm ? 'Sembunyikan Detail' : 'Edit Manual'}
-                        </span>
-                        {showManualForm ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                    </Button>
-
-                    <AnimatePresence>
-                        {showManualForm && (
                             <motion.div
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
@@ -201,7 +188,14 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     <DatePicker control={control} name="date" error={errors.date?.message} />
                                 </div>
 
-                                <CategorySelector control={control} name="category" categories={activeCategories} error={(errors as any).category?.message} onSubCategoryChange={(val) => setValue('subCategory', val)} />
+                                <CategorySelector 
+                                    control={control} 
+                                    name="category" 
+                                    value={subCategory}
+                                    categories={activeCategories} 
+                                    error={(errors as any).category?.message} 
+                                    onSubCategoryChange={(val) => setValue('subCategory', val)} 
+                                />
 
                                 {type === 'expense' && (
                                     <div className="flex gap-2 p-1 bg-secondary rounded-lg border border-border">

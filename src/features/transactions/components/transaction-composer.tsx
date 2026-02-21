@@ -216,7 +216,16 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                                     <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={getError('walletId')} />
                                     <DatePicker control={control} name="date" error={getError('date')} />
                                 </div>
-                                <CategorySelector control={control} name="category" categories={activeCategories} error={getError('category')} isSuggesting={isSuggesting} isAiSuggested={lastSuggestedDescription === description && description.length > 2} onSubCategoryChange={(val) => setValue('subCategory', val)} />
+                                <CategorySelector 
+                                    control={control} 
+                                    name="category" 
+                                    value={form.getValues('subCategory')}
+                                    categories={activeCategories} 
+                                    error={getError('category')} 
+                                    isSuggesting={isSuggesting} 
+                                    isAiSuggested={lastSuggestedDescription === description && description.length > 2} 
+                                    onSubCategoryChange={(val) => setValue('subCategory', val)} 
+                                />
                             </motion.div>
                         )}
                     </AnimatePresence>

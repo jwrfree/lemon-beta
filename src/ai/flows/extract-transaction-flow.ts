@@ -136,6 +136,7 @@ Jam sekarang: ${currentTime}
      - Jika 'investasi', 'beli reksadana', 'beli saham', 'beli crypto', 'emas' -> 'Investasi & Aset'.
      - Jika 'bayar cicilan', 'kartu kredit', 'paylater', 'bayar hutang' -> 'Cicilan & Pinjaman'.
      - Jika 'nonton', 'tiket bioskop', 'topup game', 'liburan', 'hotel' -> 'Hiburan & Wisata'.
+     - Jika 'ganti oli', 'servis motor', 'servis mobil', 'cuci motor', 'tambal ban' -> 'Transportasi'.
      - Jika 'biaya admin', 'pajak' -> 'Biaya Lain-lain'.
 
 6. **LOGIKA TRANSFER (KHUSUS):**
@@ -165,7 +166,7 @@ Jam sekarang: ${currentTime}
 
 10. **BRAND & MERCHANT AWARENESS:**
    - Ekstrak brand populer Indonesia:
-     - Transportasi: Gojek, Grab, Maxim, Bluebird.
+     - Transportasi: Gojek, Grab, Maxim, Bluebird, Shell, Pertamina, AHASS, Yamalube, Federal Oil, Motul, Castrol.
      - Belanja: Alfamart, Indomaret, Tokopedia, Shopee, Lazada, Uniqlo.
      - Makan: McD, KFC, Hokben, Kopi Kenangan, Janji Jiwa, Starbucks.
      - Finance: BCA, Mandiri, BNI, BRI, Dana, OVO, GoPay.

@@ -14,6 +14,7 @@ interface CategorySelectorProps<T extends FieldValues> {
     control: Control<T>;
     name: Path<T>;
     subCategoryName?: Path<T>;
+    value?: string; // Add value prop for sub-category
     categories: Category[];
     label?: string;
     error?: string;
@@ -26,6 +27,7 @@ export function CategorySelector<T extends FieldValues>({
     control,
     name,
     subCategoryName,
+    value = '', // Default to empty string
     categories,
     label = "Kategori",
     error,
@@ -36,7 +38,12 @@ export function CategorySelector<T extends FieldValues>({
     const [isSubCategorySheetOpen, setIsSubCategorySheetOpen] = useState(false);
     const [selectedCategoryForSub, setSelectedCategoryForSub] = useState<Category | null>(null);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [localSubCategory, setLocalSubCategory] = useState<string>(''); // Track locally
+    const [localSubCategory, setLocalSubCategory] = useState<string>(value); // Initialize with prop
+
+    // Sync local state with prop when it changes (e.g. on form reset)
+    React.useEffect(() => {
+        setLocalSubCategory(value);
+    }, [value]);
 
     const handleCategoryClick = (cat: Category, onChange: (value: string) => void) => {
         onChange(cat.name);

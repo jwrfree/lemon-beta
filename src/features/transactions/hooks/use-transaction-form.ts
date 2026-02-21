@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { parseISO } from 'date-fns';
 
 import { unifiedTransactionSchema, UnifiedTransactionFormValues, UnifiedTransactionInputValues } from '../schemas/transaction-schema';
-import { transactionService } from '../services/transaction.service';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { triggerHaptic } from '@/lib/utils';
 import { Transaction, Wallet } from '@/types/models';
 import { patchTransactionLiquid } from '@/ai/flows/liquid-patch-flow';
+import { useActions } from '@/providers/action-provider'; // Import useActions
 
 interface UseTransactionFormProps {
     initialData?: Transaction | null;
@@ -22,6 +22,7 @@ interface UseTransactionFormProps {
 export const useTransactionForm = ({ initialData, onSuccess, type, context }: UseTransactionFormProps = {}) => {
     const { user } = useAuth();
     const { showToast } = useUI();
+    const { addTransaction, updateTransaction, deleteTransaction } = useActions(); // Use useActions
     const [isAiProcessing, setIsAiProcessing] = useState(false);
     const [aiExplanation, setAiExplanation] = useState<string | null>(null);
     const router = useRouter();
@@ -33,13 +34,14 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         resolver: zodResolver(unifiedTransactionSchema) as any,
         defaultValues: {
             type: type || 'expense',
-            amount: '' as any, // String for input handling, cast to avoid TS mismatch with schema input
+            amount: '' as any,
             description: '',
             date: new Date(),
             walletId: '',
             category: '',
             subCategory: '',
             location: '',
+            isNeed: true, // Added default
             // Transfer defaults
             fromWalletId: '',
             toWalletId: '',
@@ -58,6 +60,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 category: initialData.category,
                 subCategory: initialData.subCategory || '',
                 location: initialData.location || '',
+                isNeed: initialData.isNeed ?? true, // Added isNeed
             } as any);
         }
     }, [initialData, form]);
@@ -98,7 +101,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
     }, [user, context, form]);
 
     // 4. Robust Submit Handler
-    const handleSubmit = useCallback(async (data: UnifiedTransactionFormValues) => {
+    const onSubmitHandler = useCallback(async (data: UnifiedTransactionFormValues) => {
         if (!user) {
             showToast("Sesi habis. Silakan login kembali.", "error");
             return;
@@ -108,15 +111,11 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
         let result;
         if (isEditMode && initialData) {
-            result = await transactionService.updateTransaction(user.id, initialData.id, data);
+            // Use updateTransaction from useActions
+            await updateTransaction(initialData.id, initialData, data);
         } else {
-            result = await transactionService.createTransaction(user.id, data);
-        }
-
-        if (result.error) {
-            triggerHaptic('error');
-            showToast(result.error, 'error');
-            return;
+            // Use addTransaction from useActions
+            await addTransaction(data);
         }
 
         // Success Flow
@@ -133,21 +132,16 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
             }, 100);
         }
 
-    }, [user, isEditMode, initialData, showToast, onSuccess, router]);
+    }, [user, isEditMode, initialData, showToast, onSuccess, router, addTransaction, updateTransaction]);
 
     // 5. Delete Handler
-    const handleDelete = useCallback(async () => {
+    const onDeleteHandler = useCallback(async () => {
         if (!user || !initialData) return;
 
         triggerHaptic('medium');
 
-        const result = await transactionService.deleteTransaction(user.id, initialData.id);
-
-        if (result.error) {
-            triggerHaptic('error');
-            showToast(result.error, 'error');
-            return;
-        }
+        // Use deleteTransaction from useActions
+        await deleteTransaction(initialData);
 
         triggerHaptic('success');
         showToast("Transaksi berhasil dihapus", 'success');
@@ -159,7 +153,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
             }, 100);
         }
 
-    }, [user, initialData, showToast, onSuccess, router]);
+    }, [user, initialData, showToast, onSuccess, router, deleteTransaction]);
 
     return {
         form,
@@ -168,8 +162,8 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         isAiProcessing,
         aiExplanation,
         applyLiquidPatch,
-        handleSubmit: form.handleSubmit(handleSubmit as any),
-        handleDelete,
+        handleSubmit: form.handleSubmit(onSubmitHandler),
+        handleDelete: onDeleteHandler,
         errors: form.formState.errors,
     };
 };
