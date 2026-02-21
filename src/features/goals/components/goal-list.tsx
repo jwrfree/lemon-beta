@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import { Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, LucideIcon, CalendarClock } from 'lucide-react';
 import { formatDistanceToNowStrict, parseISO, isPast } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';

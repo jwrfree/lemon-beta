@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from '@/components/ui-provider';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';

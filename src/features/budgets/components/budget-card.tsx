@@ -167,14 +167,9 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                 </div>
                             )}
                         </div>
-                    </div>
-                </Card>
-            </button>
-        </motion.div>
-    );
-};
-
-            </button>
-        </motion.div>
-    );
-};
+                                    </div>
+                                </Card>
+                            </button>
+                        </motion.div>
+                    );
+                    };

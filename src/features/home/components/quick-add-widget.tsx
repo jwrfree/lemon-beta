@@ -163,6 +163,4 @@ export const QuickAddWidget = () => {
         </Card>
     );
 };
-    );
-};
 

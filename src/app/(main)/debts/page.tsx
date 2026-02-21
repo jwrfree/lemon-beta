@@ -19,6 +19,7 @@ import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DebtAnalyticsCard } from '@/features/debts/components/debt-analytics-card';
 import { StatusBadge } from '@/components/status-badge';
+import { motion } from 'framer-motion';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
@@ -275,8 +276,6 @@ export default function DebtsPage() {
                             })
                         )}
                     </div>
-                </div>
-            </main>
                 </div>
             </main>
 

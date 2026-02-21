@@ -44,8 +44,6 @@ interface MobileDashboardProps {
     isLoading: boolean;
 }
 
-import { SpendingTrendChart } from './spending-trend-chart';
-import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
 import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
 
 // ... (interface MobileDashboardProps remains same)
