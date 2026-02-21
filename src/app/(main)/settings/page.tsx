@@ -47,11 +47,11 @@ function BentoItem({
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.4, delay: delay, ease: [0.23, 1, 0.32, 1] }}
-            whileHover={{ scale: 0.98 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 0.985 }}
+            whileTap={{ scale: 0.96 }}
             onClick={onClick}
             className={cn(
-                "relative overflow-hidden rounded-lg bg-card border border-border shadow-sm hover:shadow-xl transition-all cursor-pointer group select-none",
+                "relative overflow-hidden rounded-3xl bg-card shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all cursor-pointer group select-none border-none",
                 className
             )}
         >
@@ -100,7 +100,7 @@ function SettingsContent() {
                 title="Profil"
                 showBackButton={true}
                 extraActions={
-                    <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-border">
+                    <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-background shadow-sm">
                         {userData?.photoURL ? (
                             <Image src={userData.photoURL} alt="User" width={40} height={40} className="object-cover" />
                         ) : (
@@ -116,23 +116,23 @@ function SettingsContent() {
                 {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
                 <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
                     {/* Identity Card */}
-                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white border-none p-6 md:p-8 flex flex-col justify-between" delay={0.05}>
+                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl rounded-[32px] p-8 flex flex-col justify-between" delay={0.05}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <p className="text-white/60 text-xs font-medium uppercase tracking-widest">Digital ID</p>
-                                <h2 className="text-2xl md:text-4xl font-medium tracking-tight">{userData?.displayName || 'Guest User'}</h2>
-                                <p className="text-white/80 font-medium">{user?.email}</p>
+                                <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.3em]">Digital ID</p>
+                                <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter leading-none">{userData?.displayName || 'Guest User'}</h2>
+                                <p className="text-white/80 font-medium text-sm mt-1">{user?.email}</p>
                             </div>
                             <ShieldCheck className="w-8 h-8 text-white/50" />
                         </div>
                         <div className="mt-8 flex items-end justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-medium border border-white/10 shadow-lg">PRO MEMBER</span>
-                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-xs font-medium border border-white/5">LEVEL 4</span>
+                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border border-white/10 shadow-lg text-white">PRO MEMBER</span>
+                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border border-white/5 text-white/80">LEVEL 4</span>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-white/60 font-medium">Bergabung sejak</p>
-                                <p className="text-sm font-medium">2024</p>
+                                <p className="text-[9px] text-white/60 font-bold uppercase tracking-widest">Sejak</p>
+                                <p className="text-sm font-bold">2024</p>
                             </div>
                         </div>
 
@@ -143,7 +143,7 @@ function SettingsContent() {
                     {/* Theme Switcher - Visual */}
                     <BentoItem
                         onClick={toggleTheme}
-                        className="col-span-12 md:col-span-4 bg-foreground text-background dark:bg-foreground dark:text-background p-6 flex flex-col justify-center items-center relative gap-4"
+                        className="col-span-12 md:col-span-4 bg-foreground text-background dark:bg-foreground dark:text-background p-6 flex flex-col justify-center items-center relative gap-4 rounded-[32px]"
                         delay={0.1}
                     >
                         <div className="relative">
@@ -171,27 +171,27 @@ function SettingsContent() {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <p className="font-medium text-sm tracking-widest uppercase mt-4">
+                        <p className="font-bold text-[10px] tracking-[0.3em] uppercase mt-4">
                             {mounted && theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                         </p>
-                        <p className="text-[10px] opacity-60">Tap to switch</p>
+                        <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest">Tap to switch</p>
                     </BentoItem>
                 </div>
 
                 {/* BARIS 2: Core Actions (Grid 2) */}
                 <div className="grid grid-cols-2 gap-4">
-                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50">
-                        <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-[24px]">
+                        <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm">
                             <Wallet className="w-6 h-6" />
                         </div>
-                        <span className="font-medium text-sm text-center">Dompet</span>
+                        <span className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/80">Dompet</span>
                     </BentoItem>
 
-                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50">
-                        <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-[24px]">
+                        <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shadow-sm">
                             <Target className="w-6 h-6" />
                         </div>
-                        <span className="font-medium text-sm text-center">Target</span>
+                        <span className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/80">Target</span>
                     </BentoItem>
                 </div>
 
@@ -205,24 +205,24 @@ function SettingsContent() {
                         {deferredPrompt && (
                             <BentoItem
                                 onClick={handleInstallClick}
-                                className="col-span-1 md:col-span-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-none p-6 flex items-center justify-between group overflow-hidden relative"
+                                className="col-span-1 md:col-span-3 bg-teal-900 text-white shadow-xl rounded-[32px] p-8 flex items-center justify-between group overflow-hidden relative"
                                 delay={0.32}
                             >
-                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-teal-800 to-teal-900 opacity-50" />
                                 <div className="relative z-10 flex items-center gap-6">
-                                    <div className="h-16 w-16 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                                    <div className="h-16 w-16 rounded-[24px] bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
                                         <Download className="h-8 w-8 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">
+                                        <h3 className="text-xl font-bold tracking-tighter flex items-center gap-2">
                                             Instal Lemon
                                             <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
                                         </h3>
-                                        <p className="text-white/70 text-sm font-medium">Akses lebih cepat & mode luring penuh</p>
+                                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Akses lebih cepat & mode luring penuh</p>
                                     </div>
                                 </div>
-                                <div className="relative z-10 bg-white text-teal-700 font-medium text-[10px] uppercase tracking-widest px-4 py-2 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
-                                    Pasang Sekarang
+                                <div className="relative z-10 bg-white text-teal-900 font-bold text-[10px] uppercase tracking-[0.2em] px-5 py-2.5 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
+                                    Pasang
                                 </div>
 
                                 {/* Decor */}
@@ -231,51 +231,58 @@ function SettingsContent() {
                         )}
                     </AnimatePresence>
 
-                    <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1">
-                        <div className="px-4 py-3 text-xs font-medium uppercase tracking-widest text-muted-foreground">Pengaturan Lanjutan</div>
-                        {[
-                            { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
-                            { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts' },
-                            { name: 'Aset & Liabilitas', icon: Landmark, path: '/assets-liabilities' },
-                        ].map((item, idx) => (
-                            <div
-                                key={idx}
-                                onClick={() => router.push(item.path)}
-                                className="flex items-center justify-between p-4 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                                    <span className="font-medium text-sm">{item.name}</span>
+                    <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1 rounded-[32px]">
+                        <div className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Pengaturan Lanjutan</div>
+                        <div className="space-y-1 px-2 pb-2">
+                            {[
+                                { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
+                                { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts' },
+                                { name: 'Aset & Liabilitas', icon: Landmark, path: '/assets-liabilities' },
+                            ].map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    onClick={() => router.push(item.path)}
+                                    className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted/50 transition-colors cursor-pointer group"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="p-2 rounded-xl bg-secondary/50 group-hover:bg-card transition-colors shadow-sm">
+                                            <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                        </div>
+                                        <span className="font-semibold text-sm tracking-tight">{item.name}</span>
+                                    </div>
+                                    <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-muted-foreground" />
                                 </div>
-                                <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-muted-foreground" />
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </BentoItem>
 
-                    <BentoItem delay={0.4} className="p-6 flex flex-col justify-center gap-4 bg-muted/50 border-dashed border-2 border-border">
-                        <div className="flex items-center gap-3 opacity-50">
-                            <Monitor className="w-5 h-5" />
-                            <span className="text-sm font-medium">Versi Web Desktop (Beta)</span>
+                    <BentoItem delay={0.4} className="p-8 flex flex-col justify-center gap-6 bg-muted/30 border-dashed border-2 border-border/50 rounded-[32px]">
+                        <div className="flex flex-col gap-1 opacity-40">
+                            <div className="flex items-center gap-2">
+                                <Monitor className="w-4 h-4" />
+                                <span className="text-[10px] font-bold uppercase tracking-widest">Platform</span>
+                            </div>
+                            <span className="text-sm font-semibold">Web Desktop (Beta)</span>
                         </div>
-                        <div className="h-px bg-border w-full" />
+                        <div className="h-px bg-border/50 w-full" />
 
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <div className="flex items-center gap-3 text-destructive cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-lg">
+                                <div className="flex items-center gap-3 text-destructive cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-xl">
                                     <LogOut className="w-5 h-5" />
-                                    <span className="font-medium text-sm">Keluar dari Akun</span>
+                                    <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Keluar Akun</span>
                                 </div>
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle>Logout</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Apakah Anda yakin ingin keluar? Sesi Anda akan berakhir.
+                                    <AlertDialogTitle className="text-2xl font-semibold tracking-tighter">Konfirmasi Logout</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-sm font-medium text-muted-foreground">
+                                        Apakah Anda yakin ingin keluar? Sesi aktif Anda akan segera diakhiri.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleSignOut} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">Keluar</AlertDialogAction>
+                                <AlertDialogFooter className="mt-6 flex-row gap-3">
+                                    <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-bold text-xs uppercase tracking-widest mt-0">Batal</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleSignOut} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-bold text-xs uppercase tracking-widest">Logout</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
@@ -283,7 +290,7 @@ function SettingsContent() {
                 </div>
 
                 <div className="pt-8 pb-12 text-center">
-                    <p className="text-[10px] font-medium tracking-[0.3em] uppercase opacity-30">Designed by Lemon AI</p>
+                    <p className="text-[9px] font-bold tracking-[0.4em] uppercase opacity-20">Designed by Lemon AI</p>
                 </div>
             </div>
         </div>

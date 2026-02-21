@@ -182,24 +182,24 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 animate={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }) : {}}
                 exit={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }) : {}}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="w-full max-w-lg bg-background rounded-t-lg md:rounded-lg shadow-2xl flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border overflow-hidden relative pb-safe"
+                className="w-full max-w-lg bg-background/95 backdrop-blur-xl rounded-t-[2.5rem] md:rounded-[32px] shadow-2xl flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border-none overflow-hidden relative pb-safe"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="md:hidden w-12 h-1.5 bg-muted rounded-full mx-auto mt-3 mb-1 shrink-0 opacity-40" />
+                <div className="md:hidden w-12 h-1.5 bg-muted rounded-full mx-auto mt-4 mb-1 shrink-0 opacity-40" />
                 <div className={cn("absolute top-0 left-0 w-full h-1.5 transition-colors duration-500", accentBg.replace('bg-', 'bg-').split(' ')[0])} />
 
-                <div className="p-4 pt-5 border-b flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 shrink-0">
-                    <h2 className="text-xl font-medium flex items-center gap-2 tracking-tight">
-                        <div className={cn("w-2.5 h-2.5 rounded-full ring-4 transition-colors duration-500", accentColor.replace('text-', 'bg-').split(' ')[0], accentBg.replace('bg-', 'ring-').split(' ')[0])} />
+                <div className="p-6 pt-5 flex items-center justify-between sticky top-0 z-10 shrink-0">
+                    <h2 className="text-2xl font-semibold flex items-center gap-3 tracking-tighter">
+                        <div className={cn("w-3 h-3 rounded-full ring-4 transition-colors duration-500", accentColor.replace('text-', 'bg-').split(' ')[0], accentBg.replace('bg-', 'ring-').split(' ')[0])} />
                         {isEditMode ? 'Edit Transaksi' : 'Transaksi Baru'}
                     </h2>
-                    <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted/50 rounded-full hover:bg-muted h-9 w-9">
+                    <Button variant="ghost" size="icon" onClick={() => onClose()} className="bg-muted/50 rounded-full hover:bg-muted h-10 w-10">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="overflow-y-auto p-4 space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="overflow-y-auto p-6 space-y-8">
                     <TransactionTypeTabs value={type} onChange={handleTypeChange} />
                     <AmountInput control={control} name="amount" error={getError('amount')} />
 
@@ -210,7 +210,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                                 <WalletSelector control={control} name="toWalletId" wallets={wallets} label="Ke Dompet" placeholder="Tujuan" excludedWalletId={fromWalletId} error={getError('toWalletId')} />
                             </motion.div>
                         ) : (
-                            <motion.div key="regular-fields" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+                            <motion.div key="regular-fields" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
                                 <div className="grid grid-cols-2 gap-4">
                                     <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={getError('walletId')} />
                                     <DatePicker control={control} name="date" error={getError('date')} />
@@ -220,9 +220,10 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                         )}
                     </AnimatePresence>
 
-                    <div className="space-y-2">
-                        <Input {...form.register('description')} id="description" placeholder="Deskripsi (makan siang, bensin, dll...)" className={cn("h-12 rounded-lg bg-secondary border-border shrink-0 focus-visible:ring-primary/30", errors.description && "border-destructive")} />
-                        {errors.description && <p className="text-sm font-medium text-destructive">{errors.description.message}</p>}
+                    <div className="space-y-3">
+                        <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Deskripsi</Label>
+                        <Input {...form.register('description')} id="description" placeholder="makan siang, bensin, dll..." className={cn("h-12 rounded-2xl bg-secondary/50 border-none shadow-inner shrink-0 focus-visible:ring-primary/30", errors.description && "bg-destructive/5")} />
+                        {errors.description && <p className="text-xs font-medium text-destructive ml-1">{errors.description.message}</p>}
                     </div>
 
                     {type === 'transfer' && (
@@ -232,13 +233,13 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     )}
                 </form>
 
-                <div className="p-4 border-t sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-4">
+                <div className="p-6 border-t border-border/20 sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-6">
                     {type === 'expense' && <PocketCoPilot />}
                     <BudgetStatusPill category={category} />
 
                     <Button
                         onClick={handleSubmit(onSubmit)}
-                        className="w-full h-12 text-base rounded-lg font-medium transition-all duration-300 shadow-card active:scale-[0.98] text-white hover:brightness-110 bg-primary"
+                        className="w-full h-14 text-base rounded-full font-bold shadow-xl active:scale-[0.98] text-white hover:brightness-110 bg-primary transition-all duration-300"
                         style={categoryVisuals ? {
                             backgroundColor: getCategoryColorHex(categoryVisuals)
                         } : undefined}
