@@ -35,8 +35,9 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
     const [magicValue, setMagicValue] = useState('');
+    const [showAllFields, setShowAllFields] = useState(true);
     // Always show manual form for editing
-    const showManualForm = true; 
+    const showManualForm = true;
 
     // Context for AI logic
     const aiContext = useMemo(() => ({
@@ -167,78 +168,76 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
                 {/* 2. Manual Form (Always Visible) */}
                 <div className="flex-1 overflow-y-auto px-6 pb-6 pt-4">
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="space-y-6 pt-2 overflow-hidden"
-                            >
-                                <div className="bg-card rounded-lg p-5 border border-border shadow-card space-y-5">
-                                    <Tabs value={type} onValueChange={(v: any) => setValue('type', v)}>
-                                        <TabsList className="w-full h-11 bg-muted/50 rounded-lg p-1">
-                                            <TabsTrigger value="expense" className="flex-1 rounded-md text-[10px] font-medium uppercase">Pengeluaran</TabsTrigger>
-                                            <TabsTrigger value="income" className="flex-1 rounded-md text-[10px] font-medium uppercase">Pemasukan</TabsTrigger>
-                                        </TabsList>
-                                    </Tabs>
-                                    <AmountInput control={control} name="amount" error={errors.amount?.message} />
-                                </div>
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="space-y-6 pt-2 overflow-hidden"
+                    >
+                        <div className="bg-card rounded-lg p-5 border border-border shadow-card space-y-5">
+                            <Tabs value={type} onValueChange={(v: any) => setValue('type', v)}>
+                                <TabsList className="w-full h-11 bg-muted/50 rounded-lg p-1">
+                                    <TabsTrigger value="expense" className="flex-1 rounded-md text-[10px] font-medium uppercase">Pengeluaran</TabsTrigger>
+                                    <TabsTrigger value="income" className="flex-1 rounded-md text-[10px] font-medium uppercase">Pemasukan</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <AmountInput control={control} name="amount" error={errors.amount?.message} />
+                        </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={(errors as any).walletId?.message} />
-                                    <DatePicker control={control} name="date" error={errors.date?.message} />
-                                </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={(errors as any).walletId?.message} />
+                            <DatePicker control={control} name="date" error={errors.date?.message} />
+                        </div>
 
-                                <CategorySelector 
-                                    control={control} 
-                                    name="category" 
-                                    value={subCategory}
-                                    categories={activeCategories} 
-                                    error={(errors as any).category?.message} 
-                                    onSubCategoryChange={(val) => setValue('subCategory', val)} 
-                                />
+                        <CategorySelector
+                            control={control}
+                            name="category"
+                            value={subCategory}
+                            categories={activeCategories}
+                            error={(errors as any).category?.message}
+                            onSubCategoryChange={(val) => setValue('subCategory', val)}
+                        />
 
-                                {type === 'expense' && (
-                                    <div className="flex gap-2 p-1 bg-secondary rounded-lg border border-border">
-                                        <button
-                                            type="button"
-                                            onClick={() => setValue('isNeed', true, { shouldDirty: true })}
-                                            className={cn(
-                                                "flex-1 py-3 px-4 rounded-md text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
-                                                isNeed !== false ? "bg-card shadow-sm text-success ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
-                                            )}
-                                        >
-                                            <Heart className={cn("h-3.5 w-3.5", isNeed !== false ? "fill-success" : "opacity-50")} />
-                                            Kebutuhan
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setValue('isNeed', false, { shouldDirty: true })}
-                                            className={cn(
-                                                "flex-1 py-3 px-4 rounded-md text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
-                                                isNeed === false ? "bg-card shadow-sm text-pink-500 ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
-                                            )}
-                                        >
-                                            <ShoppingBag className={cn("h-3.5 w-3.5", isNeed === false ? "fill-pink-500" : "opacity-50")} />
-                                            Keinginan
-                                        </button>
-                                    </div>
-                                )}
-
-                                <div className="space-y-2">
-                                    <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1">
-                                        <MapPin className="h-3 w-3" />
-                                        Lokasi
-                                    </p>
-                                    <Input {...form.register('location')} placeholder="Mis: Grand Indonesia, Starbucks..." className="h-12 rounded-lg bg-card border-border" />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground px-1">Deskripsi</p>
-                                    <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-lg bg-card border-border" />
-                                </div>
-                            </motion.div>
+                        {type === 'expense' && (
+                            <div className="flex gap-2 p-1 bg-secondary rounded-lg border border-border">
+                                <button
+                                    type="button"
+                                    onClick={() => setValue('isNeed', true, { shouldDirty: true })}
+                                    className={cn(
+                                        "flex-1 py-3 px-4 rounded-md text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                        isNeed !== false ? "bg-card shadow-sm text-success ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
+                                    )}
+                                >
+                                    <Heart className={cn("h-3.5 w-3.5", isNeed !== false ? "fill-success" : "opacity-50")} />
+                                    Kebutuhan
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setValue('isNeed', false, { shouldDirty: true })}
+                                    className={cn(
+                                        "flex-1 py-3 px-4 rounded-md text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                        isNeed === false ? "bg-card shadow-sm text-pink-500 ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
+                                    )}
+                                >
+                                    <ShoppingBag className={cn("h-3.5 w-3.5", isNeed === false ? "fill-pink-500" : "opacity-50")} />
+                                    Keinginan
+                                </button>
+                            </div>
                         )}
-                    </AnimatePresence>
+
+                        <div className="space-y-2">
+                            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                Lokasi
+                            </p>
+                            <Input {...form.register('location')} placeholder="Mis: Grand Indonesia, Starbucks..." className="h-12 rounded-lg bg-card border-border" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground px-1">Deskripsi</p>
+                            <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-lg bg-card border-border" />
+                        </div>
+                    </motion.div>
                 </div>
 
                 {/* 3. Global Actions */}

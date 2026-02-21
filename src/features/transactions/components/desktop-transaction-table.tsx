@@ -35,7 +35,10 @@ import type { Transaction, Wallet } from '@/types/models';
 import {
     getMerchantVisuals,
     getMerchantLogoUrl,
-    getBackupLogoUrl
+    getBackupLogoUrl,
+    getGoogleFaviconUrl,
+    markLogoAsFailed,
+    isLogoFailed
 } from '@/lib/merchant-utils';
 
 interface DesktopTransactionTableProps {
@@ -63,16 +66,33 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
 
     // Merchant Logic
     const merchantVisuals = getMerchantVisuals(t.merchant || t.description);
-    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>('primary');
+    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>(() => {
+        if (!merchantVisuals?.domain) return 'icon';
+        if (isLogoFailed(merchantVisuals.domain)) return 'icon';
+        return 'primary';
+    });
 
-    // Reset state when transaction changes
+    // Reset state ONLY when the actual merchant identity/domain changes
+    const domainRef = React.useRef(merchantVisuals?.domain);
     React.useEffect(() => {
-        setLogoSource('primary');
-    }, [t.id, t.merchant, t.description]);
+        if (merchantVisuals?.domain !== domainRef.current) {
+            setLogoSource(merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain) ? 'primary' : 'icon');
+            domainRef.current = merchantVisuals?.domain;
+        }
+    }, [merchantVisuals?.domain]);
+
+    const handleLogoError = () => {
+        if (logoSource === 'primary') setLogoSource('secondary');
+        else if (logoSource === 'secondary') setLogoSource('tertiary');
+        else {
+            setLogoSource('icon');
+            if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
+        }
+    };
 
     const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
     const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
-    const googleLogo = merchantVisuals?.domain ? `https://www.google.com/s2/favicons?domain=${merchantVisuals.domain}&sz=128` : null;
+    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
 
     const DefaultIcon = merchantVisuals?.icon || CategoryIcon;
     const iconColor = merchantVisuals?.color || categoryData.color;
@@ -99,7 +119,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                                 width={40}
                                 height={40}
                                 className="h-full w-full object-cover animate-in fade-in duration-500"
-                                onError={() => setLogoSource('secondary')}
+                                onError={handleLogoError}
                                 unoptimized
                             />
                         )}
@@ -110,7 +130,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                                 width={40}
                                 height={40}
                                 className="h-full w-full object-cover animate-in fade-in duration-500"
-                                onError={() => setLogoSource('tertiary')}
+                                onError={handleLogoError}
                                 unoptimized
                             />
                         )}
@@ -121,7 +141,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                                 width={40}
                                 height={40}
                                 className="h-full w-full object-cover animate-in fade-in duration-500"
-                                onError={() => setLogoSource('icon')}
+                                onError={handleLogoError}
                                 unoptimized
                             />
                         )}

@@ -85,18 +85,29 @@ export const DeepSeekUsageCard = () => {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-2xl md:text-3xl font-bold tracking-tight">
-                                {currency === 'CNY' ? '¥' : '$'}
-                                {balance ? totalBalance.toFixed(2) : '...'}
-                            </span>
-                            <span className="text-xs text-indigo-300 font-medium">tersisa</span>
+                        <div className="flex flex-col gap-1">
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-2xl md:text-3xl font-black tracking-tighter">
+                                    {currency === 'CNY' ? '¥' : '$'}
+                                    {balance ? totalBalance.toFixed(2) : '...'}
+                                </span>
+                                <span className="text-xs text-indigo-300 font-bold uppercase tracking-widest opacity-60">tersisa</span>
+                            </div>
+                            {balance && (
+                                <span className="text-sm font-bold text-indigo-200/50 tracking-tight">
+                                    ≈ {formatCurrency(totalBalance * (currency === 'CNY' ? 2250 : 16100))}
+                                </span>
+                            )}
                         </div>
 
                         <div className="space-y-2">
                             <div className="flex justify-between text-xs text-indigo-300/80">
                                 <span>Estimasi Token</span>
                                 <span>{balance ? estimatedTokens.toLocaleString() : '...'}</span>
+                            </div>
+                            <div className="flex justify-between text-[10px] text-indigo-400/50 font-bold uppercase tracking-widest">
+                                <span>Penggunaan Harian</span>
+                                <span>~4,000 Token</span>
                             </div>
                             {/* Simple Progress Bar (assuming $10 is "full" just for visual) */}
                             <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
@@ -107,8 +118,8 @@ export const DeepSeekUsageCard = () => {
                                     transition={{ duration: 1, ease: "easeOut" }}
                                 />
                             </div>
-                            <p className="text-[10px] text-indigo-400/60 text-right pt-1">
-                                Cukup untuk ~{(estimatedTokens / 1000).toFixed(0)}k kata lagi
+                            <p className="text-[10px] text-indigo-400/60 text-right pt-1 font-bold uppercase tracking-tighter">
+                                Estimasi habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari lagi (5 tx/hari)
                             </p>
                         </div>
                     </div>

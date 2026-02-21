@@ -92,85 +92,20 @@ export async function extractTransaction(text: string, context?: ExtractionConte
   const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
   const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi, Keluarga, Sosial';
 
+  // 1. STATIC INSTRUCTION (Cacheable)
   const systemPrompt = `## INSTRUKSI PARSING TRANSAKSI LEMON AI ##
 Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap makna implisit!
-Tanggal hari ini: ${currentDate}
-Jam sekarang: ${currentTime}
 
-### KONTEKS SISTEM:
-- **Dompet Tersedia**: ${walletList}
-- **Kategori Tersedia**: ${categoryList}
-
-### ATURAN DETEKSI OTOMATIS:
-1. **MULTI-TRANSACTION SUPPORT:**
-   - Jika user menyebutkan beberapa transaksi sekaligus (misal: "beli bensin 50rb dan makan 30rb"), pecah menjadi beberapa objek transaksi dalam array 'transactions'.
-   - **Mixed Types**: Dukung input campuran Pemasukan dan Pengeluaran (misal: "Dapat gaji 5jt dan bayar listrik 500rb").
-   - **Bulk Transfer**: Jika user transfer ke banyak orang (misal: "Transfer 50rb ke Budi dan 100rb ke Ani"), pecah jadi transaksi expense terpisah.
-
-2. **DETEKSI JENIS & TIPE:**
-   - **Expense**: beli, bayar, jajan, keluar, makan, isi pulsa, cicil, bayar.
-   - **Income**: gaji, dapat, terima, bonus, cashback, refund, masuk, jual, laku, cair, dividen, profit.
-   - **Transfer**: pindah, kirim, tf, dari [A] ke [B], mutasi.
-
-3. **DETEKSI HUTANG/PIUTANG:**
-   - Jika mendeteksi pembayaran hutang (misal: "bayar hutang ke Budi 100rb"), set 'isDebtPayment': true dan isi 'counterparty': "Budi".
-   - Jika mendeteksi penagihan/penerimaan piutang (misal: "Budi bayar hutang 100rb"), set 'isDebtPayment': true dan isi 'counterparty': "Budi" (type: income).
-
-4. **DETEKSI NOMINAL (MANDATORY):**
-   - 'rb'/'ribu'/'k' = x1000, 'jt'/'juta' = x1000000.
-
-5. **DETEKSI KATEGORI:**
-   - Sesuaikan dengan tipe. Jika Transfer, kategori HARUS 'Transfer'.
-   - Gunakan kategori dari daftar tersedia jika memungkinkan: ${categoryList}.
-   - **Income Specific**: 
-     - Jika 'jual' (barang bekas, hp, motor) -> 'Penjualan Aset'.
-     - Jika 'cashback', 'refund', 'klaim' -> 'Refund & Cashback'.
-     - Jika 'bunga', 'dividen', 'profit trading' -> 'Investasi & Pasif'.
-     - Jika 'proyek', 'freelance', 'komisi', 'adsense' -> 'Bisnis & Freelance'.
-     - Jika 'gaji', 'thr', 'bonus kerja' -> 'Gaji & Tetap'.
-   - **Expense Specific**:
-     - Jika 'makan', 'minum', 'kopi', 'warung', 'restoran', 'gofood' -> 'Konsumsi & F&B'.
-     - Jika 'beli baju', 'sepatu', 'tas', 'belanja di mall', 'skincare', 'shopee', 'tokped' -> 'Belanja & Lifestyle'.
-     - Jika 'bayar listrik', 'air', 'pdam', 'internet', 'wifi', 'pulsa', 'kuota' -> 'Tagihan & Utilitas'.
-     - Jika 'netflix', 'spotify', 'youtube premium', 'icloud', 'google one', 'chatgpt' -> 'Langganan Digital'.
-     - Jika 'investasi', 'beli reksadana', 'beli saham', 'beli crypto', 'emas' -> 'Investasi & Aset'.
-     - Jika 'bayar cicilan', 'kartu kredit', 'paylater', 'bayar hutang' -> 'Cicilan & Pinjaman'.
-     - Jika 'nonton', 'tiket bioskop', 'topup game', 'liburan', 'hotel' -> 'Hiburan & Wisata'.
-     - Jika 'ganti oli', 'servis motor', 'servis mobil', 'cuci motor', 'tambal ban' -> 'Transportasi'.
-     - Jika 'biaya admin', 'pajak' -> 'Biaya Lain-lain'.
-
-6. **LOGIKA TRANSFER (KHUSUS):**
-   - **Internal Transfer**: Jika tujuan adalah salah satu dari **Dompet Tersedia** (misal: "Transfer dari BCA ke GoPay").
-     - Set 'category': 'Transfer'.
-     - 'sourceWallet': Dompet asal.
-     - 'destinationWallet': Dompet tujuan.
-   - **External Transfer**: Jika tujuan adalah ORANG atau PIHAK LAIN (misal: "Transfer ke Adik", "Kirim ke Ortu", "Tf ke Budi").
-     - Set 'type': 'expense'.
-     - Set 'category': 'Keluarga & Anak' atau 'Sosial & Donasi' atau 'Lain-lain'.
-     - JANGAN isi 'destinationWallet'.
-     - Masukkan nama penerima ke 'description' (misal: "Transfer ke Adik").
-
-7. **DETEKSI SUMBER DANA (NON-TRANSFER):**
-   - 'pakai', 'via', 'dari' -> masukkan ke field 'wallet'. Pilih dari: ${walletList}.
-   - Default: 'Tunai'.
-
-8. **DETEKSI WAKTU:**
-   - 'kemarin' -> ${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}
-   - Default: ${currentDate}
-
-9. **DETEKSI NEED VS WANT (KRITIKAL):**
-   - **Need (Kebutuhan)**: Sembako, beras, sayur, biaya kos/cicilan rumah, tagihan listrik/air/internet (dasar), bensin transportasi kerja, biaya sekolah, obat-obatan, makan siang harian yang murah (< 25rb). (Set 'isNeed': true).
-   - **Want (Keinginan/Gaya Hidup)**: Kopi kekinian (Starbucks, Janji Jiwa, dll), makan di restoran/mall, nonton bioskop (Cinema XXI, CGV), belanja baju/gadget bukan darurat, game/topup (Steam, Mobile Legends), langganan hiburan (Netflix, Spotify, Disney+), jalan-jalan/wisata. (Set 'isNeed': false).
-   - Khusus Makan: Jika ada nama brand seperti "McD", "KFC", "Starbucks" -> otomatis 'isNeed': false.
-   - Default: true jika ragu, tapi condongkan ke false jika terdengar seperti gaya hidup atau hiburan.
-
-10. **BRAND & MERCHANT AWARENESS:**
-   - Ekstrak brand populer Indonesia:
-     - Transportasi: Gojek, Grab, Maxim, Bluebird, Shell, Pertamina, AHASS, Yamalube, Federal Oil, Motul, Castrol.
-     - Belanja: Alfamart, Indomaret, Tokopedia, Shopee, Lazada, Uniqlo.
-     - Makan: McD, KFC, Hokben, Kopi Kenangan, Janji Jiwa, Starbucks.
-     - Finance: BCA, Mandiri, BNI, BRI, Dana, OVO, GoPay.
-   - Masukkan ke field 'merchant'. Jika ada merchant, sesuaikan 'description' agar lebih natural (misal: "Makan di McD" bukan cuma "Makan").
+### ATURAN UTAMA:
+1. **MULTI-TRANSACTION SUPPORT**: Jika user menyebut beberapa transaksi (misal: "beli bensin 50rb dan makan 30rb"), pecah menjadi objek terpisah dalam array 'transactions'.
+2. **DETEKSI HUTANG/PIUTANG**: Jika mendeteksi pembayaran hutang, set 'isDebtPayment': true dan isi 'counterparty'.
+3. **TRANSFER LOGIC**: 
+   - Internal: Jika dompet asal/tujuan ada di daftar -> set 'category': 'Transfer'.
+   - External: Jika transfer ke orang luar -> set 'type': 'expense' dan masukkan nama ke 'description'.
+4. **NEED VS WANT**: 
+   - Need: Sembako, cicilan, tagihan dasar, bensin kerja, obat.
+   - Want: Makan di mall, kopi kekinian (Starbucks, dll), bioskop, langganan hiburan (Netflix), topup game.
+5. **MERCHANT & DOMAIN**: Ekstrak brand (misal: "Gojek", "McD") dan tebak domain resminya (misal: "starbucks.co.id").
 
 ### OUTPUT JSON FORMAT:
 {
@@ -178,38 +113,34 @@ Jam sekarang: ${currentTime}
     {
       "type": "income|expense",
       "category": "...",
-      "subCategory": "...",
       "merchant": "...",
-      "merchantDomain": "example.com",
+      "merchantDomain": "...",
       "description": "...",
       "amount": number,
       "date": "YYYY-MM-DD",
       "wallet": "...",
-      "sourceWallet": "...",
-      "destinationWallet": "...",
-      "isDebtPayment": boolean,
-      "counterparty": "...",
       "isNeed": boolean
     }
   ],
   "clarificationQuestion": "string (optional)"
-}
+}`;
 
-### ATURAN SUB-CATEGORY / MERCHANT / DETAIL:
-- **MERCHANT DETECTION**: Ekstrak nama brand/toko/merchant jika ada (misal: "Netflix", "Starbucks", "BCA", "Gojek", "Tokopedia"). Masukkan ke field 'merchant'.
-- **DOMAIN GUESS**: Jika merchant terdeteksi, tebak domain resminya (misal: "Starbucks" -> "starbucks.co.id", "Tokopedia" -> "tokopedia.com"). Masukkan ke 'merchantDomain'.
-- Jika Input User: "Makan di McD 50rb" -> Category: "Makanan", Merchant: "McDonalds", Description: "Makan di McD", SubCategory: "Restoran & Kafe".
-- Jika user secara eksplisit menyebut sub-kategori yang ada di daftar (misal: "Beli Bensin"), masukkan ke 'subCategory'.
-- Format input kategori di sistem ini adalah "Nama Kategori (Sub1, Sub2, ...)" -> Gunakan ini sebagai referensi.
+  // 2. DYNAMIC CONTEXT (User Messaging)
+  const userPrompt = `### KONTEKS USER:
+- Tanggal hari ini: ${currentDate}
+- Jam sekarang: ${currentTime}
+- Dompet Tersedia: ${walletList}
+- Kategori Tersedia: ${categoryList}
 
-Langsung parse tanpa tanya balik!`;
+### INPUT USER:
+"${text}"`;
 
   try {
     const completion = await openai.chat.completions.create({
       model: "deepseek-chat",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: `Input: "${text}"` }
+        { role: "user", content: userPrompt }
       ],
       temperature: 0,
       response_format: { type: "json_object" },

@@ -29,14 +29,14 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
     };
 
     return (
-        <div 
+        <div
             onClick={onAmountClick}
             className={cn(
                 "flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all duration-500 group",
                 compact ? "py-4" : "py-10"
             )}
         >
-            <motion.div 
+            <motion.div
                 layout
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -49,7 +49,7 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
                 )}>
                     {symbol}
                 </span>
-                
+
                 <div className="relative">
                     <span className={cn(
                         "font-medium tracking-tighter tabular-nums leading-none transition-all duration-500",
@@ -58,8 +58,8 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
                     )}>
                         {valueStr}
                     </span>
-                    
-                    <motion.div 
+
+                    <motion.div
                         layoutId="activeUnderline"
                         className={cn(
                             "absolute -bottom-1 left-0 right-0 h-1 rounded-full blur-sm opacity-20",
@@ -68,9 +68,9 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
                     />
                 </div>
             </motion.div>
-            
+
             {!compact && (
-                <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.3em] text-zinc-400 group-hover:text-primary transition-colors">
+                <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 group-hover:text-primary transition-colors">
                     Ketuk untuk ubah nominal
                 </p>
             )}

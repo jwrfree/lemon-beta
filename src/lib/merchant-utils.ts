@@ -17,6 +17,19 @@ export interface MerchantVisuals {
     logo?: string; // Local first logo path
 }
 
+// Global cache for failed logo attempts to prevent flickering during session
+export const FAILED_DOMAINS = new Set<string>();
+
+export function markLogoAsFailed(domain: string) {
+    if (!domain) return;
+    FAILED_DOMAINS.add(domain);
+}
+
+export function isLogoFailed(domain?: string) {
+    if (!domain) return false;
+    return FAILED_DOMAINS.has(domain);
+}
+
 export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     // --- ENTERTAINMENT ---
     'netflix': { icon: Tv, color: 'text-rose-600', bgColor: 'bg-rose-50', domain: 'netflix.com' },
@@ -115,7 +128,25 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'mako': { icon: Utensils, color: 'text-amber-700', bgColor: 'bg-amber-50' },
     'holland bakery': { icon: Coffee, color: 'text-rose-600', bgColor: 'bg-orange-50', domain: 'hollandbakery.co.id' },
     'kartika sari': { icon: Coffee, color: 'text-blue-800', bgColor: 'bg-blue-50', domain: 'kartikasari.com' },
-    'amanda brownies': { icon: Coffee, color: 'text-rose-700', bgColor: 'bg-rose-50', domain: 'amandabrownies.co.id' },
+    'kapal api': { icon: Coffee, color: 'text-rose-700', bgColor: 'bg-rose-50', domain: 'kapalapi.co.id' },
+    'sosro': { icon: Coffee, color: 'text-emerald-700', bgColor: 'bg-rose-50' },
+    'teh botol': { icon: Coffee, color: 'text-emerald-800', bgColor: 'bg-rose-50' },
+    'ultra milk': { icon: Utensils, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'ultrajaya.co.id' },
+    'teh pucuk': { icon: Coffee, color: 'text-emerald-700', bgColor: 'bg-orange-50' },
+    'kopiko': { icon: Coffee, color: 'text-rose-900', bgColor: 'bg-orange-50' },
+    'chitato': { icon: Utensils, color: 'text-blue-800', bgColor: 'bg-yellow-50' },
+    'pocky': { icon: Utensils, color: 'text-rose-600', bgColor: 'bg-rose-50' },
+    'indomie': { icon: Utensils, color: 'text-rose-600', bgColor: 'bg-yellow-50', domain: 'indomie.com' },
+    'sarimi': { icon: Utensils, color: 'text-amber-500', bgColor: 'bg-amber-50' },
+    'sedaap': { icon: Utensils, color: 'text-rose-700', bgColor: 'bg-rose-50' },
+    'mie sedaap': { icon: Utensils, color: 'text-rose-700', bgColor: 'bg-rose-50' },
+    'aqua': { icon: Droplets, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'sehataqua.co.id' },
+    'nestle': { icon: Utensils, color: 'text-blue-800', bgColor: 'bg-blue-50', domain: 'nestle.co.id' },
+    'campina': { icon: ShoppingCart, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'campina.co.id' },
+    'wall\'s': { icon: ShoppingCart, color: 'text-rose-600', bgColor: 'bg-rose-50', domain: 'wallsicecream.com' },
+    'indomilk': { icon: Utensils, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'indomilk.com' },
+    'abc': { icon: Utensils, color: 'text-rose-600', bgColor: 'bg-orange-50', domain: 'heinzabc.co.id' },
+
 
 
 
@@ -153,6 +184,19 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'ponds': { icon: Flower, color: 'text-rose-500', bgColor: 'bg-rose-50', domain: 'ponds.com' },
     'vaseline': { icon: Flower, color: 'text-blue-700', bgColor: 'bg-blue-50', domain: 'vaseline.com' },
     'cetaphil': { icon: Flower, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'cetaphil.co.id' },
+    'hada labo': { icon: Flower, color: 'text-blue-700', bgColor: 'bg-blue-50' },
+    'laneige': { icon: Flower, color: 'text-blue-400', bgColor: 'bg-white', domain: 'laneige.com' },
+    'innisfree': { icon: Flower, color: 'text-emerald-800', bgColor: 'bg-emerald-50', domain: 'innisfree.com' },
+    'nature republic': { icon: Flower, color: 'text-emerald-700', bgColor: 'bg-emerald-50', domain: 'naturerepublic.com' },
+    'sunsilk': { icon: Flower, color: 'text-yellow-500', bgColor: 'bg-yellow-50' },
+    'pantene': { icon: Flower, color: 'text-yellow-600', bgColor: 'bg-zinc-50' },
+    'lifebuoy': { icon: Flower, color: 'text-rose-600', bgColor: 'bg-rose-50' },
+    'dove': { icon: Flower, color: 'text-blue-500', bgColor: 'bg-white' },
+    'lux': { icon: Flower, color: 'text-amber-600', bgColor: 'bg-amber-50' },
+    'rexona': { icon: Flower, color: 'text-blue-800', bgColor: 'bg-blue-50' },
+    'marina': { icon: Flower, color: 'text-pink-500', bgColor: 'bg-pink-50' },
+    'citra': { icon: Flower, color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
+
 
     // Keywords for auto-branding
     'skincare': { icon: Flower, color: 'text-emerald-500', bgColor: 'bg-emerald-50' },
@@ -334,20 +378,6 @@ export const MERCHANT_MAP: Record<string, MerchantVisuals> = {
     'ecovacs': { icon: Zap, color: 'text-blue-800', bgColor: 'bg-blue-50', domain: 'ecovacs.com' },
     'dreame': { icon: Zap, color: 'text-yellow-600', bgColor: 'bg-yellow-50', domain: 'dreametech.com' },
     'roborock': { icon: Zap, color: 'text-rose-600', bgColor: 'bg-rose-50', domain: 'roborock.com' },
-
-    // --- FMCG & FOOD BRANDS ---
-    'indomie': { icon: Utensils, color: 'text-rose-600', bgColor: 'bg-yellow-50', domain: 'indomie.com' },
-    'sarimi': { icon: Utensils, color: 'text-amber-500', bgColor: 'bg-amber-50' },
-    'sedaap': { icon: Utensils, color: 'text-rose-700', bgColor: 'bg-rose-50' },
-    'mie sedaap': { icon: Utensils, color: 'text-rose-700', bgColor: 'bg-rose-50' },
-    'aqua': { icon: Droplets, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'sehataqua.co.id' },
-    'nestle': { icon: Utensils, color: 'text-blue-800', bgColor: 'bg-blue-50', domain: 'nestle.co.id' },
-    'campina': { icon: ShoppingCart, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'campina.co.id' },
-    'wall\'s': { icon: ShoppingCart, color: 'text-rose-600', bgColor: 'bg-rose-50', domain: 'wallsicecream.com' },
-    'indomilk': { icon: Utensils, color: 'text-blue-600', bgColor: 'bg-blue-50', domain: 'indomilk.com' },
-    'abc': { icon: Utensils, color: 'text-rose-600', bgColor: 'bg-orange-50', domain: 'heinzabc.co.id' },
-    'kapal api': { icon: Coffee, color: 'text-rose-700', bgColor: 'bg-rose-50', domain: 'kapalapi.co.id' },
-
 
 
     // --- FINANCE ---

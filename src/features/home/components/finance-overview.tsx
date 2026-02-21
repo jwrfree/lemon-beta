@@ -31,14 +31,14 @@ export const FinanceOverview = ({
     expenseTrend,
     netTrend
 }: FinanceOverviewProps) => {
-    
+
     // Calculate savings rate (Net / Income * 100)
     const savingsRate = income > 0 ? (net / income) * 100 : 0;
 
     const incomeDiff = income - prevIncome;
     const expenseDiff = expense - prevExpense;
     const netDiff = net - prevNet;
-    
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Total Balance Card */}
@@ -67,11 +67,11 @@ export const FinanceOverview = ({
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-[10px] font-medium",
-                            incomeTrend.direction === 'up' 
-                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" 
+                            incomeTrend.direction === 'up'
+                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : incomeTrend.direction === 'down'
                                     ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
-                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
+                                    : "bg-secondary text-muted-foreground dark:bg-muted dark:text-muted-foreground"
                         )}>
                             {incomeTrend.direction === 'up' ? '+' : ''}{incomeTrend.value}
                         </div>
@@ -94,11 +94,11 @@ export const FinanceOverview = ({
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-[10px] font-medium",
-                            expenseTrend.direction === 'down' 
-                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" 
+                            expenseTrend.direction === 'down'
+                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : expenseTrend.direction === 'up'
                                     ? "bg-rose-50 text-rose-700 dark:bg-rose-900/20 dark:text-rose-400"
-                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
+                                    : "bg-secondary text-muted-foreground dark:bg-muted dark:text-muted-foreground"
                         )}>
                             {expenseTrend.direction === 'up' ? '+' : ''}{expenseTrend.value}
                         </div>
@@ -122,11 +122,11 @@ export const FinanceOverview = ({
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-[10px] font-medium",
-                            netTrend.direction === 'up' 
-                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400" 
+                            netTrend.direction === 'up'
+                                ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : netTrend.direction === 'down'
                                     ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
-                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
+                                    : "bg-secondary text-muted-foreground dark:bg-muted dark:text-muted-foreground"
                         )}>
                             {netTrend.direction === 'up' ? '+' : ''}{netTrend.value}
                         </div>

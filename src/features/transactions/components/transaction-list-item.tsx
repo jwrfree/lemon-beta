@@ -9,7 +9,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
-import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl } from '@/lib/merchant-utils';
+import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl, markLogoAsFailed, isLogoFailed } from '@/lib/merchant-utils';
 
 import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
 
@@ -33,16 +33,35 @@ const TransactionListItemContent = ({
     const categoryVisuals = getCategoryVisuals(transaction.category);
     const dna = getVisualDNA(extractBaseColor(categoryVisuals.color));
 
-    // Multi-tier Fallback State: clearbit -> logodev -> icon
-    const [logoSource, setLogoSource] = React.useState<'clearbit' | 'logodev' | 'icon'>('clearbit');
+    // Multi-tier Fallback State: logodev -> clearbit -> favicon -> icon
+    const [logoSource, setLogoSource] = React.useState<'primary' | 'secondary' | 'tertiary' | 'icon'>(() => {
+        if (!merchantVisuals?.domain) return 'icon';
+        if (isLogoFailed(merchantVisuals.domain)) return 'icon';
+        return 'primary';
+    });
 
-    // CRITICAL: Reset state when transaction changes to avoid carrying over errors from previous items in the list
+    // Reset state ONLY when the actual merchant identity/domain changes
+    // This prevents flickering on minor data updates or re-renders
+    const domainRef = React.useRef(merchantVisuals?.domain);
     React.useEffect(() => {
-        setLogoSource('clearbit');
-    }, [transaction.id, transaction.merchant, transaction.description]);
+        if (merchantVisuals?.domain !== domainRef.current) {
+            setLogoSource(merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain) ? 'primary' : 'icon');
+            domainRef.current = merchantVisuals?.domain;
+        }
+    }, [merchantVisuals?.domain]);
 
-    const clearbitLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
-    const logoDevLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+    const handleLogoError = () => {
+        if (logoSource === 'primary') setLogoSource('secondary');
+        else if (logoSource === 'secondary') setLogoSource('tertiary');
+        else {
+            setLogoSource('icon');
+            if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
+        }
+    };
+
+    const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+    const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
+    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
 
     // Hierarchy: Merchant Icon (e.g., TV for Netflix) > Category Icon (e.g., Game for Entertainment)
     const DefaultIcon = merchantVisuals?.icon || categoryVisuals.icon;
@@ -58,8 +77,8 @@ const TransactionListItemContent = ({
             isExpense && transaction.amount >= 1000000 && "bg-rose-500/[0.03]"
         )}>
             {/* Dynamic DNA Stripe */}
-            <div 
-                className="absolute left-0 top-0 bottom-0 w-1 opacity-60" 
+            <div
+                className="absolute left-0 top-0 bottom-0 w-1 opacity-60"
                 style={{ background: dna.primary }}
             />
 
@@ -67,20 +86,28 @@ const TransactionListItemContent = ({
                 "flex-shrink-0 h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm border border-border/20",
                 iconBg
             )}>
-                {clearbitLogo && logoSource === 'clearbit' && (
+                {primaryLogo && logoSource === 'primary' && (
                     <img
-                        src={clearbitLogo}
+                        src={primaryLogo}
                         alt=""
-                        className="h-full w-full object-contain animate-in fade-in duration-500"
-                        onError={() => setLogoSource('logodev')}
+                        className="h-full w-full object-cover animate-in fade-in duration-500"
+                        onError={handleLogoError}
                     />
                 )}
-                {logoDevLogo && logoSource === 'logodev' && (
+                {backupLogo && logoSource === 'secondary' && (
                     <img
-                        src={logoDevLogo}
+                        src={backupLogo}
                         alt=""
-                        className="h-full w-full object-cover animate-in zoom-in-50 duration-300"
-                        onError={() => setLogoSource('icon')}
+                        className="h-full w-full object-contain animate-in fade-in duration-500"
+                        onError={handleLogoError}
+                    />
+                )}
+                {googleLogo && logoSource === 'tertiary' && (
+                    <img
+                        src={googleLogo}
+                        alt=""
+                        className="h-6 w-6 object-contain animate-in zoom-in-50 duration-300"
+                        onError={handleLogoError}
                     />
                 )}
                 {(logoSource === 'icon' || !merchantVisuals?.domain) && (

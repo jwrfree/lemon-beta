@@ -27,11 +27,11 @@ export const BottomNavigation = () => {
     const navItems = [
         { id: 'home', href: '/home', icon: Home, name: 'Beranda' },
         { id: 'statistik', href: '/charts', icon: PieChart, name: 'Statistik' },
-        { 
-            id: 'add', 
+        {
+            id: 'add',
             href: '/add-smart', // Keep for fallback or SEO, but onClick will override
-            icon: Sparkles, 
-            name: 'Smart', 
+            icon: Sparkles,
+            name: 'Smart',
             primary: true,
             onClick: (e: React.MouseEvent) => {
                 e.preventDefault();
@@ -69,7 +69,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-6 left-4 right-4 z-40 md:bottom-8"
                 >
                     <div
-                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-popover/80 backdrop-blur-2xl shadow-2xl border border-border/50 rounded-full h-16 px-1.5 py-1"
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-background backdrop-blur-3xl shadow-2xl border border-border/80 rounded-full h-16 px-1.5 py-1"
                     >
                         {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
@@ -106,15 +106,15 @@ export const BottomNavigation = () => {
                                     prefetch={false}
                                     onClick={() => triggerHaptic('light')}
                                     className={cn(
-                                                        'flex flex-col items-center justify-center h-10 w-10 rounded-full transition-all active:scale-95 group relative',
-                                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                                                    )}
+                                        'flex flex-col items-center justify-center h-10 w-10 rounded-full transition-all active:scale-95 group relative',
+                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+                                    )}
                                     aria-label={item.name}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="nav-pill"
-                                            className="absolute inset-0 m-auto w-9 h-7 rounded-full bg-primary/10 dark:bg-primary/20 -z-10"
+                                            className="absolute inset-0 m-auto w-9 h-7 rounded-full bg-primary/30 dark:bg-primary/40 -z-10"
                                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         />
                                     )}

@@ -11,7 +11,14 @@ import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { CornerDownRight, ArrowRight, MapPin } from 'lucide-react';
 import type { Transaction, Wallet } from '@/types/models';
-import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl } from '@/lib/merchant-utils';
+import {
+    getMerchantVisuals,
+    getMerchantLogoUrl,
+    getBackupLogoUrl,
+    getGoogleFaviconUrl,
+    markLogoAsFailed,
+    isLogoFailed
+} from '@/lib/merchant-utils';
 
 interface DashboardRecentTransactionsProps {
     transactions: Transaction[];
@@ -26,25 +33,42 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
 
     // Merchant Logic
     const merchantVisuals = getMerchantVisuals(t.merchant || t.description);
-    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>('primary');
+    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>(() => {
+        if (!merchantVisuals?.domain) return 'icon';
+        if (isLogoFailed(merchantVisuals.domain)) return 'icon';
+        return 'primary';
+    });
 
-    // Reset state when transaction changes (important for list re-renders)
+    // Reset state ONLY when the actual merchant identity/domain changes
+    const domainRef = React.useRef(merchantVisuals?.domain);
     useEffect(() => {
-        setLogoSource('primary');
-    }, [t.id, t.merchant, t.description]);
+        if (merchantVisuals?.domain !== domainRef.current) {
+            setLogoSource(merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain) ? 'primary' : 'icon');
+            domainRef.current = merchantVisuals?.domain;
+        }
+    }, [merchantVisuals?.domain]);
+
+    const handleLogoError = () => {
+        if (logoSource === 'primary') setLogoSource('secondary');
+        else if (logoSource === 'secondary') setLogoSource('tertiary');
+        else {
+            setLogoSource('icon');
+            if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
+        }
+    };
 
     const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
     const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
-    const googleLogo = merchantVisuals?.domain ? `https://www.google.com/s2/favicons?domain=${merchantVisuals.domain}&sz=128` : null;
+    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
 
     const DefaultIcon = merchantVisuals?.icon || CategoryIcon;
     const iconColor = merchantVisuals?.color || categoryData.color;
-    const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-zinc-100";
+    const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-secondary";
 
     return (
         <tr
             onClick={() => handleRowClick(t)}
-            className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/30 transition-all group cursor-pointer"
+            className="hover:bg-muted/50 dark:hover:bg-muted/30 transition-all group cursor-pointer"
         >
             <td className="p-4 pl-6">
                 <div className="flex items-center gap-4">
@@ -57,7 +81,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                                 src={primaryLogo}
                                 alt=""
                                 className="h-full w-full object-cover"
-                                onError={() => setLogoSource('secondary')}
+                                onError={handleLogoError}
                             />
                         )}
                         {backupLogo && logoSource === 'secondary' && (
@@ -65,7 +89,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                                 src={backupLogo}
                                 alt=""
                                 className="h-full w-full object-cover"
-                                onError={() => setLogoSource('tertiary')}
+                                onError={handleLogoError}
                             />
                         )}
                         {googleLogo && logoSource === 'tertiary' && (
@@ -73,7 +97,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                                 src={googleLogo}
                                 alt=""
                                 className="h-6 w-6 object-contain"
-                                onError={() => setLogoSource('icon')}
+                                onError={handleLogoError}
                             />
                         )}
                         {(logoSource === 'icon' || !merchantVisuals?.domain) && (

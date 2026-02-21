@@ -120,7 +120,14 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 });
             } else {
                 const transactionData = {
-                    ...validData,
+                    type: validData.type,
+                    amount: validData.amount,
+                    description: validData.description,
+                    category: validData.category,
+                    subCategory: validData.subCategory,
+                    walletId: validData.walletId,
+                    location: validData.location,
+                    isNeed: validData.isNeed,
                     date: validData.date.toISOString(),
                 };
 
@@ -216,15 +223,15 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                                     <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={getError('walletId')} />
                                     <DatePicker control={control} name="date" error={getError('date')} />
                                 </div>
-                                <CategorySelector 
-                                    control={control} 
-                                    name="category" 
+                                <CategorySelector
+                                    control={control}
+                                    name="category"
                                     value={form.getValues('subCategory')}
-                                    categories={activeCategories} 
-                                    error={getError('category')} 
-                                    isSuggesting={isSuggesting} 
-                                    isAiSuggested={lastSuggestedDescription === description && description.length > 2} 
-                                    onSubCategoryChange={(val) => setValue('subCategory', val)} 
+                                    categories={activeCategories}
+                                    error={getError('category')}
+                                    isSuggesting={isSuggesting}
+                                    isAiSuggested={lastSuggestedDescription === description && description.length > 2}
+                                    onSubCategoryChange={(val) => setValue('subCategory', val)}
                                 />
                             </motion.div>
                         )}

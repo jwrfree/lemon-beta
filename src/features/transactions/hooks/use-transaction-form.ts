@@ -101,7 +101,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
     }, [user, context, form]);
 
     // 4. Robust Submit Handler
-    const onSubmitHandler = useCallback(async (data: UnifiedTransactionFormValues) => {
+    const onSubmitHandler = useCallback(async (data: any) => {
         if (!user) {
             showToast("Sesi habis. Silakan login kembali.", "error");
             return;
@@ -109,13 +109,26 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
         triggerHaptic('medium');
 
-        let result;
+        // Format data for storage (ISO string for date)
+        const currentData = data as any;
+        const formattedData = {
+            type: currentData.type,
+            amount: currentData.amount,
+            description: currentData.description,
+            category: currentData.category,
+            subCategory: currentData.subCategory,
+            walletId: currentData.walletId,
+            location: currentData.location,
+            isNeed: currentData.isNeed,
+            date: currentData.date.toISOString(),
+        };
+
         if (isEditMode && initialData) {
             // Use updateTransaction from useActions
-            await updateTransaction(initialData.id, initialData, data);
+            await updateTransaction(initialData.id, initialData, formattedData);
         } else {
             // Use addTransaction from useActions
-            await addTransaction(data);
+            await addTransaction(formattedData);
         }
 
         // Success Flow

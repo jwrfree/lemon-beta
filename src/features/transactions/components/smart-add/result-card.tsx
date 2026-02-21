@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CategoryGrid } from '@/features/transactions/components/category-grid';
 import { Category } from '@/lib/categories';
-import { getMerchantVisuals, getMerchantLogoUrl } from '@/lib/merchant-utils';
+import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl, markLogoAsFailed, isLogoFailed } from '@/lib/merchant-utils';
 
 interface ResultCardProps {
     parsedData: any;
@@ -48,9 +48,35 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
     const visuals = getCategoryVisuals(parsedData.category);
     const merchantVisuals = getMerchantVisuals(parsedData.merchant || parsedData.description);
     const dna = getVisualDNA(extractBaseColor(visuals.color));
-    
-    // Logic: Use Merchant Logo -> Merchant Icon -> Category Icon
-    const logoUrl = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+
+    // Multi-tier Fallback State: logodev -> clearbit -> favicon -> icon
+    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>(() => {
+        if (!merchantVisuals?.domain) return 'icon';
+        if (isLogoFailed(merchantVisuals.domain)) return 'icon';
+        return 'primary';
+    });
+
+    useEffect(() => {
+        if (merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain)) {
+            setLogoSource('primary');
+        } else {
+            setLogoSource('icon');
+        }
+    }, [parsedData.merchant, parsedData.description]);
+
+    const handleLogoError = () => {
+        if (logoSource === 'primary') setLogoSource('secondary');
+        else if (logoSource === 'secondary') setLogoSource('tertiary');
+        else {
+            setLogoSource('icon');
+            if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
+        }
+    };
+
+    const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+    const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
+    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
+
     const DisplayIcon = merchantVisuals?.icon || visuals.icon;
     const displayColor = merchantVisuals?.color || visuals.color;
     const displayBg = merchantVisuals?.bgColor || visuals.bgColor;
@@ -62,16 +88,16 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
             className="w-full"
         >
             {/* Apple-style Card Container with Aurora Mesh */}
-            <div 
+            <div
                 className="bg-white/95 dark:bg-black/60 backdrop-blur-2xl rounded-[32px] p-7 shadow-2xl relative overflow-hidden group border border-white/20 dark:border-white/5"
                 style={{ boxShadow: `0 30px 60px -12px ${dna.ambient.replace('0.2', '0.4')}` }}
             >
                 {/* Dynamic DNA Ornament */}
-                <div 
+                <div
                     className="absolute -right-12 -top-12 h-40 w-40 rounded-full blur-[60px] opacity-20"
                     style={{ background: dna.primary }}
                 ></div>
-                
+
                 {/* 1. HERO AMOUNT (Apple Wallet Style) */}
                 <div className="flex flex-col items-center justify-center mb-10 pt-4 relative z-10">
                     <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 mb-3">Verified Transaction</p>
@@ -112,7 +138,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         }}
                         transition={{ type: "spring", stiffness: 400, damping: 35 }}
                     />
-                    
+
                     <button
                         onClick={() => setParsedData({ ...parsedData, isNeed: true })}
                         className={cn(
@@ -137,25 +163,42 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
 
                 {/* 3. INSET GROUPED LIST (iOS Settings Style) */}
                 <div className="bg-muted/30 rounded-[24px] overflow-hidden border border-border/20 shadow-inner">
-                    
+
                     {/* Row 1: Category */}
                     <Popover open={isCatOpen} onOpenChange={setIsCatOpen}>
                         <PopoverTrigger asChild>
                             <div className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]">
                                 <div className="flex items-center gap-4">
-                                    <div 
+                                    <div
                                         className={cn("w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm text-white overflow-hidden border border-white/10")}
                                         style={{ background: dna.gradient }}
                                     >
-                                        {logoUrl ? (
-                                            <img 
-                                                src={logoUrl} 
-                                                alt="Merchant" 
+                                        {primaryLogo && logoSource === 'primary' && (
+                                            <img
+                                                src={primaryLogo}
+                                                alt=""
                                                 className="w-full h-full object-cover"
-                                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                                onError={handleLogoError}
                                             />
-                                        ) : (
-                                            <DisplayIcon className="w-5 h-5" strokeWidth={2.5} />
+                                        )}
+                                        {backupLogo && logoSource === 'secondary' && (
+                                            <img
+                                                src={backupLogo}
+                                                alt=""
+                                                className="w-full h-full object-contain p-1"
+                                                onError={handleLogoError}
+                                            />
+                                        )}
+                                        {googleLogo && logoSource === 'tertiary' && (
+                                            <img
+                                                src={googleLogo}
+                                                alt=""
+                                                className="w-6 h-6 object-contain"
+                                                onError={handleLogoError}
+                                            />
+                                        )}
+                                        {(logoSource === 'icon' || !merchantVisuals?.domain) && (
+                                            <DisplayIcon className="w-5 h-5 text-white" strokeWidth={2.5} />
                                         )}
                                     </div>
                                     <div className="flex flex-col items-start space-y-0.5">

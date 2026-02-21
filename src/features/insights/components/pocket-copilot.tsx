@@ -47,7 +47,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={cn(
-                    "p-4 rounded-xl border flex flex-col gap-3",
+                    "p-4 rounded-lg border flex flex-col gap-3 shadow-card",
                     config.bg,
                     config.border,
                     className
@@ -55,7 +55,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
             >
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
-                        <div className={cn("p-1.5 rounded-lg bg-white dark:bg-zinc-900 shadow-sm", config.color)}>
+                        <div className={cn("p-1.5 rounded-md bg-card/50 shadow-sm", config.color)}>
                             <Sparkles className="h-4 w-4" />
                         </div>
                         <div>

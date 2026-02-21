@@ -114,7 +114,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     ) || pathname === '/plan';
 
     return (
-        <div className="w-full h-dvh bg-slate-100 dark:bg-slate-950 relative flex flex-col md:flex-row overflow-hidden">
+        <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">
             <Sidebar />
             <div className={cn(
                 "flex-1 flex flex-col relative w-full h-full max-w-lg md:max-w-none mx-auto overflow-hidden transition-all duration-300",
@@ -171,7 +171,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 <SmartAddOverlay isOpen={isSmartAddOpen} onClose={() => setIsSmartAddOpen(false)} />
 
                 <div className="md:hidden">
-                    {showBottomNav && <BottomNavigation />}
+                    <AnimatePresence>
+                        {showBottomNav && <BottomNavigation key="bottom-nav" />}
+                    </AnimatePresence>
                 </div>
             </div>
         </div>

@@ -18,8 +18,7 @@ export function ThemeTransition() {
     }
 
     // Apply global body styles on client-side only to avoid hydration mismatch
-    document.body.style.overflowX = 'hidden';
-    document.body.style.overflowY = 'hidden';
+    // (Removed redundant overflow hides as they are now in root layout)
 
     const mediaQuery = window.matchMedia(PREFERS_REDUCED_MOTION_QUERY);
 

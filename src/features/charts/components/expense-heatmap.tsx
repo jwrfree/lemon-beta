@@ -28,7 +28,7 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
 
     // Helper to determine color intensity
     const getIntensityClass = (amount: number) => {
-        if (amount === 0) return 'bg-zinc-100 dark:bg-zinc-800/50';
+        if (amount === 0) return 'bg-muted/30 dark:bg-muted/10';
         const ratio = amount / maxExpense;
         if (ratio < 0.2) return 'bg-rose-100 dark:bg-rose-900/20';
         if (ratio < 0.4) return 'bg-rose-300 dark:bg-rose-700/40';
@@ -38,13 +38,13 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
     };
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+        <div className="w-full bg-card rounded-xl p-6 shadow-card border border-border">
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h3 className="text-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
+                    <h3 className="text-lg font-medium tracking-tight text-foreground">
                         Intensitas Pengeluaran
                     </h3>
-                    <p className="text-sm text-zinc-500">Pola belanja harian Anda bulan ini</p>
+                    <p className="text-sm text-muted-foreground">Pola belanja harian Anda bulan ini</p>
                 </div>
             </div>
 
@@ -59,7 +59,7 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
                                 <TooltipTrigger>
                                     <div
                                         className={cn(
-                                            "w-8 h-8 rounded-md transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-zinc-300 dark:hover:border-zinc-500",
+                                            "w-8 h-8 rounded-md transition-all hover:scale-110 cursor-pointer border border-transparent hover:border-primary/50",
                                             getIntensityClass(amount)
                                         )}
                                     />
@@ -78,7 +78,7 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
                 })}
             </div>
 
-            <div className="flex items-center gap-2 mt-4 text-xs text-zinc-400">
+            <div className="flex items-center gap-2 mt-4 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/40">
                 <span>Rendah</span>
                 <div className="w-3 h-3 bg-rose-100 dark:bg-rose-900/20 rounded-sm" />
                 <div className="w-3 h-3 bg-rose-300 dark:bg-rose-700/40 rounded-sm" />

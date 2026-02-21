@@ -31,10 +31,10 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
         <button
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden bg-white dark:bg-zinc-900 rounded-xl p-5 border-none shadow-sm transition-all text-left w-full",
+                "group relative overflow-hidden bg-card rounded-xl p-5 border-none shadow-card transition-all text-left w-full",
                 isOverBudget
                     ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
-                    : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                    : "hover:bg-muted/50"
             )}
         >
             <div className="relative z-10">
@@ -42,11 +42,11 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
                             <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-rose-500" : color)} />
-                            <p className={cn("font-medium text-sm uppercase tracking-wider", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-zinc-500 dark:text-zinc-400")}>
+                            <p className={cn("font-medium text-[10px] uppercase tracking-[0.15em]", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
                                 {category}
                             </p>
                         </div>
-                        <p className={cn("text-xl md:text-2xl font-medium tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-zinc-900 dark:text-zinc-100")}>
+                        <p className={cn("text-xl md:text-2xl font-black tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-foreground")}>
                             {formatCurrency(amount)}
                         </p>
                     </div>
@@ -65,11 +65,10 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                             </span>
                         </div>
                         {budgetAmount && (
-                            <span className="text-zinc-400">Limit: {formatCurrency(budgetAmount)}</span>
+                            <span className="text-muted-foreground">Limit: {formatCurrency(budgetAmount)}</span>
                         )}
                     </div>
-
-                    <div className="relative h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="relative h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                         <motion.div
                             initial={{ width: 0 }}
                             whileInView={{ width: `${Math.min(percentage, 100)}%` }}
@@ -95,14 +94,14 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
     return (
         <button
             onClick={onClick}
-            className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg border-none hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all w-full text-left active:scale-[0.98]"
+            className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border-none hover:bg-muted/50 transition-all w-full text-left active:scale-[0.98]"
         >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-black font-medium text-sm">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background font-bold text-xs">
                 {rank}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm truncate">{transaction.description || transaction.category}</p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
+                <p className="font-bold text-sm truncate tracking-tight">{transaction.description || transaction.category}</p>
+                <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/50">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
             </div>
             <p className="font-medium text-base tabular-nums">{formatCurrency(transaction.amount)}</p>
         </button>
