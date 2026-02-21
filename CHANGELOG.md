@@ -2,6 +2,31 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.9] - 21 February 2026
+
+### 🛠 Transaction Editing & Robustness
+
+- **Streamlined Editing Workflow**:
+  - Refactored `EditTransactionSheet` to consistently utilize `useActions` for `updateTransaction` and `deleteTransaction`. This ensures all editing operations benefit from centralized optimistic updates, real-time event emissions, and robust error handling.
+  - Resolved an issue where optimistic updates were not correctly applied during transaction edits, leading to perceived failures or delayed UI feedback.
+- **Enhanced Edit User Experience**:
+  - The manual edit form within `EditTransactionSheet` is now **always visible** by default, eliminating confusion and ensuring immediate access to all editable fields without requiring an additional click. The toggle button for manual form visibility has been removed for a streamlined experience.
+  - Fixed `CategorySelector` to correctly initialize and display the existing sub-category of a transaction when opened for editing, preventing data loss or misrepresentation.
+  - Ensured the `isNeed` (Needs vs. Wants) flag is accurately preserved and displayed when editing transactions.
+
+### 💸 Expense Category Refinement & AI Integration
+
+- **Comprehensive Expense Schema**:
+  - Overhauled default expense categories in `src/lib/categories.ts` for greater detail and modern relevance (e.g., "Makanan" -> "Konsumsi & F&B", "Belanja" -> "Belanja & Lifestyle", "Tagihan" -> "Tagihan & Utilitas", "Langganan" -> "Langganan Digital").
+  - Expanded sub-categories for all expense types to cover modern needs like Skincare, Logistics, and various Digital Subscriptions.
+- **AI Intelligence for Expenses**:
+  - Updated `extract-transaction-flow`'s AI prompt with specific mapping logic for new expense categories and sub-categories.
+  - Enhanced merchant awareness for automotive maintenance (e.g., "oli", "yamalube", "motul") within the AI prompt, improving automated categorization accuracy.
+  - Updated `MERCHANT_MAP` in `merchant-utils.ts` to include popular motor oil brands and related services.
+- **Visual & Database Alignment**:
+  - Integrated new Lucide icons (`Zap`, `Tv`) into `iconMap` in `category-utils.ts` for improved visual representation of new categories.
+  - Introduced a new migration (`20260221130000_refine_expense_categories.sql`) to safely update default expense category names and sub-categories in the database, including the automatic update of existing transactions to align with the new naming conventions.
+
 ## [Version 2.4.8] - 21 February 2026
 
 ### 💰 Income Category Overhaul & Precision
