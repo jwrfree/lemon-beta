@@ -2,6 +2,29 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.5.0] - 21 February 2026
+
+### 🏦 Assets & Liabilities Architecture Overhaul
+
+- **Global State & Real-time Sync**:
+  - Introduced `AssetProvider` to manage assets and liabilities globally across the application. This ensures that adding, updating, or deleting entries reflects instantly in all relevant views without manual page refreshes.
+  - Implemented **Supabase Real-time** listeners for assets and liabilities tables, enabling multi-device synchronization and instant UI updates.
+- **Improved Entry Experience**:
+  - **Robust Form Validation**: Refactored `AssetLiabilityForm` to utilize standard HTML form submission, ensuring field validation and better keyboard accessibility.
+  - **Smarter Quantity Parsing**: Improved the parsing of asset quantities (e.g., grams of gold, stock lots) to handle various input formats and prevent `NaN` errors.
+  - **Consistent Pricing**: Refined the gold price tracking logic within the provider for better performance.
+- **Architecture Cleanup**:
+  - Refactored `useAssets` into a lightweight consumer hook for the global `AssetContext`, adhering to the project's modularity standards.
+
+### 🧠 Performance & UX Refinements
+
+- **AI Cost Optimization**:
+  - Optimized the `extractTransaction` AI flow by moving dynamic context (time, user lists) from the system prompt to the user message. This leverages **DeepSeek Prefix Caching**, significantly reducing token consumption and costs.
+- **Mobile Fidelity Patches**:
+  - Refined the mobile bottom navigation with reduced transparency and increased backdrop blur for a more premium, readable feel.
+- **Type Safety & Build Stability**:
+  - Resolved several TypeScript errors in `TransactionComposer` and `useTransactionForm` related to date formatting and Zod schema transformations, ensuring successful production builds.
+
 ## [Version 2.4.9] - 21 February 2026
 
 ### 🛠 Transaction Editing & Robustness
