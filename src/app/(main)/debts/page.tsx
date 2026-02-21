@@ -193,46 +193,52 @@ export default function DebtsPage() {
                         </TabsList>
                     </Tabs>
 
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         {visibleDebts.length === 0 ? (
                             <DebtsEmptyState />
                         ) : (
                             visibleDebts.map((debt: Debt) => (
                                 <Card
                                     key={debt.id}
-                                    className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer border-border shadow-sm"
+                                    className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px]"
                                     onClick={() => router.push(`/debts/${debt.id}`)}
                                 >
-                                    <CardContent className="p-4">
-                                        <div className="flex items-start justify-between gap-4 mb-3">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-start justify-between gap-4 mb-6">
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="font-medium text-sm truncate">{debt.title}</h3>
-                                                <p className="text-xs text-muted-foreground mt-0.5">{debt.direction === 'owed' ? 'Kepada: ' : 'Dari: '} {debt.counterparty}</p>
+                                                <h3 className="font-semibold text-lg tracking-tight truncate">{debt.title}</h3>
+                                                <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mt-1">{debt.direction === 'owed' ? 'Pihak: ' : 'Dari: '} {debt.counterparty}</p>
                                                 {getDebtDueStatus(debt)}
                                             </div>
                                             {getDebtStatusBadge(debt)}
                                         </div>
 
                                         <div className="flex items-end justify-between">
-                                            <div>
-                                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                                            <div className="space-y-1">
+                                                <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">
                                                     {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
                                                 </p>
                                                 <p className={cn(
-                                                    "text-base font-medium tabular-nums",
-                                                    debt.direction === 'owed' ? "text-destructive" : "text-success"
+                                                    "text-2xl font-bold tracking-tighter tabular-nums",
+                                                    debt.direction === 'owed' ? "text-rose-600" : "text-emerald-600"
                                                 )}>
                                                     {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
                                                 </p>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1 text-right">Progress</p>
-                                                <div className="flex items-center gap-2">
-                                                    <Progress 
-                                                         value={Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))} 
-                                                         className="w-16 h-1.5 bg-muted"
-                                                     />
-                                                    <span className="text-[10px] font-medium">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
+                                            <div className="text-right space-y-2">
+                                                <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] text-right">Lunas</p>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                                                        <motion.div 
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))}%` }}
+                                                            className={cn(
+                                                                "h-full rounded-full transition-all duration-1000",
+                                                                debt.direction === 'owed' ? "bg-rose-500" : "bg-emerald-500"
+                                                            )}
+                                                        />
+                                                    </div>
+                                                    <span className="text-[10px] font-bold tabular-nums">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
                                                 </div>
                                             </div>
                                         </div>

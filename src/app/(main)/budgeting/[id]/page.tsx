@@ -166,23 +166,23 @@ export default function BudgetDetailPage() {
 
                             {/* Multi-Stat Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                                <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 space-y-1">
-                                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Target className="h-3 w-3" /> Target
                                     </p>
-                                    <p className="text-xl font-medium tabular-nums">{formatCurrency(budget.targetAmount)}</p>
+                                    <p className="text-xl font-bold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
                                 </div>
-                                <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 space-y-1">
-                                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Layers className="h-3 w-3" /> Terpakai
                                     </p>
-                                    <p className={cn("text-xl font-medium tabular-nums", isOver ? 'text-rose-600' : 'text-zinc-900 dark:text-zinc-100')}>{formatCurrency(spent)}</p>
+                                    <p className={cn("text-xl font-bold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
                                 </div>
-                                <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800 space-y-1">
-                                    <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Flame className="h-3 w-3" /> {isOver ? 'Kekurangan' : 'Sisa'}
                                     </p>
-                                    <p className={cn("text-xl font-medium tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
+                                    <p className={cn("text-xl font-bold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
                                         {formatCurrency(Math.abs(remaining))}
                                     </p>
                                 </div>
@@ -190,19 +190,19 @@ export default function BudgetDetailPage() {
 
                             {/* Action Insight Bar */}
                             {!isOver && remaining > 0 && (
-                                <div className="p-5 rounded-[2rem] bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:row justify-between items-center gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                                            <Sparkles className="h-5 w-5" />
+                                <div className="p-6 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm">
+                                            <Sparkles className="h-6 w-6" />
                                         </div>
-                                        <div className="text-center md:text-left">
-                                            <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 tracking-tight">Jatah Aman Harian</p>
-                                            <p className="text-xs font-normal text-emerald-600/70">Agar budget cukup sampai akhir bulan</p>
+                                        <div className="text-center md:text-left space-y-0.5">
+                                            <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
+                                            <p className="text-[10px] font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-2xl font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">{formatCurrency(safeDailyLimit)}</p>
-                                        <p className="text-[10px] font-medium text-emerald-600/40 uppercase tracking-widest">per hari</p>
+                                    <div className="text-center md:text-right">
+                                        <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">{formatCurrency(safeDailyLimit)}</p>
+                                        <p className="text-[9px] font-bold text-emerald-600/40 uppercase tracking-[0.3em]">per hari</p>
                                     </div>
                                 </div>
                             )}

@@ -11,6 +11,12 @@ import { useUI } from '@/components/ui-provider';
 import { useAuth } from '@/providers/auth-provider';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { SIDEBAR_NAV_ITEMS, SIDEBAR_CONFIG } from '@/lib/sidebar-config';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const Sidebar = () => {
     const pathname = usePathname();
@@ -29,212 +35,202 @@ export const Sidebar = () => {
     };
 
     return (
-        <aside
-            className={cn(
-                'hidden md:flex flex-col h-full fixed top-0 left-0 z-50 border-r transition-[width,padding] duration-300 ease-in-out',
-                'bg-card',
-                isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-2 py-4 gap-3') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 gap-4')
-            )}
-        >
-            <div className={cn('flex items-center transition-[padding] duration-300', isSidebarCollapsed ? 'justify-center px-1' : 'px-3 py-4')}>
-                <div className="h-9 w-9 rounded-lg bg-primary shadow-card flex items-center justify-center shrink-0">
-                    <div className="text-primary-foreground font-medium text-lg leading-none">L</div>
-                </div>
-                <div 
-                    className={cn(
-                        "flex flex-col overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
-                        isSidebarCollapsed ? "w-0 opacity-0 ml-0 translate-x-[-10px]" : "w-[120px] opacity-100 ml-3 translate-x-0"
-                    )}
-                >
-                    <p className="text-base font-medium tracking-tight truncate">{SIDEBAR_CONFIG.appName}</p>
-                    <p className="text-xs text-muted-foreground font-medium truncate">{SIDEBAR_CONFIG.appVersion}</p>
-                </div>
-            </div>
-
-            <div className="space-y-2">
-                <p 
-                    className={cn(
-                        'text-[10px] font-medium text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
-                        isSidebarCollapsed ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100 h-4'
-                    )}
-                >
-                    Aksi Cepat
-                </p>
-                <Button
-                    onClick={() => router.push('/add-smart')}
-                    className={cn(
-                        'shadow-card active:scale-95 transition-all duration-300 ease-in-out bg-primary text-primary-foreground hover:bg-primary/90',
-                        isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full gap-2 rounded-lg px-4'
-                    )}
-                    size="default" 
-                >
-                    <Sparkles className="h-5 w-5 shrink-0" />
-                    <span 
-                        className={cn(
-                            "truncate whitespace-nowrap overflow-hidden transition-all duration-300",
-                            isSidebarCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"
-                        )}
-                    >
-                        Smart Add
-                    </span>
-                </Button>
-            </div>
-
-            <nav className="flex-1 space-y-1 mt-4 overflow-y-auto no-scrollbar" aria-label="Navigasi utama">
-                <p 
-                    className={cn(
-                        'text-[10px] font-medium text-muted-foreground/60 px-1 mb-2 transition-all duration-300', 
-                        isSidebarCollapsed ? 'opacity-0 h-0 overflow-hidden mb-0' : 'opacity-100 h-4'
-                    )}
-                >
-                    Menu Utama
-                </p>
-                {SIDEBAR_NAV_ITEMS.map((item) => {
-                    const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
-                    return (
-                        <Link
-                            key={item.id}
-                            href={item.href}
-                            prefetch={false}
-                            aria-current={isActive ? 'page' : undefined}
-                            className={cn(
-                                'group flex items-center gap-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 relative overflow-hidden',
-                                isSidebarCollapsed ? 'justify-center px-0 w-11 mx-auto' : 'px-3 w-full',
-                                isActive
-                                    ? 'text-primary bg-gradient-to-r from-primary/10 to-transparent dark:from-primary/20 dark:to-transparent'
-                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                            )}
-                        >
-                            <motion.span
-                                layoutId="sidebar-active"
-                                className={cn(
-                                    'absolute left-0 h-6 w-1 rounded-r-full bg-primary',
-                                    !isActive && 'opacity-0'
-                                )}
-                                initial={false}
-                                animate={{ opacity: isActive && !isSidebarCollapsed ? 1 : 0 }}
-                                transition={{ type: 'spring', stiffness: 220, damping: 24 }}
-                            />
-                            <span
-                                className={cn(
-                                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors duration-300',
-                                    isActive
-                                        ? 'bg-primary/10 text-primary dark:bg-primary/20'
-                                        : 'bg-muted/70 text-muted-foreground group-hover:bg-muted group-hover:text-foreground'
-                                )}
-                            >
-                                <item.icon className="h-5 w-5" />
-                            </span>
-                            <span 
-                                className={cn(
-                                    "truncate flex-1 whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out",
-                                    isSidebarCollapsed ? "w-0 opacity-0 translate-x-[-10px]" : "w-auto opacity-100 translate-x-0"
-                                )}
-                            >
-                                {item.name}
-                            </span>
-                        </Link>
-                    );
-                })}
-            </nav>
-
-            <div className="mt-auto border-t pt-4 space-y-3">
-                {deferredPrompt && (
-                    <div className={cn("transition-all duration-300", isSidebarCollapsed ? "w-11 mx-auto" : "w-full")}>
-                        <Button
-                            variant="ghost"
-                            className={cn(
-                                'text-primary hover:bg-primary/10 rounded-lg transition-all duration-300',
-                                isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3 px-3'
-                            )}
-                            onClick={handleInstallClick}
-                            size={isSidebarCollapsed ? "icon" : "default"}
-                        >
-                            <Download className={cn("shrink-0", isSidebarCollapsed ? "h-6 w-6" : "h-5 w-5")} />
-                            <span 
-                                className={cn(
-                                    "truncate whitespace-nowrap overflow-hidden transition-all duration-300",
-                                    isSidebarCollapsed ? "w-0 opacity-0" : "w-auto opacity-100 ml-3"
-                                )}
-                            >
-                                Install App
-                            </span>
-                        </Button>
-                    </div>
+        <TooltipProvider delayDuration={0}>
+            <aside
+                className={cn(
+                    'hidden md:flex flex-col fixed left-4 top-4 bottom-4 z-50 transition-[width,padding] duration-300 ease-in-out',
+                    'bg-background/60 backdrop-blur-xl border border-border/20 shadow-2xl rounded-[32px] overflow-hidden',
+                    isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'py-10 px-2') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 py-10')
                 )}
-                <div
-                    className={cn(
-                        'flex flex-col items-center rounded-lg bg-muted border border-border transition-all duration-300',
-                        isSidebarCollapsed ? 'p-1.5 w-11 mx-auto' : 'p-2 w-full'
+            >
+                {/* 1. Logo Section - Fixed Centering */}
+                <div className={cn('flex items-center mb-12 transition-all duration-300 w-full', isSidebarCollapsed ? 'justify-center' : 'px-3')}>
+                    <div className="h-10 w-10 rounded-full bg-primary shadow-lg shadow-primary/20 flex items-center justify-center shrink-0">
+                        <div className="text-primary-foreground font-semibold text-xl leading-none tracking-tighter">L</div>
+                    </div>
+                    {!isSidebarCollapsed && (
+                        <div className="flex flex-col ml-4 overflow-hidden whitespace-nowrap">
+                            <p className="text-lg font-semibold tracking-tighter truncate text-foreground leading-none">{SIDEBAR_CONFIG.appName}</p>
+                            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.2em] truncate opacity-50 mt-1.5">{SIDEBAR_CONFIG.appVersion}</p>
+                        </div>
                     )}
-                >
-                    <Button
-                        variant="ghost"
-                        onClick={toggleBalanceVisibility}
-                        className={cn(
-                            'text-muted-foreground hover:bg-primary/10 hover:text-foreground rounded-lg transition-all duration-300',
-                            isSidebarCollapsed ? 'w-full h-8 p-0 justify-center' : 'w-full justify-start gap-3 px-3'
-                        )}
-                        aria-label={isBalanceVisible ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
-                        size={isSidebarCollapsed ? 'icon' : 'default'}
-                    >
-                        {isBalanceVisible ? (
-                            <Eye className="h-5 w-5 shrink-0" />
-                        ) : (
-                            <EyeOff className="h-5 w-5 shrink-0" />
-                        )}
-                        <span 
-                            className={cn(
-                                "truncate whitespace-nowrap overflow-hidden transition-all duration-300",
-                                isSidebarCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"
-                            )}
-                        >
-                            {isBalanceVisible ? 'Sembunyikan' : 'Tampilkan'}
-                        </span>
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size={isSidebarCollapsed ? 'icon' : 'default'}
-                        onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                        className={cn(
-                            'rounded-lg hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-primary transition-all duration-300',
-                            isSidebarCollapsed ? 'w-full h-8 p-0' : 'w-full justify-start gap-3 px-3'
-                        )}
-                        aria-label={isSidebarCollapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
-                    >
-                        {isSidebarCollapsed ? (
-                            <ChevronRight className="h-4 w-4" />
-                        ) : (
-                            <>
-                                <ChevronLeft className="h-5 w-5 shrink-0" />
-                                <span className="text-sm font-medium whitespace-nowrap overflow-hidden">Ciutkan Sidebar</span>
-                            </>
-                        )}
-                    </Button>
                 </div>
-                <div className={cn("transition-all duration-300", isSidebarCollapsed ? "w-11 mx-auto" : "w-full")}>
-                     <Button
-                        variant="ghost"
-                        className={cn(
-                            'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all duration-300',
-                            isSidebarCollapsed ? 'w-11 h-11 p-0 justify-center rounded-full' : 'w-full justify-start gap-3 px-3'
-                        )}
-                        onClick={handleSignOut}
-                        size={isSidebarCollapsed ? "icon" : "default"}
-                    >
-                        <LogOut className={cn("shrink-0", isSidebarCollapsed ? "h-6 w-6" : "h-5 w-5")} />
-                        <span 
-                            className={cn(
-                                "truncate whitespace-nowrap overflow-hidden transition-all duration-300",
-                                isSidebarCollapsed ? "w-0 opacity-0" : "w-auto opacity-100 ml-3"
+
+                {/* 2. Primary Action - Aligned width */}
+                <div className="mb-12 w-full">
+                    {!isSidebarCollapsed && (
+                        <p className="text-[9px] font-bold text-muted-foreground/40 px-5 mb-4 uppercase tracking-[0.3em]">
+                            Aksi Cepat
+                        </p>
+                    )}
+                    <div className={isSidebarCollapsed ? "flex justify-center" : "px-1"}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    onClick={() => router.push('/add-smart')}
+                                    className={cn(
+                                        'shadow-lg shadow-primary/20 active:scale-95 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full',
+                                        isSidebarCollapsed ? 'w-12 h-12 p-0' : 'w-full gap-3 px-5 h-12'
+                                    )}
+                                >
+                                    <Sparkles className="h-5 w-5 shrink-0" />
+                                    {!isSidebarCollapsed && (
+                                        <span className="font-semibold text-sm truncate">Smart Add</span>
+                                    )}
+                                </Button>
+                            </TooltipTrigger>
+                            {isSidebarCollapsed && (
+                                <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-primary text-primary-foreground border-none">
+                                    Smart Add
+                                </TooltipContent>
                             )}
-                        >
-                            Keluar
-                        </span>
-                    </Button> 
+                        </Tooltip>
+                    </div>
                 </div>
-            </div>
-        </aside>
+
+                {/* 3. Navigation - Aligned Icons */}
+                <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar w-full" aria-label="Navigasi utama">
+                    {!isSidebarCollapsed && (
+                        <p className="text-[9px] font-bold text-muted-foreground/40 px-5 mb-4 uppercase tracking-[0.3em]">
+                            Menu Utama
+                        </p>
+                    )}
+                    <div className="space-y-1">
+                        {SIDEBAR_NAV_ITEMS.map((item) => {
+                            const isActive = pathname === item.href || (item.href !== '/home' && pathname.startsWith(item.href));
+                            return (
+                                <Tooltip key={item.id}>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            href={item.href}
+                                            prefetch={false}
+                                            className={cn(
+                                                'group flex items-center h-11 rounded-full text-sm font-medium transition-all duration-300 relative',
+                                                isSidebarCollapsed ? 'justify-center w-12 h-12 mx-auto' : 'px-4 w-full gap-4',
+                                                isActive
+                                                    ? 'text-primary'
+                                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                                            )}
+                                        >
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId="sidebar-active-bg"
+                                                    className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-full"
+                                                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                                />
+                                            )}
+                                            <item.icon className={cn("h-5 w-5 relative z-10 transition-transform duration-300 group-hover:scale-110", isActive ? "stroke-[2.5px]" : "stroke-2")} />
+                                            {!isSidebarCollapsed && (
+                                                <span className="truncate flex-1 whitespace-nowrap relative z-10 font-semibold tracking-tight">
+                                                    {item.name}
+                                                </span>
+                                            )}
+                                        </Link>
+                                    </TooltipTrigger>
+                                    {isSidebarCollapsed && (
+                                        <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
+                                            {item.name}
+                                        </TooltipContent>
+                                    )}
+                                </Tooltip>
+                            );
+                        })}
+                    </div>
+                </nav>
+
+                {/* 4. Footer - Clean & Centered */}
+                <div className="mt-auto pt-8 space-y-2 w-full">
+                    <div className="flex flex-col gap-1">
+                        {deferredPrompt && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={handleInstallClick}
+                                        className={cn(
+                                            'text-primary hover:bg-primary/10 rounded-full transition-all duration-300 font-semibold text-[10px] uppercase tracking-widest',
+                                            isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                        )}
+                                    >
+                                        <Download className="h-5 w-5 shrink-0" />
+                                        {!isSidebarCollapsed && <span>Install App</span>}
+                                    </Button>
+                                </TooltipTrigger>
+                                {isSidebarCollapsed && (
+                                    <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-primary border-primary/20 shadow-xl">
+                                        Install App
+                                    </TooltipContent>
+                                )}
+                            </Tooltip>
+                        )}
+                        
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    onClick={toggleBalanceVisibility}
+                                    className={cn(
+                                        'text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-full transition-all duration-300 font-semibold text-[10px] uppercase tracking-widest',
+                                        isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                    )}
+                                >
+                                    {isBalanceVisible ? <Eye className="h-5 w-5 shrink-0" /> : <EyeOff className="h-5 w-5 shrink-0" />}
+                                    {!isSidebarCollapsed && <span>{isBalanceVisible ? 'Sembunyikan' : 'Tampilkan'}</span>}
+                                </Button>
+                            </TooltipTrigger>
+                            {isSidebarCollapsed && (
+                                <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
+                                    {isBalanceVisible ? 'Sembunyikan Saldo' : 'Tampilkan Saldo'}
+                                </TooltipContent>
+                            )}
+                        </Tooltip>
+
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                                    className={cn(
+                                        'text-muted-foreground hover:bg-muted/50 rounded-full transition-all duration-300 font-semibold text-[10px] uppercase tracking-widest',
+                                        isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                    )}
+                                >
+                                    {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4 shrink-0" />}
+                                    {!isSidebarCollapsed && <span>Ciutkan</span>}
+                                </Button>
+                            </TooltipTrigger>
+                            {isSidebarCollapsed && (
+                                <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
+                                    Perluas Sidebar
+                                </TooltipContent>
+                            )}
+                        </Tooltip>
+
+                        <div className="pt-4 flex justify-center">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={handleSignOut}
+                                        className={cn(
+                                            'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-all duration-300 font-semibold text-[10px] uppercase tracking-widest',
+                                            isSidebarCollapsed ? 'w-12 h-12 p-0 flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                        )}
+                                    >
+                                        <LogOut className="h-5 w-5 shrink-0" />
+                                        {!isSidebarCollapsed && <span>Keluar</span>}
+                                    </Button>
+                                </TooltipTrigger>
+                                {isSidebarCollapsed && (
+                                    <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-destructive text-destructive-foreground border-none shadow-xl">
+                                        Keluar Akun
+                                    </TooltipContent>
+                                )}
+                            </Tooltip>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </TooltipProvider>
     );
 };
-

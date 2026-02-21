@@ -9,25 +9,27 @@ export const DebtsEmptyState = () => {
     const { setIsDebtModalOpen, setDebtToEdit } = useUI();
 
     return (
-        <Card className="shadow-sm border-border/60 border-dashed bg-muted/30">
-            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-4 bg-primary/10 rounded-full mb-4 animate-in zoom-in duration-300">
-                    <HandCoins className="h-8 w-8 text-primary" strokeWidth={1.5} />
+        <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px] overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
+                <HandCoins className="h-40 w-40" />
+            </div>
+            <CardContent className="flex flex-col items-center justify-center py-16 text-center relative z-10">
+                <div className="p-5 bg-primary/10 rounded-2xl mb-6">
+                    <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-base font-medium mb-1">Belum Ada Catatan Hutang</h3>
-                <p className="text-sm text-muted-foreground max-w-[280px] mb-6">
-                    Kelola hutang dan piutangmu dengan rapi. Catat siapa yang berhutang padamu dan sebaliknya.
+                <h3 className="text-xl font-semibold tracking-tighter mb-2">Belum Ada Catatan</h3>
+                <p className="text-[10px] font-bold text-muted-foreground/60 max-w-[240px] mb-8 uppercase tracking-widest leading-relaxed">
+                    Kelola hutang dan piutangmu dengan rapi dalam satu asisten cerdas.
                 </p>
                 <Button 
                     onClick={() => {
                         setDebtToEdit(null);
                         setIsDebtModalOpen(true);
                     }} 
-                    size="sm" 
-                    className="gap-2"
+                    className="gap-2 rounded-full h-12 px-8 font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
                 >
                     <Plus className="h-4 w-4" />
-                    Catat Baru
+                    Catat Sekarang
                 </Button>
             </CardContent>
         </Card>
