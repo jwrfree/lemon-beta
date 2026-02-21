@@ -2,6 +2,25 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.4] - 21 February 2026
+
+### ✨ Visual Harmony & "Apple Capsule" Overhaul
+
+- **Floating Inset Sidebar (Desktop)**:
+  - Redesigned as a **floating capsule** with `rounded-[32px]` and deep shadow depth.
+  - Implemented **Shadcn UI Tooltips** for all navigation items in collapsed mode.
+  - Refined typography to `semibold` for an elegant, professional macOS-style feel.
+  - Optimized alignment and spacing for perfect visual symmetry.
+- **Universal Card Standardization**:
+  - Upgraded all list cards (Budgets, Goals, Debts, Reminders) to `rounded-[32px]` with **Visual Depth** (soft shadows instead of hard borders).
+  - Standardized progress bars and status badges with high-fidelity typography (`tracking-tighter` for amounts).
+- **Modal & Bottom Sheet Polish**:
+  - Standardized all mobile sheets to `rounded-t-[2.5rem]` with `backdrop-blur-xl` glass effects.
+  - Converted all primary action buttons to `rounded-full` for better ergonomics and aesthetic consistency.
+- **Settings Bento Grid 2.0**:
+  - Overhauled the profile bento layout with the new radius and shadow standards.
+  - Refined typography and spacing for a high-density "Command Center" feel.
+
 ## [Version 2.4.3] - 21 February 2026
 
 ### 🏷️ Massive Merchant Visual Map Extension
