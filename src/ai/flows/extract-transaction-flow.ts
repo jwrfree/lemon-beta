@@ -128,6 +128,15 @@ Jam sekarang: ${currentTime}
      - Jika 'bunga', 'dividen', 'profit trading' -> 'Investasi & Pasif'.
      - Jika 'proyek', 'freelance', 'komisi', 'adsense' -> 'Bisnis & Freelance'.
      - Jika 'gaji', 'thr', 'bonus kerja' -> 'Gaji & Tetap'.
+   - **Expense Specific**:
+     - Jika 'makan', 'minum', 'kopi', 'warung', 'restoran', 'gofood' -> 'Konsumsi & F&B'.
+     - Jika 'beli baju', 'sepatu', 'tas', 'belanja di mall', 'skincare', 'shopee', 'tokped' -> 'Belanja & Lifestyle'.
+     - Jika 'bayar listrik', 'air', 'pdam', 'internet', 'wifi', 'pulsa', 'kuota' -> 'Tagihan & Utilitas'.
+     - Jika 'netflix', 'spotify', 'youtube premium', 'icloud', 'google one', 'chatgpt' -> 'Langganan Digital'.
+     - Jika 'investasi', 'beli reksadana', 'beli saham', 'beli crypto', 'emas' -> 'Investasi & Aset'.
+     - Jika 'bayar cicilan', 'kartu kredit', 'paylater', 'bayar hutang' -> 'Cicilan & Pinjaman'.
+     - Jika 'nonton', 'tiket bioskop', 'topup game', 'liburan', 'hotel' -> 'Hiburan & Wisata'.
+     - Jika 'biaya admin', 'pajak' -> 'Biaya Lain-lain'.
 
 6. **LOGIKA TRANSFER (KHUSUS):**
    - **Internal Transfer**: Jika tujuan adalah salah satu dari **Dompet Tersedia** (misal: "Transfer dari BCA ke GoPay").

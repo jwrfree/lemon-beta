@@ -4,13 +4,15 @@ import {
     Gamepad2, Home, GraduationCap, HeartPulse,
     Briefcase, Gift, PiggyBank, Wrench, ReceiptText,
     ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake,
-    Heart, Baby, RefreshCw, BadgeDollarSign, Wallet, TrendingUp, Code
+    Heart, Baby, RefreshCw, BadgeDollarSign, Wallet, TrendingUp, Code,
+    Zap, Tv
 } from 'lucide-react';
 
 export const iconMap: Record<string, React.ElementType> = {
     Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse,
     Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins,
-    ArrowRightLeft, Handshake, Wrench, Heart, Baby, RefreshCw, BadgeDollarSign, Wallet, TrendingUp, Code
+    ArrowRightLeft, Handshake, Wrench, Heart, Baby, RefreshCw, BadgeDollarSign, Wallet, TrendingUp, Code,
+    Zap, Tv
 };
 
 export const getCategoryIcon = (iconName: string | null | undefined) => {
