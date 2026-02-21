@@ -12,6 +12,7 @@ import { ServiceWorkerProvider } from "@/components/service-worker-provider";
 import { InstallPrompt } from "@/components/install-prompt";
 import { BalanceVisibilityProvider } from "@/providers/balance-visibility-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -55,16 +56,18 @@ export default function RootLayout({
       <body className="antialiased font-sans">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ThemeTransition />
-          <UIProvider>
-            <AppProvider>
-              <BalanceVisibilityProvider>
-                <ServiceWorkerProvider />
-                <InstallPrompt />
-                <Toaster />
-                {children}
-              </BalanceVisibilityProvider>
-            </AppProvider>
-          </UIProvider>
+          <TooltipProvider delayDuration={300}>
+            <UIProvider>
+              <AppProvider>
+                <BalanceVisibilityProvider>
+                  <ServiceWorkerProvider />
+                  <InstallPrompt />
+                  <Toaster />
+                  {children}
+                </BalanceVisibilityProvider>
+              </AppProvider>
+            </UIProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

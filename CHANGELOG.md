@@ -2,6 +2,19 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.4.5] - 21 February 2026
+
+### 🛠 UI Infrastructure & Accessibility Fixes
+
+- **Tooltip Rendering Fix**: 
+  - Updated `src/components/ui/tooltip.tsx` to utilize **React Portal**. This ensures tooltips are no longer clipped by containers with `overflow: hidden` (like the new Capsule Sidebar).
+- **Global Tooltip Standardization**:
+  - Centralized `TooltipProvider` in the root `layout.tsx` to enable consistent tooltip behavior and performance across the entire application.
+  - Standardized `delayDuration` to 300ms for a smooth, high-fidelity interaction feel.
+- **Code Quality**:
+  - Cleaned up redundant provider declarations in the Sidebar.
+  - Fixed a syntax error in the Sidebar component that was blocking production builds.
+
 ## [Version 2.4.4] - 21 February 2026
 
 ### ✨ Visual Harmony & "Apple Capsule" Overhaul

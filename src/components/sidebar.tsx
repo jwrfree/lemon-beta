@@ -14,7 +14,6 @@ import { SIDEBAR_NAV_ITEMS, SIDEBAR_CONFIG } from '@/lib/sidebar-config';
 import {
     Tooltip,
     TooltipContent,
-    TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 
@@ -35,14 +34,13 @@ export const Sidebar = () => {
     };
 
     return (
-        <TooltipProvider delayDuration={0}>
-            <aside
-                className={cn(
-                    'hidden md:flex flex-col fixed left-4 top-4 bottom-4 z-50 transition-[width,padding] duration-300 ease-in-out',
-                    'bg-background/60 backdrop-blur-xl border border-border/20 shadow-2xl rounded-[32px] overflow-hidden',
-                    isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'py-10 px-2') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 py-10')
-                )}
-            >
+        <aside
+            className={cn(
+                'hidden md:flex flex-col fixed left-4 top-4 bottom-4 z-50 transition-[width,padding] duration-300 ease-in-out',
+                'bg-background/60 backdrop-blur-xl border border-border/20 shadow-2xl rounded-[32px] overflow-hidden',
+                isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'py-10 px-2') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 py-10')
+            )}
+        >
                 {/* 1. Logo Section - Fixed Centering */}
                 <div className={cn('flex items-center mb-12 transition-all duration-300 w-full', isSidebarCollapsed ? 'justify-center' : 'px-3')}>
                     <div className="h-10 w-10 rounded-full bg-primary shadow-lg shadow-primary/20 flex items-center justify-center shrink-0">
@@ -229,8 +227,7 @@ export const Sidebar = () => {
                             </Tooltip>
                         </div>
                     </div>
-                </div>
-            </aside>
-        </TooltipProvider>
-    );
-};
+                            </div>
+                        </aside>
+                    );
+                };
