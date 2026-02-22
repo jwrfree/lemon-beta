@@ -14,7 +14,7 @@ import { BalanceVisibilityProvider } from "@/providers/balance-visibility-provid
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Lemon - Personal Finance Tracker",

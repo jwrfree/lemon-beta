@@ -222,11 +222,13 @@
     @apply bg-background font-sans text-foreground antialiased;
     min-height: 100vh;
     min-height: 100dvh;
+    line-height: 1.5;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans tracking-tight;
+    @apply font-sans font-semibold tracking-tight;
+    line-height: 1.2;
   }
 
   html.theme-transition :where(*, *::before, *::after) {
