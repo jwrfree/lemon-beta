@@ -2,6 +2,41 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.5.2] - 22 February 2026
+
+### ✨ Smart Add — Complete Transaction Flow
+
+- **Sub-Category Editing in Confirmation Card**:
+  - Added a new "Sub-kategori" row in the Smart Add result card that appears only when the selected category has sub-categories.
+  - Users can now tap to pick a specific sub-category from a scrollable popover list; the selection resets when the main category is changed.
+- **Wallet / Sumber Dana Picker**:
+  - Added a "Sumber Dana" row displaying the currently selected wallet (with color dot indicator).
+  - Users can select a different wallet directly from the confirmation card; the selection updates `parsedData.walletId`.
+- **Date & Time Editing**:
+  - Added a "Waktu Transaksi" row showing the formatted transaction date and time.
+  - A combined calendar picker + time input lets users adjust both fields; changes update `parsedData.date` as ISO string while preserving the other field's value.
+  - Robust date handling: `parseISO` wrapped in try/catch with `new Date()` fallback; time parsing uses `parseInt` + `isNaN` guards.
+
+### 🧩 Smart Add — Standard Bottom Sheet Migration
+
+- **Sheet Component**: Replaced custom `framer-motion` backdrop + drag-gesture overlay with the standard `Sheet`/`SheetContent side="bottom"` from `@radix-ui/react-dialog`.
+  - Removed: `useAnimation`, `controls`, `handleDragEnd`, `PanInfo`, `AnimatePresence` wrapper.
+  - Sheet now provides: slide-in animation, backdrop overlay, close-on-backdrop-click, Escape key dismiss, focus trap, and ARIA dialog attributes — all standard and accessible.
+- **`SheetContent` Enhancement**: Added optional `hideCloseButton` prop (backwards-compatible) to suppress the default ✕ close button for bottom sheets that use a drag handle instead.
+  - Drag handle is marked `aria-hidden="true"` (decorative only).
+
+### 🔧 Build Fix
+
+- **Supabase Client Resilient During SSR/Build**: Fixed `npm run build` crash caused by `createClient()` throwing when `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` are absent at build time.
+  - When running server-side (`typeof window === 'undefined'`) without env vars, a placeholder client is returned with a `console.warn` instead of throwing.
+  - In production deployments env vars are always set; browser-side behavior is unchanged (still throws for clear user-facing error).
+  - Result: all 28 pages now generate successfully during `next build`.
+
+### 🧪 Tests & Validation
+
+- **`quickParseTransaction` Test Suite**: Added comprehensive tests for the regex-based fast parser covering: amount suffixes (`rb`/`k`/`jt`/`juta`/Indonesian thousand separator/plain integers), confidence levels, category + sub-category detection, transaction type, need/want classification, wallet detection, `kemarin` date offset, and transfer keyword detection.
+- **`SheetContent hideCloseButton` Tests**: New `sheet.test.tsx` verifying the close button is present by default and absent when `hideCloseButton={true}`, with children rendering correctly in both cases.
+
 ## [Version 2.5.1] - 22 February 2026
 
 ### 🔧 Critical Category Database Fix
