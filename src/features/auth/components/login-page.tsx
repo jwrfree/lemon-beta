@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from '@/components/ui-provider';
@@ -30,6 +31,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 const formSchema = z.object({
     email: z.string().email({ message: "Format email tidak valid." }),
     password: z.string().min(6, { message: "Password minimal 6 karakter." }),
+    remember: z.boolean().default(false),
 });
 
 export const LoginPage = ({
@@ -51,7 +53,7 @@ export const LoginPage = ({
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { email: "", password: "" },
+        defaultValues: { email: "", password: "", remember: false },
         mode: 'onTouched'
     });
 
@@ -60,19 +62,19 @@ export const LoginPage = ({
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
             setAuthError(null);
-            const { error } = await supabase.auth.signInWithPassword({
-                email: values.email,
-                password: values.password,
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                    remember: values.remember,
+                }),
             });
 
-            if (error) {
-                let message = 'Gagal masuk. Coba lagi ya.';
-                if (error.message.includes('Invalid login credentials')) {
-                    message = 'Email atau password salah.';
-                } else {
-                    message = error.message; // Use Supabase error message directly for debugging
-                }
-                throw new Error(message);
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error ?? 'Gagal masuk. Coba lagi ya.');
             }
 
             showToast("Login berhasil! Selamat datang kembali.", 'success');
@@ -227,7 +229,25 @@ export const LoginPage = ({
                                     </FormItem>
                                 )}
                             />
-                            <div className="flex justify-end text-sm">
+                            <div className="flex items-center justify-between">
+                                <FormField
+                                    control={form.control}
+                                    name="remember"
+                                    render={({ field }) => (
+                                        <FormItem className="flex items-center gap-2 space-y-0">
+                                            <FormControl>
+                                                <Checkbox
+                                                    id="remember"
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </FormControl>
+                                            <FormLabel htmlFor="remember" className="text-sm font-normal cursor-pointer">
+                                                Ingat saya
+                                            </FormLabel>
+                                        </FormItem>
+                                    )}
+                                />
                                 <Button
                                     variant="link"
                                     type="button"
