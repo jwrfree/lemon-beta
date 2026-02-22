@@ -81,6 +81,7 @@ export const useSmartAddFlow = () => {
     const [parsedData, setParsedData] = useState<SmartTransactionData | null>(null);
     const [multiParsedData, setMultiParsedData] = useState<SmartTransactionData[]>([]);
     const [insightData, setInsightData] = useState<InsightData | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     const removeMultiTransaction = useCallback((index: number) => {
         setMultiParsedData(prev => {
@@ -375,9 +376,14 @@ export const useSmartAddFlow = () => {
         }
     }, [wallets, expenseCategories, incomeCategories, handleAISuccess, showToast, resetFlow, pageState, parsedData, multiParsedData]);
 
-    const saveTransaction = useCallback(async (andAddAnother = false) => {
-        if (!parsedData) return;
-        // setPageState('ANALYZING'); // Removed to prevent UI jump. Loading handled by caller.
+    /**
+     * Saves the current `parsedData` transaction to the database.
+     * @param andAddAnother - If true, resets the flow after saving to allow adding another transaction.
+     * @returns `true` on success (signals caller to redirect), `false` on failure or when andAddAnother is true.
+     */
+    const saveTransaction = useCallback(async (andAddAnother = false): Promise<boolean> => {
+        if (!parsedData) return false;
+        setIsSaving(true);
         try {
             // Check if it's a transfer
             if (parsedData.category === 'Transfer' && parsedData.sourceWallet && parsedData.destinationWallet) {
@@ -393,7 +399,9 @@ export const useSmartAddFlow = () => {
                         description: parsedData.description
                     });
                     if (andAddAnother) resetFlow();
-                    else return true;
+                    return true;
+                } else {
+                    showToast("Dompet asal atau tujuan transfer tidak ditemukan.", 'error');
                     return false;
                 }
             }
@@ -409,13 +417,19 @@ export const useSmartAddFlow = () => {
             console.error("Failed to save transaction:", error);
             showToast("Gagal menyimpan transaksi.", 'error');
             setPageState('CONFIRMING');
+        } finally {
+            setIsSaving(false);
         }
         return false;
     }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow]);
 
-    const saveMultiTransactions = useCallback(async () => {
-        if (multiParsedData.length === 0) return;
-        // setPageState('ANALYZING'); // Removed.
+    /**
+     * Saves all transactions in `multiParsedData` to the database in sequence.
+     * @returns `true` on success, `false` on failure or empty list.
+     */
+    const saveMultiTransactions = useCallback(async (): Promise<boolean> => {
+        if (multiParsedData.length === 0) return false;
+        setIsSaving(true);
         try {
             for (const tx of multiParsedData) {
                 await addTransaction(tx);
@@ -427,6 +441,8 @@ export const useSmartAddFlow = () => {
             console.error("Failed to save multi transactions:", error);
             showToast("Gagal menyimpan beberapa transaksi.", 'error');
             setPageState('MULTI_CONFIRMING');
+        } finally {
+            setIsSaving(false);
         }
         return false;
     }, [multiParsedData, addTransaction, showToast, resetFlow]);
@@ -441,6 +457,7 @@ export const useSmartAddFlow = () => {
         setMultiParsedData,
         removeMultiTransaction,
         insightData,
+        isSaving,
         processInput,
         saveTransaction,
         saveMultiTransactions,

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -9,8 +9,6 @@ import {
     Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useUI } from '@/components/ui-provider';
 import { triggerHaptic, cn, compressImageFile, getDataUrlSizeInBytes } from '@/lib/utils';
 import { SuccessAnimation } from '@/components/success-animation';
@@ -19,7 +17,6 @@ import { SuccessAnimation } from '@/components/success-animation';
 import { HeroAmount } from '@/features/transactions/components/liquid-composer/HeroAmount';
 import { MagicBar } from '@/features/transactions/components/liquid-composer/MagicBar';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
-import { useTransactionForm } from '@/features/transactions/hooks/use-transaction-form';
 import { DynamicSuggestions } from './dynamic-suggestions';
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
@@ -69,8 +66,6 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 export default function SmartAddPage() {
     const router = useRouter();
-    const { wallets } = useWallets();
-    const { expenseCategories, incomeCategories } = useCategories();
     const { showToast } = useUI();
     const [magicValue, setMagicValue] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
@@ -83,20 +78,12 @@ export default function SmartAddPage() {
         pageState,
         parsedData,
         multiParsedData,
+        isSaving,
         processInput,
         saveTransaction,
         saveMultiTransactions,
         resetFlow
     } = useSmartAddFlow();
-
-    // AI Context
-    const aiContext = useMemo(() => ({
-        wallets: wallets.map(w => ({ id: w.id, name: w.name })),
-        categories: [...expenseCategories, ...incomeCategories].map(c => c.name)
-    }), [wallets, expenseCategories, incomeCategories]);
-
-    // Hook untuk handle submission akhir
-    const { isSubmitting } = useTransactionForm({ context: aiContext });
 
     const handleMagicSubmit = async () => {
         if (!magicValue) return;
@@ -334,10 +321,10 @@ export default function SmartAddPage() {
                         >
                             <Button 
                                 onClick={handleConfirmSave} 
-                                disabled={isSubmitting}
+                                disabled={isSaving}
                                 className="w-full h-14 rounded-2xl text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
                             >
-                                {isSubmitting ? (
+                                {isSaving ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
                                     <>

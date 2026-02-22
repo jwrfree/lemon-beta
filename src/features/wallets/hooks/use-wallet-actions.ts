@@ -73,7 +73,7 @@ export const useWalletActions = (user: User | null) => {
         }
 
         if (txCount && txCount > 0) {
-            ui.showToast("Dompet tidak bisa dihapus karena memiliki riwayat transaksi.", 'error');
+            ui.showToast("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
             return;
         }
 

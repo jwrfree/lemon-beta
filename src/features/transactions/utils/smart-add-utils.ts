@@ -1,8 +1,16 @@
 import { Category } from '@/lib/categories';
 
 /**
+ * Normalizes a string for fuzzy comparison by replacing non-alphanumeric
+ * characters (punctuation, special symbols) with spaces and collapsing whitespace.
+ */
+const normalizeForFuzzy = (str: string): string =>
+    str.replace(/[^a-z0-9\s]/gi, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+
+/**
  * Resolves a raw sub-category string to a valid sub-category from the available list based on the main category.
- * Uses exact match (case-insensitive) first, then falls back to bidirectional substring matching (fuzzy).
+ * Uses exact match (case-insensitive) first, then falls back to bidirectional substring matching (fuzzy)
+ * with special-character normalization so that e.g. "bayar parkir tol" matches "Parkir & Tol".
  */
 export const resolveSubCategory = (
     finalCategory: string | undefined,
@@ -19,11 +27,23 @@ export const resolveSubCategory = (
             // 1. Exact match (case-insensitive)
             let matchedSub = categoryObj.sub_categories.find(s => s.toLowerCase() === normalizedSub);
 
-            // 2. Fuzzy match (substring)
+            // 2. Fuzzy match (substring, raw)
             if (!matchedSub) {
                 matchedSub = categoryObj.sub_categories.find(s =>
                     s.toLowerCase().includes(normalizedSub) || normalizedSub.includes(s.toLowerCase())
                 );
+            }
+
+            // 3. Fuzzy match (normalized – strips &, /, (, ) etc. before comparing)
+            if (!matchedSub) {
+                const normalizedInput = normalizeForFuzzy(rawSubCategory);
+                matchedSub = categoryObj.sub_categories.find(s => {
+                    const normalizedCandidate = normalizeForFuzzy(s);
+                    return (
+                        normalizedCandidate.includes(normalizedInput) ||
+                        normalizedInput.includes(normalizedCandidate)
+                    );
+                });
             }
 
             if (matchedSub) {
@@ -35,6 +55,9 @@ export const resolveSubCategory = (
 };
 
 // --- Quick Parser Types ---
+
+/** Minimum character count for a sub-category word token to be used in word-level fuzzy matching. */
+const MIN_WORD_MATCH_LENGTH = 4;
 
 export interface QuickParseResult {
     amount: number;
@@ -103,7 +126,18 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
             // Check subcategories
             if (cat.sub_categories) {
                 for (const sub of cat.sub_categories) {
+                    // Exact substring match
                     if (lowerText.includes(sub.toLowerCase())) {
+                        category = cat.name;
+                        subCategory = sub;
+                        type = txType;
+                        foundMatch = true;
+                        return true;
+                    }
+                    // Word-level match: split sub-category by delimiters and check if
+                    // any meaningful word (>= MIN_WORD_MATCH_LENGTH chars) appears in the input text.
+                    const subWords = sub.toLowerCase().split(/[\s/&()[\],;-]+/).filter(w => w.length >= MIN_WORD_MATCH_LENGTH);
+                    if (subWords.length > 0 && subWords.some(w => lowerText.includes(w))) {
                         category = cat.name;
                         subCategory = sub;
                         type = txType;
