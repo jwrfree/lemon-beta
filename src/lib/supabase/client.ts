@@ -11,6 +11,22 @@ export const createClient = () => {
 
   if (!url || !key) {
     console.error('Supabase environment variables are missing:', { url: !!url, key: !!key })
+    // During SSR/build time, NEXT_PUBLIC env vars may not be available in the build environment.
+    // Return a placeholder client so static pre-render doesn't crash.
+    // In a real production deployment the vars will always be set, so this path is never reached
+    // at runtime. If they ARE missing at runtime (misconfiguration), all Supabase API calls
+    // will fail with network errors — which is intentionally visible.
+    if (typeof window === 'undefined') {
+      console.warn(
+        '[Supabase] Running without env vars on the server (SSR/build). ' +
+        'Placeholder client returned — ensure NEXT_PUBLIC_SUPABASE_URL and ' +
+        'NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your deployment environment.'
+      )
+      return createBrowserClient(
+        'https://placeholder.supabase.co',
+        'placeholder-anon-key'
+      )
+    }
     throw new Error('Supabase configuration is incomplete')
   }
 
