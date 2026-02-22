@@ -14,8 +14,8 @@ export const config = {
       apiKey: process.env.DEEPSEEK_API_KEY,
       baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com",
     },
-    gemini: {
-      apiKey: process.env.GEMINI_API_KEY,
+    openai: {
+      apiKey: process.env.OPENAI_API_KEY,
     },
   },
   auth: {
