@@ -1,12 +1,14 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.5.1** · Complete Category Coverage Fix · February 2026
+> **v2.5.2** · Smart Add Complete Flow & Sheet Migration · February 2026
 
-Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.5.1 ensures all transaction categories are now available to all users.
+Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.5.2 delivers a fully featured Smart Add flow, an accessible standard bottom sheet, and a reliable production build.
 
-## 🔥 Latest Update (v2.5.1)
+## 🔥 Latest Update (v2.5.2)
 
-**Critical Fix**: Added 8 missing expense categories and 1 income category to the database. All users now have access to the complete set of 26 transaction categories including Digital Subscriptions, Business & Productivity, Family & Children, and more. [Read more →](KATEGORI_FIX_README.md)
+- **Smart Add – Complete Transaction Flow**: Sub-category selection, wallet/source-of-funds picker, and date & time editing are all now available directly inside the Smart Add confirmation card.
+- **Standard Bottom Sheet**: Replaced the custom Framer Motion overlay with the accessible `Sheet` component (Radix UI Dialog), adding keyboard dismiss, focus trap, and ARIA attributes out of the box.
+- **Build Fix**: Supabase client no longer crashes `next build` when environment variables are absent at build time — all 28 pages now generate successfully.
 
 ## ✨ Key Highlights & Recent Updates
 - **Massive Merchant Map Expansion:** Hundreds of Indonesian (Pertamina, Richeese, Erigo, etc.) and global (AWS, OpenAI, Spotify, etc.) brands are now automatically detected with their official logos and colors.
@@ -57,6 +59,6 @@ Lemon is a modern financial companion designed to help Indonesia's digital worke
 2. Install dependencies: `npm install`
 3. Run the development server: `npm run dev`
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-5. Set up your own Firebase configuration in environment variables before testing authentication.
+5. Set up your own Supabase configuration in environment variables before testing authentication.
 
 Happy financial tidying! Feel free to open an issue or pull request for further ideas.
