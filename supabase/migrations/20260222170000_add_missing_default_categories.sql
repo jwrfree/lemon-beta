@@ -61,14 +61,14 @@ BEGIN
 
     -- Biaya Lain-lain (was 'Lain-lain' in update migration, needs proper naming)
     IF NOT EXISTS (SELECT 1 FROM public.categories WHERE name = 'Biaya Lain-lain' AND is_default = TRUE) THEN
-        -- Update the old 'Lain-lain' to 'Biaya Lain-lain' if it exists
-        UPDATE public.categories SET 
-            name = 'Biaya Lain-lain',
-            sub_categories = '{"Biaya Admin Bank", "Pajak", "Kebutuhan Mendadak", "Lainnya"}'
-        WHERE name = 'Lain-lain' AND is_default = TRUE AND type = 'expense';
-        
-        -- If it doesn't exist, insert it
-        IF NOT FOUND THEN
+        -- First try to update old 'Lain-lain' to 'Biaya Lain-lain'
+        IF EXISTS (SELECT 1 FROM public.categories WHERE name = 'Lain-lain' AND is_default = TRUE AND type = 'expense') THEN
+            UPDATE public.categories SET 
+                name = 'Biaya Lain-lain',
+                sub_categories = '{"Biaya Admin Bank", "Pajak", "Kebutuhan Mendadak", "Lainnya"}'
+            WHERE name = 'Lain-lain' AND is_default = TRUE AND type = 'expense';
+        ELSE
+            -- If old category doesn't exist, insert new one
             INSERT INTO public.categories (name, icon, color, bg_color, type, is_default, sub_categories) 
             VALUES ('Biaya Lain-lain', 'Wrench', 'text-gray-600', 'bg-gray-100', 'expense', TRUE, 
                     '{"Biaya Admin Bank", "Pajak", "Kebutuhan Mendadak", "Lainnya"}');
@@ -96,11 +96,13 @@ BEGIN
     END IF;
 
     -- Update Pendapatan Lain if it was inserted with wrong name
-    UPDATE public.categories SET
-        name = 'Pendapatan Lain',
-        icon = 'Wallet',
-        color = 'text-gray-600',
-        bg_color = 'bg-gray-100'
-    WHERE name = 'Lain-lain' AND is_default = TRUE AND type = 'income';
+    IF NOT EXISTS (SELECT 1 FROM public.categories WHERE name = 'Pendapatan Lain' AND is_default = TRUE AND type = 'income') THEN
+        UPDATE public.categories SET
+            name = 'Pendapatan Lain',
+            icon = 'Wallet',
+            color = 'text-gray-600',
+            bg_color = 'bg-gray-100'
+        WHERE name = 'Lain-lain' AND is_default = TRUE AND type = 'income';
+    END IF;
 
 END $$;
