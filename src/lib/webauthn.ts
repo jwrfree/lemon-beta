@@ -57,7 +57,7 @@ function decodeCredentialDescriptors(
   if (!descriptors) return undefined;
 
   return descriptors.map((descriptor) => ({
-    id: base64UrlDecode(descriptor.id),
+    id: base64UrlDecode(descriptor.id) as BufferSource,
     type: 'public-key',
   }));
 }
@@ -70,10 +70,10 @@ export async function createCredential(
 ): Promise<RegistrationResponseJSON> {
   const publicKey: PublicKeyCredentialCreationOptions = {
     ...options,
-    challenge: base64UrlDecode(options.challenge),
+    challenge: base64UrlDecode(options.challenge) as BufferSource,
     user: {
       ...options.user,
-      id: base64UrlDecode(options.user.id),
+      id: base64UrlDecode(options.user.id) as BufferSource,
     },
     excludeCredentials: decodeCredentialDescriptors(options.excludeCredentials),
   };
@@ -112,7 +112,7 @@ export async function getCredential(
 ): Promise<AuthenticationResponseJSON> {
   const publicKey: PublicKeyCredentialRequestOptions = {
     ...options,
-    challenge: base64UrlDecode(options.challenge),
+    challenge: base64UrlDecode(options.challenge) as BufferSource,
     allowCredentials: decodeCredentialDescriptors(options.allowCredentials),
   };
 

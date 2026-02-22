@@ -2,6 +2,26 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.5.1] - 22 February 2026
+
+### 🔧 Critical Category Database Fix
+
+- **Missing Default Categories Resolved**:
+  - Fixed a critical issue where 8 expense categories and 1 income category defined in the application code were not present in the database.
+  - Added migration `20260222170000_add_missing_default_categories.sql` to ensure all 26 categories (16 expense + 9 income + 1 internal) are available to all users.
+  - **New Categories Now Available**:
+    - **Expense**: Langganan Digital, Bisnis & Produktivitas, Keluarga & Anak, Sosial & Donasi, Investasi & Aset, Cicilan & Pinjaman, Penyesuaian Saldo
+    - **Income**: Penyesuaian Saldo
+  - **Category Naming Consistency**: Renamed "Rumah" to "Rumah & Properti", "Lain-lain" to "Biaya Lain-lain" (expense) and "Pendapatan Lain" (income) for clarity.
+  - All changes are applied globally via default categories, making them immediately visible to all users without any action required.
+  - Migration uses idempotent `IF NOT EXISTS` checks for safe deployment and rerunning.
+
+### 📚 Documentation Improvements
+
+- **Comprehensive Solution Documentation**: Added `SOLUTION_SUMMARY.md` with detailed root cause analysis, solution implementation, and impact assessment.
+- **Migration Documentation**: Created `README_20260222170000.md` explaining the migration's purpose, impact, and verification steps.
+- **Verification Tools**: Provided `VERIFY_20260222170000.sql` with SQL queries to confirm successful migration deployment.
+
 ## [Version 2.5.0] - 21 February 2026
 
 ### 🏦 Assets & Liabilities Architecture Overhaul

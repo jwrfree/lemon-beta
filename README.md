@@ -1,8 +1,12 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.4.3** · Massive Merchant Map Expansion · February 2026
+> **v2.5.1** · Complete Category Coverage Fix · February 2026
 
-Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.4.3 introduces a **comprehensive merchant branding engine** with hundreds of pre-mapped Indonesian and global brands.
+Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.5.1 ensures all transaction categories are now available to all users.
+
+## 🔥 Latest Update (v2.5.1)
+
+**Critical Fix**: Added 8 missing expense categories and 1 income category to the database. All users now have access to the complete set of 26 transaction categories including Digital Subscriptions, Business & Productivity, Family & Children, and more. [Read more →](KATEGORI_FIX_README.md)
 
 ## ✨ Key Highlights & Recent Updates
 - **Massive Merchant Map Expansion:** Hundreds of Indonesian (Pertamina, Richeese, Erigo, etc.) and global (AWS, OpenAI, Spotify, etc.) brands are now automatically detected with their official logos and colors.
