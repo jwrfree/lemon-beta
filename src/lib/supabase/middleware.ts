@@ -6,9 +6,23 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    console.error('[Supabase Middleware] Missing credentials:', { 
+      url: !!url, 
+      key: !!key,
+      urlValue: url?.substring(0, 20) + '...' || 'undefined',
+      keyValue: key?.substring(0, 20) + '...' || 'undefined'
+    })
+    // For development, return next response to avoid crashes
+    return supabaseResponse
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {

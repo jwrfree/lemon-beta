@@ -10,8 +10,16 @@ export const createClient = () => {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!url || !key) {
-    console.error('Supabase environment variables are missing:', { url: !!url, key: !!key })
-    throw new Error('Supabase configuration is incomplete')
+    console.error('[Supabase Client] Missing environment variables:', { 
+      url: !!url, 
+      key: !!key,
+      urlSet: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      keySet: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    })
+    console.error('Please add the following environment variables to your Vercel project:')
+    console.error('- NEXT_PUBLIC_SUPABASE_URL: Your Supabase project URL (e.g., https://rfbargejxzobranifajb.supabase.co)')
+    console.error('- NEXT_PUBLIC_SUPABASE_ANON_KEY: Your Supabase anonymous key')
+    throw new Error('Supabase configuration is incomplete. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment.')
   }
 
   try {
