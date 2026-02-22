@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase/client';
 import type { SpendingRisk, MonthlySummary, MonthlySummaryRow } from '@/types/models';
 
-const supabase = createClient();
-
 export const mapMonthlySummaryFromDb = (row: MonthlySummaryRow): MonthlySummary => ({
     id: row.id,
     userId: row.user_id,
@@ -21,6 +19,7 @@ class InsightService {
      * Get current month's risk score and insights.
      */
     async getSpendingRisk(userId: string): Promise<SpendingRisk | null> {
+        const supabase = createClient();
         const { data, error } = await supabase.rpc('get_spending_risk_score', {
             p_user_id: userId
         });
@@ -54,6 +53,7 @@ class InsightService {
      * Get monthly summaries for trend analysis.
      */
     async getMonthlySummaries(userId: string, limit = 6): Promise<MonthlySummary[]> {
+        const supabase = createClient();
         const { data, error } = await supabase
             .from('monthly_summaries')
             .select('*')
