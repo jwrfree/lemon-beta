@@ -9,7 +9,7 @@ export type ServiceResult<T> = {
 };
 
 class TransactionService {
-    private supabase = createClient();
+    private get supabase() { return createClient(); }
 
     /**
      * Create a new transaction using the atomic RPC function.

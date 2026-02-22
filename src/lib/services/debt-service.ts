@@ -2,8 +2,6 @@ import { createClient } from '@/lib/supabase/client';
 import { normalizeDateInput } from '@/lib/utils';
 import type { Debt, DebtInput, DebtPaymentInput, DebtRow, DebtPayment, DebtPaymentRow } from '@/types/models';
 
-const supabase = createClient();
-
 export const mapDebtPaymentFromDb = (p: DebtPaymentRow): DebtPayment => ({
     id: p.id,
     amount: p.amount,
@@ -38,6 +36,7 @@ export const mapDebtFromDb = (d: any): Debt => ({
 
 export const debtService = {
     async getDebts(userId: string) {
+        const supabase = createClient();
         const { data, error } = await supabase
             .from('debts')
             .select('*, payments:debt_payments(*)')
@@ -49,6 +48,7 @@ export const debtService = {
     },
 
     async addDebt(userId: string, debtData: DebtInput) {
+        const supabase = createClient();
         const { error } = await supabase.from('debts').insert({
             title: debtData.title,
             counterparty: debtData.counterparty,
@@ -70,6 +70,7 @@ export const debtService = {
     },
 
     async updateDebt(debtId: string, debtData: DebtInput) {
+        const supabase = createClient();
         const { error } = await supabase.from('debts').update({
             title: debtData.title,
             counterparty: debtData.counterparty,
@@ -85,11 +86,13 @@ export const debtService = {
     },
 
     async deleteDebt(debtId: string) {
+        const supabase = createClient();
         const { error } = await supabase.from('debts').delete().eq('id', debtId);
         if (error) throw error;
     },
 
     async settleDebt(debtId: string) {
+        const supabase = createClient();
         const { error } = await supabase.from('debts').update({
             status: 'settled',
             outstanding_balance: 0,
@@ -98,6 +101,7 @@ export const debtService = {
     },
 
     async payDebt(userId: string, debtId: string, paymentData: DebtPaymentInput) {
+        const supabase = createClient();
         const { error } = await supabase.rpc('pay_debt_v1', {
             p_debt_id: debtId,
             p_payment_amount: paymentData.amount,
@@ -110,6 +114,7 @@ export const debtService = {
     },
 
     async deleteDebtPayment(userId: string, debtId: string, paymentId: string) {
+        const supabase = createClient();
         const { error } = await supabase.rpc('delete_debt_payment_v1', {
             p_debt_id: debtId,
             p_payment_id: paymentId,

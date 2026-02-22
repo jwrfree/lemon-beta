@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction, TransactionRow } from '@/types/models';
 
-const supabase = createClient();
-
 export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
     id: t.id,
     amount: t.amount,
@@ -21,6 +19,7 @@ export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
 
 export const transactionService = {
     async getTransactions(userId: string) {
+        const supabase = createClient();
         const { data, error } = await supabase
             .from('transactions')
             .select('*')
@@ -32,6 +31,7 @@ export const transactionService = {
     },
 
     async getCategories() {
+        const supabase = createClient();
         const { data, error } = await supabase
             .from('categories')
             .select('*')

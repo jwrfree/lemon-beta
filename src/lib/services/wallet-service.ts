@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase/client';
 import type { Wallet, WalletRow } from '@/types/models';
 
-const supabase = createClient();
-
 export const mapWalletFromDb = (w: WalletRow): Wallet => ({
     id: w.id,
     name: w.name,
@@ -16,6 +14,7 @@ export const mapWalletFromDb = (w: WalletRow): Wallet => ({
 
 export const walletService = {
     async getWallets(userId: string) {
+        const supabase = createClient();
         const { data, error } = await supabase
             .from('wallets')
             .select('*')
