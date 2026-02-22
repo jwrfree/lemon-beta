@@ -129,6 +129,11 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
     };
 
     const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+        // Prevent closing during save operation
+        if (isSaving) {
+            controls.start({ y: 0 });
+            return;
+        }
         if (info.offset.y > 100 || info.velocity.y > 500) {
             onClose();
         } else {
@@ -159,13 +164,14 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                         exit={{ opacity: 0 }}
                         onClick={onClose}
                         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                        style={{ pointerEvents: isSaving ? 'none' : 'auto' }}
                     />
 
                     {/* Bottom Sheet Wrapper */}
                     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center pointer-events-none">
                         <motion.div
                             key="sheet"
-                            drag="y"
+                            drag={isSaving ? false : "y"}
                             dragConstraints={{ top: 0, bottom: 0 }}
                             dragElastic={{ top: 0.05, bottom: 0.8 }}
                             onDragEnd={handleDragEnd}
@@ -179,8 +185,15 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                 isResultMode ? "h-[85dvh]" : "max-h-[85dvh]"
                             )}
                         >
-                            {/* Drag Handle */}
-                            <div className="w-full flex justify-center pt-3 pb-2 shrink-0 bg-background z-10 cursor-grab active:cursor-grabbing" onClick={onClose}>
+                            {/* Drag Handle - pointerEvents: 'none' prevents all interactions when saving */}
+                            <div 
+                                className={cn(
+                                    "w-full flex justify-center pt-3 pb-2 shrink-0 bg-background z-10",
+                                    isSaving ? "cursor-not-allowed" : "cursor-grab active:cursor-grabbing"
+                                )} 
+                                onClick={onClose}
+                                style={{ pointerEvents: isSaving ? 'none' : 'auto' }}
+                            >
                                 <div className="w-12 h-1.5 rounded-full bg-muted-foreground/20" />
                             </div>
 
@@ -198,6 +211,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                             variant="ghost"
                                             size="sm"
                                             onClick={() => resetFlow()}
+                                            disabled={isSaving}
                                             className="h-8 text-xs text-muted-foreground hover:text-foreground"
                                         >
                                             <RotateCcw className="h-3 w-3 mr-1" />
@@ -295,6 +309,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                                 variant="outline"
                                                 className="flex-1 h-12 rounded-full border-border text-muted-foreground hover:text-foreground"
                                                 onClick={() => resetFlow()}
+                                                disabled={isSaving}
                                             >
                                                 Batal
                                             </Button>
