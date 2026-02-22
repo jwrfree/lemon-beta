@@ -90,7 +90,7 @@ export async function extractTransaction(text: string, context?: ExtractionConte
   const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
   const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
-  const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi, Keluarga, Sosial';
+  const categoryList = context?.categories?.join(', ') || 'Konsumsi & F&B, Belanja & Lifestyle, Transportasi, Tagihan & Utilitas, Langganan Digital, Hiburan & Wisata, Rumah & Properti, Kesehatan & Medis, Pendidikan, Bisnis & Produktivitas, Keluarga & Anak, Sosial & Donasi, Investasi & Aset, Cicilan & Pinjaman, Biaya Lain-lain, Gaji & Tetap, Bisnis & Freelance, Investasi & Pasif, Pemberian & Hadiah, Refund & Cashback, Penjualan Aset, Terima Piutang, Pendapatan Lain';
 
   // 1. STATIC INSTRUCTION (Cacheable)
   const systemPrompt = `## INSTRUKSI PARSING TRANSAKSI LEMON AI ##
@@ -223,7 +223,7 @@ export async function refineTransaction(
   const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
   const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
-  const categoryList = context?.categories?.join(', ') || 'Makanan, Transportasi, Belanja, Tagihan, Hiburan, Kesehatan, Gaji, Bonus, Investasi, Keluarga, Sosial';
+  const categoryList = context?.categories?.join(', ') || 'Konsumsi & F&B, Belanja & Lifestyle, Transportasi, Tagihan & Utilitas, Langganan Digital, Hiburan & Wisata, Rumah & Properti, Kesehatan & Medis, Pendidikan, Bisnis & Produktivitas, Keluarga & Anak, Sosial & Donasi, Investasi & Aset, Cicilan & Pinjaman, Biaya Lain-lain, Gaji & Tetap, Bisnis & Freelance, Investasi & Pasif, Pemberian & Hadiah, Refund & Cashback, Penjualan Aset, Terima Piutang, Pendapatan Lain';
 
   const systemPrompt = `## INSTRUKSI REFINEMENT TRANSAKSI LEMON AI ##
 Anda adalah asisten keuangan yang membantu memperbaiki data transaksi berdasarkan feedback user.
