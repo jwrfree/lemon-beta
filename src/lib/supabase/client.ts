@@ -3,6 +3,25 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 let supabase: SupabaseClient | undefined
 
+// Create a mock client that handles missing credentials gracefully
+const createMockClient = (): SupabaseClient => {
+  console.warn('[Supabase Client] Credentials are missing. Using mock client.')
+  // Return a minimal mock client object that won't crash during initialization
+  return {
+    auth: {
+      getUser: async () => ({ data: { user: null }, error: new Error('Supabase not configured') }),
+      getSession: async () => ({ data: { session: null }, error: new Error('Supabase not configured') }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    },
+    from: () => ({
+      select: async () => ({ data: null, error: new Error('Supabase not configured') }),
+      insert: async () => ({ data: null, error: new Error('Supabase not configured') }),
+      update: async () => ({ data: null, error: new Error('Supabase not configured') }),
+      delete: async () => ({ data: null, error: new Error('Supabase not configured') }),
+    }),
+  } as unknown as SupabaseClient
+}
+
 export const createClient = () => {
   if (supabase) return supabase
 
@@ -11,25 +30,23 @@ export const createClient = () => {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 
   if (!url || !key) {
-    console.error('[Supabase Client] Missing environment variables:', { 
+    console.warn('[Supabase Client] Missing environment variables:', { 
       url: !!url, 
-      key: !!key,
-      urlSet: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-      anonKeySet: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      publishableKeySet: !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
+      key: !!key
     })
-    console.error('Please add the following environment variables to your Vercel project:')
-    console.error('- NEXT_PUBLIC_SUPABASE_URL: Your Supabase project URL (e.g., https://rfbargejxzobranifajb.supabase.co)')
-    console.error('- NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY): Your Supabase anonymous/publishable key')
-    throw new Error('Supabase configuration is incomplete.')
+    // Return a mock client to prevent initialization errors
+    supabase = createMockClient()
+    return supabase
   }
 
   try {
     supabase = createBrowserClient(url, key)
-    console.log('Supabase client created successfully')
+    console.log('[Supabase Client] Client created successfully')
     return supabase
   } catch (error) {
-    console.error('Failed to create Supabase client:', error)
-    throw error
+    console.error('[Supabase Client] Failed to create client:', error)
+    // Fall back to mock client on error
+    supabase = createMockClient()
+    return supabase
   }
 }
