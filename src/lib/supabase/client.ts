@@ -11,7 +11,12 @@ export const createClient = () => {
 
   if (!url || !key) {
     console.error('Supabase environment variables are missing:', { url: !!url, key: !!key })
-    throw new Error('Supabase configuration is incomplete')
+    // Return a placeholder client during build/prerendering without env vars.
+    // API calls will fail at runtime if env vars are not configured.
+    return createBrowserClient(
+      'https://placeholder.supabase.co',
+      'placeholder-key'
+    )
   }
 
   try {

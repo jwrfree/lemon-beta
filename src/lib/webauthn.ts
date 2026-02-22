@@ -24,7 +24,7 @@ export async function isWebAuthnSupported(): Promise<boolean> {
 /**
  * Base64URL-decodes a string into a Uint8Array.
  */
-function base64UrlDecode(base64UrlString: string): Uint8Array {
+function base64UrlDecode(base64UrlString: string): Uint8Array<ArrayBuffer> {
   const base64 = base64UrlString.replace(/-/g, '+').replace(/_/g, '/');
   const padLength = (4 - (base64.length % 4)) % 4;
   const paddedBase64 = base64 + '='.repeat(padLength);
