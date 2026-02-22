@@ -170,7 +170,7 @@ export const LoginPage = ({
                                                 <Input
                                                     type="email"
                                                     id="email"
-                                                    autoComplete="email"
+                                                    autoComplete="username"
                                                     placeholder="email@contoh.com"
                                                     className="pl-10 pr-12"
                                                     size="lg"
