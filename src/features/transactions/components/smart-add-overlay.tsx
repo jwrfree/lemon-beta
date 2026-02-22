@@ -185,7 +185,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                 isResultMode ? "h-[85dvh]" : "max-h-[85dvh]"
                             )}
                         >
-                            {/* Drag Handle */}
+                            {/* Drag Handle - pointerEvents: 'none' prevents all interactions when saving */}
                             <div 
                                 className={cn(
                                     "w-full flex justify-center pt-3 pb-2 shrink-0 bg-background z-10",
