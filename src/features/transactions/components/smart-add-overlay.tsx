@@ -162,7 +162,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={isSaving ? undefined : onClose}
+                        onClick={onClose}
                         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
                         style={{ pointerEvents: isSaving ? 'none' : 'auto' }}
                     />
@@ -191,7 +191,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                     "w-full flex justify-center pt-3 pb-2 shrink-0 bg-background z-10",
                                     isSaving ? "cursor-not-allowed" : "cursor-grab active:cursor-grabbing"
                                 )} 
-                                onClick={isSaving ? undefined : onClose}
+                                onClick={onClose}
                                 style={{ pointerEvents: isSaving ? 'none' : 'auto' }}
                             >
                                 <div className="w-12 h-1.5 rounded-full bg-muted-foreground/20" />
