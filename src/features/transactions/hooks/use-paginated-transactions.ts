@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Transaction, TransactionRow } from '@/types/models';
+import { mapTransactionFromDb } from '@/lib/services/transaction-service';
+import type { Transaction } from '@/types/models';
 import { transactionEvents } from '@/lib/transaction-events';
 
 const PAGE_SIZE = 20;
@@ -83,19 +84,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
             if (error) throw error;
 
             if (data) {
-                const mappedTx = data.map((t: TransactionRow) => ({
-                    id: t.id,
-                    amount: t.amount,
-                    category: t.category,
-                    date: t.date,
-                    description: t.description,
-                    type: t.type,
-                    walletId: t.wallet_id,
-                    userId: t.user_id,
-                    createdAt: t.created_at,
-                    subCategory: t.sub_category || undefined,
-                    location: t.location || undefined
-                }));
+                const mappedTx = data.map(mapTransactionFromDb);
 
                 if (isReset) {
                     setTransactions(mappedTx);

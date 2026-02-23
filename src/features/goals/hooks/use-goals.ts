@@ -3,26 +3,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
-import { createClient } from '@/lib/supabase/client';
-import type { Goal, GoalInput, GoalRow } from '@/types/models';
-
-const mapGoalFromDb = (g: GoalRow): Goal => ({
-    id: g.id,
-    name: g.name,
-    targetAmount: g.target_amount,
-    currentAmount: g.current_amount,
-    targetDate: g.target_date,
-    icon: g.icon,
-    userId: g.user_id,
-    createdAt: g.created_at
-});
+import { goalService } from '@/lib/services/goal-service';
+import type { Goal, GoalInput } from '@/types/models';
 
 export const useGoals = () => {
     const { user } = useAuth();
     const { showToast, setIsGoalModalOpen } = useUI();
     const [goals, setGoals] = useState<Goal[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const supabase = createClient();
 
     useEffect(() => {
         if (!user) {
@@ -31,24 +19,14 @@ export const useGoals = () => {
             return;
         }
 
-        const fetchGoals = async () => {
-            const { data, error } = await supabase
-                .from('goals')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('target_date', { ascending: true });
-
-            if (error) {
+        goalService.getGoals(user.id)
+            .then(data => setGoals(data))
+            .catch(error => {
                 console.error("Error fetching goals:", error);
                 showToast("Gagal memuat target keuangan.", 'error');
-            } else if (data) {
-                setGoals(data.map(mapGoalFromDb));
-            }
-            setIsLoading(false);
-        };
-
-        fetchGoals();
-    }, [user, supabase, showToast]);
+            })
+            .finally(() => setIsLoading(false));
+    }, [user, showToast]);
 
     const addGoal = useCallback(async (goalData: GoalInput) => {
         if (!user) throw new Error("User not authenticated.");
@@ -69,56 +47,32 @@ export const useGoals = () => {
         setGoals(prev => [...prev, newGoal]);
         setIsGoalModalOpen(false);
 
-        const { data, error } = await supabase.from('goals').insert({
-            name: goalData.name,
-            target_amount: goalData.targetAmount,
-            current_amount: goalData.currentAmount || 0,
-            target_date: goalData.targetDate,
-            icon: goalData.icon,
-            user_id: user.id
-        }).select().single();
-
-        if (error) {
-             setGoals(prev => prev.filter(g => g.id !== tempId)); // Revert
-             showToast("Gagal membuat target.", 'error');
-             return;
+        try {
+            const savedGoal = await goalService.addGoal(user.id, goalData);
+            setGoals(prev => prev.map(g => g.id === tempId ? savedGoal : g));
+            showToast("Target berhasil dibuat!", 'success');
+        } catch {
+            setGoals(prev => prev.filter(g => g.id !== tempId)); // Revert
+            showToast("Gagal membuat target.", 'error');
         }
-
-        // Replace temp with real
-        setGoals(prev => prev.map(g => g.id === tempId ? mapGoalFromDb(data) : g));
-        showToast("Target berhasil dibuat!", 'success');
-    }, [user, supabase, showToast, setIsGoalModalOpen]);
+    }, [user, showToast, setIsGoalModalOpen]);
 
     const updateGoal = useCallback(async (goalId: string, goalData: Partial<Goal>) => {
         if (!user) throw new Error("User not authenticated.");
 
         // Optimistic Update
         const previousGoals = [...goals];
-        setGoals(prev => prev.map(g => {
-            if (g.id === goalId) {
-                return { ...g, ...goalData };
-            }
-            return g;
-        }));
-        setIsGoalModalOpen(false); // Assuming reuse of modal state or dedicated edit modal logic
+        setGoals(prev => prev.map(g => g.id === goalId ? { ...g, ...goalData } : g));
+        setIsGoalModalOpen(false);
 
-        const dbPayload: Partial<GoalRow> = {};
-        if (goalData.name) dbPayload.name = goalData.name;
-        if (goalData.targetAmount !== undefined) dbPayload.target_amount = goalData.targetAmount;
-        if (goalData.currentAmount !== undefined) dbPayload.current_amount = goalData.currentAmount;
-        if (goalData.targetDate) dbPayload.target_date = goalData.targetDate;
-        if (goalData.icon) dbPayload.icon = goalData.icon;
-
-        const { error } = await supabase.from('goals').update(dbPayload).eq('id', goalId);
-
-        if (error) {
-             setGoals(previousGoals); // Revert
-             showToast("Gagal memperbarui target.", 'error');
-             return;
+        try {
+            await goalService.updateGoal(goalId, goalData);
+            showToast("Target berhasil diperbarui!", 'success');
+        } catch {
+            setGoals(previousGoals); // Revert
+            showToast("Gagal memperbarui target.", 'error');
         }
-
-        showToast("Target berhasil diperbarui!", 'success');
-    }, [user, goals, supabase, showToast, setIsGoalModalOpen]);
+    }, [user, goals, showToast, setIsGoalModalOpen]);
 
     const deleteGoal = useCallback(async (goalId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -128,16 +82,14 @@ export const useGoals = () => {
         setGoals(prev => prev.filter(g => g.id !== goalId));
         setIsGoalModalOpen(false);
 
-        const { error } = await supabase.from('goals').delete().eq('id', goalId);
-
-        if (error) {
-             setGoals(previousGoals); // Revert
-             showToast("Gagal menghapus target.", 'error');
-             return;
+        try {
+            await goalService.deleteGoal(goalId);
+            showToast("Target berhasil dihapus.", 'success');
+        } catch {
+            setGoals(previousGoals); // Revert
+            showToast("Gagal menghapus target.", 'error');
         }
-
-        showToast("Target berhasil dihapus.", 'success');
-    }, [user, goals, supabase, showToast, setIsGoalModalOpen]);
+    }, [user, goals, showToast, setIsGoalModalOpen]);
 
     return {
         goals,

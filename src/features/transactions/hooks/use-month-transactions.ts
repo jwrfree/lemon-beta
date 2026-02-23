@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Transaction, TransactionRow } from '@/types/models';
+import { mapTransactionFromDb } from '@/lib/services/transaction-service';
+import type { Transaction } from '@/types/models';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 
 export const useMonthTransactions = (date?: Date) => {
@@ -31,20 +32,7 @@ export const useMonthTransactions = (date?: Date) => {
             if (error) throw error;
 
             if (data) {
-                const mapped: Transaction[] = data.map((t: TransactionRow) => ({
-                    id: t.id,
-                    amount: t.amount,
-                    category: t.category,
-                    date: t.date,
-                    description: t.description,
-                    type: t.type,
-                    walletId: t.wallet_id,
-                    userId: t.user_id,
-                    createdAt: t.created_at,
-                    subCategory: t.sub_category || undefined,
-                    location: t.location || undefined
-                }));
-                setTransactions(mapped);
+                setTransactions(data.map(mapTransactionFromDb));
             }
         } catch (err) {
             console.error("Error fetching month transactions:", err);

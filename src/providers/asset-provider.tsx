@@ -4,7 +4,8 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import type { Asset, Liability, AssetLiabilityInput, AssetRow, LiabilityRow, AssetPayload, LiabilityPayload } from '@/types/models';
+import { assetService } from '@/lib/services/asset-service';
+import type { Asset, Liability, AssetLiabilityInput, AssetPayload, LiabilityPayload } from '@/types/models';
 
 interface AssetContextType {
     assets: Asset[];
@@ -25,29 +26,6 @@ export const useAssetData = () => {
     return context;
 };
 
-const mapAssetFromDb = (a: AssetRow): Asset => ({
-    id: a.id,
-    name: a.name,
-    value: Number(a.value),
-    notes: a.notes || undefined,
-    categoryKey: a.category,
-    quantity: a.quantity ? Number(a.quantity) : undefined,
-    userId: a.user_id,
-    createdAt: a.created_at,
-    updatedAt: a.updated_at
-});
-
-const mapLiabilityFromDb = (l: LiabilityRow): Liability => ({
-    id: l.id,
-    name: l.name,
-    value: Number(l.value),
-    notes: l.notes || undefined,
-    categoryKey: l.category,
-    userId: l.user_id,
-    createdAt: l.created_at,
-    updatedAt: l.updated_at
-});
-
 export const AssetProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = useAuth();
     const { showToast } = useUI();
@@ -61,33 +39,18 @@ export const AssetProvider = ({ children }: { children: React.ReactNode }) => {
         if (!user) return;
 
         try {
-            // Fetch Assets
-            const { data: assetsData, error: assetsError } = await supabase
-                .from('assets')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false });
-
-            if (!assetsError && assetsData) {
-                setAssets(assetsData.map(mapAssetFromDb));
-            }
-
-            // Fetch Liabilities
-            const { data: liabilitiesData, error: liabilitiesError } = await supabase
-                .from('liabilities')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false });
-
-            if (!liabilitiesError && liabilitiesData) {
-                setLiabilities(liabilitiesData.map(mapLiabilityFromDb));
-            }
+            const [assetsData, liabilitiesData] = await Promise.all([
+                assetService.getAssets(user.id),
+                assetService.getLiabilities(user.id)
+            ]);
+            setAssets(assetsData);
+            setLiabilities(liabilitiesData);
         } catch (err) {
             console.error("[AssetProvider] Fetch Error:", err);
         } finally {
             setIsLoading(false);
         }
-    }, [user, supabase]);
+    }, [user]);
 
     const fetchGoldPrice = useCallback(async () => {
         try {
@@ -131,88 +94,57 @@ export const AssetProvider = ({ children }: { children: React.ReactNode }) => {
     const addAssetLiability = useCallback(async (data: AssetLiabilityInput) => {
         if (!user) throw new Error("User not authenticated.");
         const { type, ...itemData } = data;
-        const tableName = type === 'asset' ? 'assets' : 'liabilities';
 
-        let insertData: any;
-
-        if (type === 'asset') {
-            const assetInput = itemData as AssetPayload;
-            insertData = {
-                name: assetInput.name,
-                value: assetInput.value,
-                notes: assetInput.notes || null,
-                category: assetInput.categoryKey,
-                user_id: user.id,
-                quantity: assetInput.quantity
-            };
-        } else {
-            const liabilityInput = itemData as LiabilityPayload;
-            insertData = {
-                name: liabilityInput.name,
-                value: liabilityInput.value,
-                notes: liabilityInput.notes || null,
-                category: liabilityInput.categoryKey,
-                user_id: user.id
-            };
-        }
-
-        const { error } = await supabase.from(tableName).insert(insertData);
-
-        if (error) {
-            console.error(`[AssetProvider] Add Error:`, error);
+        try {
+            if (type === 'asset') {
+                await assetService.addAsset(user.id, itemData as AssetPayload);
+            } else {
+                await assetService.addLiability(user.id, itemData as LiabilityPayload);
+            }
+            showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
+            await fetchData();
+        } catch (err) {
+            console.error(`[AssetProvider] Add Error:`, err);
             showToast(`Gagal menambahkan ${type === 'asset' ? 'aset' : 'liabilitas'}.`, 'error');
-            throw error;
+            throw err;
         }
-
-        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil ditambahkan!`, 'success');
-        await fetchData();
-    }, [user, supabase, showToast, fetchData]);
+    }, [user, showToast, fetchData]);
 
     const updateAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability', data: Partial<Asset> | Partial<Liability>) => {
         if (!user) throw new Error("User not authenticated.");
-        const tableName = type === 'asset' ? 'assets' : 'liabilities';
 
-        const updateData: Record<string, any> = {};
-
-        if (data.name !== undefined) updateData.name = data.name;
-        if (data.value !== undefined) updateData.value = data.value;
-        if (data.notes !== undefined) updateData.notes = data.notes;
-
-        if ('categoryKey' in data && data.categoryKey !== undefined) {
-            updateData.category = data.categoryKey;
-        }
-
-        if (type === 'asset' && 'quantity' in data) {
-            updateData.quantity = (data as Partial<Asset>).quantity;
-        }
-
-        const { error } = await supabase.from(tableName).update(updateData).eq('id', id);
-
-        if (error) {
-            console.error(`[AssetProvider] Update Error:`, error);
+        try {
+            if (type === 'asset') {
+                await assetService.updateAsset(id, data as Partial<Asset>);
+            } else {
+                await assetService.updateLiability(id, data as Partial<Liability>);
+            }
+            showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
+            await fetchData();
+        } catch (err) {
+            console.error(`[AssetProvider] Update Error:`, err);
             showToast(`Gagal memperbarui ${type === 'asset' ? 'aset' : 'liabilitas'}.`, 'error');
-            throw error;
+            throw err;
         }
-
-        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil diperbarui!`, 'success');
-        await fetchData();
-    }, [user, supabase, showToast, fetchData]);
+    }, [user, showToast, fetchData]);
 
     const deleteAssetLiability = useCallback(async (id: string, type: 'asset' | 'liability') => {
         if (!user) throw new Error("User not authenticated.");
-        const tableName = type === 'asset' ? 'assets' : 'liabilities';
 
-        const { error } = await supabase.from(tableName).delete().eq('id', id);
-
-        if (error) {
-            console.error(`[AssetProvider] Delete Error:`, error);
+        try {
+            if (type === 'asset') {
+                await assetService.deleteAsset(id);
+            } else {
+                await assetService.deleteLiability(id);
+            }
+            showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
+            await fetchData();
+        } catch (err) {
+            console.error(`[AssetProvider] Delete Error:`, err);
             showToast(`Gagal menghapus ${type === 'asset' ? 'aset' : 'liabilitas'}.`, 'error');
-            throw error;
+            throw err;
         }
-
-        showToast(`${type === 'asset' ? 'Aset' : 'Liabilitas'} berhasil dihapus.`, 'success');
-        await fetchData();
-    }, [user, supabase, showToast, fetchData]);
+    }, [user, showToast, fetchData]);
 
     return (
         <AssetContext.Provider value={{

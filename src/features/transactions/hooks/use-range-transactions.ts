@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
+import { mapTransactionFromDb } from '@/lib/services/transaction-service';
 import type { Transaction, TransactionRow } from '@/types/models';
 import { format, parseISO, endOfDay } from 'date-fns';
 import { transactionEvents } from '@/lib/transaction-events';
@@ -61,20 +62,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
             const data = await fetchWithRetry();
 
             if (data) {
-                const mapped: Transaction[] = (data as TransactionRow[]).map((t) => ({
-                    id: t.id,
-                    amount: t.amount,
-                    category: t.category,
-                    date: t.date,
-                    description: t.description,
-                    type: t.type,
-                    walletId: t.wallet_id,
-                    userId: t.user_id,
-                    createdAt: t.created_at,
-                    subCategory: t.sub_category || undefined,
-                    location: t.location || undefined,
-                    linkedDebtId: (t as any).linked_debt_id || undefined,
-                }));
+                const mapped: Transaction[] = (data as TransactionRow[]).map(mapTransactionFromDb);
                 setTransactions(mapped);
             }
         } catch (err: any) {

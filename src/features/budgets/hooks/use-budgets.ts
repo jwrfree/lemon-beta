@@ -1,33 +1,24 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter as useNextRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
-import { createClient } from '@/lib/supabase/client';
-import type { Budget, BudgetInput, BudgetRow, Transaction } from '@/types/models';
+import { budgetService } from '@/lib/services/budget-service';
+import type { Budget, BudgetInput, Transaction } from '@/types/models';
 import { transactionEvents } from '@/lib/transaction-events';
 import { isSameMonth, parseISO } from 'date-fns';
 
-const mapBudgetFromDb = (b: BudgetRow): Budget => ({
-    id: b.id,
-    name: b.name,
-    targetAmount: b.amount,
-    spent: b.spent,
-    categories: b.category ? [b.category] : [],
-    subCategory: b.sub_category || undefined,
-    period: b.period,
-    userId: b.user_id,
-    createdAt: b.created_at
-});
-
 export const useBudgets = () => {
     const { user } = useAuth();
-    const router = useNextRouter();
     const { showToast, setIsBudgetModalOpen, setIsEditBudgetModalOpen } = useUI();
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const supabase = createClient();
+
+    const refreshBudgets = useCallback(async () => {
+        if (!user) return;
+        const data = await budgetService.getBudgets(user.id);
+        setBudgets(data);
+    }, [user]);
 
     // 1. Fetch Initial Data
     useEffect(() => {
@@ -37,25 +28,14 @@ export const useBudgets = () => {
             return;
         }
 
-        const fetchBudgets = async () => {
-            const { data, error } = await supabase
-                .from('budgets')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false });
-
-            if (error) {
+        budgetService.getBudgets(user.id)
+            .then(data => setBudgets(data))
+            .catch(error => {
                 console.error("Error fetching budgets:", error);
                 showToast("Gagal memuat anggaran.", 'error');
-            } else if (data) {
-                setBudgets(data.map(mapBudgetFromDb));
-            }
-            setIsLoading(false);
-        };
-
-        fetchBudgets();
-
-    }, [user, supabase, showToast]);
+            })
+            .finally(() => setIsLoading(false));
+    }, [user, showToast]);
 
     // 2. Real-time Transaction Listener (Optimistic Budget Updates)
     useEffect(() => {
@@ -66,7 +46,7 @@ export const useBudgets = () => {
             const txDate = parseISO(tx.date);
             const isCurrentMonth = isSameMonth(txDate, new Date());
 
-            if (!isCurrentMonth) return; // Only update if tx is in current month (assuming monthly budgets)
+            if (!isCurrentMonth) return;
 
             setBudgets(prev => prev.map(b => {
                 const categoryMatches = b.categories.includes(tx.category);
@@ -79,19 +59,11 @@ export const useBudgets = () => {
             }));
         };
 
-        const handleTransactionUpdated = (tx: Transaction) => {
-            // Complex logic: We need the OLD transaction to revert, but we don't have it here easily.
-            // For now, we will perform a "Refetch Strategy" for updates to ensure accuracy,
-            // OR we can implement a smarter delta if we passed oldData in the event.
-            // Current limitation: 'transaction.updated' only passes the NEW transaction.
-            // Strategy: Re-fetch budgets to ensure accuracy.
+        const handleTransactionUpdated = () => {
             refreshBudgets();
         };
 
-        const handleTransactionDeleted = (txId: string) => {
-             // We need to know the amount/category of the deleted tx to revert.
-             // Since we only get ID, we can't optimistically revert without looking it up.
-             // Strategy: Re-fetch budgets.
+        const handleTransactionDeleted = () => {
              refreshBudgets();
         };
 
@@ -104,18 +76,7 @@ export const useBudgets = () => {
             transactionEvents.off('transaction.updated', handleTransactionUpdated);
             transactionEvents.off('transaction.deleted', handleTransactionDeleted);
         };
-    }, [user]);
-
-    const refreshBudgets = async () => {
-        if (!user) return;
-        const { data } = await supabase
-            .from('budgets')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false });
-        
-        if (data) setBudgets(data.map(mapBudgetFromDb));
-    };
+    }, [user, refreshBudgets]);
 
     const addBudget = useCallback(async (budgetData: BudgetInput) => {
         if (!user) throw new Error("User not authenticated.");
@@ -135,28 +96,17 @@ export const useBudgets = () => {
         };
 
         setBudgets(prev => [newBudget, ...prev]);
-        setIsBudgetModalOpen(false); // Close UI immediately
+        setIsBudgetModalOpen(false);
 
-        const { data, error } = await supabase.from('budgets').insert({
-            name: budgetData.name,
-            amount: budgetData.targetAmount,
-            spent: 0,
-            category: budgetData.categories?.[0] || '',
-            sub_category: budgetData.subCategory || null,
-            period: budgetData.period,
-            user_id: user.id
-        }).select().single();
-
-        if (error) {
-             setBudgets(prev => prev.filter(b => b.id !== tempId)); // Revert
-             showToast("Gagal membuat anggaran.", 'error');
-             return;
+        try {
+            const savedBudget = await budgetService.addBudget(user.id, budgetData);
+            setBudgets(prev => prev.map(b => b.id === tempId ? savedBudget : b));
+            showToast("Anggaran berhasil dibuat!", 'success');
+        } catch {
+            setBudgets(prev => prev.filter(b => b.id !== tempId)); // Revert
+            showToast("Gagal membuat anggaran.", 'error');
         }
-
-        // Replace temp with real
-        setBudgets(prev => prev.map(b => b.id === tempId ? mapBudgetFromDb(data) : b));
-        showToast("Anggaran berhasil dibuat!", 'success');
-    }, [user, supabase, showToast, setIsBudgetModalOpen]);
+    }, [user, showToast, setIsBudgetModalOpen]);
 
     const updateBudget = useCallback(async (budgetId: string, budgetData: Partial<Budget>) => {
         if (!user) throw new Error("User not authenticated.");
@@ -175,23 +125,14 @@ export const useBudgets = () => {
         }));
         setIsEditBudgetModalOpen(false);
 
-        const updateData: Partial<BudgetRow> = {};
-        if (budgetData.name) updateData.name = budgetData.name;
-        if (budgetData.targetAmount !== undefined) updateData.amount = budgetData.targetAmount;
-        if (budgetData.categories !== undefined) updateData.category = budgetData.categories[0];
-        if (budgetData.subCategory !== undefined) updateData.sub_category = budgetData.subCategory || null;
-        if (budgetData.period) updateData.period = budgetData.period;
-
-        const { error } = await supabase.from('budgets').update(updateData).eq('id', budgetId);
-
-        if (error) {
-             showToast("Gagal memperbarui anggaran.", 'error');
-             refreshBudgets(); // Revert by fetching
-             return;
+        try {
+            await budgetService.updateBudget(budgetId, budgetData);
+            showToast("Anggaran berhasil diperbarui!", 'success');
+        } catch {
+            showToast("Gagal memperbarui anggaran.", 'error');
+            refreshBudgets(); // Revert by fetching
         }
-        
-        showToast("Anggaran berhasil diperbarui!", 'success');
-    }, [user, supabase, showToast, setIsEditBudgetModalOpen]);
+    }, [user, showToast, setIsEditBudgetModalOpen, refreshBudgets]);
 
     const deleteBudget = useCallback(async (budgetId: string) => {
         if (!user) throw new Error("User not authenticated.");
@@ -200,18 +141,15 @@ export const useBudgets = () => {
         const previousBudgets = [...budgets];
         setBudgets(prev => prev.filter(b => b.id !== budgetId));
         setIsEditBudgetModalOpen(false);
-        // router.back(); // Don't force back navigation, let UI handle it or context
 
-        const { error } = await supabase.from('budgets').delete().eq('id', budgetId);
-        
-        if (error) {
-             setBudgets(previousBudgets); // Revert
-             showToast("Gagal menghapus anggaran.", 'error');
-             return;
+        try {
+            await budgetService.deleteBudget(budgetId);
+            showToast("Anggaran berhasil dihapus.", 'success');
+        } catch {
+            setBudgets(previousBudgets); // Revert
+            showToast("Gagal menghapus anggaran.", 'error');
         }
-
-        showToast("Anggaran berhasil dihapus.", 'success');
-    }, [user, budgets, supabase, showToast, setIsEditBudgetModalOpen]);
+    }, [user, budgets, showToast, setIsEditBudgetModalOpen]);
 
     return {
         budgets,
