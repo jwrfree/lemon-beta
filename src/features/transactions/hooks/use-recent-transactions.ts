@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
-import { mapTransactionFromDb } from '@/lib/services/transaction-service';
+import { mapTransactionFromDb } from '../services/transaction.service';
 import type { Transaction } from '@/types/models';
 
 export const useRecentTransactions = (limit: number = 5) => {

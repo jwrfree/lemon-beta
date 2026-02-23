@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
-import { reminderService } from '@/lib/services/reminder-service';
 import type { Reminder, ReminderInput } from '@/types/models';
+import { reminderService } from '../services/reminder.service';
 
 export const useReminders = () => {
     const { user } = useAuth();
@@ -19,8 +19,8 @@ export const useReminders = () => {
         try {
             const data = await reminderService.getReminders(user.id);
             setReminders(data);
-        } catch (error) {
-            console.error("Error fetching reminders:", error);
+        } catch (err) {
+            console.error("Error fetching reminders:", err);
             ui.showToast("Gagal memuat pengingat.", 'error');
         } finally {
             setIsLoading(false);
@@ -56,65 +56,68 @@ export const useReminders = () => {
 
     const addReminder = useCallback(async (reminderData: ReminderInput) => {
         if (!user) throw new Error("User not authenticated.");
+
         try {
             await reminderService.addReminder(user.id, reminderData);
             ui.showToast("Pengingat berhasil dibuat!", 'success');
             ui.setReminderToEdit(null);
             ui.setIsReminderModalOpen(false);
-            fetchReminders();
-        } catch {
+        } catch (err) {
+            console.error("Error adding reminder:", err);
             ui.showToast("Gagal membuat pengingat.", 'error');
         }
-    }, [user, ui, fetchReminders]);
+    }, [user, ui]);
 
     const updateReminder = useCallback(async (reminderId: string, reminderData: ReminderInput) => {
         if (!user) throw new Error("User not authenticated.");
+
         try {
             await reminderService.updateReminder(reminderId, reminderData);
             ui.showToast("Pengingat diperbarui.", 'success');
             ui.setReminderToEdit(null);
             ui.setIsReminderModalOpen(false);
-            fetchReminders();
-        } catch {
+        } catch (err) {
             ui.showToast("Gagal memperbarui pengingat.", 'error');
         }
-    }, [user, ui, fetchReminders]);
+    }, [user, ui]);
 
     const deleteReminder = useCallback(async (reminderId: string) => {
         if (!user) throw new Error("User not authenticated.");
+
         try {
             await reminderService.deleteReminder(reminderId);
             ui.showToast("Pengingat dihapus.", 'info');
             ui.setReminderToEdit(null);
             ui.setIsReminderModalOpen(false);
             setReminders(prev => prev.filter(r => r.id !== reminderId));
-        } catch {
+        } catch (err) {
             ui.showToast("Gagal menghapus pengingat.", 'error');
         }
     }, [user, ui]);
 
     const markReminderComplete = useCallback(async (reminderId: string) => {
         if (!user) throw new Error("User not authenticated.");
+        const now = new Date().toISOString();
         try {
-            const now = await reminderService.markComplete(reminderId);
+            await reminderService.markComplete(reminderId, now);
             ui.showToast("Pengingat ditandai selesai.", 'success');
             setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: 'completed', completedAt: now } : r));
-        } catch {
+        } catch (err) {
             ui.showToast("Gagal update status.", 'error');
         }
     }, [user, ui]);
 
     const snoozeReminder = useCallback(async (reminderId: string, nextDueDate: string, currentCount: number = 0) => {
         if (!user) throw new Error("User not authenticated.");
+        const newSnoozeCount = currentCount + 1;
         try {
-            await reminderService.snooze(reminderId, nextDueDate, currentCount);
+            await reminderService.snoozeReminder(reminderId, nextDueDate, newSnoozeCount);
             ui.showToast("Pengingat ditunda.", 'info');
-            setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: 'snoozed', dueDate: nextDueDate, snoozeCount: currentCount + 1 } : r));
-        } catch {
+            setReminders(prev => prev.map(r => r.id === reminderId ? { ...r, status: 'snoozed', dueDate: nextDueDate, snoozeCount: newSnoozeCount } : r));
+        } catch (err) {
             ui.showToast("Gagal menunda pengingat.", 'error');
         }
     }, [user, ui]);
-
 
     return {
         reminders,
