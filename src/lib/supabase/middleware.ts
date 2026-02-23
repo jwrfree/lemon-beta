@@ -39,12 +39,12 @@ export async function updateSession(request: NextRequest) {
 
   // Redirect unauthenticated users to the login page (on root '/')
   // if they are trying to access protected routes.
-  // Allowed public routes: '/', '/auth' and its subpaths.
+  // Allowed public routes: '/', '/auth' and its subpaths, '/api' routes (handled by their own auth).
   if (
     !user &&
     request.nextUrl.pathname !== '/' &&
     !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/api/public') // Optional public API routes
+    !request.nextUrl.pathname.startsWith('/api')
   ) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
