@@ -1,64 +1,144 @@
 # Lemon – Personal Finance Tracker
 
-> **v2.5.2** · Smart Add Complete Flow & Sheet Migration · February 2026
+Lemon is a mobile-first personal finance PWA for tracking income, expenses, debts, savings goals, and net worth. It is built on Next.js (App Router) with Supabase as the backend and uses two AI providers (DeepSeek V3 and Google Gemini) to power natural-language transaction entry and weekly spending insights.
 
-Lemon is a modern financial companion designed to help Indonesia's digital workers master their income, expenses, debts, and financial goals right from their pocket. Release v2.5.2 delivers a fully featured Smart Add flow, an accessible standard bottom sheet, and a reliable production build.
+The primary audience is Indonesian digital workers who want a single place to manage multiple wallets, recurring debts, and category budgets — accessible from any device without installing a native app.
 
-## 🔥 Latest Update (v2.5.2)
+---
 
-- **Smart Add – Complete Transaction Flow**: Sub-category selection, wallet/source-of-funds picker, and date & time editing are all now available directly inside the Smart Add confirmation card.
-- **Standard Bottom Sheet**: Replaced the custom Framer Motion overlay with the accessible `Sheet` component (Radix UI Dialog), adding keyboard dismiss, focus trap, and ARIA attributes out of the box.
-- **Build Fix**: Supabase client no longer crashes `next build` when environment variables are absent at build time — all 28 pages now generate successfully.
+## How the system fits together
 
-## ✨ Key Highlights & Recent Updates
-- **Massive Merchant Map Expansion:** Hundreds of Indonesian (Pertamina, Richeese, Erigo, etc.) and global (AWS, OpenAI, Spotify, etc.) brands are now automatically detected with their official logos and colors.
-- **Smart Keyword Recognition:** Not just brands! Lemon now detects product keywords like *"serum"*, *"bensin"*, *"servis motor"*, and *"pajak"* to auto-assign fitting visual branding.
-- **Enterprise Desktop UI:** High-density, borderless "Command Center" aesthetic for the wallet and assets view, optimized for professional efficiency.
-- **Balance Correction Tool:** One-tap reconciliation to sync app balances with real-world values via automated adjustment transactions.
-- **Optimistic Updates:** Instant UI response (zero-latency) when recording transactions—balance numbers update before server confirmation completes.
-- **AI Smart Add 2.0:** Super-fast recording with natural language now supports bulk transaction detection and granular sub-categories.
+```
+Browser / PWA
+└── Next.js App Router (src/app)
+    ├── Route handlers (src/app/api)       — auth, AI proxy, logo lookup, PWA icons
+    ├── Feature modules (src/features)     — transactions, budgets, debts, goals, wallets …
+    └── AI flows (src/ai/flows)            — Genkit-based pipelines (see below)
 
-- **Desktop UI/UX Overhaul (Assets & Wallets):** Redesigned desktop asset management page with gradient summary cards and enterprise-grade visual hierarchy.
+Supabase
+├── Auth      — email + optional WebAuthn (passkey) via @simplewebauthn/server
+├── Database  — Postgres with RLS; schema bootstrapped by supabase/migrations
+└── Realtime  — used for optimistic balance updates
 
-*For complete technical details, please see [CHANGELOG.md](./CHANGELOG.md).*
+AI pipeline
+├── DeepSeek V3 (DEEPSEEK_API_KEY)  — transaction text extraction (Smart Add)
+└── Google Gemini (GEMINI_API_KEY)  — weekly insights, receipt scanning, debt/subscription audits
+    └── orchestrated with Genkit flows (src/ai/flows)
+```
 
-## 🧭 Key User Flows
-| Flow | Summary |
+**Optimistic updates:** balance totals are written to local state immediately on transaction save; Supabase confirms in the background. No Realtime subscription is needed for the happy path.
+
+**Offline support:** a service worker caches the shell so previously visited pages load without a network. Write operations are not queued offline.
+
+---
+
+## Tech stack
+
+| Layer | Choice |
 | --- | --- |
-| **Onboarding & Activation** | Landing → CTA → Sign Up/Login modal → Email verification → Optional biometric setup → Dashboard. |
-| **Quick Transaction Entry** | "Record" quick action → Select Manual/AI → Fill details → Save → Toast notification + Balance counter update. |
-| **Smart Reminders** | Create reminder from quick action/tab → Select frequency & channel → Reminder Center → Notifications & snooze. |
-| **Debt & IOU** | comprehensive Debt/Receivable forms → Payment timeline → Integration with reminders & Debt Health insights. |
-| **Budgeting** | Category ring progress, AI recommendations, and real-time target adjustments. |
-| **Insights** | AI Weekly Digest, category trends, expense distribution, and actionable recommendations. |
+| Framework | Next.js 16 (App Router) |
+| Styling | Tailwind CSS + shadcn/ui (Radix UI primitives) |
+| Backend | Supabase (Auth, Postgres, Realtime) |
+| AI – extraction | DeepSeek V3 via `@ai-sdk/deepseek` |
+| AI – insights | Google Gemini via `@google/generative-ai` + Genkit |
+| Auth extras | WebAuthn passkeys via `@simplewebauthn/server` |
+| Forms | React Hook Form + Zod |
+| Animations | Framer Motion (respects `prefers-reduced-motion`) |
+| Testing | Vitest + Testing Library |
+| Deployment | Firebase App Hosting (`apphosting.yaml`) |
 
-## 🎨 Design Principles & Accessibility
-- Consistent typography scale and color palette (teal/lemon) with AA contrast ratios.
-- 4/8 px spacing system, 16–32 px radii, and soft shadows to maintain hierarchy without clutter.
-- Clear focus rings, skip links, and nav anchors support keyboard navigation.
-- All animations use a standard 0.28s ease-out and respect `reduced-motion` preferences.
-- Error & success alerts use `aria-live`, decorative illustrations are marked `aria-hidden`.
+---
 
-## 📚 Documentation
-- [Design Audit](./docs/design-audit.md) – Heuristic summary, design system, and full flow evaluation.
-- [Product Blueprint](./docs/blueprint.md) – Information architecture reference, detailed flows, motion specs, and roadmap.
-- [Complexity Control Guide](./docs/complexity-control-guide.md) – Mandatory guardrails for information architecture and UI density.
-- [Changelog](./CHANGELOG.md) – History of feature updates and technical improvements.
-- [UX Writing Guide](./docs/UX_WRITING_GUIDE.md) – Style guide for microcopy.
+## Local setup
 
-## 🛠️ Tech Stack
-- **Framework:** Next.js (App Router)
-- **UI:** Tailwind CSS & shadcn/ui
-- **Backend:** Supabase (Auth, Database, Realtime)
-- **AI:** DeepSeek V3 (Core Extraction), Google Gemini & Genkit (Insights)
-- **Form & Validation:** React Hook Form & Zod
-- **Animations:** Framer Motion (with `prefers-reduced-motion` support)
+### 1. Install dependencies
 
-## 🚀 Running Locally
-1. Clone this repository.
-2. Install dependencies: `npm install`
-3. Run the development server: `npm run dev`
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-5. Set up your own Supabase configuration in environment variables before testing authentication.
+```bash
+npm install
+```
 
-Happy financial tidying! Feel free to open an issue or pull request for further ideas.
+### 2. Configure environment variables
+
+Create a `.env.local` file in the project root. Required variables:
+
+```bash
+# Supabase – required for all authentication and data operations
+NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>   # server-side admin calls only
+
+# AI – at least one is needed to use AI features
+DEEPSEEK_API_KEY=<key>                         # Smart Add transaction extraction
+GEMINI_API_KEY=<key>                           # Insights, receipt scan, audits
+
+# WebAuthn / passkey (biometric auth)
+NEXT_PUBLIC_ORIGIN=http://localhost:3000       # must match the browser origin exactly
+NEXT_PUBLIC_RP_ID=localhost                    # relying-party ID (domain without port)
+NEXT_PUBLIC_RP_NAME=Lemon App
+
+# Optional – logo lookup for merchant branding
+NEXT_PUBLIC_LOGO_DEV_KEY=<key>
+```
+
+The app builds and runs without AI keys; Smart Add and Insights will return errors until they are provided. Supabase variables are required for login to work.
+
+### 3. Apply the database schema
+
+```bash
+# Start a local Supabase instance (Docker required)
+npx supabase start
+
+# Apply all migrations
+npx supabase db push
+```
+
+The canonical schema lives in `supabase/migrations`. `SUPABASE_SETUP.sql` and `SUPABASE_RPC.sql` document the Postgres functions and triggers used for balance integrity and atomic ownership checks.
+
+### 4. Run the development server
+
+```bash
+npm run dev          # Next.js dev server with Turbopack
+```
+
+Open [http://localhost:3000](http://localhost:3000). Register an account — email verification is required before the dashboard is accessible.
+
+---
+
+## Available scripts
+
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest unit tests |
+| `npm run genkit:dev` | Start Genkit developer UI for inspecting AI flows |
+
+---
+
+## Key modules
+
+| Path | What lives there |
+| --- | --- |
+| `src/features/` | One folder per domain: `transactions`, `budgets`, `debts`, `goals`, `wallets`, `insights`, `reminders`, `assets`, `auth` |
+| `src/ai/flows/` | Genkit flows: `extract-transaction`, `generate-insight`, `scan-receipt`, `audit-debts`, `audit-subscriptions`, `suggest-category`, `count-tokens` |
+| `src/lib/supabase/` | Supabase client helpers for browser, server, middleware, and admin contexts |
+| `src/lib/config.ts` | Single file that reads all environment variables — add new ones here |
+| `src/lib/categories.ts` | Source of truth for the default transaction categories |
+| `supabase/migrations/` | Ordered Postgres migrations; run via `supabase db push` |
+
+---
+
+## Documentation
+
+- [Product Blueprint](./docs/blueprint.md) – information architecture, detailed flows, and motion specs
+- [Design System](./docs/DESIGN_SYSTEM.md) – typography scale, color palette, spacing rules
+- [Complexity Control Guide](./docs/complexity-control-guide.md) – guardrails for information density
+- [UX Writing Guide](./docs/UX_WRITING_GUIDE.md) – microcopy style guide
+- [Design Audit](./docs/design-audit.md) – heuristic evaluation and full flow assessment
+- [Changelog](./CHANGELOG.md) – version history
+
+---
+
+Feel free to open an issue or pull request. See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
