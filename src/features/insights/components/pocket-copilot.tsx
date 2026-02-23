@@ -59,13 +59,13 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                             <Sparkles className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-widest opacity-60">Pocket Co-Pilot</p>
+                            <p className="text-xs font-semibold uppercase tracking-widest opacity-60">Pocket Co-Pilot</p>
                             <p className={cn("text-xs font-semibold", config.color)}>{config.label}</p>
                         </div>
                     </div>
                     {showBurnRate && (
                         <div className="text-right">
-                            <p className="text-[9px] font-semibold uppercase tracking-widest opacity-40">Burn Rate</p>
+                            <p className="text-xs font-semibold uppercase tracking-widest opacity-40">Burn Rate</p>
                             <p className="text-xs font-semibold tabular-nums">
                                 Rp {new Intl.NumberFormat('id-ID').format(risk.burnRate)}/hari
                             </p>
@@ -75,7 +75,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
 
                 <div className="flex gap-2 items-start">
                     <Icon className={cn("h-4 w-4 shrink-0 mt-0.5", config.color)} />
-                    <p className="text-[11px] leading-relaxed font-medium opacity-80">
+                    <p className="text-xs leading-relaxed font-medium opacity-80">
                         {risk.insight}
                     </p>
                 </div>

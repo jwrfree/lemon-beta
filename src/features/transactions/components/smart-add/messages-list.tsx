@@ -39,7 +39,7 @@ export const MessagesList = ({ messages, loadingMessage }: MessagesListProps) =>
                     )}
                     {msg.type === 'ai-thinking' && (
                         <div className="flex justify-start">
-                            <div className="py-2.5 px-4 bg-card rounded-2xl rounded-tl-none flex items-center gap-3 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]">
+                            <div className="py-2.5 px-4 bg-card rounded-card rounded-tl-none flex items-center gap-3 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.3)]">
                                 <div className="relative flex items-center justify-center w-4 h-4">
                                     <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
                                 </div>
@@ -52,8 +52,8 @@ export const MessagesList = ({ messages, loadingMessage }: MessagesListProps) =>
                     )}
                     {msg.type === 'ai-clarification' && (
                         <div className="flex justify-start">
-                            <div className="py-3 px-5 bg-card text-orange-700 dark:text-orange-400 rounded-2xl rounded-tl-none max-w-[85%] text-sm shadow-[0_4px_12px_-2px_rgba(249,115,22,0.15)] dark:shadow-[0_4px_12px_-2px_rgba(249,115,22,0.1)] relative overflow-hidden">
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500/50" />
+                            <div className="py-3 px-5 bg-card text-orange-700 dark:text-orange-400 rounded-card rounded-tl-none max-w-[85%] text-sm shadow-[0_4px_12px_-2px_rgba(249,115,22,0.15)] dark:shadow-[0_4px_12px_-2px_rgba(249,115,22,0.1)] relative overflow-hidden">
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-warning/50" />
                                 <p className="leading-snug font-medium pl-2">
                                     &quot;{String(msg.content)}&quot;
                                 </p>

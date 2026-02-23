@@ -5,7 +5,7 @@ export default function Loading() {
   return (
     <div className="flex flex-col h-full items-center justify-center animate-in fade-in duration-300">
       <div className="relative">
-        <div className="p-4 bg-primary/10 rounded-2xl mb-4">
+        <div className="p-4 bg-primary/10 rounded-card mb-4">
           <Sparkles className="h-10 w-10 text-primary animate-pulse" />
         </div>
         <div className="absolute -bottom-1 -right-1">

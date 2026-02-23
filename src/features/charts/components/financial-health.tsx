@@ -46,7 +46,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
     const rotation = (clampedRate + 50) * 1.8;
 
     return (
-        <Card className="p-6 bg-card border-none rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col justify-between h-full relative overflow-hidden">
+        <Card className="p-6 bg-card border-none rounded-card-glass shadow-card flex flex-col justify-between h-full relative overflow-hidden">
 
             <div className="flex justify-between items-start mb-4 z-10">
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
@@ -119,7 +119,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
                         }
                     </div>
                     <p className={cn("text-sm font-semibold uppercase tracking-widest leading-none mb-1", colorClass)}>{status}</p>
-                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-tight">
                         {message}
                     </p>
                 </div>
@@ -141,23 +141,23 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
     trend?: { value: number }
 }) {
     return (
-        <Card className="p-5 bg-card border-none rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-md transition-all">
+        <Card className="p-5 bg-card border-none rounded-card-glass shadow-card hover:shadow-md transition-all">
             <div className="flex items-start justify-between mb-3">
-                <div className="p-2 bg-secondary rounded-xl">
+                <div className="p-2 bg-secondary rounded-md">
                     <Icon className="w-4 h-4 text-muted-foreground" />
                 </div>
                 {trend && (
                     <Badge variant="outline" className={cn(
-                        "text-[10px] border-none font-semibold",
+                        "text-xs border-none font-semibold",
                         trend.value < 0 ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
                     )}>
                         {trend.value > 0 ? '+' : ''}{trend.value.toFixed(0)}%
                     </Badge>
                 )}
             </div>
-            <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">{title}</p>
+            <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">{title}</p>
             <p className="text-2xl font-semibold tracking-tighter tabular-nums mb-1 text-foreground">{value}</p>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">{subtitle}</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-tight">{subtitle}</p>
         </Card>
     );
 }

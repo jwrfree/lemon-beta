@@ -59,7 +59,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                             <div className="flex items-center gap-2">
                                 <p className="font-medium text-sm">{item.name}</p>
                                 {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && (
-                                    <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">
+                                    <span className="text-xs bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">
                                         {item.quantity} gr
                                     </span>
                                 )}
@@ -67,7 +67,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                             <p className="text-xs text-muted-foreground capitalize">
                                 {item.categoryKey.replace('-', ' ')}
                                 {item.categoryKey === 'gold' && goldPrice && (
-                                    <span className="ml-1 text-[10px] text-teal-600 font-medium">
+                                    <span className="ml-1 text-xs text-teal-600 font-medium">
                                         • Harga: {formatCurrency(goldPrice)}/gr
                                     </span>
                                 )}
@@ -81,7 +81,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                             </p>
                             {item.categoryKey === 'gold' && 'quantity' in item && item.quantity && goldPrice && (
                                 <p className={cn(
-                                    "text-[10px] font-medium",
+                                    "text-xs font-medium",
                                     (item.quantity * goldPrice) > item.value ? "text-teal-600" : "text-rose-600"
                                 )}>
                                     {(item.quantity * goldPrice) > item.value ? '+' : ''}

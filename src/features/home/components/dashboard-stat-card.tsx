@@ -39,7 +39,7 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
                 {trend && (
                     <div className="flex items-center gap-1.5 mt-2">
                         <div className={cn(
-                            "flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-medium tracking-tight",
+                            "flex items-center px-1.5 py-0.5 rounded-md text-xs font-medium tracking-tight",
                             trend === 'up' ? "bg-teal-50 text-teal-600" :
                             trend === 'down' ? "bg-pink-50 text-destructive" :
                             "bg-muted text-foreground/70"
@@ -48,7 +48,7 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
                             {trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
                             {trendValue}
                         </div>
-                        <span className="text-[10px] text-muted-foreground font-medium tracking-tight">vs bulan lalu</span>
+                        <span className="text-xs text-muted-foreground font-medium tracking-tight">vs bulan lalu</span>
                     </div>
                 )}
             </CardContent>

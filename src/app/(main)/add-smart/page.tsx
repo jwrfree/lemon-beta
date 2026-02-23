@@ -164,7 +164,7 @@ export default function SmartAddPage() {
                     )}
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50">
                         <Sparkles className={cn("h-3.5 w-3.5 text-primary", isAnalyzing && "animate-pulse")} />
-                        <span className="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">Smart Add</span>
+                        <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Smart Add</span>
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@ export default function SmartAddPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="w-full overflow-y-auto no-scrollbar max-h-full pb-32"
+                            className="w-full overflow-y-auto no-scrollbar max-h-full pb-24"
                         >
                             <DynamicSuggestions onSuggestionClick={(text) => {
                                 setMagicValue(text);
@@ -213,7 +213,7 @@ export default function SmartAddPage() {
                                                 <Loader2 className="h-10 w-10 text-primary animate-spin" strokeWidth={1.5} />
                                                 <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
                                             </div>
-                                            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-primary">Menganalisis...</p>
+                                            <p className="text-xs font-medium uppercase tracking-widest text-primary">Menganalisis...</p>
                                         </motion.div>
                                     ) : activeTx && (
                                         <motion.div key="tx-data" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 w-full">
@@ -222,12 +222,12 @@ export default function SmartAddPage() {
                                             <div className="flex flex-col items-center gap-2">
                                                 <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
                                                     <Tag className="h-3 w-3 fill-primary-foreground/20" />
-                                                    <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{activeTx.category}</span>
+                                                    <span className="text-xs font-medium uppercase tracking-widest">{activeTx.category}</span>
                                                 </div>
                                                 {activeTx.subCategory && (
                                                     <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
                                                         <CornerDownRight className="h-3 w-3 opacity-50" />
-                                                        <span className="text-[10px] font-medium">{activeTx.subCategory}</span>
+                                                        <span className="text-xs font-medium">{activeTx.subCategory}</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -237,7 +237,7 @@ export default function SmartAddPage() {
                                                 {activeTx.location && (
                                                     <div className="flex items-center gap-1.5 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
                                                         <MapPin className="h-3 w-3 text-destructive" />
-                                                        <span className="text-[9px] font-medium uppercase tracking-wider">{activeTx.location}</span>
+                                                        <span className="text-xs font-medium uppercase tracking-wider">{activeTx.location}</span>
                                                     </div>
                                                 )}
                                                 <div className="text-sm font-medium text-muted-foreground italic text-center max-w-[280px] min-h-[1.5em]">
@@ -273,7 +273,7 @@ export default function SmartAddPage() {
                                 variant="secondary" 
                                 size="sm" 
                                 onClick={() => fileInputRef.current?.click()}
-                                className="rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800 h-8 px-3 gap-2 text-[9px] font-medium uppercase tracking-widest hover:text-primary transition-all"
+                                className="rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800 h-8 px-3 gap-2 text-xs font-medium uppercase tracking-widest hover:text-primary transition-all"
                             >
                                 <Camera className="h-3.5 w-3.5" />
                                 Scan Struk
@@ -284,18 +284,18 @@ export default function SmartAddPage() {
 
                 {/* Multi-Nav Center */}
                 {multiParsedData.length > 1 && !isAnalyzing && (
-                    <div className="flex items-center justify-between bg-zinc-100/50 dark:bg-zinc-900/50 p-1.5 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
+                    <div className="flex items-center justify-between bg-zinc-100/50 dark:bg-zinc-900/50 p-1.5 rounded-card border border-zinc-200/50 dark:border-zinc-800/50">
                         <Button 
                             variant="ghost" 
                             size="icon"
                             disabled={focusedIndex === 0}
                             onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f - 1); }}
-                            className="h-9 w-9 rounded-xl"
+                            className="h-9 w-9 rounded-md"
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
                         <div className="flex flex-col items-center">
-                            <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-tighter">Transaksi</span>
+                            <span className="text-xs font-medium text-zinc-400 uppercase tracking-tighter">Transaksi</span>
                             <span className="text-xs font-medium tabular-nums">{focusedIndex + 1} <span className="opacity-30">/</span> {multiParsedData.length}</span>
                         </div>
                         <Button 
@@ -303,7 +303,7 @@ export default function SmartAddPage() {
                             size="icon"
                             disabled={focusedIndex === multiParsedData.length - 1}
                             onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f + 1); }}
-                            className="h-9 w-9 rounded-xl text-primary"
+                            className="h-9 w-9 rounded-md text-primary"
                         >
                             <ChevronRight className="h-4 w-4" />
                         </Button>
@@ -322,7 +322,7 @@ export default function SmartAddPage() {
                             <Button 
                                 onClick={handleConfirmSave} 
                                 disabled={isSaving}
-                                className="w-full h-14 rounded-2xl text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
+                                className="w-full h-14 rounded-card text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
                             >
                                 {isSaving ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -336,7 +336,7 @@ export default function SmartAddPage() {
                             
                             <button 
                                 onClick={() => { triggerHaptic('medium'); resetFlow(); setFocusedIndex(0); }}
-                                className="text-[9px] font-medium uppercase tracking-[0.2em] text-zinc-400 hover:text-rose-500 transition-colors py-1"
+                                className="text-xs font-medium uppercase tracking-widest text-zinc-400 hover:text-rose-500 transition-colors py-1"
                             >
                                 Batalkan & Mulai Ulang
                             </button>

@@ -37,7 +37,7 @@ export const Sidebar = () => {
         <aside
             className={cn(
                 'hidden md:flex flex-col fixed left-4 top-4 bottom-4 z-50 transition-[width,padding] duration-300 ease-in-out',
-                'bg-background/85 backdrop-blur-xl border border-border/20 shadow-card rounded-xl overflow-hidden',
+                'bg-background/85 backdrop-blur-xl border border-border/20 shadow-card rounded-md overflow-hidden',
                 isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'py-10 px-2') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 py-10')
             )}
         >

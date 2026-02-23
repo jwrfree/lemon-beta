@@ -154,7 +154,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
           <div className="space-y-3 pt-6 border-t border-border">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-primary">Koreksi Saldo</Label>
-              <p className="text-[10px] text-muted-foreground leading-normal">
+              <p className="text-xs text-muted-foreground leading-normal">
                 Gunakan ini jika saldo di aplikasi berbeda dengan saldo asli. Lemon akan membuat transaksi penyesuaian otomatis.
               </p>
             </div>
@@ -197,7 +197,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                     Hapus Dompet
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-[90vw] rounded-2xl md:max-w-md">
+                <AlertDialogContent className="max-w-[90vw] rounded-card md:max-w-md">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Yakin mau menghapus dompet?</AlertDialogTitle>
                     <AlertDialogDescription>
@@ -205,11 +205,11 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter className="flex-row gap-2 pt-2">
-                    <AlertDialogCancel className="flex-1 mt-0 rounded-xl">Batal</AlertDialogCancel>
+                    <AlertDialogCancel className="flex-1 mt-0 rounded-md">Batal</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDelete}
                       disabled={isDeleting}
-                      className="flex-1 bg-destructive hover:bg-destructive/90 rounded-xl"
+                      className="flex-1 bg-destructive hover:bg-destructive/90 rounded-md"
                     >
                       {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
                     </AlertDialogAction>

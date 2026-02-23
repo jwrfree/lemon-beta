@@ -170,7 +170,7 @@ interface GoalRow {
         }
       />
 
-      <main className="flex-1 p-4 md:p-8 space-y-8 pb-28 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-4 md:p-8 space-y-8 pb-24 max-w-7xl mx-auto w-full">
         {/* Summary Card - Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <motion.div 
@@ -219,7 +219,7 @@ interface GoalRow {
                     className="h-full bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full shadow-[0_0_15px_rgba(253,224,71,0.4)]"
                   />
                 </div>
-                <p className="text-[10px] text-teal-100/70 text-center italic">
+                <p className="text-xs text-teal-100/70 text-center italic">
                   Tersisa {formatCurrency(totalTarget - totalSavings)} lagi untuk mencapai semua target
                 </p>
               </div>
@@ -292,7 +292,7 @@ interface GoalRow {
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-md uppercase tracking-wider font-medium bg-muted/50">
+                        <Badge variant="secondary" className="text-xs px-2 py-1 rounded-md uppercase tracking-wider font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
@@ -308,11 +308,11 @@ interface GoalRow {
                         <div className="space-y-2">
                           <div className="flex justify-between items-end">
                             <div className="flex flex-col">
-                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Terkumpul</span>
+                              <span className="text-xs text-muted-foreground font-medium uppercase tracking-tight">Terkumpul</span>
                               <span className="font-medium text-lg text-primary">{formatCurrency(goal.currentAmount)}</span>
                             </div>
                             <div className="flex flex-col items-end">
-                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Target</span>
+                              <span className="text-xs text-muted-foreground font-medium uppercase tracking-tight">Target</span>
                               <span className="font-medium text-sm">{formatCurrency(goal.targetAmount)}</span>
                             </div>
                           </div>
@@ -325,7 +325,7 @@ interface GoalRow {
                               className={`absolute inset-y-0 left-0 rounded-full ${goal.barColor} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
                             />
                             <div className="absolute inset-0 flex items-center justify-center">
-                               <span className="text-[8px] font-medium text-foreground/50 uppercase tracking-tighter">
+                               <span className="text-xs font-medium text-foreground/50 uppercase tracking-tighter">
                                  {calculateProgress(goal.currentAmount, goal.targetAmount)}%
                                </span>
                             </div>
@@ -333,7 +333,7 @@ interface GoalRow {
                         </div>
 
                         <div className="pt-3 border-t border-border/50 flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                             <Calendar className="w-3.5 h-3.5 text-primary/60" strokeWidth={2} />
                             <span>
                               {isMounted 
@@ -382,7 +382,7 @@ interface GoalRow {
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-[10px] px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">
+                        <Badge variant="secondary" className="text-xs px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
@@ -398,11 +398,11 @@ interface GoalRow {
                         <div className="space-y-2">
                           <div className="flex justify-between items-end">
                             <div className="flex flex-col">
-                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Terkumpul</span>
+                              <span className="text-xs text-muted-foreground font-medium uppercase tracking-tight">Terkumpul</span>
                               <span className="font-medium text-lg text-primary">{formatCurrency(goal.currentAmount)}</span>
                             </div>
                             <div className="flex flex-col items-end">
-                              <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">Target</span>
+                              <span className="text-xs text-muted-foreground font-medium uppercase tracking-tight">Target</span>
                               <span className="font-medium text-sm">{formatCurrency(goal.targetAmount)}</span>
                             </div>
                           </div>
@@ -410,7 +410,7 @@ interface GoalRow {
                           <div className="relative h-3 bg-muted rounded-full overflow-hidden">
                             <div className={`absolute inset-0 rounded-full ${goal.barColor}`} />
                             <div className="absolute inset-0 flex items-center justify-center">
-                               <span className="text-[8px] font-medium text-white uppercase tracking-tighter">
+                               <span className="text-xs font-medium text-white uppercase tracking-tighter">
                                  100%
                                </span>
                             </div>
@@ -418,7 +418,7 @@ interface GoalRow {
                         </div>
 
                         <div className="pt-3 border-t border-border/50 flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                             <Calendar className="w-3.5 h-3.5 text-primary/60" strokeWidth={2} />
                             <span>
                               {isMounted 
@@ -427,7 +427,7 @@ interface GoalRow {
                               }
                             </span>
                           </div>
-                          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-[10px] h-5">
+                          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-xs h-5">
                             Selesai
                           </Badge>
                         </div>

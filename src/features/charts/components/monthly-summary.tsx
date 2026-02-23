@@ -227,7 +227,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
     };
 
     if (isLoading) {
-        return <div className="h-40 w-full animate-pulse rounded-3xl bg-muted" />;
+        return <div className="h-40 w-full animate-pulse rounded-card-glass bg-muted" />;
     }
 
     if (type !== 'net' && summary.value === 0) {
@@ -251,13 +251,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 </div>
                 <CardHeader className="space-y-4 sm:space-y-6 relative z-10 p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-3">
-                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-2 sm:px-3 py-0.5 sm:py-1 font-medium text-[9px] sm:text-[10px]">
+                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-2 sm:px-3 py-0.5 sm:py-1 font-medium text-xs sm:text-xs">
                             <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             {summary.monthLabel}
                         </Badge>
                         <Badge
                             className={cn(
-                                'border-none bg-white/30 text-white font-medium text-[10px] sm:text-[11px] px-2 sm:px-3',
+                                'border-none bg-white/30 text-white font-medium text-xs sm:text-xs px-2 sm:px-3',
                                 summary.type === 'net' && summary.isPositive && 'bg-teal-600/60',
                                 summary.type === 'net' && !summary.isPositive && 'bg-destructive/60'
                             )}
@@ -266,7 +266,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </Badge>
                     </div>
                     <div className="space-y-1">
-                        <CardTitle className="text-[10px] sm:text-[11px] font-medium text-white/70">{summary.title}</CardTitle>
+                        <CardTitle className="text-xs sm:text-xs font-medium text-white/70">{summary.title}</CardTitle>
                         <div className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-white tabular-nums">
                             <AnimatedCounter value={summary.value} />
                         </div>
@@ -275,7 +275,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6 pb-6 sm:pb-8 pt-0 relative z-10 px-4 sm:px-6">
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-medium text-white/60">
+                        <div className="flex items-center justify-between text-xs sm:text-xs font-medium text-white/60">
                             <span>Laju Hari</span>
                             <span className="tabular-nums">
                                 {summary.daysElapsed} / {summary.daysInMonth} Hari
@@ -292,13 +292,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         {summary.type === 'net' ? (
                             <>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Pemasukan</p>
+                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Pemasukan</p>
                                     <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Pengeluaran</p>
+                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Pengeluaran</p>
                                     <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.expense)}
                                     </p>
@@ -307,13 +307,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         ) : (
                             <>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Per Hari</p>
+                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Per Hari</p>
                                     <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-[10px] sm:text-[11px] font-medium text-white/50 mb-1">Per Transaksi</p>
+                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Per Transaksi</p>
                                     <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerTransaction)}
                                     </p>
@@ -325,9 +325,9 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             </Card>
 
             {summary.type !== 'net' && summary.topCategory ? (
-                <Card className="rounded-2xl sm:rounded-3xl border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
                     <CardHeader className="flex flex-row items-center gap-3 sm:gap-4 pb-3 sm:pb-4 p-4 sm:p-6">
-                        <div className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
+                        <div className={cn("p-2 sm:p-3 rounded-md sm:rounded-card shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -336,12 +336,12 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
                         <div className="text-right">
                             <p className="text-lg sm:text-xl font-medium text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
-                            <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground uppercase tracking-wider mt-1">Kontribusi</p>
+                            <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-wider mt-1">Kontribusi</p>
                         </div>
                     </CardHeader>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 sm:space-y-6">
                         <div className="space-y-1.5 sm:space-y-2">
-                            <div className="flex justify-between text-[10px] sm:text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+                            <div className="flex justify-between text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground">
                                 <span>Total di kategori ini</span>
                                 <span className="text-foreground tabular-nums">{formatCurrency(summary.topCategory.value)}</span>
                             </div>
@@ -351,28 +351,28 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         {summary.topTransaction && (
                             <div
                                 onClick={() => handleTxClick(summary.topTransaction!.id)}
-                                className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
+                                className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-md sm:rounded-card bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
                             >
                                 <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-background flex items-center justify-center border border-muted shadow-sm group-hover/item:rotate-12 transition-transform">
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground uppercase tracking-tighter mb-0.5">Transaksi Terbesar</p>
+                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-tighter mb-0.5">Transaksi Terbesar</p>
                                     <p className="text-xs sm:text-sm font-medium text-foreground truncate">{summary.topTransaction.description}</p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-xs sm:text-sm font-medium text-foreground tabular-nums">{formatCurrency(summary.topTransaction.amount)}</p>
-                                    <p className="text-[9px] sm:text-[10px] font-medium text-muted-foreground">{format(parseISO(summary.topTransaction.date), 'd MMM')}</p>
+                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground">{format(parseISO(summary.topTransaction.date), 'd MMM')}</p>
                                 </div>
                                 <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
                             </div>
                         )}
 
-                        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-primary/5 border border-primary/10">
+                        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-md sm:rounded-card bg-primary/5 border border-primary/10">
                             <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg text-primary shrink-0 mt-0.5">
                                 <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
-                            <p className="text-[11px] sm:text-xs text-primary/80 font-medium leading-relaxed">
+                            <p className="text-xs sm:text-xs text-primary/80 font-medium leading-relaxed">
                                 {summary.tipCopy}
                             </p>
                         </div>
@@ -381,20 +381,20 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             ) : null}
 
             {/* AI INSIGHT SECTION */}
-            <Card className="rounded-2xl sm:rounded-3xl border-none bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 shadow-sm border border-indigo-500/20 dark:border-indigo-500/30 overflow-hidden relative group">
+            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-sm border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
                 {/* Decorative background elements */}
-                <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-all duration-500"></div>
-                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/10 blur-3xl rounded-full group-hover:bg-pink-500/20 transition-all duration-500"></div>
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
+                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
 
                 <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6 relative z-10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="p-2 sm:p-2.5 bg-indigo-500 rounded-xl sm:rounded-2xl shadow-lg shadow-indigo-500/30 text-white animate-pulse">
+                            <div className="p-2 sm:p-2.5 bg-primary rounded-card-icon shadow-lg shadow-primary/30 text-primary-foreground animate-pulse">
                                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
                             <div>
-                                <CardTitle className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">AI Financial Insight</CardTitle>
-                                <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
+                                <CardTitle className="text-xs sm:text-sm font-medium text-primary uppercase tracking-widest">AI Financial Insight</CardTitle>
+                                <p className="text-xs sm:text-xs font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
                             </div>
                         </div>
                         {aiInsight && (
@@ -402,7 +402,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 variant="ghost"
                                 size="sm"
                                 onClick={generateInsight}
-                                className="h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                                className="h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full hover:bg-primary/10 text-primary"
                             >
                                 <RefreshCw className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", isAiLoading && "animate-spin")} />
                             </Button>
@@ -412,17 +412,17 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 <CardContent className="p-4 sm:p-6 pt-0 relative z-10">
                     {!aiInsight ? (
                         <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-center space-y-3 sm:space-y-4">
-                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-indigo-100 dark:border-indigo-900/30 shadow-inner">
-                                <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-400 opacity-50" />
+                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-primary/10 shadow-inner">
+                                <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-primary opacity-50" />
                             </div>
                             <div className="space-y-1">
                                 <p className="text-xs sm:text-sm font-medium text-foreground">Butuh pandangan baru?</p>
-                                <p className="text-[10px] sm:text-[11px] text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
+                                <p className="text-xs sm:text-xs text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
                             </div>
                             <Button
                                 onClick={generateInsight}
                                 disabled={isAiLoading}
-                                className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-medium shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-card rounded-card px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-medium shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95"
                             >
                                 {isAiLoading ? (
                                     <>
@@ -436,14 +436,14 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
                     ) : (
                         <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-xl sm:rounded-2xl border border-white dark:border-zinc-800 shadow-sm backdrop-blur-sm">
+                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-md sm:rounded-card border border-white dark:border-zinc-800 shadow-sm backdrop-blur-sm">
                                 <div className="prose prose-sm dark:prose-invert max-w-none">
                                     <p className="text-xs sm:text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap font-medium">
                                         {aiInsight}
                                     </p>
                                 </div>
                             </div>
-                            <p className="text-[9px] sm:text-[10px] text-center text-muted-foreground font-medium flex items-center justify-center gap-1.5">
+                            <p className="text-xs sm:text-xs text-center text-muted-foreground font-medium flex items-center justify-center gap-1.5">
                                 <AlertCircle className="h-3 w-3" />
                                 Analisis AI mungkin tidak sepenuhnya akurat. Gunakan sebagai pertimbangan tambahan.
                             </p>

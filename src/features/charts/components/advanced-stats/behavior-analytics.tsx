@@ -36,7 +36,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
                 <div className="space-y-4">
                     <div className="flex justify-between items-end">
                         <div className="space-y-1">
-                            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Rata-rata Harian</p>
+                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Rata-rata Harian</p>
                             <p className="text-sm font-medium">
                                 {isWeekendHeavy ? 'Akhir pekan lebih boros' : 'Hari kerja lebih boros'}
                             </p>
@@ -73,7 +73,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
                             <Zap className="h-5 w-5 text-warning" />
                         </div>
                         <div className="flex-1">
-                            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Payday Drain</p>
+                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Payday Drain</p>
                             <p className="text-sm font-medium">50% Gaji Habis dalam <span className="text-warning font-semibold">{data.paydayDrainDays} Hari</span></p>
                         </div>
                     </div>
@@ -82,14 +82,14 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
                         <div className="p-3 rounded-lg border border-border space-y-2">
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <Coffee className="h-3 w-3" />
-                                <span className="text-[9px] font-medium uppercase tracking-tighter">Top Weekday</span>
+                                <span className="text-xs font-medium uppercase tracking-tighter">Top Weekday</span>
                             </div>
                             <p className="text-xs font-medium truncate">{data.topWeekdayCategory}</p>
                         </div>
                         <div className="p-3 rounded-lg border border-border space-y-2">
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <Pizza className="h-3 w-3" />
-                                <span className="text-[9px] font-medium uppercase tracking-tighter">Top Weekend</span>
+                                <span className="text-xs font-medium uppercase tracking-tighter">Top Weekend</span>
                             </div>
                             <p className="text-xs font-medium truncate">{data.topWeekendCategory}</p>
                         </div>

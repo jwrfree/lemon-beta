@@ -73,12 +73,12 @@ export default function BudgetDetailPage() {
                 <PageHeader title="Detail Anggaran" />
                 <main className="flex justify-center text-center p-8 pt-20">
                     <div className="max-w-xs flex flex-col items-center">
-                        <div className="p-5 bg-rose-500/10 rounded-[2rem] mb-6">
+                        <div className="p-5 bg-rose-500/10 rounded-card-premium mb-6">
                             <AlertCircle className="h-12 w-12 text-rose-500" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl font-bold tracking-tighter">Tidak Ditemukan</h2>
                         <p className="text-sm font-medium text-muted-foreground mt-3">Anggaran ini mungkin sudah dihapus atau dipindahkan.</p>
-                        <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-xl h-11 px-6">
+                        <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-md h-11 px-6">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Kembali ke Anggaran
                         </Button>
@@ -111,27 +111,27 @@ export default function BudgetDetailPage() {
                 }}
             />
 
-            <main className="flex-1 overflow-y-auto px-4 md:px-8 space-y-8 pb-32 pt-4">
+            <main className="flex-1 overflow-y-auto px-4 md:px-8 space-y-8 pb-24 pt-4">
 
                 {/* 1. Identity & Health Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-sm overflow-hidden premium-shadow">
+                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900 shadow-sm overflow-hidden premium-shadow">
                         <div className="p-8 space-y-10">
                             {/* Title & Icon */}
                             <div className="flex flex-col items-center text-center gap-4">
-                                <div className={cn("p-5 rounded-[2rem] border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>
+                                <div className={cn("p-5 rounded-card-premium border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>
                                     <CategoryIcon className={cn("h-10 w-10", visuals.color)} strokeWidth={1.5} />
                                 </div>
                                 <div className="space-y-1">
                                     <h2 className="text-3xl font-medium tracking-tighter">{budget.name}</h2>
                                     <div className="flex items-center justify-center gap-2">
-                                        <Badge variant="outline" className="text-[10px] font-normal uppercase tracking-widest px-2.5 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
+                                        <Badge variant="outline" className="text-xs font-normal uppercase tracking-widest px-2.5 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
                                             {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : `${budget.categories.length} Kategori`}
                                         </Badge>
-                                        <span className={cn("text-[10px] font-medium uppercase tracking-widest", textColor)}>
+                                        <span className={cn("text-xs font-medium uppercase tracking-widest", textColor)}>
                                             {isOver ? 'Overbudget' : (progress > 80 ? 'Hampir Habis' : 'Sehat')}
                                         </span>
                                     </div>
@@ -140,7 +140,7 @@ export default function BudgetDetailPage() {
 
                             {/* Massive Progress Bar */}
                             <div className="space-y-4">
-                                <div className="flex justify-between items-end text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400">
+                                <div className="flex justify-between items-end text-xs font-medium uppercase tracking-widest text-zinc-400">
                                     <span>PENGGUNAAN</span>
                                     <span>{progress.toFixed(1)}%</span>
                                 </div>
@@ -158,7 +158,7 @@ export default function BudgetDetailPage() {
                                         <div className="absolute inset-0 opacity-20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }} />
                                     </motion.div>
                                 </div>
-                                <div className="flex justify-between text-[9px] font-medium text-zinc-400 uppercase tracking-widest px-1">
+                                <div className="flex justify-between text-xs font-medium text-zinc-400 uppercase tracking-widest px-1">
                                     <span>Awal Bulan</span>
                                     <span>Hari ke-{now.getDate()}</span>
                                     <span>Akhir Bulan</span>
@@ -167,20 +167,20 @@ export default function BudgetDetailPage() {
 
                             {/* Multi-Stat Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
+                                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                                         <Target className="h-3 w-3" /> Target
                                     </p>
                                     <p className="text-xl font-semibold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
                                 </div>
-                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
+                                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                                         <Layers className="h-3 w-3" /> Terpakai
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
                                 </div>
-                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
+                                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                                         <Flame className="h-3 w-3" /> {isOver ? 'Kekurangan' : 'Sisa'}
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
@@ -191,19 +191,19 @@ export default function BudgetDetailPage() {
 
                             {/* Action Insight Bar */}
                             {!isOver && remaining > 0 && (
-                                <div className="p-6 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
+                                <div className="p-6 rounded-card-premium bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm">
+                                        <div className="h-12 w-12 rounded-card bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm">
                                             <Sparkles className="h-6 w-6" />
                                         </div>
                                         <div className="text-center md:text-left space-y-0.5">
                                             <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
-                                            <p className="text-[10px] font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
+                                            <p className="text-xs font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
                                         </div>
                                     </div>
                                     <div className="text-center md:text-right">
                                         <p className="text-3xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">{formatCurrency(safeDailyLimit)}</p>
-                                        <p className="text-[9px] font-semibold text-emerald-600/40 uppercase tracking-[0.3em]">per hari</p>
+                                        <p className="text-xs font-semibold text-emerald-600/40 uppercase tracking-widest">per hari</p>
                                     </div>
                                 </div>
                             )}
@@ -223,7 +223,7 @@ export default function BudgetDetailPage() {
                             <Tag className="h-4 w-4" />
                             <h2 className="text-lg font-medium tracking-tighter text-zinc-900 dark:text-zinc-100">Aktivitas Anggaran</h2>
                         </div>
-                        <Badge variant="outline" className="rounded-lg font-normal text-[10px] uppercase">{budgetTransactions.length} Transaksi</Badge>
+                        <Badge variant="outline" className="rounded-lg font-normal text-xs uppercase">{budgetTransactions.length} Transaksi</Badge>
                     </div>
 
                     <TransactionList

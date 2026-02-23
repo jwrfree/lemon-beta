@@ -12,7 +12,7 @@ export const SuccessAnimation = () => {
                     initial={{ scale: 0, opacity: 0.5 }}
                     animate={{ scale: [0, 1.2, 1], opacity: [0.5, 1, 0] }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="absolute h-32 w-32 bg-green-500 rounded-full opacity-20"
+                    className="absolute h-32 w-32 bg-success rounded-full opacity-20"
                 />
                 
                 {/* Main Circle */}
@@ -25,7 +25,7 @@ export const SuccessAnimation = () => {
                         damping: 20,
                         delay: 0.1 
                     }}
-                    className="h-24 w-24 bg-green-500 rounded-full flex items-center justify-center shadow-xl shadow-green-500/30"
+                    className="h-24 w-24 bg-success rounded-full flex items-center justify-center shadow-xl shadow-success/30"
                 >
                     {/* Checkmark Drawing Animation */}
                     <motion.div
@@ -41,7 +41,7 @@ export const SuccessAnimation = () => {
                 {[...Array(8)].map((_, i) => (
                     <motion.div
                         key={i}
-                        className="absolute h-2 w-2 bg-green-500 rounded-full"
+                        className="absolute h-2 w-2 bg-success rounded-full"
                         initial={{ opacity: 1, x: 0, y: 0 }}
                         animate={{ 
                             opacity: 0,

@@ -27,7 +27,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const growth = previousNetWorth !== 0 ? ((currentNetWorth - previousNetWorth) / Math.abs(previousNetWorth)) * 100 : 0;
 
     return (
-        <Card className="p-8 border-none rounded-[32px] bg-[#064e4b] text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] overflow-hidden relative">
+        <Card className="p-8 border-none rounded-card-premium bg-[#064e4b] text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] overflow-hidden relative">
             {/* Ambient Background Ornaments */}
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 pointer-events-none">
                 <Landmark className="h-40 w-40" />
@@ -40,7 +40,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         <ShieldCheck className="w-5 h-5 text-emerald-400" />
                         Net Worth Flow
                     </h3>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">Equity Accumulation Trend</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Equity Accumulation Trend</p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2">
                     <p className="text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-sm">
@@ -48,7 +48,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                     </p>
                     <Badge
                         className={cn(
-                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-[10px] uppercase tracking-widest", 
+                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-xs uppercase tracking-widest", 
                             growth >= 0 ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
                         )}
                     >
@@ -82,7 +82,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         <YAxis hide />
                         <ChartTooltip
                             cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2, strokeDasharray: '4 4' }}
-                            content={<ChartTooltipContent indicator="line" className="bg-popover/90 backdrop-blur-xl border-none shadow-2xl rounded-2xl" formatter={(value) => formatCurrency(Number(value))} />}
+                            content={<ChartTooltipContent indicator="line" className="bg-popover/90 backdrop-blur-xl border-none shadow-2xl rounded-card" formatter={(value) => formatCurrency(Number(value))} />}
                         />
                         <Area
                             dataKey="netWorth"
@@ -98,8 +98,8 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
             </div>
 
             <div className="grid grid-cols-2 gap-6 mt-10 pt-8 border-t border-white/10 relative z-10">
-                <div className="bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner">
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center gap-2">
+                <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                         Assets
                     </p>
@@ -107,8 +107,8 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         {formatCurrency(data[data.length - 1]?.assets || 0)}
                     </p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner text-right">
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center justify-end gap-2">
+                <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner text-right">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center justify-end gap-2">
                         Liabilities
                         <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                     </p>

@@ -26,12 +26,12 @@ export const DashboardQuickActions = () => {
                 <div className="grid grid-cols-5 gap-2">
                     <Button 
                         variant="outline" 
-                        className="flex flex-col h-auto py-2 px-1 gap-1 border-violet-200 bg-violet-50 hover:bg-violet-100 hover:text-violet-700 text-violet-600"
+                        className="flex flex-col h-auto py-2 px-1 gap-1 border-primary/20 bg-primary/10 hover:bg-primary/20 hover:text-primary text-primary"
                         onClick={() => router.push('/add-smart')}
                         title="Smart Add (AI)"
                     >
                         <Sparkles className="h-5 w-5" />
-                        <span className="text-[10px] font-medium">Smart</span>
+                        <span className="text-xs font-medium">Smart</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -43,7 +43,7 @@ export const DashboardQuickActions = () => {
                         title="Transaksi Baru"
                     >
                         <Plus className="h-5 w-5" />
-                        <span className="text-[10px] font-medium">Baru</span>
+                        <span className="text-xs font-medium">Baru</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -52,7 +52,7 @@ export const DashboardQuickActions = () => {
                         title="Transfer Antar Dompet"
                     >
                         <ArrowRightLeft className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground">Transfer</span>
+                        <span className="text-xs font-medium text-muted-foreground">Transfer</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -64,7 +64,7 @@ export const DashboardQuickActions = () => {
                         title="Catat Hutang/Piutang"
                     >
                         <HandCoins className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground">Hutang</span>
+                        <span className="text-xs font-medium text-muted-foreground">Hutang</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -76,7 +76,7 @@ export const DashboardQuickActions = () => {
                         title="Target Baru"
                     >
                         <Target className="h-5 w-5 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground">Target</span>
+                        <span className="text-xs font-medium text-muted-foreground">Target</span>
                     </Button>
                 </div>
             </CardContent>

@@ -56,7 +56,7 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
                     <TrendingUp className="h-4 w-4 text-destructive" />
                     Tren Pengeluaran
                 </CardTitle>
-                <span className="text-[10px] bg-destructive/10 text-destructive px-2 py-1 rounded-full font-medium">
+                <span className="text-xs bg-destructive/10 text-destructive px-2 py-1 rounded-full font-medium">
                     {days} Hari Terakhir
                 </span>
             </CardHeader>

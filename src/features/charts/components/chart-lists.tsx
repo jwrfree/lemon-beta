@@ -31,7 +31,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
         <button
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden bg-card rounded-xl p-5 border-none shadow-card transition-all text-left w-full",
+                "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-card transition-all text-left w-full",
                 isOverBudget
                     ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
                     : "hover:bg-muted/50"
@@ -42,7 +42,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
                             <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-rose-500" : color)} />
-                            <p className={cn("font-medium text-[10px] uppercase tracking-[0.15em]", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
+                            <p className={cn("font-medium text-xs uppercase tracking-widest", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
                                 {category}
                             </p>
                         </div>
@@ -51,14 +51,14 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                         </p>
                     </div>
                     {isOverBudget && (
-                        <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-xl">
+                        <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-md">
                             <AlertTriangle className="w-5 h-5" />
                         </div>
                     )}
                 </div>
 
                 <div className="space-y-2">
-                    <div className="flex justify-between items-center text-[10px] font-medium uppercase tracking-widest">
+                    <div className="flex justify-between items-center text-xs font-medium uppercase tracking-widest">
                         <div className="flex items-center gap-2">
                             <span className={isOverBudget ? "text-rose-500" : "text-zinc-400"}>
                                 {percentage.toFixed(0)}% Terpakai
@@ -101,7 +101,7 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
             </div>
             <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm truncate tracking-tight">{transaction.description || transaction.category}</p>
-                <p className="text-[10px] uppercase font-semibold tracking-widest text-muted-foreground/50">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
+                <p className="text-xs uppercase font-semibold tracking-widest text-muted-foreground/50">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
             </div>
             <p className="font-medium text-base tabular-nums">{formatCurrency(transaction.amount)}</p>
         </button>

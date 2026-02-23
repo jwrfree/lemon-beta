@@ -65,7 +65,7 @@ describe('UI Visual Consistency Tests', () => {
       
       expect(card.className).toContain('shadow-card');
       expect(card.className).toContain('rounded-lg');
-      expect(card.className).not.toContain('rounded-xl'); // Ensuring we moved away from xl
+      expect(card.className).not.toContain('rounded-md'); // Ensuring we moved away from xl
     });
   });
 });

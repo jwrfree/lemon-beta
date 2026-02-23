@@ -71,7 +71,7 @@ export default function BudgetingPage() {
         <div className="flex flex-col h-full relative bg-background">
             <PageHeader title="Manajemen Anggaran" />
 
-            <main className="flex-1 overflow-y-auto pb-32">
+            <main className="flex-1 overflow-y-auto pb-24">
                 <AnimatePresence mode="wait">
                     {budgets.length === 0 ? (
                         <motion.div

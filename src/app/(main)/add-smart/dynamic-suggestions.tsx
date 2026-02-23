@@ -116,7 +116,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
 
     return (
         <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500 max-w-sm mx-auto">
-            <div className={`p-4 rounded-2xl mb-6 ring-8 ${greeting.bg} ${greeting.ring}`}>
+            <div className={`p-4 rounded-card mb-6 ring-8 ${greeting.bg} ${greeting.ring}`}>
                 <Icon className={`h-10 w-10 ${greeting.color}`} strokeWidth={1.5} />
             </div>
             <h2 className="text-xl font-medium text-foreground">{greeting.text}</h2>
@@ -131,7 +131,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             
             <div className="mt-10 w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <p className="text-[10px] font-medium tracking-[0.05em] text-muted-foreground/60">
+                    <p className="text-xs font-medium tracking-widest text-muted-foreground/60">
                         {dayContext === 'gajian' ? 'Rutin Bulanan' : dayContext === 'weekend' ? 'Ide Akhir Pekan' : `Contoh ${timeOfDay} ini`}
                     </p>
                     <div className="h-px flex-1 bg-border/50 ml-3" />
@@ -142,7 +142,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
                             key={`${timeOfDay}-${dayContext}-${idx}`}
                             type="button"
                             onClick={() => onSuggestionClick(s)}
-                            className="text-xs text-left bg-card hover:bg-primary/5 px-4 py-3 rounded-xl active:scale-[0.98] transition-all flex items-center justify-between group"
+                            className="text-xs text-left bg-card hover:bg-primary/5 px-4 py-3 rounded-md active:scale-[0.98] transition-all flex items-center justify-between group"
                         >
                             <span className="text-foreground/80 group-hover:text-primary font-medium">{s}</span>
                             <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary" />
@@ -151,9 +151,9 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
                 </div>
             </div>
 
-            <div className="mt-8 p-4 bg-muted/50 rounded-2xl w-full">
-                <p className="text-[10px] font-medium text-muted-foreground mb-2">💡 Tips Cerdas</p>
-                <p className="text-[11px] text-muted-foreground leading-relaxed text-left">
+            <div className="mt-8 p-4 bg-muted/50 rounded-card w-full">
+                <p className="text-xs font-medium text-muted-foreground mb-2">💡 Tips Cerdas</p>
+                <p className="text-xs text-muted-foreground leading-relaxed text-left">
                     Gunakan kata hubung seperti <b>"dan"</b> atau <b>tanda koma</b> untuk mencatat banyak transaksi sekaligus.
                 </p>
             </div>

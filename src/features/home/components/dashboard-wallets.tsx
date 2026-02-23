@@ -66,7 +66,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
                                         </div>
                                         <div>
                                             <p className="font-medium text-sm text-foreground">{wallet.name}</p>
-                                            <p className="text-[10px] text-muted-foreground capitalize">{wallet.icon?.replace('-', ' ') || 'Personal'}</p>
+                                            <p className="text-xs text-muted-foreground capitalize">{wallet.icon?.replace('-', ' ') || 'Personal'}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">

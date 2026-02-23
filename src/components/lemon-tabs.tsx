@@ -30,7 +30,7 @@ export const LemonTabs = ({
                 onValueChange={onValueChange}
                 className="w-full max-w-md mx-auto"
             >
-                <TabsList className="grid w-full bg-muted p-1 rounded-2xl h-14" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+                <TabsList className="grid w-full bg-muted p-1 rounded-card h-14" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
                     {tabs.map((tab) => (
                         <TabsTrigger
                             key={tab.value}

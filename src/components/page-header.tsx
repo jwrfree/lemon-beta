@@ -60,7 +60,7 @@ export const PageHeader = ({
         <div className="flex flex-col items-center md:items-start w-full md:w-auto">
           <h1 className="text-base font-semibold tracking-tight text-foreground">{title}</h1>
           {description && (
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest hidden md:block">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest hidden md:block">
               {description}
             </p>
           )}

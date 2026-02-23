@@ -218,7 +218,7 @@ export const DesktopDashboard = () => {
 
     return (
         <TooltipProvider>
-            <div className="min-h-screen bg-background pb-20 text-foreground">
+            <div className="min-h-screen bg-background pb-24 text-foreground">
                 <div className="max-w-[1920px] mx-auto p-4 lg:p-6 space-y-6">
 
                     {/* Header */}
@@ -277,7 +277,7 @@ export const DesktopDashboard = () => {
                                         variant="outline"
                                         size="sm"
                                         className={cn(
-                                            "bg-white/10 border-white/20 text-white hover:bg-white/20 h-8 text-[10px] uppercase tracking-widest font-medium transition-all",
+                                            "bg-white/10 border-white/20 text-white hover:bg-white/20 h-8 text-xs uppercase tracking-widest font-medium transition-all",
                                             isAnalystView && "bg-white/30 border-white/40"
                                         )}
                                         onClick={() => setIsAnalystView(!isAnalystView)}
@@ -390,7 +390,7 @@ export const DesktopDashboard = () => {
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="h-7 text-[9px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary px-2"
+                                        className="h-7 text-xs font-medium uppercase tracking-widest text-muted-foreground hover:text-primary px-2"
                                         onClick={() => router.push('/transactions')}
                                     >
                                         Semua

@@ -488,7 +488,7 @@ function ChartContent() {
                 <div className="flex justify-between items-center py-3">
                     <h2 className="text-xl font-semibold tracking-tight">Financial Analytics</h2>
                     <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] uppercase font-semibold tracking-widest px-3 py-1 rounded-full bg-muted/50 border-none">
+                        <Badge variant="outline" className="text-xs uppercase font-semibold tracking-widest px-3 py-1 rounded-full bg-muted/50 border-none">
                             <Calendar className="w-3 h-3 mr-1.5 opacity-50" />
                             {format(now, 'MMM yyyy')}
                         </Badge>
@@ -584,15 +584,15 @@ function ChartContent() {
                                 />
                             ))
                         ) : (
-                            <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                            <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-card relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-8 opacity-[0.02]">
                                     <Layers className="h-32 w-32" />
                                 </div>
-                                <div className="p-4 bg-muted rounded-2xl mb-4">
+                                <div className="p-4 bg-muted rounded-card mb-4">
                                     <Info className="w-8 h-8 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
-                                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
+                                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
                                     Semua transaksi besarmu akan dianalisis secara otomatis di sini.
                                 </p>
                             </div>
@@ -610,7 +610,7 @@ function ChartContent() {
                             <button
                                 onClick={() => setCategoryView('expense')}
                                 className={cn(
-                                    "px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest rounded-full transition-all",
+                                    "px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-all",
                                     categoryView === 'expense'
                                         ? "bg-card text-primary shadow-sm"
                                         : "text-muted-foreground hover:text-foreground"
@@ -621,7 +621,7 @@ function ChartContent() {
                             <button
                                 onClick={() => setCategoryView('income')}
                                 className={cn(
-                                    "px-4 py-1.5 text-[10px] font-semibold uppercase tracking-widest rounded-full transition-all",
+                                    "px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-all",
                                     categoryView === 'income'
                                         ? "bg-card text-primary shadow-sm"
                                         : "text-muted-foreground hover:text-foreground"
@@ -657,15 +657,15 @@ function ChartContent() {
                                     );
                                 })
                             ) : (
-                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-card relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
                                             <Trophy className="h-32 w-32" />
                                         </div>
-                                        <div className="p-4 bg-muted rounded-2xl mb-4">
+                                        <div className="p-4 bg-muted rounded-card mb-4">
                                             <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
-                                        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
+                                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
                                             Mulai catat pengeluaranmu untuk melihat breakdown kategori secara mendalam.
                                         </p>
                                     </div>
@@ -683,15 +683,15 @@ function ChartContent() {
                                     />
                                 ))
                             ) : (
-                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-card relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
                                             <Trophy className="h-32 w-32" />
                                         </div>
-                                        <div className="p-4 bg-muted rounded-2xl mb-4">
+                                        <div className="p-4 bg-muted rounded-card mb-4">
                                             <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pemasukan</h3>
-                                        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
+                                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
                                             Catat setiap pendapatanmu untuk melihat analisis sumber keuangan yang komprehensif.
                                         </p>
                                     </div>

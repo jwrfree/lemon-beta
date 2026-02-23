@@ -68,7 +68,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
                                 <div className="flex justify-between text-xs">
                                     <span className="font-medium truncate max-w-[120px]">{goal.name}</span>
                                     <span className="text-muted-foreground tabular-nums">
-                                        {formatCurrency(goal.currentAmount || 0)} <span className="text-[10px] text-muted-foreground/60">/ {formatCurrency(goal.targetAmount)}</span>
+                                        {formatCurrency(goal.currentAmount || 0)} <span className="text-xs text-muted-foreground/60">/ {formatCurrency(goal.targetAmount)}</span>
                                     </span>
                                 </div>
                                 <Progress value={percent} className="h-2" />

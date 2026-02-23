@@ -131,11 +131,11 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                             <div className="relative z-10 grid grid-cols-2 gap-8 mt-8 pt-6 border-t border-white/10">
                                 <div>
-                                    <p className="text-[11px] font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Produktif</p>
+                                    <p className="text-xs font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Produktif</p>
                                     <p className="text-xl font-medium">{formatCurrency(totals.realAssetsValue)}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[11px] font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Konsumtif</p>
+                                    <p className="text-xs font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Konsumtif</p>
                                     <p className="text-xl font-medium">{formatCurrency(totals.depreciatingAssetsValue)}</p>
                                 </div>
                             </div>
@@ -176,7 +176,7 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                             <div className="grid grid-cols-1 gap-2 w-full mt-4">
                                 {totals.chartData.map((entry, index) => (
-                                    <div key={index} className="flex items-center justify-between text-[10px] font-medium uppercase tracking-tight">
+                                    <div key={index} className="flex items-center justify-between text-xs font-medium uppercase tracking-tight">
                                         <div className="flex items-center gap-2">
                                             <div className={cn("w-2 h-2 rounded-full",
                                                 entry.name === 'Kas & Bank' ? 'bg-blue-500' :
@@ -240,14 +240,14 @@ export default function AssetsLiabilitiesPage() {
                                     <CardContent className="px-0 flex-1 overflow-hidden">
                                         <TabsContent value="all" className="mt-0 h-full">
                                             <div className="px-4 mb-2">
-                                                <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+                                                <div className="flex items-center justify-between p-3 rounded-lg bg-info/5 border border-info/20">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
+                                                        <div className="p-2 rounded-full bg-info/10 text-info">
                                                             <WalletCards className="h-4 w-4" />
                                                         </div>
                                                         <div>
                                                             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">Kas & Setara Kas</p>
-                                                            <p className="text-[10px] text-muted-foreground">Saldo Dompet & Bank</p>
+                                                            <p className="text-xs text-muted-foreground">Saldo Dompet & Bank</p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
@@ -267,14 +267,14 @@ export default function AssetsLiabilitiesPage() {
                                                 <p className="text-lg font-medium text-teal-600">{formatCurrency(totals.realAssetsValue)}</p>
                                             </div>
                                             <div className="px-4 mb-2">
-                                                <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+                                                <div className="flex items-center justify-between p-3 rounded-lg bg-info/5 border border-info/20">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
+                                                        <div className="p-2 rounded-full bg-info/10 text-info">
                                                             <WalletCards className="h-4 w-4" />
                                                         </div>
                                                         <div>
                                                             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">Kas & Setara Kas</p>
-                                                            <p className="text-[10px] text-muted-foreground">Saldo Dompet & Bank</p>
+                                                            <p className="text-xs text-muted-foreground">Saldo Dompet & Bank</p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">

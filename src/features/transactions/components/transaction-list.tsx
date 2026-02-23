@@ -39,15 +39,15 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
 
     if (finalTransactions.length === 0 && !isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+            <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-card-premium shadow-card relative overflow-hidden">
                 {/* Ambient Glow */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16" />
                 
-                <div className="p-6 bg-primary/10 rounded-[24px] mb-6 relative z-10 shadow-inner">
+                <div className="p-6 bg-primary/10 rounded-card-glass mb-6 relative z-10 shadow-inner">
                     <ReceiptText className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-semibold tracking-tighter mb-2 relative z-10">Kosong Melompong</h2>
-                <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-8 max-w-[240px] leading-relaxed relative z-10">
+                <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-8 max-w-[240px] leading-relaxed relative z-10">
                     Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini.
                 </p>
                 <Button 
@@ -72,10 +72,10 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
             <div className="md:hidden space-y-6">
                 {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
                     <div key={date} className="space-y-2">
-                        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2 px-4">
+                        <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="bg-card rounded-2xl shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">
+                        <div className="bg-card rounded-card shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 

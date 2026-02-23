@@ -254,10 +254,10 @@ export default function RemindersPage() {
                                                     ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                                     : undefined;
                                                 return (
-                                                    <Card key={reminder.id} className="p-5 bg-card border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[24px]">
+                                                    <Card key={reminder.id} className="p-5 bg-card border-none shadow-card rounded-card-glass">
                                                         <div className="flex items-start gap-4">
                                                             <div className={cn(
-                                                                "p-3 rounded-2xl shadow-inner",
+                                                                "p-3 rounded-card shadow-inner",
                                                                 status === 'overdue' ? 'bg-rose-500/10 text-rose-600' :
                                                                 status === 'completed' ? 'bg-muted text-muted-foreground' :
                                                                 status === 'snoozed' ? 'bg-amber-500/10 text-amber-600' :
@@ -273,20 +273,20 @@ export default function RemindersPage() {
                                                                 
                                                                 <div className="flex flex-wrap gap-x-4 gap-y-2">
                                                                     {dueDate && (
-                                                                        <div className="text-[10px] font-semibold text-muted-foreground/60 flex items-center gap-1.5 uppercase tracking-widest">
+                                                                        <div className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-1.5 uppercase tracking-widest">
                                                                             <CalendarClock className="h-3.5 w-3.5" />
                                                                             {format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                                                         </div>
                                                                     )}
                                                                     {reminder.amount ? (
-                                                                        <div className="text-[10px] font-semibold text-primary flex items-center gap-1.5 uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-full">
+                                                                        <div className="text-xs font-semibold text-primary flex items-center gap-1.5 uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-full">
                                                                             {formatCurrency(reminder.amount)}
                                                                         </div>
                                                                     ) : null}
                                                                 </div>
 
                                                                 {linkedDebt && (
-                                                                    <p className="text-[10px] font-semibold text-muted-foreground/40 uppercase tracking-widest">
+                                                                    <p className="text-xs font-semibold text-muted-foreground/40 uppercase tracking-widest">
                                                                         Terkait: {linkedDebt.title}
                                                                     </p>
                                                                 )}
@@ -297,7 +297,7 @@ export default function RemindersPage() {
 
                                                                 <div className="flex items-center gap-2 pt-2">
                                                                     {status !== 'completed' && (
-                                                                        <Button size="sm" variant="secondary" className="h-9 px-4 rounded-full font-semibold text-[10px] uppercase tracking-widest gap-2 bg-primary/10 text-primary hover:bg-primary/20" onClick={() => handleComplete(reminder)}>
+                                                                        <Button size="sm" variant="secondary" className="h-9 px-4 rounded-full font-semibold text-xs uppercase tracking-widest gap-2 bg-primary/10 text-primary hover:bg-primary/20" onClick={() => handleComplete(reminder)}>
                                                                             <Check className="h-4 w-4" strokeWidth={3} /> Selesai
                                                                         </Button>
                                                                     )}
@@ -307,7 +307,7 @@ export default function RemindersPage() {
                                                                                 <EllipsisVertical className="h-4 w-4" />
                                                                             </Button>
                                                                         </DropdownMenuTrigger>
-                                                                        <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                                                                        <DropdownMenuContent align="end" className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                                                                             {status !== 'completed' && dueDate && (
                                                                                 <>
                                                                                     <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>
@@ -539,13 +539,13 @@ export default function RemindersPage() {
             <div className="md:hidden sticky bottom-0 inset-x-0 bg-background/80 backdrop-blur-xl border-t border-border/50 p-4 flex items-center justify-between gap-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-30">
                 <Button 
                     variant="outline" 
-                    className="flex-1 h-14 rounded-full font-semibold text-[10px] uppercase tracking-[0.2em] border-border shadow-sm" 
+                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest border-border shadow-sm" 
                     onClick={() => setActiveTab('overdue')}
                 >
                     Terlambat
                 </Button>
                 <Button 
-                    className="flex-1 h-14 rounded-full font-semibold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20" 
+                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest shadow-lg shadow-primary/20" 
                     onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}
                 >
                     Tambah

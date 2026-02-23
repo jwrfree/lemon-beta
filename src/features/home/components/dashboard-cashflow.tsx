@@ -104,10 +104,10 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
                         </CardDescription>
                     </div>
                     <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as '30' | '90' | 'month')} className="w-auto">
-                        <TabsList className="grid w-full grid-cols-3 h-9 p-1 bg-muted rounded-xl">
-                            <TabsTrigger value="month" className="h-full rounded-lg text-[10px] px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Bulan Ini</TabsTrigger>
-                            <TabsTrigger value="30" className="h-full rounded-lg text-[10px] px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 Hari</TabsTrigger>
-                            <TabsTrigger value="90" className="h-full rounded-lg text-[10px] px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">3 Bulan</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-3 h-9 p-1 bg-muted rounded-md">
+                            <TabsTrigger value="month" className="h-full rounded-lg text-xs px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Bulan Ini</TabsTrigger>
+                            <TabsTrigger value="30" className="h-full rounded-lg text-xs px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 Hari</TabsTrigger>
+                            <TabsTrigger value="90" className="h-full rounded-lg text-xs px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">3 Bulan</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>

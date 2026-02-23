@@ -120,7 +120,7 @@ function TransactionsPageContent() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder="Cari transaksi..."
-                            className="pl-10 h-10 text-sm bg-muted/50 border-none focus-visible:ring-4 focus-visible:ring-primary/5 rounded-2xl transition-all"
+                            className="pl-10 h-10 text-sm bg-muted/50 border-none focus-visible:ring-4 focus-visible:ring-primary/5 rounded-card transition-all"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                         />
@@ -138,14 +138,14 @@ function TransactionsPageContent() {
                                 <div className="relative">
                                     <ListFilter className="h-4 w-4" />
                                     {activeFilterCount > 0 && (
-                                        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-[8px] font-semibold shadow-sm">
+                                        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-sm">
                                             {activeFilterCount}
                                         </span>
                                     )}
                                 </div>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom" className="rounded-t-[2.5rem] max-h-[85vh] flex flex-col border-t-0 shadow-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
+                        <SheetContent side="bottom" className="rounded-t-card-premium max-h-[85vh] flex flex-col border-t-0 shadow-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
                             <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4 shrink-0" />
                             <SheetHeader className="text-left mb-6">
                                 <SheetTitle className="text-xl font-semibold tracking-tight">Atur Tampilan</SheetTitle>
@@ -156,7 +156,7 @@ function TransactionsPageContent() {
                                     <div className="flex items-center justify-between mb-3">
                                         <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pilih Kategori</Label>
                                         {selectedCategories.length > 0 && (
-                                            <button onClick={() => setSelectedCategories([])} className="text-[10px] font-semibold text-destructive uppercase tracking-wide">Bersihkan</button>
+                                            <button onClick={() => setSelectedCategories([])} className="text-xs font-semibold text-destructive uppercase tracking-wide">Bersihkan</button>
                                         )}
                                     </div>
                                     <div className="flex flex-wrap gap-2">
@@ -165,14 +165,14 @@ function TransactionsPageContent() {
                                                 key={c.id}
                                                 variant={selectedCategories.includes(c.name) ? 'default' : 'outline'}
                                                 size="sm"
-                                                className="rounded-full h-8 px-4 text-[11px] font-semibold transition-all"
+                                                className="rounded-full h-8 px-4 text-xs font-semibold transition-all"
                                                 onClick={() => handleCategoryToggle(c.name)}
                                             >
                                                 {c.name}
                                             </Button>
                                         ))}
                                         {categoriesForFilter.length > 8 && !showAllCategories && (
-                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-semibold rounded-full" onClick={() => setShowAllCategories(true)}>+ {categoriesForFilter.length - 8} Lainnya</Button>
+                                            <Button variant="ghost" size="sm" className="h-8 text-xs text-primary font-semibold rounded-full" onClick={() => setShowAllCategories(true)}>+ {categoriesForFilter.length - 8} Lainnya</Button>
                                         )}
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@ function TransactionsPageContent() {
                                     <div className="flex items-center justify-between mb-3">
                                         <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pilih Dompet</Label>
                                         {selectedWallets.length > 0 && (
-                                            <button onClick={() => setSelectedWallets([])} className="text-[10px] font-semibold text-destructive uppercase tracking-wide">Bersihkan</button>
+                                            <button onClick={() => setSelectedWallets([])} className="text-xs font-semibold text-destructive uppercase tracking-wide">Bersihkan</button>
                                         )}
                                     </div>
                                     <div className="flex flex-wrap gap-2">
@@ -189,14 +189,14 @@ function TransactionsPageContent() {
                                                 key={w.id}
                                                 variant={selectedWallets.includes(w.id) ? 'default' : 'outline'}
                                                 size="sm"
-                                                className="rounded-full h-8 px-4 text-[11px] font-semibold transition-all"
+                                                className="rounded-full h-8 px-4 text-xs font-semibold transition-all"
                                                 onClick={() => handleWalletToggle(w.id)}
                                             >
                                                 {w.name}
                                             </Button>
                                         ))}
                                         {wallets.length > 8 && !showAllWallets && (
-                                            <Button variant="ghost" size="sm" className="h-8 text-[11px] text-primary font-semibold rounded-full" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
+                                            <Button variant="ghost" size="sm" className="h-8 text-xs text-primary font-semibold rounded-full" onClick={() => setShowAllWallets(true)}>Lihat Semua</Button>
                                         )}
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@ function TransactionsPageContent() {
                             <TabsTrigger
                                 key={tab.value}
                                 value={tab.value}
-                                className="h-full rounded-full font-semibold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                                className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
                             >
                                 {tab.label}
                             </TabsTrigger>
@@ -233,7 +233,7 @@ function TransactionsPageContent() {
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         {selectedCategories.map(category => (
-                            <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-[10px] font-semibold bg-primary/5 text-primary border-primary/20 rounded-md">
+                            <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/5 text-primary border-primary/20 rounded-md">
                                 {category}
                                 <button
                                     type="button"
@@ -248,7 +248,7 @@ function TransactionsPageContent() {
                         {selectedWallets.map(walletId => {
                             const wallet = wallets.find(w => w.id === walletId);
                             return wallet && (
-                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-[10px] font-semibold bg-primary/5 text-primary border-primary/20 rounded-md">
+                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/5 text-primary border-primary/20 rounded-md">
                                     {wallet.name}
                                     <button
                                         type="button"
@@ -286,7 +286,7 @@ function TransactionsPageContent() {
                                             <span className="text-sm font-semibold italic tracking-tight">{formatCurrency(outstanding)}</span>
                                         </div>
                                         {dueDate && (
-                                            <p className="text-[10px] uppercase font-semibold text-muted-foreground">
+                                            <p className="text-xs uppercase font-semibold text-muted-foreground">
                                                 Tempo: {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
                                             </p>
                                         )}

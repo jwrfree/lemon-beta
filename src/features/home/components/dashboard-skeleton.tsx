@@ -11,9 +11,9 @@ export const DashboardSkeleton = () => {
                     <Skeleton className="h-4 w-64 bg-zinc-100 dark:bg-zinc-900" />
                 </div>
                 <div className="flex items-center gap-3">
-                    <Skeleton className="h-10 w-48 hidden lg:block rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
-                    <Skeleton className="h-10 w-10 rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
-                    <Skeleton className="h-10 w-10 rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+                    <Skeleton className="h-10 w-48 hidden lg:block rounded-card bg-zinc-200 dark:bg-zinc-800" />
+                    <Skeleton className="h-10 w-10 rounded-card bg-zinc-200 dark:bg-zinc-800" />
+                    <Skeleton className="h-10 w-10 rounded-card bg-zinc-200 dark:bg-zinc-800" />
                 </div>
             </div>
 
@@ -21,13 +21,13 @@ export const DashboardSkeleton = () => {
                 {/* Finance Overview Skeleton (4 Cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[...Array(4)].map((_, i) => (
-                        <Card key={i} className="p-5 border-zinc-200/60 dark:border-zinc-800/60 rounded-3xl shadow-sm bg-white dark:bg-zinc-900">
+                        <Card key={i} className="p-5 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-glass shadow-sm bg-white dark:bg-zinc-900">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-2">
                                     <Skeleton className="h-3 w-20" />
                                     <Skeleton className="h-7 w-32" />
                                 </div>
-                                <Skeleton className="h-10 w-10 rounded-2xl" />
+                                <Skeleton className="h-10 w-10 rounded-card" />
                             </div>
                             <Skeleton className="h-3 w-24" />
                         </Card>
@@ -39,15 +39,15 @@ export const DashboardSkeleton = () => {
                     <div className="lg:col-span-8 space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
                             {/* Cashflow Chart */}
-                            <Card className="md:col-span-3 p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900">
+                            <Card className="md:col-span-3 p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900">
                                 <div className="flex justify-between items-center mb-6">
                                     <Skeleton className="h-6 w-32" />
                                     <Skeleton className="h-8 w-24 rounded-full" />
                                 </div>
-                                <Skeleton className="h-[280px] w-full rounded-2xl" />
+                                <Skeleton className="h-[280px] w-full rounded-card" />
                             </Card>
                             {/* Expense Pie */}
-                            <Card className="md:col-span-2 p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900">
+                            <Card className="md:col-span-2 p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900">
                                 <Skeleton className="h-6 w-32 mb-8 mx-auto" />
                                 <div className="flex flex-col items-center justify-center space-y-6">
                                     <Skeleton className="h-48 w-48 rounded-full" />
@@ -59,7 +59,7 @@ export const DashboardSkeleton = () => {
                             </Card>
                         </div>
                         {/* Recent Transactions */}
-                        <Card className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900">
+                        <Card className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900">
                              <div className="flex justify-between items-center mb-6">
                                 <Skeleton className="h-6 w-40" />
                                 <Skeleton className="h-8 w-20 rounded-full" />
@@ -68,7 +68,7 @@ export const DashboardSkeleton = () => {
                                 {[...Array(5)].map((_, i) => (
                                     <div key={i} className="flex items-center justify-between py-3 border-b border-zinc-100 dark:border-zinc-800/50 last:border-0">
                                         <div className="flex items-center gap-4">
-                                            <Skeleton className="h-12 w-12 rounded-2xl" />
+                                            <Skeleton className="h-12 w-12 rounded-card" />
                                             <div className="space-y-2">
                                                 <Skeleton className="h-4 w-32" />
                                                 <Skeleton className="h-3 w-20" />
@@ -84,9 +84,9 @@ export const DashboardSkeleton = () => {
                     {/* Sidebar Area (Col 4) */}
                     <div className="lg:col-span-4 space-y-8">
                         {[...Array(3)].map((_, i) => (
-                            <Card key={i} className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-3xl bg-white dark:bg-zinc-900 space-y-4">
+                            <Card key={i} className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-glass bg-white dark:bg-zinc-900 space-y-4">
                                 <Skeleton className="h-5 w-32" />
-                                <Skeleton className="h-20 w-full rounded-2xl" />
+                                <Skeleton className="h-20 w-full rounded-card" />
                                 <div className="space-y-2">
                                     <Skeleton className="h-4 w-full" />
                                     <Skeleton className="h-4 w-2/3" />

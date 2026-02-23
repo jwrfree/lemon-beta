@@ -43,7 +43,7 @@ export const DashboardHero = ({
                         <div className="text-3xl font-medium tracking-tight">
                             <AnimatedCounter value={totalBalance} />
                         </div>
-                        <div className="mt-1 text-[11px] text-primary-foreground/70 font-medium max-w-[300px]">
+                        <div className="mt-1 text-xs text-primary-foreground/70 font-medium max-w-[300px]">
                             <TrendingDown className="h-3 w-3 inline mr-1 opacity-70" />
                             Potensi menabungmu bulan ini meningkat 15%.
                         </div>
@@ -60,7 +60,7 @@ export const DashboardHero = ({
                 <CardContent className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded-md text-[11px] font-medium tracking-tight",
+                            "flex items-center px-2 py-1 rounded-md text-xs font-medium tracking-tight",
                             incomeTrend.direction === 'flat' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-teal-600/20 text-teal-600'
                         )}>
                             {incomeTrend.direction === 'up' && <TrendingUp className="h-3.5 w-3.5 mr-1" />}
@@ -68,7 +68,7 @@ export const DashboardHero = ({
                             {incomeTrend.value} vs bulan lalu
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded-md text-[11px] font-medium tracking-tight",
+                            "flex items-center px-2 py-1 rounded-md text-xs font-medium tracking-tight",
                             expenseTrend.direction === 'flat' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-foreground/10 text-foreground'
                         )}>
                             {expenseTrend.direction === 'up' && <TrendingUp className="h-3.5 w-3.5 mr-1" />}

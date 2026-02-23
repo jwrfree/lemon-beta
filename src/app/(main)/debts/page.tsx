@@ -59,7 +59,7 @@ const getDebtDueStatus = (debt: Debt) => {
     
     if (diff < 0) {
         return (
-            <span className="text-[10px] text-destructive font-medium flex items-center gap-1 bg-destructive/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
+            <span className="text-xs text-destructive font-medium flex items-center gap-1 bg-destructive/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
                 <CalendarClock className="h-3 w-3" /> 
                 Telat {Math.abs(diff)} hari
             </span>
@@ -67,7 +67,7 @@ const getDebtDueStatus = (debt: Debt) => {
     }
     if (diff === 0) {
         return (
-            <span className="text-[10px] text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
+            <span className="text-xs text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
                 <CalendarClock className="h-3 w-3" /> 
                 Hari ini
             </span>
@@ -75,14 +75,14 @@ const getDebtDueStatus = (debt: Debt) => {
     }
     if (diff <= 7) {
         return (
-            <span className="text-[10px] text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
+            <span className="text-xs text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
                 <CalendarClock className="h-3 w-3" /> 
                 {diff} hari lagi
             </span>
         );
     }
     return (
-        <span className="text-[10px] text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded-md w-fit mt-1">
+        <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded-md w-fit mt-1">
             <CalendarClock className="h-3 w-3" /> 
             {diff} hari lagi
         </span>
@@ -149,11 +149,11 @@ export default function DebtsPage() {
                 showBackButton={true}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-[10px] font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none shadow-sm">
+                        <SelectTrigger className="w-[140px] h-9 text-xs font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none shadow-sm">
                             <ArrowUpDown className="w-3 h-3 mr-2 text-primary" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                        <SelectContent align="end" className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                             <SelectItem value="updated_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
                             <SelectItem value="due_soon" className="text-xs font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
                             <SelectItem value="amount_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
@@ -204,7 +204,7 @@ export default function DebtsPage() {
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                         <TabsList className="bg-muted/50 p-1 rounded-full h-12 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-semibold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
+                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
                                     {label === 'Semua' ? 'All' : label.split(' ')[0]}
                                 </TabsTrigger>
                             ))}

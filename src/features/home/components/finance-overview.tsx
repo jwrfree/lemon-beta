@@ -52,7 +52,7 @@ export const FinanceOverview = ({
                         <AnimatedCounter value={totalBalance} />
                     </div>
                     <div className="flex items-center gap-2 text-xs text-primary-foreground/70">
-                        <span className="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse"></span>
                         Status Keuangan Sehat
                     </div>
                 </CardContent>
@@ -66,7 +66,7 @@ export const FinanceOverview = ({
                             <ArrowUpRight className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded text-[10px] font-medium",
+                            "flex items-center px-2 py-1 rounded text-xs font-medium",
                             incomeTrend.direction === 'up'
                                 ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : incomeTrend.direction === 'down'
@@ -79,7 +79,7 @@ export const FinanceOverview = ({
                     <div className="text-2xl font-medium text-foreground">
                         <AnimatedCounter value={income} />
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                         {incomeDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(incomeDiff))} vs bulan lalu
                     </p>
                 </CardContent>
@@ -93,7 +93,7 @@ export const FinanceOverview = ({
                             <ArrowDownLeft className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded text-[10px] font-medium",
+                            "flex items-center px-2 py-1 rounded text-xs font-medium",
                             expenseTrend.direction === 'down'
                                 ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : expenseTrend.direction === 'up'
@@ -107,21 +107,21 @@ export const FinanceOverview = ({
                     <div className="text-2xl font-medium text-foreground">
                         <AnimatedCounter value={expense} />
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                         {expenseDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(expenseDiff))} vs bulan lalu
                     </p>
                 </CardContent>
             </Card>
 
             {/* Net / Savings Card */}
-            <Card className="border-none shadow-sm bg-blue-50/30 dark:bg-blue-950/10 hover:shadow-md transition-all">
+            <Card className="border-none shadow-sm bg-info/5 hover:shadow-md transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                            <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <div className="p-2 bg-info/10 rounded-lg">
+                            <DollarSign className="w-5 h-5 text-info" />
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded text-[10px] font-medium",
+                            "flex items-center px-2 py-1 rounded text-xs font-medium",
                             netTrend.direction === 'up'
                                 ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : netTrend.direction === 'down'
@@ -139,13 +139,13 @@ export const FinanceOverview = ({
                         )}>
                             <AnimatedCounter value={net} />
                         </div>
-                        <p className="text-[10px] text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                             {netDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(netDiff))} vs bulan lalu
                         </p>
                     </div>
                     {income > 0 && (
                         <div className="mt-3">
-                            <div className="flex justify-between text-[10px] mb-1 text-muted-foreground">
+                            <div className="flex justify-between text-xs mb-1 text-muted-foreground">
                                 <span>Savings Rate</span>
                                 <span>{savingsRate.toFixed(1)}%</span>
                             </div>

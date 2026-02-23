@@ -27,7 +27,7 @@ export default function OfflinePage() {
           </Link>
         </Button>
 
-        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium opacity-50">
+        <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium opacity-50">
           Financial Co-Pilot
         </p>
       </div>

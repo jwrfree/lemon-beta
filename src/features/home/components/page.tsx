@@ -93,7 +93,7 @@ export default function ProfilePage() {
                                             onChange={(e) => setPhotoURL(e.target.value)}
                                             placeholder="https://example.com/photo.jpg"
                                         />
-                                        <p className="text-[10px] text-muted-foreground">
+                                        <p className="text-xs text-muted-foreground">
                                             Masukkan URL gambar langsung (JPG/PNG).
                                         </p>
                                     </div>
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                             <div className="grid gap-2">
                                 <Label>Email</Label>
                                 <Input value={userData.email || ''} disabled className="bg-muted" />
-                                <p className="text-[10px] text-muted-foreground">
+                                <p className="text-xs text-muted-foreground">
                                     Email tidak dapat diubah. Hubungi dukungan jika perlu bantuan.
                                 </p>
                             </div>
