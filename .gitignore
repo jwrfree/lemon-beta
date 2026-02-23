@@ -46,7 +46,6 @@ firebase-debug.log*
 
 # Temp / debug files
 *.log
-log.txt
 git_log_temp.txt
 tsc-errors*.txt
 .modified
