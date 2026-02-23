@@ -9,6 +9,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useVoiceRecognition } from '@/features/transactions/hooks/use-voice-recognition';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { useKeyboardHeight } from '@/hooks/use-keyboard-height';
 import TextareaAutosize from 'react-textarea-autosize';
 
 // Import new sub-components
@@ -39,6 +40,9 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
     const [loadingMsg, setLoadingMsg] = useState('Menganalisis...');
     const [isSaving, setIsSaving] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Keyboard-aware positioning
+    const keyboardHeight = useKeyboardHeight();
 
     // Voice Hook
     const { isListening, toggleListening } = useVoiceRecognition(
@@ -134,8 +138,9 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
             <SheetContent
                 side="bottom"
                 hideCloseButton
+                style={{ bottom: keyboardHeight }}
                 className={cn(
-                    "rounded-t-xl p-0 flex flex-col border-white/10 shadow-2xl focus:outline-none",
+                    "rounded-t-xl p-0 flex flex-col border-white/10 shadow-2xl focus:outline-none transition-[bottom] duration-200",
                     isResultMode ? "h-[85dvh]" : "max-h-[85dvh]"
                 )}
             >

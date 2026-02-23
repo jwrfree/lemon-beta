@@ -2,7 +2,7 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Version 2.5.4] - 23 February 2026
+## [Version 2.5.5] - 23 February 2026
 
 ### 🎨 UI — Font Weight Reduction
 
@@ -11,6 +11,15 @@ All updates and improvements to the Lemon app will be documented here.
   - All `font-bold` (700) instances downgraded to `font-semibold` (600).
   - Affects 44 files across `src/components/`, `src/app/`, and `src/features/`, covering page headers, sidebar labels, transaction cards, budget modals, wallet views, debt panels, and more.
   - Result: a lighter, more readable visual hierarchy throughout the UI.
+
+## [Version 2.5.4] - 23 February 2026
+
+### 🐛 Bug Fixes — Smart Add Bottom Sheet
+
+- **Keyboard-Aware Bottom Sheet (`SmartAddOverlay`)**:
+  - Fixed the Smart Add bottom sheet input being obscured by the on-screen keyboard on mobile devices (especially iOS Safari).
+  - Added a new `useKeyboardHeight` hook (`src/hooks/use-keyboard-height.ts`) that uses the [`visualViewport` API](https://developer.mozilla.org/en-US/docs/Web/API/Visual_Viewport_API) to reliably detect keyboard height across platforms. On iOS Safari the layout viewport height does not shrink when the keyboard appears — the visual viewport does — so this approach is required for correct detection.
+  - The `SheetContent` in `SmartAddOverlay` now receives `style={{ bottom: keyboardHeight }}` so the entire sheet slides above the keyboard automatically. A `transition-[bottom] duration-200` CSS transition ensures the movement is smooth.
 
 ## [Version 2.5.3] - 22 February 2026
 
