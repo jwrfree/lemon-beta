@@ -1,97 +1,397 @@
-# UX Writing Guide for Lemon App
+UX Writing Guide for Lemon App (v2)
 
-This document serves as a guide for writing all copy (text) within the Lemon app. The goal is to create a consistent, friendly, and clear user experience.
+This document defines how all copy inside the Lemon app should be written.
+Our goal is to create a clear, supportive, and emotionally intelligent financial experience.
 
-## Core Principles
 
-Lemon's tone of voice is based on three main principles:
+---
 
-1.  **Friendly & Personal**
-    Our tone is familiar, like a good friend helping manage finances. We aren't stiff or overly formal, but also not "cringe" or excessively slangy.
-    - **Use "you"**, not third-person terms.
-    - Make the user feel supported, not judged.
+1. Brand Voice Foundation
 
-2.  **Clear & Concise**
-    Every piece of text must be easily understood at a glance. Avoid complicated financial jargon and technical terms.
-    - Get straight to the point.
-    - Use active and simple sentences.
+Lemon is a supportive financial companion — not a bank, not a motivational coach, and not a strict accountant.
 
-3.  **Helpful & Motivating**
-    Our text should guide users, especially when they are just starting or facing difficulties.
-    - Provide clear instructions.
-    - On empty states, provide a motivating call to action.
-    - When errors occur, explain what went wrong and how to fix it calmly.
+We help users manage money calmly and confidently.
 
-## Tone & Style
+Voice Attributes
 
-### Addressing the User
-- **Use**: `you`, `your`.
-- **Avoid**: `user`, `one's`.
+Attribute	Level	Description
 
-**Example**:
-- 👍: "See all your wallets."
-- 👎: "View user wallets."
+Formality	3/10	Casual but respectful. Never slangy.
+Playfulness	3/10	Light warmth allowed. No jokes during serious moments.
+Directness	8/10	Clear, straight to the point.
+Emotional Tone	6/10	Calm and supportive, never judgmental.
 
-### Action Messages (Buttons & Links)
-Use clear and specific verbs.
 
-- **Use**: "Create New Budget", "Save Transaction", "View All", "Delete".
-- **Avoid**: "Send", "Okay", "Submit".
 
-### Page & Modal Titles
-Must be descriptive and immediately explain the content.
+---
 
-- **Example**: "Add New Transaction", "Edit Wallet", "Confirm Deletion".
+2. Core Writing Principles
 
-### Confirmation Messages (Toasts & Alerts)
-Brief, clear, and reassuring.
+2.1 Friendly & Personal
 
-- **Success Examples**: "Transaction added successfully!", "Budget created!", "Changes saved."
-- **Info Example**: "You have successfully logged out."
+Use "you" and "your".
 
-### Error Messages
-Explain the problem from the user's perspective and offer a solution. Do not blame.
+Speak directly to the user.
 
-- **Use**: "Budget name cannot be empty.", "Source and destination wallets cannot be the same."
-- **Avoid**: "Error: Invalid input.", "Process failed."
+Never refer to the user in third person.
 
-### Empty States
-Use this as an opportunity to guide and motivate the user.
 
-- **Examples**:
-    - "No transactions here yet. Let's add your first one!"
-    - "Start tracking your spending by creating your first budget."
-    - "You don't have any wallets yet. Let's create your first wallet to get started!"
+Example:
 
-## Consistent Terminology
+"See all your wallets."
 
-To maintain consistency, use the following terms throughout the app (English / Bahasa Indonesia context):
+Avoid: "View user wallets."
 
-| Term Used | Alternatives to Avoid |
-| :--- | :--- |
-| **Wallet** | Account, Bank, Pocket |
-| **Transaction** | Entry, Record |
-| **Budget** | Limit, Cap |
-| **Goal** | Target, Dream |
-| **Income** | Revenue, Earnings |
-| **Expense** | Cost, Burden |
-| **Category** | Type, Kind |
-| **Transfer** | Move Funds, Send Money |
-| **Manage** | Organize, Admin |
-| **Save** | Submit, Send, Ok |
-| **Smart Add** | Quick Input, AI Input |
 
-## AI Conversations (Conversational Refinement)
 
-The Smart Add feature now supports two-way interaction. Use the following principles when the AI interacts with the user:
+---
 
-### Clarifying Ambiguity
-When the AI is unsure about user input, ask helpful but casual questions.
-- **Use**: "Does this go under 'Needs' or 'Lifestyle'?", "Should this order go to BCA or Cash wallet?"
-- **Avoid**: "Input unclear. Select category.", "Incomplete data."
+2.2 Clear & Concise
 
-### corrections via Chat
-Provide responses that show the AI understands the user's correction.
-- **User Input Example**: "Oops wrong one, used BCA credit card instead."
-- **AI Response (Implicit)**: AI immediately updates the data on screen without long extra messages, or simply "Okay, I've switched it to BCA credit card!"
+Avoid financial jargon.
 
+Use short sentences.
+
+One idea per sentence.
+
+Prefer active voice.
+
+
+Example:
+
+"Add a new transaction."
+
+Avoid: "A new transaction can be added."
+
+
+
+---
+
+2.3 Helpful & Actionable
+
+Always guide the user toward the next step.
+
+Error messages must explain what happened and what to do next.
+
+
+
+---
+
+3. Emotional Context Handling
+
+Financial apps must handle sensitive situations carefully.
+
+3.1 When User Exceeds Budget
+
+Avoid blame or shame.
+
+Avoid: "You exceeded your budget."
+
+Use: "You've gone over this budget. Want to review your recent expenses?"
+
+
+
+---
+
+3.2 When User Has Low Balance
+
+Be neutral and supportive.
+
+Avoid: "Insufficient funds."
+
+Use: "This wallet doesn’t have enough balance for this transfer."
+
+
+
+---
+
+3.3 When Goals Are Not Met
+
+Encourage without pressure.
+
+Avoid: "Goal failed."
+
+Use: "You’re not there yet. Let’s adjust your plan and keep going."
+
+
+
+---
+
+4. Action Messages (Buttons & Links)
+
+4.1 Primary Actions
+
+Use strong, specific verbs.
+
+Use:
+
+"Create New Budget"
+
+"Save Transaction"
+
+"Add Wallet"
+
+"Confirm Transfer"
+
+
+Avoid:
+
+"Submit"
+
+"Okay"
+
+"Send"
+
+
+Primary CTA max length: 3–4 words.
+
+
+---
+
+4.2 Destructive Actions
+
+Be explicit and serious.
+
+Use:
+
+"Delete Wallet"
+
+"Delete Permanently"
+
+"Confirm Deletion"
+
+
+Never soften destructive actions with vague wording.
+
+
+---
+
+5. Page & Modal Titles
+
+Titles must clearly describe the content.
+
+Use:
+
+"Add New Transaction"
+
+"Edit Wallet"
+
+"Transfer Between Wallets"
+
+
+Avoid generic titles like "Details" or "Manage".
+
+
+---
+
+6. Confirmation Messages (Toasts & Alerts)
+
+Short and reassuring.
+
+Success:
+
+"Transaction added successfully."
+
+"Budget created."
+
+"Changes saved."
+
+
+Information:
+
+"You have logged out."
+
+
+Keep under 10 words when possible.
+
+
+---
+
+7. Error Message Framework
+
+Errors must follow this structure:
+
+1. What happened
+
+
+2. Why (if necessary)
+
+
+3. What to do next
+
+
+
+7.1 Validation Errors
+
+Direct and specific.
+
+"Budget name cannot be empty."
+
+
+---
+
+7.2 System or Network Errors
+
+Calm and reassuring.
+
+"We’re having trouble connecting. Please try again."
+
+Avoid technical terms like "server error" or "exception".
+
+
+---
+
+7.3 Permission Errors
+
+Clear and instructive.
+
+"You don’t have access to edit this wallet."
+
+
+---
+
+8. Empty States
+
+Empty states should guide action.
+
+Structure:
+
+1. State what is missing.
+
+
+2. Encourage next step.
+
+
+
+Examples:
+
+"No transactions yet. Add your first one."
+
+"You don’t have any wallets. Create your first wallet to get started."
+
+
+Keep it short and motivating.
+
+
+---
+
+9. Consistent Terminology
+
+Use only these terms:
+
+Term Used	Avoid
+
+Wallet	Account, Bank, Pocket
+Transaction	Entry, Record
+Budget	Limit, Cap
+Goal	Target, Dream
+Income	Revenue, Earnings
+Expense	Cost, Burden
+Category	Type, Kind
+Transfer	Move Funds, Send Money
+Manage	Organize, Admin
+Save	Submit, Send, Ok
+Smart Add	Quick Input, AI Input
+
+
+Do not mix terminology across screens.
+
+
+---
+
+10. AI Conversation Guidelines (Smart Add)
+
+The AI should feel efficient, calm, and natural.
+
+10.1 Clarifying Ambiguity
+
+Ask casual but clear questions.
+
+Use:
+
+"Does this go under 'Needs' or 'Lifestyle'?"
+
+"Should this use BCA or Cash wallet?"
+
+
+Avoid robotic phrasing:
+
+"Input unclear. Select category."
+
+
+
+---
+
+10.2 Handling Corrections
+
+Keep responses short.
+
+User: "Oops wrong one, used BCA credit card instead."
+
+AI: "Okay, I’ve switched it to BCA credit card."
+
+Do not over-explain.
+
+
+---
+
+10.3 AI Personality Boundaries
+
+The AI:
+
+Should not joke about money.
+
+Should not criticize spending.
+
+Should not sound overly enthusiastic.
+
+Should not give financial advice beyond tracking and organizing.
+
+
+The AI may:
+
+Gently encourage.
+
+Clarify.
+
+Summarize clearly.
+
+
+
+---
+
+11. Writing Constraints
+
+Avoid emojis in core financial actions.
+
+Avoid slang.
+
+Avoid exclamation marks in serious contexts.
+
+Use sentence case (not ALL CAPS).
+
+Keep most UI text under 12 words.
+
+
+
+---
+
+12. Accessibility & Inclusivity
+
+Use simple language.
+
+Avoid idioms that may confuse non-native speakers.
+
+Avoid culturally specific jokes.
+
+Avoid gendered language.
+
+
+
+---
+
+Final Principle
+
+If a sentence makes the user feel judged, confused, or overwhelmed — rewrite it.
+
+Lemon should always feel calm, clear, and in control.
