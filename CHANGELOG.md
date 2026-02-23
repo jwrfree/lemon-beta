@@ -2,7 +2,43 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Version 2.5.2] - 22 February 2026
+## [Version 2.5.3] - 22 February 2026
+
+### 🐛 Bug Fixes — Smart Add Flow
+
+- **`resolveSubCategory` — Special-Character Normalization**:
+  - Fixed fuzzy sub-category matching to correctly match inputs like `"bayar parkir tol"` → `"Parkir & Tol"` and `"isi bensin di pom"` → `"Bensin"`.
+  - Added a `normalizeForFuzzy` helper that strips punctuation (`&`, `/`, `(`, `)`, etc.) before bidirectional substring comparison, making matching robust to Indonesian address/category formatting.
+
+- **`quickParseTransaction` — Word-Level Sub-Category Matching**:
+  - Quick parser now splits sub-category names by delimiters (`/`, `&`, `()`, spaces) and checks for individual word matches (minimum 4 chars) in the input text.
+  - Example: `"makan 25rb"` now correctly matches `"Konsumsi & F&B"` via the word `"makan"` in `"Makan Harian/Warteg"`, returning `confidence: 'medium'` instead of `'low'`.
+
+- **`saveTransaction` — Transfer Wallet Not Found**:
+  - Previously, if a transfer's source/destination wallet names were not resolved, the transaction silently fell through and was added as a regular transaction.
+  - Fixed: now shows an error toast `"Dompet asal atau tujuan transfer tidak ditemukan."` and returns `false`.
+
+- **`saveTransaction` / `saveMultiTransactions` — Proper `isSaving` State**:
+  - Introduced `isSaving` state in `useSmartAddFlow` that is set during save operations and exposed in the hook return value.
+  - The save button in `SmartAddPage` now uses `isSaving` (instead of the always-false `isSubmitting` from the unrelated `useTransactionForm`) for its `disabled` prop and loading spinner, preventing double-submit.
+
+- **`useWalletActions.deleteWallet` — Error Message Consistency**:
+  - Standardized the toast message when a wallet with existing transactions cannot be deleted to `"Gagal menghapus: Dompet masih memiliki riwayat transaksi."`.
+
+### 🧪 Test Fixes
+
+- **`use-wallet-actions.test.ts`**:
+  - Added mock for `debt_payments` table query that was missing after `deleteWallet` gained a debt-payment safety check, fixing a `TypeError: supabase.from(...).select is not a function` crash.
+  - Fixed delete chain mock to support the two-chained `.eq()` calls (`.eq('id', …).eq('user_id', …)`).
+
+- **`use-transaction-actions.test.ts`** and **`use-transfer-actions.test.ts`**:
+  - Updated tests to mock `transactionService` directly (instead of raw `supabase.from().insert()`) to match the current RPC-based implementation.
+  - Added missing `useWalletData` mock to prevent `WalletProvider` context error.
+
+- **`sheet.test.tsx`**:
+  - Replaced `toBeInTheDocument()` / `not.toBeInTheDocument()` assertions (requires `@testing-library/jest-dom` setup) with standard vitest `toBeDefined()` / `toBeNull()` equivalents.
+
+
 
 ### ✨ Smart Add — Complete Transaction Flow
 
@@ -37,7 +73,7 @@ All updates and improvements to the Lemon app will be documented here.
 - **`quickParseTransaction` Test Suite**: Added comprehensive tests for the regex-based fast parser covering: amount suffixes (`rb`/`k`/`jt`/`juta`/Indonesian thousand separator/plain integers), confidence levels, category + sub-category detection, transaction type, need/want classification, wallet detection, `kemarin` date offset, and transfer keyword detection.
 - **`SheetContent hideCloseButton` Tests**: New `sheet.test.tsx` verifying the close button is present by default and absent when `hideCloseButton={true}`, with children rendering correctly in both cases.
 
-## [Version 2.5.1] - 22 February 2026
+## [Version 2.5.2] - 22 February 2026
 
 ### 🔧 Critical Category Database Fix
 

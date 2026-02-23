@@ -7,12 +7,6 @@ const mockShowToast = vi.fn();
 const mockSetIsTxModalOpen = vi.fn();
 const mockLogActivity = vi.fn();
 
-// Supabase Chain Mocks
-const mockFrom = vi.fn();
-const mockInsert = vi.fn();
-const mockUpdate = vi.fn();
-const mockDelete = vi.fn();
-
 vi.mock('@/components/ui-provider', () => ({
   useUI: () => ({
     showToast: mockShowToast,
@@ -21,43 +15,34 @@ vi.mock('@/components/ui-provider', () => ({
   }),
 }));
 
+vi.mock('@/providers/wallet-provider', () => ({
+  useWalletData: () => ({
+    refreshWallets: vi.fn().mockResolvedValue(undefined),
+    updateWalletOptimistically: vi.fn(),
+  }),
+}));
+
 vi.mock('@/lib/audit', () => ({
   logActivity: (args: { action: string; entity: string; entityId?: string; details?: Record<string, unknown> }) => mockLogActivity(args),
 }));
 
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: () => ({
-    from: mockFrom,
-  }),
+vi.mock('../services/transaction.service', () => ({
+  transactionService: {
+    createTransaction: vi.fn().mockResolvedValue({ data: 'tx-1', error: null }),
+    updateTransaction: vi.fn().mockResolvedValue({ data: true, error: null }),
+    deleteTransaction: vi.fn().mockResolvedValue({ data: true, error: null }),
+  },
 }));
 
 import { User } from '@supabase/supabase-js';
+import { transactionService } from '../services/transaction.service';
 
 describe('useTransactionActions', () => {
   const mockUser = { id: 'user-123' } as unknown as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // -- Chain Setup --
-    mockInsert.mockResolvedValue({ error: null });
-
-    const updateEqMock = vi.fn().mockResolvedValue({ error: null });
-    mockUpdate.mockReturnValue({ eq: updateEqMock });
-
-    const deleteEqMock = vi.fn().mockResolvedValue({ error: null });
-    mockDelete.mockReturnValue({ eq: deleteEqMock });
-
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'transactions') {
-        return {
-          insert: mockInsert,
-          update: mockUpdate,
-          delete: mockDelete,
-        };
-      }
-      return {};
-    });
+    vi.mocked(transactionService.createTransaction).mockResolvedValue({ data: 'tx-1', error: null });
   });
 
   it('should add an expense transaction successfully', async () => {
@@ -76,13 +61,7 @@ describe('useTransactionActions', () => {
       await result.current.addTransaction(newTransaction);
     });
 
-    const { walletId, ...rest } = newTransaction;
-    expect(mockInsert).toHaveBeenCalledWith({
-      ...rest,
-      wallet_id: walletId,
-      user_id: mockUser.id,
-    });
-
+    expect(transactionService.createTransaction).toHaveBeenCalledTimes(1);
     expect(mockShowToast).toHaveBeenCalledWith("Transaksi berhasil ditambahkan!", 'success');
     expect(mockSetIsTxModalOpen).toHaveBeenCalledWith(false);
   });
@@ -103,18 +82,12 @@ describe('useTransactionActions', () => {
       await result.current.addTransaction(newTransaction);
     });
 
-    const { walletId, ...rest } = newTransaction;
-    expect(mockInsert).toHaveBeenCalledWith({
-      ...rest,
-      wallet_id: walletId,
-      user_id: mockUser.id,
-    });
-
+    expect(transactionService.createTransaction).toHaveBeenCalledTimes(1);
     expect(mockShowToast).toHaveBeenCalledWith("Transaksi berhasil ditambahkan!", 'success');
   });
 
   it('should handle errors when adding transaction', async () => {
-    mockInsert.mockResolvedValue({ error: { message: 'DB Error' } });
+    vi.mocked(transactionService.createTransaction).mockResolvedValue({ data: null, error: "Gagal menambahkan transaksi." });
     const { result } = renderHook(() => useTransactionActions(mockUser));
 
     await act(async () => {

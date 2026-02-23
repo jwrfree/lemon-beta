@@ -6,10 +6,6 @@ import { useTransferActions } from './use-transfer-actions';
 const mockShowToast = vi.fn();
 const mockSetIsTransferModalOpen = vi.fn();
 
-// Supabase Mocks
-const mockFrom = vi.fn();
-const mockInsert = vi.fn();
-
 vi.mock('@/components/ui-provider', () => ({
   useUI: () => ({
     showToast: mockShowToast,
@@ -17,27 +13,28 @@ vi.mock('@/components/ui-provider', () => ({
   }),
 }));
 
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: () => ({
-    from: mockFrom,
+vi.mock('@/providers/wallet-provider', () => ({
+  useWalletData: () => ({
+    refreshWallets: vi.fn().mockResolvedValue(undefined),
+    updateWalletOptimistically: vi.fn(),
   }),
 }));
 
+vi.mock('../services/transaction.service', () => ({
+  transactionService: {
+    createTransaction: vi.fn().mockResolvedValue({ data: 'Transfer successful', error: null }),
+  },
+}));
+
 import { User } from '@supabase/supabase-js';
+import { transactionService } from '../services/transaction.service';
 
 describe('useTransferActions', () => {
   const mockUser = { id: 'user-123' } as unknown as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // -- Chain Setup --
-    mockInsert.mockResolvedValue({ error: null });
-
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'transactions') return { insert: mockInsert };
-      return {};
-    });
+    vi.mocked(transactionService.createTransaction).mockResolvedValue({ data: 'Transfer successful', error: null });
   });
 
   it('should execute a transfer successfully', async () => {
@@ -55,18 +52,17 @@ describe('useTransferActions', () => {
       await result.current.addTransfer(transferData);
     });
 
-    // 1. Should create 2 transactions (expense & income)
-    expect(mockInsert).toHaveBeenCalledTimes(2);
-    expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
-      type: 'expense',
-      amount: 500,
-      wallet_id: 'w1'
-    }));
-    expect(mockInsert).toHaveBeenCalledWith(expect.objectContaining({
-      type: 'income',
-      amount: 500,
-      wallet_id: 'w2'
-    }));
+    // Should call transactionService.createTransaction once with type='transfer'
+    expect(transactionService.createTransaction).toHaveBeenCalledTimes(1);
+    expect(transactionService.createTransaction).toHaveBeenCalledWith(
+      mockUser.id,
+      expect.objectContaining({
+        type: 'transfer',
+        fromWalletId: 'w1',
+        toWalletId: 'w2',
+        amount: 500,
+      })
+    );
 
     expect(mockShowToast).toHaveBeenCalledWith("Transfer berhasil dicatat!", 'success');
     expect(mockSetIsTransferModalOpen).toHaveBeenCalledWith(false);

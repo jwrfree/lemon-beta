@@ -44,8 +44,9 @@ describe('useWalletActions', () => {
     const updateEqMock = vi.fn().mockResolvedValue({ error: null });
     mockUpdate.mockReturnValue({ eq: updateEqMock });
 
-    // delete: from('...').delete().eq(...)
-    const deleteEqMock = vi.fn().mockResolvedValue({ error: null });
+    // delete: from('...').delete().eq(...).eq(...)
+    const deleteEqChainMock = vi.fn().mockResolvedValue({ error: null });
+    const deleteEqMock = vi.fn().mockReturnValue({ eq: deleteEqChainMock });
     mockDelete.mockReturnValue({ eq: deleteEqMock });
 
     // update is_default: from('...').update(...).eq(...) - reused updateEqMock
@@ -66,6 +67,11 @@ describe('useWalletActions', () => {
         return {
           select: mockSelect,
         };
+      }
+      if (table === 'debt_payments') {
+        // No debt payments by default — allow deletion to proceed
+        const noneEqMock = vi.fn().mockResolvedValue({ count: 0, error: null });
+        return { select: vi.fn().mockReturnValue({ eq: noneEqMock }) };
       }
       return {};
     });

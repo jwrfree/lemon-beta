@@ -10,7 +10,7 @@ describe('SheetContent - hideCloseButton prop', () => {
             </Sheet>
         );
         // The default SheetContent includes a SheetPrimitive.Close with sr-only "Close" text
-        expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /close/i })).toBeDefined();
     });
 
     it('does not render the close button when hideCloseButton={true}', () => {
@@ -19,7 +19,7 @@ describe('SheetContent - hideCloseButton prop', () => {
                 <SheetContent hideCloseButton>Sheet body</SheetContent>
             </Sheet>
         );
-        expect(screen.queryByRole('button', { name: /close/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /close/i })).toBeNull();
     });
 
     it('still renders children when hideCloseButton={true}', () => {
@@ -30,7 +30,7 @@ describe('SheetContent - hideCloseButton prop', () => {
                 </SheetContent>
             </Sheet>
         );
-        expect(screen.getByText('Smart Add Content')).toBeInTheDocument();
+        expect(screen.getByText('Smart Add Content')).toBeDefined();
     });
 
     it('renders children regardless of hideCloseButton value', () => {
@@ -39,13 +39,13 @@ describe('SheetContent - hideCloseButton prop', () => {
                 <SheetContent>Content A</SheetContent>
             </Sheet>
         );
-        expect(screen.getByText('Content A')).toBeInTheDocument();
+        expect(screen.getByText('Content A')).toBeDefined();
 
         rerender(
             <Sheet open={true}>
                 <SheetContent hideCloseButton>Content A</SheetContent>
             </Sheet>
         );
-        expect(screen.getByText('Content A')).toBeInTheDocument();
+        expect(screen.getByText('Content A')).toBeDefined();
     });
 });
