@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client';
-import { Transaction, TransactionInput } from '@/types/models';
+import type { Transaction, TransactionInput, TransactionRow } from '@/types/models';
 import { UnifiedTransactionFormValues } from '../schemas/transaction-schema';
 
 // Standardized Result Pattern for Robust Error Handling
@@ -7,6 +7,22 @@ export type ServiceResult<T> = {
     data: T | null;
     error: string | null;
 };
+
+export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
+    id: t.id,
+    amount: t.amount,
+    category: t.category,
+    date: t.date,
+    description: t.description,
+    type: t.type,
+    walletId: t.wallet_id,
+    userId: t.user_id,
+    createdAt: t.created_at,
+    updatedAt: t.updated_at,
+    subCategory: t.sub_category || undefined,
+    location: t.location || undefined,
+    isNeed: t.is_need
+});
 
 class TransactionService {
     private get supabase() { return createClient(); }
@@ -185,6 +201,20 @@ class TransactionService {
                 error: this.formatError(err),
             };
         }
+    }
+
+    /**
+     * Get all transactions for a user, ordered by date descending.
+     */
+    async getTransactions(userId: string): Promise<Transaction[]> {
+        const { data, error } = await this.supabase
+            .from('transactions')
+            .select('*')
+            .eq('user_id', userId)
+            .order('date', { ascending: false });
+
+        if (error) throw error;
+        return (data || []).map(mapTransactionFromDb);
     }
 
     /**

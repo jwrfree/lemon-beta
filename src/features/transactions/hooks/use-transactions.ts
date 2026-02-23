@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction } from '@/types/models';
-import { transactionService } from '@/lib/services/transaction-service';
+import { transactionService } from '../services/transaction.service';
 import { useCategories } from './use-categories';
 
 export { useCategories };
