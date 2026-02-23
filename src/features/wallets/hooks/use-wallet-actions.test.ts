@@ -7,14 +7,6 @@ const mockShowToast = vi.fn();
 const mockSetIsWalletModalOpen = vi.fn();
 const mockSetIsEditWalletModalOpen = vi.fn();
 
-// Supabase Chain Mocks
-const mockFrom = vi.fn();
-const mockInsert = vi.fn();
-const mockSelect = vi.fn();
-const mockUpdate = vi.fn();
-const mockDelete = vi.fn();
-const mockEq = vi.fn();
-
 vi.mock('@/components/ui-provider', () => ({
   useUI: () => ({
     showToast: mockShowToast,
@@ -23,58 +15,27 @@ vi.mock('@/components/ui-provider', () => ({
   }),
 }));
 
-vi.mock('@/lib/supabase/client', () => ({
-  createClient: () => ({
-    from: mockFrom,
-  }),
+vi.mock('@/lib/services/wallet-service', () => ({
+  walletService: {
+    addWallet: vi.fn().mockResolvedValue(undefined),
+    updateWallet: vi.fn().mockResolvedValue(undefined),
+    deleteWallet: vi.fn().mockResolvedValue({ blocked: null }),
+    reconcileWallet: vi.fn().mockResolvedValue(undefined),
+  },
 }));
 
 import { User } from '@supabase/supabase-js';
+import { walletService } from '@/lib/services/wallet-service';
 
 describe('useWalletActions', () => {
   const mockUser = { id: 'user-123' } as unknown as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // -- Chain Setup --
-    mockInsert.mockResolvedValue({ error: null });
-
-    // update: from('...').update(...).eq(...)
-    const updateEqMock = vi.fn().mockResolvedValue({ error: null });
-    mockUpdate.mockReturnValue({ eq: updateEqMock });
-
-    // delete: from('...').delete().eq(...).eq(...)
-    const deleteEqChainMock = vi.fn().mockResolvedValue({ error: null });
-    const deleteEqMock = vi.fn().mockReturnValue({ eq: deleteEqChainMock });
-    mockDelete.mockReturnValue({ eq: deleteEqMock });
-
-    // update is_default: from('...').update(...).eq(...) - reused updateEqMock
-
-    // select for check: from('transactions').select(...).eq(...)
-    const selectEqMock = vi.fn().mockResolvedValue({ count: 0 }); // Default no transactions
-    mockSelect.mockReturnValue({ eq: selectEqMock });
-
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'wallets') {
-        return {
-          insert: mockInsert,
-          update: mockUpdate,
-          delete: mockDelete,
-        };
-      }
-      if (table === 'transactions') {
-        return {
-          select: mockSelect,
-        };
-      }
-      if (table === 'debt_payments') {
-        // No debt payments by default — allow deletion to proceed
-        const noneEqMock = vi.fn().mockResolvedValue({ count: 0, error: null });
-        return { select: vi.fn().mockReturnValue({ eq: noneEqMock }) };
-      }
-      return {};
-    });
+    vi.mocked(walletService.addWallet).mockResolvedValue(undefined);
+    vi.mocked(walletService.updateWallet).mockResolvedValue(undefined);
+    vi.mocked(walletService.deleteWallet).mockResolvedValue({ blocked: null });
+    vi.mocked(walletService.reconcileWallet).mockResolvedValue(undefined);
   });
 
   describe('addWallet', () => {
@@ -92,21 +53,13 @@ describe('useWalletActions', () => {
         await result.current.addWallet(newWallet);
       });
 
-      expect(mockInsert).toHaveBeenCalledWith({
-        name: newWallet.name,
-        balance: newWallet.balance,
-        icon: newWallet.icon,
-        color: newWallet.color,
-        is_default: newWallet.isDefault,
-        user_id: mockUser.id,
-      });
-
+      expect(walletService.addWallet).toHaveBeenCalledWith(mockUser.id, newWallet);
       expect(mockShowToast).toHaveBeenCalledWith("Dompet berhasil dibuat!", 'success');
       expect(mockSetIsWalletModalOpen).toHaveBeenCalledWith(false);
     });
 
     it('should handle errors when adding wallet', async () => {
-      mockInsert.mockResolvedValue({ error: { message: 'DB Error' } });
+      vi.mocked(walletService.addWallet).mockRejectedValue(new Error('DB Error'));
       const { result } = renderHook(() => useWalletActions(mockUser));
 
       await act(async () => {
@@ -126,22 +79,9 @@ describe('useWalletActions', () => {
         await result.current.updateWallet('wallet-1', updateData);
       });
 
-      expect(mockUpdate).toHaveBeenCalledWith({ name: 'New Name' });
+      expect(walletService.updateWallet).toHaveBeenCalledWith(mockUser.id, 'wallet-1', updateData);
       expect(mockShowToast).toHaveBeenCalledWith("Dompet berhasil diperbarui!", 'success');
       expect(mockSetIsEditWalletModalOpen).toHaveBeenCalledWith(false);
-    });
-
-    it('should reset other defaults if setting as default', async () => {
-      const { result } = renderHook(() => useWalletActions(mockUser));
-
-      await act(async () => {
-        await result.current.updateWallet('wallet-1', { isDefault: true });
-      });
-
-      // Should first unset all defaults
-      expect(mockUpdate).toHaveBeenCalledWith({ is_default: false });
-      // Then set the specific wallet as default
-      expect(mockUpdate).toHaveBeenCalledWith({ is_default: true });
     });
   });
 
@@ -153,14 +93,13 @@ describe('useWalletActions', () => {
         await result.current.deleteWallet('wallet-1');
       });
 
-      expect(mockDelete).toHaveBeenCalled();
+      expect(walletService.deleteWallet).toHaveBeenCalledWith(mockUser.id, 'wallet-1');
       expect(mockShowToast).toHaveBeenCalledWith("Dompet berhasil dihapus.", 'success');
     });
 
     it('should prevent deletion if transactions exist', async () => {
-      // Mock transaction existence
-      mockSelect.mockReturnValue({
-        eq: vi.fn().mockResolvedValue({ count: 5 })
+      vi.mocked(walletService.deleteWallet).mockResolvedValue({
+        blocked: 'Gagal menghapus: Dompet masih memiliki riwayat transaksi.'
       });
 
       const { result } = renderHook(() => useWalletActions(mockUser));
@@ -169,7 +108,6 @@ describe('useWalletActions', () => {
         await result.current.deleteWallet('wallet-1');
       });
 
-      expect(mockDelete).not.toHaveBeenCalled();
       expect(mockShowToast).toHaveBeenCalledWith("Gagal menghapus: Dompet masih memiliki riwayat transaksi.", 'error');
     });
   });
