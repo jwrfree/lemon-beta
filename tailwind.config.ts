@@ -126,6 +126,15 @@ export default {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        // Design-system named tiers — use these instead of arbitrary values
+        'card':         'var(--radius-card)',          // flat / list cards
+        'card-premium': 'var(--radius-card-premium)',  // DNA-gradient premium cards
+        'card-glass':   'var(--radius-card-glass)',    // glass inset panels inside premium cards
+        'card-icon':    'var(--radius-card-icon)',     // icon containers inside premium cards
+      },
+      fontSize: {
+        // Design-system label token — use `text-label` instead of text-[10px], text-[9px], text-[11px]
+        'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.1em', fontWeight: '600' }],
       },
       keyframes: {
         'accordion-down': {
