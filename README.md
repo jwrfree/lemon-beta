@@ -44,7 +44,7 @@ Lemon is a modern financial companion designed to help Indonesia's digital worke
 - [Product Blueprint](./docs/blueprint.md) – Information architecture reference, detailed flows, motion specs, and roadmap.
 - [Complexity Control Guide](./docs/complexity-control-guide.md) – Mandatory guardrails for information architecture and UI density.
 - [Changelog](./CHANGELOG.md) – History of feature updates and technical improvements.
-- [UX Writing Guide](./UX_WRITING_GUIDE.md) – Style guide for microcopy.
+- [UX Writing Guide](./docs/UX_WRITING_GUIDE.md) – Style guide for microcopy.
 
 ## 🛠️ Tech Stack
 - **Framework:** Next.js (App Router)
