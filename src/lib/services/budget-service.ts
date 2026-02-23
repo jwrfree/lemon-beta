@@ -45,11 +45,11 @@ export const budgetService = {
     async updateBudget(budgetId: string, budgetData: Partial<Budget>): Promise<void> {
         const supabase = createClient();
         const updateData: Partial<BudgetRow> = {};
-        if (budgetData.name) updateData.name = budgetData.name;
+        if (budgetData.name !== undefined) updateData.name = budgetData.name;
         if (budgetData.targetAmount !== undefined) updateData.amount = budgetData.targetAmount;
         if (budgetData.categories !== undefined) updateData.category = budgetData.categories[0];
         if (budgetData.subCategory !== undefined) updateData.sub_category = budgetData.subCategory || null;
-        if (budgetData.period) updateData.period = budgetData.period;
+        if (budgetData.period !== undefined) updateData.period = budgetData.period;
 
         const { error } = await supabase.from('budgets').update(updateData).eq('id', budgetId);
         if (error) throw error;
