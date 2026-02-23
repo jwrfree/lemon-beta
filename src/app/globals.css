@@ -142,6 +142,12 @@
     
     --radius: 0.875rem; /* 14px for mobile */
 
+    /* Design-system radius tiers */
+    --radius-card:         var(--radius);  /* flat / list cards */
+    --radius-card-premium: 2rem;           /* 32px — DNA-gradient premium cards */
+    --radius-card-glass:   1.5rem;         /* 24px — glass inset panels */
+    --radius-card-icon:    1.25rem;        /* 20px — icon containers inside premium cards */
+
     @media (min-width: 768px) {
       :root {
         --radius: 0.5rem; /* 8px for desktop */
@@ -256,6 +262,20 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+  }
+
+  /**
+   * Design-system utilities — use these instead of raw arbitrary-value classes.
+   *
+   * label-xs     : section micro-label (replaces text-[9px/10px/11px] + tracking-[0.Xem])
+   * number-display : financial amount display (replaces font-medium tracking-tighter tabular-nums)
+   */
+  .label-xs {
+    @apply text-xs font-semibold uppercase tracking-widest text-muted-foreground;
+  }
+
+  .number-display {
+    @apply font-medium tracking-tighter tabular-nums;
   }
 }
 
