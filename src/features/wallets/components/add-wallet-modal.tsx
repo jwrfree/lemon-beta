@@ -159,7 +159,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                     <div className="p-3 rounded-2xl bg-primary/5 group-hover:bg-primary/10 transition-colors">
                       <cat.Icon className="h-8 w-8 text-primary" />
                     </div>
-                    <span className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/80">{cat.name}</span>
+                    <span className="font-semibold text-[10px] uppercase tracking-widest text-muted-foreground/80">{cat.name}</span>
                   </div>
                 ))}
               </motion.div>
@@ -177,7 +177,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
               >
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="wallet-name" className={cn("text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1", errors.name && "text-destructive")}>Nama Dompet</Label>
+                    <Label htmlFor="wallet-name" className={cn("text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1", errors.name && "text-destructive")}>Nama Dompet</Label>
                     <Controller
                       control={control}
                       name="name"
@@ -197,7 +197,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   {popularWallets[selectedCategory.key] && (
                     <div className="flex flex-wrap gap-2 px-1">
                       {popularWallets[selectedCategory.key].map(name => (
-                        <Button key={name} type="button" variant="outline" size="sm" className="rounded-full h-8 px-4 text-[10px] font-bold uppercase tracking-wider" onClick={() => setValue('name', name, { shouldValidate: true })}>
+                        <Button key={name} type="button" variant="outline" size="sm" className="rounded-full h-8 px-4 text-[10px] font-semibold uppercase tracking-wider" onClick={() => setValue('name', name, { shouldValidate: true })}>
                           {name}
                         </Button>
                       ))}
@@ -205,7 +205,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   )}
 
                   <div className="space-y-3">
-                    <Label htmlFor="initial-balance" className={cn("text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1", errors.balance && "text-destructive")}>Saldo Awal</Label>
+                    <Label htmlFor="initial-balance" className={cn("text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1", errors.balance && "text-destructive")}>Saldo Awal</Label>
                     <Controller
                       control={control}
                       name="balance"
@@ -229,7 +229,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                     />
                     {errors.balance && <p className="text-xs font-medium text-destructive ml-1">{errors.balance.message}</p>}
                   </div>
-                  <Button type="submit" className="w-full h-14 rounded-full font-bold shadow-xl shadow-primary/20 transition-all active:scale-[0.98]" disabled={isSubmitting}>
+                  <Button type="submit" className="w-full h-14 rounded-full font-semibold shadow-xl shadow-primary/20 transition-all active:scale-[0.98]" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />

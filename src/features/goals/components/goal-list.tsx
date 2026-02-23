@@ -77,9 +77,9 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                                     <Icon className="h-6 w-6 text-white" strokeWidth={2.5} />
                                 </div>
                                 <div className='flex-1 min-w-0'>
-                                    <CardTitle className="text-lg font-bold tracking-tight truncate">{goal.name}</CardTitle>
+                                    <CardTitle className="text-lg font-semibold tracking-tight truncate">{goal.name}</CardTitle>
                                     {timeLeftText && (
-                                        <div className={cn("flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest mt-1.5", isOverdue ? "text-rose-300" : "text-white/50")}>
+                                        <div className={cn("flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-widest mt-1.5", isOverdue ? "text-rose-300" : "text-white/50")}>
                                             <CalendarClock className="h-3.5 w-3.5" />
                                             <span>{timeLeftText}</span>
                                         </div>
@@ -91,12 +91,12 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                                 <div className="space-y-5">
                                     <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner flex justify-between items-end">
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest mb-1.5">Accumulated</span>
-                                            <span className="text-2xl font-bold tracking-tighter tabular-nums text-white">{formatCurrency(goal.currentAmount)}</span>
+                                            <span className="text-[9px] font-semibold text-white/40 uppercase tracking-widest mb-1.5">Accumulated</span>
+                                            <span className="text-2xl font-semibold tracking-tighter tabular-nums text-white">{formatCurrency(goal.currentAmount)}</span>
                                         </div>
                                         <div className="flex flex-col items-end">
-                                            <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest mb-1.5 text-right">Target Goal</span>
-                                            <span className="text-sm font-bold tracking-tight text-white/70">{formatCurrency(goal.targetAmount)}</span>
+                                            <span className="text-[9px] font-semibold text-white/40 uppercase tracking-widest mb-1.5 text-right">Target Goal</span>
+                                            <span className="text-sm font-semibold tracking-tight text-white/70">{formatCurrency(goal.targetAmount)}</span>
                                         </div>
                                     </div>
                                     
@@ -109,7 +109,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                                                 className="absolute inset-y-0 left-0 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]"
                                             />
                                         </div>
-                                        <p className="text-[9px] font-bold text-white/40 text-right uppercase tracking-[0.3em]">{Math.round(progress)}% Completion</p>
+                                        <p className="text-[9px] font-semibold text-white/40 text-right uppercase tracking-[0.3em]">{Math.round(progress)}% Completion</p>
                                     </div>
                                 </div>
                             </CardContent>

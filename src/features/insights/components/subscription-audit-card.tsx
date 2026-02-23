@@ -51,7 +51,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                         )}
                     </div>
                     <div className="flex-1">
-                        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary mb-1">
+                        <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-primary mb-1">
                             AI Subscription Auditor
                         </p>
                         {isAiLoading ? (
@@ -69,7 +69,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 {/* 1. Monthly Burn Rate Card */}
                 <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px] overflow-hidden">
                     <CardHeader className="pb-2 px-6 pt-6">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-[0.2em]">
+                        <CardTitle className="text-[10px] font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-[0.2em]">
                             <CreditCard className="h-3.5 w-3.5 text-indigo-500" />
                             Biaya Langganan
                         </CardTitle>
@@ -79,11 +79,11 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                             <span className="text-4xl font-semibold tracking-tighter text-foreground tabular-nums">
                                 {formatCurrency(totalMonthlyBurn)}
                             </span>
-                            <span className="text-xs font-bold text-muted-foreground/40 uppercase tracking-widest">/ bln</span>
+                            <span className="text-xs font-semibold text-muted-foreground/40 uppercase tracking-widest">/ bln</span>
                         </div>
 
                         <div className="flex items-center gap-2 mt-3">
-                            <Badge variant="secondary" className="bg-muted/50 text-muted-foreground border-none text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">
+                            <Badge variant="secondary" className="bg-muted/50 text-muted-foreground border-none text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-widest">
                                 {activeSubscriptions} Layanan
                             </Badge>
                         </div>
@@ -93,7 +93,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 {/* 2. Silent Inflation Alerts */}
                 <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card relative overflow-hidden rounded-[32px]">
                     <CardHeader className="pb-2 px-6 pt-6">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-[0.2em]">
+                        <CardTitle className="text-[10px] font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-[0.2em]">
                             <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
                             Status Harga
                         </CardTitle>
@@ -110,10 +110,10 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                             <TrendingUp className="h-3 w-3 text-rose-600 dark:text-rose-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-rose-600 dark:text-rose-200 leading-tight uppercase tracking-tight">
+                                            <p className="text-xs font-semibold text-rose-600 dark:text-rose-200 leading-tight uppercase tracking-tight">
                                                 {anomaly.merchantName} naik!
                                             </p>
-                                            <p className="text-[10px] text-rose-500/80 mt-0.5 font-bold tracking-tighter tabular-nums">
+                                            <p className="text-[10px] text-rose-500/80 mt-0.5 font-semibold tracking-tighter tabular-nums">
                                                 +{formatCurrency(anomaly.difference)} <span className="opacity-50 text-[8px] font-medium tracking-normal">vs BLN LALU</span>
                                             </p>
                                         </div>
@@ -125,7 +125,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                 <div className="flex items-center gap-3 text-emerald-600 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/10">
                                     <CheckCircle2 className="h-5 w-5 shrink-0 opacity-80" />
                                     <div>
-                                        <p className="text-xs font-bold uppercase tracking-widest">Normal</p>
+                                        <p className="text-xs font-semibold uppercase tracking-widest">Normal</p>
                                         <p className="text-[10px] font-medium opacity-70">
                                             Biaya bulanan stabil.
                                         </p>

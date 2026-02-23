@@ -33,7 +33,7 @@ export const GoalsDashboard = () => {
                         <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
                             Mulailah menabung untuk impianmu hari ini.
                         </p>
-                        <Button onClick={() => setIsGoalModalOpen(true)} className="w-full rounded-full h-12 shadow-lg shadow-purple-500/20 bg-purple-600 hover:bg-purple-700 active:scale-95 transition-all font-bold text-xs uppercase tracking-widest text-white">
+                        <Button onClick={() => setIsGoalModalOpen(true)} className="w-full rounded-full h-12 shadow-lg shadow-purple-500/20 bg-purple-600 hover:bg-purple-700 active:scale-95 transition-all font-semibold text-xs uppercase tracking-widest text-white">
                             <Plus className="mr-2 h-4 w-4" />
                             Buat Target Baru
                         </Button>
@@ -50,8 +50,8 @@ export const GoalsDashboard = () => {
             {/* List */}
             <div>
                 <div className="flex items-center justify-between mb-4 px-2">
-                    <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Daftar Impian</h2>
-                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-purple-500/10 hover:text-purple-600">
+                    <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">Daftar Impian</h2>
+                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-[10px] font-semibold uppercase tracking-widest hover:bg-purple-500/10 hover:text-purple-600">
                         <Plus className="h-3.5 w-3.5 mr-1" />
                         Tambah
                     </Button>

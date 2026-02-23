@@ -49,7 +49,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
         <Card className="p-6 bg-card border-none rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col justify-between h-full relative overflow-hidden">
 
             <div className="flex justify-between items-start mb-4 z-10">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                     <Gauge className="w-4 h-4" />
                     Kesehatan
                 </h3>
@@ -112,13 +112,13 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
                 </div>
 
                 <div className="mt-6 text-center">
-                    <div className={cn("text-4xl font-bold tracking-tighter tabular-nums mb-1", colorClass)}>
+                    <div className={cn("text-4xl font-semibold tracking-tighter tabular-nums mb-1", colorClass)}>
                         {savingsRate > 999 || savingsRate < -999 ?
                             (savingsRate / 100).toFixed(1) + 'x' :
                             (Math.abs(savingsRate) >= 10 ? savingsRate.toFixed(0) : savingsRate.toFixed(1)) + '%'
                         }
                     </div>
-                    <p className={cn("text-sm font-bold uppercase tracking-widest leading-none mb-1", colorClass)}>{status}</p>
+                    <p className={cn("text-sm font-semibold uppercase tracking-widest leading-none mb-1", colorClass)}>{status}</p>
                     <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
                         {message}
                     </p>
@@ -148,14 +148,14 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
                 </div>
                 {trend && (
                     <Badge variant="outline" className={cn(
-                        "text-[10px] border-none font-bold",
+                        "text-[10px] border-none font-semibold",
                         trend.value < 0 ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
                     )}>
                         {trend.value > 0 ? '+' : ''}{trend.value.toFixed(0)}%
                     </Badge>
                 )}
             </div>
-            <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1">{title}</p>
+            <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">{title}</p>
             <p className="text-2xl font-semibold tracking-tighter tabular-nums mb-1 text-foreground">{value}</p>
             <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">{subtitle}</p>
         </Card>

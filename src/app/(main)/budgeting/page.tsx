@@ -118,16 +118,16 @@ export default function BudgetingPage() {
 
                                         <CardContent className="p-8 space-y-8 relative z-10">
                                             <div className="space-y-1">
-                                                <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">Ringkasan Bulan Ini</h2>
-                                                <p className="text-2xl font-bold tracking-tight">Kesehatan Anggaran</p>
+                                                <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/60">Ringkasan Bulan Ini</h2>
+                                                <p className="text-2xl font-semibold tracking-tight">Kesehatan Anggaran</p>
                                             </div>
 
                                             <div className="h-60 flex justify-center items-center relative">
                                                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                                    <p className="text-5xl font-bold tracking-tighter tabular-nums text-white">
+                                                    <p className="text-5xl font-semibold tracking-tighter tabular-nums text-white">
                                                         {Math.round(overview.percentUsed)}%
                                                     </p>
-                                                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest mt-1">Total Terpakai</p>
+                                                    <p className="text-[9px] font-semibold text-white/40 uppercase tracking-widest mt-1">Total Terpakai</p>
                                                 </div>
 
                                                 <ChartContainer config={{}} className="aspect-square h-full">
@@ -161,8 +161,8 @@ export default function BudgetingPage() {
                                                             <Sparkles className="h-5 w-5 text-[#064e4b]" />
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mb-0.5">Sisa Dana Aman</p>
-                                                            <p className="text-xl font-bold text-white tabular-nums truncate">
+                                                            <p className="text-[10px] font-semibold text-white/60 uppercase tracking-widest mb-0.5">Sisa Dana Aman</p>
+                                                            <p className="text-xl font-semibold text-white tabular-nums truncate">
                                                                 {formatCurrency(overview.totalRemaining)}
                                                             </p>
                                                         </div>

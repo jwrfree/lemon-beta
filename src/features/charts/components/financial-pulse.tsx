@@ -73,10 +73,10 @@ export function FinancialPulse({
                 {/* Left: Net Value */}
                 <div className="text-center md:text-left space-y-2">
                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                        <p className="text-xs md:text-sm font-bold text-white/50 uppercase tracking-[0.2em]">Sisa Uang (Cashflow)</p>
+                        <p className="text-xs md:text-sm font-semibold text-white/50 uppercase tracking-[0.2em]">Sisa Uang (Cashflow)</p>
                         {netChange !== 0 && (
                             <Badge className={cn(
-                                "text-[10px] font-bold px-1.5 py-0.5 h-5 rounded-full",
+                                "text-[10px] font-semibold px-1.5 py-0.5 h-5 rounded-full",
                                 netChange > 0 ? "bg-white/20 text-white border-white/30" : "bg-destructive/20 text-destructive-foreground border-destructive/30"
                             )}>
                                 {netChange > 0 ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
@@ -89,14 +89,14 @@ export function FinancialPulse({
                     </h1>
 
                     {/* Layer 1 AI Insight Sentence */}
-                    <div className="mt-6 flex items-center gap-2 text-white/80 md:text-sm text-[10px] font-bold uppercase tracking-widest bg-white/10 w-fit px-4 py-2 rounded-full border border-white/10 backdrop-blur-sm">
+                    <div className="mt-6 flex items-center gap-2 text-white/80 md:text-sm text-[10px] font-semibold uppercase tracking-widest bg-white/10 w-fit px-4 py-2 rounded-full border border-white/10 backdrop-blur-sm">
                         <TrendingUp className="w-3 h-3 text-white" />
                         <span>Kondisi <b className="text-white">12% lebih stabil</b></span>
                         <div className="h-3 w-px bg-white/20 mx-1" />
                         <button className="underline decoration-white/30 hover:decoration-white">Analitik</button>
                     </div>
 
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 text-[9px] font-bold uppercase tracking-widest mt-6">
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 text-[9px] font-semibold uppercase tracking-widest mt-6">
                         <span>Estimasi Akhir Bulan:</span>
                         <span className="text-white/80 tabular-nums font-semibold">{formatCurrency(projectedExpense)}</span>
                     </div>
@@ -107,13 +107,13 @@ export function FinancialPulse({
                     <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm shadow-sm">
                         <div className="flex items-center gap-2 text-white/50 mb-2">
                             <TrendingUp className="w-4 h-4" />
-                            <span className="text-[9px] font-bold uppercase tracking-widest">Pemasukan</span>
+                            <span className="text-[9px] font-semibold uppercase tracking-widest">Pemasukan</span>
                         </div>
                         <p className="text-lg md:text-xl font-semibold tabular-nums tracking-tighter">{formatCurrency(income)}</p>
                         <div className="w-full bg-white/10 h-1 mt-3 mb-2 rounded-full overflow-hidden">
                             <div className="bg-white/80 h-full rounded-full" style={{ width: '100%' }} />
                         </div>
-                        <div className={cn("text-[10px] font-bold flex items-center gap-1 flex-wrap uppercase tracking-tighter", incomeChange >= 0 ? "text-white" : "text-white/60")}>
+                        <div className={cn("text-[10px] font-semibold flex items-center gap-1 flex-wrap uppercase tracking-tighter", incomeChange >= 0 ? "text-white" : "text-white/60")}>
                             {incomeChange >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                             <span>{formatCurrency(Math.abs(incomeDiff))}</span>
                         </div>
@@ -121,13 +121,13 @@ export function FinancialPulse({
                     <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm shadow-sm">
                         <div className="flex items-center gap-2 text-white/50 mb-2">
                             <TrendingDown className="w-4 h-4" />
-                            <span className="text-[9px] font-bold uppercase tracking-widest">Pengeluaran</span>
+                            <span className="text-[9px] font-semibold uppercase tracking-widest">Pengeluaran</span>
                         </div>
                         <p className="text-lg md:text-xl font-semibold tabular-nums tracking-tighter">{formatCurrency(expense)}</p>
                         <div className="w-full bg-white/10 h-1 mt-3 mb-2 rounded-full overflow-hidden">
                             <div className="bg-white/80 h-full rounded-full" style={{ width: `${income > 0 ? Math.min((expense / income) * 100, 100) : 100}%` }} />
                         </div>
-                        <div className={cn("text-[10px] font-bold flex items-center gap-1 flex-wrap uppercase tracking-tighter", expenseChange <= 0 ? "text-white" : "text-white/60")}>
+                        <div className={cn("text-[10px] font-semibold flex items-center gap-1 flex-wrap uppercase tracking-tighter", expenseChange <= 0 ? "text-white" : "text-white/60")}>
                             {expenseChange <= 0 ? <ArrowDownRight className="w-3 h-3" /> : <ArrowUpRight className="w-3 h-3" />}
                             <span>{formatCurrency(Math.abs(expenseDiff))}</span>
                         </div>

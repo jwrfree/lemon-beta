@@ -18,7 +18,7 @@ export const DebtsEmptyState = () => {
                     <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h3 className="text-xl font-semibold tracking-tighter mb-2">Belum Ada Catatan</h3>
-                <p className="text-[10px] font-bold text-muted-foreground/60 max-w-[240px] mb-8 uppercase tracking-widest leading-relaxed">
+                <p className="text-[10px] font-semibold text-muted-foreground/60 max-w-[240px] mb-8 uppercase tracking-widest leading-relaxed">
                     Kelola hutang dan piutangmu dengan rapi dalam satu asisten cerdas.
                 </p>
                 <Button 
@@ -26,7 +26,7 @@ export const DebtsEmptyState = () => {
                         setDebtToEdit(null);
                         setIsDebtModalOpen(true);
                     }} 
-                    className="gap-2 rounded-full h-12 px-8 font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
+                    className="gap-2 rounded-full h-12 px-8 font-semibold text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
                 >
                     <Plus className="h-4 w-4" />
                     Catat Sekarang

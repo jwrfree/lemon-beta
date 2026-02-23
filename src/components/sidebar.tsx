@@ -57,7 +57,7 @@ export const Sidebar = () => {
             {/* 2. Primary Action - Aligned width */}
             <div className="mb-12 w-full">
                 {!isSidebarCollapsed && (
-                    <p className="text-[9px] font-bold text-muted-foreground/40 px-5 mb-4 uppercase tracking-[0.3em]">
+                    <p className="text-[9px] font-semibold text-muted-foreground/40 px-5 mb-4 uppercase tracking-[0.3em]">
                         Aksi Cepat
                     </p>
                 )}
@@ -78,7 +78,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-primary text-primary-foreground border-none">
+                            <TooltipContent side="right" sideOffset={20} className="font-semibold text-[10px] uppercase tracking-widest bg-primary text-primary-foreground border-none">
                                 Smart Add
                             </TooltipContent>
                         )}
@@ -89,7 +89,7 @@ export const Sidebar = () => {
             {/* 3. Navigation - Aligned Icons */}
             <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar w-full" aria-label="Navigasi utama">
                 {!isSidebarCollapsed && (
-                    <p className="text-[9px] font-bold text-muted-foreground/40 px-5 mb-4 uppercase tracking-[0.3em]">
+                    <p className="text-[9px] font-semibold text-muted-foreground/40 px-5 mb-4 uppercase tracking-[0.3em]">
                         Menu Utama
                     </p>
                 )}
@@ -126,7 +126,7 @@ export const Sidebar = () => {
                                     </Link>
                                 </TooltipTrigger>
                                 {isSidebarCollapsed && (
-                                    <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
+                                    <TooltipContent side="right" sideOffset={20} className="font-semibold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
                                         {item.name}
                                     </TooltipContent>
                                 )}
@@ -155,7 +155,7 @@ export const Sidebar = () => {
                                 </Button>
                             </TooltipTrigger>
                             {isSidebarCollapsed && (
-                                <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-primary border-primary/20 shadow-xl">
+                                <TooltipContent side="right" sideOffset={20} className="font-semibold text-[10px] uppercase tracking-widest bg-card text-primary border-primary/20 shadow-xl">
                                     Install App
                                 </TooltipContent>
                             )}
@@ -177,7 +177,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
+                            <TooltipContent side="right" sideOffset={20} className="font-semibold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
                                 {isBalanceVisible ? 'Sembunyikan Saldo' : 'Tampilkan Saldo'}
                             </TooltipContent>
                         )}
@@ -198,7 +198,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
+                            <TooltipContent side="right" sideOffset={20} className="font-semibold text-[10px] uppercase tracking-widest bg-card text-foreground border-border shadow-xl">
                                 Perluas Sidebar
                             </TooltipContent>
                         )}
@@ -220,7 +220,7 @@ export const Sidebar = () => {
                                 </Button>
                             </TooltipTrigger>
                             {isSidebarCollapsed && (
-                                <TooltipContent side="right" sideOffset={20} className="font-bold text-[10px] uppercase tracking-widest bg-destructive text-destructive-foreground border-none shadow-xl">
+                                <TooltipContent side="right" sideOffset={20} className="font-semibold text-[10px] uppercase tracking-widest bg-destructive text-destructive-foreground border-none shadow-xl">
                                     Keluar Akun
                                 </TooltipContent>
                             )}
