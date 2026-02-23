@@ -60,11 +60,11 @@ export const useBudgets = () => {
         };
 
         const handleTransactionUpdated = () => {
-            refreshBudgets();
+            void refreshBudgets().catch(err => console.error("Error refreshing budgets:", err));
         };
 
         const handleTransactionDeleted = () => {
-             refreshBudgets();
+            void refreshBudgets().catch(err => console.error("Error refreshing budgets:", err));
         };
 
         transactionEvents.on('transaction.created', handleTransactionCreated);
@@ -130,7 +130,11 @@ export const useBudgets = () => {
             showToast("Anggaran berhasil diperbarui!", 'success');
         } catch {
             showToast("Gagal memperbarui anggaran.", 'error');
-            refreshBudgets(); // Revert by fetching
+            try {
+                await refreshBudgets(); // Revert by fetching
+            } catch {
+                showToast("Gagal memuat ulang anggaran.", 'error');
+            }
         }
     }, [user, showToast, setIsEditBudgetModalOpen, refreshBudgets]);
 

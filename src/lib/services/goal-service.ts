@@ -43,11 +43,11 @@ export const goalService = {
     async updateGoal(goalId: string, goalData: Partial<Goal>): Promise<void> {
         const supabase = createClient();
         const dbPayload: Partial<GoalRow> = {};
-        if (goalData.name) dbPayload.name = goalData.name;
+        if (goalData.name !== undefined) dbPayload.name = goalData.name;
         if (goalData.targetAmount !== undefined) dbPayload.target_amount = goalData.targetAmount;
         if (goalData.currentAmount !== undefined) dbPayload.current_amount = goalData.currentAmount;
-        if (goalData.targetDate) dbPayload.target_date = goalData.targetDate;
-        if (goalData.icon) dbPayload.icon = goalData.icon;
+        if (goalData.targetDate !== undefined) dbPayload.target_date = goalData.targetDate;
+        if (goalData.icon !== undefined) dbPayload.icon = goalData.icon;
 
         const { error } = await supabase.from('goals').update(dbPayload).eq('id', goalId);
         if (error) throw error;
