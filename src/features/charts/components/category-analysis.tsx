@@ -86,7 +86,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     }, [transactions, type, selectedCategory]);
 
     if (isLoading) {
-        return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
+        return <div className="h-96 w-full animate-pulse rounded-card-glass bg-muted" />;
     }
 
     if (chartData.length === 0 && !selectedCategory) {
@@ -105,7 +105,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     const parentVisuals = selectedCategory ? categoryDetails(selectedCategory) : null;
 
     return (
-        <Card className="shadow-sm border-none rounded-xl sm:rounded-2xl overflow-hidden bg-card transition-all duration-300">
+        <Card className="shadow-sm border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6 space-y-0">
                 <div className="flex items-center gap-2">
                     {selectedCategory && (
@@ -143,7 +143,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                 key={item.name}
                                 type="button"
                                 className={cn(
-                                    "group w-full rounded-xl border-none bg-muted/30 p-2.5 sm:p-3 text-left transition hover:bg-muted/50 active:scale-[0.98]",
+                                    "group w-full rounded-md border-none bg-muted/30 p-2.5 sm:p-3 text-left transition hover:bg-muted/50 active:scale-[0.98]",
                                     isSubCategoryView && "cursor-default active:scale-100 hover:bg-muted/30"
                                 )}
                                 onClick={() => handleCategoryClick(item.name)}

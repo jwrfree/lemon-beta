@@ -170,7 +170,7 @@ interface GoalRow {
         }
       />
 
-      <main className="flex-1 p-4 md:p-8 space-y-8 pb-28 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-4 md:p-8 space-y-8 pb-24 max-w-7xl mx-auto w-full">
         {/* Summary Card - Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <motion.div 

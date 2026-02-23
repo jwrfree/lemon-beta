@@ -42,8 +42,8 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
         <div className="space-y-4 mb-8">
             {/* AI Auditor Insight Pill */}
             {(aiInsight || isAiLoading) && (
-                <div className="bg-primary/5 rounded-3xl p-4 flex items-start gap-4 shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] transition-all">
-                    <div className="bg-primary/10 p-2 rounded-2xl shrink-0">
+                <div className="bg-primary/5 rounded-card-glass p-4 flex items-start gap-4 shadow-sm transition-all">
+                    <div className="bg-primary/10 p-2 rounded-card shrink-0">
                         {isAiLoading ? (
                             <Loader2 className="h-4 w-4 text-primary animate-spin" />
                         ) : (
@@ -67,7 +67,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* 1. Monthly Burn Rate Card */}
-                <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px] overflow-hidden">
+                <Card className="border-none shadow-card bg-card rounded-card-premium overflow-hidden">
                     <CardHeader className="pb-2 px-6 pt-6">
                         <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-widest">
                             <CreditCard className="h-3.5 w-3.5 text-indigo-500" />
@@ -91,7 +91,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 </Card>
 
                 {/* 2. Silent Inflation Alerts */}
-                <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card relative overflow-hidden rounded-[32px]">
+                <Card className="border-none shadow-card bg-card relative overflow-hidden rounded-card-premium">
                     <CardHeader className="pb-2 px-6 pt-6">
                         <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-widest">
                             <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
@@ -104,7 +104,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                 {anomalies.map((anomaly, idx) => (
                                     <div
                                         key={`${anomaly.merchantName}-${idx}`}
-                                        className="bg-rose-500/5 border border-rose-500/10 rounded-2xl p-3 flex items-start gap-3"
+                                        className="bg-rose-500/5 border border-rose-500/10 rounded-card p-3 flex items-start gap-3"
                                     >
                                         <div className="bg-rose-500/10 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <TrendingUp className="h-3 w-3 text-rose-600 dark:text-rose-400" />
@@ -122,7 +122,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                             </div>
                         ) : (
                             <div className="h-full flex flex-col justify-center py-2">
-                                <div className="flex items-center gap-3 text-emerald-600 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/10">
+                                <div className="flex items-center gap-3 text-emerald-600 bg-emerald-500/5 p-4 rounded-card border border-emerald-500/10">
                                     <CheckCircle2 className="h-5 w-5 shrink-0 opacity-80" />
                                     <div>
                                         <p className="text-xs font-semibold uppercase tracking-widest">Normal</p>

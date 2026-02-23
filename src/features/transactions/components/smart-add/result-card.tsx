@@ -129,7 +129,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
         >
             {/* Apple-style Card Container with Aurora Mesh */}
             <div
-                className="bg-white/95 dark:bg-black/60 backdrop-blur-2xl rounded-[32px] p-7 shadow-2xl relative overflow-hidden group border border-white/20 dark:border-white/5"
+                className="bg-white/95 dark:bg-black/60 backdrop-blur-xl rounded-card-premium p-7 shadow-2xl relative overflow-hidden group border border-white/20 dark:border-white/5"
                 style={{ boxShadow: `0 30px 60px -12px ${dna.ambient.replace('0.2', '0.4')}` }}
             >
                 {/* Dynamic DNA Ornament */}
@@ -147,7 +147,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 {formatCurrency(parsedData.amount)}
                             </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-60 p-4 rounded-[24px] shadow-2xl border-none bg-popover/90 backdrop-blur-xl" side="bottom" sideOffset={10}>
+                        <PopoverContent className="w-60 p-4 rounded-card-glass shadow-2xl border-none bg-popover/90 backdrop-blur-xl" side="bottom" sideOffset={10}>
                             <div className="space-y-3">
                                 <Label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground ml-1">Edit Amount</Label>
                                 <div className="flex gap-2">
@@ -156,9 +156,9 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                         value={editAmount}
                                         onChange={e => setEditAmount(e.target.value)}
                                         autoFocus
-                                        className="h-11 rounded-xl bg-secondary/50 border-none shadow-inner text-lg font-semibold tabular-nums"
+                                        className="h-11 rounded-md bg-secondary/50 border-none shadow-inner text-lg font-semibold tabular-nums"
                                     />
-                                    <Button size="icon" className="h-11 w-11 rounded-xl shadow-lg" onClick={() => setParsedData({ ...parsedData, amount: Number(editAmount) })}>
+                                    <Button size="icon" className="h-11 w-11 rounded-md shadow-lg" onClick={() => setParsedData({ ...parsedData, amount: Number(editAmount) })}>
                                         <Check className="h-5 w-5" strokeWidth={3} />
                                     </Button>
                                 </div>
@@ -202,7 +202,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                 </div>
 
                 {/* 3. INSET GROUPED LIST (iOS Settings Style) */}
-                <div className="bg-muted/30 rounded-[24px] overflow-hidden border border-border/20 shadow-inner">
+                <div className="bg-muted/30 rounded-card-glass overflow-hidden border border-border/20 shadow-inner">
 
                     {/* Row 1: Category */}
                     <Popover open={isCatOpen} onOpenChange={setIsCatOpen}>
@@ -210,7 +210,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                             <div className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]">
                                 <div className="flex items-center gap-4">
                                     <div
-                                        className={cn("w-10 h-10 rounded-2xl flex items-center justify-center shadow-sm text-white overflow-hidden border border-white/10")}
+                                        className={cn("w-10 h-10 rounded-card flex items-center justify-center shadow-sm text-white overflow-hidden border border-white/10")}
                                         style={{ background: dna.gradient }}
                                     >
                                         {primaryLogo && logoSource === 'primary' && (
@@ -254,7 +254,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 </div>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="w-80 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
+                        <PopoverContent className="w-80 p-0 rounded-card-premium shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-5 bg-popover/95 backdrop-blur-xl max-h-[320px] overflow-y-auto">
                                 <p className="text-xs font-bold text-muted-foreground/40 mb-4 px-1 uppercase tracking-widest">Select Identity</p>
                                 <CategoryGrid
@@ -278,7 +278,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 <PopoverTrigger asChild>
                                     <div className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-2xl bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
+                                            <div className="w-10 h-10 rounded-card bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
                                                 <Tag className="w-4 h-4" />
                                             </div>
                                             <div className="flex flex-col items-start space-y-0.5">
@@ -292,7 +292,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                         </div>
                                     </div>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-72 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
+                                <PopoverContent className="w-72 p-0 rounded-card-premium shadow-2xl border-none overflow-hidden" align="center">
                                     <div className="p-4 bg-popover/95 backdrop-blur-xl">
                                         <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-widest">Pilih Sub-kategori</p>
                                         <ScrollArea className="max-h-[240px]">
@@ -306,7 +306,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                                             setIsSubCatOpen(false);
                                                         }}
                                                         className={cn(
-                                                            "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-colors",
+                                                            "w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm transition-colors",
                                                             parsedData.subCategory === sub
                                                                 ? "bg-primary/10 text-primary font-semibold"
                                                                 : "hover:bg-muted/60 text-foreground"
@@ -330,7 +330,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         <PopoverTrigger asChild>
                             <div className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-2xl bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
+                                    <div className="w-10 h-10 rounded-card bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
                                         <CreditCard className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col items-start space-y-0.5">
@@ -344,7 +344,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 </div>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="w-64 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
+                        <PopoverContent className="w-64 p-0 rounded-card-premium shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-4 bg-popover/95 backdrop-blur-xl">
                                 <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-widest">Pilih Sumber Dana</p>
                                 <div className="space-y-1">
@@ -357,7 +357,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                                 setIsWalletOpen(false);
                                             }}
                                             className={cn(
-                                                "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-colors",
+                                                "w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm transition-colors",
                                                 parsedData.walletId === wallet.id
                                                     ? "bg-primary/10 text-primary font-semibold"
                                                     : "hover:bg-muted/60 text-foreground"
@@ -382,7 +382,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         <PopoverTrigger asChild>
                             <div className="flex items-center justify-between p-5 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-2xl bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
+                                    <div className="w-10 h-10 rounded-card bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
                                         <CalendarClock className="w-4 h-4" />
                                     </div>
                                     <div className="flex flex-col items-start space-y-0.5">
@@ -398,7 +398,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 </div>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
+                        <PopoverContent className="w-auto p-0 rounded-card-premium shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-4 bg-popover/95 backdrop-blur-xl space-y-3">
                                 <p className="text-xs font-bold text-muted-foreground/40 mb-1 px-1 uppercase tracking-widest">Waktu Transaksi</p>
                                 <Calendar
@@ -414,10 +414,10 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                             type="time"
                                             value={timeStr}
                                             onChange={handleTimeChange}
-                                            className="h-10 rounded-xl bg-secondary/50 border-none shadow-inner text-sm pl-3"
+                                            className="h-10 rounded-md bg-secondary/50 border-none shadow-inner text-sm pl-3"
                                         />
                                     </div>
-                                    <Button size="sm" className="h-10 rounded-xl shadow-lg px-4" onClick={() => setIsDateOpen(false)}>
+                                    <Button size="sm" className="h-10 rounded-md shadow-lg px-4" onClick={() => setIsDateOpen(false)}>
                                         <Check className="h-4 w-4" strokeWidth={3} />
                                     </Button>
                                 </div>
@@ -432,7 +432,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         <PopoverTrigger asChild>
                             <div className="flex items-start justify-between p-5 cursor-pointer hover:bg-muted/50 transition-colors active:scale-[0.99]">
                                 <div className="flex items-center gap-4 overflow-hidden">
-                                    <div className="w-10 h-10 rounded-2xl bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
+                                    <div className="w-10 h-10 rounded-card bg-foreground/5 flex items-center justify-center text-foreground/40 shrink-0 shadow-inner">
                                         <Pencil className="w-4 h-4" />
                                     </div>
                                     <span className="text-sm font-medium text-foreground/80 italic truncate pr-4">
@@ -442,7 +442,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 <ChevronRight className="w-4 h-4 text-muted-foreground/20 mt-3 shrink-0" />
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="w-72 p-4 rounded-[24px] shadow-2xl border-none bg-popover/90 backdrop-blur-xl" side="top" sideOffset={10}>
+                        <PopoverContent className="w-72 p-4 rounded-card-glass shadow-2xl border-none bg-popover/90 backdrop-blur-xl" side="top" sideOffset={10}>
                             <div className="space-y-3">
                                 <Label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground ml-1">Keterangan</Label>
                                 <div className="flex gap-2">
@@ -450,10 +450,10 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                         value={editDesc}
                                         onChange={e => setEditDesc(e.target.value)}
                                         autoFocus
-                                        className="h-11 rounded-xl bg-secondary/50 border-none shadow-inner text-sm font-medium"
+                                        className="h-11 rounded-md bg-secondary/50 border-none shadow-inner text-sm font-medium"
                                         placeholder="Tulis keterangan..."
                                     />
-                                    <Button size="icon" className="h-11 w-11 rounded-xl shadow-lg" onClick={() => setParsedData({ ...parsedData, description: editDesc })}>
+                                    <Button size="icon" className="h-11 w-11 rounded-md shadow-lg" onClick={() => setParsedData({ ...parsedData, description: editDesc })}>
                                         <Check className="h-5 w-5" strokeWidth={3} />
                                     </Button>
                                 </div>

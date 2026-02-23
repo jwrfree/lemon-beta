@@ -38,7 +38,7 @@ export function ExpenseHeatmap({ transactions, start, end }: ExpenseHeatmapProps
     };
 
     return (
-        <div className="w-full bg-card rounded-xl p-6 shadow-card border border-border">
+        <div className="w-full bg-card rounded-md p-6 shadow-card border border-border">
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <h3 className="text-lg font-medium tracking-tight text-foreground">

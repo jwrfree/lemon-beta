@@ -153,7 +153,7 @@ export default function DebtsPage() {
                             <ArrowUpDown className="w-3 h-3 mr-2 text-primary" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                        <SelectContent align="end" className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                             <SelectItem value="updated_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
                             <SelectItem value="due_soon" className="text-xs font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
                             <SelectItem value="amount_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>

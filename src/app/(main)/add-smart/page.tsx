@@ -181,7 +181,7 @@ export default function SmartAddPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="w-full overflow-y-auto no-scrollbar max-h-full pb-32"
+                            className="w-full overflow-y-auto no-scrollbar max-h-full pb-24"
                         >
                             <DynamicSuggestions onSuggestionClick={(text) => {
                                 setMagicValue(text);
@@ -284,13 +284,13 @@ export default function SmartAddPage() {
 
                 {/* Multi-Nav Center */}
                 {multiParsedData.length > 1 && !isAnalyzing && (
-                    <div className="flex items-center justify-between bg-zinc-100/50 dark:bg-zinc-900/50 p-1.5 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50">
+                    <div className="flex items-center justify-between bg-zinc-100/50 dark:bg-zinc-900/50 p-1.5 rounded-card border border-zinc-200/50 dark:border-zinc-800/50">
                         <Button 
                             variant="ghost" 
                             size="icon"
                             disabled={focusedIndex === 0}
                             onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f - 1); }}
-                            className="h-9 w-9 rounded-xl"
+                            className="h-9 w-9 rounded-md"
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
@@ -303,7 +303,7 @@ export default function SmartAddPage() {
                             size="icon"
                             disabled={focusedIndex === multiParsedData.length - 1}
                             onClick={() => { triggerHaptic('light'); setFocusedIndex(f => f + 1); }}
-                            className="h-9 w-9 rounded-xl text-primary"
+                            className="h-9 w-9 rounded-md text-primary"
                         >
                             <ChevronRight className="h-4 w-4" />
                         </Button>
@@ -322,7 +322,7 @@ export default function SmartAddPage() {
                             <Button 
                                 onClick={handleConfirmSave} 
                                 disabled={isSaving}
-                                className="w-full h-14 rounded-2xl text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
+                                className="w-full h-14 rounded-card text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
                             >
                                 {isSaving ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />

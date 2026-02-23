@@ -108,7 +108,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-[2.5rem] shadow-2xl flex flex-col h-fit md:h-auto border-none"
+        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-2xl flex flex-col h-fit md:h-auto border-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 z-10">
@@ -146,7 +146,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   <div
                     key={cat.key}
                     onClick={() => handleCategorySelect(cat)}
-                    className="flex flex-col items-center justify-center gap-3 p-6 bg-card rounded-[24px] shadow-sm hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group border border-border/20"
+                    className="flex flex-col items-center justify-center gap-3 p-6 bg-card rounded-card-glass shadow-sm hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group border border-border/20"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -156,7 +156,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                       }
                     }}
                   >
-                    <div className="p-3 rounded-2xl bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                    <div className="p-3 rounded-card bg-primary/5 group-hover:bg-primary/10 transition-colors">
                       <cat.Icon className="h-8 w-8 text-primary" />
                     </div>
                     <span className="font-semibold text-xs uppercase tracking-widest text-muted-foreground/80">{cat.name}</span>
@@ -187,7 +187,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                           id="wallet-name"
                           placeholder={`Contoh: ${selectedCategory.key === 'e-wallet' ? 'GoPay' : 'Rekening Gaji'}`}
                           disabled={selectedCategory.key === 'cash'}
-                          className={cn("h-12 rounded-2xl bg-secondary/50 border-none shadow-inner focus-visible:ring-primary/30", errors.name && "bg-destructive/5")}
+                          className={cn("h-12 rounded-card bg-secondary/50 border-none shadow-inner focus-visible:ring-primary/30", errors.name && "bg-destructive/5")}
                         />
                       )}
                     />
@@ -223,7 +223,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                             field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
                           }}
                           inputMode="numeric"
-                          className={cn("h-12 rounded-2xl bg-secondary/50 border-none shadow-inner text-lg font-semibold tabular-nums focus-visible:ring-primary/30", errors.balance && "bg-destructive/5")}
+                          className={cn("h-12 rounded-card bg-secondary/50 border-none shadow-inner text-lg font-semibold tabular-nums focus-visible:ring-primary/30", errors.balance && "bg-destructive/5")}
                         />
                       )}
                     />

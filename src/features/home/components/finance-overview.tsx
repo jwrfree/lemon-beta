@@ -52,7 +52,7 @@ export const FinanceOverview = ({
                         <AnimatedCounter value={totalBalance} />
                     </div>
                     <div className="flex items-center gap-2 text-xs text-primary-foreground/70">
-                        <span className="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse"></span>
                         Status Keuangan Sehat
                     </div>
                 </CardContent>
@@ -114,11 +114,11 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Net / Savings Card */}
-            <Card className="border-none shadow-sm bg-blue-50/30 dark:bg-blue-950/10 hover:shadow-md transition-all">
+            <Card className="border-none shadow-sm bg-info/5 dark:bg-info/5 hover:shadow-md transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                            <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <div className="p-2 bg-info/10 rounded-lg">
+                            <DollarSign className="w-5 h-5 text-info" />
                         </div>
                         <div className={cn(
                             "flex items-center px-2 py-1 rounded text-xs font-medium",

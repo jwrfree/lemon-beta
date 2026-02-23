@@ -192,14 +192,14 @@ export default function TokenCalculatorPage() {
                                                 <p className="text-xs text-teal-700 uppercase tracking-wider mb-1">Total Transaksi</p>
                                                 <p className="text-2xl font-medium text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
                                             </div>
-                                            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg flex flex-col justify-center items-center">
-                                                <Calendar className="h-6 w-6 text-blue-600 mb-2" />
-                                                <p className="text-xs text-blue-700 uppercase tracking-wider mb-1">Estimasi Waktu</p>
+                                            <div className="p-4 bg-info/10 border border-info/20 rounded-lg flex flex-col justify-center items-center">
+                                                <Calendar className="h-6 w-6 text-info mb-2" />
+                                                <p className="text-xs text-info uppercase tracking-wider mb-1">Estimasi Waktu</p>
                                                 <div className="flex items-baseline gap-1">
-                                                     <p className="text-2xl font-medium text-blue-700">{runway.totalDays.toLocaleString()}</p>
-                                                     <span className="text-sm text-blue-600">hari</span>
+                                                     <p className="text-2xl font-medium text-info">{runway.totalDays.toLocaleString()}</p>
+                                                     <span className="text-sm text-info">hari</span>
                                                 </div>
-                                                <p className="text-xs text-blue-600/80 mt-1">({(runway.totalDays / 365).toFixed(1)} tahun)</p>
+                                                <p className="text-xs text-info/80 mt-1">({(runway.totalDays / 365).toFixed(1)} tahun)</p>
                                             </div>
                                         </div>
                                     )}

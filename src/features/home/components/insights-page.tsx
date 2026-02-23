@@ -63,10 +63,10 @@ export const InsightsPage = () => {
                         </Card>
 
                         <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as '30' | '90' | 'month')} className="w-full">
-                            <TabsList className="bg-muted p-1 rounded-2xl h-14 w-full grid grid-cols-3">
-                                <TabsTrigger value="month" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Bulan Ini</TabsTrigger>
-                                <TabsTrigger value="30" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 Hari</TabsTrigger>
-                                <TabsTrigger value="90" className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">90 Hari</TabsTrigger>
+                            <TabsList className="bg-muted p-1 rounded-card h-14 w-full grid grid-cols-3">
+                                <TabsTrigger value="month" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Bulan Ini</TabsTrigger>
+                                <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">30 Hari</TabsTrigger>
+                                <TabsTrigger value="90" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">90 Hari</TabsTrigger>
                             </TabsList>
                             
                             <div className="mt-6 space-y-6">

@@ -91,7 +91,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
     }, [filteredData, selectedMonthKey]);
 
     if (isLoading) {
-        return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
+        return <div className="h-96 w-full animate-pulse rounded-card-glass bg-muted" />;
     }
 
     if (!hasActivity) {
@@ -168,7 +168,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
     };
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-3xl">
+        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-card-glass">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
                 <div className="flex items-center justify-between gap-3">
@@ -220,7 +220,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                    <div className="col-span-2 rounded-3xl bg-primary/[0.03] border border-primary/10 p-6">
+                    <div className="col-span-2 rounded-card-glass bg-primary/[0.03] border border-primary/10 p-6">
                         <div className="flex flex-col gap-1">
                             <p className="text-xs font-medium uppercase tracking-widest text-primary/70">Total Net</p>
                             <p className={cn('text-3xl font-medium tracking-tight', filteredTotals.net >= 0 ? 'text-teal-600' : 'text-destructive')}>
@@ -229,11 +229,11 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                             <p className="text-xs font-medium text-muted-foreground/60 mt-1 uppercase tracking-tight">{summaryFootnote}</p>
                         </div>
                     </div>
-                    <div className="rounded-3xl bg-muted/30 p-5 border border-border/50">
+                    <div className="rounded-card-glass bg-muted/30 p-5 border border-border/50">
                         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Pemasukan</p>
                         <p className="text-xl font-medium text-foreground tracking-tight">{formatCurrency(filteredTotals.income)}</p>
                     </div>
-                    <div className="rounded-3xl bg-muted/30 p-5 border border-border/50">
+                    <div className="rounded-card-glass bg-muted/30 p-5 border border-border/50">
                         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Pengeluaran</p>
                         <p className="text-xl font-medium text-foreground tracking-tight">{formatCurrency(filteredTotals.expense)}</p>
                     </div>
@@ -243,7 +243,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="space-y-6 rounded-3xl bg-primary/[0.03] border border-primary/10 p-4 md:p-6"
+                        className="space-y-6 rounded-card-glass bg-primary/[0.03] border border-primary/10 p-4 md:p-6"
                     >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="space-y-0.5">

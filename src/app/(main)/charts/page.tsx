@@ -584,11 +584,11 @@ function ChartContent() {
                                 />
                             ))
                         ) : (
-                            <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                            <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-card relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-8 opacity-[0.02]">
                                     <Layers className="h-32 w-32" />
                                 </div>
-                                <div className="p-4 bg-muted rounded-2xl mb-4">
+                                <div className="p-4 bg-muted rounded-card mb-4">
                                     <Info className="w-8 h-8 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
@@ -657,11 +657,11 @@ function ChartContent() {
                                     );
                                 })
                             ) : (
-                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-card relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
                                             <Trophy className="h-32 w-32" />
                                         </div>
-                                        <div className="p-4 bg-muted rounded-2xl mb-4">
+                                        <div className="p-4 bg-muted rounded-card mb-4">
                                             <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
@@ -683,11 +683,11 @@ function ChartContent() {
                                     />
                                 ))
                             ) : (
-                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+                                <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-card relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12">
                                             <Trophy className="h-32 w-32" />
                                         </div>
-                                        <div className="p-4 bg-muted rounded-2xl mb-4">
+                                        <div className="p-4 bg-muted rounded-card mb-4">
                                             <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pemasukan</h3>

@@ -45,7 +45,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
     }, null);
 
     if (isLoading) {
-        return <div className="h-96 w-full animate-pulse rounded-3xl bg-muted" />;
+        return <div className="h-96 w-full animate-pulse rounded-card-glass bg-muted" />;
     }
 
     if (!hasActivity) {
@@ -61,7 +61,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
     const gradientId = `expense-trend-${chartType}-${range}`;
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-xl">
+        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-md">
             <CardHeader className="space-y-4">
                 <div className="flex flex-col gap-1">
                     <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Tren Pengeluaran</CardTitle>

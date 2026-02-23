@@ -73,12 +73,12 @@ export default function BudgetDetailPage() {
                 <PageHeader title="Detail Anggaran" />
                 <main className="flex justify-center text-center p-8 pt-20">
                     <div className="max-w-xs flex flex-col items-center">
-                        <div className="p-5 bg-rose-500/10 rounded-[2rem] mb-6">
+                        <div className="p-5 bg-rose-500/10 rounded-card-premium mb-6">
                             <AlertCircle className="h-12 w-12 text-rose-500" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl font-bold tracking-tighter">Tidak Ditemukan</h2>
                         <p className="text-sm font-medium text-muted-foreground mt-3">Anggaran ini mungkin sudah dihapus atau dipindahkan.</p>
-                        <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-xl h-11 px-6">
+                        <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-md h-11 px-6">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Kembali ke Anggaran
                         </Button>
@@ -111,18 +111,18 @@ export default function BudgetDetailPage() {
                 }}
             />
 
-            <main className="flex-1 overflow-y-auto px-4 md:px-8 space-y-8 pb-32 pt-4">
+            <main className="flex-1 overflow-y-auto px-4 md:px-8 space-y-8 pb-24 pt-4">
 
                 {/* 1. Identity & Health Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-sm overflow-hidden premium-shadow">
+                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900 shadow-sm overflow-hidden premium-shadow">
                         <div className="p-8 space-y-10">
                             {/* Title & Icon */}
                             <div className="flex flex-col items-center text-center gap-4">
-                                <div className={cn("p-5 rounded-[2rem] border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>
+                                <div className={cn("p-5 rounded-card-premium border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>
                                     <CategoryIcon className={cn("h-10 w-10", visuals.color)} strokeWidth={1.5} />
                                 </div>
                                 <div className="space-y-1">
@@ -167,19 +167,19 @@ export default function BudgetDetailPage() {
 
                             {/* Multi-Stat Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
+                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                                         <Target className="h-3 w-3" /> Target
                                     </p>
                                     <p className="text-xl font-semibold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
                                 </div>
-                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
+                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                                         <Layers className="h-3 w-3" /> Terpakai
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
                                 </div>
-                                <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
+                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
                                         <Flame className="h-3 w-3" /> {isOver ? 'Kekurangan' : 'Sisa'}
                                     </p>
@@ -191,9 +191,9 @@ export default function BudgetDetailPage() {
 
                             {/* Action Insight Bar */}
                             {!isOver && remaining > 0 && (
-                                <div className="p-6 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
+                                <div className="p-6 rounded-card-premium bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm">
+                                        <div className="h-12 w-12 rounded-card bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm">
                                             <Sparkles className="h-6 w-6" />
                                         </div>
                                         <div className="text-center md:text-left space-y-0.5">

@@ -32,7 +32,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 className="space-y-2"
             >
                 <div className={cn(
-                    "flex items-center justify-between px-4 py-3 rounded-xl text-xs font-semibold border transition-colors duration-500",
+                    "flex items-center justify-between px-4 py-3 rounded-md text-xs font-semibold border transition-colors duration-500",
                     isOverBudget
                         ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
                         : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"

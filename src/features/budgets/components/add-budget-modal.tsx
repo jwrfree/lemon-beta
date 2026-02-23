@@ -149,7 +149,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-popover rounded-t-[2.5rem] flex flex-col h-fit max-h-[85vh] shadow-2xl border-none"
+        className="w-full max-w-md bg-popover rounded-t-card-premium flex flex-col h-fit max-h-[85vh] shadow-2xl border-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 z-10">
@@ -182,7 +182,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
               {step === 1 && (
                 <div className="space-y-4 pt-2">
                   <Label htmlFor="budget-name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Nama Anggaran</Label>
-                  <Input id="budget-name" placeholder="Contoh: Makan Siang Kantor" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required autoFocus />
+                  <Input id="budget-name" placeholder="Contoh: Makan Siang Kantor" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-secondary/50 border-none shadow-inner" required autoFocus />
                 </div>
               )}
               {step === 2 && (
@@ -196,7 +196,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                         return (
                           <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
                             className={cn(
-                              "p-3 text-center border-2 rounded-[20px] flex flex-col items-center justify-center gap-2 aspect-square transition-all",
+                              "p-3 text-center border-2 rounded-card-icon flex flex-col items-center justify-center gap-2 aspect-square transition-all",
                               isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                             )}>
                             <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
@@ -240,10 +240,10 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                 <div className="space-y-8 pt-2">
                   {/* Recommendation Card */}
                   {loadingRec ? (
-                    <div className="h-24 w-full animate-pulse bg-muted/50 rounded-3xl" />
+                    <div className="h-24 w-full animate-pulse bg-muted/50 rounded-card-glass" />
                   ) : recommendation && recommendation.avg > 0 ? (
-                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-[2rem] flex items-start gap-4 shadow-sm">
-                      <div className="bg-emerald-500/10 p-2.5 rounded-2xl">
+                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-sm">
+                      <div className="bg-emerald-500/10 p-2.5 rounded-card">
                         <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div className="flex-1">
@@ -262,7 +262,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-muted/30 p-5 rounded-[2rem] flex items-center gap-4 text-muted-foreground/60 shadow-inner">
+                    <div className="bg-muted/30 p-5 rounded-card-premium flex items-center gap-4 text-muted-foreground/60 shadow-inner">
                       <TrendingUp className="h-5 w-5 opacity-40" />
                       <p className="text-xs font-semibold uppercase tracking-widest">No historical data for insights yet.</p>
                     </div>
@@ -285,7 +285,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
 
                   <div className="grid grid-cols-4 gap-3 pt-4">
                     {budgetSteps.map(val => (
-                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold tabular-nums text-xs", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 font-semibold tabular-nums text-xs", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
                         {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                       </Button>
                     ))}

@@ -227,7 +227,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
     };
 
     if (isLoading) {
-        return <div className="h-40 w-full animate-pulse rounded-3xl bg-muted" />;
+        return <div className="h-40 w-full animate-pulse rounded-card-glass bg-muted" />;
     }
 
     if (type !== 'net' && summary.value === 0) {
@@ -325,9 +325,9 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             </Card>
 
             {summary.type !== 'net' && summary.topCategory ? (
-                <Card className="rounded-2xl sm:rounded-3xl border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
                     <CardHeader className="flex flex-row items-center gap-3 sm:gap-4 pb-3 sm:pb-4 p-4 sm:p-6">
-                        <div className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
+                        <div className={cn("p-2 sm:p-3 rounded-md sm:rounded-card shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -351,7 +351,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         {summary.topTransaction && (
                             <div
                                 onClick={() => handleTxClick(summary.topTransaction!.id)}
-                                className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
+                                className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-md sm:rounded-card bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
                             >
                                 <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-background flex items-center justify-center border border-muted shadow-sm group-hover/item:rotate-12 transition-transform">
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
@@ -368,7 +368,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             </div>
                         )}
 
-                        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-primary/5 border border-primary/10">
+                        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-md sm:rounded-card bg-primary/5 border border-primary/10">
                             <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg text-primary shrink-0 mt-0.5">
                                 <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
@@ -381,19 +381,19 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             ) : null}
 
             {/* AI INSIGHT SECTION */}
-            <Card className="rounded-2xl sm:rounded-3xl border-none bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/20 dark:to-pink-500/20 shadow-sm border border-indigo-500/20 dark:border-indigo-500/30 overflow-hidden relative group">
+            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-sm border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
                 {/* Decorative background elements */}
-                <div className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-all duration-500"></div>
-                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-500/10 blur-3xl rounded-full group-hover:bg-pink-500/20 transition-all duration-500"></div>
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
+                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
 
                 <CardHeader className="pb-3 sm:pb-4 p-4 sm:p-6 relative z-10">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="p-2 sm:p-2.5 bg-indigo-500 rounded-xl sm:rounded-2xl shadow-lg shadow-indigo-500/30 text-white animate-pulse">
+                            <div className="p-2 sm:p-2.5 bg-primary rounded-card-icon shadow-lg shadow-primary/30 text-primary-foreground animate-pulse">
                                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
                             <div>
-                                <CardTitle className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">AI Financial Insight</CardTitle>
+                                <CardTitle className="text-xs sm:text-sm font-medium text-primary uppercase tracking-widest">AI Financial Insight</CardTitle>
                                 <p className="text-xs sm:text-xs font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
                             </div>
                         </div>
@@ -402,7 +402,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 variant="ghost"
                                 size="sm"
                                 onClick={generateInsight}
-                                className="h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full hover:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                                className="h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full hover:bg-primary/10 text-primary"
                             >
                                 <RefreshCw className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", isAiLoading && "animate-spin")} />
                             </Button>
@@ -412,8 +412,8 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 <CardContent className="p-4 sm:p-6 pt-0 relative z-10">
                     {!aiInsight ? (
                         <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-center space-y-3 sm:space-y-4">
-                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-indigo-100 dark:border-indigo-900/30 shadow-inner">
-                                <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-400 opacity-50" />
+                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-primary/10 shadow-inner">
+                                <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-primary opacity-50" />
                             </div>
                             <div className="space-y-1">
                                 <p className="text-xs sm:text-sm font-medium text-foreground">Butuh pandangan baru?</p>
@@ -422,7 +422,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             <Button
                                 onClick={generateInsight}
                                 disabled={isAiLoading}
-                                className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl sm:rounded-2xl px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-medium shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-card rounded-card px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-medium shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95"
                             >
                                 {isAiLoading ? (
                                     <>
@@ -436,7 +436,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
                     ) : (
                         <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-xl sm:rounded-2xl border border-white dark:border-zinc-800 shadow-sm backdrop-blur-sm">
+                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-md sm:rounded-card border border-white dark:border-zinc-800 shadow-sm backdrop-blur-sm">
                                 <div className="prose prose-sm dark:prose-invert max-w-none">
                                     <p className="text-xs sm:text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap font-medium">
                                         {aiInsight}

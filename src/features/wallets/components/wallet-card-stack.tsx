@@ -66,7 +66,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.4}
                 onClick={() => !isActive && (triggerHaptic('light'), setActiveIndex(i))}
                 className={cn(
-                  "absolute w-[88%] max-w-sm h-52 rounded-[32px] text-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] overflow-hidden",
+                  "absolute w-[88%] max-w-sm h-52 rounded-card-premium text-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] overflow-hidden",
                   isActive ? "cursor-grab active:cursor-grabbing z-30" : "cursor-pointer grayscale-[0.2]"
                 )}
                 style={{
@@ -99,7 +99,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 <div className="relative p-7 flex flex-col h-full">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="p-1.5 bg-white/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner flex items-center justify-center">
+                      <div className="p-1.5 bg-white/20 backdrop-blur-md rounded-card border border-white/20 shadow-inner flex items-center justify-center">
                         {logo ? (
                           <>
                             <img
@@ -180,7 +180,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 style={{ opacity: isActive ? 1 : 0.4, transform: isActive ? 'scale(1.1)' : 'scale(0.9)' }}
               >
                 <div className={cn(
-                  "h-12 w-12 rounded-2xl flex items-center justify-center shadow-card border-2 transition-all",
+                  "h-12 w-12 rounded-card flex items-center justify-center shadow-card border-2 transition-all",
                   isActive ? "border-primary bg-card" : "border-transparent bg-muted"
                 )}>
                   {logo ? (

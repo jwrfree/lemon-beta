@@ -218,7 +218,7 @@ export const DesktopDashboard = () => {
 
     return (
         <TooltipProvider>
-            <div className="min-h-screen bg-background pb-20 text-foreground">
+            <div className="min-h-screen bg-background pb-24 text-foreground">
                 <div className="max-w-[1920px] mx-auto p-4 lg:p-6 space-y-6">
 
                     {/* Header */}

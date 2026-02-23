@@ -254,10 +254,10 @@ export default function RemindersPage() {
                                                     ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                                     : undefined;
                                                 return (
-                                                    <Card key={reminder.id} className="p-5 bg-card border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[24px]">
+                                                    <Card key={reminder.id} className="p-5 bg-card border-none shadow-card rounded-card-glass">
                                                         <div className="flex items-start gap-4">
                                                             <div className={cn(
-                                                                "p-3 rounded-2xl shadow-inner",
+                                                                "p-3 rounded-card shadow-inner",
                                                                 status === 'overdue' ? 'bg-rose-500/10 text-rose-600' :
                                                                 status === 'completed' ? 'bg-muted text-muted-foreground' :
                                                                 status === 'snoozed' ? 'bg-amber-500/10 text-amber-600' :
@@ -307,7 +307,7 @@ export default function RemindersPage() {
                                                                                 <EllipsisVertical className="h-4 w-4" />
                                                                             </Button>
                                                                         </DropdownMenuTrigger>
-                                                                        <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                                                                        <DropdownMenuContent align="end" className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                                                                             {status !== 'completed' && dueDate && (
                                                                                 <>
                                                                                     <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>

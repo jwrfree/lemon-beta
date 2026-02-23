@@ -250,7 +250,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     key={f}
                                     onClick={() => setFilter(f)}
                                     className={cn(
-                                        "px-2.5 py-1.5 rounded-[6px] text-xs font-medium uppercase tracking-widest transition-all shrink-0 border-none",
+                                        "px-2.5 py-1.5 rounded-md text-xs font-medium uppercase tracking-widest transition-all shrink-0 border-none",
                                         filter === f
                                             ? "bg-primary text-white shadow-sm"
                                             : "bg-transparent text-muted-foreground hover:text-foreground"

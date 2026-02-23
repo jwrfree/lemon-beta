@@ -46,7 +46,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
     const rotation = (clampedRate + 50) * 1.8;
 
     return (
-        <Card className="p-6 bg-card border-none rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col justify-between h-full relative overflow-hidden">
+        <Card className="p-6 bg-card border-none rounded-card-glass shadow-card flex flex-col justify-between h-full relative overflow-hidden">
 
             <div className="flex justify-between items-start mb-4 z-10">
                 <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
@@ -141,9 +141,9 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
     trend?: { value: number }
 }) {
     return (
-        <Card className="p-5 bg-card border-none rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-md transition-all">
+        <Card className="p-5 bg-card border-none rounded-card-glass shadow-card hover:shadow-md transition-all">
             <div className="flex items-start justify-between mb-3">
-                <div className="p-2 bg-secondary rounded-xl">
+                <div className="p-2 bg-secondary rounded-md">
                     <Icon className="w-4 h-4 text-muted-foreground" />
                 </div>
                 {trend && (

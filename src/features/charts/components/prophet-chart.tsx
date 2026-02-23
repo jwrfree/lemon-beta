@@ -52,7 +52,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
 
     if (data.length === 0) {
         return (
-            <div className="h-[350px] flex items-center justify-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl bg-zinc-50/50 dark:bg-zinc-900/50">
+            <div className="h-[350px] flex items-center justify-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-card-glass bg-zinc-50/50 dark:bg-zinc-900/50">
                 Butuh minimal 3 hari data untuk prediksi.
             </div>
         );
@@ -66,9 +66,9 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
     const anomalies = useMemo(() => data.filter(d => d.anomaly && d.actual !== undefined), [data]);
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
+        <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
             {/* Decorative AI Glow */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-purple-500/20 blur-[80px] rounded-full pointer-events-none" />
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 blur-[80px] rounded-full pointer-events-none" />
 
             <div className="flex items-center justify-between mb-6 relative z-10">
                 <div>
@@ -126,10 +126,10 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                                     const isPrediction = item.actual === undefined;
 
                                     return (
-                                        <div className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-800 text-sm ring-1 ring-purple-500/20">
+                                        <div className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 rounded-md shadow-xl border border-zinc-200 dark:border-zinc-800 text-sm ring-1 ring-purple-500/20">
                                             <p className="font-medium mb-2 flex items-center justify-between">
                                                 {format(parseISO(label), 'EEEE, d MMM')}
-                                                {isPrediction && <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-600 px-1.5 py-0.5 rounded-full uppercase font-medium tracking-wider">Forecast</span>}
+                                                {isPrediction && <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded-full uppercase font-medium tracking-wider">Forecast</span>}
                                             </p>
 
                                             <div className="space-y-1">
@@ -238,7 +238,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                 </ChartContainer>
             </div>
 
-            <div className="flex items-start gap-2 mt-4 p-3 bg-purple-50 dark:bg-purple-900/10 rounded-xl text-xs text-purple-700 dark:text-purple-300 border border-purple-100 dark:border-purple-800/20">
+            <div className="flex items-start gap-2 mt-4 p-3 bg-primary/5 rounded-card text-xs text-primary border border-primary/10">
                 <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                 <p>
                     Model menggunakan <strong>Holt-Winters (Triple Exponential Smoothing)</strong> untuk mendeteksi tren dan pola musiman (seasonality) dari kebiasaan belanja Anda. Titik merah menandakan anomali pengeluaran historis.

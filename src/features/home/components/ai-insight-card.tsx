@@ -131,7 +131,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                             <Button 
                                 size="sm" 
                                 onClick={handleGenerateInsight} 
-                                className="bg-violet-600 hover:bg-violet-700 text-white text-xs h-8"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8"
                             >
                                 <Sparkles className="mr-1.5 h-3 w-3" />
                                 Cek Insight

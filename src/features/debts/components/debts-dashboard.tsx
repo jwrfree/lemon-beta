@@ -180,9 +180,9 @@ export const DebtsDashboard = () => {
             </div>
 
             <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                <TabsList className="bg-muted p-1 rounded-2xl h-12 w-full grid grid-cols-4">
+                <TabsList className="bg-muted p-1 rounded-card h-12 w-full grid grid-cols-4">
                     {Object.entries(filterLabels).map(([value, label]) => (
-                        <TabsTrigger key={value} value={value} className="h-full rounded-xl font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm px-1">
+                        <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm px-1">
                             {label === 'Orang Lain Berhutang' ? 'Piutang' : label === 'Saya Berhutang' ? 'Hutang' : label}
                         </TabsTrigger>
                     ))}

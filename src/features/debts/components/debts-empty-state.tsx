@@ -9,12 +9,12 @@ export const DebtsEmptyState = () => {
     const { setIsDebtModalOpen, setDebtToEdit } = useUI();
 
     return (
-        <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px] overflow-hidden relative">
+        <Card className="border-none shadow-card bg-card rounded-card-premium overflow-hidden relative">
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                 <HandCoins className="h-40 w-40" />
             </div>
             <CardContent className="flex flex-col items-center justify-center py-16 text-center relative z-10">
-                <div className="p-5 bg-primary/10 rounded-2xl mb-6">
+                <div className="p-5 bg-primary/10 rounded-card mb-6">
                     <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h3 className="text-xl font-semibold tracking-tighter mb-2">Belum Ada Catatan</h3>

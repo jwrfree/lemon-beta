@@ -47,12 +47,12 @@ export const BudgetingDashboard = () => {
     if (budgets.length === 0) {
         return (
             <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="max-w-[320px] w-full p-10 bg-card rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] text-center relative overflow-hidden">
+                <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] text-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                         <HandCoins className="h-40 w-40" />
                     </div>
                     <div className="relative z-10 flex flex-col items-center">
-                        <div className="p-5 bg-primary/10 rounded-2xl mb-6">
+                        <div className="p-5 bg-primary/10 rounded-card mb-6">
                             <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Anggaran</h2>
@@ -76,7 +76,7 @@ export const BudgetingDashboard = () => {
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
-                    <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[32px] bg-card overflow-hidden">
+                    <Card className="border-none shadow-card rounded-card-premium bg-card overflow-hidden">
                         <CardContent className="p-8 space-y-8">
                             <div className="h-48 flex justify-center relative">
                                 <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
@@ -100,7 +100,7 @@ export const BudgetingDashboard = () => {
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
-                                <div className="p-5 rounded-2xl bg-muted/30 border border-border/20 shadow-inner">
+                                <div className="p-5 rounded-card bg-muted/30 border border-border/20 shadow-inner">
                                     <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">Total Limit Anggaran</p>
                                     <p className="text-2xl font-semibold tracking-tighter tabular-nums">{formatCurrency(overview.totalBudget)}</p>
                                 </div>

@@ -26,7 +26,7 @@ export const SmartAddMessages = ({ messages, loadingMessage }: SmartAddMessagesP
                 >
                     {msg.type === 'user' && (
                         <div className="flex justify-end">
-                            <div className="p-3 bg-primary/10 text-foreground rounded-2xl text-sm leading-relaxed border border-primary/20">
+                            <div className="p-3 bg-primary/10 text-foreground rounded-card text-sm leading-relaxed border border-primary/20">
                                 {String(msg.content)}
                             </div>
                         </div>
@@ -34,13 +34,13 @@ export const SmartAddMessages = ({ messages, loadingMessage }: SmartAddMessagesP
                     {msg.type === 'user-image' && (
                         <div className="flex justify-end">
                             <Card className="p-1 bg-primary/20 max-w-xs border-primary/30 overflow-hidden">
-                                <Image src={String(msg.content)} alt="Receipt" width={200} height={300} className="rounded-xl" />
+                                <Image src={String(msg.content)} alt="Receipt" width={200} height={300} className="rounded-md" />
                             </Card>
                         </div>
                     )}
                     {msg.type === 'ai-thinking' && (
                         <div className="flex justify-start">
-                            <div className="p-3 bg-card rounded-2xl flex items-center gap-2.5 shadow-sm border">
+                            <div className="p-3 bg-card rounded-card flex items-center gap-2.5 shadow-sm border">
                                 <div className="relative flex items-center justify-center">
                                     <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
                                     <motion.div
@@ -66,7 +66,7 @@ export const SmartAddMessages = ({ messages, loadingMessage }: SmartAddMessagesP
                     )}
                     {msg.type === 'ai-clarification' && (
                         <div className="flex justify-start">
-                            <div className="p-3 bg-card rounded-2xl max-w-[85%] shadow-sm border">
+                            <div className="p-3 bg-card rounded-card max-w-[85%] shadow-sm border">
                                 <p className="text-sm leading-relaxed text-foreground italic">
                                     &quot;{String(msg.content)}&quot;
                                 </p>

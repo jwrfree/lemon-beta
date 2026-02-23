@@ -127,7 +127,7 @@ export const DeepSeekUsageCard = () => {
             </CardContent>
 
             {/* Decor */}
-            <div className="absolute -right-10 -bottom-10 h-32 w-32 bg-indigo-500/20 blur-3xl rounded-full group-hover:bg-indigo-500/30 transition-colors" />
+            <div className="absolute -right-10 -bottom-10 h-32 w-32 bg-primary/20 blur-3xl rounded-full group-hover:bg-primary/30 transition-colors" />
         </Card>
     );
 };

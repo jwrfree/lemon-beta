@@ -183,14 +183,14 @@ export const RemindersDashboard = () => {
 
             {/* Status Cards */}
             <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-3 flex flex-col justify-between">
+                <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 flex flex-col justify-between">
                     <p className="text-xs uppercase font-medium text-destructive tracking-wider">Terlambat</p>
                     <div className="flex items-baseline gap-1">
                         <p className="text-2xl font-medium text-destructive">{overdueRemindersCount}</p>
                         <span className="text-xs text-destructive/80">invoice</span>
                     </div>
                 </div>
-                <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 flex flex-col justify-between">
+                <div className="rounded-md border border-primary/20 bg-primary/5 p-3 flex flex-col justify-between">
                     <p className="text-xs uppercase font-medium text-primary tracking-wider">Segera</p>
                     <div className="flex items-baseline gap-1">
                         <p className="text-2xl font-medium text-primary">{upcomingRemindersCount}</p>

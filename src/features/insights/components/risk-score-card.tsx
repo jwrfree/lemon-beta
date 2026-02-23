@@ -60,7 +60,7 @@ export const RiskScoreCard = () => {
     return (
         <Card 
             className={cn(
-                "relative overflow-hidden border-none shadow-2xl transition-all duration-500 rounded-[32px] text-white",
+                "relative overflow-hidden border-none shadow-2xl transition-all duration-500 rounded-card-premium text-white",
                 config.bg
             )}
             style={{ boxShadow: `0 20px 50px -12px ${config.glow}` }}
@@ -73,7 +73,7 @@ export const RiskScoreCard = () => {
             <div className="p-7 space-y-8 relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className={cn("p-3 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 shadow-inner")}>
+                        <div className={cn("p-3 rounded-card bg-white/10 backdrop-blur-xl border border-white/10 shadow-inner")}>
                             <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                         </div>
                         <div>
@@ -106,11 +106,11 @@ export const RiskScoreCard = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-[24px] bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
+                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
                                 <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">Burn Velocity</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
-                            <div className="p-4 rounded-[24px] bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
+                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
                                 <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">Momentum</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40">RATIO</span></p>
                             </div>

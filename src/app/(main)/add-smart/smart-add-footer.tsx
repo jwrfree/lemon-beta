@@ -96,14 +96,14 @@ export const SmartAddFooter = ({
                     >
                         <Button
                             variant="outline"
-                            className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary w-full"
+                            className="h-12 rounded-card border-primary/20 hover:bg-primary/5 text-primary w-full"
                             onClick={() => handleConfirmSave(true)}
                         >
                             <Save className="mr-2 h-4 w-4" />
                             Simpan & Tambah Lagi
                         </Button>
                         <Button
-                            className="w-full h-14 rounded-2xl text-lg font-medium shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
+                            className="w-full h-14 rounded-card text-lg font-medium shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
                             size="lg"
                             onClick={() => handleConfirmSave(false)}
                         >
@@ -121,14 +121,14 @@ export const SmartAddFooter = ({
                     >
                         <Button
                             variant="outline"
-                            className="h-12 rounded-2xl border-primary/20 hover:bg-primary/5 text-primary"
+                            className="h-12 rounded-card border-primary/20 hover:bg-primary/5 text-primary"
                             onClick={() => resetFlow()}
                         >
                             <X className="mr-2 h-4 w-4" />
                             Batalkan Semua
                         </Button>
                         <Button
-                            className="w-full h-14 rounded-2xl text-lg font-medium shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
+                            className="w-full h-14 rounded-card text-lg font-medium shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 transition-all active:scale-[0.98]"
                             size="lg"
                             onClick={() => handleMultiConfirmSave()}
                         >

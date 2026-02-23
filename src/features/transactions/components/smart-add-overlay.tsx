@@ -187,7 +187,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                     </div>
 
                     {/* Bottom Action Area (Fixed) */}
-                    <div className="shrink-0 pt-4 pb-safe relative group">
+                    <div className="shrink-0 pt-4 pb-6 relative group">
                         
                         {/* Ambient Glow Orb Behind Input */}
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-t from-primary/10 via-primary/5 to-transparent blur-3xl pointer-events-none opacity-50" />
@@ -201,7 +201,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                     (inputValue || isListening) ? "opacity-100" : "opacity-0"
                                 )} />
 
-                                <div className="relative bg-card rounded-[28px] p-2 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.5)] transition-all duration-500 hover:shadow-[0_12px_50px_-12px_rgba(0,0,0,0.15)] focus-within:shadow-[0_12px_50px_-12px_rgba(var(--primary-rgb),0.25)]">
+                                <div className="relative bg-card rounded-card-premium p-2 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.5)] transition-all duration-500 hover:shadow-[0_12px_50px_-12px_rgba(0,0,0,0.15)] focus-within:shadow-[0_12px_50px_-12px_rgba(var(--primary-rgb),0.25)]">
                                     <div className="flex items-end gap-3 px-1">
                                         <TextareaAutosize
                                             ref={textareaRef}

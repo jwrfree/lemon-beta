@@ -91,7 +91,7 @@ export const SmartAddResults = ({
                 className="space-y-3"
             >
                 <div className="flex justify-start">
-                    <div className="p-4 bg-card rounded-2xl relative overflow-hidden group shadow-sm border border-border/50 max-w-[90%]">
+                    <div className="p-4 bg-card rounded-card relative overflow-hidden group shadow-sm border border-border/50 max-w-[90%]">
                         <div className={cn("absolute top-0 left-0 w-1.5 h-full opacity-60 transition-transform group-hover:scale-y-110 duration-300", getCategoryVisuals(parsedData.category).color.replace('text-', 'bg-'))} />
                         <div className="flex flex-col gap-1">
                             <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5 text-base leading-snug text-foreground">
@@ -102,7 +102,7 @@ export const SmartAddResults = ({
                                             {parsedData.description}
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-72 p-4 shadow-xl rounded-2xl border-primary/10">
+                                    <PopoverContent className="w-72 p-4 shadow-xl rounded-card border-primary/10">
                                         <div className="space-y-3">
                                             <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ubah Deskripsi</Label>
                                             <div className="flex gap-2">
@@ -110,9 +110,9 @@ export const SmartAddResults = ({
                                                     value={editDesc}
                                                     onChange={e => setEditDesc(e.target.value)}
                                                     autoFocus
-                                                    className="h-10 rounded-xl"
+                                                    className="h-10 rounded-md"
                                                 />
-                                                <Button size="icon" className="h-10 w-10 shrink-0 rounded-xl" onClick={() => setParsedData({ ...parsedData, description: editDesc })}>
+                                                <Button size="icon" className="h-10 w-10 shrink-0 rounded-md" onClick={() => setParsedData({ ...parsedData, description: editDesc })}>
                                                     <Check className="h-4 w-4" />
                                                 </Button>
                                             </div>
@@ -126,7 +126,7 @@ export const SmartAddResults = ({
                                             {formatCurrency(parsedData.amount)}
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-64 p-4 shadow-xl rounded-2xl border-primary/10">
+                                    <PopoverContent className="w-64 p-4 shadow-xl rounded-card border-primary/10">
                                         <div className="space-y-3">
                                             <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ubah Nominal</Label>
                                             <div className="flex gap-2">
@@ -135,9 +135,9 @@ export const SmartAddResults = ({
                                                     value={editAmount}
                                                     onChange={e => setEditAmount(e.target.value)}
                                                     autoFocus
-                                                    className="h-10 rounded-xl tabular-nums"
+                                                    className="h-10 rounded-md tabular-nums"
                                                 />
-                                                <Button size="icon" className="h-10 w-10 shrink-0 rounded-xl" onClick={() => setParsedData({ ...parsedData, amount: Number(editAmount) })}>
+                                                <Button size="icon" className="h-10 w-10 shrink-0 rounded-md" onClick={() => setParsedData({ ...parsedData, amount: Number(editAmount) })}>
                                                     <Check className="h-4 w-4" />
                                                 </Button>
                                             </div>
@@ -170,7 +170,7 @@ export const SmartAddResults = ({
                                             <Pencil className="h-2.5 w-2.5 ml-0.5 opacity-70" />
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-80 p-0 shadow-2xl rounded-2xl border-primary/10 overflow-hidden" align="start">
+                                    <PopoverContent className="w-80 p-0 shadow-2xl rounded-card border-primary/10 overflow-hidden" align="start">
 
                                         {popoverView === 'CATEGORY' ? (
                                             <div className="max-h-[300px] overflow-y-auto p-2">
@@ -247,7 +247,7 @@ export const SmartAddResults = ({
                     <div className="space-y-2">
                         {insightData.wallet?.isInsufficient && (
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-start">
-                                <div className="p-3 bg-destructive/10 text-destructive rounded-2xl text-xs font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-sm shadow-destructive/5">
+                                <div className="p-3 bg-destructive/10 text-destructive rounded-card text-xs font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-sm shadow-destructive/5">
                                     <span className="font-medium uppercase tracking-wider text-xs">⚠️ Saldo Tidak Cukup!</span>
                                     <p className="opacity-90">Saldo {insightData.wallet.name} kamu akan menjadi minus ({formatCurrency(insightData.wallet.newBalance)}).</p>
                                 </div>
@@ -256,7 +256,7 @@ export const SmartAddResults = ({
                         
                         <div className="flex flex-wrap gap-2">
                             {insightData.wallet && (
-                                <div className="p-3 bg-card rounded-2xl text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
+                                <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
                                     <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-wider">Sumber: {insightData.wallet.name}</span>
                                     <div className="flex items-center gap-2">
                                         <span className="opacity-40 tabular-nums">{formatCurrency(insightData.wallet.currentBalance)}</span>
@@ -269,7 +269,7 @@ export const SmartAddResults = ({
                             )}
                             
                             {insightData.budget && (
-                                <div className="p-3 bg-card rounded-2xl text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
+                                <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
                                     <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-wider">Anggaran: {insightData.budget.name}</span>
                                     <div className="flex items-center gap-2">
                                         <span className="opacity-40 tabular-nums">{formatCurrency(insightData.budget.currentRemaining)}</span>
@@ -296,17 +296,17 @@ export const SmartAddResults = ({
                 className="space-y-3"
             >
                 <div className="flex justify-start">
-                    <div className="p-3 bg-card rounded-2xl text-sm border shadow-sm font-medium">
+                    <div className="p-3 bg-card rounded-card text-sm border shadow-sm font-medium">
                         Wah, saya menemukan <span className="font-medium text-primary">{multiParsedData.length} transaksi</span> sekaligus!
                     </div>
                 </div>
                 <div className="space-y-2">
                     {multiParsedData.map((tx, idx) => (
-                        <div key={idx} className="bg-card rounded-2xl p-3 flex justify-between items-center relative overflow-hidden border shadow-sm group hover:border-primary/20 transition-colors">
+                        <div key={idx} className="bg-card rounded-card p-3 flex justify-between items-center relative overflow-hidden border shadow-sm group hover:border-primary/20 transition-colors">
                             <div className={cn("absolute top-0 left-0 w-1 h-full opacity-60 group-hover:scale-y-110 transition-transform", getCategoryVisuals(tx.category).color.replace('text-', 'bg-'))} />
 
                             <div className="flex items-center gap-3 overflow-hidden">
-                                <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm", getCategoryVisuals(tx.category).bgColor, getCategoryVisuals(tx.category).color)}>
+                                <div className={cn("h-11 w-11 rounded-md flex items-center justify-center shrink-0 shadow-sm", getCategoryVisuals(tx.category).bgColor, getCategoryVisuals(tx.category).color)}>
                                     {(() => {
                                         const Icon = getCategoryVisuals(tx.category).icon;
                                         const IconElement = Icon as React.ElementType;

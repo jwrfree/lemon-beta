@@ -83,7 +83,7 @@ const TransactionListItemContent = ({
             />
 
             <div className={cn(
-                "flex-shrink-0 h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm border border-border/20",
+                "flex-shrink-0 h-11 w-11 rounded-card flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm border border-border/20",
                 iconBg
             )}>
                 {primaryLogo && logoSource === 'primary' && (

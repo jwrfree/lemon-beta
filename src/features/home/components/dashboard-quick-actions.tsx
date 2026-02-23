@@ -26,7 +26,7 @@ export const DashboardQuickActions = () => {
                 <div className="grid grid-cols-5 gap-2">
                     <Button 
                         variant="outline" 
-                        className="flex flex-col h-auto py-2 px-1 gap-1 border-violet-200 bg-violet-50 hover:bg-violet-100 hover:text-violet-700 text-violet-600"
+                        className="flex flex-col h-auto py-2 px-1 gap-1 border-primary/20 bg-primary/10 hover:bg-primary/20 hover:text-primary text-primary"
                         onClick={() => router.push('/add-smart')}
                         title="Smart Add (AI)"
                     >

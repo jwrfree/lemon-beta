@@ -43,7 +43,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="relative overflow-hidden rounded-[32px] bg-teal-950 text-white p-8 md:p-12 shadow-2xl mx-4 mt-4 border border-white/10">
+        <div className="relative overflow-hidden rounded-card-premium bg-teal-950 text-white p-8 md:p-12 shadow-2xl mx-4 mt-4 border border-white/10">
             {/* Background Chart */}
             {mounted && dataPoints.length > 0 && (
                 <div className="absolute inset-x-0 bottom-0 h-48 opacity-10 pointer-events-none">
@@ -104,7 +104,7 @@ export function FinancialPulse({
 
                 {/* Right: Quick Stats */}
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm shadow-sm">
+                    <div className="p-5 rounded-card-glass bg-white/5 border border-white/10 backdrop-blur-sm shadow-sm">
                         <div className="flex items-center gap-2 text-white/50 mb-2">
                             <TrendingUp className="w-4 h-4" />
                             <span className="text-xs font-semibold uppercase tracking-widest">Pemasukan</span>
@@ -118,7 +118,7 @@ export function FinancialPulse({
                             <span>{formatCurrency(Math.abs(incomeDiff))}</span>
                         </div>
                     </div>
-                    <div className="p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm shadow-sm">
+                    <div className="p-5 rounded-card-glass bg-white/5 border border-white/10 backdrop-blur-sm shadow-sm">
                         <div className="flex items-center gap-2 text-white/50 mb-2">
                             <TrendingDown className="w-4 h-4" />
                             <span className="text-xs font-semibold uppercase tracking-widest">Pengeluaran</span>

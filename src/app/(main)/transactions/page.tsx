@@ -120,7 +120,7 @@ function TransactionsPageContent() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder="Cari transaksi..."
-                            className="pl-10 h-10 text-sm bg-muted/50 border-none focus-visible:ring-4 focus-visible:ring-primary/5 rounded-2xl transition-all"
+                            className="pl-10 h-10 text-sm bg-muted/50 border-none focus-visible:ring-4 focus-visible:ring-primary/5 rounded-card transition-all"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                         />
@@ -145,7 +145,7 @@ function TransactionsPageContent() {
                                 </div>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom" className="rounded-t-[2.5rem] max-h-[85vh] flex flex-col border-t-0 shadow-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
+                        <SheetContent side="bottom" className="rounded-t-card-premium max-h-[85vh] flex flex-col border-t-0 shadow-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
                             <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4 shrink-0" />
                             <SheetHeader className="text-left mb-6">
                                 <SheetTitle className="text-xl font-semibold tracking-tight">Atur Tampilan</SheetTitle>

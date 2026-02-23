@@ -124,7 +124,7 @@ export const ForgotPasswordPage = ({
 
                     {isSuccess && (
                         <div
-                            className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
+                            className="mb-4 rounded-card border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
                             role="status"
                         >
                             Instruksi reset password sudah dikirim. Cek folder inbox atau spam bila belum terlihat.

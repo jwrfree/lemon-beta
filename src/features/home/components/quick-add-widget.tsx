@@ -66,7 +66,7 @@ export const QuickAddWidget = () => {
     };
 
     return (
-        <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px] overflow-hidden relative">
+        <Card className="border-none shadow-card bg-card rounded-card-premium overflow-hidden relative">
             {/* Ambient Accent */}
             <div className="absolute top-0 right-0 p-6 opacity-[0.03] -rotate-12 pointer-events-none">
                 <Sparkles className="h-20 w-20" />
@@ -100,7 +100,7 @@ export const QuickAddWidget = () => {
                         >
                             <Input 
                                 placeholder="e.g. 'coffee 25k' or 'salary 5m'" 
-                                className="pr-12 h-12 bg-muted/30 border-none rounded-2xl focus-visible:ring-4 focus-visible:ring-primary/5 shadow-inner transition-all"
+                                className="pr-12 h-12 bg-muted/30 border-none rounded-card focus-visible:ring-4 focus-visible:ring-primary/5 shadow-inner transition-all"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleQuickAdd()}
@@ -110,7 +110,7 @@ export const QuickAddWidget = () => {
                                 size="icon" 
                                 variant="ghost" 
                                 className={cn(
-                                    "absolute right-1.5 top-1.5 h-9 w-9 rounded-xl transition-all",
+                                    "absolute right-1.5 top-1.5 h-9 w-9 rounded-md transition-all",
                                     inputValue.trim() ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground/40"
                                 )}
                                 onClick={handleQuickAdd}
@@ -125,7 +125,7 @@ export const QuickAddWidget = () => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-muted/30 rounded-2xl p-4 border border-border/10 shadow-inner relative overflow-hidden"
+                            className="bg-muted/30 rounded-card p-4 border border-border/10 shadow-inner relative overflow-hidden"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">

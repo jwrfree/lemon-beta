@@ -102,7 +102,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     }, []);
 
     return (
-        <div className="w-full h-full md:h-auto flex flex-col bg-background md:rounded-xl overflow-hidden">
+        <div className="w-full h-full md:h-auto flex flex-col bg-background md:rounded-md overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10">
                 <h2 className="text-xl font-medium">{title}</h2>
                 <Button
@@ -120,9 +120,9 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                 <div className="flex-1 space-y-4">
                     {!isEditMode && (
                         <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
-                            <TabsList className="bg-muted p-1 rounded-2xl h-11 w-full grid grid-cols-2">
-                                <TabsTrigger value="asset" className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Aset</TabsTrigger>
-                                <TabsTrigger value="liability" className="h-full rounded-xl font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
+                            <TabsList className="bg-muted p-1 rounded-card h-11 w-full grid grid-cols-2">
+                                <TabsTrigger value="asset" className="h-full rounded-md font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Aset</TabsTrigger>
+                                <TabsTrigger value="liability" className="h-full rounded-md font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm">Liabilitas</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     )}
@@ -130,10 +130,10 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     <div className="space-y-2">
                         <Label htmlFor="categoryKey" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Kategori</Label>
                         <Select onValueChange={setCategoryKey} value={categoryKey}>
-                            <SelectTrigger id="categoryKey" className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
+                            <SelectTrigger id="categoryKey" className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
                                 <SelectValue placeholder="Pilih kategori" />
                             </SelectTrigger>
-                            <SelectContent className="rounded-xl">
+                            <SelectContent className="rounded-md">
                                 {type === 'asset' ? (
                                     Object.entries(assetGroups).map(([groupName, cats]) => (
                                         <SelectGroup key={groupName}>
@@ -164,7 +164,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
+                            className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
                         />
                     </div>
 
@@ -179,7 +179,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     value={quantity}
                                     onChange={(e) => setQuantity(e.target.value)}
                                     placeholder={`0 ${selectedCategory?.unit}`}
-                                    className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
+                                    className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
                                     required
                                 />
                                 <p className="text-xs text-muted-foreground px-1 italic">
@@ -201,7 +201,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     onChange={handleAmountChange}
                                     required
                                     inputMode="numeric"
-                                    className="h-12 pl-11 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 font-medium text-lg"
+                                    className="h-12 pl-11 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 font-medium text-lg"
                                 />
                             </div>
                         </div>
@@ -214,7 +214,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             placeholder="Tambahkan catatan di sini..."
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            className="rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 min-h-[100px] resize-none"
+                            className="rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 min-h-[100px] resize-none"
                         />
                     </div>
                 </div>

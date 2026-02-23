@@ -39,11 +39,11 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
 
     if (finalTransactions.length === 0 && !isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] relative overflow-hidden">
+            <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-card-premium shadow-card relative overflow-hidden">
                 {/* Ambient Glow */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16" />
                 
-                <div className="p-6 bg-primary/10 rounded-[24px] mb-6 relative z-10 shadow-inner">
+                <div className="p-6 bg-primary/10 rounded-card-glass mb-6 relative z-10 shadow-inner">
                     <ReceiptText className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-semibold tracking-tighter mb-2 relative z-10">Kosong Melompong</h2>
@@ -75,7 +75,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                         <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="bg-card rounded-2xl shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">
+                        <div className="bg-card rounded-card shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 

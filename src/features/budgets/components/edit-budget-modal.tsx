@@ -91,7 +91,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-[2.5rem] shadow-2xl flex flex-col h-fit max-h-[90vh] border-none overflow-hidden"
+        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-2xl flex flex-col h-fit max-h-[90vh] border-none overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/10">
@@ -104,7 +104,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-8 overflow-y-auto">
           <div className="space-y-3">
             <Label htmlFor="budget-name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
-            <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required />
+            <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-secondary/50 border-none shadow-inner" required />
           </div>
 
           <div className="space-y-6">
@@ -130,7 +130,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
             </div>
             <div className="grid grid-cols-4 gap-3">
               {budgetSteps.map(val => (
-                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold text-xs", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 font-semibold text-xs", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
                   {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                 </Button>
               ))}
@@ -147,7 +147,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                   return (
                     <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
                       className={cn(
-                        "p-3 text-center border-2 rounded-[20px] flex flex-col items-center justify-center gap-2 aspect-square transition-all",
+                        "p-3 text-center border-2 rounded-card-icon flex flex-col items-center justify-center gap-2 aspect-square transition-all",
                         isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                       )}>
                       <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
@@ -197,7 +197,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                 <Trash2 className="h-6 w-6" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+            <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-2xl font-semibold tracking-tighter">Delete Budget?</AlertDialogTitle>
                 <AlertDialogDescription className="text-sm font-medium text-muted-foreground">

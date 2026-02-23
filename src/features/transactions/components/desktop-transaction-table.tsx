@@ -319,7 +319,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-xl bg-card shadow-card border border-border">
+            <div className="overflow-hidden rounded-md bg-card shadow-card border border-border">
                 <Table className="table-fixed">
                     <TableHeader className="bg-muted/50">
                         <TableRow className="hover:bg-muted/50 border-b border-border">

@@ -29,7 +29,7 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
     }, []);
 
     if (!mounted || data.length === 0) {
-        return <div className="h-72 bg-zinc-100 dark:bg-zinc-900 rounded-3xl animate-pulse" />;
+        return <div className="h-72 bg-zinc-100 dark:bg-zinc-900 rounded-card-glass animate-pulse" />;
     }
 
     return (

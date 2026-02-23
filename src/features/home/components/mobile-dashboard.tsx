@@ -169,7 +169,7 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 >
-                    <div className="relative overflow-hidden rounded-[32px] bg-[#064e4b] text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] dark:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.6)]">
+                    <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] dark:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.6)]">
                         {/* Dynamic Mesh Ornaments */}
                         <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-emerald-400/20 blur-[80px] animate-pulse"></div>
                         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-teal-300/10 blur-[80px]"></div>
@@ -207,9 +207,9 @@ export const MobileDashboard = ({
 
                             {/* Income/Expense Pill (Glassmorphism Inset) */}
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 flex flex-col justify-between h-24 border border-white/10 shadow-inner group">
+                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 shadow-inner group">
                                     <div className="flex items-center gap-2 text-white/60">
-                                        <div className="p-1.5 rounded-xl bg-emerald-500/20 text-emerald-300">
+                                        <div className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-300">
                                             <ArrowUpRight className="h-3.5 w-3.5" />
                                         </div>
                                         <span className="text-xs uppercase font-semibold tracking-widest">Inflow</span>
@@ -221,9 +221,9 @@ export const MobileDashboard = ({
                                         </p>
                                     </div>
                                 </div>
-                                <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 flex flex-col justify-between h-24 border border-white/10 shadow-inner group">
+                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 shadow-inner group">
                                     <div className="flex items-center gap-2 text-white/60">
-                                        <div className="p-1.5 rounded-xl bg-rose-500/20 text-rose-300">
+                                        <div className="p-1.5 rounded-md bg-rose-500/20 text-rose-300">
                                             <ArrowDownLeft className="h-3.5 w-3.5" />
                                         </div>
                                         <span className="text-xs uppercase font-semibold tracking-widest">Outflow</span>
@@ -295,7 +295,7 @@ export const MobileDashboard = ({
                                 onClick={() => router.push(`/wallets?id=${wallet.id}`)}
                             >
                                 <div 
-                                    className="w-44 h-32 rounded-[28px] p-4 flex flex-col justify-between relative overflow-hidden group shadow-2xl transition-all duration-500"
+                                    className="w-44 h-32 rounded-card-premium p-4 flex flex-col justify-between relative overflow-hidden group shadow-2xl transition-all duration-500"
                                     style={{ 
                                         background: dna.gradient,
                                         boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
@@ -306,7 +306,7 @@ export const MobileDashboard = ({
                                     <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                                     <div className="flex items-start justify-between relative z-10">
-                                        <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center overflow-hidden h-9 w-9 shadow-inner border border-white/10">
+                                        <div className="p-2 rounded-card bg-white/10 backdrop-blur-xl flex items-center justify-center overflow-hidden h-9 w-9 shadow-inner border border-white/10">
                                             {logo ? (
                                                 <img
                                                     src={logo}
@@ -325,7 +325,7 @@ export const MobileDashboard = ({
                                     <div className="relative z-10 space-y-1">
                                         <p className="text-xs font-semibold text-white/60 uppercase tracking-widest truncate">{wallet.name}</p>
                                         {/* Dynamic Contrast Protection for Balance */}
-                                        <div className="bg-white/10 backdrop-blur-sm px-2 py-1 rounded-xl border border-white/5 w-fit">
+                                        <div className="bg-white/10 backdrop-blur-sm px-2 py-1 rounded-md border border-white/5 w-fit">
                                             <p className="text-sm font-semibold text-white truncate tracking-tighter tabular-nums">
                                                 {formatCurrency(wallet.balance)}
                                             </p>
@@ -339,7 +339,7 @@ export const MobileDashboard = ({
                     <div className="snap-center shrink-0">
                         <button
                             onClick={() => router.push('/wallets')}
-                            className="w-16 h-32 rounded-[28px] border-2 border-dashed border-border/40 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-all group"
+                            className="w-16 h-32 rounded-card-premium border-2 border-dashed border-border/40 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-all group"
                         >
                             <div className="p-3 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">
                                 <Plus className="h-6 w-6 text-muted-foreground/40 group-hover:text-primary" />

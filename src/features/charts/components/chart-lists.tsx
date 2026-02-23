@@ -31,7 +31,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
         <button
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden bg-card rounded-xl p-5 border-none shadow-card transition-all text-left w-full",
+                "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-card transition-all text-left w-full",
                 isOverBudget
                     ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
                     : "hover:bg-muted/50"
@@ -51,7 +51,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                         </p>
                     </div>
                     {isOverBudget && (
-                        <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-xl">
+                        <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-md">
                             <AlertTriangle className="w-5 h-5" />
                         </div>
                     )}

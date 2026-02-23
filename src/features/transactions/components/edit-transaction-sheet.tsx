@@ -241,7 +241,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                 </div>
 
                 {/* 3. Global Actions */}
-                <div className="p-6 border-t bg-card flex gap-3 pb-safe">
+                <div className="p-6 border-t bg-card flex gap-3 pb-6">
                     <Button
                         variant="ghost"
                         size="icon"

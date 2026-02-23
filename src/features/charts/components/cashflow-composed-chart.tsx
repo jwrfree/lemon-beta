@@ -44,14 +44,14 @@ const chartConfig = {
 export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
     if (data.length === 0) {
         return (
-            <div className="h-[350px] flex items-center justify-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl">
+            <div className="h-[350px] flex items-center justify-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-card-glass">
                 Belum ada data transaksi
             </div>
         );
     }
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+        <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h3 className="text-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
