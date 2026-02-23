@@ -2,7 +2,52 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Version 2.5.5] - 23 February 2026
+## [Version 2.5.6] - 23 February 2026
+
+### 🎨 UI — Design System Consistency Audit (Phase 2–5)
+
+This release enforces the design system standards documented in `DESIGN_SYSTEM.md` across the entire presentation layer. **No business logic was changed.**
+
+#### Typography
+
+- **Arbitrary pixel font sizes eliminated** from key components:
+  - `sidebar.tsx`: `text-[9px]` and all `text-[10px] font-semibold uppercase tracking-widest` instances replaced with the canonical `text-label` and `label-xs` utility classes.
+  - `goals-dashboard.tsx`: `text-[10px] tracking-[0.2em]` → `label-xs`.
+  - `wallets/page.tsx`: tab trigger labels and section headers now use `text-label` / `label-xs`.
+  - `debts/page.tsx`: all hero card micro-labels (`text-[10px]`, `text-[9px]`) → `label-xs`.
+  - `budgeting/page.tsx`: `text-[10px]`, `text-[9px]`, `text-[11px]` → `label-xs` / `text-xs`.
+
+- **Arbitrary `tracking-[X]` values eliminated**:
+  - `sidebar.tsx`: `tracking-[0.2em]` and `tracking-[0.3em]` → `tracking-widest`.
+  - `budgeting/page.tsx`, `debts/page.tsx`, and `goals-dashboard.tsx`: all `tracking-[0.2em]` / `tracking-[0.3em]` instances removed in favour of `tracking-widest`.
+
+#### Spacing
+
+- **`pb-32` → `pb-24`** in `debts/page.tsx` — standardised nav clearance across all pages.
+
+#### Colors & Component Structure
+
+- **FAB Consolidation** — all 8 inline FAB patterns replaced with the canonical `<FAB>` component:
+  - `goals-dashboard.tsx`: `bg-purple-600` → `bg-primary` via `<FAB>`.
+  - `reminders-dashboard.tsx`: `bg-blue-600` → `bg-primary` via `<FAB>`.
+  - `debts-dashboard.tsx`: inline Button → `<FAB>`.
+  - `budgeting-dashboard.tsx`: inline Button → `<FAB>`.
+  - `wallets/page.tsx`: `bottom-20` → `bottom-24` via `<FAB>`.
+  - `goals/page.tsx`: `bottom-20` → `bottom-24` via `<FAB>`.
+  - `debts/page.tsx`: `bottom-20` → `bottom-24` via `<FAB>`, Tooltip wrapper removed.
+  - `budgeting/page.tsx`: `md:bottom-10 md:right-10` → `md:bottom-8 md:right-8` via `<FAB>`, motion wrapper removed.
+
+- **Border Radius Tokens** — arbitrary values replaced with named tokens:
+  - `rounded-[32px]` → `rounded-card-premium` in `goal-list.tsx`, `goals-dashboard.tsx`, `debts/page.tsx`, `budgeting/page.tsx`, `wallets/page.tsx`.
+  - `rounded-[24px]` → `rounded-card-glass` in `goal-list.tsx`, `debts/page.tsx`, `budgeting/page.tsx`.
+  - `rounded-[20px]` → `rounded-card-icon` in `goal-list.tsx`, `budgeting/page.tsx`, `goals-dashboard.tsx`.
+  - `rounded-2xl` → `rounded-card-icon` in `goals-dashboard.tsx`.
+
+#### Backdrop Blur
+
+- **`backdrop-blur-3xl` → `backdrop-blur-xl`** in `bottom-navigation.tsx` — aligns with the documented blur scale (3xl is deprecated).
+
+
 
 ### 🎨 UI — Font Weight Reduction
 

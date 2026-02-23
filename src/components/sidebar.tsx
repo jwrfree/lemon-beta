@@ -49,7 +49,7 @@ export const Sidebar = () => {
                 {!isSidebarCollapsed && (
                     <div className="flex flex-col ml-4 overflow-hidden whitespace-nowrap">
                         <p className="text-lg font-semibold tracking-tighter truncate text-foreground leading-none">{SIDEBAR_CONFIG.appName}</p>
-                        <p className="text-label truncate opacity-50 mt-1.5">{SIDEBAR_CONFIG.appVersion}</p>
+                        <p className="text-label text-muted-foreground uppercase truncate opacity-50 mt-1.5">{SIDEBAR_CONFIG.appVersion}</p>
                     </div>
                 )}
             </div>
@@ -78,7 +78,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="text-label bg-primary text-primary-foreground border-none">
+                            <TooltipContent side="right" sideOffset={20} className="text-label uppercase bg-primary text-primary-foreground border-none">
                                 Smart Add
                             </TooltipContent>
                         )}
@@ -126,7 +126,7 @@ export const Sidebar = () => {
                                     </Link>
                                 </TooltipTrigger>
                                 {isSidebarCollapsed && (
-                                    <TooltipContent side="right" sideOffset={20} className="text-label bg-card text-foreground border-border shadow-xl">
+                                    <TooltipContent side="right" sideOffset={20} className="text-label uppercase bg-card text-foreground border-border shadow-xl">
                                         {item.name}
                                     </TooltipContent>
                                 )}
@@ -146,7 +146,7 @@ export const Sidebar = () => {
                                     variant="ghost"
                                     onClick={handleInstallClick}
                                     className={cn(
-                                        'text-primary hover:bg-primary/10 rounded-full transition-all duration-300 text-label',
+                                        'text-primary hover:bg-primary/10 rounded-full transition-all duration-300 text-label uppercase',
                                         isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
                                     )}
                                 >
@@ -155,7 +155,7 @@ export const Sidebar = () => {
                                 </Button>
                             </TooltipTrigger>
                             {isSidebarCollapsed && (
-                                <TooltipContent side="right" sideOffset={20} className="text-label bg-card text-primary border-primary/20 shadow-xl">
+                                <TooltipContent side="right" sideOffset={20} className="text-label uppercase bg-card text-primary border-primary/20 shadow-xl">
                                     Install App
                                 </TooltipContent>
                             )}
@@ -168,7 +168,7 @@ export const Sidebar = () => {
                                 variant="ghost"
                                 onClick={toggleBalanceVisibility}
                                 className={cn(
-                                    'text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-full transition-all duration-300 text-label',
+                                    'text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-full transition-all duration-300 text-label uppercase',
                                     isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
                                 )}
                             >
@@ -177,7 +177,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="text-label bg-card text-foreground border-border shadow-xl">
+                            <TooltipContent side="right" sideOffset={20} className="text-label uppercase bg-card text-foreground border-border shadow-xl">
                                 {isBalanceVisible ? 'Sembunyikan Saldo' : 'Tampilkan Saldo'}
                             </TooltipContent>
                         )}
@@ -189,7 +189,7 @@ export const Sidebar = () => {
                                 variant="ghost"
                                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                                 className={cn(
-                                    'text-muted-foreground hover:bg-muted/50 rounded-full transition-all duration-300 text-label',
+                                    'text-muted-foreground hover:bg-muted/50 rounded-full transition-all duration-300 text-label uppercase',
                                     isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
                                 )}
                             >
@@ -198,7 +198,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="text-label bg-card text-foreground border-border shadow-xl">
+                            <TooltipContent side="right" sideOffset={20} className="text-label uppercase bg-card text-foreground border-border shadow-xl">
                                 Perluas Sidebar
                             </TooltipContent>
                         )}
@@ -211,7 +211,7 @@ export const Sidebar = () => {
                                     variant="ghost"
                                     onClick={handleSignOut}
                                     className={cn(
-                                        'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-all duration-300 text-label',
+                                        'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-all duration-300 text-label uppercase',
                                         isSidebarCollapsed ? 'w-12 h-12 p-0 flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
                                     )}
                                 >
@@ -220,7 +220,7 @@ export const Sidebar = () => {
                                 </Button>
                             </TooltipTrigger>
                             {isSidebarCollapsed && (
-                                <TooltipContent side="right" sideOffset={20} className="text-label bg-destructive text-destructive-foreground border-none shadow-xl">
+                                <TooltipContent side="right" sideOffset={20} className="text-label uppercase bg-destructive text-destructive-foreground border-none shadow-xl">
                                     Keluar Akun
                                 </TooltipContent>
                             )}

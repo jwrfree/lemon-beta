@@ -52,7 +52,7 @@ export const GoalsDashboard = () => {
             <div>
                 <div className="flex items-center justify-between mb-4 px-2">
                     <h2 className="label-xs">Daftar Impian</h2>
-                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-label hover:bg-primary/10 hover:text-primary">
+                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-label uppercase hover:bg-primary/10 hover:text-primary">
                         <Plus className="h-3.5 w-3.5 mr-1" />
                         Tambah
                     </Button>
