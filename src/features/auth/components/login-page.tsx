@@ -79,6 +79,7 @@ export const LoginPage = ({
 
             showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
+            router.refresh();
             router.push('/home');
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Gagal masuk. Coba lagi ya.';
