@@ -2,7 +2,67 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Version 2.5.6] - 23 February 2026
+## [Version 2.5.7] - 23 February 2026
+
+### ♻️ Refactor — Full Design System Enforcement (Phase 2–5 Complete)
+
+This release completes the mechanical enforcement of the design system (`docs/DESIGN_SYSTEM.md`) across the entire codebase. **No business logic was changed.**
+
+#### Summary
+
+All arbitrary Tailwind values (pixel font sizes, pixel tracking, non-standard padding, arbitrary border radii, raw palette colors on interactive elements) have been replaced with semantic utility classes, named tokens, and canonical component variants. The UI is now visually coherent across all routes.
+
+#### Typography (Phase 2 — Complete)
+
+- **401 arbitrary font sizes eliminated** across 82 files:
+  - `text-[10px]`, `text-[9px]`, `text-[11px]`, `text-[8px]` → `text-xs`
+  - `text-[15px]` → `text-sm`
+  - `text-[0.8rem]` → `text-sm`
+- **77 arbitrary tracking values eliminated** across 29 files:
+  - `tracking-[0.1em]`, `tracking-[0.2em]`, `tracking-[0.3em]`, `tracking-[0.4em]`, `tracking-[0.05em]`, `tracking-[0.15em]` → `tracking-widest`
+- **Affected modules**: `page-header.tsx`, `sidebar.tsx`, all features (`transactions`, `home`, `budgets`, `goals`, `debts`, `reminders`, `wallets`, `charts`, `insights`, `settings`, `assets`)
+
+#### Spacing (Phase 2 — Complete)
+
+- **Forbidden padding standardised**: `pb-32`, `pb-28`, `pb-20` → `pb-24` in all main layout containers
+- `pb-safe` (iOS-only) → `pb-6` in modal/sheet footer contexts
+
+#### Border Radius (Phase 3 — Complete)
+
+- `rounded-[32px]`, `rounded-[2rem]`, `rounded-[2.5rem]`, `rounded-[28px]` → `rounded-card-premium`
+- `rounded-[24px]`, `rounded-[1.5rem]` → `rounded-card-glass`
+- `rounded-[20px]`, `rounded-[1.25rem]` → `rounded-card-icon`
+- `rounded-[6px]` → `rounded-md`
+- `rounded-3xl` → `rounded-card-glass` (exact match: both 24px)
+- `rounded-2xl` → `rounded-card` (16px → 14px, within 1 step)
+- `rounded-xl` → `rounded-md` (12px → ~12px)
+
+#### Elevation & Blur (Phase 5 — Complete)
+
+- `shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[...]` → `shadow-card` (semantic flat card shadow)
+- `backdrop-blur-2xl` → `backdrop-blur-xl`
+
+#### Colors & Semantic Tokens (Phase 3 — Complete)
+
+- `bg-green-500` → `bg-success` in `success-animation.tsx`
+- `bg-violet-600` / `bg-indigo-500` (on Buttons) → `bg-primary` in `ai-insight-card.tsx`, `monthly-summary.tsx`
+- `bg-blue-100/bg-blue-900/30 text-blue-600` (info-style icon containers) → `bg-info/10 text-info` in `assets-liabilities/page.tsx`, `settings/page.tsx`, `finance-overview.tsx`
+- `bg-purple-500/20` / `bg-purple-50` (AI decorative) → `bg-primary/20` / `bg-primary/5` in `prophet-chart.tsx`
+- `bg-indigo-500/20` (decorative glow) → `bg-primary/20` in `deepseek-usage-card.tsx`
+- `bg-orange-500/50` (chat message accent) → `bg-warning/50` in `messages-list.tsx`
+- `bg-violet-50/border-violet-200` (Smart Add quick action button) → `bg-primary/10/border-primary/20` in `dashboard-quick-actions.tsx`
+- `bg-green-400` (status indicator) → `bg-success` in `finance-overview.tsx`
+- `bg-blue-500/10 text-blue-600` (info panel) → `bg-info/10 text-info` in `token-calculator/page.tsx`
+
+#### Affected Modules
+
+`components/success-animation.tsx`, `components/page-header.tsx`, `app/(main)/goals/page.tsx`, `app/(main)/settings/page.tsx`, `app/(main)/budgeting/*`, `app/(main)/charts/page.tsx`, `app/(main)/assets-liabilities/page.tsx`, `app/(main)/token-calculator/page.tsx`, `app/(main)/add-smart/*`, `app/(main)/reminders/page.tsx`, `features/home/*`, `features/transactions/*`, `features/budgets/*`, `features/charts/*`, `features/wallets/*`, `features/insights/*`, `features/debts/*`, `features/reminders/*`, `features/settings/*`
+
+#### No Business Logic Changed
+
+All changes are **presentation-layer only** (CSS class names in JSX). No TypeScript logic, hooks, data fetching, state management, routing, or database interactions were modified.
+
+
 
 ### 🎨 UI — Design System Consistency Audit (Phase 2–5)
 

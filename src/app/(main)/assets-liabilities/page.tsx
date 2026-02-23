@@ -240,7 +240,7 @@ export default function AssetsLiabilitiesPage() {
                                     <CardContent className="px-0 flex-1 overflow-hidden">
                                         <TabsContent value="all" className="mt-0 h-full">
                                             <div className="px-4 mb-2">
-                                                <div className="flex items-center justify-between p-3 rounded-lg bg-info/5 dark:bg-info/5 border border-info/20">
+                                                <div className="flex items-center justify-between p-3 rounded-lg bg-info/5 border border-info/20">
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 rounded-full bg-info/10 text-info">
                                                             <WalletCards className="h-4 w-4" />
@@ -267,7 +267,7 @@ export default function AssetsLiabilitiesPage() {
                                                 <p className="text-lg font-medium text-teal-600">{formatCurrency(totals.realAssetsValue)}</p>
                                             </div>
                                             <div className="px-4 mb-2">
-                                                <div className="flex items-center justify-between p-3 rounded-lg bg-info/5 dark:bg-info/5 border border-info/20">
+                                                <div className="flex items-center justify-between p-3 rounded-lg bg-info/5 border border-info/20">
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 rounded-full bg-info/10 text-info">
                                                             <WalletCards className="h-4 w-4" />

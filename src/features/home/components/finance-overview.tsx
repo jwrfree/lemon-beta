@@ -114,7 +114,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Net / Savings Card */}
-            <Card className="border-none shadow-sm bg-info/5 dark:bg-info/5 hover:shadow-md transition-all">
+            <Card className="border-none shadow-sm bg-info/5 hover:shadow-md transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-info/10 rounded-lg">
