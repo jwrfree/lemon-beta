@@ -70,7 +70,7 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
             </motion.div>
 
             {!compact && (
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 group-hover:text-primary transition-colors">
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 group-hover:text-primary transition-colors">
                     Ketuk untuk ubah nominal
                 </p>
             )}

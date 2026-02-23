@@ -66,11 +66,11 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
                 <div className="space-y-0.5 sm:space-y-1">
                     <CardTitle className="text-base sm:text-lg font-medium tracking-tight">Tren Tahunan</CardTitle>
-                    <CardDescription className="text-[10px] sm:text-xs">
+                    <CardDescription className="text-xs sm:text-xs">
                         {`Visualisasi ${sectionLabel} 12 bulan.`}
                     </CardDescription>
                 </div>
-                <Badge variant="outline" className="border-border text-[9px] sm:text-[10px] font-medium px-1.5 py-0.5">
+                <Badge variant="outline" className="border-border text-xs sm:text-xs font-medium px-1.5 py-0.5">
                     {rangeLabel}
                 </Badge>
             </CardHeader>
@@ -85,11 +85,11 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <div className="rounded-xl bg-muted/30 p-3 sm:p-4 border-none">
-                        <p className="text-[10px] sm:text-[11px] font-medium uppercase tracking-widest text-muted-foreground/70 mb-1 leading-none">Total Setahun</p>
+                        <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground/70 mb-1 leading-none">Total Setahun</p>
                         <p className="text-base sm:text-lg font-medium text-foreground tabular-nums leading-none">{formatCurrency(totalYear)}</p>
                     </div>
                     <div className="rounded-xl bg-muted/30 p-3 sm:p-4 border-none">
-                        <p className="text-[10px] sm:text-[11px] font-medium uppercase tracking-widest text-muted-foreground/70 mb-1 leading-none">Rata-rata</p>
+                        <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground/70 mb-1 leading-none">Rata-rata</p>
                         <p className="text-base sm:text-lg font-medium text-foreground tabular-nums leading-none">{formatCurrency(average)}</p>
                     </div>
                 </div>

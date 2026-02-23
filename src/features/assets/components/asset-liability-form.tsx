@@ -137,7 +137,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                 {type === 'asset' ? (
                                     Object.entries(assetGroups).map(([groupName, cats]) => (
                                         <SelectGroup key={groupName}>
-                                            <SelectLabel className="px-2 py-1.5 text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">{groupName}</SelectLabel>
+                                            <SelectLabel className="px-2 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground/60">{groupName}</SelectLabel>
                                             {cats.map((cat) => (
                                                 <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
                                                     {cat.label}
@@ -182,7 +182,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     className="h-12 rounded-xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
                                     required
                                 />
-                                <p className="text-[10px] text-muted-foreground px-1 italic">
+                                <p className="text-xs text-muted-foreground px-1 italic">
                                     *Masukkan jumlah {selectedCategory?.unit} untuk tracking harga otomatis.
                                 </p>
                             </div>

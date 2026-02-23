@@ -110,7 +110,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                         <div className="font-medium text-foreground leading-tight truncate max-w-[200px] tracking-tight">
                             {t.description || t.category}
                         </div>
-                        <div className="text-[10px] font-medium text-muted-foreground mt-1 flex items-center gap-2">
+                        <div className="text-xs font-medium text-muted-foreground mt-1 flex items-center gap-2">
                             <span>{format(dateObj, 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
                             <span className="w-1 h-1 rounded-full bg-border" />
                             <span>{format(dateObj, 'HH:mm')}</span>
@@ -131,19 +131,19 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
             <td className="p-4 align-middle">
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-md w-fit mb-1 border",
+                        "text-xs font-medium uppercase tracking-wider px-2 py-0.5 rounded-md w-fit mb-1 border",
                         categoryData.bg_color ? `${categoryData.bg_color} border-border` : "bg-secondary border-transparent",
                         categoryData.color
                     )}>
                         {t.category}
                     </span>
                     {t.subCategory ? (
-                        <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1 ml-1">
+                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-1 ml-1">
                             <CornerDownRight className="w-3 h-3 text-muted-foreground/50" />
                             {t.subCategory}
                         </span>
                     ) : (
-                        <span className="text-[10px] font-medium text-muted-foreground/40 ml-1 italic">Umum</span>
+                        <span className="text-xs font-medium text-muted-foreground/40 ml-1 italic">Umum</span>
                     )}
                 </div>
             </td>
@@ -181,10 +181,10 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
             <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
                     <tr>
-                        <th className="p-5 pl-6 font-medium text-[10px] uppercase tracking-[0.15em]">Detail Transaksi</th>
-                        <th className="p-5 font-medium text-[10px] uppercase tracking-[0.15em]">Kategori / Sub</th>
-                        <th className="p-5 font-medium text-[10px] uppercase tracking-[0.15em]">Sumber Dana</th>
-                        <th className="p-5 text-right pr-6 font-medium text-[10px] uppercase tracking-[0.15em]">Nominal</th>
+                        <th className="p-5 pl-6 font-medium text-xs uppercase tracking-[0.15em]">Detail Transaksi</th>
+                        <th className="p-5 font-medium text-xs uppercase tracking-[0.15em]">Kategori / Sub</th>
+                        <th className="p-5 font-medium text-xs uppercase tracking-[0.15em]">Sumber Dana</th>
+                        <th className="p-5 text-right pr-6 font-medium text-xs uppercase tracking-[0.15em]">Nominal</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">

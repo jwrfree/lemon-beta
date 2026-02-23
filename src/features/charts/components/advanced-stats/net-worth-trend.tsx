@@ -40,7 +40,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         <ShieldCheck className="w-5 h-5 text-emerald-400" />
                         Net Worth Flow
                     </h3>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">Equity Accumulation Trend</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">Equity Accumulation Trend</p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2">
                     <p className="text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-sm">
@@ -48,7 +48,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                     </p>
                     <Badge
                         className={cn(
-                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-[10px] uppercase tracking-widest", 
+                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-xs uppercase tracking-widest", 
                             growth >= 0 ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
                         )}
                     >
@@ -99,7 +99,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
 
             <div className="grid grid-cols-2 gap-6 mt-10 pt-8 border-t border-white/10 relative z-10">
                 <div className="bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner">
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center gap-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                         Assets
                     </p>
@@ -108,7 +108,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                     </p>
                 </div>
                 <div className="bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner text-right">
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center justify-end gap-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center justify-end gap-2">
                         Liabilities
                         <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                     </p>

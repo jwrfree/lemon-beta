@@ -114,7 +114,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 >
                                     <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg">
                                         <Tag className="h-3 w-3 fill-primary-foreground/20" />
-                                        <span className="text-[10px] font-medium uppercase tracking-[0.1em]">{category}</span>
+                                        <span className="text-xs font-medium uppercase tracking-[0.1em]">{category}</span>
                                     </div>
                                     {subCategory && (
                                         <motion.div
@@ -124,7 +124,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                             className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10"
                                         >
                                             <CornerDownRight className="h-3 w-3 opacity-50" />
-                                            <span className="text-[10px] font-medium">{subCategory}</span>
+                                            <span className="text-xs font-medium">{subCategory}</span>
                                         </motion.div>
                                     )}
                                 </motion.div>
@@ -136,7 +136,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm"
                                 >
                                     <MapPin className="h-3 w-3 text-destructive" />
-                                    <span className="text-[9px] font-medium uppercase tracking-wider">{location}</span>
+                                    <span className="text-xs font-medium uppercase tracking-wider">{location}</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -159,7 +159,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     className="flex items-center justify-center gap-1.5 mt-3 text-success"
                                 >
                                     <Sparkles className="h-3 w-3 fill-current" />
-                                    <span className="text-[10px] font-medium uppercase tracking-widest">{aiExplanation}</span>
+                                    <span className="text-xs font-medium uppercase tracking-widest">{aiExplanation}</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -177,8 +177,8 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                         <div className="bg-card rounded-lg p-5 border border-border shadow-card space-y-5">
                             <Tabs value={type} onValueChange={(v: any) => setValue('type', v)}>
                                 <TabsList className="w-full h-11 bg-muted/50 rounded-lg p-1">
-                                    <TabsTrigger value="expense" className="flex-1 rounded-md text-[10px] font-medium uppercase">Pengeluaran</TabsTrigger>
-                                    <TabsTrigger value="income" className="flex-1 rounded-md text-[10px] font-medium uppercase">Pemasukan</TabsTrigger>
+                                    <TabsTrigger value="expense" className="flex-1 rounded-md text-xs font-medium uppercase">Pengeluaran</TabsTrigger>
+                                    <TabsTrigger value="income" className="flex-1 rounded-md text-xs font-medium uppercase">Pemasukan</TabsTrigger>
                                 </TabsList>
                             </Tabs>
                             <AmountInput control={control} name="amount" error={errors.amount?.message} />
@@ -204,7 +204,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     type="button"
                                     onClick={() => setValue('isNeed', true, { shouldDirty: true })}
                                     className={cn(
-                                        "flex-1 py-3 px-4 rounded-md text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                        "flex-1 py-3 px-4 rounded-md text-xs font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
                                         isNeed !== false ? "bg-card shadow-sm text-success ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
                                     )}
                                 >
@@ -215,7 +215,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     type="button"
                                     onClick={() => setValue('isNeed', false, { shouldDirty: true })}
                                     className={cn(
-                                        "flex-1 py-3 px-4 rounded-md text-[10px] font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                        "flex-1 py-3 px-4 rounded-md text-xs font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
                                         isNeed === false ? "bg-card shadow-sm text-pink-500 ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
                                     )}
                                 >
@@ -226,7 +226,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                         )}
 
                         <div className="space-y-2">
-                            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1">
+                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-1 flex items-center gap-1">
                                 <MapPin className="h-3 w-3" />
                                 Lokasi
                             </p>
@@ -234,7 +234,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                         </div>
 
                         <div className="space-y-2">
-                            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground px-1">Deskripsi</p>
+                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-1">Deskripsi</p>
                             <Input {...form.register('description')} placeholder="Catatan transaksi..." className="h-12 rounded-lg bg-card border-border" />
                         </div>
                     </motion.div>

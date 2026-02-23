@@ -47,7 +47,7 @@ export const DashboardRecentTransactionsEmpty = () => {
                     Catat Sekarang
                 </Button>
                 
-                <div className="mt-8 flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest text-primary/40">
+                <div className="mt-8 flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-primary/40">
                     <Sparkles className="h-3 w-3" />
                     <span>Didukung AI Lemon</span>
                 </div>

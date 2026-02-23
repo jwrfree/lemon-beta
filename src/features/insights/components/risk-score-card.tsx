@@ -25,7 +25,7 @@ export const RiskScoreCard = () => {
                 </div>
                 <div className="space-y-1">
                     <p className="text-xs font-semibold uppercase tracking-widest opacity-40">Co-Pilot sedang belajar</p>
-                    <p className="text-[10px] text-muted-foreground max-w-[200px]">Catat beberapa transaksi lagi untuk melihat momentum keuanganmu.</p>
+                    <p className="text-xs text-muted-foreground max-w-[200px]">Catat beberapa transaksi lagi untuk melihat momentum keuanganmu.</p>
                 </div>
             </Card>
         );
@@ -77,7 +77,7 @@ export const RiskScoreCard = () => {
                             <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">Flux Momentum</p>
+                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">Flux Momentum</p>
                             <h3 className="text-xl font-semibold tracking-tighter text-white">Co-Pilot Insight</h3>
                         </div>
                     </div>
@@ -107,12 +107,12 @@ export const RiskScoreCard = () => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="p-4 rounded-[24px] bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
-                                <p className="text-[9px] font-semibold uppercase tracking-widest text-white/40 mb-1.5">Burn Velocity</p>
+                                <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">Burn Velocity</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
                             <div className="p-4 rounded-[24px] bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
-                                <p className="text-[9px] font-semibold uppercase tracking-widest text-white/40 mb-1.5">Momentum</p>
-                                <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-[8px] font-medium opacity-40">RATIO</span></p>
+                                <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">Momentum</p>
+                                <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40">RATIO</span></p>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@ export const RiskScoreCard = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/30 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/30 pt-4 border-t border-white/5">
                     <div className="flex items-center gap-2">
                         <div className="h-1 w-1 rounded-full bg-white/40" />
                         <span>Adaptive Risk Engine Active</span>

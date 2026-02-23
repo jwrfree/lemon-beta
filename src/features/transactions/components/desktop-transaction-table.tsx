@@ -156,7 +156,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                             {t.description || t.category}
                         </div>
                         {t.location && (
-                            <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                                 <MapPin className="h-2.5 w-2.5" />
                                 <span className="truncate">{t.location}</span>
                             </div>
@@ -169,14 +169,14 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             <TableCell>
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-lg w-fit border border-transparent bg-opacity-50",
+                        "text-xs font-semibold uppercase tracking-widest px-2 py-0.5 rounded-lg w-fit border border-transparent bg-opacity-50",
                         categoryData.color,
                         categoryData.bg_color || "bg-secondary"
                     )}>
                         {t.category}
                     </span>
                     {t.subCategory && (
-                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-1 ml-1">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1 ml-1">
                             <CornerDownRight className="w-2.5 h-2.5" />
                             <span>{t.subCategory}</span>
                         </div>
@@ -206,12 +206,12 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                 </div>
                 <div className="flex flex-col items-end gap-0.5 mt-0.5">
                     {t.amount >= 1000000 && isExpense && (
-                        <span className="text-[8px] font-semibold text-destructive uppercase tracking-widest px-1 bg-destructive/10 rounded">
+                        <span className="text-xs font-semibold text-destructive uppercase tracking-widest px-1 bg-destructive/10 rounded">
                             Transaksi Besar
                         </span>
                     )}
                     {isExpense && t.isNeed === false && (
-                        <span className="text-[8px] font-semibold text-accent-foreground/70 uppercase tracking-tighter">
+                        <span className="text-xs font-semibold text-accent-foreground/70 uppercase tracking-tighter">
                             Gaya Hidup
                         </span>
                     )}
@@ -313,7 +313,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="gap-2 h-10 rounded-lg px-4 border-border hover:bg-muted transition-all font-medium text-[10px] uppercase tracking-widest"
+                    className="gap-2 h-10 rounded-lg px-4 border-border hover:bg-muted transition-all font-medium text-xs uppercase tracking-widest"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
@@ -323,37 +323,37 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                 <Table className="table-fixed">
                     <TableHeader className="bg-muted/50">
                         <TableRow className="hover:bg-muted/50 border-b border-border">
-                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em] w-32" onClick={() => handleSort('date')}>
+                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-32" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
                                     Tanggal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em]" onClick={() => handleSort('description')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em]" onClick={() => handleSort('description')}>
                                 <div className="flex items-center gap-2">
                                     Transaksi
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em] w-44" onClick={() => handleSort('category')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-44" onClick={() => handleSort('category')}>
                                 <div className="flex items-center gap-2">
                                     Kategori
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em] w-40" onClick={() => handleSort('wallet')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-40" onClick={() => handleSort('wallet')}>
                                 <div className="flex items-center gap-2">
                                     Metode
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors font-medium text-[10px] uppercase tracking-[0.15em] w-40" onClick={() => handleSort('amount')}>
+                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-40" onClick={() => handleSort('amount')}>
                                 <div className="flex items-center justify-end gap-2">
                                     Nominal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right pr-8 font-medium text-[10px] uppercase tracking-[0.15em] w-24">Aksi</TableHead>
+                            <TableHead className="text-right pr-8 font-medium text-xs uppercase tracking-[0.15em] w-24">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

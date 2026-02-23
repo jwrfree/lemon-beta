@@ -118,10 +118,10 @@ const TransactionListItemContent = ({
                 <div className="font-semibold text-foreground text-sm leading-tight mb-1.5 tracking-tight">
                     {transaction.description || transaction.category}
                 </div>
-                <div className="text-[9px] font-semibold text-muted-foreground/40 flex items-center gap-2 flex-wrap uppercase tracking-widest">
+                <div className="text-xs font-semibold text-muted-foreground/40 flex items-center gap-2 flex-wrap uppercase tracking-widest">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-2 py-0.5 rounded-full text-[8px] font-semibold border border-primary/10 shadow-sm">
+                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-2 py-0.5 rounded-full text-xs font-semibold border border-primary/10 shadow-sm">
                             <ShoppingBag className="h-2 w-2 fill-current" />
                             Want
                         </span>
@@ -140,7 +140,7 @@ const TransactionListItemContent = ({
             <div className="flex flex-col items-end gap-1">
                 <div
                     className={cn(
-                        "text-[15px] font-semibold tracking-tighter tabular-nums",
+                        "text-sm font-semibold tracking-tighter tabular-nums",
                         amountColor,
                         !isBalanceVisible && 'blur-sm transition-all duration-300',
                         isExpense && transaction.amount >= 1000000 && "text-lg"
@@ -153,7 +153,7 @@ const TransactionListItemContent = ({
                     </span>
                 </div>
                 {isExpense && transaction.amount >= 1000000 && (
-                    <span className="text-[8px] font-semibold bg-rose-500/10 text-rose-600 px-1.5 rounded-full uppercase tracking-widest border border-rose-500/10">Large Item</span>
+                    <span className="text-xs font-semibold bg-rose-500/10 text-rose-600 px-1.5 rounded-full uppercase tracking-widest border border-rose-500/10">Large Item</span>
                 )}
             </div>
         </div>

@@ -119,7 +119,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
                         }
                     </div>
                     <p className={cn("text-sm font-semibold uppercase tracking-widest leading-none mb-1", colorClass)}>{status}</p>
-                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-tight">
                         {message}
                     </p>
                 </div>
@@ -148,16 +148,16 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
                 </div>
                 {trend && (
                     <Badge variant="outline" className={cn(
-                        "text-[10px] border-none font-semibold",
+                        "text-xs border-none font-semibold",
                         trend.value < 0 ? "bg-success/15 text-success" : "bg-destructive/15 text-destructive"
                     )}>
                         {trend.value > 0 ? '+' : ''}{trend.value.toFixed(0)}%
                     </Badge>
                 )}
             </div>
-            <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">{title}</p>
+            <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">{title}</p>
             <p className="text-2xl font-semibold tracking-tighter tabular-nums mb-1 text-foreground">{value}</p>
-            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">{subtitle}</p>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-tight">{subtitle}</p>
         </Card>
     );
 }

@@ -61,7 +61,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                                         "text-xs",
                                         isOver ? "text-destructive font-medium" : "text-muted-foreground"
                                     )}>
-                                        {formatCurrency(spent)} <span className="text-[10px] text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
+                                        {formatCurrency(spent)} <span className="text-xs text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
                                     </span>
                                 </div>
                                 <Progress

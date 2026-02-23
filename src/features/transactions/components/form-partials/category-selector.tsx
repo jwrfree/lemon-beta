@@ -81,13 +81,13 @@ export function CategorySelector<T extends FieldValues>({
                         <div className="flex items-center justify-end min-h-[20px]">
                             <AnimatePresence>
                                 {isSuggesting && (
-                                    <motion.div initial={{ opacity: 0, x: 5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="flex items-center gap-1 text-[10px] text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-md">
+                                    <motion.div initial={{ opacity: 0, x: 5 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }} className="flex items-center gap-1 text-xs text-primary font-medium bg-primary/5 px-2 py-0.5 rounded-md">
                                         <Loader2 className="h-2.5 w-2.5 animate-spin" />
                                         AI berpikir...
                                     </motion.div>
                                 )}
                                 {!isSuggesting && isAiSuggested && (
-                                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1 text-[10px] text-warning font-medium bg-warning/10 px-2 py-0.5 rounded-md border border-warning/20">
+                                    <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1 text-xs text-warning font-medium bg-warning/10 px-2 py-0.5 rounded-md border border-warning/20">
                                         <Sparkles className="h-2.5 w-2.5 fill-warning" />
                                         Disarankan AI
                                     </motion.div>
@@ -118,9 +118,9 @@ export function CategorySelector<T extends FieldValues>({
                                             <div className="flex flex-col text-left">
                                                 <span className="font-medium text-sm tracking-tight">{selectedCategory.name}</span>
                                                 {localSubCategory ? (
-                                                    <span className="text-[10px] text-primary font-medium">• {localSubCategory}</span>
+                                                    <span className="text-xs text-primary font-medium">• {localSubCategory}</span>
                                                 ) : (
-                                                    <span className="text-[10px] text-muted-foreground font-medium">Klik untuk ganti kategori</span>
+                                                    <span className="text-xs text-muted-foreground font-medium">Klik untuk ganti kategori</span>
                                                 )}
                                             </div>
                                         </>

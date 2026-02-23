@@ -238,7 +238,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     </AnimatePresence>
 
                     <div className="space-y-3">
-                        <Label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Deskripsi</Label>
+                        <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Deskripsi</Label>
                         <Input {...form.register('description')} id="description" placeholder="makan siang, bensin, dll..." className={cn("h-12 rounded-2xl bg-secondary/50 border-none shadow-inner shrink-0 focus-visible:ring-primary/30", errors.description && "bg-destructive/5")} />
                         {errors.description && <p className="text-xs font-medium text-destructive ml-1">{errors.description.message}</p>}
                     </div>

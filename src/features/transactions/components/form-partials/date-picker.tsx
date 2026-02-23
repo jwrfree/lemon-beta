@@ -105,7 +105,7 @@ export function DatePicker<T extends FieldValues>({ control, name, label = "Tang
                     );
                 }}
             />
-            {error && <p className="text-[10px] font-medium text-destructive mt-1">{error}</p>}
+            {error && <p className="text-xs font-medium text-destructive mt-1">{error}</p>}
         </div>
     );
 }

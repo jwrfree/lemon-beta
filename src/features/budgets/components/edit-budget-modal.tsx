@@ -103,13 +103,13 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
         <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-8 overflow-y-auto">
           <div className="space-y-3">
-            <Label htmlFor="budget-name" className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
+            <Label htmlFor="budget-name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
             <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required />
           </div>
 
           <div className="space-y-6">
             <div className="space-y-2 text-center">
-              <Label htmlFor="target-amount" className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Monthly Target</Label>
+              <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Monthly Target</Label>
               <Input
                 id="target-amount"
                 value={formatCurrency(targetAmount)}
@@ -130,7 +130,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
             </div>
             <div className="grid grid-cols-4 gap-3">
               {budgetSteps.map(val => (
-                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold text-[10px]", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold text-xs", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
                   {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                 </Button>
               ))}
@@ -138,7 +138,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
           </div>
 
           <div className="space-y-4">
-            <Label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Main Category</Label>
+            <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Main Category</Label>
             <ScrollArea className="h-48">
               <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
                 {expenseCategories.map(cat => {
@@ -151,7 +151,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                         isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                       )}>
                       <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
-                      <span className={cn("text-[9px] text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
+                      <span className={cn("text-xs text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
                     </button>
                   );
                 })}
@@ -161,7 +161,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
           {hasSubCategories && (
             <div className="space-y-4 pt-2">
-                <Label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Sub-Category (Optional)</Label>
+                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Sub-Category (Optional)</Label>
                 <div className="flex flex-wrap gap-2">
                 <Button 
                     type="button" 

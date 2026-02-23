@@ -57,7 +57,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="font-semibold text-sm leading-tight mb-1 tracking-tight">{transaction.description || transaction.category}</div>
-                            <div className="text-[9px] font-semibold text-muted-foreground/60 flex items-center gap-1.5 flex-wrap uppercase tracking-widest">
+                            <div className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-1.5 flex-wrap uppercase tracking-widest">
                                 <span>{transaction.category}</span>
                                 <span className="opacity-30">•</span>
                                 <span>{format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
@@ -74,7 +74,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                         <Button onClick={onConfirm} variant="destructive" className="w-full h-14 rounded-full font-semibold shadow-xl shadow-destructive/20">
                             Ya, Hapus Transaksi
                         </Button>
-                        <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-full font-semibold text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-full font-semibold text-xs uppercase tracking-[0.2em] text-muted-foreground">
                             Batalkan
                         </Button>
                     </div>

@@ -117,12 +117,12 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                         <CardTitle className="text-base sm:text-lg font-medium tracking-tight flex items-center gap-2">
                             {title}
                         </CardTitle>
-                        <CardDescription className="text-[10px] sm:text-xs">
+                        <CardDescription className="text-xs sm:text-xs">
                             {subTitle}
                         </CardDescription>
                     </div>
                 </div>
-                <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-medium tabular-nums text-[10px] sm:text-xs px-2 py-0.5">
+                <Badge variant="secondary" className="border-none bg-primary/10 text-primary font-medium tabular-nums text-xs sm:text-xs px-2 py-0.5">
                     {formatCurrency(total)}
                 </Badge>
             </CardHeader>
@@ -163,7 +163,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                         </div>
                                         <div className="min-w-0">
                                             <p className="truncate text-xs sm:text-sm font-medium leading-tight">{item.name}</p>
-                                            <p className="text-[9px] sm:text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 mt-0.5">
+                                            <p className="text-xs sm:text-xs font-medium uppercase tracking-wider text-muted-foreground/70 mt-0.5">
                                                 {item.percentage.toFixed(1)}% TOTAL
                                             </p>
                                         </div>

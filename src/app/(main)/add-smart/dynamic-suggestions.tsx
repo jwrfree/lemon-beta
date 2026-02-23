@@ -131,7 +131,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             
             <div className="mt-10 w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <p className="text-[10px] font-medium tracking-[0.05em] text-muted-foreground/60">
+                    <p className="text-xs font-medium tracking-[0.05em] text-muted-foreground/60">
                         {dayContext === 'gajian' ? 'Rutin Bulanan' : dayContext === 'weekend' ? 'Ide Akhir Pekan' : `Contoh ${timeOfDay} ini`}
                     </p>
                     <div className="h-px flex-1 bg-border/50 ml-3" />
@@ -152,8 +152,8 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             </div>
 
             <div className="mt-8 p-4 bg-muted/50 rounded-2xl w-full">
-                <p className="text-[10px] font-medium text-muted-foreground mb-2">💡 Tips Cerdas</p>
-                <p className="text-[11px] text-muted-foreground leading-relaxed text-left">
+                <p className="text-xs font-medium text-muted-foreground mb-2">💡 Tips Cerdas</p>
+                <p className="text-xs text-muted-foreground leading-relaxed text-left">
                     Gunakan kata hubung seperti <b>"dan"</b> atau <b>tanda koma</b> untuk mencatat banyak transaksi sekaligus.
                 </p>
             </div>

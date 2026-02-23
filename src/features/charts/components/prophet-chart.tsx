@@ -129,7 +129,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                                         <div className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-800 text-sm ring-1 ring-purple-500/20">
                                             <p className="font-medium mb-2 flex items-center justify-between">
                                                 {format(parseISO(label), 'EEEE, d MMM')}
-                                                {isPrediction && <span className="text-[10px] bg-purple-100 dark:bg-purple-900 text-purple-600 px-1.5 py-0.5 rounded-full uppercase font-medium tracking-wider">Forecast</span>}
+                                                {isPrediction && <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-600 px-1.5 py-0.5 rounded-full uppercase font-medium tracking-wider">Forecast</span>}
                                             </p>
 
                                             <div className="space-y-1">

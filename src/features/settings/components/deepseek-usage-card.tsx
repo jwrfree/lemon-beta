@@ -81,7 +81,7 @@ export const DeepSeekUsageCard = () => {
                 {error ? (
                     <div className="text-red-400 text-xs text-center py-4 bg-red-900/20 rounded-lg">
                         {error}
-                        <Button variant="link" size="sm" onClick={fetchBalance} className="text-red-300 text-[10px] h-auto p-0 ml-1">Coba Lagi</Button>
+                        <Button variant="link" size="sm" onClick={fetchBalance} className="text-red-300 text-xs h-auto p-0 ml-1">Coba Lagi</Button>
                     </div>
                 ) : (
                     <div className="space-y-4">
@@ -105,7 +105,7 @@ export const DeepSeekUsageCard = () => {
                                 <span>Estimasi Token</span>
                                 <span>{balance ? estimatedTokens.toLocaleString() : '...'}</span>
                             </div>
-                            <div className="flex justify-between text-[10px] text-indigo-400/50 font-semibold uppercase tracking-widest">
+                            <div className="flex justify-between text-xs text-indigo-400/50 font-semibold uppercase tracking-widest">
                                 <span>Penggunaan Harian</span>
                                 <span>~4,000 Token</span>
                             </div>
@@ -118,7 +118,7 @@ export const DeepSeekUsageCard = () => {
                                     transition={{ duration: 1, ease: "easeOut" }}
                                 />
                             </div>
-                            <p className="text-[10px] text-indigo-400/60 text-right pt-1 font-semibold uppercase tracking-tighter">
+                            <p className="text-xs text-indigo-400/60 text-right pt-1 font-semibold uppercase tracking-tighter">
                                 Estimasi habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari lagi (5 tx/hari)
                             </p>
                         </div>

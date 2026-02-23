@@ -244,7 +244,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                 {pageState === 'IDLE' && !inputValue && (
                                     <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide opacity-60">
                                         {["Gaji 10jt", "Makan 20rb", "Grab 50rb"].map(s => (
-                                            <button key={s} onClick={() => setInputValue(s)} className="text-[10px] px-3 py-1.5 rounded-full bg-muted whitespace-nowrap hover:bg-primary/10 transition-colors">
+                                            <button key={s} onClick={() => setInputValue(s)} className="text-xs px-3 py-1.5 rounded-full bg-muted whitespace-nowrap hover:bg-primary/10 transition-colors">
                                                 {s}
                                             </button>
                                         ))}

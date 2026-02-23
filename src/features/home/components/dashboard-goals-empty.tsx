@@ -24,7 +24,7 @@ export const DashboardGoalsEmpty = () => {
                     <div className="p-4 bg-warning/10 rounded-lg border border-warning/20">
                         <Target className="h-8 w-8 text-warning" strokeWidth={1.5} />
                     </div>
-                    <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-warning text-[10px] text-warning-foreground font-medium shadow-sm">
+                    <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-warning text-xs text-warning-foreground font-medium shadow-sm">
                         !
                     </div>
                 </div>

@@ -47,7 +47,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                     <ReceiptText className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-semibold tracking-tighter mb-2 relative z-10">Kosong Melompong</h2>
-                <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-widest mb-8 max-w-[240px] leading-relaxed relative z-10">
+                <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-8 max-w-[240px] leading-relaxed relative z-10">
                     Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini.
                 </p>
                 <Button 
@@ -72,7 +72,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
             <div className="md:hidden space-y-6">
                 {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
                     <div key={date} className="space-y-2">
-                        <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2 px-4">
+                        <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
                         <div className="bg-card rounded-2xl shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">

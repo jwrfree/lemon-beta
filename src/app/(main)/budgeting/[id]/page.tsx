@@ -128,10 +128,10 @@ export default function BudgetDetailPage() {
                                 <div className="space-y-1">
                                     <h2 className="text-3xl font-medium tracking-tighter">{budget.name}</h2>
                                     <div className="flex items-center justify-center gap-2">
-                                        <Badge variant="outline" className="text-[10px] font-normal uppercase tracking-widest px-2.5 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
+                                        <Badge variant="outline" className="text-xs font-normal uppercase tracking-widest px-2.5 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
                                             {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : `${budget.categories.length} Kategori`}
                                         </Badge>
-                                        <span className={cn("text-[10px] font-medium uppercase tracking-widest", textColor)}>
+                                        <span className={cn("text-xs font-medium uppercase tracking-widest", textColor)}>
                                             {isOver ? 'Overbudget' : (progress > 80 ? 'Hampir Habis' : 'Sehat')}
                                         </span>
                                     </div>
@@ -140,7 +140,7 @@ export default function BudgetDetailPage() {
 
                             {/* Massive Progress Bar */}
                             <div className="space-y-4">
-                                <div className="flex justify-between items-end text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400">
+                                <div className="flex justify-between items-end text-xs font-medium uppercase tracking-[0.2em] text-zinc-400">
                                     <span>PENGGUNAAN</span>
                                     <span>{progress.toFixed(1)}%</span>
                                 </div>
@@ -158,7 +158,7 @@ export default function BudgetDetailPage() {
                                         <div className="absolute inset-0 opacity-20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }} />
                                     </motion.div>
                                 </div>
-                                <div className="flex justify-between text-[9px] font-medium text-zinc-400 uppercase tracking-widest px-1">
+                                <div className="flex justify-between text-xs font-medium text-zinc-400 uppercase tracking-widest px-1">
                                     <span>Awal Bulan</span>
                                     <span>Hari ke-{now.getDate()}</span>
                                     <span>Akhir Bulan</span>
@@ -168,19 +168,19 @@ export default function BudgetDetailPage() {
                             {/* Multi-Stat Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                                 <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Target className="h-3 w-3" /> Target
                                     </p>
                                     <p className="text-xl font-semibold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
                                 </div>
                                 <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Layers className="h-3 w-3" /> Terpakai
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
                                 </div>
                                 <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Flame className="h-3 w-3" /> {isOver ? 'Kekurangan' : 'Sisa'}
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
@@ -198,12 +198,12 @@ export default function BudgetDetailPage() {
                                         </div>
                                         <div className="text-center md:text-left space-y-0.5">
                                             <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
-                                            <p className="text-[10px] font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
+                                            <p className="text-xs font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
                                         </div>
                                     </div>
                                     <div className="text-center md:text-right">
                                         <p className="text-3xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">{formatCurrency(safeDailyLimit)}</p>
-                                        <p className="text-[9px] font-semibold text-emerald-600/40 uppercase tracking-[0.3em]">per hari</p>
+                                        <p className="text-xs font-semibold text-emerald-600/40 uppercase tracking-[0.3em]">per hari</p>
                                     </div>
                                 </div>
                             )}
@@ -223,7 +223,7 @@ export default function BudgetDetailPage() {
                             <Tag className="h-4 w-4" />
                             <h2 className="text-lg font-medium tracking-tighter text-zinc-900 dark:text-zinc-100">Aktivitas Anggaran</h2>
                         </div>
-                        <Badge variant="outline" className="rounded-lg font-normal text-[10px] uppercase">{budgetTransactions.length} Transaksi</Badge>
+                        <Badge variant="outline" className="rounded-lg font-normal text-xs uppercase">{budgetTransactions.length} Transaksi</Badge>
                     </div>
 
                     <TransactionList

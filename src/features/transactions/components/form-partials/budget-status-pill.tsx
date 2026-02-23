@@ -32,7 +32,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 className="space-y-2"
             >
                 <div className={cn(
-                    "flex items-center justify-between px-4 py-3 rounded-xl text-[11px] font-semibold border transition-colors duration-500",
+                    "flex items-center justify-between px-4 py-3 rounded-xl text-xs font-semibold border transition-colors duration-500",
                     isOverBudget
                         ? "bg-rose-500/10 text-rose-600 border-rose-500/20"
                         : "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
@@ -51,7 +51,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                     <motion.div
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center gap-2 px-1 text-[10px] font-semibold text-amber-600"
+                        className="flex items-center gap-2 px-1 text-xs font-semibold text-amber-600"
                     >
                         <TrendingUp className="h-3 w-3" />
                         <span className="uppercase tracking-[0.1em]">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>

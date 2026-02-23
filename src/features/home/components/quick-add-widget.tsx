@@ -73,7 +73,7 @@ export const QuickAddWidget = () => {
             </div>
 
             <CardHeader className="pb-3 flex flex-row items-center justify-between px-6 pt-6 relative z-10">
-                <CardTitle className="text-[10px] font-semibold flex items-center gap-2 text-muted-foreground/60 uppercase tracking-[0.2em]">
+                <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground/60 uppercase tracking-[0.2em]">
                     <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
                         <Sparkles className="h-3.5 w-3.5" />
                     </div>
@@ -82,7 +82,7 @@ export const QuickAddWidget = () => {
                 <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-8 px-3 text-[9px] font-semibold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-full"
+                    className="h-8 px-3 text-xs font-semibold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-full"
                     onClick={() => setIsTxModalOpen(true)}
                 >
                     Manual Entry
@@ -129,7 +129,7 @@ export const QuickAddWidget = () => {
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
-                                    <span className="text-[9px] text-muted-foreground/50 font-semibold uppercase tracking-widest mb-1">Verify Entry</span>
+                                    <span className="text-xs text-muted-foreground/50 font-semibold uppercase tracking-widest mb-1">Verify Entry</span>
                                     <div className="flex items-center gap-3">
                                         <span className={cn(
                                             "text-xl font-semibold tracking-tighter tabular-nums",
@@ -151,7 +151,7 @@ export const QuickAddWidget = () => {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-[9px] font-semibold text-muted-foreground/60 bg-background/50 backdrop-blur-sm py-1.5 px-3 rounded-full w-fit border border-border/20 shadow-sm">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground/60 bg-background/50 backdrop-blur-sm py-1.5 px-3 rounded-full w-fit border border-border/20 shadow-sm">
                                 <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">{parsedData.category}</span>
                                 <ArrowRight className="h-3 w-3 opacity-30" />
                                 <span className="italic uppercase tracking-widest">{parsedData.wallet}</span>

@@ -28,7 +28,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
                     <div className="space-y-1">
                         <div className="flex items-center gap-2 text-success">
                             <Sparkles className="w-4 h-4" />
-                            <h3 className="text-[10px] font-medium uppercase tracking-[0.2em]">Potensi Tabungan</h3>
+                            <h3 className="text-xs font-medium uppercase tracking-[0.2em]">Potensi Tabungan</h3>
                         </div>
                         <p className="text-2xl font-medium tracking-tight">Celah Keuanganmu</p>
                     </div>
@@ -40,17 +40,17 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-8">
                         <div className="space-y-1">
-                            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Tabungan Saat Ini</p>
+                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Tabungan Saat Ini</p>
                             <p className="text-2xl font-medium tabular-nums text-success">{formatCurrency(data.actualSavings)}</p>
                         </div>
                         <div className="space-y-1 text-right">
-                            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Maksimal Potensi</p>
+                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Maksimal Potensi</p>
                             <p className="text-2xl font-medium tabular-nums text-foreground">{formatCurrency(data.potentialSavings)}</p>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <div className="flex justify-between text-[10px] font-medium text-muted-foreground">
+                        <div className="flex justify-between text-xs font-medium text-muted-foreground">
                             <span>EFISIENSI TABUNGAN</span>
                             <span>{efficiency.toFixed(0)}%</span>
                         </div>
@@ -71,7 +71,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
                             </div>
                             <div>
                                 <p className="text-xs font-medium">Kembangkan Asetmu</p>
-                                <p className="text-[10px] text-muted-foreground">Kamu punya sisa Rp {(data.potentialSavings - data.actualSavings).toLocaleString()} lagi</p>
+                                <p className="text-xs text-muted-foreground">Kamu punya sisa Rp {(data.potentialSavings - data.actualSavings).toLocaleString()} lagi</p>
                             </div>
                         </div>
                         <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />

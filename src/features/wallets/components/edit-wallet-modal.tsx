@@ -154,7 +154,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
           <div className="space-y-3 pt-6 border-t border-border">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-primary">Koreksi Saldo</Label>
-              <p className="text-[10px] text-muted-foreground leading-normal">
+              <p className="text-xs text-muted-foreground leading-normal">
                 Gunakan ini jika saldo di aplikasi berbeda dengan saldo asli. Lemon akan membuat transaksi penyesuaian otomatis.
               </p>
             </div>

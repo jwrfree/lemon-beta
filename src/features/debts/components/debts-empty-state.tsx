@@ -18,7 +18,7 @@ export const DebtsEmptyState = () => {
                     <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h3 className="text-xl font-semibold tracking-tighter mb-2">Belum Ada Catatan</h3>
-                <p className="text-[10px] font-semibold text-muted-foreground/60 max-w-[240px] mb-8 uppercase tracking-widest leading-relaxed">
+                <p className="text-xs font-semibold text-muted-foreground/60 max-w-[240px] mb-8 uppercase tracking-widest leading-relaxed">
                     Kelola hutang dan piutangmu dengan rapi dalam satu asisten cerdas.
                 </p>
                 <Button 

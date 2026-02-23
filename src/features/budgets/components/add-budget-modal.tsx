@@ -181,7 +181,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
             >
               {step === 1 && (
                 <div className="space-y-4 pt-2">
-                  <Label htmlFor="budget-name" className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Nama Anggaran</Label>
+                  <Label htmlFor="budget-name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Nama Anggaran</Label>
                   <Input id="budget-name" placeholder="Contoh: Makan Siang Kantor" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required autoFocus />
                 </div>
               )}
@@ -200,7 +200,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                               isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                             )}>
                             <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
-                            <span className={cn("text-[9px] text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
+                            <span className={cn("text-xs text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
                           </button>
                         );
                       })}
@@ -247,14 +247,14 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                         <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
+                        <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
                         <p className="text-xs text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed font-medium">
                           Rata-rata pengeluaranmu di <span className="font-semibold text-emerald-700">{selectedSubCategory || selectedCategories[0]}</span> adalah <span className="font-semibold text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
                         </p>
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-semibold text-[10px] uppercase tracking-widest mt-3 hover:bg-transparent hover:underline"
+                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 font-semibold text-xs uppercase tracking-widest mt-3 hover:bg-transparent hover:underline"
                           onClick={() => setTargetAmount(Math.ceil(recommendation.avg))}
                         >
                           Apply {formatCurrency(Math.ceil(recommendation.avg))}
@@ -264,12 +264,12 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                   ) : (
                     <div className="bg-muted/30 p-5 rounded-[2rem] flex items-center gap-4 text-muted-foreground/60 shadow-inner">
                       <TrendingUp className="h-5 w-5 opacity-40" />
-                      <p className="text-[10px] font-semibold uppercase tracking-widest">No historical data for insights yet.</p>
+                      <p className="text-xs font-semibold uppercase tracking-widest">No historical data for insights yet.</p>
                     </div>
                   )}
 
                   <div className="space-y-3 text-center">
-                    <Label htmlFor="target-amount" className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Target Allowance</Label>
+                    <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Target Allowance</Label>
                     <div className="flex items-center justify-center gap-2">
                         <Input
                         id="target-amount"
@@ -285,7 +285,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
 
                   <div className="grid grid-cols-4 gap-3 pt-4">
                     {budgetSteps.map(val => (
-                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold tabular-nums text-[10px]", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold tabular-nums text-xs", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
                         {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                       </Button>
                     ))}

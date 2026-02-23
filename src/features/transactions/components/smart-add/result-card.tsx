@@ -140,7 +140,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
 
                 {/* 1. HERO AMOUNT (Apple Wallet Style) */}
                 <div className="flex flex-col items-center justify-center mb-10 pt-4 relative z-10">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 mb-3">Verified Transaction</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 mb-3">Verified Transaction</p>
                     <Popover>
                         <PopoverTrigger asChild>
                             <button className="text-5xl md:text-6xl font-bold tracking-tighter text-foreground hover:scale-[1.02] active:scale-95 transition-transform cursor-text tabular-nums">
@@ -149,7 +149,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         </PopoverTrigger>
                         <PopoverContent className="w-60 p-4 rounded-[24px] shadow-2xl border-none bg-popover/90 backdrop-blur-xl" side="bottom" sideOffset={10}>
                             <div className="space-y-3">
-                                <Label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground ml-1">Edit Amount</Label>
+                                <Label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground ml-1">Edit Amount</Label>
                                 <div className="flex gap-2">
                                     <Input
                                         type="number"
@@ -182,7 +182,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                     <button
                         onClick={() => setParsedData({ ...parsedData, isNeed: true })}
                         className={cn(
-                            "relative z-10 flex items-center justify-center gap-2 py-3 text-[10px] font-semibold uppercase tracking-widest rounded-full transition-colors duration-200",
+                            "relative z-10 flex items-center justify-center gap-2 py-3 text-xs font-semibold uppercase tracking-widest rounded-full transition-colors duration-200",
                             parsedData.isNeed !== false ? "text-foreground" : "text-muted-foreground/60 hover:text-foreground/70"
                         )}
                     >
@@ -192,7 +192,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                     <button
                         onClick={() => setParsedData({ ...parsedData, isNeed: false })}
                         className={cn(
-                            "relative z-10 flex items-center justify-center gap-2 py-3 text-[10px] font-semibold uppercase tracking-widest rounded-full transition-colors duration-200",
+                            "relative z-10 flex items-center justify-center gap-2 py-3 text-xs font-semibold uppercase tracking-widest rounded-full transition-colors duration-200",
                             parsedData.isNeed === false ? "text-foreground" : "text-muted-foreground/60 hover:text-foreground/70"
                         )}
                     >
@@ -243,20 +243,20 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                     </div>
                                     <div className="flex flex-col items-start space-y-0.5">
                                         <span className="text-sm font-semibold tracking-tight">{parsedData.merchant || parsedData.category}</span>
-                                        <span className="text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-widest">
+                                        <span className="text-xs text-muted-foreground/60 font-semibold uppercase tracking-widest">
                                             {parsedData.merchant ? parsedData.category : (parsedData.subCategory || 'General')}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 text-muted-foreground/40">
-                                    <span className="text-[10px] font-semibold uppercase tracking-widest">Adjust</span>
+                                    <span className="text-xs font-semibold uppercase tracking-widest">Adjust</span>
                                     <ChevronRight className="w-4 h-4" />
                                 </div>
                             </div>
                         </PopoverTrigger>
                         <PopoverContent className="w-80 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-5 bg-popover/95 backdrop-blur-xl max-h-[320px] overflow-y-auto">
-                                <p className="text-[10px] font-bold text-muted-foreground/40 mb-4 px-1 uppercase tracking-[0.3em]">Select Identity</p>
+                                <p className="text-xs font-bold text-muted-foreground/40 mb-4 px-1 uppercase tracking-[0.3em]">Select Identity</p>
                                 <CategoryGrid
                                     categories={parsedData.type === 'income' ? incomeCategories : expenseCategories}
                                     selectedCategory={parsedData.category}
@@ -283,18 +283,18 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                             </div>
                                             <div className="flex flex-col items-start space-y-0.5">
                                                 <span className="text-sm font-semibold tracking-tight">{parsedData.subCategory || 'Pilih Sub-kategori'}</span>
-                                                <span className="text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-widest">Sub-kategori</span>
+                                                <span className="text-xs text-muted-foreground/60 font-semibold uppercase tracking-widest">Sub-kategori</span>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 text-muted-foreground/40">
-                                            <span className="text-[10px] font-semibold uppercase tracking-widest">Adjust</span>
+                                            <span className="text-xs font-semibold uppercase tracking-widest">Adjust</span>
                                             <ChevronRight className="w-4 h-4" />
                                         </div>
                                     </div>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-72 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                                     <div className="p-4 bg-popover/95 backdrop-blur-xl">
-                                        <p className="text-[10px] font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-[0.3em]">Pilih Sub-kategori</p>
+                                        <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-[0.3em]">Pilih Sub-kategori</p>
                                         <ScrollArea className="max-h-[240px]">
                                             <div className="space-y-1 pr-1">
                                                 {selectedCategoryObj.sub_categories?.map((sub) => (
@@ -335,18 +335,18 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                     </div>
                                     <div className="flex flex-col items-start space-y-0.5">
                                         <span className="text-sm font-semibold tracking-tight">{selectedWallet?.name || 'Pilih Dompet'}</span>
-                                        <span className="text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-widest">Sumber Dana</span>
+                                        <span className="text-xs text-muted-foreground/60 font-semibold uppercase tracking-widest">Sumber Dana</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 text-muted-foreground/40">
-                                    <span className="text-[10px] font-semibold uppercase tracking-widest">Adjust</span>
+                                    <span className="text-xs font-semibold uppercase tracking-widest">Adjust</span>
                                     <ChevronRight className="w-4 h-4" />
                                 </div>
                             </div>
                         </PopoverTrigger>
                         <PopoverContent className="w-64 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-4 bg-popover/95 backdrop-blur-xl">
-                                <p className="text-[10px] font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-[0.3em]">Pilih Sumber Dana</p>
+                                <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-[0.3em]">Pilih Sumber Dana</p>
                                 <div className="space-y-1">
                                     {wallets.map((wallet) => (
                                         <button
@@ -389,18 +389,18 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                         <span className="text-sm font-semibold tracking-tight">
                                             {format(parsedDate, "d MMM yyyy, HH:mm", { locale: dateFnsLocaleId })}
                                         </span>
-                                        <span className="text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-widest">Waktu Transaksi</span>
+                                        <span className="text-xs text-muted-foreground/60 font-semibold uppercase tracking-widest">Waktu Transaksi</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 text-muted-foreground/40">
-                                    <span className="text-[10px] font-semibold uppercase tracking-widest">Adjust</span>
+                                    <span className="text-xs font-semibold uppercase tracking-widest">Adjust</span>
                                     <ChevronRight className="w-4 h-4" />
                                 </div>
                             </div>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-4 bg-popover/95 backdrop-blur-xl space-y-3">
-                                <p className="text-[10px] font-bold text-muted-foreground/40 mb-1 px-1 uppercase tracking-[0.3em]">Waktu Transaksi</p>
+                                <p className="text-xs font-bold text-muted-foreground/40 mb-1 px-1 uppercase tracking-[0.3em]">Waktu Transaksi</p>
                                 <Calendar
                                     mode="single"
                                     selected={parsedDate}
@@ -444,7 +444,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         </PopoverTrigger>
                         <PopoverContent className="w-72 p-4 rounded-[24px] shadow-2xl border-none bg-popover/90 backdrop-blur-xl" side="top" sideOffset={10}>
                             <div className="space-y-3">
-                                <Label className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground ml-1">Keterangan</Label>
+                                <Label className="text-xs uppercase tracking-widest font-semibold text-muted-foreground ml-1">Keterangan</Label>
                                 <div className="flex gap-2">
                                     <Input
                                         value={editDesc}

@@ -175,7 +175,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                         )}
                     </div>
                     <div className="flex-1 z-10">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-primary mb-0.5 flex items-center gap-1">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-0.5 flex items-center gap-1">
                             <Sparkles className="h-3 w-3" />
                             AI Debt Strategist
                         </p>
@@ -228,7 +228,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 className="h-1.5"
                                 indicatorClassName={analytics.isGrowing ? "bg-destructive" : "bg-success"}
                             />
-                            <p className="text-[10px] text-muted-foreground">
+                            <p className="text-xs text-muted-foreground">
                                 {analytics.currentTotal < analytics.lastYearTotal
                                     ? "Bagus! Hutangmu berkurang dibanding tahun lalu."
                                     : "Waspada, total hutang meningkat dibanding tahun lalu."}
@@ -262,7 +262,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 </div>
                             </div>
                             {analytics.avgMonthlyPayment > 0 && (
-                                <p className="text-[10px] text-muted-foreground pl-11">
+                                <p className="text-xs text-muted-foreground pl-11">
                                     Dengan rata-rata pembayaran {formatCurrency(analytics.avgMonthlyPayment)}/bulan
                                 </p>
                             )}
@@ -275,7 +275,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                     <AlertTriangle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
                                     <div>
                                         <p className="text-xs font-medium text-warning">Peringatan Bunga</p>
-                                        <p className="text-[10px] text-warning/90 mt-1">
+                                        <p className="text-xs text-warning/90 mt-1">
                                             Ada {analytics.highInterestDebts.length} hutang yang mungkin bertambah "diam-diam" karena bunga atau denda.
                                             Cek: {analytics.highInterestDebts.map(d => d.title).join(', ')}.
                                         </p>

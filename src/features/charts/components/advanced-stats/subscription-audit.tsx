@@ -34,7 +34,7 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
                     <p className="text-2xl font-medium tracking-tighter tabular-nums">
                         {formatCurrency(totalMonthly)}
                     </p>
-                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Per Bulan</p>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Per Bulan</p>
                 </div>
             </div>
 
@@ -59,13 +59,13 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">{item.name}</p>
-                                    <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{item.category}</p>
+                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{item.category}</p>
                                 </div>
                             </div>
                             <div className="text-right">
                                 <p className="text-sm font-medium tabular-nums">{formatCurrency(item.amount)}</p>
                                 {item.isDueSoon && (
-                                    <Badge variant="outline" className="text-[9px] h-4 border-warning/30 text-warning bg-warning/5">
+                                    <Badge variant="outline" className="text-xs h-4 border-warning/30 text-warning bg-warning/5">
                                         Segera Jatuh Tempo
                                     </Badge>
                                 )}
@@ -82,7 +82,7 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
 
             <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/10 flex items-center gap-3">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                <p className="text-[11px] font-medium text-primary leading-snug">
+                <p className="text-xs font-medium text-primary leading-snug">
                     Tips: Mengurangi satu biaya langganan yang jarang terpakai bisa menghemat <span className="font-medium">{(totalMonthly * 12).toLocaleString()}</span> per tahun.
                 </p>
             </div>

@@ -43,7 +43,7 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
                     <p className="text-xs text-muted-foreground">Pola pengeluaran 30 hari terakhir</p>
                 </div>
                 <div className="flex gap-2">
-                    <Badge variant="secondary" className="text-[10px] font-medium">30 Hari</Badge>
+                    <Badge variant="secondary" className="text-xs font-medium">30 Hari</Badge>
                 </div>
             </div>
 
