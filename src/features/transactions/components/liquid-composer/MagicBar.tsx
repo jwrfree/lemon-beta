@@ -150,7 +150,7 @@ export const MagicBar = ({
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        className="text-center text-xs font-medium text-primary uppercase tracking-[0.3em] mt-3"
+                        className="text-center text-xs font-medium text-primary uppercase tracking-widest mt-3"
                     >
                         {isListening ? "Suara Anda Sedang Direkam..." : "Lemon Sedang Berpikir..."}
                     </motion.p>

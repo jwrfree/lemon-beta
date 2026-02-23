@@ -65,7 +65,7 @@ export const LiquidPreview = () => {
                             {/* Main Category Chip */}
                             <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg">
                                 <Tag className="h-3 w-3 fill-primary-foreground/20" />
-                                <span className="text-xs font-medium uppercase tracking-[0.1em]">{metadata.category}</span>
+                                <span className="text-xs font-medium uppercase tracking-widest">{metadata.category}</span>
                             </div>
 
                             {/* Sub-Category Chip (Staggered) */}
@@ -100,7 +100,7 @@ export const LiquidPreview = () => {
                             key="idle"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.3 }}
-                            className="text-xs font-medium text-muted-foreground uppercase tracking-[0.2em] animate-pulse"
+                            className="text-xs font-medium text-muted-foreground uppercase tracking-widest animate-pulse"
                         >
                             Ceritakan transaksimu...
                         </motion.div>

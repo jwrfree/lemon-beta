@@ -54,7 +54,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                         className="flex items-center gap-2 px-1 text-xs font-semibold text-amber-600"
                     >
                         <TrendingUp className="h-3 w-3" />
-                        <span className="uppercase tracking-[0.1em]">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>
+                        <span className="uppercase tracking-widest">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>
                     </motion.div>
                 )}
             </motion.div>

@@ -179,7 +179,7 @@ export const MobileDashboard = ({
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-3">
-                                    <span className="text-white/50 text-xs uppercase font-semibold tracking-[0.3em]">Total Wealth</span>
+                                    <span className="text-white/50 text-xs uppercase font-semibold tracking-widest">Total Wealth</span>
                                     <div className="bg-white/10 backdrop-blur-xl rounded-full px-2 py-0.5 border border-white/10 shadow-inner">
                                         <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
@@ -270,11 +270,11 @@ export const MobileDashboard = ({
             {/* 4. Horizontal Wallets (Snap Scroll - Dynamic Branded DNA) */}
             <div className="space-y-4">
                 <div className="px-6 flex items-center justify-between">
-                    <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
+                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
                         <WalletIcon className="h-3.5 w-3.5" />
                         Wallet Stack
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-[0.2em] text-primary px-0 hover:bg-transparent" onClick={() => router.push('/wallets')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-widest text-primary px-0 hover:bg-transparent" onClick={() => router.push('/wallets')}>
                         Manage
                     </Button>
                 </div>
@@ -317,7 +317,7 @@ export const MobileDashboard = ({
                                                 <Icon className="h-5 w-5 text-white" strokeWidth={2.5} />
                                             )}
                                         </div>
-                                        <span className="text-xs font-semibold text-white/40 uppercase tracking-[0.2em]">
+                                        <span className="text-xs font-semibold text-white/40 uppercase tracking-widest">
                                             {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : 'Cash'}
                                         </span>
                                     </div>
@@ -357,11 +357,11 @@ export const MobileDashboard = ({
             {/* 6. Recent Transactions */}
             <div className="space-y-4 px-6 pb-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
+                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
                         <TrendingUp className="h-3.5 w-3.5" />
                         Recent Flux
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-[0.2em] text-primary px-0" onClick={() => router.push('/transactions')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-widest text-primary px-0" onClick={() => router.push('/transactions')}>
                         Feed
                     </Button>
                 </div>

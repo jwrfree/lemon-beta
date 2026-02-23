@@ -75,7 +75,7 @@ export const BudgetingDashboard = () => {
 
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
-                    <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
+                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
                     <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] rounded-[32px] bg-card overflow-hidden">
                         <CardContent className="p-8 space-y-8">
                             <div className="h-48 flex justify-center relative">
@@ -112,7 +112,7 @@ export const BudgetingDashboard = () => {
                 {/* BUDGETS LIST */}
                 <div className="col-span-12 lg:col-span-8 space-y-4">
                     <div className="flex items-center justify-between px-2">
-                        <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">Pos Anggaran</h2>
+                        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Pos Anggaran</h2>
                         <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
                             <Plus className="h-3.5 w-3.5 mr-1" />
                             Tambah

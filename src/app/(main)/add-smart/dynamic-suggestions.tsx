@@ -131,7 +131,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
             
             <div className="mt-10 w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <p className="text-xs font-medium tracking-[0.05em] text-muted-foreground/60">
+                    <p className="text-xs font-medium tracking-widest text-muted-foreground/60">
                         {dayContext === 'gajian' ? 'Rutin Bulanan' : dayContext === 'weekend' ? 'Ide Akhir Pekan' : `Contoh ${timeOfDay} ini`}
                     </p>
                     <div className="h-px flex-1 bg-border/50 ml-3" />

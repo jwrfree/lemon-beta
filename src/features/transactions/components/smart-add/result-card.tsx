@@ -140,7 +140,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
 
                 {/* 1. HERO AMOUNT (Apple Wallet Style) */}
                 <div className="flex flex-col items-center justify-center mb-10 pt-4 relative z-10">
-                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 mb-3">Verified Transaction</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40 mb-3">Verified Transaction</p>
                     <Popover>
                         <PopoverTrigger asChild>
                             <button className="text-5xl md:text-6xl font-bold tracking-tighter text-foreground hover:scale-[1.02] active:scale-95 transition-transform cursor-text tabular-nums">
@@ -256,7 +256,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         </PopoverTrigger>
                         <PopoverContent className="w-80 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-5 bg-popover/95 backdrop-blur-xl max-h-[320px] overflow-y-auto">
-                                <p className="text-xs font-bold text-muted-foreground/40 mb-4 px-1 uppercase tracking-[0.3em]">Select Identity</p>
+                                <p className="text-xs font-bold text-muted-foreground/40 mb-4 px-1 uppercase tracking-widest">Select Identity</p>
                                 <CategoryGrid
                                     categories={parsedData.type === 'income' ? incomeCategories : expenseCategories}
                                     selectedCategory={parsedData.category}
@@ -294,7 +294,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                                 </PopoverTrigger>
                                 <PopoverContent className="w-72 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                                     <div className="p-4 bg-popover/95 backdrop-blur-xl">
-                                        <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-[0.3em]">Pilih Sub-kategori</p>
+                                        <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-widest">Pilih Sub-kategori</p>
                                         <ScrollArea className="max-h-[240px]">
                                             <div className="space-y-1 pr-1">
                                                 {selectedCategoryObj.sub_categories?.map((sub) => (
@@ -346,7 +346,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         </PopoverTrigger>
                         <PopoverContent className="w-64 p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-4 bg-popover/95 backdrop-blur-xl">
-                                <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-[0.3em]">Pilih Sumber Dana</p>
+                                <p className="text-xs font-bold text-muted-foreground/40 mb-3 px-1 uppercase tracking-widest">Pilih Sumber Dana</p>
                                 <div className="space-y-1">
                                     {wallets.map((wallet) => (
                                         <button
@@ -400,7 +400,7 @@ export const ResultCard = ({ parsedData, setParsedData, getCategoryVisuals, inco
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0 rounded-[28px] shadow-2xl border-none overflow-hidden" align="center">
                             <div className="p-4 bg-popover/95 backdrop-blur-xl space-y-3">
-                                <p className="text-xs font-bold text-muted-foreground/40 mb-1 px-1 uppercase tracking-[0.3em]">Waktu Transaksi</p>
+                                <p className="text-xs font-bold text-muted-foreground/40 mb-1 px-1 uppercase tracking-widest">Waktu Transaksi</p>
                                 <Calendar
                                     mode="single"
                                     selected={parsedDate}

@@ -109,7 +109,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
           <div className="space-y-6">
             <div className="space-y-2 text-center">
-              <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Monthly Target</Label>
+              <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40">Monthly Target</Label>
               <Input
                 id="target-amount"
                 value={formatCurrency(targetAmount)}

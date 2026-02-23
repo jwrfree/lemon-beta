@@ -28,7 +28,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
                     <div className="space-y-1">
                         <div className="flex items-center gap-2 text-success">
                             <Sparkles className="w-4 h-4" />
-                            <h3 className="text-xs font-medium uppercase tracking-[0.2em]">Potensi Tabungan</h3>
+                            <h3 className="text-xs font-medium uppercase tracking-widest">Potensi Tabungan</h3>
                         </div>
                         <p className="text-2xl font-medium tracking-tight">Celah Keuanganmu</p>
                     </div>

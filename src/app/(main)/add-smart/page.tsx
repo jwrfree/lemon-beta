@@ -213,7 +213,7 @@ export default function SmartAddPage() {
                                                 <Loader2 className="h-10 w-10 text-primary animate-spin" strokeWidth={1.5} />
                                                 <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
                                             </div>
-                                            <p className="text-xs font-medium uppercase tracking-[0.3em] text-primary">Menganalisis...</p>
+                                            <p className="text-xs font-medium uppercase tracking-widest text-primary">Menganalisis...</p>
                                         </motion.div>
                                     ) : activeTx && (
                                         <motion.div key="tx-data" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 w-full">
@@ -222,7 +222,7 @@ export default function SmartAddPage() {
                                             <div className="flex flex-col items-center gap-2">
                                                 <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
                                                     <Tag className="h-3 w-3 fill-primary-foreground/20" />
-                                                    <span className="text-xs font-medium uppercase tracking-[0.1em]">{activeTx.category}</span>
+                                                    <span className="text-xs font-medium uppercase tracking-widest">{activeTx.category}</span>
                                                 </div>
                                                 {activeTx.subCategory && (
                                                     <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
@@ -336,7 +336,7 @@ export default function SmartAddPage() {
                             
                             <button 
                                 onClick={() => { triggerHaptic('medium'); resetFlow(); setFocusedIndex(0); }}
-                                className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-400 hover:text-rose-500 transition-colors py-1"
+                                className="text-xs font-medium uppercase tracking-widest text-zinc-400 hover:text-rose-500 transition-colors py-1"
                             >
                                 Batalkan & Mulai Ulang
                             </button>

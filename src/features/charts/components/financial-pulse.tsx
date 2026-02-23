@@ -73,7 +73,7 @@ export function FinancialPulse({
                 {/* Left: Net Value */}
                 <div className="text-center md:text-left space-y-2">
                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                        <p className="text-xs md:text-sm font-semibold text-white/50 uppercase tracking-[0.2em]">Sisa Uang (Cashflow)</p>
+                        <p className="text-xs md:text-sm font-semibold text-white/50 uppercase tracking-widest">Sisa Uang (Cashflow)</p>
                         {netChange !== 0 && (
                             <Badge className={cn(
                                 "text-xs font-semibold px-1.5 py-0.5 h-5 rounded-full",

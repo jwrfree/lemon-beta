@@ -539,13 +539,13 @@ export default function RemindersPage() {
             <div className="md:hidden sticky bottom-0 inset-x-0 bg-background/80 backdrop-blur-xl border-t border-border/50 p-4 flex items-center justify-between gap-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-30">
                 <Button 
                     variant="outline" 
-                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-[0.2em] border-border shadow-sm" 
+                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest border-border shadow-sm" 
                     onClick={() => setActiveTab('overdue')}
                 >
                     Terlambat
                 </Button>
                 <Button 
-                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-[0.2em] shadow-lg shadow-primary/20" 
+                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest shadow-lg shadow-primary/20" 
                     onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}
                 >
                     Tambah

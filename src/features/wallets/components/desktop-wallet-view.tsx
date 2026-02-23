@@ -155,7 +155,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                     <div className="relative z-10 flex flex-col h-full justify-between">
                         <div className="space-y-0.5">
-                            <span className="text-xs font-medium text-teal-100/40 uppercase tracking-[0.4em]">Net Worth Portfolio</span>
+                            <span className="text-xs font-medium text-teal-100/40 uppercase tracking-widest">Net Worth Portfolio</span>
                             <div className="flex items-center gap-3">
                                 <h1 className={cn("text-4xl font-medium text-white tracking-tighter transition-all duration-300", !isBalanceVisible && "blur-xl")}>
                                     {isBalanceVisible ? formatCurrency(totalBalance) : "Rp •••••••••"}
@@ -174,12 +174,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/5" />
                             <div className="flex items-center gap-6">
                                 <div className="flex flex-col">
-                                    <p className="text-xs font-medium text-white/20 uppercase tracking-[0.3em]">Instruments</p>
+                                    <p className="text-xs font-medium text-white/20 uppercase tracking-widest">Instruments</p>
                                     <p className="text-lg font-medium text-white">{wallets.length} <span className="text-xs font-normal opacity-30">Accounts</span></p>
                                 </div>
                                 <div className="h-8 w-[1px] bg-white/5" />
                                 <div className="flex flex-col">
-                                    <p className="text-xs font-medium text-white/20 uppercase tracking-[0.3em]">Status</p>
+                                    <p className="text-xs font-medium text-white/20 uppercase tracking-widest">Status</p>
                                     <div className="flex items-center gap-2">
                                         <div className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(var(--success),0.4)]" />
                                         <p className="text-lg font-medium text-white tracking-tight">Prime</p>
@@ -228,7 +228,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 <div className="flex flex-col space-y-5 xl:sticky xl:top-6">
                     <div className="space-y-4 bg-card p-5 rounded-lg shadow-sm">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground opacity-60">Portfolio Accounts</h2>
+                            <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground opacity-60">Portfolio Accounts</h2>
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-secondary" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
                                 <ArrowUpDown className="h-3 w-3 opacity-40" />
                             </Button>
@@ -300,7 +300,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-1.5 mb-0">
-                                                <p className={cn("text-xs font-medium uppercase tracking-[0.15em] truncate", isActive ? "text-primary" : "text-muted-foreground/60")}>
+                                                <p className={cn("text-xs font-medium uppercase tracking-widest truncate", isActive ? "text-primary" : "text-muted-foreground/60")}>
                                                     {wallet.name}
                                                 </p>
                                                 {wallet.isDefault && <div className="h-1 w-1 rounded-full bg-primary" />}
@@ -365,7 +365,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </div>
 
                                     <div className="flex flex-col md:items-end justify-center space-y-0.5 bg-secondary rounded-lg px-6 py-4">
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-[0.3em] opacity-60">Liquid Balance</p>
+                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest opacity-60">Liquid Balance</p>
                                         <h3 className={cn("text-3xl font-medium tracking-tighter text-foreground transition-all duration-300", !isBalanceVisible && "blur-xl")}>
                                             {isBalanceVisible ? formatCurrency(activeWallet.balance) : "Rp •••••••••"}
                                         </h3>
@@ -380,7 +380,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 <TabsTrigger
                                                     key={tab}
                                                     value={tab}
-                                                    className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground bg-transparent transition-all px-0 text-xs font-medium uppercase tracking-[0.4em] opacity-30 data-[state=active]:opacity-100"
+                                                    className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground bg-transparent transition-all px-0 text-xs font-medium uppercase tracking-widest opacity-30 data-[state=active]:opacity-100"
                                                 >
                                                     {tab}
                                                 </TabsTrigger>
@@ -418,7 +418,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                             <Card className="p-6 bg-card rounded-lg shadow-sm space-y-6 border-none">
                                                 <div className="flex items-center justify-between">
-                                                    <h4 className="text-xs font-medium uppercase tracking-[0.2em] opacity-40">Cashflow Stats</h4>
+                                                    <h4 className="text-xs font-medium uppercase tracking-widest opacity-40">Cashflow Stats</h4>
                                                     <Badge className="bg-primary/5 text-primary rounded-full px-3 py-1 text-xs border-none">30D</Badge>
                                                 </div>
                                                 <div className="space-y-1">
@@ -434,7 +434,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                     <Sparkles className="h-5 w-5" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <h4 className="font-medium text-xs uppercase tracking-[0.2em]">Forecast</h4>
+                                                    <h4 className="font-medium text-xs uppercase tracking-widest">Forecast</h4>
                                                     <p className="text-xs text-muted-foreground leading-tight max-w-[200px] opacity-70">
                                                         AI Analyzing patterns...
                                                     </p>
@@ -504,7 +504,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                         </div>
                                                     ) : (
                                                         <div className="p-6 bg-muted/20 rounded-lg border border-dashed border-border flex items-center justify-center">
-                                                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
+                                                            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
                                                         </div>
                                                     )}
                                                 </div>

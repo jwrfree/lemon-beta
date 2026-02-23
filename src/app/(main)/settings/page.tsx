@@ -119,7 +119,7 @@ function SettingsContent() {
                     <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl rounded-[32px] p-8 flex flex-col justify-between" delay={0.05}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <p className="text-white/60 text-xs font-semibold uppercase tracking-[0.3em]">Digital ID</p>
+                                <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">Digital ID</p>
                                 <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter leading-none">{userData?.displayName || 'Guest User'}</h2>
                                 <p className="text-white/80 font-medium text-sm mt-1">{user?.email}</p>
                             </div>
@@ -171,7 +171,7 @@ function SettingsContent() {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <p className="font-semibold text-xs tracking-[0.3em] uppercase mt-4">
+                        <p className="font-semibold text-xs tracking-widest uppercase mt-4">
                             {mounted && theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                         </p>
                         <p className="text-xs font-semibold opacity-40 uppercase tracking-widest">Tap to switch</p>
@@ -221,7 +221,7 @@ function SettingsContent() {
                                         <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">Akses lebih cepat & mode luring penuh</p>
                                     </div>
                                 </div>
-                                <div className="relative z-10 bg-white text-teal-900 font-semibold text-xs uppercase tracking-[0.2em] px-5 py-2.5 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
+                                <div className="relative z-10 bg-white text-teal-900 font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
                                     Pasang
                                 </div>
 
@@ -232,7 +232,7 @@ function SettingsContent() {
                     </AnimatePresence>
 
                     <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1 rounded-[32px]">
-                        <div className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/60">Pengaturan Lanjutan</div>
+                        <div className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Pengaturan Lanjutan</div>
                         <div className="space-y-1 px-2 pb-2">
                             {[
                                 { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
@@ -270,7 +270,7 @@ function SettingsContent() {
                             <AlertDialogTrigger asChild>
                                 <div className="flex items-center gap-3 text-destructive cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-xl">
                                     <LogOut className="w-5 h-5" />
-                                    <span className="font-semibold text-xs uppercase tracking-[0.2em]">Keluar Akun</span>
+                                    <span className="font-semibold text-xs uppercase tracking-widest">Keluar Akun</span>
                                 </div>
                             </AlertDialogTrigger>
                             <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
@@ -290,7 +290,7 @@ function SettingsContent() {
                 </div>
 
                 <div className="pt-8 pb-12 text-center">
-                    <p className="text-xs font-semibold tracking-[0.4em] uppercase opacity-20">Designed by Lemon AI</p>
+                    <p className="text-xs font-semibold tracking-widest uppercase opacity-20">Designed by Lemon AI</p>
                 </div>
             </div>
         </div>

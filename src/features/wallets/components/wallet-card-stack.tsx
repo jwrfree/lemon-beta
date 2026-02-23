@@ -146,7 +146,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   <div className="flex-1 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-1 opacity-60">
                       <Sparkles className="h-3 w-3" />
-                      <span className="text-xs font-semibold uppercase tracking-[0.3em]">Saldo Tersedia</span>
+                      <span className="text-xs font-semibold uppercase tracking-widest">Saldo Tersedia</span>
                     </div>
                     <p className={cn("text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
                       {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}

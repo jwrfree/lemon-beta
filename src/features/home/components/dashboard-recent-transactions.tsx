@@ -181,10 +181,10 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
             <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
                     <tr>
-                        <th className="p-5 pl-6 font-medium text-xs uppercase tracking-[0.15em]">Detail Transaksi</th>
-                        <th className="p-5 font-medium text-xs uppercase tracking-[0.15em]">Kategori / Sub</th>
-                        <th className="p-5 font-medium text-xs uppercase tracking-[0.15em]">Sumber Dana</th>
-                        <th className="p-5 text-right pr-6 font-medium text-xs uppercase tracking-[0.15em]">Nominal</th>
+                        <th className="p-5 pl-6 font-medium text-xs uppercase tracking-widest">Detail Transaksi</th>
+                        <th className="p-5 font-medium text-xs uppercase tracking-widest">Kategori / Sub</th>
+                        <th className="p-5 font-medium text-xs uppercase tracking-widest">Sumber Dana</th>
+                        <th className="p-5 text-right pr-6 font-medium text-xs uppercase tracking-widest">Nominal</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">

@@ -72,7 +72,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
             <div className="md:hidden space-y-6">
                 {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
                     <div key={date} className="space-y-2">
-                        <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2 px-4">
+                        <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
                         <div className="bg-card rounded-2xl shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">

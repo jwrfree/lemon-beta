@@ -73,7 +73,7 @@ export const QuickAddWidget = () => {
             </div>
 
             <CardHeader className="pb-3 flex flex-row items-center justify-between px-6 pt-6 relative z-10">
-                <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground/60 uppercase tracking-[0.2em]">
+                <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground/60 uppercase tracking-widest">
                     <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
                         <Sparkles className="h-3.5 w-3.5" />
                     </div>

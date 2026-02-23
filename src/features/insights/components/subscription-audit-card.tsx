@@ -51,7 +51,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                         )}
                     </div>
                     <div className="flex-1">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-1">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">
                             AI Subscription Auditor
                         </p>
                         {isAiLoading ? (
@@ -69,7 +69,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 {/* 1. Monthly Burn Rate Card */}
                 <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card rounded-[32px] overflow-hidden">
                     <CardHeader className="pb-2 px-6 pt-6">
-                        <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-[0.2em]">
+                        <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-widest">
                             <CreditCard className="h-3.5 w-3.5 text-indigo-500" />
                             Biaya Langganan
                         </CardTitle>
@@ -93,7 +93,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 {/* 2. Silent Inflation Alerts */}
                 <Card className="border-none shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-card relative overflow-hidden rounded-[32px]">
                     <CardHeader className="pb-2 px-6 pt-6">
-                        <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-[0.2em]">
+                        <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-widest">
                             <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
                             Status Harga
                         </CardTitle>

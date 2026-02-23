@@ -247,7 +247,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                         <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
+                        <h4 className="text-xs font-semibold uppercase tracking-widest text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
                         <p className="text-xs text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed font-medium">
                           Rata-rata pengeluaranmu di <span className="font-semibold text-emerald-700">{selectedSubCategory || selectedCategories[0]}</span> adalah <span className="font-semibold text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
                         </p>
@@ -269,7 +269,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                   )}
 
                   <div className="space-y-3 text-center">
-                    <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Target Allowance</Label>
+                    <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40">Target Allowance</Label>
                     <div className="flex items-center justify-center gap-2">
                         <Input
                         id="target-amount"

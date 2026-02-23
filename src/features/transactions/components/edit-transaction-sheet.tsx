@@ -114,7 +114,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 >
                                     <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg">
                                         <Tag className="h-3 w-3 fill-primary-foreground/20" />
-                                        <span className="text-xs font-medium uppercase tracking-[0.1em]">{category}</span>
+                                        <span className="text-xs font-medium uppercase tracking-widest">{category}</span>
                                     </div>
                                     {subCategory && (
                                         <motion.div

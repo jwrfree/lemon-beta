@@ -104,7 +104,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                 <div className="space-y-0.5">
                                     <h3 className="font-semibold text-lg tracking-tight leading-tight group-hover:underline decoration-white/30">{budget.name}</h3>
                                     <div className="flex items-center gap-2">
-                                        <span className={cn("text-xs font-semibold uppercase tracking-[0.2em] text-white/50")}>
+                                        <span className={cn("text-xs font-semibold uppercase tracking-widest text-white/50")}>
                                             {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : currentHealth.label}
                                         </span>
                                     </div>
@@ -117,7 +117,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
 
                         {/* Middle: The Living Bar */}
                         <div className="space-y-3 flex-1">
-                            <div className="flex justify-between items-end text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+                            <div className="flex justify-between items-end text-xs font-semibold uppercase tracking-widest text-white/40">
                                 <span>Utilization</span>
                                 <span className="tabular-nums text-white/80">{Math.min(progress, 100).toFixed(0)}%</span>
                             </div>
@@ -160,7 +160,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                             {/* Safe Limit Inset */}
                             {remaining > 0 && (
                                 <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                                    <span className="text-xs font-semibold text-white/40 uppercase tracking-[0.2em]">Safe Daily Quota</span>
+                                    <span className="text-xs font-semibold text-white/40 uppercase tracking-widest">Safe Daily Quota</span>
                                     <span className="text-sm font-semibold text-white tabular-nums tracking-tighter">
                                         {formatCurrency(safeDailyLimit)}
                                     </span>

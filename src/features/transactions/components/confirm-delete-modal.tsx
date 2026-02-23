@@ -74,7 +74,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                         <Button onClick={onConfirm} variant="destructive" className="w-full h-14 rounded-full font-semibold shadow-xl shadow-destructive/20">
                             Ya, Hapus Transaksi
                         </Button>
-                        <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-full font-semibold text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                        <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-full font-semibold text-xs uppercase tracking-widest text-muted-foreground">
                             Batalkan
                         </Button>
                     </div>

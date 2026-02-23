@@ -77,7 +77,7 @@ export const RiskScoreCard = () => {
                             <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">Flux Momentum</p>
+                            <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Flux Momentum</p>
                             <h3 className="text-xl font-semibold tracking-tighter text-white">Co-Pilot Insight</h3>
                         </div>
                     </div>
@@ -133,7 +133,7 @@ export const RiskScoreCard = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/30 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-widest text-white/30 pt-4 border-t border-white/5">
                     <div className="flex items-center gap-2">
                         <div className="h-1 w-1 rounded-full bg-white/40" />
                         <span>Adaptive Risk Engine Active</span>

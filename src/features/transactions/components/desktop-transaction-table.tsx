@@ -323,37 +323,37 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                 <Table className="table-fixed">
                     <TableHeader className="bg-muted/50">
                         <TableRow className="hover:bg-muted/50 border-b border-border">
-                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-32" onClick={() => handleSort('date')}>
+                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-32" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
                                     Tanggal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em]" onClick={() => handleSort('description')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest" onClick={() => handleSort('description')}>
                                 <div className="flex items-center gap-2">
                                     Transaksi
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-44" onClick={() => handleSort('category')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-44" onClick={() => handleSort('category')}>
                                 <div className="flex items-center gap-2">
                                     Kategori
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-40" onClick={() => handleSort('wallet')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-40" onClick={() => handleSort('wallet')}>
                                 <div className="flex items-center gap-2">
                                     Metode
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-[0.15em] w-40" onClick={() => handleSort('amount')}>
+                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-40" onClick={() => handleSort('amount')}>
                                 <div className="flex items-center justify-end gap-2">
                                     Nominal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right pr-8 font-medium text-xs uppercase tracking-[0.15em] w-24">Aksi</TableHead>
+                            <TableHead className="text-right pr-8 font-medium text-xs uppercase tracking-widest w-24">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

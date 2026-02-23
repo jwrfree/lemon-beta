@@ -42,7 +42,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
                             <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-rose-500" : color)} />
-                            <p className={cn("font-medium text-xs uppercase tracking-[0.15em]", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
+                            <p className={cn("font-medium text-xs uppercase tracking-widest", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
                                 {category}
                             </p>
                         </div>
