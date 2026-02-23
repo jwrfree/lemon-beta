@@ -175,7 +175,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                         )}
                     </div>
                     <div className="flex-1 z-10">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5 flex items-center gap-1">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-primary mb-0.5 flex items-center gap-1">
                             <Sparkles className="h-3 w-3" />
                             AI Debt Strategist
                         </p>

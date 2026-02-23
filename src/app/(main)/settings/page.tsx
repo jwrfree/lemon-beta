@@ -119,7 +119,7 @@ function SettingsContent() {
                     <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl rounded-[32px] p-8 flex flex-col justify-between" delay={0.05}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
-                                <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.3em]">Digital ID</p>
+                                <p className="text-white/60 text-[10px] font-semibold uppercase tracking-[0.3em]">Digital ID</p>
                                 <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter leading-none">{userData?.displayName || 'Guest User'}</h2>
                                 <p className="text-white/80 font-medium text-sm mt-1">{user?.email}</p>
                             </div>
@@ -127,12 +127,12 @@ function SettingsContent() {
                         </div>
                         <div className="mt-8 flex items-end justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border border-white/10 shadow-lg text-white">PRO MEMBER</span>
-                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-[9px] font-bold uppercase tracking-widest border border-white/5 text-white/80">LEVEL 4</span>
+                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[9px] font-semibold uppercase tracking-widest border border-white/10 shadow-lg text-white">PRO MEMBER</span>
+                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-[9px] font-semibold uppercase tracking-widest border border-white/5 text-white/80">LEVEL 4</span>
                             </div>
                             <div className="text-right">
-                                <p className="text-[9px] text-white/60 font-bold uppercase tracking-widest">Sejak</p>
-                                <p className="text-sm font-bold">2024</p>
+                                <p className="text-[9px] text-white/60 font-semibold uppercase tracking-widest">Sejak</p>
+                                <p className="text-sm font-semibold">2024</p>
                             </div>
                         </div>
 
@@ -171,10 +171,10 @@ function SettingsContent() {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <p className="font-bold text-[10px] tracking-[0.3em] uppercase mt-4">
+                        <p className="font-semibold text-[10px] tracking-[0.3em] uppercase mt-4">
                             {mounted && theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                         </p>
-                        <p className="text-[9px] font-bold opacity-40 uppercase tracking-widest">Tap to switch</p>
+                        <p className="text-[9px] font-semibold opacity-40 uppercase tracking-widest">Tap to switch</p>
                     </BentoItem>
                 </div>
 
@@ -184,14 +184,14 @@ function SettingsContent() {
                         <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm">
                             <Wallet className="w-6 h-6" />
                         </div>
-                        <span className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/80">Dompet</span>
+                        <span className="font-semibold text-[10px] uppercase tracking-widest text-muted-foreground/80">Dompet</span>
                     </BentoItem>
 
                     <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-[24px]">
                         <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shadow-sm">
                             <Target className="w-6 h-6" />
                         </div>
-                        <span className="font-bold text-[10px] uppercase tracking-widest text-muted-foreground/80">Target</span>
+                        <span className="font-semibold text-[10px] uppercase tracking-widest text-muted-foreground/80">Target</span>
                     </BentoItem>
                 </div>
 
@@ -214,14 +214,14 @@ function SettingsContent() {
                                         <Download className="h-8 w-8 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold tracking-tighter flex items-center gap-2">
+                                        <h3 className="text-xl font-semibold tracking-tighter flex items-center gap-2">
                                             Instal Lemon
                                             <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
                                         </h3>
-                                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Akses lebih cepat & mode luring penuh</p>
+                                        <p className="text-white/60 text-[10px] font-semibold uppercase tracking-widest">Akses lebih cepat & mode luring penuh</p>
                                     </div>
                                 </div>
-                                <div className="relative z-10 bg-white text-teal-900 font-bold text-[10px] uppercase tracking-[0.2em] px-5 py-2.5 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
+                                <div className="relative z-10 bg-white text-teal-900 font-semibold text-[10px] uppercase tracking-[0.2em] px-5 py-2.5 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
                                     Pasang
                                 </div>
 
@@ -232,7 +232,7 @@ function SettingsContent() {
                     </AnimatePresence>
 
                     <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1 rounded-[32px]">
-                        <div className="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/60">Pengaturan Lanjutan</div>
+                        <div className="px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/60">Pengaturan Lanjutan</div>
                         <div className="space-y-1 px-2 pb-2">
                             {[
                                 { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
@@ -260,7 +260,7 @@ function SettingsContent() {
                         <div className="flex flex-col gap-1 opacity-40">
                             <div className="flex items-center gap-2">
                                 <Monitor className="w-4 h-4" />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Platform</span>
+                                <span className="text-[10px] font-semibold uppercase tracking-widest">Platform</span>
                             </div>
                             <span className="text-sm font-semibold">Web Desktop (Beta)</span>
                         </div>
@@ -270,7 +270,7 @@ function SettingsContent() {
                             <AlertDialogTrigger asChild>
                                 <div className="flex items-center gap-3 text-destructive cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-xl">
                                     <LogOut className="w-5 h-5" />
-                                    <span className="font-bold text-[10px] uppercase tracking-[0.2em]">Keluar Akun</span>
+                                    <span className="font-semibold text-[10px] uppercase tracking-[0.2em]">Keluar Akun</span>
                                 </div>
                             </AlertDialogTrigger>
                             <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
@@ -281,8 +281,8 @@ function SettingsContent() {
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter className="mt-6 flex-row gap-3">
-                                    <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-bold text-xs uppercase tracking-widest mt-0">Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleSignOut} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-bold text-xs uppercase tracking-widest">Logout</AlertDialogAction>
+                                    <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-semibold text-xs uppercase tracking-widest mt-0">Batal</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleSignOut} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-semibold text-xs uppercase tracking-widest">Logout</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
@@ -290,7 +290,7 @@ function SettingsContent() {
                 </div>
 
                 <div className="pt-8 pb-12 text-center">
-                    <p className="text-[9px] font-bold tracking-[0.4em] uppercase opacity-20">Designed by Lemon AI</p>
+                    <p className="text-[9px] font-semibold tracking-[0.4em] uppercase opacity-20">Designed by Lemon AI</p>
                 </div>
             </div>
         </div>

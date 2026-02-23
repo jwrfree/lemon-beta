@@ -447,17 +447,17 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         <Card className="max-w-2xl mx-auto bg-card rounded-lg border border-border overflow-hidden shadow-card">
                                             <div className="p-10 space-y-10">
                                                 <div className="space-y-3">
-                                                    <h4 className="text-2xl font-black tracking-tighter">Asset Control Center</h4>
+                                                    <h4 className="text-2xl font-bold tracking-tighter">Asset Control Center</h4>
                                                     <p className="text-sm text-muted-foreground leading-relaxed">Kelola integrasi dan otorisasi untuk aset strategis {activeWallet.name}.</p>
                                                 </div>
 
                                                 <div className="space-y-5">
                                                     <div className="p-6 rounded-lg border border-border bg-secondary/40 flex items-center justify-between group hover:border-primary/20 transition-all">
                                                         <div className="space-y-1">
-                                                            <p className="text-sm font-bold tracking-tight">Instrument Identity</p>
+                                                            <p className="text-sm font-semibold tracking-tight">Instrument Identity</p>
                                                             <p className="text-[11px] text-muted-foreground opacity-70">Manage labels, categories, and visual identification.</p>
                                                         </div>
-                                                        <Button variant="outline" size="sm" className="rounded-lg text-[9px] font-bold uppercase tracking-widest" onClick={() => openEditWalletModal(activeWallet)}>
+                                                        <Button variant="outline" size="sm" className="rounded-lg text-[9px] font-semibold uppercase tracking-widest" onClick={() => openEditWalletModal(activeWallet)}>
                                                             Modify
                                                         </Button>
                                                     </div>
@@ -465,18 +465,18 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                     {activeWallet.name !== 'Tunai' ? (
                                                         <div className="p-6 rounded-lg border border-destructive/20 bg-destructive/5 flex items-center justify-between">
                                                             <div className="space-y-1">
-                                                                <p className="text-sm font-bold text-destructive">Danger Zone</p>
+                                                                <p className="text-sm font-semibold text-destructive">Danger Zone</p>
                                                                 <p className="text-xs text-muted-foreground text-destructive/60">Hapus aset ini secara permanen dari portofolio.</p>
                                                             </div>
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
-                                                                    <Button variant="destructive" size="sm" className="rounded-lg text-[9px] font-bold uppercase tracking-widest" disabled={isDeleting}>
+                                                                    <Button variant="destructive" size="sm" className="rounded-lg text-[9px] font-semibold uppercase tracking-widest" disabled={isDeleting}>
                                                                         {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Terminate'}
                                                                     </Button>
                                                                 </AlertDialogTrigger>
                                                                 <AlertDialogContent className="rounded-lg border-border/40">
                                                                     <AlertDialogHeader>
-                                                                        <AlertDialogTitle className="font-black tracking-tight text-2xl">Yakin ingin menghapus ini?</AlertDialogTitle>
+                                                                        <AlertDialogTitle className="font-bold tracking-tight text-2xl">Yakin ingin menghapus ini?</AlertDialogTitle>
                                                                         <AlertDialogDescription className="text-sm leading-relaxed">
                                                                             Tindakan ini permanen. {activeWallet.name} akan dihapus beserta seluruh referensi yang melampirinya. Saldo harus nol untuk melanjutkan.
                                                                         </AlertDialogDescription>
@@ -504,7 +504,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                         </div>
                                                     ) : (
                                                         <div className="p-6 bg-muted/20 rounded-lg border border-dashed border-border flex items-center justify-center">
-                                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
+                                                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -520,7 +520,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <WalletIcon className="h-12 w-12 text-muted-foreground/20" />
                             </div>
                             <div className="space-y-3">
-                                <h3 className="text-2xl font-black tracking-tighter">Pusat Strategi Aset</h3>
+                                <h3 className="text-2xl font-bold tracking-tighter">Pusat Strategi Aset</h3>
                                 <p className="text-sm text-muted-foreground max-w-[320px] leading-relaxed mx-auto">
                                     Silakan pilih salah satu instrument keuangan dari Master List di sebelah kiri untuk memulai audit dan analisis.
                                 </p>

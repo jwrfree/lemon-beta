@@ -141,14 +141,14 @@ export const MobileDashboard = ({
                     </Avatar>
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{timeBasedGreeting},</span>
+                            <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">{timeBasedGreeting},</span>
                             {currentTime && (
-                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-md tabular-nums">
+                                <span className="text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-md tabular-nums">
                                     {format(currentTime, 'HH:mm')}
                                 </span>
                             )}
                         </div>
-                        <h1 className="text-xl font-bold leading-tight tracking-tighter">{firstName}</h1>
+                        <h1 className="text-xl font-semibold leading-tight tracking-tighter">{firstName}</h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -179,12 +179,12 @@ export const MobileDashboard = ({
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-3">
-                                    <span className="text-white/50 text-[10px] uppercase font-bold tracking-[0.3em]">Total Wealth</span>
+                                    <span className="text-white/50 text-[10px] uppercase font-semibold tracking-[0.3em]">Total Wealth</span>
                                     <div className="bg-white/10 backdrop-blur-xl rounded-full px-2 py-0.5 border border-white/10 shadow-inner">
                                         <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
-                                <div className="text-5xl font-bold tracking-tighter tabular-nums drop-shadow-sm">
+                                <div className="text-5xl font-semibold tracking-tighter tabular-nums drop-shadow-sm">
                                     <AnimatedCounter value={totalBalance} />
                                 </div>
                                 <div className="mt-6 flex flex-col gap-3">
@@ -197,7 +197,7 @@ export const MobileDashboard = ({
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="w-fit h-8 px-4 text-[10px] font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10 transition-all active:scale-95"
+                                        className="w-fit h-8 px-4 text-[10px] font-semibold uppercase tracking-widest bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10 transition-all active:scale-95"
                                         onClick={() => router.push('/charts')}
                                     >
                                         Financial Pulse
@@ -212,11 +212,11 @@ export const MobileDashboard = ({
                                         <div className="p-1.5 rounded-xl bg-emerald-500/20 text-emerald-300">
                                             <ArrowUpRight className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="text-[9px] uppercase font-bold tracking-widest">Inflow</span>
+                                        <span className="text-[9px] uppercase font-semibold tracking-widest">Inflow</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyIncome} className="font-bold text-base tracking-tight text-white" />
-                                        <p className="text-[9px] text-white/30 mt-1 font-bold uppercase tracking-tighter">
+                                        <AnimatedCounter value={monthlyIncome} className="font-semibold text-base tracking-tight text-white" />
+                                        <p className="text-[9px] text-white/30 mt-1 font-semibold uppercase tracking-tighter">
                                             {incomeDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(incomeDiff))} this month
                                         </p>
                                     </div>
@@ -226,11 +226,11 @@ export const MobileDashboard = ({
                                         <div className="p-1.5 rounded-xl bg-rose-500/20 text-rose-300">
                                             <ArrowDownLeft className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="text-[9px] uppercase font-bold tracking-widest">Outflow</span>
+                                        <span className="text-[9px] uppercase font-semibold tracking-widest">Outflow</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyExpense} className="font-bold text-base tracking-tight text-white" />
-                                        <p className="text-[9px] text-white/30 mt-1 font-bold uppercase tracking-tighter">
+                                        <AnimatedCounter value={monthlyExpense} className="font-semibold text-base tracking-tight text-white" />
+                                        <p className="text-[9px] text-white/30 mt-1 font-semibold uppercase tracking-tighter">
                                             {expenseDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(expenseDiff))} this month
                                         </p>
                                     </div>
@@ -259,7 +259,7 @@ export const MobileDashboard = ({
                             <div className={cn("h-16 w-16 rounded-full flex items-center justify-center shadow-lg border border-border/40 transition-all group-active:shadow-inner bg-card", action.bg.replace('/10', '/5'))}>
                                 <action.icon className={cn("h-7 w-7", action.color)} strokeWidth={1.5} />
                             </div>
-                            <span className="text-[9px] font-bold text-muted-foreground/60 text-center leading-tight uppercase tracking-widest">
+                            <span className="text-[9px] font-semibold text-muted-foreground/60 text-center leading-tight uppercase tracking-widest">
                                 {action.label}
                             </span>
                         </motion.button>
@@ -270,11 +270,11 @@ export const MobileDashboard = ({
             {/* 4. Horizontal Wallets (Snap Scroll - Dynamic Branded DNA) */}
             <div className="space-y-4">
                 <div className="px-6 flex items-center justify-between">
-                    <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
+                    <h2 className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
                         <WalletIcon className="h-3.5 w-3.5" />
                         Wallet Stack
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-[0.2em] text-primary px-0 hover:bg-transparent" onClick={() => router.push('/wallets')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary px-0 hover:bg-transparent" onClick={() => router.push('/wallets')}>
                         Manage
                     </Button>
                 </div>
@@ -317,16 +317,16 @@ export const MobileDashboard = ({
                                                 <Icon className="h-5 w-5 text-white" strokeWidth={2.5} />
                                             )}
                                         </div>
-                                        <span className="text-[8px] font-bold text-white/40 uppercase tracking-[0.2em]">
+                                        <span className="text-[8px] font-semibold text-white/40 uppercase tracking-[0.2em]">
                                             {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : 'Cash'}
                                         </span>
                                     </div>
 
                                     <div className="relative z-10 space-y-1">
-                                        <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest truncate">{wallet.name}</p>
+                                        <p className="text-[10px] font-semibold text-white/60 uppercase tracking-widest truncate">{wallet.name}</p>
                                         {/* Dynamic Contrast Protection for Balance */}
                                         <div className="bg-white/10 backdrop-blur-sm px-2 py-1 rounded-xl border border-white/5 w-fit">
-                                            <p className="text-sm font-bold text-white truncate tracking-tighter tabular-nums">
+                                            <p className="text-sm font-semibold text-white truncate tracking-tighter tabular-nums">
                                                 {formatCurrency(wallet.balance)}
                                             </p>
                                         </div>
@@ -357,11 +357,11 @@ export const MobileDashboard = ({
             {/* 6. Recent Transactions */}
             <div className="space-y-4 px-6 pb-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
+                    <h2 className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
                         <TrendingUp className="h-3.5 w-3.5" />
                         Recent Flux
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-bold uppercase tracking-[0.2em] text-primary px-0" onClick={() => router.push('/transactions')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary px-0" onClick={() => router.push('/transactions')}>
                         Feed
                     </Button>
                 </div>

@@ -76,7 +76,7 @@ export default function BudgetDetailPage() {
                         <div className="p-5 bg-rose-500/10 rounded-[2rem] mb-6">
                             <AlertCircle className="h-12 w-12 text-rose-500" strokeWidth={1.5} />
                         </div>
-                        <h2 className="text-2xl font-black tracking-tighter">Tidak Ditemukan</h2>
+                        <h2 className="text-2xl font-bold tracking-tighter">Tidak Ditemukan</h2>
                         <p className="text-sm font-medium text-muted-foreground mt-3">Anggaran ini mungkin sudah dihapus atau dipindahkan.</p>
                         <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-xl h-11 px-6">
                             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -168,22 +168,22 @@ export default function BudgetDetailPage() {
                             {/* Multi-Stat Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                                 <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Target className="h-3 w-3" /> Target
                                     </p>
-                                    <p className="text-xl font-bold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
+                                    <p className="text-xl font-semibold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
                                 </div>
                                 <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Layers className="h-3 w-3" /> Terpakai
                                     </p>
-                                    <p className={cn("text-xl font-bold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
+                                    <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
                                 </div>
                                 <div className="p-6 rounded-[2rem] bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 flex items-center gap-2">
                                         <Flame className="h-3 w-3" /> {isOver ? 'Kekurangan' : 'Sisa'}
                                     </p>
-                                    <p className={cn("text-xl font-bold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
+                                    <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
                                         {formatCurrency(Math.abs(remaining))}
                                     </p>
                                 </div>
@@ -197,13 +197,13 @@ export default function BudgetDetailPage() {
                                             <Sparkles className="h-6 w-6" />
                                         </div>
                                         <div className="text-center md:text-left space-y-0.5">
-                                            <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
+                                            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
                                             <p className="text-[10px] font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
                                         </div>
                                     </div>
                                     <div className="text-center md:text-right">
-                                        <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">{formatCurrency(safeDailyLimit)}</p>
-                                        <p className="text-[9px] font-bold text-emerald-600/40 uppercase tracking-[0.3em]">per hari</p>
+                                        <p className="text-3xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">{formatCurrency(safeDailyLimit)}</p>
+                                        <p className="text-[9px] font-semibold text-emerald-600/40 uppercase tracking-[0.3em]">per hari</p>
                                     </div>
                                 </div>
                             )}

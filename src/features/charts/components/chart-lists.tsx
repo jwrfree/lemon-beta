@@ -46,7 +46,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                                 {category}
                             </p>
                         </div>
-                        <p className={cn("text-xl md:text-2xl font-black tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-foreground")}>
+                        <p className={cn("text-xl md:text-2xl font-bold tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-foreground")}>
                             {formatCurrency(amount)}
                         </p>
                     </div>
@@ -96,12 +96,12 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
             onClick={onClick}
             className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border-none hover:bg-muted/50 transition-all w-full text-left active:scale-[0.98]"
         >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background font-bold text-xs">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background font-semibold text-xs">
                 {rank}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm truncate tracking-tight">{transaction.description || transaction.category}</p>
-                <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/50">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
+                <p className="font-semibold text-sm truncate tracking-tight">{transaction.description || transaction.category}</p>
+                <p className="text-[10px] uppercase font-semibold tracking-widest text-muted-foreground/50">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
             </div>
             <p className="font-medium text-base tabular-nums">{formatCurrency(transaction.amount)}</p>
         </button>

@@ -47,7 +47,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 >
                     <div className="flex items-center gap-2 text-success mb-1">
                         <TrendingUp className="h-3 w-3" />
-                        <span className="text-[9px] font-bold uppercase tracking-wider">Pemasukan</span>
+                        <span className="text-[9px] font-semibold uppercase tracking-wider">Pemasukan</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(income)}
@@ -62,7 +62,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 >
                     <div className="flex items-center gap-2 text-destructive mb-1">
                         <TrendingDown className="h-3 w-3" />
-                        <span className="text-[9px] font-bold uppercase tracking-wider">Pengeluaran</span>
+                        <span className="text-[9px] font-semibold uppercase tracking-wider">Pengeluaran</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(expense)}
@@ -91,7 +91,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                                     <span className="text-[11px] font-medium text-muted-foreground">{cat.name}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[11px] font-bold">{Math.round((cat.value / totalExpense) * 100)}%</span>
+                                    <span className="text-[11px] font-semibold">{Math.round((cat.value / totalExpense) * 100)}%</span>
                                     <span className="text-[10px] text-muted-foreground">{formatCurrency(cat.value)}</span>
                                 </div>
                             </div>

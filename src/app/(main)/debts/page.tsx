@@ -148,15 +148,15 @@ export default function DebtsPage() {
                 showBackButton={true}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-[10px] font-bold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none shadow-sm">
+                        <SelectTrigger className="w-[140px] h-9 text-[10px] font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none shadow-sm">
                             <ArrowUpDown className="w-3 h-3 mr-2 text-primary" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
                         <SelectContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
-                            <SelectItem value="updated_desc" className="text-xs font-bold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
-                            <SelectItem value="due_soon" className="text-xs font-bold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
-                            <SelectItem value="amount_desc" className="text-xs font-bold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
-                            <SelectItem value="amount_asc" className="text-xs font-bold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
+                            <SelectItem value="updated_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
+                            <SelectItem value="due_soon" className="text-xs font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
+                            <SelectItem value="amount_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
+                            <SelectItem value="amount_asc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
                         </SelectContent>
                     </Select>
                 }
@@ -172,27 +172,27 @@ export default function DebtsPage() {
 
                         <CardContent className="p-8 space-y-8 relative z-10">
                             <div>
-                                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/50 mb-2">Debt Overview</p>
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50 mb-2">Debt Overview</p>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-bold tracking-tighter text-white tabular-nums">
+                                    <span className="text-4xl font-semibold tracking-tighter text-white tabular-nums">
                                         {formatCurrency(Math.abs(totals.totalOwing - totals.totalOwed))}
                                     </span>
-                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Net Liability</span>
+                                    <span className="text-[10px] font-semibold text-white/40 uppercase tracking-widest">Net Liability</span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner">
-                                    <p className="text-[9px] font-bold text-rose-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                    <p className="text-[9px] font-semibold text-rose-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                         <ArrowUpRight className="h-3 w-3" /> Owed
                                     </p>
-                                    <p className="text-lg font-bold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwed)}</p>
+                                    <p className="text-lg font-semibold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwed)}</p>
                                 </div>
                                 <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner">
-                                    <p className="text-[9px] font-bold text-emerald-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                    <p className="text-[9px] font-semibold text-emerald-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                         <ArrowDownRight className="h-3 w-3" /> Owing
                                     </p>
-                                    <p className="text-lg font-bold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwing)}</p>
+                                    <p className="text-lg font-semibold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwing)}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -203,7 +203,7 @@ export default function DebtsPage() {
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                         <TabsList className="bg-muted/50 p-1 rounded-full h-12 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-bold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
+                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-semibold text-[10px] uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
                                     {label === 'Semua' ? 'All' : label.split(' ')[0]}
                                 </TabsTrigger>
                             ))}
@@ -234,12 +234,12 @@ export default function DebtsPage() {
                                         <CardContent className="p-7 relative z-10 text-white">
                                             <div className="flex items-start justify-between gap-4 mb-8">
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="font-bold text-lg tracking-tight truncate">{debt.title}</h3>
-                                                    <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
+                                                    <h3 className="font-semibold text-lg tracking-tight truncate">{debt.title}</h3>
+                                                    <p className="text-[10px] font-semibold text-white/50 uppercase tracking-widest mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
                                                     <div className="mt-2">{getDebtDueStatus(debt)}</div>
                                                 </div>
                                                 <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/10 shadow-sm">
-                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-white">
+                                                    <span className="text-[9px] font-semibold uppercase tracking-widest text-white">
                                                         {debt.status === 'settled' ? 'Settled' : 'Active'}
                                                     </span>
                                                 </div>
@@ -247,17 +247,17 @@ export default function DebtsPage() {
 
                                             <div className="flex items-end justify-between gap-6">
                                                 <div className="space-y-2 flex-1">
-                                                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">
+                                                    <p className="text-[9px] font-semibold text-white/40 uppercase tracking-[0.2em]">
                                                         {isOwed ? 'Principal Owed' : 'Receivable'}
                                                     </p>
                                                     <div className="bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-2xl border border-white/5 w-fit">
-                                                        <p className="text-2xl font-bold tracking-tighter tabular-nums text-white">
+                                                        <p className="text-2xl font-semibold tracking-tighter tabular-nums text-white">
                                                             {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right space-y-2 min-w-[80px]">
-                                                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">Recovery</p>
+                                                    <p className="text-[9px] font-semibold text-white/40 uppercase tracking-[0.2em]">Recovery</p>
                                                     <div className="flex items-center gap-3 justify-end">
                                                         <div className="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
                                                             <motion.div 
@@ -266,7 +266,7 @@ export default function DebtsPage() {
                                                                 className="h-full rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.4)]"
                                                             />
                                                         </div>
-                                                        <span className="text-[10px] font-bold tabular-nums text-white">{Math.round(progress)}%</span>
+                                                        <span className="text-[10px] font-semibold tabular-nums text-white">{Math.round(progress)}%</span>
                                                     </div>
                                                 </div>
                                             </div>

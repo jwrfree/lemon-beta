@@ -36,19 +36,19 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6 relative z-10">
                 <div className="space-y-1.5">
-                    <h3 className="text-xl font-bold tracking-tight flex items-center gap-2.5">
+                    <h3 className="text-xl font-semibold tracking-tight flex items-center gap-2.5">
                         <ShieldCheck className="w-5 h-5 text-emerald-400" />
                         Net Worth Flow
                     </h3>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Equity Accumulation Trend</p>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">Equity Accumulation Trend</p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2">
-                    <p className="text-4xl font-bold tracking-tighter tabular-nums drop-shadow-sm">
+                    <p className="text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-sm">
                         {formatCurrency(currentNetWorth)}
                     </p>
                     <Badge
                         className={cn(
-                            "rounded-full px-2.5 py-0.5 border-none font-bold text-[10px] uppercase tracking-widest", 
+                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-[10px] uppercase tracking-widest", 
                             growth >= 0 ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
                         )}
                     >
@@ -99,20 +99,20 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
 
             <div className="grid grid-cols-2 gap-6 mt-10 pt-8 border-t border-white/10 relative z-10">
                 <div className="bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center gap-2">
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                         Assets
                     </p>
-                    <p className="text-xl font-bold tabular-nums tracking-tighter">
+                    <p className="text-xl font-semibold tabular-nums tracking-tighter">
                         {formatCurrency(data[data.length - 1]?.assets || 0)}
                     </p>
                 </div>
                 <div className="bg-white/5 backdrop-blur-md p-4 rounded-[24px] border border-white/10 shadow-inner text-right">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center justify-end gap-2">
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-1.5 flex items-center justify-end gap-2">
                         Liabilities
                         <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                     </p>
-                    <p className="text-xl font-bold tabular-nums tracking-tighter">
+                    <p className="text-xl font-semibold tabular-nums tracking-tighter">
                         {formatCurrency(data[data.length - 1]?.liabilities || 0)}
                     </p>
                 </div>

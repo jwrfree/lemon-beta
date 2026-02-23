@@ -44,7 +44,7 @@ export default function PlanPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={cn(
-                                    "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all relative min-w-[90px]",
+                                    "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-[10px] font-semibold uppercase tracking-wider transition-all relative min-w-[90px]",
                                     isActive ? "text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
                                 )}
                             >

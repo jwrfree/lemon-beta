@@ -10,7 +10,7 @@ export default function OfflinePage() {
         <WifiOff className="h-12 w-12 text-muted-foreground" />
       </div>
 
-      <h1 className="text-3xl font-bold tracking-tight mb-3">
+      <h1 className="text-3xl font-semibold tracking-tight mb-3">
         Sedang Offline
       </h1>
 

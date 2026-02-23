@@ -95,7 +95,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/10">
-          <h2 className="text-xl font-bold tracking-tighter">Adjust Budget</h2>
+          <h2 className="text-xl font-semibold tracking-tighter">Adjust Budget</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
             <X className="h-5 w-5" />
           </Button>
@@ -103,18 +103,18 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
         <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-8 overflow-y-auto">
           <div className="space-y-3">
-            <Label htmlFor="budget-name" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
+            <Label htmlFor="budget-name" className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
             <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-2xl bg-secondary/50 border-none shadow-inner" required />
           </div>
 
           <div className="space-y-6">
             <div className="space-y-2 text-center">
-              <Label htmlFor="target-amount" className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Monthly Target</Label>
+              <Label htmlFor="target-amount" className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground/40">Monthly Target</Label>
               <Input
                 id="target-amount"
                 value={formatCurrency(targetAmount)}
                 onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                className="text-5xl font-black border-none focus-visible:ring-0 text-center bg-transparent h-auto p-0 tracking-tighter tabular-nums"
+                className="text-5xl font-bold border-none focus-visible:ring-0 text-center bg-transparent h-auto p-0 tracking-tighter tabular-nums"
                 size="lg"
                 inputMode="numeric"
               />
@@ -130,7 +130,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
             </div>
             <div className="grid grid-cols-4 gap-3">
               {budgetSteps.map(val => (
-                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-bold text-[10px]", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
+                <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-xl h-10 font-semibold text-[10px]", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/50 text-muted-foreground")}>
                   {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
                 </Button>
               ))}
@@ -138,7 +138,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
           </div>
 
           <div className="space-y-4">
-            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Main Category</Label>
+            <Label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Main Category</Label>
             <ScrollArea className="h-48">
               <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
                 {expenseCategories.map(cat => {
@@ -151,7 +151,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                         isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                       )}>
                       <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
-                      <span className={cn("text-[9px] text-center leading-tight font-bold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
+                      <span className={cn("text-[9px] text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
                     </button>
                   );
                 })}
@@ -161,13 +161,13 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
           {hasSubCategories && (
             <div className="space-y-4 pt-2">
-                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Sub-Category (Optional)</Label>
+                <Label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ml-1">Sub-Category (Optional)</Label>
                 <div className="flex flex-wrap gap-2">
                 <Button 
                     type="button" 
                     variant={selectedSubCategory === null ? 'default' : 'outline'}
                     onClick={() => setSelectedSubCategory(null)}
-                    className="rounded-full h-10 px-5 text-xs font-bold uppercase tracking-widest"
+                    className="rounded-full h-10 px-5 text-xs font-semibold uppercase tracking-widest"
                 >
                     All {selectedCategories[0]}
                 </Button>
@@ -177,7 +177,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                         type="button" 
                         variant={selectedSubCategory === sub ? 'default' : 'outline'}
                         onClick={() => setSelectedSubCategory(sub)}
-                        className="rounded-full h-10 px-5 text-xs font-bold uppercase tracking-widest"
+                        className="rounded-full h-10 px-5 text-xs font-semibold uppercase tracking-widest"
                     >
                         {sub}
                     </Button>
@@ -188,7 +188,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         </form>
 
         <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md flex gap-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-          <Button type="submit" onClick={handleSubmit} className="flex-1 h-14 rounded-full font-bold text-xs uppercase tracking-widest shadow-xl shadow-primary/20 bg-primary active:scale-95" disabled={isSubmitting || !hasChanges}>
+          <Button type="submit" onClick={handleSubmit} className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest shadow-xl shadow-primary/20 bg-primary active:scale-95" disabled={isSubmitting || !hasChanges}>
             {isSubmitting ? 'Updating...' : 'Save Changes'}
           </Button>
           <AlertDialog>
@@ -199,14 +199,14 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
             </AlertDialogTrigger>
             <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-2xl font-bold tracking-tighter">Delete Budget?</AlertDialogTitle>
+                <AlertDialogTitle className="text-2xl font-semibold tracking-tighter">Delete Budget?</AlertDialogTitle>
                 <AlertDialogDescription className="text-sm font-medium text-muted-foreground">
                   This will permanently remove the budget for &apos;{budget.name}&apos;.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter className="mt-6 flex-row gap-3">
-                <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-bold text-xs uppercase tracking-widest mt-0">Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-bold text-xs uppercase tracking-widest">
+                <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-semibold text-xs uppercase tracking-widest mt-0">Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-semibold text-xs uppercase tracking-widest">
                   {isDeleting ? 'Deleting...' : 'Delete'}
                 </AlertDialogAction>
               </AlertDialogFooter>

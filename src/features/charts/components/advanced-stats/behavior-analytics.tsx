@@ -74,7 +74,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
                         </div>
                         <div className="flex-1">
                             <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Payday Drain</p>
-                            <p className="text-sm font-medium">50% Gaji Habis dalam <span className="text-warning font-bold">{data.paydayDrainDays} Hari</span></p>
+                            <p className="text-sm font-medium">50% Gaji Habis dalam <span className="text-warning font-semibold">{data.paydayDrainDays} Hari</span></p>
                         </div>
                     </div>
 

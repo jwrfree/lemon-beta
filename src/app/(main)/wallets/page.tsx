@@ -61,7 +61,7 @@ export default function WalletsPage() {
                 </p>
                 <Button
                   onClick={() => setIsWalletModalOpen(true)}
-                  className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-bold text-xs uppercase tracking-widest"
+                  className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-semibold text-xs uppercase tracking-widest"
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Buat Dompet Pertama
@@ -81,15 +81,15 @@ export default function WalletsPage() {
               <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as any)} className="w-full">
                 <div className="px-5 mb-6">
                   <TabsList className="bg-muted/50 p-1 rounded-full h-11 w-full grid grid-cols-2">
-                    <TabsTrigger value="mutasi" className="h-full rounded-full font-bold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
-                    <TabsTrigger value="analitik" className="h-full rounded-full font-bold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
+                    <TabsTrigger value="mutasi" className="h-full rounded-full font-semibold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
+                    <TabsTrigger value="analitik" className="h-full rounded-full font-semibold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
                   </TabsList>
                 </div>
 
                 <TabsContent value="mutasi" className="mt-0">
                   <div className="px-6 flex items-center justify-between mb-4">
-                    <h2 className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">10 Transaksi Terakhir</h2>
-                    <Button variant="link" size="sm" className="text-[10px] font-bold uppercase tracking-widest text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
+                    <h2 className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-[0.2em]">10 Transaksi Terakhir</h2>
+                    <Button variant="link" size="sm" className="text-[10px] font-semibold uppercase tracking-widest text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                   </div>
                   <div className="w-full">
                     {activeWallet && (

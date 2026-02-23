@@ -59,14 +59,14 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                             <Sparkles className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Pocket Co-Pilot</p>
-                            <p className={cn("text-xs font-bold", config.color)}>{config.label}</p>
+                            <p className="text-[10px] font-semibold uppercase tracking-widest opacity-60">Pocket Co-Pilot</p>
+                            <p className={cn("text-xs font-semibold", config.color)}>{config.label}</p>
                         </div>
                     </div>
                     {showBurnRate && (
                         <div className="text-right">
-                            <p className="text-[9px] font-bold uppercase tracking-widest opacity-40">Burn Rate</p>
-                            <p className="text-xs font-bold tabular-nums">
+                            <p className="text-[9px] font-semibold uppercase tracking-widest opacity-40">Burn Rate</p>
+                            <p className="text-xs font-semibold tabular-nums">
                                 Rp {new Intl.NumberFormat('id-ID').format(risk.burnRate)}/hari
                             </p>
                         </div>

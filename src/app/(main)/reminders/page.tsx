@@ -267,26 +267,26 @@ export default function RemindersPage() {
                                                             </div>
                                                             <div className="flex-1 space-y-3">
                                                                 <div className="flex items-center justify-between gap-2">
-                                                                    <h2 className="font-bold text-base tracking-tight">{reminder.title}</h2>
+                                                                    <h2 className="font-semibold text-base tracking-tight">{reminder.title}</h2>
                                                                     {renderStatusBadge(status)}
                                                                 </div>
                                                                 
                                                                 <div className="flex flex-wrap gap-x-4 gap-y-2">
                                                                     {dueDate && (
-                                                                        <div className="text-[10px] font-bold text-muted-foreground/60 flex items-center gap-1.5 uppercase tracking-widest">
+                                                                        <div className="text-[10px] font-semibold text-muted-foreground/60 flex items-center gap-1.5 uppercase tracking-widest">
                                                                             <CalendarClock className="h-3.5 w-3.5" />
                                                                             {format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                                                         </div>
                                                                     )}
                                                                     {reminder.amount ? (
-                                                                        <div className="text-[10px] font-bold text-primary flex items-center gap-1.5 uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-full">
+                                                                        <div className="text-[10px] font-semibold text-primary flex items-center gap-1.5 uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-full">
                                                                             {formatCurrency(reminder.amount)}
                                                                         </div>
                                                                     ) : null}
                                                                 </div>
 
                                                                 {linkedDebt && (
-                                                                    <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                                                                    <p className="text-[10px] font-semibold text-muted-foreground/40 uppercase tracking-widest">
                                                                         Terkait: {linkedDebt.title}
                                                                     </p>
                                                                 )}
@@ -297,7 +297,7 @@ export default function RemindersPage() {
 
                                                                 <div className="flex items-center gap-2 pt-2">
                                                                     {status !== 'completed' && (
-                                                                        <Button size="sm" variant="secondary" className="h-9 px-4 rounded-full font-bold text-[10px] uppercase tracking-widest gap-2 bg-primary/10 text-primary hover:bg-primary/20" onClick={() => handleComplete(reminder)}>
+                                                                        <Button size="sm" variant="secondary" className="h-9 px-4 rounded-full font-semibold text-[10px] uppercase tracking-widest gap-2 bg-primary/10 text-primary hover:bg-primary/20" onClick={() => handleComplete(reminder)}>
                                                                             <Check className="h-4 w-4" strokeWidth={3} /> Selesai
                                                                         </Button>
                                                                     )}
@@ -310,14 +310,14 @@ export default function RemindersPage() {
                                                                         <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                                                                             {status !== 'completed' && dueDate && (
                                                                                 <>
-                                                                                    <DropdownMenuItem className="text-xs font-bold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>
-                                                                                    <DropdownMenuItem className="text-xs font-bold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 3)}>Tunda 3 hari</DropdownMenuItem>
+                                                                                    <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>
+                                                                                    <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 3)}>Tunda 3 hari</DropdownMenuItem>
                                                                                 </>
                                                                             )}
-                                                                            <DropdownMenuItem className="text-xs font-bold uppercase tracking-widest p-3" onClick={() => { setReminderToEdit(reminder); setIsReminderModalOpen(true); }}>
+                                                                            <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3" onClick={() => { setReminderToEdit(reminder); setIsReminderModalOpen(true); }}>
                                                                                 Edit
                                                                             </DropdownMenuItem>
-                                                                            <DropdownMenuItem className="text-xs font-bold uppercase tracking-widest p-3 text-destructive" onClick={() => handleDelete(reminder)}>
+                                                                            <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3 text-destructive" onClick={() => handleDelete(reminder)}>
                                                                                 Hapus
                                                                             </DropdownMenuItem>
                                                                         </DropdownMenuContent>
@@ -539,13 +539,13 @@ export default function RemindersPage() {
             <div className="md:hidden sticky bottom-0 inset-x-0 bg-background/80 backdrop-blur-xl border-t border-border/50 p-4 flex items-center justify-between gap-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-30">
                 <Button 
                     variant="outline" 
-                    className="flex-1 h-14 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] border-border shadow-sm" 
+                    className="flex-1 h-14 rounded-full font-semibold text-[10px] uppercase tracking-[0.2em] border-border shadow-sm" 
                     onClick={() => setActiveTab('overdue')}
                 >
                     Terlambat
                 </Button>
                 <Button 
-                    className="flex-1 h-14 rounded-full font-bold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20" 
+                    className="flex-1 h-14 rounded-full font-semibold text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20" 
                     onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}
                 >
                     Tambah

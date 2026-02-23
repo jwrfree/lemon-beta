@@ -121,14 +121,14 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                       <div>
                         <div className="flex items-center gap-2 mb-0.5">
                           <p className="font-semibold text-xl tracking-tight drop-shadow-sm">{wallet.name}</p>
-                          <span className="text-[8px] font-bold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/10 uppercase tracking-widest">
+                          <span className="text-[8px] font-semibold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/10 uppercase tracking-widest">
                             {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : 'Tunai'}
                           </span>
                         </div>
                         {wallet.isDefault && (
                           <div className="flex items-center gap-1 mt-0.5">
                             <ShieldCheck className="h-3 w-3 text-white/60" />
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-white/60">Dompet Utama</span>
+                            <span className="text-[9px] font-semibold uppercase tracking-widest text-white/60">Dompet Utama</span>
                           </div>
                         )}
                       </div>
@@ -146,7 +146,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   <div className="flex-1 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-1 opacity-60">
                       <Sparkles className="h-3 w-3" />
-                      <span className="text-[9px] font-bold uppercase tracking-[0.3em]">Saldo Tersedia</span>
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.3em]">Saldo Tersedia</span>
                     </div>
                     <p className={cn("text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-md", !isBalanceVisible && 'blur-md transition-all duration-500')}>
                       {isBalanceVisible ? formatCurrency(wallet.balance) : 'Rp ••••••'}
@@ -194,7 +194,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                   )}
                 </div>
                 <span className={cn(
-                  "text-[9px] font-bold uppercase tracking-widest max-w-[50px] truncate",
+                  "text-[9px] font-semibold uppercase tracking-widest max-w-[50px] truncate",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}>
                   {wallet.name.split(' ')[0]}
