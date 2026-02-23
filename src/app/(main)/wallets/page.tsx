@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { FAB } from '@/components/ui/fab';
 import { Plus, Wallet, PlusCircle } from 'lucide-react';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { WalletCardStack } from '@/features/wallets/components/wallet-card-stack';
@@ -47,12 +48,12 @@ export default function WalletsPage() {
 
         {wallets.length === 0 ? (
           <main className="flex-1 flex flex-col items-center justify-center p-6 bg-background">
-            <div className="max-w-[320px] w-full p-10 bg-card rounded-[32px] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] text-center relative overflow-hidden">
+            <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-2xl text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                 <Wallet className="h-40 w-40" />
               </div>
               <div className="relative z-10 flex flex-col items-center">
-                <div className="p-5 bg-primary/10 rounded-2xl mb-6">
+                <div className="p-5 bg-primary/10 rounded-card-icon mb-6">
                   <Wallet className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Dompet</h2>
@@ -81,15 +82,15 @@ export default function WalletsPage() {
               <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as any)} className="w-full">
                 <div className="px-5 mb-6">
                   <TabsList className="bg-muted/50 p-1 rounded-full h-11 w-full grid grid-cols-2">
-                    <TabsTrigger value="mutasi" className="h-full rounded-full font-semibold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
-                    <TabsTrigger value="analitik" className="h-full rounded-full font-semibold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
+                    <TabsTrigger value="mutasi" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
+                    <TabsTrigger value="analitik" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
                   </TabsList>
                 </div>
 
                 <TabsContent value="mutasi" className="mt-0">
                   <div className="px-6 flex items-center justify-between mb-4">
-                    <h2 className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-[0.2em]">10 Transaksi Terakhir</h2>
-                    <Button variant="link" size="sm" className="text-[10px] font-semibold uppercase tracking-widest text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
+                    <h2 className="label-xs">10 Transaksi Terakhir</h2>
+                    <Button variant="link" size="sm" className="text-label text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                   </div>
                   <div className="w-full">
                     {activeWallet && (
@@ -115,16 +116,7 @@ export default function WalletsPage() {
         )}
 
         {/* Floating Action Button (FAB) */}
-        <div className="fixed bottom-20 right-6 z-40">
-          <Button
-            onClick={() => setIsWalletModalOpen(true)}
-            size="icon"
-            className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform active:scale-95"
-            aria-label="Tambah dompet"
-          >
-            <Plus className="h-7 w-7" />
-          </Button>
-        </div>
+        <FAB onClick={() => setIsWalletModalOpen(true)} label="Tambah dompet" />
       </div>
 
       {/* Desktop View */}

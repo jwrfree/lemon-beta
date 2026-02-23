@@ -58,12 +58,12 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                         type="button"
                         onClick={() => openEditGoalModal(goal)}
                         className={cn(
-                            'w-full text-left rounded-[32px] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 transition-all active:scale-[0.98]'
+                            'w-full text-left rounded-card-premium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 transition-all active:scale-[0.98]'
                         )}
                         aria-label={`Edit target ${goal.name}`}
                     >
                         <Card 
-                            className="border-none shadow-2xl rounded-[32px] overflow-hidden transition-all duration-500 relative"
+                            className="border-none shadow-2xl rounded-card-premium overflow-hidden transition-all duration-500 relative"
                             style={{ 
                                 background: dna.gradient,
                                 boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
@@ -73,13 +73,13 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                             <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10 blur-2xl"></div>
 
                             <CardHeader className="flex-row items-center gap-4 space-y-0 pb-2 p-7 relative z-10 text-white">
-                                <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-[20px] shadow-inner border border-white/10">
+                                <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-card-icon shadow-inner border border-white/10">
                                     <Icon className="h-6 w-6 text-white" strokeWidth={2.5} />
                                 </div>
                                 <div className='flex-1 min-w-0'>
                                     <CardTitle className="text-lg font-semibold tracking-tight truncate">{goal.name}</CardTitle>
                                     {timeLeftText && (
-                                        <div className={cn("flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-widest mt-1.5", isOverdue ? "text-rose-300" : "text-white/50")}>
+                                        <div className={cn("flex items-center gap-1.5 label-xs mt-1.5", isOverdue ? "text-rose-300" : "text-white/50")}>
                                             <CalendarClock className="h-3.5 w-3.5" />
                                             <span>{timeLeftText}</span>
                                         </div>
@@ -89,13 +89,13 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                             
                             <CardContent className="space-y-6 p-7 pt-2 relative z-10 text-white">
                                 <div className="space-y-5">
-                                    <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner flex justify-between items-end">
+                                    <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner flex justify-between items-end">
                                         <div className="flex flex-col">
-                                            <span className="text-[9px] font-semibold text-white/40 uppercase tracking-widest mb-1.5">Accumulated</span>
+                                            <span className="label-xs text-white/40 mb-1.5">Accumulated</span>
                                             <span className="text-2xl font-semibold tracking-tighter tabular-nums text-white">{formatCurrency(goal.currentAmount)}</span>
                                         </div>
                                         <div className="flex flex-col items-end">
-                                            <span className="text-[9px] font-semibold text-white/40 uppercase tracking-widest mb-1.5 text-right">Target Goal</span>
+                                            <span className="label-xs text-white/40 mb-1.5 text-right">Target Goal</span>
                                             <span className="text-sm font-semibold tracking-tight text-white/70">{formatCurrency(goal.targetAmount)}</span>
                                         </div>
                                     </div>
@@ -109,7 +109,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                                                 className="absolute inset-y-0 left-0 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]"
                                             />
                                         </div>
-                                        <p className="text-[9px] font-semibold text-white/40 text-right uppercase tracking-[0.3em]">{Math.round(progress)}% Completion</p>
+                                        <p className="label-xs text-white/40 text-right">{Math.round(progress)}% Completion</p>
                                     </div>
                                 </div>
                             </CardContent>

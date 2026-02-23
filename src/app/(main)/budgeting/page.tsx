@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { FAB } from '@/components/ui/fab';
 import { PlusCircle, HandCoins, Plus, Sparkles, TrendingUp, Target } from 'lucide-react';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { formatCurrency, triggerHaptic } from '@/lib/utils';
@@ -111,14 +112,14 @@ export default function BudgetingPage() {
                                     animate={{ opacity: 1, x: 0 }}
                                     className="col-span-12 lg:col-span-4"
                                 >
-                                    <Card className="border-none rounded-2xl bg-[#064e4b] text-white shadow-xl shadow-primary/10 overflow-hidden relative">
+                                    <Card className="border-none rounded-card-premium bg-[#064e4b] text-white shadow-xl shadow-primary/10 overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-6 opacity-[0.05] -rotate-12">
                                             <TrendingUp className="h-40 w-40" />
                                         </div>
 
                                         <CardContent className="p-8 space-y-8 relative z-10">
                                             <div className="space-y-1">
-                                                <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/60">Ringkasan Bulan Ini</h2>
+                                                <h2 className="label-xs text-white/60">Ringkasan Bulan Ini</h2>
                                                 <p className="text-2xl font-semibold tracking-tight">Kesehatan Anggaran</p>
                                             </div>
 
@@ -127,7 +128,7 @@ export default function BudgetingPage() {
                                                     <p className="text-5xl font-semibold tracking-tighter tabular-nums text-white">
                                                         {Math.round(overview.percentUsed)}%
                                                     </p>
-                                                    <p className="text-[9px] font-semibold text-white/40 uppercase tracking-widest mt-1">Total Terpakai</p>
+                                                    <p className="label-xs text-white/40 mt-1">Total Terpakai</p>
                                                 </div>
 
                                                 <ChartContainer config={{}} className="aspect-square h-full">
@@ -155,13 +156,13 @@ export default function BudgetingPage() {
                                             </div>
 
                                             <div className="space-y-5">
-                                                <div className="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex justify-between items-center">
+                                                <div className="p-4 rounded-card-glass bg-white/10 backdrop-blur-md border border-white/10 flex justify-between items-center">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="h-10 w-10 rounded-lg bg-white p-2 flex items-center justify-center shrink-0">
+                                                        <div className="h-10 w-10 rounded-card-icon bg-white p-2 flex items-center justify-center shrink-0">
                                                             <Sparkles className="h-5 w-5 text-[#064e4b]" />
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <p className="text-[10px] font-semibold text-white/60 uppercase tracking-widest mb-0.5">Sisa Dana Aman</p>
+                                                            <p className="label-xs text-white/60 mb-0.5">Sisa Dana Aman</p>
                                                             <p className="text-xl font-semibold text-white tabular-nums truncate">
                                                                 {formatCurrency(overview.totalRemaining)}
                                                             </p>
@@ -169,7 +170,7 @@ export default function BudgetingPage() {
                                                     </div>
                                                 </div>
 
-                                                <div className="px-1 text-[11px] font-medium leading-relaxed text-white/80">
+                                                <div className="px-1 text-xs font-medium leading-relaxed text-white/80">
                                                     Kamu masih punya <b>{Math.round(100 - overview.percentUsed)}%</b> budget untuk dialokasikan. Pertahankan disiplin belanjamu!
                                                 </div>
                                             </div>
@@ -190,7 +191,7 @@ export default function BudgetingPage() {
                                             onClick={() => { triggerHaptic('light'); setIsBudgetModalOpen(true); }}
                                             variant="ghost"
                                             size="sm"
-                                            className="rounded-lg h-9 text-[10px] font-medium uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+                                            className="rounded-lg h-9 text-label text-muted-foreground hover:text-primary transition-colors"
                                         >
                                             <Plus className="h-4 w-4 mr-2" />
                                             Tambah Baru
@@ -223,21 +224,11 @@ export default function BudgetingPage() {
             {/* Floating Action Button */}
             <AnimatePresence>
                 {budgets.length > 0 && (
-                    <motion.div
-                        initial={{ scale: 0, y: 20 }}
-                        animate={{ scale: 1, y: 0 }}
-                        exit={{ scale: 0, y: 20 }}
-                        className="fixed bottom-24 right-6 z-40 md:bottom-10 md:right-10"
-                    >
-                        <Button
-                            onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }}
-                            size="icon"
-                            className="h-16 w-16 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-all active:scale-95 bg-primary text-white"
-                            aria-label="Tambah anggaran"
-                        >
-                            <Plus className="h-8 w-8" strokeWidth={2.5} />
-                        </Button>
-                    </motion.div>
+                    <FAB
+                        onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }}
+                        label="Tambah anggaran"
+                        mobileOnly={false}
+                    />
                 )}
             </AnimatePresence>
         </div>

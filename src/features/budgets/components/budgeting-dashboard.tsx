@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { FAB } from '@/components/ui/fab';
 import { PlusCircle, HandCoins, Plus, LoaderCircle } from 'lucide-react';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { formatCurrency } from '@/lib/utils';
@@ -126,16 +127,7 @@ export const BudgetingDashboard = () => {
             </div>
 
             {/* Floating Action Button */}
-            <div className="fixed bottom-24 right-6 z-40 md:bottom-8 md:right-8 lg:hidden">
-                <Button
-                    onClick={() => setIsBudgetModalOpen(true)}
-                    size="icon"
-                    className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 bg-primary hover:bg-primary/90 hover:scale-110 transition-transform active:scale-95"
-                    aria-label="Tambah anggaran"
-                >
-                    <Plus className="h-7 w-7 text-primary-foreground" />
-                </Button>
-            </div>
+            <FAB onClick={() => setIsBudgetModalOpen(true)} label="Tambah anggaran" />
         </div>
     );
 };

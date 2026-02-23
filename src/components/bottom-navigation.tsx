@@ -69,7 +69,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-6 left-4 right-4 z-40 md:bottom-8"
                 >
                     <div
-                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-background backdrop-blur-3xl shadow-2xl border border-border/80 rounded-full h-16 px-1.5 py-1"
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-background backdrop-blur-xl shadow-2xl border border-border/80 rounded-full h-16 px-1.5 py-1"
                     >
                         {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
