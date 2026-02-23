@@ -1,10 +1,14 @@
+import type { Transaction } from '@/types/models';
+
 class DataRepairService {
-    constructor(transactions) {
+    private transactions: Transaction[];
+
+    constructor(transactions: Transaction[]) {
         this.transactions = transactions;
     }
 
-    identifyMissingSubCategories() {
-        const missingSubCategories = [];
+    identifyMissingSubCategories(): Transaction[] {
+        const missingSubCategories: Transaction[] = [];
         this.transactions.forEach(transaction => {
             if (!transaction.subCategory) {
                 missingSubCategories.push(transaction);
@@ -13,7 +17,7 @@ class DataRepairService {
         return missingSubCategories;
     }
 
-    repairTransactions() {
+    repairTransactions(): Transaction[] {
         const repairedTransactions = this.transactions.map(transaction => {
             if (!transaction.subCategory) {
                 transaction.subCategory = this.assignDefaultSubCategory(transaction);
@@ -23,8 +27,9 @@ class DataRepairService {
         return repairedTransactions;
     }
 
-    assignDefaultSubCategory(transaction) {
-        // Logic to assign a default sub-category
+    assignDefaultSubCategory(transaction: Transaction): string {
+        // TODO: use transaction.category to determine the appropriate default sub-category
+        void transaction;
         return 'Default Sub-Category';
     }
 }
