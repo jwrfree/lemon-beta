@@ -1,10 +1,17 @@
+interface Transaction {
+    subCategory?: string;
+    [key: string]: unknown;
+}
+
 class DataRepairService {
-    constructor(transactions) {
+    private transactions: Transaction[];
+
+    constructor(transactions: Transaction[]) {
         this.transactions = transactions;
     }
 
     identifyMissingSubCategories() {
-        const missingSubCategories = [];
+        const missingSubCategories: Transaction[] = [];
         this.transactions.forEach(transaction => {
             if (!transaction.subCategory) {
                 missingSubCategories.push(transaction);
@@ -23,7 +30,7 @@ class DataRepairService {
         return repairedTransactions;
     }
 
-    assignDefaultSubCategory(transaction) {
+    assignDefaultSubCategory(_transaction: Transaction) {
         // Logic to assign a default sub-category
         return 'Default Sub-Category';
     }
