@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { FAB } from '@/components/ui/fab';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
@@ -161,10 +162,10 @@ export default function DebtsPage() {
                     </Select>
                 }
             />
-            <main className="flex-1 overflow-y-auto pb-32">
+            <main className="flex-1 overflow-y-auto pb-24">
                 <div className="p-4 space-y-8">
                     {/* Summary Hero Card */}
-                    <Card className="border-none rounded-[32px] bg-teal-900 text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] overflow-hidden relative">
+                    <Card className="border-none rounded-card-premium bg-teal-900 text-white shadow-2xl overflow-hidden relative">
                         <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12">
                             <HandCoins className="h-40 w-40" />
                         </div>
@@ -172,24 +173,24 @@ export default function DebtsPage() {
 
                         <CardContent className="p-8 space-y-8 relative z-10">
                             <div>
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50 mb-2">Debt Overview</p>
+                                <p className="label-xs text-white/50 mb-2">Debt Overview</p>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-4xl font-semibold tracking-tighter text-white tabular-nums">
                                         {formatCurrency(Math.abs(totals.totalOwing - totals.totalOwed))}
                                     </span>
-                                    <span className="text-[10px] font-semibold text-white/40 uppercase tracking-widest">Net Liability</span>
+                                    <span className="label-xs text-white/40">Net Liability</span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner">
-                                    <p className="text-[9px] font-semibold text-rose-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner">
+                                    <p className="label-xs text-rose-300/60 mb-1.5 flex items-center gap-1.5">
                                         <ArrowUpRight className="h-3 w-3" /> Owed
                                     </p>
                                     <p className="text-lg font-semibold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwed)}</p>
                                 </div>
-                                <div className="bg-white/5 backdrop-blur-md rounded-[24px] p-4 border border-white/10 shadow-inner">
-                                    <p className="text-[9px] font-semibold text-emerald-300/60 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
+                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner">
+                                    <p className="label-xs text-emerald-300/60 mb-1.5 flex items-center gap-1.5">
                                         <ArrowDownRight className="h-3 w-3" /> Owing
                                     </p>
                                     <p className="text-lg font-semibold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwing)}</p>
@@ -222,7 +223,7 @@ export default function DebtsPage() {
                                 return (
                                     <Card
                                         key={debt.id}
-                                        className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-2xl rounded-[32px] relative"
+                                        className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-2xl rounded-card-premium relative"
                                         style={{ 
                                             background: dna.gradient,
                                             boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
@@ -235,11 +236,11 @@ export default function DebtsPage() {
                                             <div className="flex items-start justify-between gap-4 mb-8">
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className="font-semibold text-lg tracking-tight truncate">{debt.title}</h3>
-                                                    <p className="text-[10px] font-semibold text-white/50 uppercase tracking-widest mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
+                                                    <p className="label-xs text-white/50 mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
                                                     <div className="mt-2">{getDebtDueStatus(debt)}</div>
                                                 </div>
                                                 <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/10 shadow-sm">
-                                                    <span className="text-[9px] font-semibold uppercase tracking-widest text-white">
+                                                    <span className="label-xs text-white">
                                                         {debt.status === 'settled' ? 'Settled' : 'Active'}
                                                     </span>
                                                 </div>
@@ -247,17 +248,17 @@ export default function DebtsPage() {
 
                                             <div className="flex items-end justify-between gap-6">
                                                 <div className="space-y-2 flex-1">
-                                                    <p className="text-[9px] font-semibold text-white/40 uppercase tracking-[0.2em]">
+                                                    <p className="label-xs text-white/40">
                                                         {isOwed ? 'Principal Owed' : 'Receivable'}
                                                     </p>
-                                                    <div className="bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-2xl border border-white/5 w-fit">
+                                                    <div className="bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-card-glass border border-white/5 w-fit">
                                                         <p className="text-2xl font-semibold tracking-tighter tabular-nums text-white">
                                                             {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right space-y-2 min-w-[80px]">
-                                                    <p className="text-[9px] font-semibold text-white/40 uppercase tracking-[0.2em]">Recovery</p>
+                                                    <p className="label-xs text-white/40">Recovery</p>
                                                     <div className="flex items-center gap-3 justify-end">
                                                         <div className="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
                                                             <motion.div 
@@ -266,7 +267,7 @@ export default function DebtsPage() {
                                                                 className="h-full rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.4)]"
                                                             />
                                                         </div>
-                                                        <span className="text-[10px] font-semibold tabular-nums text-white">{Math.round(progress)}%</span>
+                                                        <span className="text-xs font-semibold tabular-nums text-white">{Math.round(progress)}%</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -280,28 +281,14 @@ export default function DebtsPage() {
             </main>
 
             {/* Floating Action Button */}
-            <div className="fixed bottom-20 right-6 z-40 md:bottom-8 md:right-8">
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button 
-                                onClick={() => {
-                                    setDebtToEdit(null);
-                                    setIsDebtModalOpen(true);
-                                }}
-                                size="icon"
-                                className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40 hover:scale-110 transition-transform active:scale-95"
-                                aria-label="Tambah catatan"
-                            >
-                                <Plus className="h-7 w-7" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="left">
-                            <p>Tambah catatan hutang</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
+            <FAB
+                onClick={() => {
+                    setDebtToEdit(null);
+                    setIsDebtModalOpen(true);
+                }}
+                label="Tambah catatan hutang"
+                mobileOnly={false}
+            />
         </div>
     );
 }

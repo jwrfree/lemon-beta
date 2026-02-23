@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { FAB } from '@/components/ui/fab';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
@@ -309,19 +310,13 @@ export const RemindersDashboard = () => {
             </div>
 
             {/* Contextual FAB */}
-            <div className="fixed bottom-24 right-6 z-40 md:bottom-8 md:right-8 lg:hidden">
-                <Button
-                    onClick={() => {
-                        setReminderToEdit(null);
-                        setIsReminderModalOpen(true);
-                    }}
-                    size="icon"
-                    className="h-14 w-14 rounded-full shadow-lg shadow-blue-500/20 bg-blue-600 hover:bg-blue-700 hover:scale-110 transition-transform active:scale-95"
-                    aria-label="Tambah pengingat"
-                >
-                    <Plus className="h-7 w-7" />
-                </Button>
-            </div>
+            <FAB
+                onClick={() => {
+                    setReminderToEdit(null);
+                    setIsReminderModalOpen(true);
+                }}
+                label="Tambah pengingat"
+            />
         </div>
     );
 };

@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { FAB } from '@/components/ui/fab';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
@@ -238,19 +239,13 @@ export const DebtsDashboard = () => {
             </div>
 
             {/* Contextual FAB handled by this component for consistency */}
-            <div className="fixed bottom-24 right-6 z-40 md:bottom-8 md:right-8 lg:hidden">
-                <Button
-                    onClick={() => {
-                        setDebtToEdit(null);
-                        setIsDebtModalOpen(true);
-                    }}
-                    size="icon"
-                    className="h-14 w-14 rounded-full shadow-lg shadow-destructive/20 bg-destructive hover:bg-destructive/90 hover:scale-110 transition-transform active:scale-95"
-                    aria-label="Tambah catatan"
-                >
-                    <Plus className="h-7 w-7" />
-                </Button>
-            </div>
+            <FAB
+                onClick={() => {
+                    setDebtToEdit(null);
+                    setIsDebtModalOpen(true);
+                }}
+                label="Tambah catatan"
+            />
         </div>
     );
 };
