@@ -2,6 +2,16 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.5.4] - 23 February 2026
+
+### 🎨 UI — Font Weight Reduction
+
+- **Reduced text weight across the entire app**:
+  - All `font-black` (900) instances downgraded to `font-bold` (700).
+  - All `font-bold` (700) instances downgraded to `font-semibold` (600).
+  - Affects 44 files across `src/components/`, `src/app/`, and `src/features/`, covering page headers, sidebar labels, transaction cards, budget modals, wallet views, debt panels, and more.
+  - Result: a lighter, more readable visual hierarchy throughout the UI.
+
 ## [Version 2.5.3] - 22 February 2026
 
 ### 🐛 Bug Fixes — Smart Add Flow
