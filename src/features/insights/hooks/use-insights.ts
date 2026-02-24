@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
+import { useUI } from '@/components/ui-provider';
 import { insightService } from '@/lib/services/insight-service';
 import type { SpendingRisk, MonthlySummary } from '@/types/models';
 
 export const useInsights = () => {
     const { user } = useAuth();
+    const { showToast } = useUI();
     const [risk, setRisk] = useState<SpendingRisk | null>(null);
     const [summaries, setSummaries] = useState<MonthlySummary[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +23,7 @@ export const useInsights = () => {
             setSummaries(summariesData);
         } catch (error) {
             console.error('[useInsights] Hook Error:', error);
+            showToast('Gagal memuat insight keuangan. Coba lagi.', 'error');
         } finally {
             setIsLoading(false);
         }

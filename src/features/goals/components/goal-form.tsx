@@ -77,6 +77,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
             onClose();
         } catch (error) {
             console.error(error);
+            showToast(isEditMode ? 'Gagal memperbarui tujuan. Coba lagi.' : 'Gagal menambahkan tujuan. Coba lagi.', 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -90,6 +91,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
             onClose();
         } catch (error) {
             console.error(error);
+            showToast('Gagal menghapus tujuan. Coba lagi.', 'error');
         } finally {
             setIsDeleting(false);
         }
