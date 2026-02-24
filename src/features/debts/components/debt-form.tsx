@@ -60,6 +60,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
     const { showToast } = useUI();
     const isEditMode = !!initialData;
     const [isDeleting, setIsDeleting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     const form = useForm<DebtFormValues>({
         resolver: zodResolver(debtSchema),
@@ -84,6 +85,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
     const paymentFrequency = watch('paymentFrequency');
 
     const onSubmit = async (values: DebtFormValues) => {
+        setSubmitError(null);
         const principalValue = parseInt(values.principal.replace(/[^0-9]/g, '')) || 0;
         const outstandingValue = values.outstandingBalance 
             ? parseInt(values.outstandingBalance.replace(/[^0-9]/g, '')) || principalValue
@@ -116,7 +118,8 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
             onClose();
         } catch (error) {
             console.error(error);
-            showToast('Gagal menyimpan catatan hutang/piutang.', 'error');
+            const message = error instanceof Error ? error.message : 'Terjadi kesalahan tidak diketahui.';
+            setSubmitError(message);
         }
     };
 
@@ -428,6 +431,11 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                     </div>
                 </form>
                 <div className="p-4 border-t sticky bottom-0 bg-background flex flex-col gap-2">
+                    {submitError && (
+                        <p className="text-xs text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                            {submitError}
+                        </p>
+                    )}
                     <Button type="submit" onClick={handleSubmit(onSubmit)} className="w-full" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>

@@ -2,7 +2,63 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Version 2.5.7] - 23 February 2026
+## [Version 2.5.8] - 24 February 2026
+
+### 🐛 Bug Fix — Hutang Baru Tidak Bisa Dicatat (Debt Recording Fix)
+
+#### Root Cause
+
+Pengguna tidak bisa mencatat hutang baru karena tiga masalah utama yang ditemukan setelah audit penuh seluruh kolom database dan frontend:
+
+1. **Kolom database hilang**: Tabel `debts` dibuat melalui Supabase Dashboard tanpa migrasi `CREATE TABLE` dalam repo, sehingga kolom-kolom penting (`direction`, `category`, `payment_frequency`, `interest_rate`, `custom_interval`, `start_date`, `next_payment_date`) mungkin tidak ada di environment produksi. Saat service mencoba INSERT dengan kolom-kolom tersebut, query gagal dengan error database.
+
+2. **Direction logic terbalik di `use-debts.ts`**: Fungsi `logDebtPayment` memiliki logika tipe transaksi yang salah:
+   - **Sebelum (salah)**: `direction === 'owing' ? 'expense' : 'income'`
+   - **Sesudah (benar)**: `direction === 'owed' ? 'expense' : 'income'`
+   
+   Nilai `'owed'` = "Saya Berhutang" → pembayaran keluar → `expense`. Nilai `'owing'` = "Orang Lain Berhutang" → penerimaan → `income`. Logika SQL di `pay_debt_v1` sudah benar; hanya optimistic UI update di frontend yang salah.
+
+3. **Error handling tidak memadai**: Fungsi `addDebt` dan `updateDebt` dalam `use-debts.ts` menangkap error secara internal tetapi tidak melempar ulang (`re-throw`), sehingga form tidak pernah menerima notifikasi kegagalan, dan pengguna hanya melihat data yang muncul lalu hilang tanpa pesan error yang jelas.
+
+#### Perubahan
+
+**Database Migration** (`supabase/migrations/20260224000000_ensure_debts_schema.sql`):
+- Menambahkan `CREATE TABLE IF NOT EXISTS public.debts` dengan semua kolom yang diperlukan
+- Menambahkan `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` untuk setiap kolom yang mungkin hilang: `direction`, `category`, `interest_rate`, `payment_frequency`, `custom_interval`, `start_date`, `next_payment_date`, `counterparty`, `notes`, `updated_at`
+- Menambahkan CHECK constraint untuk `direction`, `status`, dan `payment_frequency`
+- Menambahkan indeks untuk performa: `idx_debts_user_id`, `idx_debts_status`, `idx_debts_direction`
+- Menambahkan trigger `updated_at` otomatis
+
+**`src/features/debts/hooks/use-debts.ts`**:
+- ✅ Perbaiki logika `txType` di `logDebtPayment`: `'owed'` = expense, `'owing'` = income (konsisten dengan SQL)
+- ✅ `addDebt`: Setelah error, re-open modal agar pengguna bisa mencoba lagi; tampilkan pesan error spesifik; re-throw error ke form
+- ✅ `updateDebt`: Idem — re-open modal, pesan error spesifik, re-throw
+
+**`src/features/debts/schemas/debt-schema.ts`**:
+- ✅ Tambahkan `.default('owed')` pada field `direction` agar tidak pernah `undefined` saat validasi
+
+**`src/features/debts/components/debt-form.tsx`**:
+- ✅ Tambahkan state `submitError` untuk menampilkan pesan error inline di bawah tombol simpan
+- ✅ Reset `submitError` saat submit dimulai ulang
+
+#### Tests (`26 test baru`)
+
+- `src/features/debts/schemas/debt-schema.test.ts` (17 tests):
+  - Validasi input valid minimal, default direction, default category, default paymentFrequency
+  - Validasi semua nilai `direction` dan `paymentFrequency`
+  - Validasi penolakan field kosong (title, counterparty, principal) dengan pesan error yang benar
+  - Validasi penolakan nilai enum yang tidak valid
+
+- `src/lib/services/debt-service.test.ts` (9 tests):
+  - `mapDebtPaymentFromDb`: mapping semua field dari DB row
+  - `mapDebtFromDb`: mapping semua field termasuk `outstanding_balance` → `outstandingBalance`, `payment_frequency` → `paymentFrequency`
+  - Handling `direction` 'owed' dan 'owing'
+  - Handling field null (due_date, start_date, interest_rate, dll.)
+  - Handling payments array kosong dan terisi
+
+---
+
+
 
 ### ♻️ Refactor — Full Design System Enforcement (Phase 2–5 Complete)
 

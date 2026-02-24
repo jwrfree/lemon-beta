@@ -80,7 +80,10 @@ export const useDebts = () => {
             // fetchDebts handled by subscription
         } catch (err) {
             setDebts(prev => prev.filter(d => d.id !== tempId)); // Revert
-            showToast("Gagal membuat catatan hutang/piutang.", 'error');
+            setIsDebtModalOpen(true); // Re-open modal so user can retry
+            const message = err instanceof Error ? err.message : 'Terjadi kesalahan tidak diketahui.';
+            showToast(`Gagal membuat catatan: ${message}`, 'error');
+            throw err; // Re-throw so the form can react
         }
     }, [user, showToast, setIsDebtModalOpen, setDebtToEdit]);
 
@@ -99,7 +102,10 @@ export const useDebts = () => {
             // fetchDebts handled by subscription
         } catch (err) {
             setDebts(previousDebts); // Revert
-            showToast("Gagal memperbarui catatan.", 'error');
+            setIsDebtModalOpen(true); // Re-open modal so user can retry
+            const message = err instanceof Error ? err.message : 'Terjadi kesalahan tidak diketahui.';
+            showToast(`Gagal memperbarui catatan: ${message}`, 'error');
+            throw err; // Re-throw so the form can react
         }
     }, [user, debts, showToast, setIsDebtModalOpen, setDebtToEdit]);
 
@@ -170,20 +176,14 @@ export const useDebts = () => {
             // 2. Emit Transaction Event (because payDebt creates a transaction!)
             // We construct a fake transaction to update the UI immediately
             if (paymentData.walletId) {
-                const isOwed = targetDebt.direction === 'owed';
-                const type = isOwed ? 'income' : 'expense'; // Paying debt = expense, Receiving owed = income? Wait.
-                // Paying 'owing' (Hutang) -> Expense.
-                // Receiving 'owed' (Piutang) -> Income.
-                // Logic check:
-                // direction 'owing' (Me owe someone) -> I pay -> Expense. Correct.
-                // direction 'owed' (Someone owes me) -> They pay -> I receive -> Income. Correct.
-                
-                const txType = targetDebt.direction === 'owing' ? 'expense' : 'income';
+                // direction 'owed'  (Saya Berhutang  = I owe someone) -> I pay  -> Expense
+                // direction 'owing' (Orang Lain Berhutang = Someone owes me) -> I receive -> Income
+                const txType = targetDebt.direction === 'owed' ? 'expense' : 'income';
                 
                 const optimisticTx: Transaction = {
                     id: `temp-pay-${Date.now()}`,
                     amount: paymentAmount,
-                    category: targetDebt.direction === 'owing' ? 'Bayar Hutang' : 'Terima Piutang',
+                    category: targetDebt.direction === 'owed' ? 'Bayar Hutang' : 'Terima Piutang',
                     date: paymentData.paymentDate ? new Date(paymentData.paymentDate).toISOString() : new Date().toISOString(),
                     description: `Pembayaran ${targetDebt.title}`,
                     type: txType,

@@ -3,7 +3,7 @@ import { PaymentFrequency, DebtStatus, DebtDirection } from '@/types/models';
 
 export const debtSchema = z.object({
   title: z.string().min(1, 'Nama hutang/piutang wajib diisi'),
-  direction: z.enum(['owed', 'owing'] as const),
+  direction: z.enum(['owed', 'owing'] as const).default('owed'),
   counterparty: z.string().min(1, 'Pihak terkait wajib diisi'),
   category: z.string().optional().default('personal'),
   principal: z.string().min(1, 'Nominal utama wajib diisi'),
