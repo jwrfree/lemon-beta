@@ -566,3 +566,181 @@ jobs:
 | Per sprint | One Phase from the Refactor Roadmap completed |
 | On new component | Author verifies component against §4 component standards |
 | On new colour need | First ask: does a semantic token exist? If not, propose token before using raw value |
+
+---
+
+## 10. Error State Guidelines
+
+### 10.1 Error Design Tokens
+
+The following semantic tokens are defined in `globals.css` and registered in `tailwind.config.ts`:
+
+| Token | Tailwind class | Use |
+|---|---|---|
+| `--error` | `text-error` / `bg-error` | Error foreground text and solid backgrounds |
+| `--error-foreground` | `text-error-foreground` | Text on a solid error background |
+| `--error-surface` | `bg-error-surface` | Subtle error card/panel background |
+| `--error-muted` | `bg-error-muted` | Hover background on error ghost buttons |
+| `--error-border` | `border-error-border` | Error card/input border |
+
+`--error` resolves to the same rose-600 value as `--destructive`. Use `error-*` tokens for UX error states; use `destructive` for irreversible/danger actions (delete, remove).
+
+### 10.2 Error Tone Categories
+
+Four tone categories define how error messages are written:
+
+| Category | Trigger | Tone | Example |
+|---|---|---|---|
+| **Validation** | User input issue | Calm, specific, actionable | "Nama dompet wajib diisi." |
+| **Network** | Connection / timeout | Reassuring, actionable | "Koneksi bermasalah. Periksa jaringan kamu, lalu coba lagi." |
+| **Server/System** | Unexpected server error | Apologetic, not technical | "Terjadi kesalahan pada sistem. Kami sedang memperbaikinya." |
+| **Empty/Fallback** | Data unavailable | Neutral, not alarming | "Data belum tersedia. Coba refresh halaman." |
+
+#### Wording Rules
+
+- ✅ Calm, not blaming: "Nama tidak boleh kosong" (not "Invalid input")
+- ✅ Actionable: tell the user what to do next
+- ✅ Human: avoid HTTP codes, stack traces, or technical identifiers
+- ❌ No raw technical messages: "500 Internal Server Error", "undefined", "null"
+- ❌ No passive vague messages as a first choice: "Something went wrong" is only acceptable as a last-resort fallback
+- ❌ No exclamation marks in error messages
+
+### 10.3 Error Components
+
+#### `ErrorMessage` — inline field-level validation
+
+**File:** `src/components/ui/error-message.tsx`
+
+```tsx
+import { ErrorMessage } from '@/components/ui/error-message';
+
+{errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+```
+
+Renders with `role="alert"` and `aria-live="polite"`. Returns `null` when no children are provided.
+
+#### `ErrorAlert` — block-level inline error notification
+
+**File:** `src/components/ui/error-alert.tsx`
+
+```tsx
+import { ErrorAlert } from '@/components/ui/error-alert';
+
+// Network failure
+<ErrorAlert
+  variant="network"
+  message="Gagal memuat data."
+  description="Periksa koneksi internet kamu."
+  onRetry={handleRetry}
+/>
+
+// Server error
+<ErrorAlert
+  variant="server"
+  message="Terjadi kesalahan pada sistem."
+/>
+
+// Validation summary
+<ErrorAlert
+  variant="validation"
+  message="Periksa kembali isian kamu."
+  description="Ada 2 field yang belum diisi dengan benar."
+/>
+```
+
+Renders with `role="alert"` and `aria-live="assertive"`. `onRetry` is optional — omit to hide the retry button.
+
+#### `Alert` variant `"error"` — rich inline alert block
+
+```tsx
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+
+<Alert variant="error">
+  <AlertCircle className="h-4 w-4" />
+  <AlertTitle>Saldo tidak cukup</AlertTitle>
+  <AlertDescription>
+    Kamu perlu menambah dana sebelum melanjutkan.
+  </AlertDescription>
+</Alert>
+```
+
+#### `ErrorBoundary` — React error boundary for widget isolation
+
+**File:** `src/components/error-boundary.tsx`
+
+Wrap any widget that fetches or processes data independently. Provides automatic retry.
+
+```tsx
+<ErrorBoundary>
+  <MyDashboardWidget />
+</ErrorBoundary>
+```
+
+#### `CustomToast` — transient error feedback
+
+Use `showToast(message, 'error')` from `useUI()` for non-blocking, transient errors. Error toasts render with a `bg-destructive` background to distinguish them from info/success toasts.
+
+```tsx
+const { showToast } = useUI();
+showToast('Gagal menyimpan perubahan.', 'error');
+```
+
+### 10.4 Visual Hierarchy
+
+```
+Page-level critical error     → ErrorAlert variant="server" (top of page, full-width)
+Section / async load failure  → ErrorAlert variant="network" + onRetry
+Form field validation error   → ErrorMessage (below the field)
+Form summary validation       → ErrorAlert variant="validation" (above submit button)
+Widget crash / render error   → ErrorBoundary fallback
+Transient feedback (1 action) → showToast(..., 'error')
+```
+
+### 10.5 Do and Don't
+
+#### ✅ Do
+
+```tsx
+// Do: use ErrorMessage for field errors
+{errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+
+// Do: use ErrorAlert for failed fetches
+{fetchError && (
+  <ErrorAlert variant="network" message="Gagal memuat data." onRetry={refetch} />
+)}
+
+// Do: use semantic tokens
+<div className="bg-error-surface border border-error-border rounded-card p-4">
+
+// Do: add aria-live to dynamically injected error regions
+<div aria-live="polite">{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}</div>
+```
+
+#### ❌ Don't
+
+```tsx
+// Don't: raw red palette on UI state
+<p className="text-red-500">Error!</p>                  // → text-error
+
+// Don't: silent catch without UI feedback
+try { await save(); } catch (e) { console.error(e); }   // → showToast + console.error
+
+// Don't: technical messages to users
+showToast('PostgrestError: duplicate key', 'error');    // → human message
+
+// Don't: alert() for error feedback
+alert('Gagal!');                                        // → showToast or ErrorAlert
+
+// Don't: loading state left without error fallback
+{isLoading && <Skeleton />}                             // → also handle error state
+```
+
+### 10.6 Accessibility Requirements
+
+- All error messages **must** have either `role="alert"` or be in an `aria-live` region.
+- `aria-live="polite"` — for non-urgent errors (field validation, empty state).
+- `aria-live="assertive"` — for urgent errors (network failure, data loss risk).
+- Color alone must **not** convey an error — always pair with an icon or text.
+- Error icon contrast must meet **WCAG AA** (4.5:1 for text-size icons, 3:1 for large icons).
+- `ErrorMessage` and `ErrorAlert` satisfy these requirements out of the box.

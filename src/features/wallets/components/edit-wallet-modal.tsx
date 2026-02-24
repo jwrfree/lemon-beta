@@ -57,6 +57,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
       await reconcileWallet(wallet.id, wallet.balance, targetBalance);
       onClose();
     } catch (error) {
+      showToast('Gagal mengoreksi saldo. Coba lagi.', 'error');
       console.error(error);
     }
   };

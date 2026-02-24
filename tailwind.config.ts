@@ -56,6 +56,13 @@ export default {
           DEFAULT: 'var(--destructive)',
           foreground: 'var(--destructive-foreground)',
         },
+        error: {
+          DEFAULT: 'var(--error)',
+          foreground: 'var(--error-foreground)',
+          surface: 'var(--error-surface)',
+          muted: 'var(--error-muted)',
+          border: 'var(--error-border)',
+        },
         success: {
           DEFAULT: 'var(--success)',
           foreground: 'var(--success-foreground)',

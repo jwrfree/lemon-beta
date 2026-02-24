@@ -2,6 +2,26 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Unreleased]
+
+### Added
+- **Centralized Error System** (`feat(ui): introduce centralized error system and tone standardization`)
+  - Error design tokens: `--error`, `--error-foreground`, `--error-surface`, `--error-muted`, `--error-border` added to `globals.css` (light + dark modes) and registered in `tailwind.config.ts` as `bg-error-*`, `text-error`, `border-error-border`
+  - `src/components/ui/error-message.tsx` — `ErrorMessage` component for inline field-level validation errors with `role="alert"` and `aria-live="polite"`
+  - `src/components/ui/error-alert.tsx` — `ErrorAlert` component for block-level inline errors (network / server / validation / empty) with `role="alert"` and `aria-live="assertive"`, optional retry button
+  - `Alert` component extended with `error` variant (`border-error-border bg-error-surface text-error`)
+  - `DESIGN_SYSTEM.md §10 Error State Guidelines` — tone categories, component reference, visual hierarchy, accessibility requirements, Do/Don't examples
+
+### Changed
+- **Standardized error messaging tone** across `showToast` call sites — messages are human, actionable, and in Bahasa Indonesia
+- `CustomToast` — error toasts now render with `bg-destructive` background, visually distinct from info/success toasts; added `role="status"` and `aria-live="polite"` to the container
+
+### Fixed
+- **Silent error swallowing in `WalletProvider`** — network failure during wallet fetch now surfaces a toast (`'Gagal memuat dompet. Periksa koneksi kamu.'`) instead of being console-only
+- **Missing UI feedback in `EditWalletModal` reconcile** — balance correction failure now shows a toast (`'Gagal mengoreksi saldo. Coba lagi.'`) instead of being console-only
+
+---
+
 ## [Version 2.5.8] - 24 February 2026
 
 ### 🐛 Bug Fix — Hutang Baru Tidak Bisa Dicatat (Debt Recording Fix)
