@@ -15,7 +15,7 @@ const toastIcons: { [key: string]: LucideIcon } = {
 
 const toastColors: { [key: string]: string } = {
   success: 'bg-gray-800',
-  error: 'bg-gray-800',
+  error: 'bg-destructive',
   info: 'bg-gray-800',
 };
 
@@ -37,7 +37,7 @@ export const CustomToast = () => {
   return (
     <AnimatePresence>
       {show && (
-        <div className="fixed top-4 inset-x-0 z-50 flex justify-center">
+        <div className="fixed top-4 inset-x-0 z-50 flex justify-center" role="status" aria-live="polite">
             <motion.div
               layout
               initial={{ y: -100, scaleX: 0.3, opacity: 0 }}

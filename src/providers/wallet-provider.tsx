@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
+import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import { transactionEvents } from '@/lib/transaction-events';
 import type { Transaction, Wallet } from '@/types/models';
@@ -24,6 +25,7 @@ export const useWalletData = () => {
 
 export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
     const { user, isLoading: authLoading } = useAuth();
+    const { showToast } = useUI();
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
@@ -35,10 +37,11 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
             setWallets(data);
         } catch (err) {
             console.error("[WalletProvider] Fetch Error:", err);
+            showToast('Gagal memuat dompet. Periksa koneksi kamu.', 'error');
         } finally {
             setIsLoading(false);
         }
-    }, [user]);
+    }, [user, showToast]);
 
     // Optimistic Update Function
     const updateWalletOptimistically = useCallback((walletId: string, amount: number, type: 'income' | 'expense') => {
