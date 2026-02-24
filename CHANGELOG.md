@@ -7,8 +7,9 @@ All updates and improvements to the Lemon app will be documented here.
 ### Added
 - **Centralized Error System** (`feat(ui): introduce centralized error system and tone standardization`)
   - Error design tokens: `--error`, `--error-foreground`, `--error-surface`, `--error-muted`, `--error-border` added to `globals.css` (light + dark modes) and registered in `tailwind.config.ts` as `bg-error-*`, `text-error`, `border-error-border`
-  - `src/components/ui/error-message.tsx` — `ErrorMessage` component for inline field-level validation errors with `role="alert"` and `aria-live="polite"`
-  - `src/components/ui/error-alert.tsx` — `ErrorAlert` component for block-level inline errors (network / server / validation / empty) with `role="alert"` and `aria-live="assertive"`, optional retry button
+  - `src/components/ui/error-message.tsx` — `ErrorMessage` / `InlineError` component for inline field-level validation errors with `role="alert"` and `aria-live="polite"`
+  - `src/components/ui/error-alert.tsx` — `ErrorAlert` / `ErrorBanner` component for block-level inline errors (network / server / validation / empty) with `role="alert"` and `aria-live="assertive"`, optional retry button
+  - `src/components/ui/retry-section.tsx` — `RetrySection` component for self-contained retry prompts with `role="status"` and `aria-live="polite"`
   - `Alert` component extended with `error` variant (`border-error-border bg-error-surface text-error`)
   - `DESIGN_SYSTEM.md §10 Error State Guidelines` — tone categories, component reference, visual hierarchy, accessibility requirements, Do/Don't examples
 

@@ -115,4 +115,4 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
 );
 ErrorAlert.displayName = 'ErrorAlert';
 
-export { ErrorAlert, type ErrorAlertVariant };
+export { ErrorAlert, ErrorAlert as ErrorBanner, type ErrorAlertVariant };

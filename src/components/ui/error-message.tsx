@@ -33,4 +33,4 @@ const ErrorMessage = React.forwardRef<HTMLParagraphElement, ErrorMessageProps>(
 );
 ErrorMessage.displayName = 'ErrorMessage';
 
-export { ErrorMessage };
+export { ErrorMessage, ErrorMessage as InlineError };
