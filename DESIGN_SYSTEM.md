@@ -607,24 +607,28 @@ Four tone categories define how error messages are written:
 
 ### 10.3 Error Components
 
-#### `ErrorMessage` — inline field-level validation
+#### `ErrorMessage` / `InlineError` — inline field-level validation
 
 **File:** `src/components/ui/error-message.tsx`
 
 ```tsx
 import { ErrorMessage } from '@/components/ui/error-message';
+// Alias: InlineError
+import { InlineError } from '@/components/ui/error-message';
 
 {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
 ```
 
 Renders with `role="alert"` and `aria-live="polite"`. Returns `null` when no children are provided.
 
-#### `ErrorAlert` — block-level inline error notification
+#### `ErrorAlert` / `ErrorBanner` — block-level inline error notification
 
 **File:** `src/components/ui/error-alert.tsx`
 
 ```tsx
 import { ErrorAlert } from '@/components/ui/error-alert';
+// Alias: ErrorBanner
+import { ErrorBanner } from '@/components/ui/error-alert';
 
 // Network failure
 <ErrorAlert
@@ -649,6 +653,24 @@ import { ErrorAlert } from '@/components/ui/error-alert';
 ```
 
 Renders with `role="alert"` and `aria-live="assertive"`. `onRetry` is optional — omit to hide the retry button.
+
+#### `RetrySection` — self-contained retry prompt
+
+**File:** `src/components/ui/retry-section.tsx`
+
+Use when a section of the page failed to load and the user can trigger a refetch without navigating away.
+
+```tsx
+import { RetrySection } from '@/components/ui/retry-section';
+
+<RetrySection
+  message="Gagal memuat daftar transaksi."
+  onRetry={refetch}
+  isRetrying={isFetching}
+/>
+```
+
+Renders with `role="status"` and `aria-live="polite"`. The retry button shows a spinner while `isRetrying` is `true`.
 
 #### `Alert` variant `"error"` — rich inline alert block
 
@@ -689,9 +711,9 @@ showToast('Gagal menyimpan perubahan.', 'error');
 ### 10.4 Visual Hierarchy
 
 ```
-Page-level critical error     → ErrorAlert variant="server" (top of page, full-width)
-Section / async load failure  → ErrorAlert variant="network" + onRetry
-Form field validation error   → ErrorMessage (below the field)
+Page-level critical error     → ErrorAlert / ErrorBanner variant="server" (top of page, full-width)
+Section / async load failure  → ErrorAlert variant="network" + onRetry  OR  RetrySection
+Form field validation error   → ErrorMessage / InlineError (below the field)
 Form summary validation       → ErrorAlert variant="validation" (above submit button)
 Widget crash / render error   → ErrorBoundary fallback
 Transient feedback (1 action) → showToast(..., 'error')

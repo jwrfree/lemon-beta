@@ -53,7 +53,7 @@ export const DeepSeekUsageCard = () => {
     const estimatedTokens = Math.floor(totalBalance / 0.0000002);
 
     const getStatusColor = (amount: number) => {
-        if (amount <= 0.5) return 'text-red-500';
+        if (amount <= 0.5) return 'text-error';
         if (amount <= 2.0) return 'text-amber-500';
         return 'text-emerald-500';
     };
@@ -79,9 +79,9 @@ export const DeepSeekUsageCard = () => {
             </CardHeader>
             <CardContent className="relative z-10">
                 {error ? (
-                    <div className="text-red-400 text-xs text-center py-4 bg-red-900/20 rounded-lg">
+                    <div className="text-error text-xs text-center py-4 bg-error-surface rounded-lg">
                         {error}
-                        <Button variant="link" size="sm" onClick={fetchBalance} className="text-red-300 text-xs h-auto p-0 ml-1">Coba Lagi</Button>
+                        <Button variant="link" size="sm" onClick={fetchBalance} className="text-error text-xs h-auto p-0 ml-1">Coba Lagi</Button>
                     </div>
                 ) : (
                     <div className="space-y-4">

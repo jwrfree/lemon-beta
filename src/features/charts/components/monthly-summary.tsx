@@ -12,6 +12,7 @@ import { PlaceholderContent } from './placeholder-content';
 import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useUI } from '@/components/ui-provider';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,7 @@ type TabValue = 'expense' | 'income' | 'net';
 export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabValue, transactions: Transaction[], isLoading?: boolean }) => {
     const router = useRouter();
     const { wallets } = useWallets();
+    const { showToast } = useUI();
     const isMobile = useIsMobile();
     const [aiInsight, setAiInsight] = useState<string | null>(null);
     const [isAiLoading, setIsAiLoading] = useState(false);
@@ -87,6 +89,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             setAiInsight(result);
         } catch (error) {
             console.error("Failed to generate insight:", error);
+            showToast('Gagal membuat insight. Coba lagi.', 'error');
         } finally {
             setIsAiLoading(false);
         }

@@ -84,6 +84,7 @@ export const AssetProvider = ({ children }: { children: React.ReactNode }) => {
             }
         } catch (err) {
             console.error("[AssetProvider] Fetch Error:", err);
+            showToast('Gagal memuat aset dan liabilitas. Periksa koneksi kamu.', 'error');
         } finally {
             setIsLoading(false);
         }
