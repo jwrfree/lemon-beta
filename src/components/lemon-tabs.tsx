@@ -35,7 +35,7 @@ export const LemonTabs = ({
                         <TabsTrigger
                             key={tab.value}
                             value={tab.value}
-                            className="h-full rounded-lg font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm flex items-center gap-2"
+                            className="h-full rounded-lg font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground flex items-center gap-2"
                         >
                             {tab.icon && <span className="shrink-0">{tab.icon}</span>}
                             {tab.label}

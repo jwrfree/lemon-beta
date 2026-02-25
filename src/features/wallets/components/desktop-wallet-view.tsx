@@ -181,7 +181,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <div className="flex flex-col">
                                     <p className="text-xs font-medium text-white/20 uppercase tracking-widest">Status</p>
                                     <div className="flex items-center gap-2">
-                                        <div className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_8px_rgba(var(--success),0.4)]" />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-success" />
                                         <p className="text-lg font-medium text-white tracking-tight">Prime</p>
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     </Card>
                 </div>
 
-                <div className="lg:col-span-3 bg-secondary rounded-lg p-5 flex items-center gap-4 shadow-sm border-none">
+                <div className="lg:col-span-3 bg-secondary rounded-lg p-5 flex items-center gap-4 border-none">
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0 opacity-80">
                         <Target className="h-6 w-6" />
                     </div>
@@ -226,7 +226,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                 {/* LEFT NAVIGATOR: MASTER COLLECTION */}
                 <div className="flex flex-col space-y-5 xl:sticky xl:top-6">
-                    <div className="space-y-4 bg-card p-5 rounded-lg shadow-sm">
+                    <div className="space-y-4 bg-card p-5 rounded-lg shadow-card">
                         <div className="flex items-center justify-between">
                             <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground opacity-60">Portfolio Accounts</h2>
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-secondary" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
@@ -252,7 +252,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     className={cn(
                                         "px-2.5 py-1.5 rounded-md text-xs font-medium uppercase tracking-widest transition-all shrink-0 border-none",
                                         filter === f
-                                            ? "bg-primary text-white shadow-sm"
+                                            ? "bg-primary text-white"
                                             : "bg-transparent text-muted-foreground hover:text-foreground"
                                     )}
                                 >
@@ -279,14 +279,14 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         className={cn(
                                             "group cursor-pointer relative p-3 rounded-lg transition-all duration-300 flex items-center gap-4",
                                             isActive
-                                                ? "bg-card shadow-sm ring-1 ring-primary/5"
+                                                ? "bg-card ring-1 ring-primary/5"
                                                 : "bg-transparent hover:bg-secondary/40"
                                         )}
                                         whileHover={{ x: 2 }}
                                         whileTap={{ scale: 0.99 }}
                                     >
                                         <div className={cn(
-                                            "h-10 w-10 rounded-full p-0.5 bg-white shadow-sm flex items-center justify-center transition-all duration-500",
+                                            "h-10 w-10 rounded-full p-0.5 bg-white flex items-center justify-center transition-all duration-500",
                                             isActive ? "ring-2 ring-primary/30 scale-105" : "grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100"
                                         )}>
                                             {logo ? (
@@ -329,14 +329,14 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                     <div className="flex items-center gap-6">
                                         <div
-                                            className="h-16 w-16 rounded-lg shadow-sm flex items-center justify-center relative transition-all duration-500 group-hover:rotate-1"
+                                            className="h-16 w-16 rounded-lg flex items-center justify-center relative transition-all duration-500 group-hover:rotate-1"
                                             style={{
                                                 background: activeWalletVisuals ? `linear-gradient(135deg, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})` : 'hsl(var(--primary))'
                                             }}
                                         >
                                             <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             {activeWalletVisuals?.logo ? (
-                                                <img src={activeWalletVisuals.logo} className="h-8 w-8 object-contain rounded-full bg-white/95 p-1 shadow-md" alt="" />
+                                                <img src={activeWalletVisuals.logo} className="h-8 w-8 object-contain rounded-full bg-white/95 p-1" alt="" />
                                             ) : activeWalletVisuals?.Icon ? (
                                                 <activeWalletVisuals.Icon className="h-8 w-8 text-white" />
                                             ) : (
@@ -416,7 +416,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                     <TabsContent value="analytics" className="m-0 p-0">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                            <Card className="p-6 bg-card rounded-lg shadow-sm space-y-6 border-none">
+                                            <Card className="p-6 bg-card rounded-lg shadow-card space-y-6 border-none">
                                                 <div className="flex items-center justify-between">
                                                     <h4 className="text-xs font-medium uppercase tracking-widest opacity-40">Cashflow Stats</h4>
                                                     <Badge className="bg-primary/5 text-primary rounded-full px-3 py-1 text-xs border-none">30D</Badge>
@@ -429,7 +429,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                             </Card>
 
-                                            <Card className="p-6 bg-card rounded-lg shadow-sm flex flex-col items-center justify-center text-center space-y-4 border-none">
+                                            <Card className="p-6 bg-card rounded-lg shadow-card flex flex-col items-center justify-center text-center space-y-4 border-none">
                                                 <div className="h-10 w-10 bg-primary/5 rounded-full flex items-center justify-center text-primary border-none">
                                                     <Sparkles className="h-5 w-5" />
                                                 </div>

@@ -143,7 +143,7 @@ export const DebtsDashboard = () => {
             {/* Header / Filter Toolbar */}
             <div className="flex justify-end mb-2">
                 <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-[140px] h-9 text-xs bg-background shadow-sm border-input/60">
+                    <SelectTrigger className="w-[140px] h-9 text-xs bg-background border-input/60">
                         <ArrowUpDown className="w-3 h-3 mr-2 text-muted-foreground" />
                         <SelectValue placeholder="Urutkan" />
                     </SelectTrigger>
@@ -160,7 +160,7 @@ export const DebtsDashboard = () => {
             <div className="space-y-4">
                 {/* Visual Summary Card - Compact */}
                 <div className="grid grid-cols-2 gap-3">
-                    <Card className="shadow-sm border-border/60 bg-gradient-to-br from-card to-destructive/5 overflow-hidden">
+                    <Card className="shadow-card border-border/60 bg-gradient-to-br from-card to-destructive/5 overflow-hidden">
                         <CardContent className="p-4">
                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1">
                                 <ArrowUpRight className="h-3 w-3 text-destructive" /> Saya Berhutang
@@ -168,7 +168,7 @@ export const DebtsDashboard = () => {
                             <p className="text-lg font-medium text-destructive">{formatCurrency(totals.totalOwed)}</p>
                         </CardContent>
                     </Card>
-                    <Card className="shadow-sm border-border/60 bg-gradient-to-br from-card to-emerald-500/5 overflow-hidden">
+                    <Card className="shadow-card border-border/60 bg-gradient-to-br from-card to-emerald-500/5 overflow-hidden">
                         <CardContent className="p-4">
                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1">
                                 <ArrowDownRight className="h-3 w-3 text-emerald-600" /> Piutang Saya
@@ -182,7 +182,7 @@ export const DebtsDashboard = () => {
             <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                 <TabsList className="bg-muted p-1 rounded-card h-12 w-full grid grid-cols-4">
                     {Object.entries(filterLabels).map(([value, label]) => (
-                        <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm px-1">
+                        <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 px-1">
                             {label === 'Orang Lain Berhutang' ? 'Piutang' : label === 'Saya Berhutang' ? 'Hutang' : label}
                         </TabsTrigger>
                     ))}
@@ -196,7 +196,7 @@ export const DebtsDashboard = () => {
                     visibleDebts.map((debt: Debt) => (
                         <Card
                             key={debt.id}
-                            className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer border-none shadow-sm bg-card"
+                            className="overflow-hidden hover:shadow-card transition-shadow cursor-pointer border-none shadow-card bg-card"
                             onClick={() => router.push(`/debts/${debt.id}`)}
                         >
                             <CardContent className="p-4">

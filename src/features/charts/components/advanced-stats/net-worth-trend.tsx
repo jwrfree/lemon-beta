@@ -27,7 +27,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const growth = previousNetWorth !== 0 ? ((currentNetWorth - previousNetWorth) / Math.abs(previousNetWorth)) * 100 : 0;
 
     return (
-        <Card className="p-8 border-none rounded-card-premium bg-[#064e4b] text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] overflow-hidden relative">
+        <Card className="p-8 border-none rounded-card-premium bg-[#064e4b] text-white shadow-card overflow-hidden relative">
             {/* Ambient Background Ornaments */}
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 pointer-events-none">
                 <Landmark className="h-40 w-40" />
@@ -43,7 +43,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                     <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Equity Accumulation Trend</p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2">
-                    <p className="text-4xl font-semibold tracking-tighter tabular-nums drop-shadow-sm">
+                    <p className="text-4xl font-semibold tracking-tighter tabular-nums drop-">
                         {formatCurrency(currentNetWorth)}
                     </p>
                     <Badge
@@ -82,7 +82,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         <YAxis hide />
                         <ChartTooltip
                             cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2, strokeDasharray: '4 4' }}
-                            content={<ChartTooltipContent indicator="line" className="bg-popover/90 backdrop-blur-xl border-none shadow-2xl rounded-card" formatter={(value) => formatCurrency(Number(value))} />}
+                            content={<ChartTooltipContent indicator="line" className="bg-popover/90 backdrop-blur-xl border-none shadow-xl rounded-card" formatter={(value) => formatCurrency(Number(value))} />}
                         />
                         <Area
                             dataKey="netWorth"

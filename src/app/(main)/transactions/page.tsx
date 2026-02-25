@@ -111,7 +111,7 @@ function TransactionsPageContent() {
 
     return (
         <div className="flex flex-col h-full overflow-hidden bg-background">
-            <div className="px-4 py-3 flex flex-col gap-3 bg-card/80 backdrop-blur-xl border-b z-20 sticky top-0 shadow-sm">
+            <div className="px-4 py-3 flex flex-col gap-3 bg-card/80 backdrop-blur-xl border-b z-20 sticky top-0">
                 <div className="flex items-center gap-3">
                     <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 -ml-2 rounded-full">
                         <X className="h-5 w-5" />
@@ -131,21 +131,21 @@ function TransactionsPageContent() {
                             <Button
                                 variant="outline"
                                 className={cn(
-                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 border-border/50 shadow-sm",
+                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 border-border/50",
                                     activeFilterCount > 0 && "bg-primary/5 text-primary border-primary/20"
                                 )}
                             >
                                 <div className="relative">
                                     <ListFilter className="h-4 w-4" />
                                     {activeFilterCount > 0 && (
-                                        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold shadow-sm">
+                                        <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
                                             {activeFilterCount}
                                         </span>
                                     )}
                                 </div>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom" className="rounded-t-card-premium max-h-[85vh] flex flex-col border-t-0 shadow-2xl bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
+                        <SheetContent side="bottom" className="rounded-t-card-premium max-h-[85vh] flex flex-col border-t-0 shadow-lg bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
                             <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4 shrink-0" />
                             <SheetHeader className="text-left mb-6">
                                 <SheetTitle className="text-xl font-semibold tracking-tight">Atur Tampilan</SheetTitle>
@@ -222,7 +222,7 @@ function TransactionsPageContent() {
                             <TabsTrigger
                                 key={tab.value}
                                 value={tab.value}
-                                className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                                className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary"
                             >
                                 {tab.label}
                             </TabsTrigger>

@@ -148,7 +148,7 @@ export const RemindersDashboard = () => {
                                 <TabsTrigger
                                     key={key}
                                     value={key}
-                                    className="rounded-full border bg-background data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-7 text-xs px-3 shadow-sm"
+                                    className="rounded-full border bg-background data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-7 text-xs px-3"
                                 >
                                     {label}
                                 </TabsTrigger>
@@ -232,7 +232,7 @@ export const RemindersDashboard = () => {
                                         ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                         : undefined;
                                     return (
-                                        <Card key={reminder.id} className="p-4 border-none shadow-sm hover:shadow-md transition-all">
+                                        <Card key={reminder.id} className="p-4 border-none shadow-card hover:shadow-card transition-all">
                                             <div className="flex items-start gap-3">
                                                 <div className={cn(
                                                     "p-2 rounded-full mt-0.5",

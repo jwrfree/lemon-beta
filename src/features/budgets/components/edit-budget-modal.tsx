@@ -91,7 +91,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-2xl flex flex-col h-fit max-h-[90vh] border-none overflow-hidden"
+        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-lg flex flex-col h-fit max-h-[90vh] border-none overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/10">
@@ -148,7 +148,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                     <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
                       className={cn(
                         "p-3 text-center border-2 rounded-card-icon flex flex-col items-center justify-center gap-2 aspect-square transition-all",
-                        isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                        isSelected ? 'border-primary bg-primary/5' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                       )}>
                       <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
                       <span className={cn("text-xs text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
@@ -197,7 +197,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                 <Trash2 className="h-6 w-6" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+            <AlertDialogContent className="rounded-card-premium border-none shadow-xl bg-popover/95 backdrop-blur-xl">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-2xl font-semibold tracking-tighter">Delete Budget?</AlertDialogTitle>
                 <AlertDialogDescription className="text-sm font-medium text-muted-foreground">

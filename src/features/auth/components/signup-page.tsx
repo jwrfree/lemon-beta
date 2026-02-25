@@ -156,7 +156,7 @@ export const SignUpPage = ({
         role: "dialog",
         "aria-modal": true,
         "aria-labelledby": "signup-heading",
-        className: "w-full max-w-md bg-background rounded-t-2xl shadow-2xl flex flex-col h-fit",
+        className: "w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col h-fit",
         onClick: (e: React.MouseEvent) => e.stopPropagation(),
         ...handlers
     };
@@ -164,7 +164,7 @@ export const SignUpPage = ({
     return (
         <Wrapper {...pageProps}>
             <MotionWrapper {...contentProps}>
-                <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
+                <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-card" : "")}>
                     <h2 id="signup-heading" className="text-xl font-medium">Buat Akun Baru</h2>
                     {!isPage && (
                         <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">

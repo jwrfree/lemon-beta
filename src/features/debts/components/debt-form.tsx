@@ -150,10 +150,10 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col h-fit max-h-[85vh]"
+                className="w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col h-fit max-h-[85vh]"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl z-10">
+                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <div>
                         <h2 className="text-xl font-medium">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
                         <p className="text-sm text-muted-foreground">

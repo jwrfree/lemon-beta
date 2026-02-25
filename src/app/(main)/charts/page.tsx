@@ -612,7 +612,7 @@ function ChartContent() {
                                 className={cn(
                                     "px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-all",
                                     categoryView === 'expense'
-                                        ? "bg-card text-primary shadow-sm"
+                                        ? "bg-card text-primary"
                                         : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
@@ -623,7 +623,7 @@ function ChartContent() {
                                 className={cn(
                                     "px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-all",
                                     categoryView === 'income'
-                                        ? "bg-card text-primary shadow-sm"
+                                        ? "bg-card text-primary"
                                         : "text-muted-foreground hover:text-foreground"
                                 )}
                             >

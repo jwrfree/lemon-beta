@@ -83,7 +83,7 @@ const TransactionListItemContent = ({
             />
 
             <div className={cn(
-                "flex-shrink-0 h-11 w-11 rounded-card flex items-center justify-center transition-all duration-500 overflow-hidden shadow-sm border border-border/20",
+                "flex-shrink-0 h-11 w-11 rounded-card flex items-center justify-center transition-all duration-500 overflow-hidden border border-border/20",
                 iconBg
             )}>
                 {primaryLogo && logoSource === 'primary' && (
@@ -121,7 +121,7 @@ const TransactionListItemContent = ({
                 <div className="text-xs font-semibold text-muted-foreground/40 flex items-center gap-2 flex-wrap uppercase tracking-widest">
                     {/* Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-2 py-0.5 rounded-full text-xs font-semibold border border-primary/10 shadow-sm">
+                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-2 py-0.5 rounded-full text-xs font-semibold border border-primary/10">
                             <ShoppingBag className="h-2 w-2 fill-current" />
                             Want
                         </span>

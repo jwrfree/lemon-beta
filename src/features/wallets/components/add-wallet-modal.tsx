@@ -108,7 +108,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-2xl flex flex-col h-fit md:h-auto border-none"
+        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-lg flex flex-col h-fit md:h-auto border-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 z-10">
@@ -146,7 +146,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   <div
                     key={cat.key}
                     onClick={() => handleCategorySelect(cat)}
-                    className="flex flex-col items-center justify-center gap-3 p-6 bg-card rounded-card-glass shadow-sm hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer group border border-border/20"
+                    className="flex flex-col items-center justify-center gap-3 p-6 bg-card rounded-card-glass shadow-card hover:shadow-card hover:scale-[1.02] transition-all cursor-pointer group border border-border/20"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {

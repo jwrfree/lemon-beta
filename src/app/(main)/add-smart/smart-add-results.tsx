@@ -91,7 +91,7 @@ export const SmartAddResults = ({
                 className="space-y-3"
             >
                 <div className="flex justify-start">
-                    <div className="p-4 bg-card rounded-card relative overflow-hidden group shadow-sm border border-border/50 max-w-[90%]">
+                    <div className="p-4 bg-card rounded-card relative overflow-hidden group shadow-card border border-border/50 max-w-[90%]">
                         <div className={cn("absolute top-0 left-0 w-1.5 h-full opacity-60 transition-transform group-hover:scale-y-110 duration-300", getCategoryVisuals(parsedData.category).color.replace('text-', 'bg-'))} />
                         <div className="flex flex-col gap-1">
                             <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5 text-base leading-snug text-foreground">
@@ -153,7 +153,7 @@ export const SmartAddResults = ({
                                         <button
                                             type="button"
                                             className={cn(
-                                                "px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 active:scale-95 transition-all hover:brightness-95 border shadow-sm",
+                                                "px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 active:scale-95 transition-all hover:brightness-95 border",
                                                 getCategoryVisuals(parsedData.category).bgColor,
                                                 getCategoryVisuals(parsedData.category).color,
                                                 getCategoryVisuals(parsedData.category).color.replace('text-', 'border-').split(' ')[0].replace('600', '300').replace('500', '200')
@@ -170,7 +170,7 @@ export const SmartAddResults = ({
                                             <Pencil className="h-2.5 w-2.5 ml-0.5 opacity-70" />
                                         </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-80 p-0 shadow-2xl rounded-card border-primary/10 overflow-hidden" align="start">
+                                    <PopoverContent className="w-80 p-0 shadow-xl rounded-card border-primary/10 overflow-hidden" align="start">
 
                                         {popoverView === 'CATEGORY' ? (
                                             <div className="max-h-[300px] overflow-y-auto p-2">
@@ -228,7 +228,7 @@ export const SmartAddResults = ({
                                         type="button"
                                         onClick={() => setParsedData({ ...parsedData, isNeed: !parsedData.isNeed })}
                                         className={cn(
-                                            "px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 active:scale-95 transition-all border shadow-sm",
+                                            "px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 active:scale-95 transition-all border",
                                             parsedData.isNeed 
                                                 ? "bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800" 
                                                 : "bg-pink-50 text-pink-600 border-pink-200 dark:bg-pink-900/20 dark:border-pink-800"
@@ -247,7 +247,7 @@ export const SmartAddResults = ({
                     <div className="space-y-2">
                         {insightData.wallet?.isInsufficient && (
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-start">
-                                <div className="p-3 bg-destructive/10 text-destructive rounded-card text-xs font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-sm shadow-destructive/5">
+                                <div className="p-3 bg-destructive/10 text-destructive rounded-card text-xs font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-destructive/5">
                                     <span className="font-medium uppercase tracking-wider text-xs">⚠️ Saldo Tidak Cukup!</span>
                                     <p className="opacity-90">Saldo {insightData.wallet.name} kamu akan menjadi minus ({formatCurrency(insightData.wallet.newBalance)}).</p>
                                 </div>
@@ -256,7 +256,7 @@ export const SmartAddResults = ({
                         
                         <div className="flex flex-wrap gap-2">
                             {insightData.wallet && (
-                                <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
+                                <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-card flex flex-col gap-1 min-w-[140px]">
                                     <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-wider">Sumber: {insightData.wallet.name}</span>
                                     <div className="flex items-center gap-2">
                                         <span className="opacity-40 tabular-nums">{formatCurrency(insightData.wallet.currentBalance)}</span>
@@ -269,7 +269,7 @@ export const SmartAddResults = ({
                             )}
                             
                             {insightData.budget && (
-                                <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-sm flex flex-col gap-1 min-w-[140px]">
+                                <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-card flex flex-col gap-1 min-w-[140px]">
                                     <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-wider">Anggaran: {insightData.budget.name}</span>
                                     <div className="flex items-center gap-2">
                                         <span className="opacity-40 tabular-nums">{formatCurrency(insightData.budget.currentRemaining)}</span>
@@ -296,17 +296,17 @@ export const SmartAddResults = ({
                 className="space-y-3"
             >
                 <div className="flex justify-start">
-                    <div className="p-3 bg-card rounded-card text-sm border shadow-sm font-medium">
+                    <div className="p-3 bg-card rounded-card text-sm border shadow-card font-medium">
                         Wah, saya menemukan <span className="font-medium text-primary">{multiParsedData.length} transaksi</span> sekaligus!
                     </div>
                 </div>
                 <div className="space-y-2">
                     {multiParsedData.map((tx, idx) => (
-                        <div key={idx} className="bg-card rounded-card p-3 flex justify-between items-center relative overflow-hidden border shadow-sm group hover:border-primary/20 transition-colors">
+                        <div key={idx} className="bg-card rounded-card p-3 flex justify-between items-center relative overflow-hidden border shadow-card group hover:border-primary/20 transition-colors">
                             <div className={cn("absolute top-0 left-0 w-1 h-full opacity-60 group-hover:scale-y-110 transition-transform", getCategoryVisuals(tx.category).color.replace('text-', 'bg-'))} />
 
                             <div className="flex items-center gap-3 overflow-hidden">
-                                <div className={cn("h-11 w-11 rounded-md flex items-center justify-center shrink-0 shadow-sm", getCategoryVisuals(tx.category).bgColor, getCategoryVisuals(tx.category).color)}>
+                                <div className={cn("h-11 w-11 rounded-md flex items-center justify-center shrink-0", getCategoryVisuals(tx.category).bgColor, getCategoryVisuals(tx.category).color)}>
                                     {(() => {
                                         const Icon = getCategoryVisuals(tx.category).icon;
                                         const IconElement = Icon as React.ElementType;

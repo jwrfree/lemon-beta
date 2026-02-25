@@ -66,7 +66,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                 dragElastic={0.4}
                 onClick={() => !isActive && (triggerHaptic('light'), setActiveIndex(i))}
                 className={cn(
-                  "absolute w-[88%] max-w-sm h-52 rounded-card-premium text-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.2)] overflow-hidden",
+                  "absolute w-[88%] max-w-sm h-52 rounded-card-premium text-white shadow-card overflow-hidden",
                   isActive ? "cursor-grab active:cursor-grabbing z-30" : "cursor-pointer grayscale-[0.2]"
                 )}
                 style={{

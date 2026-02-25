@@ -55,7 +55,7 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
     if (data.length === 0) return null
 
     return (
-        <Card className="border-none shadow-sm">
+        <Card className="border-none shadow-card">
             <CardHeader>
                 <CardTitle className="text-lg font-medium">Top Pengeluaran</CardTitle>
             </CardHeader>

@@ -63,7 +63,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                         aria-label={`Edit target ${goal.name}`}
                     >
                         <Card 
-                            className="border-none shadow-2xl rounded-card-premium overflow-hidden transition-all duration-500 relative"
+                            className="border-none shadow-card rounded-card-premium overflow-hidden transition-all duration-500 relative"
                             style={{ 
                                 background: dna.gradient,
                                 boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
@@ -106,7 +106,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${progress}%` }}
                                                 transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                                                className="absolute inset-y-0 left-0 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                                                className="absolute inset-y-0 left-0 rounded-full bg-white"
                                             />
                                         </div>
                                         <p className="label-xs text-white/40 text-right">{Math.round(progress)}% Completion</p>

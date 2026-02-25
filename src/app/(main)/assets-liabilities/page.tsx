@@ -141,7 +141,7 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                         </Card>
 
-                        <Card className="border-none shadow-sm rounded-lg bg-card border border-border p-6 flex flex-col items-center justify-center min-h-[200px]">
+                        <Card className="border-none shadow-card rounded-lg bg-card border border-border p-6 flex flex-col items-center justify-center min-h-[200px]">
                             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-4 self-start">Distribusi Aset</p>
                             <div className="w-full h-[180px]">
                                 {totals.chartData.length > 0 ? (
@@ -207,7 +207,7 @@ export default function AssetsLiabilitiesPage() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card className="border-none shadow-sm rounded-lg h-full overflow-hidden bg-card border border-border">
+                            <Card className="border-none shadow-card rounded-lg h-full overflow-hidden bg-card border border-border">
                                 <Tabs defaultValue="all" className="h-full flex flex-col">
                                     <CardHeader className="flex flex-col gap-4 pb-2">
                                         <div className="flex flex-row items-center justify-between">
@@ -232,9 +232,9 @@ export default function AssetsLiabilitiesPage() {
                                             </Button>
                                         </div>
                                         <TabsList className="bg-muted p-1 rounded-lg h-11 w-full grid grid-cols-3">
-                                            <TabsTrigger value="all" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Semua</TabsTrigger>
-                                            <TabsTrigger value="productive" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Produktif</TabsTrigger>
-                                            <TabsTrigger value="consumptive" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Konsumtif</TabsTrigger>
+                                            <TabsTrigger value="all" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">Semua</TabsTrigger>
+                                            <TabsTrigger value="productive" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">Produktif</TabsTrigger>
+                                            <TabsTrigger value="consumptive" className="h-full rounded-md text-xs font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">Konsumtif</TabsTrigger>
                                         </TabsList>
                                     </CardHeader>
                                     <CardContent className="px-0 flex-1 overflow-hidden">
@@ -303,7 +303,7 @@ export default function AssetsLiabilitiesPage() {
                                 </Tabs>
                             </Card>
 
-                            <Card className="border-none shadow-sm rounded-lg h-full overflow-hidden bg-card border border-border">
+                            <Card className="border-none shadow-card rounded-lg h-full overflow-hidden bg-card border border-border">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="space-y-1">
                                         <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
@@ -352,7 +352,7 @@ export default function AssetsLiabilitiesPage() {
                             animate={isMobile ? { y: 0 } : { scale: 1, opacity: 1 }}
                             exit={isMobile ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
-                            className="w-full max-w-md bg-background rounded-t-xl md:rounded-lg shadow-xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh]"
+                            className="w-full max-w-md bg-background rounded-t-card md:rounded-lg shadow-xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <AssetLiabilityForm onClose={handleCloseForm} initialData={formInitialData} />

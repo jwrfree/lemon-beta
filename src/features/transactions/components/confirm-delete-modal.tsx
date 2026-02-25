@@ -37,7 +37,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-2xl flex flex-col h-fit md:h-auto border-none"
+                className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-lg flex flex-col h-fit md:h-auto border-none"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
@@ -51,8 +51,8 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 <div className="p-6 pt-0 space-y-6">
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest leading-relaxed">Yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
                     
-                    <div className="flex items-center gap-4 rounded-card-glass bg-secondary/30 p-4 border border-border/20 shadow-sm relative overflow-hidden">
-                        <div className={cn("flex-shrink-0 p-3 rounded-card shadow-sm text-white", bgColor.replace('bg-', 'bg-').replace('/50', ''))}>
+                    <div className="flex items-center gap-4 rounded-card-glass bg-secondary/30 p-4 border border-border/20 shadow-card relative overflow-hidden">
+                        <div className={cn("flex-shrink-0 p-3 rounded-card text-white", bgColor.replace('bg-', 'bg-').replace('/50', ''))}>
                             <CategoryIcon className="h-5 w-5" />
                         </div>
                         <div className="flex-1 overflow-hidden">

@@ -141,7 +141,7 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
     trend?: { value: number }
 }) {
     return (
-        <Card className="p-5 bg-card border-none rounded-card-glass shadow-card hover:shadow-md transition-all">
+        <Card className="p-5 bg-card border-none rounded-card-glass shadow-card hover:shadow-card transition-all">
             <div className="flex items-start justify-between mb-3">
                 <div className="p-2 bg-secondary rounded-md">
                     <Icon className="w-4 h-4 text-muted-foreground" />

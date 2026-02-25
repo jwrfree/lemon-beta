@@ -11,7 +11,7 @@ export const RiskScoreCard = () => {
 
     if (isLoading) {
         return (
-            <Card className="p-6 h-[200px] flex items-center justify-center border-none shadow-sm bg-card/50 backdrop-blur-md">
+            <Card className="p-6 h-[200px] flex items-center justify-center border-none shadow-card bg-card/50 backdrop-blur-md">
                 <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
             </Card>
         );
@@ -60,7 +60,7 @@ export const RiskScoreCard = () => {
     return (
         <Card 
             className={cn(
-                "relative overflow-hidden border-none shadow-2xl transition-all duration-500 rounded-card-premium text-white",
+                "relative overflow-hidden border-none shadow-card transition-all duration-500 rounded-card-premium text-white",
                 config.bg
             )}
             style={{ boxShadow: `0 20px 50px -12px ${config.glow}` }}
@@ -95,7 +95,7 @@ export const RiskScoreCard = () => {
                     <div className="space-y-6 flex-1">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
-                                <span className={cn("text-5xl font-bold tracking-tighter tabular-nums drop-shadow-sm", config.color)}>
+                                <span className={cn("text-5xl font-bold tracking-tighter tabular-nums drop-", config.color)}>
                                     {risk.level}
                                 </span>
                                 <div className="h-2 w-2 rounded-full bg-white/20 animate-ping" />
@@ -123,7 +123,7 @@ export const RiskScoreCard = () => {
                             <motion.div
                                 initial={{ height: 0 }}
                                 animate={{ height: `${risk.score}%` }}
-                                className={cn("absolute bottom-0 left-0 w-full rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(255,255,255,0.3)]",
+                                className={cn("absolute bottom-0 left-0 w-full rounded-full transition-all duration-1000",
                                     risk.level === 'Low' ? 'bg-emerald-400' :
                                         risk.level === 'Moderate' ? 'bg-amber-400' :
                                             'bg-rose-400'

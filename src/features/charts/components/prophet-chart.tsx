@@ -66,7 +66,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
     const anomalies = useMemo(() => data.filter(d => d.anomaly && d.actual !== undefined), [data]);
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
+        <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-card border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
             {/* Decorative AI Glow */}
             <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 blur-[80px] rounded-full pointer-events-none" />
 

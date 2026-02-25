@@ -47,7 +47,7 @@ export function InstallPrompt() {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed bottom-20 left-4 right-4 z-50 md:bottom-8 md:left-auto md:right-8 md:w-96"
         >
-          <div className="bg-popover/90 backdrop-blur-md border border-border rounded-md shadow-2xl p-4 flex items-center justify-between gap-4">
+          <div className="bg-popover/90 backdrop-blur-md border border-border rounded-md shadow-xl p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <Download className="h-5 w-5 text-primary" />

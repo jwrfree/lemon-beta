@@ -97,7 +97,7 @@ export const ForgotPasswordPage = ({
         role: "dialog",
         "aria-modal": true,
         "aria-labelledby": "forgot-password-heading",
-        className: "w-full max-w-md bg-background rounded-t-xl shadow-2xl flex flex-col h-fit",
+        className: "w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col h-fit",
         onClick: (e: React.MouseEvent) => e.stopPropagation(),
         ...handlers
     };
@@ -105,7 +105,7 @@ export const ForgotPasswordPage = ({
     return (
         <Wrapper {...pageProps}>
             <MotionWrapper {...contentProps}>
-                <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-2xl" : "")}>
+                <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-card" : "")}>
                     <h2 id="forgot-password-heading" className="text-xl font-medium">
                         Lupa Password
                     </h2>

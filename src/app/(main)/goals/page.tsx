@@ -216,7 +216,7 @@ interface GoalRow {
                     initial={{ width: 0 }}
                     animate={{ width: `${totalProgress}%` }}
                     transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-                    className="h-full bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full shadow-[0_0_15px_rgba(253,224,71,0.4)]"
+                    className="h-full bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full"
                   />
                 </div>
                 <p className="text-xs text-teal-100/70 text-center italic">
@@ -231,7 +231,7 @@ interface GoalRow {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="hidden lg:flex flex-col justify-center bg-card border border-border/50 rounded-lg p-6 shadow-sm"
+            className="hidden lg:flex flex-col justify-center bg-card border border-border/50 rounded-lg p-6 shadow-card"
           >
             <div className="space-y-4">
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -260,10 +260,10 @@ interface GoalRow {
             </div>
             
             <TabsList className="bg-muted p-1 rounded-lg h-14 w-full md:w-[320px] grid grid-cols-2">
-              <TabsTrigger value="active" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
+              <TabsTrigger value="active" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">
                 Aktif
               </TabsTrigger>
-              <TabsTrigger value="completed" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
+              <TabsTrigger value="completed" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">
                 Selesai
               </TabsTrigger>
             </TabsList>
@@ -286,7 +286,7 @@ interface GoalRow {
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Card className="group hover:bg-card hover:shadow-md hover:border-primary/20 border-border/50 rounded-lg shadow-sm transition-all cursor-pointer relative overflow-hidden h-full">
+                  <Card className="group hover:bg-card hover:shadow-card hover:border-primary/20 border-border/50 rounded-lg shadow-card transition-all cursor-pointer relative overflow-hidden h-full">
                     <CardContent className="p-5 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
@@ -322,7 +322,7 @@ interface GoalRow {
                               initial={{ width: 0 }}
                               animate={{ width: `${calculateProgress(goal.currentAmount, goal.targetAmount)}%` }}
                               transition={{ duration: 1, delay: 0.5 + (index * 0.1) }}
-                              className={`absolute inset-y-0 left-0 rounded-full ${goal.barColor} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
+                              className={`absolute inset-y-0 left-0 rounded-full ${goal.barColor}`}
                             />
                             <div className="absolute inset-0 flex items-center justify-center">
                                <span className="text-xs font-medium text-foreground/50 uppercase tracking-tighter">
@@ -376,7 +376,7 @@ interface GoalRow {
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <Card className="group hover:bg-card hover:shadow-md hover:border-primary/20 border-border/50 rounded-lg shadow-sm transition-all cursor-pointer relative overflow-hidden h-full">
+                  <Card className="group hover:bg-card hover:shadow-card hover:border-primary/20 border-border/50 rounded-lg shadow-card transition-all cursor-pointer relative overflow-hidden h-full">
                     <CardContent className="p-5 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>

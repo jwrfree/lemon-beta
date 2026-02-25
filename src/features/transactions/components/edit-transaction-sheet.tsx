@@ -89,14 +89,14 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <SheetContent side="bottom" className="h-[95vh] sm:h-auto sm:max-w-lg rounded-t-lg sm:rounded-lg px-0 pb-0 flex flex-col gap-0 overflow-hidden border-none shadow-2xl bg-background text-foreground">
+            <SheetContent side="bottom" className="h-[95vh] sm:h-auto sm:max-w-lg rounded-t-lg sm:rounded-lg px-0 pb-0 flex flex-col gap-0 overflow-hidden border-none shadow-lg bg-background text-foreground">
                 <SheetHeader className="sr-only">
                     <SheetTitle>Edit Transaksi</SheetTitle>
                     <SheetDescription>Gunakan Magic Bar atau formulir manual untuk mengubah detail transaksi.</SheetDescription>
                 </SheetHeader>
 
                 {/* 1. Liquid Header (The Star) */}
-                <div className="relative pt-8 pb-4 bg-card border-b border-border shadow-sm">
+                <div className="relative pt-8 pb-4 bg-card border-b border-border shadow-card">
                     <HeroAmount
                         amount={Number(amount.toString().replace(/[^0-9]/g, ''))}
                         type={type}
@@ -133,7 +133,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm"
+                                    className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border"
                                 >
                                     <MapPin className="h-3 w-3 text-destructive" />
                                     <span className="text-xs font-medium uppercase tracking-wider">{location}</span>
@@ -205,7 +205,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     onClick={() => setValue('isNeed', true, { shouldDirty: true })}
                                     className={cn(
                                         "flex-1 py-3 px-4 rounded-md text-xs font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
-                                        isNeed !== false ? "bg-card shadow-sm text-success ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
+                                        isNeed !== false ? "bg-card text-success ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
                                     )}
                                 >
                                     <Heart className={cn("h-3.5 w-3.5", isNeed !== false ? "fill-success" : "opacity-50")} />
@@ -216,7 +216,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     onClick={() => setValue('isNeed', false, { shouldDirty: true })}
                                     className={cn(
                                         "flex-1 py-3 px-4 rounded-md text-xs font-medium uppercase tracking-widest transition-all flex items-center justify-center gap-2",
-                                        isNeed === false ? "bg-card shadow-sm text-pink-500 ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
+                                        isNeed === false ? "bg-card text-pink-500 ring-1 ring-border" : "text-muted-foreground hover:bg-card/50"
                                     )}
                                 >
                                     <ShoppingBag className={cn("h-3.5 w-3.5", isNeed === false ? "fill-pink-500" : "opacity-50")} />

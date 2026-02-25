@@ -61,7 +61,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
     const gradientId = `expense-trend-${chartType}-${range}`;
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-md">
+        <Card className="overflow-hidden border-none shadow-card bg-card rounded-md">
             <CardHeader className="space-y-4">
                 <div className="flex flex-col gap-1">
                     <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Tren Pengeluaran</CardTitle>
@@ -73,7 +73,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
                                 <TabsTrigger 
                                     key={option} 
                                     value={option}
-                                    className="h-full rounded-full px-3 text-xs font-medium uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
+                                    className="h-full rounded-full px-3 text-xs font-medium uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950"
                                 >
                                     {option} Hari
                                 </TabsTrigger>
@@ -89,7 +89,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
                                 <TabsTrigger
                                     key={option.value}
                                     value={option.value}
-                                    className="h-full flex items-center gap-1 rounded-full px-3 text-xs font-medium uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm"
+                                    className="h-full flex items-center gap-1 rounded-full px-3 text-xs font-medium uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950"
                                 >
                                     <option.icon className="h-3 w-3" />
                                     {option.label}

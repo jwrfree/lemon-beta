@@ -100,7 +100,7 @@ function SettingsContent() {
                 title="Profil"
                 showBackButton={true}
                 extraActions={
-                    <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-background shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-background">
                         {userData?.photoURL ? (
                             <Image src={userData.photoURL} alt="User" width={40} height={40} className="object-cover" />
                         ) : (
@@ -181,14 +181,14 @@ function SettingsContent() {
                 {/* BARIS 2: Core Actions (Grid 2) */}
                 <div className="grid grid-cols-2 gap-4">
                     <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-card-glass">
-                        <div className="p-3 rounded-full bg-info/10 text-info shadow-sm">
+                        <div className="p-3 rounded-full bg-info/10 text-info">
                             <Wallet className="w-6 h-6" />
                         </div>
                         <span className="font-semibold text-xs uppercase tracking-widest text-muted-foreground/80">Dompet</span>
                     </BentoItem>
 
                     <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-card-glass">
-                        <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shadow-sm">
+                        <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                             <Target className="w-6 h-6" />
                         </div>
                         <span className="font-semibold text-xs uppercase tracking-widest text-muted-foreground/80">Target</span>
@@ -245,7 +245,7 @@ function SettingsContent() {
                                     className="flex items-center justify-between p-4 rounded-card hover:bg-muted/50 transition-colors cursor-pointer group"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="p-2 rounded-md bg-secondary/50 group-hover:bg-card transition-colors shadow-sm">
+                                        <div className="p-2 rounded-md bg-secondary/50 group-hover:bg-card transition-colors shadow-card">
                                             <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                                         </div>
                                         <span className="font-semibold text-sm tracking-tight">{item.name}</span>
@@ -273,7 +273,7 @@ function SettingsContent() {
                                     <span className="font-semibold text-xs uppercase tracking-widest">Keluar Akun</span>
                                 </div>
                             </AlertDialogTrigger>
-                            <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                            <AlertDialogContent className="rounded-card-premium border-none shadow-xl bg-popover/95 backdrop-blur-xl">
                                 <AlertDialogHeader>
                                     <AlertDialogTitle className="text-2xl font-semibold tracking-tighter">Konfirmasi Logout</AlertDialogTitle>
                                     <AlertDialogDescription className="text-sm font-medium text-muted-foreground">

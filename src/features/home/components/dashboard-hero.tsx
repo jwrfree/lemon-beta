@@ -33,7 +33,7 @@ export const DashboardHero = ({
 }: DashboardHeroProps) => {
     return (
         <div className="grid gap-4 lg:grid-cols-3 items-stretch">
-            <Card className="col-span-2 border-none shadow-sm bg-primary text-primary-foreground overflow-hidden relative rounded-lg">
+            <Card className="col-span-2 border-none shadow-card bg-primary text-primary-foreground overflow-hidden relative rounded-lg">
                 <div className="absolute top-0 right-0 p-6 opacity-5">
                     <Shield className="h-32 w-32" />
                 </div>
@@ -83,7 +83,7 @@ export const DashboardHero = ({
                     </Button>
                 </CardContent>
             </Card>
-            <Card className="border-none shadow-sm bg-card rounded-lg">
+            <Card className="border-none shadow-card bg-card rounded-lg">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Rentang Data</CardTitle>
                     <CardDescription className="text-xs">Atur cakupan statistik & grafik</CardDescription>

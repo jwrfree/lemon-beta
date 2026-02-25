@@ -73,7 +73,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
             <td className="p-4 pl-6">
                 <div className="flex items-center gap-4">
                     <div className={cn(
-                        "w-11 h-11 rounded-md flex items-center justify-center shrink-0 shadow-sm border border-border transition-all group-hover:scale-110 overflow-hidden",
+                        "w-11 h-11 rounded-md flex items-center justify-center shrink-0 border border-border transition-all group-hover:scale-110 overflow-hidden",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (

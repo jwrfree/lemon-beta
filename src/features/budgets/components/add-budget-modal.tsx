@@ -149,7 +149,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-popover rounded-t-card-premium flex flex-col h-fit max-h-[85vh] shadow-2xl border-none"
+        className="w-full max-w-md bg-popover rounded-t-card-premium flex flex-col h-fit max-h-[85vh] shadow-lg border-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 flex items-center justify-between sticky top-0 z-10">
@@ -197,7 +197,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                           <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
                             className={cn(
                               "p-3 text-center border-2 rounded-card-icon flex flex-col items-center justify-center gap-2 aspect-square transition-all",
-                              isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                              isSelected ? 'border-primary bg-primary/5' : 'border-transparent bg-muted/30 hover:bg-muted/50'
                             )}>
                             <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
                             <span className={cn("text-xs text-center leading-tight font-semibold uppercase tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
@@ -242,7 +242,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                   {loadingRec ? (
                     <div className="h-24 w-full animate-pulse bg-muted/50 rounded-card-glass" />
                   ) : recommendation && recommendation.avg > 0 ? (
-                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-sm">
+                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-card">
                       <div className="bg-emerald-500/10 p-2.5 rounded-card">
                         <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                       </div>

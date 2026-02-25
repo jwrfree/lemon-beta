@@ -146,7 +146,7 @@ export default function SmartAddPage() {
                     variant="ghost" 
                     size="icon" 
                     onClick={() => router.back()}
-                    className="h-10 w-10 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50"
+                    className="h-10 w-10 rounded-full bg-popover/80 backdrop-blur-md border border-border/50"
                 >
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
@@ -157,12 +157,12 @@ export default function SmartAddPage() {
                             variant="ghost" 
                             size="icon" 
                             onClick={() => { triggerHaptic('light'); resetFlow(); setFocusedIndex(0); }}
-                            className="h-10 w-10 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50"
+                            className="h-10 w-10 rounded-full bg-popover/80 backdrop-blur-md border border-border/50"
                         >
                             <RotateCcw className="h-4 w-4 text-muted-foreground" />
                         </Button>
                     )}
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-popover/80 backdrop-blur-md shadow-sm border border-border/50">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-popover/80 backdrop-blur-md border border-border/50">
                         <Sparkles className={cn("h-3.5 w-3.5 text-primary", isAnalyzing && "animate-pulse")} />
                         <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Smart Add</span>
                     </div>
@@ -235,7 +235,7 @@ export default function SmartAddPage() {
                                             {/* Location & Description with Ghost Typing */}
                                             <div className="flex flex-col items-center gap-3 w-full">
                                                 {activeTx.location && (
-                                                    <div className="flex items-center gap-1.5 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
+                                                    <div className="flex items-center gap-1.5 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border">
                                                         <MapPin className="h-3 w-3 text-destructive" />
                                                         <span className="text-xs font-medium uppercase tracking-wider">{activeTx.location}</span>
                                                     </div>
@@ -273,7 +273,7 @@ export default function SmartAddPage() {
                                 variant="secondary" 
                                 size="sm" 
                                 onClick={() => fileInputRef.current?.click()}
-                                className="rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md shadow-sm border border-zinc-200/50 dark:border-zinc-800 h-8 px-3 gap-2 text-xs font-medium uppercase tracking-widest hover:text-primary transition-all"
+                                className="rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200/50 dark:border-zinc-800 h-8 px-3 gap-2 text-xs font-medium uppercase tracking-widest hover:text-primary transition-all"
                             >
                                 <Camera className="h-3.5 w-3.5" />
                                 Scan Struk

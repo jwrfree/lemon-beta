@@ -28,7 +28,7 @@ export const DashboardRecentTransactionsEmpty = () => {
                     <div className="relative p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border border-primary/10 shadow-inner">
                         <Receipt className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
-                    <div className="absolute -bottom-2 -right-2 p-2 bg-background rounded-full border border-border shadow-sm">
+                    <div className="absolute -bottom-2 -right-2 p-2 bg-background rounded-full border border-border">
                         <Plus className="h-4 w-4 text-primary" />
                     </div>
                 </div>

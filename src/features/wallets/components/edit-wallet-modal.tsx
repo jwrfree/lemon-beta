@@ -91,10 +91,10 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background rounded-t-2xl shadow-lg flex flex-col"
+        className="w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-2xl">
+        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card">
           <h2 className="text-xl font-medium">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
