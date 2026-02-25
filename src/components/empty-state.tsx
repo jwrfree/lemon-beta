@@ -53,10 +53,11 @@ export interface EmptyStateProps {
  * 
  * Design Rules:
  * - Mobile: top-aligned with generous spacing
- * - Desktop: vertically centered in container
- * - Max width readable (not full width stretch)
+ * - Desktop: vertically centered in container (min-h-[460px])
+ * - Max width readable with constraints on title and description
  * - Consistent spacing tokens
- * - Follows card hierarchy for radius
+ * - Follows card hierarchy with rounded-card (24px)
+ * - Fixed heights prevent layout shift
  * 
  * Tone Guidelines:
  * - Clear, calm, not playful
@@ -99,22 +100,22 @@ export const EmptyState = ({
         <div className={cn(
             // Mobile: top-aligned with padding
             "flex items-start justify-center pt-12 px-6",
-            // Desktop: vertically centered
-            "md:items-center md:pt-0 md:min-h-[400px]",
+            // Desktop: vertically centered with consistent min-height
+            "md:items-center md:pt-0 md:min-h-[460px]",
             className
         )}>
             <Card className={cn(
                 // Max width for readability
                 "max-w-[320px] md:max-w-md w-full",
-                // Card hierarchy - premium for mobile, standard for desktop
-                "border-none rounded-card-premium md:rounded-lg",
+                // Card hierarchy - align with card token (24px)
+                "border-none rounded-card",
                 "shadow-card bg-card",
                 // Overflow for background decoration
                 "relative overflow-hidden"
             )}>
-                {/* Background decoration - subtle watermark */}
+                {/* Background decoration - subtle watermark with fixed height to prevent layout shift */}
                 {Icon && (
-                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12 h-[160px] w-[160px] flex items-center justify-center">
                         <Icon className="h-40 w-40" />
                     </div>
                 )}
@@ -127,30 +128,38 @@ export const EmptyState = ({
                     // Relative positioning for z-index
                     "relative z-10"
                 )}>
-                    {/* Icon */}
+                    {/* Icon - fixed height to prevent layout shift */}
                     {Icon && (
                         <div className={cn(
-                            // Icon container with consistent radius
-                            "p-5 rounded-card mb-6",
+                            // Icon container with consistent radius and fixed dimensions
+                            "p-5 rounded-card-icon mb-6 flex items-center justify-center",
+                            "h-[60px] w-[60px]",
                             styles.iconBg
                         )}>
                             <Icon className={cn("h-10 w-10", styles.iconColor)} strokeWidth={1.5} />
                         </div>
                     )}
 
-                    {/* Title - short and clear */}
-                    <h2 className="text-2xl md:text-3xl font-semibold tracking-tighter mb-3 md:mb-4">
+                    {/* Title - short and clear with max-width constraint */}
+                    <h2 className="text-2xl md:text-3xl font-semibold tracking-tighter mb-3 md:mb-4 max-w-[280px] md:max-w-[360px]">
                         {title}
                     </h2>
 
-                    {/* Description - action-oriented */}
+                    {/* Description - action-oriented with improved max-width */}
                     <p className={cn(
                         "text-xs md:text-sm font-medium text-muted-foreground leading-relaxed mb-8 md:mb-10",
-                        // Constrain width for readability
-                        "max-w-[280px]"
+                        // Constrain width for readability on large screens
+                        "max-w-[280px] md:max-w-[340px]"
                     )}>
                         {description}
                     </p>
+
+                    {/* Filter variant helper hint */}
+                    {variant === 'filter' && !actionLabel && (
+                        <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
+                            Coba sesuaikan filter
+                        </p>
+                    )}
 
                     {/* Action Button - only one primary CTA */}
                     {actionLabel && onAction && (
