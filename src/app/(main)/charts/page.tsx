@@ -36,11 +36,11 @@ const TrendAnalytics = dynamic(() => import('@/features/charts/components/trend-
 });
 const HealthGauge = dynamic(() => import('@/features/charts/components/financial-health').then(mod => mod.HealthGauge), { 
     ssr: false,
-    loading: () => <div className="h-[150px] w-full animate-pulse bg-muted rounded-lg" />
+    loading: () => <div className="h-[150px] w-full animate-pulse bg-muted rounded-card" />
 });
 const HistoryChart = dynamic(() => import('@/features/charts/components/history-chart').then(mod => mod.HistoryChart), { 
     ssr: false,
-    loading: () => <div className="h-[250px] w-full animate-pulse bg-muted rounded-lg" />
+    loading: () => <div className="h-[250px] w-full animate-pulse bg-muted rounded-card" />
 });
 const CategoryPie = dynamic(() => import('@/features/charts/components/category-pie').then(mod => mod.CategoryPie), { 
     ssr: false,

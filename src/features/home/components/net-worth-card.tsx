@@ -36,7 +36,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
     }, [debtRatio, netWorth]);
 
     return (
-        <Card className="border-none shadow-card bg-card rounded-lg">
+        <Card className="border-none shadow-card bg-card rounded-card">
             <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <PiggyBank className="h-4 w-4" />

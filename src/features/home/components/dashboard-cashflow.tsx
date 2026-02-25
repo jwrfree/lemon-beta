@@ -13,7 +13,7 @@ import type { Transaction } from '@/types/models';
 // Dynamically import DashboardChart to reduce initial bundle size
 const DashboardChart = dynamic(() => import('./dashboard-chart'), { 
     ssr: false,
-    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse rounded-lg" />
+    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse rounded-card" />
 });
 
 interface DashboardCashflowProps {
@@ -94,7 +94,7 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
     }, [transactions, chartRange, chartRangeDays, now]);
 
     return (
-        <Card className="border-none shadow-card bg-card rounded-lg">
+        <Card className="border-none shadow-card bg-card rounded-card">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div>

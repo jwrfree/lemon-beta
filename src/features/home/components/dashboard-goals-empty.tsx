@@ -9,7 +9,7 @@ export const DashboardGoalsEmpty = () => {
     const { setIsGoalModalOpen } = useUI();
 
     return (
-        <Card className="border-border rounded-lg bg-card shadow-card overflow-hidden relative">
+        <Card className="border-border rounded-card bg-card shadow-card overflow-hidden relative">
             <CardHeader className="pb-2">
                 <CardTitle className="text-lg font-medium tracking-tight">Target Keuangan</CardTitle>
                 <CardDescription className="text-xs font-medium text-muted-foreground/70">Wujudkan impianmu jadi nyata</CardDescription>

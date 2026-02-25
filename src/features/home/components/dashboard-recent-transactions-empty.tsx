@@ -9,7 +9,7 @@ export const DashboardRecentTransactionsEmpty = () => {
     const { setIsTxModalOpen } = useUI();
 
     return (
-        <Card className="h-full border-border rounded-lg bg-card shadow-card overflow-hidden relative">
+        <Card className="h-full border-border rounded-card bg-card shadow-card overflow-hidden relative">
             <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                 <Receipt className="h-32 w-32" />
             </div>

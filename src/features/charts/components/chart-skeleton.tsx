@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 export function FinancialPulseSkeleton() {
     return (
-        <div className="relative overflow-hidden rounded-lg bg-primary text-primary-foreground p-7 shadow-card mx-4 mt-4 border border-primary/20">
+        <div className="relative overflow-hidden rounded-card bg-primary text-primary-foreground p-7 shadow-card mx-4 mt-4 border border-primary/20">
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 {/* Left Side */}
                 <div className="space-y-4">
@@ -41,7 +41,7 @@ export function FinancialPulseSkeleton() {
 
 export function TrendAnalyticsSkeleton() {
     return (
-        <Card className="p-6 bg-card border-border rounded-lg shadow-card">
+        <Card className="p-6 bg-card border-border rounded-card shadow-card">
             <div className="flex items-center justify-between mb-8">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function TrendAnalyticsSkeleton() {
 
 export function MetricCardSkeleton() {
     return (
-        <Card className="p-5 bg-card border-border rounded-lg shadow-card space-y-3">
+        <Card className="p-5 bg-card border-border rounded-card shadow-card space-y-3">
             <div className="flex justify-between items-start">
                 <div className="space-y-2">
                     <Skeleton className="h-3 w-20" />
@@ -87,7 +87,7 @@ export function MetricCardSkeleton() {
 
 export function CategoryPieSkeleton() {
     return (
-        <Card className="p-6 bg-card border-border rounded-lg shadow-card">
+        <Card className="p-6 bg-card border-border rounded-card shadow-card">
             <div className="flex flex-col items-center justify-center py-6 space-y-6">
                 <div className="relative h-48 w-48">
                     <Skeleton className="h-48 w-48 rounded-full" />
@@ -127,7 +127,7 @@ export function AnalyticsPageSkeleton() {
 
             <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-1">
-                    <Card className="p-6 h-full flex flex-col items-center justify-center bg-card border-border rounded-lg shadow-card">
+                    <Card className="p-6 h-full flex flex-col items-center justify-center bg-card border-border rounded-card shadow-card">
                         <Skeleton className="h-32 w-32 rounded-full mb-4" />
                         <Skeleton className="h-6 w-32 mb-2" />
                         <Skeleton className="h-3 w-24" />
@@ -145,7 +145,7 @@ export function AnalyticsPageSkeleton() {
                     <TrendAnalyticsSkeleton />
                 </div>
                 <div className="lg:col-span-1">
-                    <Card className="p-6 h-full bg-card border-border rounded-lg shadow-card">
+                    <Card className="p-6 h-full bg-card border-border rounded-card shadow-card">
                         <Skeleton className="h-6 w-32 mb-6" />
                         <div className="space-y-6">
                             {[1, 2, 3, 4, 5].map((i) => (

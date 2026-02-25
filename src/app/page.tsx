@@ -35,7 +35,7 @@ export default function WelcomePage() {
     // The other auth pages are shown conditionally.
     return (
         <div className="w-full h-dvh flex items-center justify-center p-4 bg-muted/30">
-            <div className="w-full max-w-md bg-card border text-card-foreground shadow-xl rounded-lg overflow-hidden">
+            <div className="w-full max-w-md bg-card border text-card-foreground shadow-xl rounded-card overflow-hidden">
                 <AnimatePresence mode="wait">
                     {authView === 'login' && <LoginPage onClose={() => {}} setAuthModal={setAuthView} isPage />}
                     {authView === 'signup' && <SignUpPage onClose={() => setAuthView('login')} setAuthModal={setAuthView} isPage />}
