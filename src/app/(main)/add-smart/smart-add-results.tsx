@@ -10,6 +10,7 @@ import { CategoryGrid } from '@/features/transactions/components/category-grid';
 import { categories, Category } from '@/lib/categories';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { motionTokens } from '@/lib/motion-tokens';
 
 interface SmartAddResultsProps {
     pageState: string;
@@ -88,6 +89,7 @@ export const SmartAddResults = ({
                 layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: motionTokens.durationNormal, ease: motionTokens.easingStandard }}
                 className="space-y-3"
             >
                 <div className="flex justify-start">
@@ -293,6 +295,7 @@ export const SmartAddResults = ({
                 layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: motionTokens.durationNormal, ease: motionTokens.easingStandard }}
                 className="space-y-3"
             >
                 <div className="flex justify-start">
@@ -300,7 +303,7 @@ export const SmartAddResults = ({
                         Wah, saya menemukan <span className="font-medium text-primary">{multiParsedData.length} transaksi</span> sekaligus!
                     </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 motion-list-transition" data-loading={pageState === 'LOADING' ? 'true' : undefined}>
                     {multiParsedData.map((tx, idx) => (
                         <div key={idx} className="bg-card rounded-card p-3 flex justify-between items-center relative overflow-hidden border shadow-card group hover:border-primary/20 transition-colors">
                             <div className={cn("absolute top-0 left-0 w-1 h-full opacity-60 group-hover:scale-y-110 transition-transform", getCategoryVisuals(tx.category).color.replace('text-', 'bg-'))} />
@@ -339,4 +342,3 @@ export const SmartAddResults = ({
 
     return null;
 };
-

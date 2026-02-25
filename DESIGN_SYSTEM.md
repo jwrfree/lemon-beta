@@ -518,6 +518,48 @@ Every interactive element must communicate the pressed state:
 | Tabs | `active:scale-[0.98]` | Tab triggers |
 | FAB / nav icon | `active:scale-95` | Circular touch targets |
 
+---
+
+## 9. Motion Guidelines (Phase 6)
+
+**Tone:** finance-grade, calm, intentional. No bounce/spring or playful easing.
+
+### 9.1 Tokens
+
+Defined in `globals.css` and re-exported for JS in `src/lib/motion-tokens.ts`:
+
+| Token | CSS Var | Value | Use |
+|---|---|---|---|
+| `duration-fast` | `--motion-duration-fast` | 160ms | Press/hover/inline validation |
+| `duration-normal` | `--motion-duration-normal` | 200ms | Overlays, cards, list changes |
+| `easing-standard` | `--motion-easing-standard` | `cubic-bezier(0.22, 0.61, 0.36, 1)` | All entrances |
+| `translate-sm` | `--motion-translate-sm` | 4px | Micro slide offset |
+| `translate` | `--motion-translate` | 8px | Larger slide offset (rare) |
+
+Reduced motion (`prefers-reduced-motion: reduce`) zeroes both durations and offsets.
+
+### 9.2 Utilities
+
+- `motion-pressable`: shared transition timing for buttons, tabs, icon actions (active nudges 1px).
+- `motion-overlay`: scrims fade in/out using motion tokens.
+- `motion-panel`: modal/sheet content fades + slides 4px; exit uses ease-in.
+- `motion-surface`: default surface entrance for cards/empty states (fade + 4px translate).
+- `motion-inline-alert`: inline validation/error appears with a fast fade-slide.
+- `motion-list-transition [data-loading="true"]`: dims list children and offsets them 4px to avoid CLS while loading.
+
+### 9.3 Patterns
+
+| Interaction | Entrance | Exit |
+|---|---|---|
+| Modal/Sheet | Fade + 4px translate, `duration-normal` ease-out | Fade + 4px translate, `duration-fast` ease-in |
+| Buttons/Tabs | `motion-pressable` + active 1px nudge | `active:bg-*` tokens only |
+| Empty → Populated | Wrap surfaces with `motion-surface` to fade/settle content | N/A |
+| Loading → Success | Keep container height; animate opacity/translate only (`motion-list-transition`) | Fade with `duration-fast` |
+| Filter changes | Apply `motion-list-transition` to result lists with `data-loading` while fetching | N/A |
+| Inline validation | `motion-inline-alert` on `<ErrorMessage>` / `<FormMessage>` | N/A |
+
+**Forbidden:** bounce/spring easing, >8px translations, rotating/particle bursts in product surfaces.
+
 ### 8.6 Loading State
 
 The `Button` component accepts an `isLoading` prop:

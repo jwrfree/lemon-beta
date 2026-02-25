@@ -23,7 +23,7 @@ const ErrorMessage = React.forwardRef<HTMLParagraphElement, ErrorMessageProps>(
         ref={ref}
         role="alert"
         aria-live="polite"
-        className={cn('text-xs font-medium text-error ml-1', className)}
+        className={cn('text-xs font-medium text-error ml-1 motion-inline-alert', className)}
         {...props}
       >
         {children}
