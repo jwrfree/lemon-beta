@@ -14,6 +14,7 @@ import { startOfMonth, endOfMonth } from 'date-fns';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { BudgetCard } from './budget-card';
 import { calculateGlobalBudgetOverview } from '../logic';
+import { EmptyState } from '@/components/empty-state';
 
 export const BudgetingDashboard = () => {
     const { budgets, isLoading } = useBudgets();
@@ -46,25 +47,15 @@ export const BudgetingDashboard = () => {
 
     if (budgets.length === 0) {
         return (
-            <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="max-w-[320px] w-full p-7 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
-                        <HandCoins className="h-40 w-40" />
-                    </div>
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="p-5 bg-primary/10 rounded-card mb-6">
-                            <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                        </div>
-                        <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Anggaran</h2>
-                        <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
-                            Buat pos pengeluaran bulanan agar keuanganmu lebih teratur.
-                        </p>
-                        <Button onClick={() => setIsBudgetModalOpen(true)} className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-semibold text-xs uppercase tracking-widest">
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Buat Anggaran Baru
-                        </Button>
-                    </div>
-                </div>
+            <div className="flex flex-col h-full min-h-[400px] animate-in fade-in duration-500">
+                <EmptyState
+                    icon={HandCoins}
+                    title="Belum Ada Anggaran"
+                    description="Buat pos pengeluaran bulanan agar keuanganmu lebih teratur dan terkendali."
+                    actionLabel="Buat Anggaran Baru"
+                    onAction={() => setIsBudgetModalOpen(true)}
+                    variant="default"
+                />
             </div>
         );
     }

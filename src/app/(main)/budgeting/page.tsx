@@ -17,6 +17,7 @@ import { BudgetCard } from '@/features/budgets/components/budget-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChartContainer } from '@/components/ui/chart';
 import { spacing } from '@/lib/layout-tokens';
+import { EmptyState } from '@/components/empty-state';
 
 function BudgetingPageSkeleton() {
     return (
@@ -80,28 +81,16 @@ export default function BudgetingPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="flex flex-col h-full items-center justify-center text-center p-8 min-h-[70vh]"
+                            className="flex flex-col h-full min-h-[70vh]"
                         >
-                            <div className="relative mb-8">
-                                <div className="absolute inset-0 bg-primary/20 blur-[60px] rounded-full scale-150 opacity-50" />
-                                <div className="relative flex h-24 w-24 items-center justify-center rounded-lg bg-card shadow-xl border border-border">
-                                    <HandCoins className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                                </div>
-                            </div>
-                            <div className="max-w-[300px] space-y-3">
-                                <h2 className="text-3xl font-medium tracking-tighter">Budgeting Cerdas</h2>
-                                <p className="text-sm font-medium text-muted-foreground leading-relaxed">
-                                    Atur batas pengeluaran untuk setiap pos agar uangmu tidak "numpang lewat".
-                                </p>
-                            </div>
-                            <Button
-                                onClick={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }}
-                                size="lg"
-                                className="mt-10 rounded-lg h-14 px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all font-medium text-lg"
-                            >
-                                <PlusCircle className="mr-2 h-6 w-6" />
-                                Buat Anggaran Pertama
-                            </Button>
+                            <EmptyState
+                                icon={HandCoins}
+                                title="Budgeting Cerdas"
+                                description="Atur batas pengeluaran untuk setiap pos agar uangmu tidak numpang lewat."
+                                actionLabel="Buat Anggaran Baru"
+                                onAction={() => { triggerHaptic('medium'); setIsBudgetModalOpen(true); }}
+                                variant="default"
+                            />
                         </motion.div>
                     ) : (
                         <div className="max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">

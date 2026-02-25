@@ -942,3 +942,167 @@ alert('Gagal!');                                        // → showToast or Erro
 - Color alone must **not** convey an error — always pair with an icon or text.
 - Error icon contrast must meet **WCAG AA** (4.5:1 for text-size icons, 3:1 for large icons).
 - `ErrorMessage` and `ErrorAlert` satisfy these requirements out of the box.
+
+---
+
+## 12. Empty State Governance
+
+### 12.1 Overview
+
+Empty states communicate absence of content or data. They are not decorative — they are UI signposts that guide users toward productive actions. Every empty container must follow these rules.
+
+**File:** `src/components/empty-state.tsx`
+
+### 12.2 Structure
+
+```tsx
+import { EmptyState } from '@/components/empty-state';
+
+<EmptyState
+  title="Short Clear Headline"
+  description="Calm, action-oriented supporting text."
+  actionLabel="Primary CTA"
+  onAction={() => handleAction()}
+  icon={IconComponent}
+  variant="default"
+/>
+```
+
+### 12.3 Variants
+
+| Variant | Use Case | Icon Style | Button Variant |
+|---|---|---|---|
+| `default` | First-time user, no data yet | `bg-primary/10` | `default` |
+| `filter` | Filter/search returns 0 results | `bg-muted` | `outline` |
+| `error` | Error state, failed to load | `bg-destructive/10` | `destructive` |
+
+### 12.4 Layout Rules
+
+#### Mobile
+- Top-aligned with generous padding (`pt-12 px-6`)
+- Max width: `320px` (readable, not stretched)
+- Card radius: `rounded-card-premium`
+- Padding: `p-7`
+
+#### Desktop
+- Vertically centered in container (`items-center`)
+- Max width: `md:max-w-md` (larger readable area)
+- Card radius: `md:rounded-lg` (standard card)
+- Padding: `md:p-8`
+
+### 12.5 Tone Guidelines
+
+#### ✅ Do
+- Keep titles **short** (max 6 words)
+- Use **calm**, clear language
+- Be **action-oriented** ("Buat Target Baru", not "Kamu belum punya target")
+- Avoid blame ("Filter tidak menampilkan hasil", not "Kamu salah filter")
+- One primary CTA only
+- Icon should reinforce the message (e.g., `Target` for goals, `HandCoins` for budgets)
+
+#### ❌ Don't
+- Don't use playful or informal tone ("Yuk mulai sekarang! 🎉")
+- Don't blame the user ("Tidak ada data karena kamu belum input")
+- Don't use multiple CTAs (no secondary actions)
+- Don't stretch the empty state to full width
+- Don't use custom one-off empty UI per page
+
+### 12.6 Usage Examples
+
+#### First-Time User (default variant)
+```tsx
+<EmptyState
+  icon={Target}
+  title="Belum Ada Target"
+  description="Mulai menabung untuk impianmu hari ini. Tetapkan target dan raih satu per satu."
+  actionLabel="Buat Target Baru"
+  onAction={() => setIsGoalModalOpen(true)}
+  variant="default"
+/>
+```
+
+#### Filter Empty Result (filter variant)
+```tsx
+<EmptyState
+  icon={BellRing}
+  title="Tidak Ada Pengingat"
+  description="Filter ini tidak menampilkan pengingat. Coba sesuaikan filter atau buat baru."
+  actionLabel="Buat Pengingat"
+  onAction={() => setIsReminderModalOpen(true)}
+  variant="filter"
+/>
+```
+
+#### Error State (error variant)
+```tsx
+<EmptyState
+  icon={AlertTriangle}
+  title="Gagal Memuat Data"
+  description="Terjadi kesalahan saat memuat data. Periksa koneksi internet dan coba lagi."
+  actionLabel="Coba Lagi"
+  onAction={() => refetch()}
+  variant="error"
+/>
+```
+
+### 12.7 Spacing Tokens
+
+All spacing must use design system tokens:
+- Icon container: `p-5 rounded-card mb-6`
+- Title margin: `mb-3 md:mb-4`
+- Description margin: `mb-8 md:mb-10`
+- Description max width: `max-w-[280px]`
+
+### 12.8 Forbidden Patterns
+
+```tsx
+// ❌ Don't: inline one-off empty state
+<div className="flex flex-col items-center p-12">
+  <div className="bg-blue-500/10 p-4 rounded-xl">
+    <Icon />
+  </div>
+  <h2>Belum Ada Data</h2>
+  <p>Buat sekarang yuk!</p>
+  <Button>Buat</Button>
+</div>
+
+// ❌ Don't: raw card without EmptyState
+<Card className="p-6 text-center">
+  Belum ada data. <Button>Buat</Button>
+</Card>
+
+// ❌ Don't: playful tone
+<EmptyState 
+  title="Waduh, kosong nih!" 
+  description="Yuk isi sekarang biar seru! 🎉"
+/>
+
+// ❌ Don't: blame language
+<EmptyState 
+  title="Kamu belum input" 
+  description="Makanya data kosong terus."
+/>
+
+// ❌ Don't: multiple CTAs
+<EmptyState 
+  actionLabel="Buat Baru"
+  onAction={...}
+>
+  <Button variant="outline">Lihat Tutorial</Button>
+  <Button variant="link">Skip</Button>
+</EmptyState>
+```
+
+### 12.9 Compliance Checklist
+
+Before shipping an empty state:
+- [ ] Uses `<EmptyState>` component
+- [ ] Title is max 6 words
+- [ ] Description is calm and action-oriented
+- [ ] Icon reinforces the message
+- [ ] Only one primary CTA (or none for non-actionable states)
+- [ ] Follows mobile/desktop layout rules
+- [ ] No custom inline empty UI
+- [ ] No playful or blame language
+
+---

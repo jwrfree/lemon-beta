@@ -18,6 +18,7 @@ import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { PageHeader } from "@/components/page-header";
+import { EmptyState } from '@/components/empty-state';
 
 const statusLabels: Record<string, string> = {
     all: 'Semua',
@@ -228,12 +229,14 @@ export default function RemindersPage() {
                         {/* Mobile simple list */}
                         <div className="md:hidden space-y-3">
                             {groupedByDate.length === 0 ? (
-                                <Card className="p-6 text-center text-sm text-muted-foreground">
-                                    Belum ada pengingat pada filter ini. <br />
-                                    <Button className="mt-3" size="sm" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
-                                        Buat Pengingat
-                                    </Button>
-                                </Card>
+                                <EmptyState
+                                    icon={BellRing}
+                                    title="Tidak Ada Pengingat"
+                                    description="Filter ini tidak menampilkan pengingat. Coba sesuaikan filter atau buat baru."
+                                    actionLabel="Buat Pengingat"
+                                    onAction={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}
+                                    variant="filter"
+                                />
                             ) : (
                                 groupedByDate.map(([dateKey, items]) => {
                                     const isNoDate = dateKey === 'no-date';
@@ -337,12 +340,14 @@ export default function RemindersPage() {
                         {/* Desktop timeline */}
                         <div className="hidden md:block space-y-4">
                             {groupedByDate.length === 0 ? (
-                                <Card className="p-6 text-center text-sm text-muted-foreground">
-                                    Belum ada pengingat pada filter ini. <br />
-                                    <Button className="mt-3" size="sm" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
-                                        Buat Pengingat
-                                    </Button>
-                                </Card>
+                                <EmptyState
+                                    icon={BellRing}
+                                    title="Tidak Ada Pengingat"
+                                    description="Filter ini tidak menampilkan pengingat. Coba sesuaikan filter atau buat pengingat baru."
+                                    actionLabel="Buat Pengingat"
+                                    onAction={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}
+                                    variant="filter"
+                                />
                             ) : (
                                 groupedByDate.map(([dateKey, items]) => {
                                     const isNoDate = dateKey === 'no-date';

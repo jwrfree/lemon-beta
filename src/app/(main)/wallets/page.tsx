@@ -15,6 +15,7 @@ import { DesktopWalletView } from '@/features/wallets/components/desktop-wallet-
 import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
 import { WalletAnalyticsMobile } from '@/features/wallets/components/wallet-analytics-mobile';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { EmptyState } from '@/components/empty-state';
 
 export default function WalletsPage() {
   const { wallets } = useWallets();
@@ -47,28 +48,15 @@ export default function WalletsPage() {
         />
 
         {wallets.length === 0 ? (
-          <main className="flex-1 flex flex-col items-center justify-center p-6 bg-background">
-            <div className="max-w-[320px] w-full p-7 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
-                <Wallet className="h-40 w-40" />
-              </div>
-              <div className="relative z-10 flex flex-col items-center">
-                <div className="p-5 bg-primary/10 rounded-card-icon mb-6">
-                  <Wallet className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Dompet</h2>
-                <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
-                  Semua harta dan sumber dana kamu akan terorganisir rapi di sini.
-                </p>
-                <Button
-                  onClick={() => setIsWalletModalOpen(true)}
-                  className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-semibold text-xs uppercase tracking-widest"
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Buat Dompet Pertama
-                </Button>
-              </div>
-            </div>
+          <main className="flex-1 flex flex-col bg-background">
+            <EmptyState
+              icon={Wallet}
+              title="Belum Ada Dompet"
+              description="Semua harta dan sumber dana kamu akan terorganisir rapi di sini."
+              actionLabel="Buat Dompet Pertama"
+              onAction={() => setIsWalletModalOpen(true)}
+              variant="default"
+            />
           </main>
         ) : (
           <main className="flex-1 overflow-y-auto pb-24">
@@ -135,26 +123,15 @@ export default function WalletsPage() {
         />
         <div className="flex-1">
           {wallets.length === 0 ? (
-            <main className="flex h-full items-center justify-center p-6 bg-background">
-              <div className="max-w-md w-full p-7 bg-card rounded-lg shadow-card border border-border text-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
-                  <Wallet className="h-40 w-40" />
-                </div>
-
-                <div className="relative z-10 flex flex-col items-center">
-                  <div className="p-5 bg-primary/10 rounded-lg mb-6">
-                    <Wallet className="h-12 w-12 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <h2 className="text-3xl font-medium tracking-tighter mb-4">Mulai Kelola Asetmu</h2>
-                  <p className="text-muted-foreground mb-10 text-lg leading-relaxed">
-                    Dompet adalah sumber dana transaksi. Buat dompet seperti Kas, Bank, atau E-Wallet untuk mencatat keuangan lebih rapi.
-                  </p>
-                  <Button size="lg" onClick={() => setIsWalletModalOpen(true)} className="w-full h-14 rounded-lg text-lg font-medium shadow-xl shadow-primary/20">
-                    <PlusCircle className="mr-2 h-6 w-6" />
-                    Buat Dompet Baru
-                  </Button>
-                </div>
-              </div>
+            <main className="flex h-full items-center justify-center bg-background">
+              <EmptyState
+                icon={Wallet}
+                title="Mulai Kelola Asetmu"
+                description="Dompet adalah sumber dana transaksi. Buat dompet seperti Kas, Bank, atau E-Wallet untuk mencatat keuangan lebih rapi."
+                actionLabel="Buat Dompet Baru"
+                onAction={() => setIsWalletModalOpen(true)}
+                variant="default"
+              />
             </main>
           ) : (
             <DesktopWalletView
