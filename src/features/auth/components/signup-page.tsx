@@ -13,6 +13,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { useUI } from '@/components/ui-provider';
 import { cn } from '@/lib/utils';
+import { spacing } from '@/lib/layout-tokens';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { AuthModalView } from '@/types/auth';
@@ -177,7 +178,7 @@ export const SignUpPage = ({
                 <div className="p-5 pb-6 overflow-y-auto">
                     <p className="text-sm text-muted-foreground mb-4">Mulai kelola keuanganmu bersama Lemon. Buat akun gratis dan dapatkan insight personal.</p>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-4">
+                        <form onSubmit={form.handleSubmit(handleSignUp)} className={spacing.stack}>
                             <FormField
                                 control={form.control}
                                 name="email"

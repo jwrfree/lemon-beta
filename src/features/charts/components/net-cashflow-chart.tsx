@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getNetCashflowData } from '../lib/chart-utils';
+import { spacing } from '@/lib/layout-tokens';
 import { PlaceholderContent } from './placeholder-content';
 import dynamic from 'next/dynamic';
 
@@ -180,7 +181,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                     </Badge>
                 </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className={spacing.section}>
                 <div className="flex flex-wrap gap-2">
                     {quarterFilters.map((option) => (
                         <button
