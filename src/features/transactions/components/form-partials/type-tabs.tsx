@@ -12,13 +12,13 @@ interface TransactionTypeTabsProps {
 
 export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProps) => {
     return (
-        <div className="grid grid-cols-3 gap-2 rounded-2xl bg-muted/50 p-1.5 border border-border">
+        <div className="grid grid-cols-3 gap-2 rounded-lg bg-muted/50 p-1.5 border border-border">
             <Button
                 type="button"
                 variant="ghost"
                 onClick={() => onChange('expense')}
                 className={cn(
-                    "rounded-xl transition-all duration-200 h-9",
+                    "rounded-md transition-all duration-200 h-9",
                     value === 'expense'
                         ? 'bg-card text-destructive font-medium ring-1 ring-border'
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
@@ -32,7 +32,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 variant="ghost"
                 onClick={() => onChange('income')}
                 className={cn(
-                    "rounded-xl transition-all duration-200 h-9",
+                    "rounded-md transition-all duration-200 h-9",
                     value === 'income'
                         ? 'bg-card text-success font-medium ring-1 ring-border'
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
@@ -46,7 +46,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 variant="ghost"
                 onClick={() => onChange('transfer')}
                 className={cn(
-                    "rounded-xl transition-all duration-200 h-9",
+                    "rounded-md transition-all duration-200 h-9",
                     value === 'transfer'
                         ? 'bg-card text-info font-medium ring-1 ring-border'
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
