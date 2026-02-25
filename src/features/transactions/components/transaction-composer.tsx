@@ -190,7 +190,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 animate={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }) : {}}
                 exit={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }) : {}}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="w-full max-w-lg bg-background/95 backdrop-blur-xl rounded-t-card-premium md:rounded-card-premium shadow-2xl flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border-none overflow-hidden relative pb-6"
+                className="w-full max-w-lg bg-background/95 backdrop-blur-xl rounded-t-card-premium md:rounded-card-premium shadow-lg flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border/10 overflow-hidden relative pb-6"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="md:hidden w-12 h-1.5 bg-muted rounded-full mx-auto mt-4 mb-1 shrink-0 opacity-40" />
@@ -239,7 +239,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
 
                     <div className="space-y-3">
                         <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Deskripsi</Label>
-                        <Input {...form.register('description')} id="description" placeholder="makan siang, bensin, dll..." className={cn("h-12 rounded-card bg-secondary/50 border-none shadow-inner shrink-0 focus-visible:ring-primary/30", errors.description && "bg-destructive/5")} />
+                        <Input {...form.register('description')} id="description" placeholder="makan siang, bensin, dll..." className={cn("h-12 rounded-card bg-secondary/50 border-border/50 shadow-inner shrink-0 focus-visible:border-primary/50 focus-visible:ring-primary/20", errors.description && "bg-destructive/5")} />
                         {errors.description && <p className="text-xs font-medium text-destructive ml-1">{errors.description.message}</p>}
                     </div>
 
@@ -256,7 +256,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
 
                     <Button
                         onClick={handleSubmit(onSubmit)}
-                        className="w-full h-14 text-base rounded-full font-semibold shadow-xl active:scale-[0.98] text-white hover:brightness-110 bg-primary transition-all duration-300"
+                        className="w-full h-14 text-base rounded-full font-semibold active:scale-[0.98] text-white hover:brightness-110 bg-primary transition-all duration-300"
                         style={categoryVisuals ? {
                             backgroundColor: getCategoryColorHex(categoryVisuals)
                         } : undefined}

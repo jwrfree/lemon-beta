@@ -52,8 +52,8 @@ export function AmountInput<T extends FieldValues>({ control, name, label = "Jum
                                 }}
                                 inputMode="text"
                                 className={cn(
-                                    "text-2xl font-medium h-14 bg-muted/20 border-border/50 focus-visible:ring-primary/30 pr-12",
-                                    error && "border-destructive focus-visible:ring-destructive"
+                                    "text-2xl font-medium h-14 rounded-card bg-muted/20 border-border/50 focus-visible:border-primary/50 focus-visible:ring-primary/20 pr-12",
+                                    error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
                                 )}
                             />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary/50 transition-colors">
