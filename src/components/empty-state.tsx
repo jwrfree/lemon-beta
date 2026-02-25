@@ -156,7 +156,7 @@ export const EmptyState = ({
 
                     {/* Filter variant helper hint */}
                     {variant === 'filter' && !actionLabel && (
-                        <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
+                        <p className="text-label text-muted-foreground/60">
                             Coba sesuaikan filter
                         </p>
                     )}
