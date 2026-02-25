@@ -1,60 +1,58 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { motionTokens } from '@/lib/motion-tokens';
+
+const PREFERS_REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 
 export const SuccessAnimation = () => {
+    const [reduceMotion, setReduceMotion] = useState(false);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const query = window.matchMedia(PREFERS_REDUCED_MOTION);
+        const update = () => setReduceMotion(query.matches);
+        update();
+        query.addEventListener('change', update);
+        return () => query.removeEventListener('change', update);
+    }, []);
+
+    if (reduceMotion) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+                <div className="h-24 w-24 rounded-full bg-success text-success-foreground flex items-center justify-center shadow-card">
+                    <Check className="h-12 w-12" strokeWidth={3} />
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm motion-overlay" data-state="open">
             <div className="relative flex items-center justify-center">
-                {/* Expanding Circle Background */}
                 <motion.div
-                    initial={{ scale: 0, opacity: 0.5 }}
-                    animate={{ scale: [0, 1.2, 1], opacity: [0.5, 1, 0] }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="absolute h-32 w-32 bg-success rounded-full opacity-20"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 0.18 }}
+                    transition={{ duration: motionTokens.durationNormal, ease: motionTokens.easingStandard }}
+                    className="absolute h-32 w-32 bg-success rounded-full"
                 />
-                
-                {/* Main Circle */}
+
                 <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ 
-                        type: "spring",
-                        stiffness: 260,
-                        damping: 20,
-                        delay: 0.1 
-                    }}
-                    className="h-24 w-24 bg-success rounded-full flex items-center justify-center shadow-xl shadow-success/30"
+                    initial={{ scale: 0.92, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: motionTokens.durationFast, ease: motionTokens.easingStandard }}
+                    className="h-24 w-24 bg-success rounded-full flex items-center justify-center shadow-xl shadow-success/20"
                 >
-                    {/* Checkmark Drawing Animation */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.2, duration: 0.2 }}
+                        transition={{ duration: motionTokens.durationFast, ease: motionTokens.easingStandard }}
                     >
-                        <Check className="h-12 w-12 text-white stroke-[3px]" />
+                        <Check className="h-12 w-12 text-success-foreground stroke-[3px]" />
                     </motion.div>
                 </motion.div>
-
-                {/* Particle Explosion */}
-                {[...Array(8)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute h-2 w-2 bg-success rounded-full"
-                        initial={{ opacity: 1, x: 0, y: 0 }}
-                        animate={{ 
-                            opacity: 0,
-                            x: Math.cos(i * 45 * (Math.PI / 180)) * 60,
-                            y: Math.sin(i * 45 * (Math.PI / 180)) * 60
-                        }}
-                        transition={{ 
-                            duration: 0.6, 
-                            ease: "easeOut",
-                            delay: 0.2
-                        }}
-                    />
-                ))}
             </div>
         </div>
     );

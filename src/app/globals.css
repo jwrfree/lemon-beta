@@ -173,6 +173,11 @@
     --state-active: hsl(var(--gray-900) / 0.09);
     --transition-duration: 150ms;
     --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+    --motion-duration-fast: 160ms;
+    --motion-duration-normal: 200ms;
+    --motion-easing-standard: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --motion-translate-sm: 4px;
+    --motion-translate: 8px;
 
     /* Chart Colors */
     --chart-1: hsl(var(--teal-600));
@@ -268,6 +273,38 @@
     line-height: 1.2;
   }
 
+  @keyframes motion-fade-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(var(--motion-translate-sm));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes motion-fade-slide-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(var(--motion-translate-sm));
+    }
+  }
+
+  @keyframes motion-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes motion-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
   html.theme-transition :where(*, *::before, *::after) {
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, filter;
     transition-duration: 350ms;
@@ -278,6 +315,13 @@
     html.theme-transition :where(*, *::before, *::after) {
       transition-duration: 0ms;
       transition-delay: 0ms;
+    }
+
+    :root {
+      --motion-duration-fast: 0ms;
+      --motion-duration-normal: 0ms;
+      --motion-translate-sm: 0px;
+      --motion-translate: 0px;
     }
   }
 }
@@ -307,6 +351,64 @@
 
   .number-display {
     @apply font-medium tracking-tighter tabular-nums;
+  }
+
+  /* Motion utility classes */
+  .motion-pressable {
+    transition-property: background-color, border-color, color, fill, stroke, transform, box-shadow, opacity;
+    transition-duration: var(--motion-duration-fast);
+    transition-timing-function: var(--motion-easing-standard);
+  }
+
+  .motion-pressable:active {
+    transform: translateY(1px);
+  }
+
+  .motion-overlay {
+    animation-duration: var(--motion-duration-normal);
+    animation-timing-function: var(--motion-easing-standard);
+    animation-fill-mode: both;
+  }
+
+  .motion-panel {
+    animation-duration: var(--motion-duration-normal);
+    animation-timing-function: var(--motion-easing-standard);
+    animation-fill-mode: both;
+  }
+
+  .motion-panel[data-state="open"],
+  .motion-surface {
+    animation-name: motion-fade-slide-in;
+  }
+
+  .motion-panel[data-state="closed"] {
+    animation-name: motion-fade-slide-out;
+    animation-duration: var(--motion-duration-fast);
+    animation-timing-function: ease-in;
+  }
+
+  .motion-overlay[data-state="open"] {
+    animation-name: motion-fade;
+  }
+
+  .motion-overlay[data-state="closed"] {
+    animation-name: motion-fade-out;
+    animation-duration: var(--motion-duration-fast);
+    animation-timing-function: ease-in;
+  }
+
+  .motion-inline-alert {
+    animation: motion-fade-slide-in var(--motion-duration-fast) var(--motion-easing-standard) both;
+  }
+
+  .motion-list-transition > * {
+    transition: opacity var(--motion-duration-fast) var(--motion-easing-standard), transform var(--motion-duration-fast) var(--motion-easing-standard);
+    transform-origin: center;
+  }
+
+  .motion-list-transition[data-loading="true"] > * {
+    opacity: 0.6;
+    transform: translateY(var(--motion-translate-sm));
   }
 }
 

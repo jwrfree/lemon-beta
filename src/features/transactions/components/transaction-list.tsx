@@ -37,9 +37,9 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
         return groupTransactionsByDate(finalTransactions);
     }, [finalTransactions]);
 
-    if (finalTransactions.length === 0 && !isLoading) {
-        return (
-            <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-card-premium shadow-card relative overflow-hidden">
+  if (finalTransactions.length === 0 && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-card-premium shadow-card relative overflow-hidden motion-surface">
                 {/* Ambient Glow */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16" />
                 
@@ -62,16 +62,20 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
     }
     
     return (
-        <div className="space-y-6">
-            {/* Desktop Table View */}
-            <div className="hidden md:block">
-                <DesktopTransactionTable transactions={finalTransactions} wallets={wallets} />
-            </div>
+    <div
+      className="space-y-6 motion-list-transition"
+      data-loading={isLoading ? 'true' : undefined}
+      style={isLoading ? { minHeight: '240px' } : undefined}
+    >
+      {/* Desktop Table View */}
+      <div className="hidden md:block">
+        <DesktopTransactionTable transactions={finalTransactions} wallets={wallets} />
+      </div>
 
             {/* Mobile List View (Grouped) */}
-            <div className="md:hidden space-y-6">
-                {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
-                    <div key={date} className="space-y-2">
+      <div className="md:hidden space-y-6">
+        {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
+          <div key={date} className="space-y-2">
                         <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>

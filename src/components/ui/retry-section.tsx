@@ -42,7 +42,7 @@ const RetrySection = React.forwardRef<HTMLDivElement, RetrySectionProps>(
       role="status"
       aria-live="polite"
       className={cn(
-        'flex flex-col items-center justify-center gap-3 rounded-card border border-error-border bg-error-surface p-6 text-center text-sm',
+        'flex flex-col items-center justify-center gap-3 rounded-card border border-error-border bg-error-surface p-6 text-center text-sm motion-surface',
         className
       )}
       {...props}
