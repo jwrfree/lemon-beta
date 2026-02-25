@@ -111,14 +111,14 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
                     <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none">
                         <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
                         <p className="text-base sm:text-lg font-medium text-foreground tabular-nums">{formatCurrency(average)}</p>
-                        <p className="text-xs sm:text-xs font-medium text-muted-foreground mt-1 uppercase tracking-wider">PER HARI</p>
+                        <p className="text-xs sm:text-xs font-medium text-muted-foreground mt-1 uppercase tracking-widest">PER HARI</p>
                     </div>
                     <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none col-span-2 sm:col-span-1">
                         <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
                         {peakDay ? (
                             <div className="flex items-center justify-between sm:block">
                                 <p className="text-base sm:text-lg font-medium text-foreground tabular-nums">{formatCurrency(peakDay.total)}</p>
-                                <p className="text-xs sm:text-xs font-medium text-muted-foreground sm:mt-1 uppercase tracking-wider">{peakDay.shortLabel}</p>
+                                <p className="text-xs sm:text-xs font-medium text-muted-foreground sm:mt-1 uppercase tracking-widest">{peakDay.shortLabel}</p>
                             </div>
                         ) : (
                             <p className="text-sm text-muted-foreground">None</p>

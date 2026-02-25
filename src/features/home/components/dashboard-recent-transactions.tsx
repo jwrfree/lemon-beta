@@ -131,7 +131,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
             <td className="p-4 align-middle">
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-xs font-medium uppercase tracking-wider px-2 py-0.5 rounded-md w-fit mb-1 border",
+                        "text-xs font-medium uppercase tracking-widest px-2 py-0.5 rounded-md w-fit mb-1 border",
                         categoryData.bg_color ? `${categoryData.bg_color} border-border` : "bg-secondary border-transparent",
                         categoryData.color
                     )}>

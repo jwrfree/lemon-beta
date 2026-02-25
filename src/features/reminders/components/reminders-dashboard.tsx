@@ -224,7 +224,7 @@ export const RemindersDashboard = () => {
                                     : format(parseISO(dateKey), 'EEEE, d MMM', { locale: dateFnsLocaleId });
                         return (
                             <div key={dateKey} className="space-y-2">
-                                <h2 className="text-xs font-medium tracking-wider uppercase text-muted-foreground px-1 mt-2">{dateLabel}</h2>
+                                <h2 className="text-xs font-medium tracking-widest uppercase text-muted-foreground px-1 mt-2">{dateLabel}</h2>
                                 {items.map(reminder => {
                                     const status = getReminderStatus(reminder);
                                     const dueDate = reminder.dueDate ? parseISO(reminder.dueDate) : null;

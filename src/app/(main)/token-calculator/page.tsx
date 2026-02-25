@@ -189,12 +189,12 @@ export default function TokenCalculatorPage() {
                                         <div className="grid grid-cols-2 gap-4 text-center">
                                              <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg flex flex-col justify-center items-center">
                                                 <Coins className="h-6 w-6 text-teal-600 mb-2" />
-                                                <p className="text-xs text-teal-700 uppercase tracking-wider mb-1">Total Transaksi</p>
+                                                <p className="text-xs text-teal-700 uppercase tracking-widest mb-1">Total Transaksi</p>
                                                 <p className="text-2xl font-medium text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
                                             </div>
                                             <div className="p-4 bg-info/10 border border-info/20 rounded-lg flex flex-col justify-center items-center">
                                                 <Calendar className="h-6 w-6 text-info mb-2" />
-                                                <p className="text-xs text-info uppercase tracking-wider mb-1">Estimasi Waktu</p>
+                                                <p className="text-xs text-info uppercase tracking-widest mb-1">Estimasi Waktu</p>
                                                 <div className="flex items-baseline gap-1">
                                                      <p className="text-2xl font-medium text-info">{runway.totalDays.toLocaleString()}</p>
                                                      <span className="text-sm text-info">hari</span>

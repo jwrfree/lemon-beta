@@ -197,7 +197,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   {popularWallets[selectedCategory.key] && (
                     <div className="flex flex-wrap gap-2 px-1">
                       {popularWallets[selectedCategory.key].map(name => (
-                        <Button key={name} type="button" variant="outline" size="sm" className="rounded-full h-8 px-4 text-xs font-semibold uppercase tracking-wider" onClick={() => setValue('name', name, { shouldValidate: true })}>
+                        <Button key={name} type="button" variant="outline" size="sm" className="rounded-full h-8 px-4 text-xs font-semibold uppercase tracking-widest" onClick={() => setValue('name', name, { shouldValidate: true })}>
                           {name}
                         </Button>
                       ))}

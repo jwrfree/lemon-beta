@@ -136,7 +136,7 @@ export const EditTransactionSheet = ({ isOpen, onClose, transaction }: EditTrans
                                     className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border"
                                 >
                                     <MapPin className="h-3 w-3 text-destructive" />
-                                    <span className="text-xs font-medium uppercase tracking-wider">{location}</span>
+                                    <span className="text-xs font-medium uppercase tracking-widest">{location}</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>

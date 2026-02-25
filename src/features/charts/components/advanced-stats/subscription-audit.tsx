@@ -59,7 +59,7 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">{item.name}</p>
-                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{item.category}</p>
+                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">{item.category}</p>
                                 </div>
                             </div>
                             <div className="text-right">

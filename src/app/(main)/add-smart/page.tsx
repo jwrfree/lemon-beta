@@ -237,7 +237,7 @@ export default function SmartAddPage() {
                                                 {activeTx.location && (
                                                     <div className="flex items-center gap-1.5 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border">
                                                         <MapPin className="h-3 w-3 text-destructive" />
-                                                        <span className="text-xs font-medium uppercase tracking-wider">{activeTx.location}</span>
+                                                        <span className="text-xs font-medium uppercase tracking-widest">{activeTx.location}</span>
                                                     </div>
                                                 )}
                                                 <div className="text-sm font-medium text-muted-foreground italic text-center max-w-[280px] min-h-[1.5em]">
@@ -295,7 +295,7 @@ export default function SmartAddPage() {
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
                         <div className="flex flex-col items-center">
-                            <span className="text-xs font-medium text-zinc-400 uppercase tracking-tighter">Transaksi</span>
+                            <span className="text-xs font-medium text-zinc-400 uppercase tracking-widest">Transaksi</span>
                             <span className="text-xs font-medium tabular-nums">{focusedIndex + 1} <span className="opacity-30">/</span> {multiParsedData.length}</span>
                         </div>
                         <Button 

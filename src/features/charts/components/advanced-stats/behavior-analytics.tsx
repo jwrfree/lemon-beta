@@ -82,14 +82,14 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
                         <div className="p-3 rounded-lg border border-border space-y-2">
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <Coffee className="h-3 w-3" />
-                                <span className="text-xs font-medium uppercase tracking-tighter">Top Weekday</span>
+                                <span className="text-xs font-medium uppercase tracking-widest">Top Weekday</span>
                             </div>
                             <p className="text-xs font-medium truncate">{data.topWeekdayCategory}</p>
                         </div>
                         <div className="p-3 rounded-lg border border-border space-y-2">
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <Pizza className="h-3 w-3" />
-                                <span className="text-xs font-medium uppercase tracking-tighter">Top Weekend</span>
+                                <span className="text-xs font-medium uppercase tracking-widest">Top Weekend</span>
                             </div>
                             <p className="text-xs font-medium truncate">{data.topWeekendCategory}</p>
                         </div>

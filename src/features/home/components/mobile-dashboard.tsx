@@ -216,7 +216,7 @@ export const MobileDashboard = ({
                                     </div>
                                     <div>
                                         <AnimatedCounter value={monthlyIncome} className="font-semibold text-base tracking-tight text-white" />
-                                        <p className="text-xs text-white/30 mt-1 font-semibold uppercase tracking-tighter">
+                                        <p className="text-xs text-white/30 mt-1 font-semibold uppercase tracking-widest">
                                             {incomeDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(incomeDiff))} this month
                                         </p>
                                     </div>
@@ -230,7 +230,7 @@ export const MobileDashboard = ({
                                     </div>
                                     <div>
                                         <AnimatedCounter value={monthlyExpense} className="font-semibold text-base tracking-tight text-white" />
-                                        <p className="text-xs text-white/30 mt-1 font-semibold uppercase tracking-tighter">
+                                        <p className="text-xs text-white/30 mt-1 font-semibold uppercase tracking-widest">
                                             {expenseDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(expenseDiff))} this month
                                         </p>
                                     </div>

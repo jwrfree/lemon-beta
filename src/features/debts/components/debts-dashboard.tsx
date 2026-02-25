@@ -211,7 +211,7 @@ export const DebtsDashboard = () => {
 
                                 <div className="flex items-end justify-between">
                                     <div>
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1">
                                             {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
                                         </p>
                                         <p className={cn(
@@ -222,7 +222,7 @@ export const DebtsDashboard = () => {
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1 text-right">Progress</p>
+                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 text-right">Progress</p>
                                         <div className="flex items-center gap-2">
                                             <Progress
                                                 value={Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))}

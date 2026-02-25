@@ -188,7 +188,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             <TableCell>
                 <div className="flex items-center gap-2">
                     <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-muted')} />
-                    <span className="font-medium text-muted-foreground text-xs uppercase tracking-wider whitespace-nowrap">
+                    <span className="font-medium text-muted-foreground text-xs uppercase tracking-widest whitespace-nowrap">
                         {wallet?.name || '-'}
                     </span>
                 </div>
@@ -211,7 +211,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                         </span>
                     )}
                     {isExpense && t.isNeed === false && (
-                        <span className="text-xs font-semibold text-accent-foreground/70 uppercase tracking-tighter">
+                        <span className="text-xs font-semibold text-accent-foreground/70 uppercase tracking-widest">
                             Gaya Hidup
                         </span>
                     )}

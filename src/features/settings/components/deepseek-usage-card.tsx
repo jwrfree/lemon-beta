@@ -118,7 +118,7 @@ export const DeepSeekUsageCard = () => {
                                     transition={{ duration: 1, ease: "easeOut" }}
                                 />
                             </div>
-                            <p className="text-xs text-indigo-400/60 text-right pt-1 font-semibold uppercase tracking-tighter">
+                            <p className="text-xs text-indigo-400/60 text-right pt-1 font-semibold uppercase tracking-widest">
                                 Estimasi habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari lagi (5 tx/hari)
                             </p>
                         </div>
