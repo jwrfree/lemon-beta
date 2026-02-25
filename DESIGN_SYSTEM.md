@@ -1,6 +1,6 @@
 # Lemon Beta — Design System
 
-> **Version:** 1.0  
+> **Version:** 1.3  
 > **Status:** Active — all new code must comply.  
 > **Source of truth:** This document + `tailwind.config.ts` + `globals.css`.  
 > **Enforcement:** ESLint (`eslint.config.mjs`) + code review checklist below.
@@ -438,7 +438,117 @@ The following are forbidden but not yet auto-detected (Phase 3 enforcement):
 
 ---
 
-## 8. Refactor Roadmap
+## 8. Interaction State Tokens (DS §8)
+
+Phase 2 introduces semantic interaction tokens for hover, active, focus, disabled, and loading states. All interactive components must use these tokens exclusively — no hardcoded `opacity-*` or raw colour values for state feedback.
+
+### 8.1 Token Definitions
+
+Defined in `globals.css` under `:root` and `.dark`:
+
+| Token | CSS Var | Light | Dark | Use |
+|---|---|---|---|---|
+| `focus-ring` | `--focus-ring` | same as `--ring` | same as `--ring` | Focus ring colour on all interactive elements |
+| `focus-ring-offset` | `--focus-ring-offset` | `--background` | `--background` | Focus ring offset colour |
+| `state-hover` | `--state-hover` | gray-900/5% | gray-50/7% | Hover overlay on neutral interactive surfaces |
+| `state-active` | `--state-active` | gray-900/9% | gray-50/12% | Active/pressed overlay on neutral surfaces |
+| `transition-duration` | `--transition-duration` | 150ms | 150ms | Standard interaction transition speed |
+| `transition-easing` | `--transition-easing` | ease-in-out cubic | ease-in-out cubic | Standard easing curve |
+
+Registered in `tailwind.config.ts` as Tailwind colour tokens: `bg-state-hover`, `bg-state-active`, `ring-focus-ring`.
+
+### 8.2 Focus State
+
+All focusable interactive elements must use:
+
+```
+focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+```
+
+Use `focus-visible:` (not `focus:`) unless supporting older keyboard-only patterns. The ring colour maps to `--focus-ring` via `--ring`.
+
+### 8.3 Disabled State
+
+Disabled state must **not** rely on opacity alone. Required pattern:
+
+| Element type | Classes |
+|---|---|
+| Button | `disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground` |
+| Input / Textarea | `disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60` |
+| Select trigger | `disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60` |
+| Checkbox | `disabled:cursor-not-allowed disabled:border-muted disabled:opacity-60` |
+| Switch | `disabled:cursor-not-allowed disabled:opacity-60` |
+| Label (peer-disabled) | `peer-disabled:cursor-not-allowed peer-disabled:text-muted-foreground` |
+| Menu items | `data-[disabled]:pointer-events-none data-[disabled]:text-muted-foreground data-[disabled]:opacity-60` |
+
+**Forbidden:** `disabled:opacity-50` or `peer-disabled:opacity-70` as the sole disabled indicator.
+
+### 8.4 Hover State
+
+Semantic token priority:
+- Filled buttons: `hover:bg-{variant}/90` (already semantic per §4.1)
+- Ghost / outline: `hover:bg-accent hover:text-accent-foreground`
+- Neutral surfaces (tabs, nav): `hover:text-foreground`
+- Clickable containers: `hover:bg-state-hover`
+
+### 8.5 Active / Pressed State
+
+Every interactive element must communicate the pressed state:
+
+| Pattern | Class | Use |
+|---|---|---|
+| Filled buttons | `active:bg-{variant}/80` | All colour-filled variants |
+| Ghost / outline | `active:bg-state-active` | Ghost, outline buttons |
+| Tabs | `active:scale-[0.98]` | Tab triggers |
+| FAB / nav icon | `active:scale-95` | Circular touch targets |
+
+### 8.6 Loading State
+
+The `Button` component accepts an `isLoading` prop:
+
+```tsx
+<Button isLoading>Menyimpan</Button>
+```
+
+When `isLoading={true}`:
+- Renders a `Loader2` spinner instead of children
+- Sets `disabled={true}` (prevents double submission)
+- Sets `aria-busy={true}` (screen reader notification)
+- `sr-only` "Loading" text is announced
+
+**Forbidden:** Manual `disabled={isSaving}` with inline spinner — use `isLoading` prop.
+
+### 8.7 Error / Success States
+
+Use semantic colour tokens, never raw values:
+
+| State | Token | Class |
+|---|---|---|
+| Error text / icon | `--error` | `text-error` |
+| Error surface | `--error-surface` | `bg-error-surface` |
+| Error border | `--error-border` | `border-error-border` |
+| Success text / icon | `--success` | `text-success` |
+| Success surface | `--success-foreground` on `bg-success` | `bg-success text-success-foreground` |
+
+See §11 for full error component hierarchy.
+
+### 8.8 Transition Consistency
+
+All interactive components must use a single standard transition:
+
+```
+transition-all duration-150 ease-in-out
+```
+
+**Forbidden:**
+- `transition-opacity` (use colour-based disabled state instead)
+- Arbitrary durations: `duration-[300ms]`, `duration-[500ms]` on interactions
+- Mixing `transition-colors` and `transition-all` on the same component
+- Conflicting hover + active transforms on the same axis
+
+---
+
+## 9. Refactor Roadmap
 
 ### Phase 1 — Foundation (1–2 days) ✅ DONE in DS 1.0
 - [x] Add `success` and `error` variants to `button.tsx`
@@ -449,20 +559,26 @@ The following are forbidden but not yet auto-detected (Phase 3 enforcement):
 - [x] Add `no-restricted-syntax` ESLint rules to `eslint.config.mjs`
 - [x] Create this document (`DESIGN_SYSTEM.md`)
 
-### Phase 2 — Typography (1 sprint)
-Target: Eliminate all 461 `text-[Xpx]` usages.
+### Phase 2 — Semantic Interaction & State Normalization ✅ DONE in DS 1.3
+Target: Enforce semantic interaction state consistency across all interactive components.
 
-Process:
-1. Run `grep -rn "text-\[" src/ --include="*.tsx"` to get the full list.
-2. Replace all occurrences in a single PR per feature area:
-   - `src/components/` — sidebar, page-header (highest impact, shared)
-   - `src/features/transactions/` — highest file count
-   - `src/features/home/` — dashboard components
-   - `src/features/budgets/` + `src/features/goals/`
-   - `src/features/debts/` + `src/features/reminders/`
-3. Replace `tracking-[0.2em]` / `tracking-[0.3em]` in `sidebar.tsx` with `tracking-widest`.
+- [x] Add DS §8 Interaction tokens to `globals.css` (`--focus-ring`, `--state-hover`, `--state-active`, `--transition-duration`, `--transition-easing`)
+- [x] Register `state-hover`, `state-active`, `focus-ring` in `tailwind.config.ts`
+- [x] `button.tsx` — add `isLoading` prop, fix `disabled:opacity-50` → semantic color + opacity, add `active:` states, standardize `transition-all duration-150`
+- [x] `tabs.tsx` — add `data-[state=inactive]:hover:text-foreground`, fix disabled, add `active:scale-[0.98]`
+- [x] `input.tsx` — `disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60`
+- [x] `select.tsx` — trigger + item disabled state with semantic color tokens
+- [x] `textarea.tsx` — `disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60`
+- [x] `checkbox.tsx` — `disabled:border-muted disabled:opacity-60`
+- [x] `switch.tsx` — `disabled:opacity-60`
+- [x] `radio-group.tsx` — `disabled:opacity-60`
+- [x] `label.tsx` — `peer-disabled:text-muted-foreground` (remove `peer-disabled:opacity-70`)
+- [x] `dialog.tsx` close button — `text-muted-foreground hover:text-foreground transition-colors` (remove `opacity-70 hover:opacity-100 transition-opacity`)
+- [x] `sheet.tsx` close button — same as dialog
+- [x] `dropdown-menu.tsx` — disabled items use `data-[disabled]:text-muted-foreground data-[disabled]:opacity-60`
+- [x] Update `DESIGN_SYSTEM.md` with §8 Interaction Tokens section
 
-### Phase 3 — Radius & StatusBadge (1 sprint)
+### Phase 3 — Typography (1 sprint)
 Target: Replace all raw badge patterns and arbitrary radius values.
 
 Process:
@@ -488,9 +604,9 @@ Target: Replace all `shadow-sm` on `<Card>` with `shadow-card`. Replace `backdro
 
 ---
 
-## 9. Automation & Enforcement Strategy
+## 10. Automation & Enforcement Strategy
 
-### 9.1 ESLint (Active — `eslint.config.mjs`)
+### 10.1 ESLint (Active — `eslint.config.mjs`)
 
 Four `no-restricted-syntax` rules are active as `"warn"` level:
 - Arbitrary font sizes (`text-[8-15px]`)
@@ -505,7 +621,7 @@ Four `no-restricted-syntax` rules are active as `"warn"` level:
 npx eslint src/ --max-warnings=0
 ```
 
-### 9.2 Prettier (Active — `.prettierrc`)
+### 10.2 Prettier (Active — `.prettierrc`)
 
 `prettier-plugin-tailwindcss` is installed and configured. It enforces class sort order and catches obvious duplicates. Run on every commit via pre-commit hook.
 
@@ -517,11 +633,11 @@ npx eslint src/ --max-warnings=0
 "pre-commit": "prettier --write src/**/*.tsx && eslint src/ --max-warnings=20"
 ```
 
-### 9.3 TypeScript (Active)
+### 10.3 TypeScript (Active)
 
 The `ButtonProps` interface uses `VariantProps<typeof buttonVariants>` — adding `success` and `error` to `buttonVariants` in Phase 1 means TypeScript now validates correct variant usage at compile time. Any call site that passes an unknown variant string now produces a type error.
 
-### 9.4 Code Review Checklist
+### 10.4 Code Review Checklist
 
 Add to PR template (`.github/pull_request_template.md`):
 
@@ -536,7 +652,7 @@ Add to PR template (`.github/pull_request_template.md`):
 - [ ] New semantic states use `bg-primary/destructive/success/warning` — no literal colours
 ```
 
-### 9.5 CI Gate (Recommended — GitHub Actions)
+### 10.5 CI Gate (Recommended — GitHub Actions)
 
 Create `.github/workflows/design-system.yml`:
 
@@ -557,7 +673,7 @@ jobs:
         run: npx prettier --check "src/**/*.tsx"
 ```
 
-### 9.6 Ongoing Governance
+### 10.6 Ongoing Governance
 
 | Cadence | Action |
 |---|---|
@@ -569,9 +685,9 @@ jobs:
 
 ---
 
-## 10. Error State Guidelines
+## 11. Error State Guidelines
 
-### 10.1 Error Design Tokens
+### 11.1 Error Design Tokens
 
 The following semantic tokens are defined in `globals.css` and registered in `tailwind.config.ts`:
 
@@ -585,7 +701,7 @@ The following semantic tokens are defined in `globals.css` and registered in `ta
 
 `--error` resolves to the same rose-600 value as `--destructive`. Use `error-*` tokens for UX error states; use `destructive` for irreversible/danger actions (delete, remove).
 
-### 10.2 Error Tone Categories
+### 11.2 Error Tone Categories
 
 Four tone categories define how error messages are written:
 
@@ -605,7 +721,7 @@ Four tone categories define how error messages are written:
 - ❌ No passive vague messages as a first choice: "Something went wrong" is only acceptable as a last-resort fallback
 - ❌ No exclamation marks in error messages
 
-### 10.3 Error Components
+### 11.3 Error Components
 
 #### `ErrorMessage` / `InlineError` — inline field-level validation
 
@@ -708,7 +824,7 @@ const { showToast } = useUI();
 showToast('Gagal menyimpan perubahan.', 'error');
 ```
 
-### 10.4 Visual Hierarchy
+### 11.4 Visual Hierarchy
 
 ```
 Page-level critical error     → ErrorAlert / ErrorBanner variant="server" (top of page, full-width)
@@ -719,7 +835,7 @@ Widget crash / render error   → ErrorBoundary fallback
 Transient feedback (1 action) → showToast(..., 'error')
 ```
 
-### 10.5 Do and Don't
+### 11.5 Do and Don't
 
 #### ✅ Do
 
@@ -758,7 +874,7 @@ alert('Gagal!');                                        // → showToast or Erro
 {isLoading && <Skeleton />}                             // → also handle error state
 ```
 
-### 10.6 Accessibility Requirements
+### 11.6 Accessibility Requirements
 
 - All error messages **must** have either `role="alert"` or be in an `aria-live` region.
 - `aria-live="polite"` — for non-urgent errors (field validation, empty state).

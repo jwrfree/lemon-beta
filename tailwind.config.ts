@@ -78,6 +78,9 @@ export default {
         border: 'var(--border)',
         input: 'var(--input)',
         ring: 'var(--ring)',
+        'focus-ring': 'var(--focus-ring)',
+        'state-hover': 'var(--state-hover)',
+        'state-active': 'var(--state-active)',
         
         // Custom Gray Palette (HSL)
         gray: {
