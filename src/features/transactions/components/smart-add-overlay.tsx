@@ -140,7 +140,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                 hideCloseButton
                 style={{ bottom: keyboardHeight }}
                 className={cn(
-                    "rounded-t-card p-0 flex flex-col border-white/10 shadow-lg focus:outline-none transition-[bottom] duration-200",
+                    "rounded-t-card p-0 flex flex-col bg-card border-border shadow-lg focus:outline-none transition-[bottom] duration-200",
                     isResultMode ? "h-[85dvh]" : "max-h-[85dvh]"
                 )}
             >
