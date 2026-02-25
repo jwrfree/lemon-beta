@@ -104,7 +104,7 @@ export const SmartAddResults = ({
                                     </PopoverTrigger>
                                     <PopoverContent className="w-72 p-4 shadow-xl rounded-card border-primary/10">
                                         <div className="space-y-3">
-                                            <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ubah Deskripsi</Label>
+                                            <Label className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Ubah Deskripsi</Label>
                                             <div className="flex gap-2">
                                                 <Input
                                                     value={editDesc}
@@ -128,7 +128,7 @@ export const SmartAddResults = ({
                                     </PopoverTrigger>
                                     <PopoverContent className="w-64 p-4 shadow-xl rounded-card border-primary/10">
                                         <div className="space-y-3">
-                                            <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Ubah Nominal</Label>
+                                            <Label className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Ubah Nominal</Label>
                                             <div className="flex gap-2">
                                                 <Input
                                                     type="number"
@@ -174,7 +174,7 @@ export const SmartAddResults = ({
 
                                         {popoverView === 'CATEGORY' ? (
                                             <div className="max-h-[300px] overflow-y-auto p-2">
-                                                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 mt-1 px-2">Ganti Kategori Cepat</p>
+                                                <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-3 mt-1 px-2">Ganti Kategori Cepat</p>
                                                 <CategoryGrid
                                                     categories={parsedData.type === 'income' ? categories.income : categories.expense}
                                                     selectedCategory={parsedData.category}
@@ -248,7 +248,7 @@ export const SmartAddResults = ({
                         {insightData.wallet?.isInsufficient && (
                             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex justify-start">
                                 <div className="p-3 bg-destructive/10 text-destructive rounded-card text-xs font-medium flex flex-col gap-1 max-w-[85%] border border-destructive/20 shadow-destructive/5">
-                                    <span className="font-medium uppercase tracking-wider text-xs">⚠️ Saldo Tidak Cukup!</span>
+                                    <span className="font-medium uppercase tracking-widest text-xs">⚠️ Saldo Tidak Cukup!</span>
                                     <p className="opacity-90">Saldo {insightData.wallet.name} kamu akan menjadi minus ({formatCurrency(insightData.wallet.newBalance)}).</p>
                                 </div>
                             </motion.div>
@@ -257,7 +257,7 @@ export const SmartAddResults = ({
                         <div className="flex flex-wrap gap-2">
                             {insightData.wallet && (
                                 <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-card flex flex-col gap-1 min-w-[140px]">
-                                    <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-wider">Sumber: {insightData.wallet.name}</span>
+                                    <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-widest">Sumber: {insightData.wallet.name}</span>
                                     <div className="flex items-center gap-2">
                                         <span className="opacity-40 tabular-nums">{formatCurrency(insightData.wallet.currentBalance)}</span>
                                         <span className="text-muted-foreground/30">→</span>
@@ -270,7 +270,7 @@ export const SmartAddResults = ({
                             
                             {insightData.budget && (
                                 <div className="p-3 bg-card rounded-card text-xs leading-relaxed border shadow-card flex flex-col gap-1 min-w-[140px]">
-                                    <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-wider">Anggaran: {insightData.budget.name}</span>
+                                    <span className="text-xs uppercase font-medium text-muted-foreground/60 tracking-widest">Anggaran: {insightData.budget.name}</span>
                                     <div className="flex items-center gap-2">
                                         <span className="opacity-40 tabular-nums">{formatCurrency(insightData.budget.currentRemaining)}</span>
                                         <span className="text-muted-foreground/30">→</span>
@@ -316,7 +316,7 @@ export const SmartAddResults = ({
                                 <div className="flex flex-col overflow-hidden">
                                     <span className="text-sm font-medium text-foreground tracking-tight truncate">{tx.description}</span>
                                     {/* Updated: Check if subCategory exists in Multi-mode as well if parser supports it */}
-                                    <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider opacity-60">
+                                    <span className="text-xs text-muted-foreground font-medium uppercase tracking-widest opacity-60">
                                         {tx.category}
                                         {tx.subCategory ? ` / ${tx.subCategory}` : ''}
                                     </span>

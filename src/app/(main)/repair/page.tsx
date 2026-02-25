@@ -174,7 +174,7 @@ export default function RepairPage() {
                     {/* Console Log Area */}
                     <div className="bg-slate-950 rounded-lg p-4 font-mono text-xs text-emerald-400 h-48 overflow-y-auto w-full shadow-inner border border-border/50">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-slate-500 uppercase font-medium tracking-wider">System Log</span>
+                            <span className="text-slate-500 uppercase font-medium tracking-widest">System Log</span>
                             {logs.length > 0 && <span className="text-slate-500 cursor-pointer hover:text-white" onClick={() => setLogs([])}>Clear</span>}
                         </div>
                         {logs.length === 0 ? (

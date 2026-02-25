@@ -339,7 +339,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
                         <div className="text-right">
                             <p className="text-lg sm:text-xl font-medium text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
-                            <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-wider mt-1">Kontribusi</p>
+                            <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-widest mt-1">Kontribusi</p>
                         </div>
                     </CardHeader>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 sm:space-y-6">
@@ -360,7 +360,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-tighter mb-0.5">Transaksi Terbesar</p>
+                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-widest mb-0.5">Transaksi Terbesar</p>
                                     <p className="text-xs sm:text-sm font-medium text-foreground truncate">{summary.topTransaction.description}</p>
                                 </div>
                                 <div className="text-right">

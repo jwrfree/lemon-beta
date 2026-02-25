@@ -131,11 +131,11 @@ export default function AssetsLiabilitiesPage() {
                             </div>
                             <div className="relative z-10 grid grid-cols-2 gap-8 mt-8 pt-6 border-t border-white/10">
                                 <div>
-                                    <p className="text-xs font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Produktif</p>
+                                    <p className="text-xs font-medium uppercase tracking-widest text-primary-foreground/70 mb-1">Aset Produktif</p>
                                     <p className="text-xl font-medium">{formatCurrency(totals.realAssetsValue)}</p>
                                 </div>
                                 <div>
-                                    <p className="text-xs font-medium uppercase tracking-wider text-primary-foreground/70 mb-1">Aset Konsumtif</p>
+                                    <p className="text-xs font-medium uppercase tracking-widest text-primary-foreground/70 mb-1">Aset Konsumtif</p>
                                     <p className="text-xl font-medium">{formatCurrency(totals.depreciatingAssetsValue)}</p>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@ export default function AssetsLiabilitiesPage() {
                                     <CardHeader className="flex flex-col gap-4 pb-2">
                                         <div className="flex flex-row items-center justify-between">
                                             <div className="space-y-1">
-                                                <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
+                                                <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-widest text-muted-foreground">
                                                     <div className="p-1.5 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
                                                         <TrendingUp className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                                                     </div>
@@ -306,7 +306,7 @@ export default function AssetsLiabilitiesPage() {
                             <Card className="border-none shadow-card rounded-lg h-full overflow-hidden bg-card border border-border">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <div className="space-y-1">
-                                        <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-wider text-muted-foreground">
+                                        <CardTitle className="text-sm font-medium flex items-center gap-2 uppercase tracking-widest text-muted-foreground">
                                             <div className="p-1.5 bg-rose-100 dark:bg-rose-900/30 rounded-lg">
                                                 <MinusCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                                             </div>

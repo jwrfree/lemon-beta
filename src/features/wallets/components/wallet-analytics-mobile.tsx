@@ -47,7 +47,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 >
                     <div className="flex items-center gap-2 text-success mb-1">
                         <TrendingUp className="h-3 w-3" />
-                        <span className="text-xs font-semibold uppercase tracking-wider">Pemasukan</span>
+                        <span className="text-xs font-semibold uppercase tracking-widest">Pemasukan</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(income)}
@@ -62,7 +62,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 >
                     <div className="flex items-center gap-2 text-destructive mb-1">
                         <TrendingDown className="h-3 w-3" />
-                        <span className="text-xs font-semibold uppercase tracking-wider">Pengeluaran</span>
+                        <span className="text-xs font-semibold uppercase tracking-widest">Pengeluaran</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(expense)}

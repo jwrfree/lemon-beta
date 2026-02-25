@@ -96,6 +96,21 @@ Both utilities are defined in `src/app/globals.css` under `@layer components`.
 
 **461 existing usages** must be migrated in Phase 2 of the refactor roadmap (§8).
 
+### 2.6 Line-height (Leading) Rules
+
+Line-height is set per content category. Use only the Tailwind `leading-*` scale — no `leading-[Xpx]` or `leading-[X.X]` arbitrary values.
+
+| Content type | Class | Tailwind ratio | Use case |
+|---|---|---|---|
+| Headings (h1–h6, CardTitle, DialogTitle) | `leading-tight` | 1.25 | All heading elements, card titles |
+| Body / descriptive text | `leading-relaxed` | 1.625 | Paragraphs, card descriptions, help text |
+| Labels / captions | `leading-snug` | 1.375 | Inline labels, badge captions, metadata lines |
+| Numeric / financial display | `leading-none` | 1.0 | Large amount figures, stat counters |
+
+> **Global baseline:** `body` inherits `line-height: 1.5` from `globals.css`. Only override when the content type requires a different ratio per the table above.
+
+**Forbidden:** `leading-[1.15]`, `leading-[1.6]`, `leading-[18px]`, or any other arbitrary value.
+
 ---
 
 ## 3. Color & Semantic Token System
@@ -421,6 +436,7 @@ The following patterns are actively detected by ESLint (`eslint.config.mjs`, `no
 |---|---|---|
 | `text-[8px]` / `text-[9px]` / `text-[10px]` / `text-[11px]` / `text-[15px]` | `[DS §2]` | `text-label` or `text-xs` |
 | `tracking-[0.2em]` / `tracking-[0.3em]` (any `tracking-[X]`) | `[DS §2]` | `tracking-widest` |
+| `leading-[Xpx]` / `leading-[X.X]` (any arbitrary leading) | `[DS §2.6]` | `leading-tight`, `leading-relaxed`, `leading-snug`, or `leading-none` |
 | `pb-20`, `pb-28`, `pb-32`, `pb-safe` in JSX | `[DS §5]` | `pb-24` |
 | `bg-purple-600`, `bg-blue-600`, `bg-green-600` (literal colours on interactive elements) | `[DS §4]` | `bg-primary`, `bg-destructive`, `bg-success` |
 
@@ -596,6 +612,20 @@ Rationale:
 - All section micro-labels use `font-semibold` per `label-xs` utility rule
 - Arbitrary hex colors replaced with semantic tokens per DS P1 (Tokens over Literals)
 
+### Phase 3B — Line-height & Tracking Enforcement ✅ DONE in DS 1.5
+Target: Normalize `line-height` and `tracking` classes across the app.
+
+- [x] Add §2.6 Line-height Rules to `DESIGN_SYSTEM.md` (tight/relaxed/snug/none per content type)
+- [x] Add `leading-[X]` arbitrary-value detection rule to `eslint.config.mjs`
+- [x] Update §7 Anti-Patterns table and §10.1/§10.4 enforcement docs
+- [x] Fix `uppercase tracking-tighter` on non-amount labels → `tracking-widest` (goals, charts, home, transactions, settings pages)
+- [x] Fix `uppercase tracking-wider` on section micro-labels → `tracking-widest` (assets, smart-add, debts, token-calculator, repair pages and feature components)
+
+Rationale:
+- `tracking-tighter` is reserved for financial amount displays (`number-display` token), not labels
+- `tracking-wider` is reserved for navigation tab triggers, not section micro-labels
+- All all-caps section labels must use `tracking-widest` per DS §2.3
+
 ### Phase 4 — FAB Consolidation (0.5 sprint)
 Target: Replace all 8 inline FAB patterns with `<FAB>`.
 
@@ -616,6 +646,7 @@ Target: Replace all `shadow-sm` on `<Card>` with `shadow-card`. Replace `backdro
 Four `no-restricted-syntax` rules are active as `"warn"` level:
 - Arbitrary font sizes (`text-[8-15px]`)
 - Arbitrary tracking (`tracking-[X]`)
+- Arbitrary line-height (`leading-[X]`)
 - Non-standard nav padding (`pb-20/28/32/safe`)
 - Literal colour class on interactive elements
 
@@ -650,6 +681,8 @@ Add to PR template (`.github/pull_request_template.md`):
 ## Design System Checklist
 - [ ] No `text-[Xpx]` arbitrary font sizes used (use `text-label` or `text-xs`)
 - [ ] No `tracking-[Xem]` arbitrary tracking (use `tracking-widest` or `tracking-tight`)
+- [ ] No `leading-[X]` arbitrary line-height (use `leading-tight`, `leading-relaxed`, `leading-snug`, or `leading-none`)
+- [ ] Uppercase micro-labels use `tracking-widest` (not `tracking-wider` or `tracking-tighter`)
 - [ ] Status badges use `<StatusBadge variant="...">` — no raw colour classes
 - [ ] FABs use `<FAB>` component — no inline pattern
 - [ ] Nav clearance uses `pb-24` — not pb-20/28/32/safe

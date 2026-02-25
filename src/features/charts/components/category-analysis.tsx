@@ -163,7 +163,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                         </div>
                                         <div className="min-w-0">
                                             <p className="truncate text-xs sm:text-sm font-medium leading-tight">{item.name}</p>
-                                            <p className="text-xs sm:text-xs font-medium uppercase tracking-wider text-muted-foreground/70 mt-0.5">
+                                            <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground/70 mt-0.5">
                                                 {item.percentage.toFixed(1)}% TOTAL
                                             </p>
                                         </div>

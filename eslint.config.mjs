@@ -69,6 +69,11 @@ const eslintConfig = [
         {
           "selector": "JSXAttribute[name.name='className'] > Literal[value=/tracking-\\[[^\\]]+\\]/]",
           "message": "[DS §2] Forbidden arbitrary tracking value. Use `tracking-widest` for micro-labels or `tracking-tight` for headings. See DESIGN_SYSTEM.md §2."
+        },
+        // §2.6 Typography — ban arbitrary leading values (leading-[X])
+        {
+          "selector": "JSXAttribute[name.name='className'] > Literal[value=/leading-\\[[^\\]]+\\]/]",
+          "message": "[DS §2.6] Forbidden arbitrary line-height value. Use `leading-tight` (headings), `leading-relaxed` (body), `leading-snug` (labels), or `leading-none` (numbers). See DESIGN_SYSTEM.md §2.6."
         }
       ],
     },

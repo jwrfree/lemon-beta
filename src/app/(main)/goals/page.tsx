@@ -189,7 +189,7 @@ interface GoalRow {
                   <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     <Wallet className="w-5 h-5 text-white" strokeWidth={1.5} />
                   </div>
-                  <span className="text-sm font-medium tracking-wider uppercase">Total Tabungan Terkumpul</span>
+                  <span className="text-sm font-medium tracking-widest uppercase">Total Tabungan Terkumpul</span>
                 </div>
                 
                 <h2 className="text-4xl md:text-5xl font-medium tracking-tight">
@@ -292,7 +292,7 @@ interface GoalRow {
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-xs px-2 py-1 rounded-md uppercase tracking-wider font-medium bg-muted/50">
+                        <Badge variant="secondary" className="text-xs px-2 py-1 rounded-md uppercase tracking-widest font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
@@ -382,7 +382,7 @@ interface GoalRow {
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
                         </div>
-                        <Badge variant="secondary" className="text-xs px-2 py-1 rounded-lg uppercase tracking-wider font-medium bg-muted/50">
+                        <Badge variant="secondary" className="text-xs px-2 py-1 rounded-lg uppercase tracking-widest font-medium bg-muted/50">
                           {goal.category}
                         </Badge>
                       </div>
