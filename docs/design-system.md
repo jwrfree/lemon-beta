@@ -21,13 +21,13 @@ Use only the following design tokens for border radius. Raw Tailwind radius util
 
 ## 2. Elevation Scale
 
-Use only the following shadow tokens. Limit maximum elevation depth to **3 levels per screen**.
+Use only the following shadow tokens. All three are explicitly defined in `tailwind.config.ts`. Limit maximum elevation depth to **3 levels per screen**.
 
-| Token | Purpose |
-| :--- | :--- |
-| `shadow-card` | Base card surface |
-| `shadow-lg` | Modal / bottom sheet |
-| `shadow-xl` | Overlay / popover (use sparingly) |
+| Token | CSS definition | Purpose |
+| :--- | :--- | :--- |
+| `shadow-card` | `0 2px 8px -2px rgba(0,0,0,0.10)` | Base card surface |
+| `shadow-lg` | `0 8px 24px -4px rgba(0,0,0,0.12)` | Modal / bottom sheet |
+| `shadow-xl` | `0 20px 40px -8px rgba(0,0,0,0.16)` | Overlay / popover (use sparingly) |
 
 **Rules:**
 - No more than 3 distinct elevation levels visible on any single screen at once.
@@ -37,8 +37,8 @@ Use only the following shadow tokens. Limit maximum elevation depth to **3 level
 
 ## 3. Border & Depth
 
-- **Border is for separation only** — never use border as a substitute for elevation.
-- **No strong shadow + strong border combination** — pick one or the other to convey depth.
+- **Border is for separation only** — use `border-border` (full opacity) for structural dividers; use `border-border/20` or lower for subtle inset separators. Never use border as a substitute for elevation.
+- **No elevated shadow + opaque border combination** — do not pair `shadow-lg` or `shadow-xl` with a fully opaque border (`border-border`). If elevation is needed, let shadow carry it; a hairline tint (`border-border/10`) is acceptable.
 - **CTA buttons must not use shadow** — button prominence comes from color and contrast, not elevation.
 
 ---

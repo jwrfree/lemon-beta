@@ -130,14 +130,14 @@ export default {
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        sm: 'var(--radius-sm)',           // 6px — chips, badges, small elements
+        md: 'var(--radius-md)',           // 8px — inputs, buttons, secondary cards
+        lg: 'var(--radius-lg)',           // 12px — standard cards, panels
         // Design-system named tiers — use these instead of arbitrary values
-        'card':         'var(--radius-card)',          // flat / list cards
-        'card-premium': 'var(--radius-card-premium)',  // DNA-gradient premium cards
-        'card-glass':   'var(--radius-card-glass)',    // glass inset panels inside premium cards
-        'card-icon':    'var(--radius-card-icon)',     // icon containers inside premium cards
+        'card':         'var(--radius-card)',          // 24px — hero cards, modals, bottom sheets
+        'card-premium': 'var(--radius-card-premium)',  // 32px — DNA-gradient premium cards
+        'card-glass':   'var(--radius-card-glass)',    // 24px — glass inset panels inside premium cards
+        'card-icon':    'var(--radius-card-icon)',     // 20px — icon containers inside premium cards
       },
       fontSize: {
         // Design-system label token — use `text-label` instead of text-[10px], text-[9px], text-[11px]
@@ -171,6 +171,8 @@ export default {
       },
       boxShadow: {
         card: '0 2px 8px -2px rgba(0, 0, 0, 0.1), 0 1px 4px -2px rgba(0, 0, 0, 0.06)',
+        lg:   '0 8px 24px -4px rgba(0, 0, 0, 0.12), 0 4px 12px -4px rgba(0, 0, 0, 0.08)',
+        xl:   '0 20px 40px -8px rgba(0, 0, 0, 0.16), 0 8px 16px -4px rgba(0, 0, 0, 0.10)',
       },
     },
   },
