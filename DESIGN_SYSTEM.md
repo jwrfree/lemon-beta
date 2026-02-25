@@ -1,6 +1,6 @@
 # Lemon Beta — Design System
 
-> **Version:** 1.3  
+> **Version:** 1.4  
 > **Status:** Active — all new code must comply.  
 > **Source of truth:** This document + `tailwind.config.ts` + `globals.css`.  
 > **Enforcement:** ESLint (`eslint.config.mjs`) + code review checklist below.
@@ -578,18 +578,23 @@ Target: Enforce semantic interaction state consistency across all interactive co
 - [x] `dropdown-menu.tsx` — disabled items use `data-[disabled]:text-muted-foreground data-[disabled]:opacity-60`
 - [x] Update `DESIGN_SYSTEM.md` with §8 Interaction Tokens section
 
-### Phase 3 — Typography (1 sprint)
-Target: Replace all raw badge patterns and arbitrary radius values.
+### Phase 3 — Typography Rhythm & Spacing Harmonization ✅ DONE in DS 1.4
+Target: Normalize font-weight usage and remove arbitrary color/typography values across all components.
 
-Process:
-1. Replace all 63+ inline badge colour class strings with `<StatusBadge variant="...">`.
-   - `reminders-dashboard.tsx` (4 patterns)
-   - `transaction-list-item.tsx`
-   - `goals/page.tsx`
-   - All remaining feature files
-2. Replace `rounded-[32px]` → `rounded-card-premium` in `budget-card.tsx`, `goal-list.tsx`, `transaction-composer.tsx`.
-3. Replace `rounded-[24px]` → `rounded-card-glass`.
-4. Replace `rounded-[20px]` → `rounded-card-icon`.
+- [x] Replace all `font-bold` usages with DS-compliant weights:
+  - Headings (h2/h3/h4, AlertDialogTitle): `font-bold` → `font-semibold`
+  - Stat values / amounts (risk score, chart totals, budget inputs, usage counters): `font-bold` → `font-medium`
+  - Section micro-labels (uppercase + tracking-widest pattern): `font-bold` → `font-semibold`
+  - Inline currency value badge: `font-bold` → `font-medium`
+- [x] Replace arbitrary color `text-[#064e4b]` → `text-primary` (semantic token)
+- [x] Files normalized: `budgeting/[id]/page.tsx`, `budgeting/page.tsx`, `desktop-wallet-view.tsx`, `risk-score-card.tsx`, `chart-lists.tsx`, `deepseek-usage-card.tsx`, `budget-status-pill.tsx`, `result-card.tsx`, `add-budget-modal.tsx`, `edit-budget-modal.tsx`
+
+Rationale:
+- `font-bold` is reserved for marketing/landing pages only (DS §2.2)
+- All numeric/amount displays use `font-medium` per DS `number-display` token rule
+- All heading elements use `font-semibold` per DS §2.2
+- All section micro-labels use `font-semibold` per `label-xs` utility rule
+- Arbitrary hex colors replaced with semantic tokens per DS P1 (Tokens over Literals)
 
 ### Phase 4 — FAB Consolidation (0.5 sprint)
 Target: Replace all 8 inline FAB patterns with `<FAB>`.

@@ -159,7 +159,7 @@ export default function BudgetingPage() {
                                                 <div className="p-4 rounded-card-glass bg-white/10 backdrop-blur-md border border-white/10 flex justify-between items-center">
                                                     <div className="flex items-center gap-3">
                                                         <div className="h-10 w-10 rounded-card-icon bg-white p-2 flex items-center justify-center shrink-0">
-                                                            <Sparkles className="h-5 w-5 text-[#064e4b]" />
+                                                            <Sparkles className="h-5 w-5 text-primary" />
                                                         </div>
                                                         <div className="min-w-0">
                                                             <p className="label-xs text-white/60 mb-0.5">Sisa Dana Aman</p>

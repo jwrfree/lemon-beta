@@ -447,7 +447,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         <Card className="max-w-2xl mx-auto bg-card rounded-lg border border-border overflow-hidden shadow-card">
                                             <div className="p-10 space-y-10">
                                                 <div className="space-y-3">
-                                                    <h4 className="text-2xl font-bold tracking-tighter">Asset Control Center</h4>
+                                                    <h4 className="text-2xl font-semibold tracking-tighter">Asset Control Center</h4>
                                                     <p className="text-sm text-muted-foreground leading-relaxed">Kelola integrasi dan otorisasi untuk aset strategis {activeWallet.name}.</p>
                                                 </div>
 
@@ -476,7 +476,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                                 </AlertDialogTrigger>
                                                                 <AlertDialogContent className="rounded-lg border-border/40">
                                                                     <AlertDialogHeader>
-                                                                        <AlertDialogTitle className="font-bold tracking-tight text-2xl">Yakin ingin menghapus ini?</AlertDialogTitle>
+                                                                        <AlertDialogTitle className="font-semibold tracking-tight text-2xl">Yakin ingin menghapus ini?</AlertDialogTitle>
                                                                         <AlertDialogDescription className="text-sm leading-relaxed">
                                                                             Tindakan ini permanen. {activeWallet.name} akan dihapus beserta seluruh referensi yang melampirinya. Saldo harus nol untuk melanjutkan.
                                                                         </AlertDialogDescription>
@@ -520,7 +520,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 <WalletIcon className="h-12 w-12 text-muted-foreground/20" />
                             </div>
                             <div className="space-y-3">
-                                <h3 className="text-2xl font-bold tracking-tighter">Pusat Strategi Aset</h3>
+                                <h3 className="text-2xl font-semibold tracking-tighter">Pusat Strategi Aset</h3>
                                 <p className="text-sm text-muted-foreground max-w-[320px] leading-relaxed mx-auto">
                                     Silakan pilih salah satu instrument keuangan dari Master List di sebelah kiri untuk memulai audit dan analisis.
                                 </p>

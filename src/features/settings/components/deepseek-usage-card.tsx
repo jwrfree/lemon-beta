@@ -87,7 +87,7 @@ export const DeepSeekUsageCard = () => {
                     <div className="space-y-4">
                         <div className="flex flex-col gap-1">
                             <div className="flex items-baseline gap-1">
-                                <span className="text-2xl md:text-3xl font-bold tracking-tighter">
+                                <span className="text-2xl md:text-3xl font-medium tracking-tighter">
                                     {currency === 'CNY' ? '¥' : '$'}
                                     {balance ? totalBalance.toFixed(2) : '...'}
                                 </span>

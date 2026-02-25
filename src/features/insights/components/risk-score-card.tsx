@@ -95,7 +95,7 @@ export const RiskScoreCard = () => {
                     <div className="space-y-6 flex-1">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
-                                <span className={cn("text-5xl font-bold tracking-tighter tabular-nums drop-", config.color)}>
+                                <span className={cn("text-5xl font-medium tracking-tighter tabular-nums drop-", config.color)}>
                                     {risk.level}
                                 </span>
                                 <div className="h-2 w-2 rounded-full bg-white/20 animate-ping" />

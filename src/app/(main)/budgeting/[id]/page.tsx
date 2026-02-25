@@ -76,7 +76,7 @@ export default function BudgetDetailPage() {
                         <div className="p-5 bg-rose-500/10 rounded-card-premium mb-6">
                             <AlertCircle className="h-12 w-12 text-rose-500" strokeWidth={1.5} />
                         </div>
-                        <h2 className="text-2xl font-bold tracking-tighter">Tidak Ditemukan</h2>
+                        <h2 className="text-2xl font-semibold tracking-tighter">Tidak Ditemukan</h2>
                         <p className="text-sm font-medium text-muted-foreground mt-3">Anggaran ini mungkin sudah dihapus atau dipindahkan.</p>
                         <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-md h-11 px-6">
                             <ArrowLeft className="mr-2 h-4 w-4" />
