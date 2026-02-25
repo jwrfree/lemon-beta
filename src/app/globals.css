@@ -147,13 +147,18 @@
     --input: hsl(var(--gray-200));
     --ring: hsl(var(--gray-950));
     
-    --radius: 0.875rem; /* 14px for mobile */
+    --radius: 0.875rem; /* 14px — legacy base, kept for any residual uses */
 
-    /* Design-system radius tiers */
-    --radius-card:         var(--radius);  /* flat / list cards */
-    --radius-card-premium: 2rem;           /* 32px — DNA-gradient premium cards */
-    --radius-card-glass:   1.5rem;         /* 24px — glass inset panels */
-    --radius-card-icon:    1.25rem;        /* 20px — icon containers inside premium cards */
+    /* Design-system radius tokens (fixed, non-responsive) */
+    --radius-sm: 0.375rem;  /* 6px  — chips, badges, small UI elements */
+    --radius-md: 0.5rem;    /* 8px  — inputs, buttons, secondary cards */
+    --radius-lg: 0.75rem;   /* 12px — standard cards, panels */
+
+    /* Design-system named tiers */
+    --radius-card:         1.5rem;                   /* 24px — hero cards, modals, bottom sheets */
+    --radius-card-premium: 2rem;                     /* 32px — DNA-gradient premium cards */
+    --radius-card-glass:   1.5rem;                   /* 24px — glass inset panels */
+    --radius-card-icon:    1.25rem;                  /* 20px — icon containers inside premium cards */
 
     @media (min-width: 768px) {
       :root {
