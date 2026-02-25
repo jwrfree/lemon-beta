@@ -92,11 +92,6 @@ export default function BudgetingPage() {
                                 variant="default"
                             />
                         </motion.div>
-                            >
-                                <PlusCircle className="mr-2 h-6 w-6" />
-                                Buat Anggaran Pertama
-                            </Button>
-                        </motion.div>
                     ) : (
                         <div className="max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
 
