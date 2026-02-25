@@ -48,7 +48,7 @@ export default function WalletsPage() {
 
         {wallets.length === 0 ? (
           <main className="flex-1 flex flex-col items-center justify-center p-6 bg-background">
-            <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
+            <div className="max-w-[320px] w-full p-7 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                 <Wallet className="h-40 w-40" />
               </div>
@@ -135,8 +135,8 @@ export default function WalletsPage() {
         />
         <div className="flex-1">
           {wallets.length === 0 ? (
-            <main className="flex h-full items-center justify-center p-8 bg-background">
-              <div className="max-w-md w-full p-12 bg-card rounded-lg shadow-card border border-border text-center relative overflow-hidden">
+            <main className="flex h-full items-center justify-center p-6 bg-background">
+              <div className="max-w-md w-full p-7 bg-card rounded-lg shadow-card border border-border text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                   <Wallet className="h-40 w-40" />
                 </div>

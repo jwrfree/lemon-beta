@@ -351,7 +351,7 @@ export const DesktopDashboard = () => {
                                 </motion.div>
                             ) : (
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="bg-card rounded-lg p-8 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                    <div className="bg-card rounded-lg p-6 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <PieIcon className="w-8 h-8" />
                                         </div>
@@ -361,7 +361,7 @@ export const DesktopDashboard = () => {
                                         </div>
                                         <Button variant="outline" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
                                     </div>
-                                    <div className="bg-card rounded-lg p-8 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                    <div className="bg-card rounded-lg p-6 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <TrendingUp className="w-8 h-8" />
                                         </div>

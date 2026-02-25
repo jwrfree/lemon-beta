@@ -34,7 +34,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
     const { openEditGoalModal } = useUI();
 
     return (
-        <div className="space-y-5">
+        <div className="space-y-4">
             {goals.map(goal => {
                 const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
                 const Icon = (goal.icon && goalIcons[goal.icon]) || Rocket;
@@ -88,7 +88,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                             </CardHeader>
                             
                             <CardContent className="space-y-6 p-7 pt-2 relative z-10 text-white">
-                                <div className="space-y-5">
+                                <div className="space-y-4">
                                     <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner flex justify-between items-end">
                                         <div className="flex flex-col">
                                             <span className="label-xs text-white/40 mb-1.5">Accumulated</span>

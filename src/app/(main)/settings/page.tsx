@@ -116,7 +116,7 @@ function SettingsContent() {
                 {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
                 <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
                     {/* Identity Card */}
-                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl rounded-card-premium p-8 flex flex-col justify-between" delay={0.05}>
+                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl rounded-card-premium p-7 flex flex-col justify-between" delay={0.05}>
                         <div className="flex justify-between items-start">
                             <div className="space-y-1">
                                 <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">Digital ID</p>
@@ -205,7 +205,7 @@ function SettingsContent() {
                         {deferredPrompt && (
                             <BentoItem
                                 onClick={handleInstallClick}
-                                className="col-span-1 md:col-span-3 bg-teal-900 text-white shadow-xl rounded-card-premium p-8 flex items-center justify-between group overflow-hidden relative"
+                                className="col-span-1 md:col-span-3 bg-teal-900 text-white shadow-xl rounded-card-premium p-7 flex items-center justify-between group overflow-hidden relative"
                                 delay={0.32}
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-teal-800 to-teal-900 opacity-50" />
@@ -256,7 +256,7 @@ function SettingsContent() {
                         </div>
                     </BentoItem>
 
-                    <BentoItem delay={0.4} className="p-8 flex flex-col justify-center gap-6 bg-muted/30 border-dashed border-2 border-border/50 rounded-card-premium">
+                    <BentoItem delay={0.4} className="p-7 flex flex-col justify-center gap-6 bg-muted/30 border-dashed border-2 border-border/50 rounded-card-premium">
                         <div className="flex flex-col gap-1 opacity-40">
                             <div className="flex items-center gap-2">
                                 <Monitor className="w-4 h-4" />

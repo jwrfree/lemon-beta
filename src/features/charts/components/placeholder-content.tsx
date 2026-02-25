@@ -14,7 +14,7 @@ export const PlaceholderContent = ({
     text,
 }: PlaceholderContentProps) => (
     <Card className="border-dashed border-border bg-muted">
-        <CardContent className="flex flex-col items-center justify-center gap-5 py-12 text-center">
+        <CardContent className="flex flex-col items-center justify-center gap-4 py-12 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Icon className="h-8 w-8" strokeWidth={1.5} />
             </div>

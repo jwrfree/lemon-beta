@@ -237,7 +237,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
               )}
 
               {((step === 3 && !hasSubCategories) || step === 4) && (
-                <div className="space-y-8 pt-2">
+                <div className="space-y-6 pt-2">
                   {/* Recommendation Card */}
                   {loadingRec ? (
                     <div className="h-24 w-full animate-pulse bg-muted/50 rounded-card-glass" />

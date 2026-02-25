@@ -96,7 +96,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                         variant="outline" 
                         onClick={loadMore} 
                         disabled={isLoading}
-                        className="w-full md:w-auto md:px-8 text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all"
+                        className="w-full md:w-auto md:px-6 text-muted-foreground hover:bg-primary/5 hover:text-primary transition-all"
                     >
                         {isLoading ? (
                             <>

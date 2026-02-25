@@ -43,7 +43,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="relative overflow-hidden rounded-card-premium bg-teal-950 text-white p-8 md:p-12 shadow-card mx-4 mt-4 border border-white/10">
+        <div className="relative overflow-hidden rounded-card-premium bg-teal-950 text-white p-7 shadow-card mx-4 mt-4 border border-white/10">
             {/* Background Chart */}
             {mounted && dataPoints.length > 0 && (
                 <div className="absolute inset-x-0 bottom-0 h-48 opacity-10 pointer-events-none">

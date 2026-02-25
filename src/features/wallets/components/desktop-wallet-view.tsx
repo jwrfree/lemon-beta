@@ -148,7 +148,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
     return (
         <div className="flex flex-col space-y-6 p-6 max-w-[1600px] mx-auto w-full min-h-screen">
             {/* 1. EMPOWERING HERO HEADER - Compact Command Center */}
-            <header className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+            <header className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
                 <div className="lg:col-span-5 relative overflow-hidden rounded-lg bg-teal-950 p-6 shadow-card min-h-[160px] flex flex-col justify-center">
                     {/* Subtle Pattern Overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
@@ -222,10 +222,10 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
             </header>
 
             {/* 2. DYNAMIC WORKSPACE GRID */}
-            <main className="grid grid-cols-1 xl:grid-cols-[400px,1fr] gap-10 items-start">
+            <main className="grid grid-cols-1 xl:grid-cols-[400px,1fr] gap-6 items-start">
 
                 {/* LEFT NAVIGATOR: MASTER COLLECTION */}
-                <div className="flex flex-col space-y-5 xl:sticky xl:top-6">
+                <div className="flex flex-col space-y-4 xl:sticky xl:top-6">
                     <div className="space-y-4 bg-card p-5 rounded-lg shadow-card">
                         <div className="flex items-center justify-between">
                             <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground opacity-60">Portfolio Accounts</h2>
@@ -321,9 +321,9 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 </div>
 
                 {/* RIGHT CANVAS: SELECTED ASSET INSIGHTS */}
-                <div className="flex flex-col space-y-8 min-w-0">
+                <div className="flex flex-col space-y-6 min-w-0">
                     {activeWallet ? (
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             {/* Detailed Asset Header Card */}
                             <Card className="relative bg-card shadow-card rounded-lg overflow-hidden group border-none">
                                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -415,7 +415,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </TabsContent>
 
                                     <TabsContent value="analytics" className="m-0 p-0">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <Card className="p-6 bg-card rounded-lg shadow-card space-y-6 border-none">
                                                 <div className="flex items-center justify-between">
                                                     <h4 className="text-xs font-medium uppercase tracking-widest opacity-40">Cashflow Stats</h4>
@@ -445,13 +445,13 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                     <TabsContent value="settings" className="m-0 p-0">
                                         <Card className="max-w-2xl mx-auto bg-card rounded-lg border border-border overflow-hidden shadow-card">
-                                            <div className="p-10 space-y-10">
+                                            <div className="p-7 space-y-6">
                                                 <div className="space-y-3">
                                                     <h4 className="text-2xl font-semibold tracking-tighter">Asset Control Center</h4>
                                                     <p className="text-sm text-muted-foreground leading-relaxed">Kelola integrasi dan otorisasi untuk aset strategis {activeWallet.name}.</p>
                                                 </div>
 
-                                                <div className="space-y-5">
+                                                <div className="space-y-4">
                                                     <div className="p-6 rounded-lg border border-border bg-secondary/40 flex items-center justify-between group hover:border-primary/20 transition-all">
                                                         <div className="space-y-1">
                                                             <p className="text-sm font-semibold tracking-tight">Instrument Identity</p>

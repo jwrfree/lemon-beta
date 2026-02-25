@@ -47,7 +47,7 @@ export const BudgetingDashboard = () => {
     if (budgets.length === 0) {
         return (
             <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
+                <div className="max-w-[320px] w-full p-7 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                         <HandCoins className="h-40 w-40" />
                     </div>
@@ -70,14 +70,14 @@ export const BudgetingDashboard = () => {
     }
 
     return (
-        <div className="w-full space-y-8 animate-in slide-in-from-bottom-2 duration-500 fade-in">
+        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in">
             <div className="grid grid-cols-12 gap-6">
 
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
                     <Card className="border-none shadow-card rounded-card-premium bg-card overflow-hidden">
-                        <CardContent className="p-8 space-y-8">
+                        <CardContent className="p-7 space-y-6">
                             <div className="h-48 flex justify-center relative">
                                 <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
                                     <p className="text-xs font-semibold text-muted-foreground/40 uppercase tracking-widest">Sisa</p>

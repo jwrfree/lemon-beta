@@ -70,7 +70,7 @@ export const RiskScoreCard = () => {
             </div>
             <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl"></div>
 
-            <div className="p-7 space-y-8 relative z-10">
+            <div className="p-7 space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className={cn("p-3 rounded-card bg-white/10 backdrop-blur-xl border border-white/10 shadow-inner")}>

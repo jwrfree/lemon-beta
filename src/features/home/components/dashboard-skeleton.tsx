@@ -17,7 +17,7 @@ export const DashboardSkeleton = () => {
                 </div>
             </div>
 
-            <div className="flex-1 p-6 space-y-8 overflow-y-auto">
+            <div className="flex-1 p-6 space-y-6 overflow-y-auto">
                 {/* Finance Overview Skeleton (4 Cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[...Array(4)].map((_, i) => (
@@ -36,7 +36,7 @@ export const DashboardSkeleton = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Main Content Area (Col 8) */}
-                    <div className="lg:col-span-8 space-y-8">
+                    <div className="lg:col-span-8 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
                             {/* Cashflow Chart */}
                             <Card className="md:col-span-3 p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900">
@@ -82,7 +82,7 @@ export const DashboardSkeleton = () => {
                     </div>
 
                     {/* Sidebar Area (Col 4) */}
-                    <div className="lg:col-span-4 space-y-8">
+                    <div className="lg:col-span-4 space-y-6">
                         {[...Array(3)].map((_, i) => (
                             <Card key={i} className="p-6 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-glass bg-white dark:bg-zinc-900 space-y-4">
                                 <Skeleton className="h-5 w-32" />

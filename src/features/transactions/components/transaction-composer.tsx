@@ -207,7 +207,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     </Button>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="overflow-y-auto p-6 space-y-8">
+                <form onSubmit={handleSubmit(onSubmit)} className="overflow-y-auto p-6 space-y-6">
                     <TransactionTypeTabs value={type} onChange={handleTypeChange} />
                     <AmountInput control={control} name="amount" error={getError('amount')} />
 
@@ -218,7 +218,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                                 <WalletSelector control={control} name="toWalletId" wallets={wallets} label="Ke Dompet" placeholder="Tujuan" excludedWalletId={fromWalletId} error={getError('toWalletId')} />
                             </motion.div>
                         ) : (
-                            <motion.div key="regular-fields" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-8">
+                            <motion.div key="regular-fields" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={getError('walletId')} />
                                     <DatePicker control={control} name="date" error={getError('date')} />
