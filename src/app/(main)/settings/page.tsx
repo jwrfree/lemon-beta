@@ -66,9 +66,14 @@ function SettingsContent() {
     const { theme, setTheme } = useTheme();
     const { deferredPrompt, setDeferredPrompt } = useUI();
     const [mounted, setMounted] = useState(false);
+    const [isStandalone, setIsStandalone] = useState(false);
 
     useEffect(() => {
         setMounted(true);
+        setIsStandalone(
+            window.matchMedia('(display-mode: standalone)').matches ||
+            (window.navigator as any).standalone === true
+        );
     }, []);
 
     const toggleTheme = () => {
@@ -200,36 +205,55 @@ function SettingsContent() {
 
                 {/* BARIS 3: List Menu (Settings Detail) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* App Installation - Premium CTA */}
-                    <AnimatePresence>
-                        {deferredPrompt && (
-                            <BentoItem
-                                onClick={handleInstallClick}
-                                className="col-span-1 md:col-span-3 bg-teal-900 text-white shadow-xl rounded-card-premium p-7 flex items-center justify-between group overflow-hidden relative"
-                                delay={0.32}
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-teal-800 to-teal-900 opacity-50" />
-                                <div className="relative z-10 flex items-center gap-6">
-                                    <div className="h-16 w-16 rounded-card-glass bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                                        <Download className="h-8 w-8 text-white" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-semibold tracking-tighter flex items-center gap-2">
-                                            Instal Lemon
-                                            <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
-                                        </h3>
-                                        <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">Akses lebih cepat & mode luring penuh</p>
-                                    </div>
+                    {/* App Installation - Always Visible */}
+                    {mounted && (
+                        <BentoItem
+                            onClick={deferredPrompt ? handleInstallClick : undefined}
+                            className={cn(
+                                "col-span-1 md:col-span-3 text-white shadow-xl rounded-card-premium p-7 flex items-center justify-between group overflow-hidden relative",
+                                isStandalone
+                                    ? "bg-emerald-900 cursor-default"
+                                    : deferredPrompt
+                                        ? "bg-teal-900"
+                                        : "bg-teal-900/60 cursor-default"
+                            )}
+                            delay={0.32}
+                        >
+                            <div className={cn("absolute inset-0 opacity-50", isStandalone ? "bg-gradient-to-r from-emerald-800 to-emerald-900" : "bg-gradient-to-r from-teal-800 to-teal-900")} />
+                            <div className="relative z-10 flex items-center gap-6">
+                                <div className="h-16 w-16 rounded-card-glass bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                    <Download className="h-8 w-8 text-white" />
                                 </div>
-                                <div className="relative z-10 bg-white text-teal-900 font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-full shadow-lg group-hover:bg-teal-50 transition-colors">
+                                <div>
+                                    <h3 className="text-xl font-semibold tracking-tighter flex items-center gap-2">
+                                        {isStandalone ? 'Sudah Terinstal' : 'Instal Lemon'}
+                                        <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
+                                    </h3>
+                                    <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">
+                                        {isStandalone
+                                            ? 'Aplikasi berjalan di mode terpasang'
+                                            : deferredPrompt
+                                                ? 'Akses lebih cepat & mode luring penuh'
+                                                : 'Gunakan menu browser untuk memasang aplikasi'}
+                                    </p>
+                                </div>
+                            </div>
+                            {!isStandalone && (
+                                <div className={cn(
+                                    "relative z-10 font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-full shadow-lg transition-colors",
+                                    deferredPrompt
+                                        ? "bg-white text-teal-900 group-hover:bg-teal-50"
+                                        : "bg-white/20 text-white/60 cursor-not-allowed"
+                                )}>
                                     Pasang
                                 </div>
+                            )}
 
-                                {/* Decor */}
-                                <div className="absolute -right-4 -bottom-4 h-32 w-32 bg-white/10 blur-3xl rounded-full" />
-                            </BentoItem>
-                        )}
-                    </AnimatePresence>
+                            {/* Decor */}
+                            <div className="absolute -right-4 -bottom-4 h-32 w-32 bg-white/10 blur-3xl rounded-full" />
+                        </BentoItem>
+                    )}
+
 
                     <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1 rounded-card-premium">
                         <div className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Pengaturan Lanjutan</div>
