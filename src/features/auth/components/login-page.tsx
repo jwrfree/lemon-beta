@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { AuthModalView } from '@/types/auth';
 import { cn } from '@/lib/utils';
+import { spacing } from '@/lib/layout-tokens';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -158,7 +159,7 @@ export const LoginPage = ({
                 <div className="p-5 pb-6 overflow-y-auto">
                     <p className="text-sm text-muted-foreground mb-4">Masuk menggunakan email yang sudah terdaftar untuk membuka dashboard Lemon.</p>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+                        <form onSubmit={form.handleSubmit(handleLogin)} className={spacing.stack}>
                             <FormField
                                 control={form.control}
                                 name="email"

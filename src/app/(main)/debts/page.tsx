@@ -13,6 +13,7 @@ import { HandCoins, ArrowUpRight, ArrowDownRight, Plus, CalendarClock, ArrowUpDo
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { spacing } from '@/lib/layout-tokens';
 
 import { Progress } from '@/components/ui/progress';
 import { PageHeader } from '@/components/page-header';
@@ -171,7 +172,7 @@ export default function DebtsPage() {
                         </div>
                         <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl"></div>
 
-                        <CardContent className="p-7 space-y-6 relative z-10">
+                        <CardContent className={cn(spacing.cardPremium, "space-y-6 relative z-10")}>
                             <div>
                                 <p className="label-xs text-white/50 mb-2">Debt Overview</p>
                                 <div className="flex items-baseline gap-2">
@@ -232,7 +233,7 @@ export default function DebtsPage() {
                                     >
                                         <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/10 blur-2xl"></div>
                                         
-                                        <CardContent className="p-7 relative z-10 text-white">
+                                        <CardContent className={cn(spacing.cardPremium, "relative z-10 text-white")}>
                                             <div className="flex items-start justify-between gap-4 mb-8">
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className="font-semibold text-lg tracking-tight truncate">{debt.title}</h3>

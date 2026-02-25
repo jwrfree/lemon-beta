@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
 import { PlusCircle, HandCoins, Plus, Sparkles, TrendingUp, Target } from 'lucide-react';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
-import { formatCurrency, triggerHaptic } from '@/lib/utils';
+import { formatCurrency, triggerHaptic, cn } from '@/lib/utils';
 import { Pie, PieChart, Cell } from "recharts"
 import { useUI } from '@/components/ui-provider';
 import { startOfMonth, endOfMonth } from 'date-fns';
@@ -16,6 +16,7 @@ import { PageHeader } from '@/components/page-header';
 import { BudgetCard } from '@/features/budgets/components/budget-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChartContainer } from '@/components/ui/chart';
+import { spacing } from '@/lib/layout-tokens';
 
 function BudgetingPageSkeleton() {
     return (
@@ -117,7 +118,7 @@ export default function BudgetingPage() {
                                             <TrendingUp className="h-40 w-40" />
                                         </div>
 
-                                        <CardContent className="p-7 space-y-6 relative z-10">
+                                        <CardContent className={cn(spacing.cardPremium, "space-y-6 relative z-10")}>
                                             <div className="space-y-1">
                                                 <h2 className="label-xs text-white/60">Ringkasan Bulan Ini</h2>
                                                 <p className="text-2xl font-semibold tracking-tight">Kesehatan Anggaran</p>

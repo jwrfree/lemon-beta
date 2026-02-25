@@ -13,6 +13,7 @@ import { CalendarClock, ArrowUpRight, ArrowDownRight, ArrowUpDown, Plus } from '
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { spacing } from '@/lib/layout-tokens';
 
 import { Progress } from '@/components/ui/progress';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
@@ -161,7 +162,7 @@ export const DebtsDashboard = () => {
                 {/* Visual Summary Card - Compact */}
                 <div className="grid grid-cols-2 gap-3">
                     <Card className="shadow-card border-border/60 bg-gradient-to-br from-card to-destructive/5 overflow-hidden">
-                        <CardContent className="p-4">
+                        <CardContent className={spacing.cardFlat}>
                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1">
                                 <ArrowUpRight className="h-3 w-3 text-destructive" /> Saya Berhutang
                             </p>
@@ -169,7 +170,7 @@ export const DebtsDashboard = () => {
                         </CardContent>
                     </Card>
                     <Card className="shadow-card border-border/60 bg-gradient-to-br from-card to-emerald-500/5 overflow-hidden">
-                        <CardContent className="p-4">
+                        <CardContent className={spacing.cardFlat}>
                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1">
                                 <ArrowDownRight className="h-3 w-3 text-emerald-600" /> Piutang Saya
                             </p>
@@ -199,7 +200,7 @@ export const DebtsDashboard = () => {
                             className="overflow-hidden hover:shadow-card transition-shadow cursor-pointer border-none shadow-card bg-card"
                             onClick={() => router.push(`/debts/${debt.id}`)}
                         >
-                            <CardContent className="p-4">
+                            <CardContent className={spacing.cardFlat}>
                                 <div className="flex items-start justify-between gap-4 mb-3">
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-medium text-sm truncate">{debt.title}</h3>

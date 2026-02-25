@@ -19,6 +19,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/page-header";
+import { cn } from "@/lib/utils";
+import { spacing } from "@/lib/layout-tokens";
 
 // Helper untuk format mata uang IDR
 const formatCurrency = (amount: number) => {
@@ -170,7 +172,7 @@ interface GoalRow {
         }
       />
 
-      <main className="flex-1 p-4 md:p-6 space-y-6 pb-24 max-w-7xl mx-auto w-full">
+      <main className={cn(spacing.container, "max-w-7xl mx-auto w-full")}>
         {/* Summary Card - Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <motion.div 
@@ -270,7 +272,7 @@ interface GoalRow {
           </div>
 
           <TabsContent value="active" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3", spacing.gridGap)}>
               {loading ? (
                  // Skeleton Loading State
                  Array.from({ length: 3 }).map((_, i) => (
@@ -365,7 +367,7 @@ interface GoalRow {
           </TabsContent>
 
           <TabsContent value="completed" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3", spacing.gridGap)}>
               {goals.filter(g => g.currentAmount >= g.targetAmount).length > 0 ? (
                 goals.filter(g => g.currentAmount >= g.targetAmount).map((goal, index) => (
                 <motion.div

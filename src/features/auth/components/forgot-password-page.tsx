@@ -15,6 +15,7 @@ import { useUI } from '@/components/ui-provider';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { AuthModalView } from '@/types/auth';
 import { cn } from '@/lib/utils';
+import { spacing } from '@/lib/layout-tokens';
 
 
 const formSchema = z.object({
@@ -132,7 +133,7 @@ export const ForgotPasswordPage = ({
                     )}
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(handleReset)} className="space-y-4">
+                        <form onSubmit={form.handleSubmit(handleReset)} className={spacing.stack}>
                             <FormField
                                 control={form.control}
                                 name="email"

@@ -626,7 +626,29 @@ Rationale:
 - `tracking-wider` is reserved for navigation tab triggers, not section micro-labels
 - All all-caps section labels must use `tracking-widest` per DS §2.3
 
-### Phase 4 — FAB Consolidation (0.5 sprint)
+### Phase 4 — Token Abstraction Layer ✅ DONE in DS 1.6
+Target: Abstract structural spacing into semantic tokens to reduce direct Tailwind utility repetition in layout structure.
+
+- [x] Create `src/lib/layout-tokens.ts` — central semantic spacing token registry
+- [x] Define 6 tokens mapped to the approved spacing scale:
+  - `spacing.container` → `flex-1 p-4 md:p-6 space-y-6 pb-24` (DS §5.1 page container)
+  - `spacing.section` → `space-y-6` (DS §5.2 section gap)
+  - `spacing.cardPremium` → `p-7` (DS §4.2 Tier 2 premium card)
+  - `spacing.cardFlat` → `p-4` (DS §4.2 Tier 1 flat card)
+  - `spacing.gridGap` → `gap-4` (DS §5.2 card grid gap)
+  - `spacing.stack` → `space-y-4` (DS §5.2 form field gap)
+- [x] Export `layout` alias for ergonomic JSX: `className={layout.container}`
+- [x] Replace repeated structural utility usage in:
+  - Page containers: `goals/page.tsx`
+  - Section wrappers: `token-calculator/page.tsx`, `net-cashflow-chart.tsx`
+  - CardContent (flat): `debts-dashboard.tsx`
+  - CardContent (premium): `debts/page.tsx`, `budgeting/page.tsx`
+  - Grid layouts: `goals/page.tsx`
+  - Form stacks: `login-page.tsx`, `forgot-password-page.tsx`, `signup-page.tsx`
+
+Token coverage: container×1, section×4, cardFlat×3, cardPremium×3, gridGap×2, stack×3 = 16 replacements.
+
+### Phase 5 — FAB Consolidation (0.5 sprint)
 Target: Replace all 8 inline FAB patterns with `<FAB>`.
 
 Process:
@@ -634,7 +656,7 @@ Process:
 2. Replace inline FABs in: `goals-dashboard.tsx`, `debts-dashboard.tsx`, `budgeting-dashboard.tsx`, `reminders-dashboard.tsx`, `wallets/page.tsx`.
 3. Standardise desktop offset: remove `md:bottom-10 md:right-10` from `budgeting/page.tsx`.
 
-### Phase 5 — Shadow & Blur Audit (0.5 sprint)
+### Phase 6 — Shadow & Blur Audit (0.5 sprint)
 Target: Replace all `shadow-sm` on `<Card>` with `shadow-card`. Replace `backdrop-blur-3xl` on bottom nav.
 
 ---

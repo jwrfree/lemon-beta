@@ -13,6 +13,7 @@ import { countTransactionTokens } from '@/ai/flows/count-tokens-flow';
 import { useUI } from '@/components/ui-provider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
+import { spacing } from '@/lib/layout-tokens';
 import { PageHeader } from '@/components/page-header';
 
 const DEEPSEEK_V3_INPUT_PRICE_PER_1M = 0.14; // USD
@@ -80,7 +81,7 @@ export default function TokenCalculatorPage() {
                     <CardHeader>
                         <CardTitle className="text-lg">Hitung Token & Biaya (DeepSeek V3)</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className={spacing.stack}>
                         <p className="text-sm text-muted-foreground">
                             Masukkan teks transaksi untuk melihat perkiraan jumlah token dan biaya menggunakan model DeepSeek V3 (deepseek-chat).
                         </p>
@@ -110,13 +111,13 @@ export default function TokenCalculatorPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="space-y-6"
+                            className={spacing.section}
                         >
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="text-lg">Hasil Estimasi Per Transaksi</CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-6">
+                                <CardContent className={spacing.section}>
                                     <div className="grid grid-cols-2 gap-4 text-center">
                                         <div className="p-4 bg-muted rounded-lg">
                                             <p className="text-xs font-medium text-muted-foreground mb-1">Input Token</p>
@@ -159,7 +160,7 @@ export default function TokenCalculatorPage() {
                                 <CardHeader>
                                     <CardTitle className="text-lg">Estimasi Runway (Daya Tahan Saldo)</CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-6">
+                                <CardContent className={spacing.section}>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="budget">Top Up (USD)</Label>
