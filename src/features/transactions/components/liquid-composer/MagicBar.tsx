@@ -85,7 +85,7 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative flex items-center bg-card border border-border rounded-lg shadow-card transition-all duration-500 overflow-hidden px-5 py-3",
+                "relative flex items-center bg-card border border-border rounded-card shadow-card transition-all duration-500 overflow-hidden px-5 py-3",
                 (isProcessing || isListening) ? "border-primary/50 ring-4 ring-primary/10" : "group-focus-within:border-primary/30 group-focus-within:ring-4 group-focus-within:ring-primary/5"
             )}>
                 <div className="mr-3 shrink-0">

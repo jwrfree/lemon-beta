@@ -27,9 +27,9 @@ function BudgetingPageSkeleton() {
                 <Skeleton className="h-10 w-10 rounded-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Skeleton className="md:col-span-1 h-[300px] rounded-lg" />
+                <Skeleton className="md:col-span-1 h-[300px] rounded-card" />
                 <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-48 rounded-lg" />)}
+                    {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-48 rounded-card" />)}
                 </div>
             </div>
         </div>

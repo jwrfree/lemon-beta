@@ -19,7 +19,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
     const efficiency = (data.actualSavings / data.potentialSavings) * 100;
 
     return (
-        <Card className="p-6 border-none rounded-lg bg-card text-foreground shadow-card overflow-hidden relative">
+        <Card className="p-6 border-none rounded-card bg-card text-foreground shadow-card overflow-hidden relative">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-success/10 blur-[100px] rounded-full -mr-20 -mt-20" />
 

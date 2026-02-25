@@ -31,7 +31,7 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
     }
 
     return (
-        <Card className="p-6 bg-card border-none rounded-lg shadow-card">
+        <Card className="p-6 bg-card border-none rounded-card shadow-card">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h3 className="text-lg font-medium tracking-tight flex items-center gap-2">

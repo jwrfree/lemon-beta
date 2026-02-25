@@ -177,7 +177,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     };
 
     return (
-        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
+        <div className="overflow-hidden rounded-card border border-border bg-card shadow-card">
             <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
                     <tr>

@@ -47,7 +47,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={cn(
-                    "p-4 rounded-lg border flex flex-col gap-3 shadow-card",
+                    "p-4 rounded-card border flex flex-col gap-3 shadow-card",
                     config.bg,
                     config.border,
                     className

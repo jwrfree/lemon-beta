@@ -25,7 +25,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
     const isWeekendHeavy = data.weekendAvg > data.weekdayAvg;
 
     return (
-        <Card className="p-6 border-none rounded-lg bg-card shadow-card">
+        <Card className="p-6 border-none rounded-card bg-card shadow-card">
             <h3 className="text-xl font-medium tracking-tight mb-6 flex items-center gap-2">
                 <CalendarDays className="w-5 h-5 text-primary" />
                 Analisis Perilaku

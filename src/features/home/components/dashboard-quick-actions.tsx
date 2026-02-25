@@ -21,7 +21,7 @@ export const DashboardQuickActions = () => {
     } = useUI();
 
     return (
-        <Card className="border-none shadow-card bg-card rounded-lg">
+        <Card className="border-none shadow-card bg-card rounded-card">
             <CardContent className="p-3">
                 <div className="grid grid-cols-5 gap-2">
                     <Button 

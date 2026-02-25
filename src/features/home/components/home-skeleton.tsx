@@ -8,15 +8,15 @@ export const HomeSkeleton = () => (
         </header>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 space-y-6">
-                 <div className="h-48 bg-muted-foreground/20 rounded-md"></div>
+                 <div className="h-48 bg-muted-foreground/20 rounded-card"></div>
                  <div className="grid grid-cols-2 gap-4">
-                    <div className="h-32 bg-muted-foreground/20 rounded-md"></div>
-                    <div className="h-32 bg-muted-foreground/20 rounded-md"></div>
+                    <div className="h-32 bg-muted-foreground/20 rounded-card"></div>
+                    <div className="h-32 bg-muted-foreground/20 rounded-card"></div>
                  </div>
             </div>
             <div className="space-y-6">
-                <div className="h-64 bg-muted-foreground/20 rounded-md"></div>
-                <div className="h-64 bg-muted-foreground/20 rounded-md"></div>
+                <div className="h-64 bg-muted-foreground/20 rounded-card"></div>
+                <div className="h-64 bg-muted-foreground/20 rounded-card"></div>
             </div>
         </div>
     </div>

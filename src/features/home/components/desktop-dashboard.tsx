@@ -308,7 +308,7 @@ export const DesktopDashboard = () => {
                                     {/* ROW 2: Category Matrix */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {/* Pie Chart */}
-                                        <div className="bg-card rounded-lg p-6 shadow-card">
+                                        <div className="bg-card rounded-card p-6 shadow-card">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center gap-2">
                                                     <PieIcon className="w-5 h-5 text-primary" />
@@ -323,7 +323,7 @@ export const DesktopDashboard = () => {
                                         </div>
 
                                         {/* List Breakdown */}
-                                        <div className="bg-card rounded-lg p-6 shadow-card">
+                                        <div className="bg-card rounded-card p-6 shadow-card">
                                             <div className="flex items-center gap-2 mb-6">
                                                 <ArrowUpRight className="w-5 h-5 text-destructive" />
                                                 <h3 className="font-medium text-sm">Top Spenders</h3>
@@ -351,7 +351,7 @@ export const DesktopDashboard = () => {
                                 </motion.div>
                             ) : (
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="bg-card rounded-lg p-6 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                    <div className="bg-card rounded-card p-6 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <PieIcon className="w-8 h-8" />
                                         </div>
@@ -361,7 +361,7 @@ export const DesktopDashboard = () => {
                                         </div>
                                         <Button variant="outline" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
                                     </div>
-                                    <div className="bg-card rounded-lg p-6 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                    <div className="bg-card rounded-card p-6 border border-border shadow-card flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <TrendingUp className="w-8 h-8" />
                                         </div>
@@ -381,7 +381,7 @@ export const DesktopDashboard = () => {
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
 
                             {/* Recent Activity (Moved to Sidebar) */}
-                            <div className="bg-card rounded-lg p-5 shadow-card">
+                            <div className="bg-card rounded-card p-5 shadow-card">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-sm font-medium flex items-center gap-2">
                                         <ListTodo className="w-4 h-4 text-primary" />

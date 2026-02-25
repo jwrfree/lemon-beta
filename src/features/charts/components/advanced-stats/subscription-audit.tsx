@@ -21,7 +21,7 @@ interface SubscriptionAuditProps {
 
 export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProps) {
     return (
-        <Card className="p-6 border-none rounded-lg bg-card shadow-card">
+        <Card className="p-6 border-none rounded-card bg-card shadow-card">
             <div className="flex justify-between items-center mb-6">
                 <div className="space-y-1">
                     <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">

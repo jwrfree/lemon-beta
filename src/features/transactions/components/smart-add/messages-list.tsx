@@ -32,7 +32,7 @@ export const MessagesList = ({ messages, loadingMessage }: MessagesListProps) =>
                     )}
                     {msg.type === 'user-image' && (
                         <div className="flex justify-end">
-                            <Card className="p-1 bg-muted max-w-[180px] border-border overflow-hidden rounded-lg">
+                            <Card className="p-1 bg-muted max-w-[180px] border-border overflow-hidden rounded-card">
                                 <Image src={String(msg.content)} alt="Receipt" width={200} height={300} className="rounded-lg w-full h-auto object-cover" />
                             </Card>
                         </div>
