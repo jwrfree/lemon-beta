@@ -46,7 +46,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                                 {category}
                             </p>
                         </div>
-                        <p className={cn("text-xl md:text-2xl font-bold tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-foreground")}>
+                        <p className={cn("text-xl md:text-2xl font-medium tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-foreground")}>
                             {formatCurrency(amount)}
                         </p>
                     </div>

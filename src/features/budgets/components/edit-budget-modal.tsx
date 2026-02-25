@@ -114,7 +114,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                 id="target-amount"
                 value={formatCurrency(targetAmount)}
                 onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
-                className="text-5xl font-bold border-none focus-visible:ring-0 text-center bg-transparent h-auto p-0 tracking-tighter tabular-nums"
+                className="text-5xl font-medium border-none focus-visible:ring-0 text-center bg-transparent h-auto p-0 tracking-tighter tabular-nums"
                 size="lg"
                 inputMode="numeric"
               />

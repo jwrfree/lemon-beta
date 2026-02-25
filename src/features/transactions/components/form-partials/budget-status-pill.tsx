@@ -42,7 +42,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                         {isOverBudget ? <AlertCircle className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
                         <span className="uppercase tracking-widest">Sisa {category}:</span>
                     </div>
-                    <span className="tabular-nums text-sm font-bold">
+                    <span className="tabular-nums text-sm font-medium">
                         {formatCurrency(remainingBudget)}
                     </span>
                 </div>
