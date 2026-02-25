@@ -190,7 +190,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                 animate={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }) : {}}
                 exit={isModal ? (typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }) : {}}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="w-full max-w-lg bg-background/95 backdrop-blur-xl rounded-t-card-premium md:rounded-card-premium shadow-lg flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border/10 overflow-hidden relative pb-6"
+                className="w-full max-w-lg bg-card rounded-t-card-premium md:rounded-card-premium shadow-lg flex flex-col h-auto max-h-[92vh] md:max-h-[85vh] border border-border overflow-hidden relative pb-6"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="md:hidden w-12 h-1.5 bg-muted rounded-full mx-auto mt-4 mb-1 shrink-0 opacity-40" />
@@ -250,7 +250,7 @@ export const TransactionComposer = ({ onClose, initialData, isModal = true }: Tr
                     )}
                 </form>
 
-                <div className="p-6 border-t border-border/20 sticky bottom-0 bg-background/80 backdrop-blur-md z-10 shrink-0 space-y-6">
+                <div className="p-6 border-t border-border sticky bottom-0 bg-card/80 backdrop-blur-md z-10 shrink-0 space-y-6">
                     {type === 'expense' && <PocketCoPilot />}
                     <BudgetStatusPill category={category} />
 
