@@ -140,7 +140,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                 hideCloseButton
                 style={{ bottom: keyboardHeight }}
                 className={cn(
-                    "rounded-t-xl p-0 flex flex-col border-white/10 shadow-2xl focus:outline-none transition-[bottom] duration-200",
+                    "rounded-t-card p-0 flex flex-col border-white/10 shadow-lg focus:outline-none transition-[bottom] duration-200",
                     isResultMode ? "h-[85dvh]" : "max-h-[85dvh]"
                 )}
             >
@@ -201,7 +201,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                     (inputValue || isListening) ? "opacity-100" : "opacity-0"
                                 )} />
 
-                                <div className="relative bg-card rounded-card-premium p-2 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.5)] transition-all duration-500 hover:shadow-[0_12px_50px_-12px_rgba(0,0,0,0.15)] focus-within:shadow-[0_12px_50px_-12px_rgba(var(--primary-rgb),0.25)]">
+                                <div className="relative bg-card rounded-card-premium p-2 shadow-card transition-all duration-500">
                                     <div className="flex items-end gap-3 px-1">
                                         <TextareaAutosize
                                             ref={textareaRef}
@@ -222,7 +222,7 @@ export const SmartAddOverlay = ({ isOpen, onClose }: SmartAddOverlayProps) => {
                                                 else toggleListening();
                                             }}
                                             className={cn(
-                                                "h-12 w-12 rounded-full flex items-center justify-center shadow-sm transition-all shrink-0",
+                                                "h-12 w-12 rounded-full flex items-center justify-center transition-all shrink-0",
                                                 inputValue.trim()
                                                     ? "bg-primary text-primary-foreground hover:bg-primary/90"
                                                     : isListening ? "bg-destructive text-destructive-foreground animate-pulse" : "bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"

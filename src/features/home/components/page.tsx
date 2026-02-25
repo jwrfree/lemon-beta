@@ -67,7 +67,7 @@ export default function ProfilePage() {
                                     <UserAvatar 
                                         name={displayName || userData.displayName} 
                                         src={photoURL || userData.photoURL} 
-                                        className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-background shadow-sm" 
+                                        className="h-24 w-24 sm:h-32 sm:w-32 border-4 border-background"
                                     />
                                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                                         <Camera className="h-8 w-8 text-white" />

@@ -21,7 +21,7 @@ export const DashboardSkeleton = () => {
                 {/* Finance Overview Skeleton (4 Cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[...Array(4)].map((_, i) => (
-                        <Card key={i} className="p-5 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-glass shadow-sm bg-white dark:bg-zinc-900">
+                        <Card key={i} className="p-5 border-zinc-200/60 dark:border-zinc-800/60 rounded-card-glass shadow-card bg-white dark:bg-zinc-900">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-2">
                                     <Skeleton className="h-3 w-20" />

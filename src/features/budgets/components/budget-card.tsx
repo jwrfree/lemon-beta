@@ -37,28 +37,28 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
     const healthStyles = {
         stable: {
             bar: 'bg-white',
-            glow: 'shadow-[0_0_15px_rgba(255,255,255,0.3)]',
+            glow: '',
             text: 'text-white',
             bg: 'bg-white/20',
             label: 'On Track'
         },
         warning: {
             bar: 'bg-yellow-300',
-            glow: 'shadow-[0_0_15px_rgba(253,224,71,0.4)]',
+            glow: '',
             text: 'text-yellow-300',
             bg: 'bg-yellow-400/20',
             label: 'Running Low'
         },
         critical: {
             bar: 'bg-rose-400',
-            glow: 'shadow-[0_0_15px_rgba(244,63,94,0.4)]',
+            glow: '',
             text: 'text-rose-300',
             bg: 'bg-rose-500/20',
             label: 'Warning'
         },
         over: {
             bar: 'bg-rose-500',
-            glow: 'shadow-[0_0_20px_rgba(225,29,72,0.5)]',
+            glow: '',
             text: 'text-rose-200',
             bg: 'bg-rose-600/30',
             label: 'Exceeded'
@@ -85,7 +85,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 className="w-full h-full text-left focus:outline-none group"
             >
                 <Card 
-                    className="h-full overflow-hidden border-none rounded-card-premium shadow-2xl transition-all duration-500 relative"
+                    className="h-full overflow-hidden border-none rounded-card-premium shadow-card transition-all duration-500 relative"
                     style={{ 
                         background: dna.gradient,
                         boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 

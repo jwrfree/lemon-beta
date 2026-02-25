@@ -133,7 +133,7 @@ export const MobileDashboard = ({
             {/* 1. Header Section */}
             <div className="px-5 pt-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 border-2 border-background shadow-md cursor-pointer" onClick={() => router.push('/settings')}>
+                    <Avatar className="h-10 w-10 border-2 border-background cursor-pointer" onClick={() => router.push('/settings')}>
                         <AvatarImage src={userData?.photoURL} />
                         <AvatarFallback className="bg-primary/10 text-primary font-medium">
                             {firstName[0]}
@@ -169,7 +169,7 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 >
-                    <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white shadow-[0_20px_50px_-12px_rgba(13,148,136,0.3)] dark:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.6)]">
+                    <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white shadow-card">
                         {/* Dynamic Mesh Ornaments */}
                         <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-emerald-400/20 blur-[80px] animate-pulse"></div>
                         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-teal-300/10 blur-[80px]"></div>
@@ -184,7 +184,7 @@ export const MobileDashboard = ({
                                         <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
-                                <div className="text-5xl font-semibold tracking-tighter tabular-nums drop-shadow-sm">
+                                <div className="text-5xl font-semibold tracking-tighter tabular-nums drop-">
                                     <AnimatedCounter value={totalBalance} />
                                 </div>
                                 <div className="mt-6 flex flex-col gap-3">
@@ -295,7 +295,7 @@ export const MobileDashboard = ({
                                 onClick={() => router.push(`/wallets?id=${wallet.id}`)}
                             >
                                 <div 
-                                    className="w-44 h-32 rounded-card-premium p-4 flex flex-col justify-between relative overflow-hidden group shadow-2xl transition-all duration-500"
+                                    className="w-44 h-32 rounded-card-premium p-4 flex flex-col justify-between relative overflow-hidden group shadow-card transition-all duration-500"
                                     style={{ 
                                         background: dna.gradient,
                                         boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 

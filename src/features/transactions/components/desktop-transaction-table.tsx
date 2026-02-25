@@ -109,7 +109,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
             <TableCell>
                 <div className="flex items-center gap-3">
                     <div className={cn(
-                        "h-10 w-10 rounded-lg flex items-center justify-center shrink-0 border border-border shadow-sm overflow-hidden transition-transform group-hover:scale-105",
+                        "h-10 w-10 rounded-lg flex items-center justify-center shrink-0 border border-border overflow-hidden transition-transform group-hover:scale-105",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (

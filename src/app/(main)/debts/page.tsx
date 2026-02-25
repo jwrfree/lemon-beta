@@ -149,11 +149,11 @@ export default function DebtsPage() {
                 showBackButton={true}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-xs font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none shadow-sm">
+                        <SelectTrigger className="w-[140px] h-9 text-xs font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none">
                             <ArrowUpDown className="w-3 h-3 mr-2 text-primary" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                        <SelectContent align="end" className="rounded-card border-none shadow-xl bg-popover/95 backdrop-blur-xl">
                             <SelectItem value="updated_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
                             <SelectItem value="due_soon" className="text-xs font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
                             <SelectItem value="amount_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
@@ -165,7 +165,7 @@ export default function DebtsPage() {
             <main className="flex-1 overflow-y-auto pb-24">
                 <div className="p-4 space-y-8">
                     {/* Summary Hero Card */}
-                    <Card className="border-none rounded-card-premium bg-teal-900 text-white shadow-2xl overflow-hidden relative">
+                    <Card className="border-none rounded-card-premium bg-teal-900 text-white shadow-card overflow-hidden relative">
                         <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12">
                             <HandCoins className="h-40 w-40" />
                         </div>
@@ -204,7 +204,7 @@ export default function DebtsPage() {
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                         <TabsList className="bg-muted/50 p-1 rounded-full h-12 w-full grid grid-cols-4">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">
+                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary">
                                     {label === 'Semua' ? 'All' : label.split(' ')[0]}
                                 </TabsTrigger>
                             ))}
@@ -223,7 +223,7 @@ export default function DebtsPage() {
                                 return (
                                     <Card
                                         key={debt.id}
-                                        className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-2xl rounded-card-premium relative"
+                                        className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-card rounded-card-premium relative"
                                         style={{ 
                                             background: dna.gradient,
                                             boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
@@ -239,7 +239,7 @@ export default function DebtsPage() {
                                                     <p className="label-xs text-white/50 mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
                                                     <div className="mt-2">{getDebtDueStatus(debt)}</div>
                                                 </div>
-                                                <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/10 shadow-sm">
+                                                <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/10">
                                                     <span className="label-xs text-white">
                                                         {debt.status === 'settled' ? 'Settled' : 'Active'}
                                                     </span>
@@ -264,7 +264,7 @@ export default function DebtsPage() {
                                                             <motion.div 
                                                                 initial={{ width: 0 }}
                                                                 animate={{ width: `${progress}%` }}
-                                                                className="h-full rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+                                                                className="h-full rounded-full bg-white"
                                                             />
                                                         </div>
                                                         <span className="text-xs font-semibold tabular-nums text-white">{Math.round(progress)}%</span>

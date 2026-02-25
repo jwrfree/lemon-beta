@@ -202,8 +202,8 @@ export default function RemindersPage() {
                             <div className="flex items-center gap-2">
                                 <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full" suppressHydrationWarning>
                                     <TabsList className="bg-muted p-1 rounded-lg h-14 w-full grid grid-cols-2" suppressHydrationWarning>
-                                        <TabsTrigger value="week" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                         <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                        <TabsTrigger value="week" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">Minggu ini</TabsTrigger>
+                                         <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">30 hari</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                                 <Button
@@ -307,7 +307,7 @@ export default function RemindersPage() {
                                                                                 <EllipsisVertical className="h-4 w-4" />
                                                                             </Button>
                                                                         </DropdownMenuTrigger>
-                                                                        <DropdownMenuContent align="end" className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
+                                                                        <DropdownMenuContent align="end" className="rounded-card border-none shadow-xl bg-popover/95 backdrop-blur-xl">
                                                                             {status !== 'completed' && dueDate && (
                                                                                 <>
                                                                                     <DropdownMenuItem className="text-xs font-semibold uppercase tracking-widest p-3" onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>
@@ -492,8 +492,8 @@ export default function RemindersPage() {
                                     <div className="w-full">
                                         <Tabs value={range} onValueChange={(v: string) => setRange(v as 'week' | '30')} className="w-full">
                                             <TabsList className="grid w-full grid-cols-2 p-1 bg-muted rounded-lg h-14">
-                                                <TabsTrigger value="week" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">Minggu ini</TabsTrigger>
-                                                <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">30 hari</TabsTrigger>
+                                                <TabsTrigger value="week" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">Minggu ini</TabsTrigger>
+                                                <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">30 hari</TabsTrigger>
                                             </TabsList>
                                         </Tabs>
                                     </div>
@@ -539,7 +539,7 @@ export default function RemindersPage() {
             <div className="md:hidden sticky bottom-0 inset-x-0 bg-background/80 backdrop-blur-xl border-t border-border/50 p-4 flex items-center justify-between gap-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-30">
                 <Button 
                     variant="outline" 
-                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest border-border shadow-sm" 
+                    className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest border-border"
                     onClick={() => setActiveTab('overdue')}
                 >
                     Terlambat

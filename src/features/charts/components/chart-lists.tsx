@@ -33,7 +33,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
             className={cn(
                 "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-card transition-all text-left w-full",
                 isOverBudget
-                    ? "ring-1 ring-rose-500/10 shadow-[0_0_20px_rgba(244,63,94,0.1)]"
+                    ? "ring-1 ring-rose-500/10"
                     : "hover:bg-muted/50"
             )}
         >
@@ -74,7 +74,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                             whileInView={{ width: `${Math.min(percentage, 100)}%` }}
                             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                             className={cn(
-                                "absolute inset-y-0 left-0 rounded-full bg-gradient-to-r shadow-[0_0_10px_rgba(0,0,0,0.1)]",
+                                "absolute inset-y-0 left-0 rounded-full bg-gradient-to-r",
                                 getGradientColor()
                             )}
                         />

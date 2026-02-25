@@ -22,7 +22,7 @@ export const GoalsDashboard = () => {
     if (goals.length === 0) {
         return (
             <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-2xl text-center relative overflow-hidden">
+                <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                         <Target className="h-40 w-40" />
                     </div>

@@ -75,7 +75,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                         <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="bg-card rounded-card shadow-sm border border-border/40 overflow-hidden divide-y divide-border/30">
+                        <div className="bg-card rounded-card shadow-card border border-border/40 overflow-hidden divide-y divide-border/30">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 

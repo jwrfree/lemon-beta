@@ -69,7 +69,7 @@ export const BottomNavigation = () => {
                     className="fixed bottom-6 left-4 right-4 z-40 md:bottom-8"
                 >
                     <div
-                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-background backdrop-blur-xl shadow-2xl border border-border/80 rounded-full h-16 px-1.5 py-1"
+                        className="w-full max-w-md mx-auto grid grid-cols-5 items-center bg-background backdrop-blur-xl shadow-card border border-border/80 rounded-full h-16 px-1.5 py-1"
                     >
                         {navItems.map(item => {
                             const isActive = pathname.startsWith(item.href);
@@ -86,7 +86,7 @@ export const BottomNavigation = () => {
                                                     if (item.onClick) item.onClick(e);
                                                 }}
                                                 className={cn(
-                                                    'flex items-center justify-center rounded-full h-12 w-12 bg-primary text-primary-foreground shadow-2xl hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
+                                                    'flex items-center justify-center rounded-full h-12 w-12 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 hover:scale-110 active:scale-95 relative overflow-hidden fab-enhanced'
                                                 )}
                                                 aria-label={item.name}
                                             >

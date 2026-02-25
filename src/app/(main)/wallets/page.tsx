@@ -48,7 +48,7 @@ export default function WalletsPage() {
 
         {wallets.length === 0 ? (
           <main className="flex-1 flex flex-col items-center justify-center p-6 bg-background">
-            <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-2xl text-center relative overflow-hidden">
+            <div className="max-w-[320px] w-full p-10 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                 <Wallet className="h-40 w-40" />
               </div>
@@ -82,8 +82,8 @@ export default function WalletsPage() {
               <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as any)} className="w-full">
                 <div className="px-5 mb-6">
                   <TabsList className="bg-muted/50 p-1 rounded-full h-11 w-full grid grid-cols-2">
-                    <TabsTrigger value="mutasi" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Mutasi</TabsTrigger>
-                    <TabsTrigger value="analitik" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-sm">Analitik</TabsTrigger>
+                    <TabsTrigger value="mutasi" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary">Mutasi</TabsTrigger>
+                    <TabsTrigger value="analitik" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary">Analitik</TabsTrigger>
                   </TabsList>
                 </div>
 
@@ -136,7 +136,7 @@ export default function WalletsPage() {
         <div className="flex-1">
           {wallets.length === 0 ? (
             <main className="flex h-full items-center justify-center p-8 bg-background">
-              <div className="max-w-md w-full p-12 bg-card rounded-lg shadow-2xl border border-border text-center relative overflow-hidden">
+              <div className="max-w-md w-full p-12 bg-card rounded-lg shadow-card border border-border text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
                   <Wallet className="h-40 w-40" />
                 </div>

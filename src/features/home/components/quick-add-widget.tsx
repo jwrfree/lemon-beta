@@ -111,7 +111,7 @@ export const QuickAddWidget = () => {
                                 variant="ghost" 
                                 className={cn(
                                     "absolute right-1.5 top-1.5 h-9 w-9 rounded-md transition-all",
-                                    inputValue.trim() ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground/40"
+                                    inputValue.trim() ? "bg-primary text-primary-foreground" : "text-muted-foreground/40"
                                 )}
                                 onClick={handleQuickAdd}
                                 disabled={isAnalyzing || !inputValue.trim()}
@@ -143,7 +143,7 @@ export const QuickAddWidget = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full bg-background/50 hover:bg-rose-500/10 hover:text-rose-500 shadow-sm" onClick={() => setParsedData(null)}>
+                                    <Button size="icon" variant="ghost" className="h-10 w-10 rounded-full bg-background/50 hover:bg-rose-500/10 hover:text-rose-500" onClick={() => setParsedData(null)}>
                                         <X className="h-4 w-4" />
                                     </Button>
                                     <Button size="icon" variant="default" className="h-10 w-10 rounded-full shadow-lg shadow-primary/20" onClick={confirmTransaction}>
@@ -151,7 +151,7 @@ export const QuickAddWidget = () => {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground/60 bg-background/50 backdrop-blur-sm py-1.5 px-3 rounded-full w-fit border border-border/20 shadow-sm">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground/60 bg-background/50 backdrop-blur-sm py-1.5 px-3 rounded-full w-fit border border-border/20">
                                 <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">{parsedData.category}</span>
                                 <ArrowRight className="h-3 w-3 opacity-30" />
                                 <span className="italic uppercase tracking-widest">{parsedData.wallet}</span>

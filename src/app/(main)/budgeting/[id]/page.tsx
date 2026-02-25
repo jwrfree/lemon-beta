@@ -93,7 +93,7 @@ export default function BudgetDetailPage() {
     // Visual Configuration
     const isOver = remaining < 0;
     const barColor = isOver ? 'bg-rose-600' : (progress > 80 ? 'bg-yellow-400' : 'bg-primary');
-    const glowColor = isOver ? 'shadow-[0_0_20px_rgba(225,29,72,0.4)]' : (progress > 80 ? 'shadow-[0_0_20px_rgba(253,224,71,0.3)]' : 'shadow-[0_0_20px_rgba(13,148,136,0.3)]');
+    const glowColor = isOver ? '' : (progress > 80 ? '' : '');
     const textColor = isOver ? 'text-rose-600' : (progress > 80 ? 'text-yellow-600' : 'text-primary');
 
     const firstCategory = budget.categories[0] || 'Lainnya';
@@ -118,7 +118,7 @@ export default function BudgetDetailPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                 >
-                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900 shadow-sm overflow-hidden premium-shadow">
+                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900 shadow-card overflow-hidden premium-shadow">
                         <div className="p-8 space-y-10">
                             {/* Title & Icon */}
                             <div className="flex flex-col items-center text-center gap-4">
@@ -193,7 +193,7 @@ export default function BudgetDetailPage() {
                             {!isOver && remaining > 0 && (
                                 <div className="p-6 rounded-card-premium bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-12 w-12 rounded-card bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm">
+                                        <div className="h-12 w-12 rounded-card bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                                             <Sparkles className="h-6 w-6" />
                                         </div>
                                         <div className="text-center md:text-left space-y-0.5">

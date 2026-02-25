@@ -29,10 +29,10 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-background rounded-t-xl shadow-lg flex flex-col h-fit max-h-[60vh]"
+                className="w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col h-fit max-h-[60vh]"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-xl z-10">
+                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <h2 className="text-xl font-medium tracking-tight">Pilih Sub-kategori {category.name}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />

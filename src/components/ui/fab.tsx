@@ -51,7 +51,7 @@ export const FAB = ({
         onClick={onClick}
         size="icon"
         className={cn(
-          'h-14 w-14 rounded-full shadow-2xl shadow-primary/40',
+          'h-14 w-14 rounded-full',
           'hover:scale-110 transition-transform active:scale-95',
           className,
         )}

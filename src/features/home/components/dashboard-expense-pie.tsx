@@ -56,7 +56,7 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
         : 0;
 
     return (
-        <Card className="border-none shadow-sm bg-card rounded-lg flex flex-col h-full">
+        <Card className="border-none shadow-card bg-card rounded-lg flex flex-col h-full">
             <CardHeader className="pb-0">
                 <CardTitle className="text-sm font-medium">Distribusi Pengeluaran</CardTitle>
                 <CardDescription className="text-xs">Top 5 kategori pengeluaran</CardDescription>

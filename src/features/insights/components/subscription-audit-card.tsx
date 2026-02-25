@@ -42,7 +42,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
         <div className="space-y-4 mb-8">
             {/* AI Auditor Insight Pill */}
             {(aiInsight || isAiLoading) && (
-                <div className="bg-primary/5 rounded-card-glass p-4 flex items-start gap-4 shadow-sm transition-all">
+                <div className="bg-primary/5 rounded-card-glass p-4 flex items-start gap-4 shadow-card transition-all">
                     <div className="bg-primary/10 p-2 rounded-card shrink-0">
                         {isAiLoading ? (
                             <Loader2 className="h-4 w-4 text-primary animate-spin" />

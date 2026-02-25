@@ -18,7 +18,7 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
                 onClick={() => onTypeChange('expense')}
                 className={cn(
                     "rounded-full transition-all duration-200",
-                    type === 'expense' ? 'bg-primary text-primary-foreground shadow-sm' : 'bg-transparent text-muted-foreground hover:bg-background/50'
+                    type === 'expense' ? 'bg-primary text-primary-foreground' : 'bg-transparent text-muted-foreground hover:bg-background/50'
                 )}
             >
                 Pengeluaran
@@ -28,7 +28,7 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
                 onClick={() => onTypeChange('income')}
                 className={cn(
                     "rounded-full transition-all duration-200",
-                    type === 'income' ? 'bg-teal-600 text-white shadow-sm' : 'bg-transparent text-muted-foreground hover:bg-background/50'
+                    type === 'income' ? 'bg-teal-600 text-white' : 'bg-transparent text-muted-foreground hover:bg-background/50'
                 )}
             >
                 Pemasukan

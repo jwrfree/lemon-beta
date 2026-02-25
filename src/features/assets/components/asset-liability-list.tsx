@@ -31,7 +31,7 @@ export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListPr
                 const { Icon, logo } = getWalletVisuals(item.name, item.categoryKey);
                 return (
                     <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
-                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors shadow-sm relative flex items-center justify-center overflow-hidden">
+                        <div className="p-2.5 bg-muted rounded-lg group-hover:bg-background transition-colors relative flex items-center justify-center overflow-hidden">
                             {logo ? (
                                 <>
                                     <img

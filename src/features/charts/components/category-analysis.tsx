@@ -105,7 +105,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     const parentVisuals = selectedCategory ? categoryDetails(selectedCategory) : null;
 
     return (
-        <Card className="shadow-sm border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
+        <Card className="shadow-card border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6 space-y-0">
                 <div className="flex items-center gap-2">
                     {selectedCategory && (
@@ -152,7 +152,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                     <div className="flex flex-1 items-center gap-2 sm:gap-3">
                                         <div
                                             className={cn(
-                                                "flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg shadow-sm transition-all duration-300",
+                                                "flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg transition-all duration-300",
                                                 !isSubCategoryView && "group-hover:scale-110",
                                                 item.categoryBgColor,
                                                 item.categoryColor

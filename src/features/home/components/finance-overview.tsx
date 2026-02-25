@@ -42,7 +42,7 @@ export const FinanceOverview = ({
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Total Balance Card */}
-            <Card className="border-none shadow-sm bg-primary text-primary-foreground relative overflow-hidden">
+            <Card className="border-none shadow-card bg-primary text-primary-foreground relative overflow-hidden">
                 <div className="absolute -right-6 -top-6 opacity-10">
                     <Wallet className="w-32 h-32" />
                 </div>
@@ -59,7 +59,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Income Card */}
-            <Card className="border-none shadow-sm bg-teal-50/30 dark:bg-teal-950/10 hover:shadow-md transition-all">
+            <Card className="border-none shadow-card bg-teal-50/30 dark:bg-teal-950/10 hover:shadow-card transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
@@ -86,7 +86,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Expense Card */}
-            <Card className="border-none shadow-sm bg-rose-50/30 dark:bg-rose-950/10 hover:shadow-md transition-all">
+            <Card className="border-none shadow-card bg-rose-50/30 dark:bg-rose-950/10 hover:shadow-card transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-rose-100 dark:bg-rose-900/30 rounded-lg">
@@ -114,7 +114,7 @@ export const FinanceOverview = ({
             </Card>
 
             {/* Net / Savings Card */}
-            <Card className="border-none shadow-sm bg-info/5 hover:shadow-md transition-all">
+            <Card className="border-none shadow-card bg-info/5 hover:shadow-card transition-all">
                 <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-2 bg-info/10 rounded-lg">

@@ -40,7 +40,7 @@ export const SmartAddMessages = ({ messages, loadingMessage }: SmartAddMessagesP
                     )}
                     {msg.type === 'ai-thinking' && (
                         <div className="flex justify-start">
-                            <div className="p-3 bg-card rounded-card flex items-center gap-2.5 shadow-sm border">
+                            <div className="p-3 bg-card rounded-card flex items-center gap-2.5 shadow-card border">
                                 <div className="relative flex items-center justify-center">
                                     <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
                                     <motion.div
@@ -66,7 +66,7 @@ export const SmartAddMessages = ({ messages, loadingMessage }: SmartAddMessagesP
                     )}
                     {msg.type === 'ai-clarification' && (
                         <div className="flex justify-start">
-                            <div className="p-3 bg-card rounded-card max-w-[85%] shadow-sm border">
+                            <div className="p-3 bg-card rounded-card max-w-[85%] shadow-card border">
                                 <p className="text-sm leading-relaxed text-foreground italic">
                                     &quot;{String(msg.content)}&quot;
                                 </p>

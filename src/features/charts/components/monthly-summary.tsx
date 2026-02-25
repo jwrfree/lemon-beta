@@ -287,7 +287,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         <UIProgress
                             value={summary.monthProgress}
                             className="h-1 sm:h-1.5 bg-white/20 border-none"
-                            indicatorClassName="bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+                            indicatorClassName="bg-white"
                         />
                     </div>
 
@@ -328,7 +328,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             </Card>
 
             {summary.type !== 'net' && summary.topCategory ? (
-                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-sm hover:shadow-md transition-all group overflow-hidden">
+                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-card hover:shadow-card transition-all group overflow-hidden">
                     <CardHeader className="flex flex-row items-center gap-3 sm:gap-4 pb-3 sm:pb-4 p-4 sm:p-6">
                         <div className={cn("p-2 sm:p-3 rounded-md sm:rounded-card shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
@@ -356,7 +356,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 onClick={() => handleTxClick(summary.topTransaction!.id)}
                                 className="group/item flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-md sm:rounded-card bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer border border-transparent hover:border-muted-foreground/10"
                             >
-                                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-background flex items-center justify-center border border-muted shadow-sm group-hover/item:rotate-12 transition-transform">
+                                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-background flex items-center justify-center border border-muted group-hover/item:rotate-12 transition-transform">
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -384,7 +384,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             ) : null}
 
             {/* AI INSIGHT SECTION */}
-            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-sm border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
+            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-card border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
                 {/* Decorative background elements */}
                 <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
                 <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
@@ -439,7 +439,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
                     ) : (
                         <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-md sm:rounded-card border border-white dark:border-zinc-800 shadow-sm backdrop-blur-sm">
+                            <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-md sm:rounded-card border border-white dark:border-zinc-800 backdrop-blur-sm">
                                 <div className="prose prose-sm dark:prose-invert max-w-none">
                                     <p className="text-xs sm:text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap font-medium">
                                         {aiInsight}

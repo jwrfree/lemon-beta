@@ -168,7 +168,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
     };
 
     return (
-        <Card className="overflow-hidden border-none shadow-sm bg-card rounded-card-glass">
+        <Card className="overflow-hidden border-none shadow-card bg-card rounded-card-glass">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
                 <div className="flex items-center justify-between gap-3">
@@ -190,7 +190,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                             className={cn(
                                 'rounded-full border border-transparent px-3 py-1.5 text-xs font-medium transition',
                                 selectedQuarter === option.value
-                                    ? 'bg-primary text-primary-foreground shadow-sm'
+                                    ? 'bg-primary text-primary-foreground'
                                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                             )}
                         >
@@ -252,7 +252,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                             </div>
                             <Badge
                                 className={cn(
-                                    'rounded-full px-3 py-1 text-xs font-medium shadow-sm border-none',
+                                    'rounded-full px-3 py-1 text-xs font-medium border-none',
                                     selectedMonthData.net >= 0
                                         ? 'bg-teal-600 text-white'
                                         : 'bg-destructive text-white'
