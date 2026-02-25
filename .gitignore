@@ -51,3 +51,6 @@ git_log_temp.txt
 tsc-errors*.txt
 .modified
 .gemini-clipboard/
+
+# TypeScript
+*.tsbuildinfo
