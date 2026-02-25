@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
 import { Plus, Target, LoaderCircle } from 'lucide-react';
 import { GoalList } from './goal-list';
+import { EmptyState } from '@/components/empty-state';
 
 export const GoalsDashboard = () => {
     const { goals, isLoading } = useGoals();
@@ -21,25 +22,15 @@ export const GoalsDashboard = () => {
 
     if (goals.length === 0) {
         return (
-            <div className="flex flex-col h-full items-center justify-center text-center p-8 animate-in fade-in duration-500 min-h-[400px]">
-                <div className="max-w-[320px] w-full p-7 bg-card rounded-card-premium shadow-card text-center relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] -rotate-12">
-                        <Target className="h-40 w-40" />
-                    </div>
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="p-5 bg-primary/10 rounded-card-icon mb-6">
-                            <Target className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                        </div>
-                        <h2 className="text-2xl font-semibold tracking-tighter mb-3">Belum Ada Target</h2>
-                        <p className="text-xs font-medium text-muted-foreground leading-relaxed mb-8">
-                            Mulailah menabung untuk impianmu hari ini.
-                        </p>
-                        <Button onClick={() => setIsGoalModalOpen(true)} className="w-full rounded-full h-12 shadow-lg shadow-primary/20 active:scale-95 transition-all font-semibold text-xs uppercase tracking-widest">
-                            <Plus className="mr-2 h-4 w-4" />
-                            Buat Target Baru
-                        </Button>
-                    </div>
-                </div>
+            <div className="flex flex-col h-full min-h-[400px] animate-in fade-in duration-500">
+                <EmptyState
+                    icon={Target}
+                    title="Belum Ada Target"
+                    description="Mulai menabung untuk impianmu hari ini. Tetapkan target dan raih satu per satu."
+                    actionLabel="Buat Target Baru"
+                    onAction={() => setIsGoalModalOpen(true)}
+                    variant="default"
+                />
             </div>
         );
     }
