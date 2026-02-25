@@ -111,7 +111,7 @@ export default function BudgetDetailPage() {
                 }}
             />
 
-            <main className="flex-1 overflow-y-auto px-4 md:px-8 space-y-8 pb-24 pt-4">
+            <main className="flex-1 overflow-y-auto px-4 md:px-6 space-y-6 pb-24 pt-4">
 
                 {/* 1. Identity & Health Card */}
                 <motion.div
@@ -119,7 +119,7 @@ export default function BudgetDetailPage() {
                     animate={{ opacity: 1, y: 0 }}
                 >
                     <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900 shadow-card overflow-hidden premium-shadow">
-                        <div className="p-8 space-y-10">
+                        <div className="p-7 space-y-6">
                             {/* Title & Icon */}
                             <div className="flex flex-col items-center text-center gap-4">
                                 <div className={cn("p-5 rounded-card-premium border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>

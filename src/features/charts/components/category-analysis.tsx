@@ -126,7 +126,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                     {formatCurrency(total)}
                 </Badge>
             </CardHeader>
-            <CardContent className="space-y-6 sm:space-y-8 p-4 sm:p-6 pt-0">
+            <CardContent className="space-y-6 p-4 sm:p-6 pt-0">
                 <div className="flex flex-col items-center gap-4 relative">
                     {/* Back button overlay on chart center? No, header back button is better. */}
                     <CategoryPieChart chartData={chartData} chartConfig={chartConfig} />

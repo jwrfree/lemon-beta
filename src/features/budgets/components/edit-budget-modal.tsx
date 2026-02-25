@@ -101,7 +101,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-8 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-6 overflow-y-auto">
           <div className="space-y-3">
             <Label htmlFor="budget-name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
             <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-secondary/50 border-none shadow-inner" required />

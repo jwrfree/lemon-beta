@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 export function FinancialPulseSkeleton() {
     return (
-        <div className="relative overflow-hidden rounded-lg bg-primary text-primary-foreground p-8 md:p-10 shadow-card mx-4 mt-4 border border-primary/20">
+        <div className="relative overflow-hidden rounded-lg bg-primary text-primary-foreground p-7 shadow-card mx-4 mt-4 border border-primary/20">
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 {/* Left Side */}
                 <div className="space-y-4">

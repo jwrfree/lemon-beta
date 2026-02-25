@@ -27,7 +27,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const growth = previousNetWorth !== 0 ? ((currentNetWorth - previousNetWorth) / Math.abs(previousNetWorth)) * 100 : 0;
 
     return (
-        <Card className="p-8 border-none rounded-card-premium bg-[#064e4b] text-white shadow-card overflow-hidden relative">
+        <Card className="p-7 border-none rounded-card-premium bg-[#064e4b] text-white shadow-card overflow-hidden relative">
             {/* Ambient Background Ornaments */}
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 pointer-events-none">
                 <Landmark className="h-40 w-40" />

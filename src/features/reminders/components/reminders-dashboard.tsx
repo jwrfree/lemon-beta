@@ -202,7 +202,7 @@ export const RemindersDashboard = () => {
             {/* Reminders List */}
             <div className="space-y-3 pb-24">
                 {groupedByDate.length === 0 ? (
-                    <Card className="p-8 text-center flex flex-col items-center justify-center min-h-[200px] border-dashed">
+                    <Card className="p-6 text-center flex flex-col items-center justify-center min-h-[200px] border-dashed">
                         <div className="bg-muted rounded-full p-4 mb-3">
                             <BellRing className="h-6 w-6 text-muted-foreground" />
                         </div>

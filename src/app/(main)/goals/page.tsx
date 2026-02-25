@@ -170,14 +170,14 @@ interface GoalRow {
         }
       />
 
-      <main className="flex-1 p-4 md:p-8 space-y-8 pb-24 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-4 md:p-6 space-y-6 pb-24 max-w-7xl mx-auto w-full">
         {/* Summary Card - Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="lg:col-span-2 bg-gradient-to-br from-teal-600 to-teal-700 rounded-lg p-6 md:p-8 text-white shadow-lg shadow-teal-900/20 relative overflow-hidden"
+            className="lg:col-span-2 bg-gradient-to-br from-teal-600 to-teal-700 rounded-lg p-6 text-white shadow-lg shadow-teal-900/20 relative overflow-hidden"
           >
             {/* Elemen Dekoratif */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
@@ -270,7 +270,7 @@ interface GoalRow {
           </div>
 
           <TabsContent value="active" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {loading ? (
                  // Skeleton Loading State
                  Array.from({ length: 3 }).map((_, i) => (
@@ -287,7 +287,7 @@ interface GoalRow {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Card className="group hover:bg-card hover:shadow-card hover:border-primary/20 border-border/50 rounded-lg shadow-card transition-all cursor-pointer relative overflow-hidden h-full">
-                    <CardContent className="p-5 flex flex-col h-full">
+                    <CardContent className="p-4 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}
@@ -365,7 +365,7 @@ interface GoalRow {
           </TabsContent>
 
           <TabsContent value="completed" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {goals.filter(g => g.currentAmount >= g.targetAmount).length > 0 ? (
                 goals.filter(g => g.currentAmount >= g.targetAmount).map((goal, index) => (
                 <motion.div
@@ -377,7 +377,7 @@ interface GoalRow {
                   whileTap={{ scale: 0.98 }}
                 >
                   <Card className="group hover:bg-card hover:shadow-card hover:border-primary/20 border-border/50 rounded-lg shadow-card transition-all cursor-pointer relative overflow-hidden h-full">
-                    <CardContent className="p-5 flex flex-col h-full">
+                    <CardContent className="p-4 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div className={`w-14 h-14 rounded-lg flex items-center justify-center text-3xl shadow-inner shrink-0 ${goal.color}`}>
                           {goal.emoji}

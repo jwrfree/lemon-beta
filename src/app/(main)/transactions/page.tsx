@@ -151,7 +151,7 @@ function TransactionsPageContent() {
                                 <SheetTitle className="text-xl font-semibold tracking-tight">Atur Tampilan</SheetTitle>
                                 <p className="text-xs text-muted-foreground">Fokuskan data pada kategori atau dompet tertentu.</p>
                             </SheetHeader>
-                            <div className="space-y-8 py-2 overflow-y-auto pb-10">
+                            <div className="space-y-6 py-2 overflow-y-auto pb-10">
                                 <div>
                                     <div className="flex items-center justify-between mb-3">
                                         <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pilih Kategori</Label>

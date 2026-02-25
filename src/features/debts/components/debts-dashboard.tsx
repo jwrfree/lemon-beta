@@ -135,7 +135,7 @@ export const DebtsDashboard = () => {
     }, [debts, activeFilter, sortBy]);
 
     if (debts.length === 0 && isLoading) { // safe check
-        return <div className="p-8 text-center text-muted-foreground">Memuat data hutang...</div>;
+        return <div className="p-6 text-center text-muted-foreground">Memuat data hutang...</div>;
     }
 
     return (

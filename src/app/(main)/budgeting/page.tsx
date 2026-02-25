@@ -19,7 +19,7 @@ import { ChartContainer } from '@/components/ui/chart';
 
 function BudgetingPageSkeleton() {
     return (
-        <div className="flex flex-col h-full bg-background p-6 space-y-8">
+        <div className="flex flex-col h-full bg-background p-6 space-y-6">
             <div className="flex justify-between items-center mb-4">
                 <Skeleton className="h-10 w-48 rounded-lg" />
                 <Skeleton className="h-10 w-10 rounded-full" />
@@ -103,7 +103,7 @@ export default function BudgetingPage() {
                             </Button>
                         </motion.div>
                     ) : (
-                        <div className="max-w-7xl mx-auto w-full p-4 md:p-8 space-y-10">
+                        <div className="max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
 
                             <div className="grid grid-cols-12 gap-8 items-start">
                                 {/* 1. Premium Overview Card */}
@@ -117,7 +117,7 @@ export default function BudgetingPage() {
                                             <TrendingUp className="h-40 w-40" />
                                         </div>
 
-                                        <CardContent className="p-8 space-y-8 relative z-10">
+                                        <CardContent className="p-7 space-y-6 relative z-10">
                                             <div className="space-y-1">
                                                 <h2 className="label-xs text-white/60">Ringkasan Bulan Ini</h2>
                                                 <p className="text-2xl font-semibold tracking-tight">Kesehatan Anggaran</p>
@@ -155,7 +155,7 @@ export default function BudgetingPage() {
                                                 </ChartContainer>
                                             </div>
 
-                                            <div className="space-y-5">
+                                            <div className="space-y-4">
                                                 <div className="p-4 rounded-card-glass bg-white/10 backdrop-blur-md border border-white/10 flex justify-between items-center">
                                                     <div className="flex items-center gap-3">
                                                         <div className="h-10 w-10 rounded-card-icon bg-white p-2 flex items-center justify-center shrink-0">

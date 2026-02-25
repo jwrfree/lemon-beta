@@ -163,7 +163,7 @@ export default function DebtsPage() {
                 }
             />
             <main className="flex-1 overflow-y-auto pb-24">
-                <div className="p-4 space-y-8">
+                <div className="p-4 space-y-6">
                     {/* Summary Hero Card */}
                     <Card className="border-none rounded-card-premium bg-teal-900 text-white shadow-card overflow-hidden relative">
                         <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12">
@@ -171,7 +171,7 @@ export default function DebtsPage() {
                         </div>
                         <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl"></div>
 
-                        <CardContent className="p-8 space-y-8 relative z-10">
+                        <CardContent className="p-7 space-y-6 relative z-10">
                             <div>
                                 <p className="label-xs text-white/50 mb-2">Debt Overview</p>
                                 <div className="flex items-baseline gap-2">
@@ -211,7 +211,7 @@ export default function DebtsPage() {
                         </TabsList>
                     </Tabs>
 
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                         {visibleDebts.length === 0 ? (
                             <DebtsEmptyState />
                         ) : (

@@ -129,7 +129,7 @@ export const MobileDashboard = ({
     if (isLoading) return null;
 
     return (
-        <main className="flex-1 pb-24 space-y-8">
+        <main className="flex-1 pb-24 space-y-6">
             {/* 1. Header Section */}
             <div className="px-5 pt-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -175,7 +175,7 @@ export const MobileDashboard = ({
                         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-teal-300/10 blur-[80px]"></div>
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full bg-gradient-to-br from-transparent via-black/5 to-black/20"></div>
 
-                        <div className="relative p-8 space-y-8">
+                        <div className="relative p-7 space-y-6">
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-3">
@@ -279,7 +279,7 @@ export const MobileDashboard = ({
                     </Button>
                 </div>
 
-                <div className="flex gap-5 overflow-x-auto px-6 pb-6 snap-x snap-mandatory scrollbar-hide">
+                <div className="flex gap-4 overflow-x-auto px-6 pb-6 snap-x snap-mandatory scrollbar-hide">
                     {wallets.slice(0, 5).map((wallet, idx) => {
                         const { Icon, logo, textColor } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                         const dna = getVisualDNA(extractBaseColor(textColor));
