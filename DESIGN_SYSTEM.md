@@ -175,6 +175,7 @@ Using palette colours directly for UI state (e.g., `bg-blue-600` on a FAB) is **
 | `outline` | Secondary actions alongside a default button |
 | `secondary` | Low-prominence actions |
 | `ghost` | Toolbar/icon actions, nav items |
+| `tertiary` | Lowest-prominence text action — muted foreground, no fill |
 | `link` | Inline text navigation |
 | `success` | Confirmation of a positive outcome |
 | `error` | Alias for destructive — use when UX context says "error state" not "delete" |
