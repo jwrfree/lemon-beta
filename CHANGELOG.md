@@ -5,6 +5,24 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Added
+- **Tokenized Amount Input Engine** for transaction forms
+  - `AmountInput` now tokenizes numeric expressions into explicit `number` + `operator` tokens before evaluation.
+  - Added deterministic evaluator with operator precedence (`*`/`/` first, then `+`/`-`) and clamped non-negative output for safer amount parsing.
+  - Added optional **custom numeric keypad** (`useCustomKeyboard`) with operators, backspace, and explicit dismiss action (`Selesai`) to support non-native keyboard amount entry.
+
+### Changed
+- **Edit Transaction Drawer (`EditTransactionSheet`) UX iteration**
+  - Amount field now enables custom keypad mode to reduce input friction on mobile and keep users in-context during edit flows.
+  - Error extraction for wallet/category was aligned to union-safe form error access, fixing build-time type issues in production compilation.
+  - Expression apply flow now uses explicit tokenization action (`Gunakan hasil tokenisasi ekspresi`) when operators are detected.
+
+### Documentation
+- Added `docs/EDIT_TRANSACTION_SHEET_GUIDE.md` covering:
+  - Information hierarchy and progressive disclosure in the edit drawer.
+  - Amount input state model (raw expression → tokenization → evaluated formatted amount).
+  - Custom keyboard behavior, limitations, and recommended QA checklist.
+
+### Added
 - **Centralized Error System** (`feat(ui): introduce centralized error system and tone standardization`)
   - Error design tokens: `--error`, `--error-foreground`, `--error-surface`, `--error-muted`, `--error-border` added to `globals.css` (light + dark modes) and registered in `tailwind.config.ts` as `bg-error-*`, `text-error`, `border-error-border`
   - `src/components/ui/error-message.tsx` — `ErrorMessage` / `InlineError` component for inline field-level validation errors with `role="alert"` and `aria-live="polite"`
