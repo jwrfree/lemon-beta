@@ -19,6 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
         ghost: "hover:bg-accent hover:text-accent-foreground active:bg-state-active",
         link: "text-primary underline-offset-4 hover:underline",
+        tertiary: "text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-state-active",
         success: "bg-success text-success-foreground hover:bg-success/90 active:bg-success/80",
         error: "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/80",
       },
@@ -26,7 +27,7 @@ const buttonVariants = cva(
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: {
