@@ -1,0 +1,30 @@
+[
+  {
+    "component_name": "Button",
+    "file_path": "src/components/ui/button.tsx",
+    "variant_compliant": true,
+    "states_compliant": true,
+    "size_spacing_compliant": true,
+    "colors_compliant": true,
+    "border_radius_shadow_compliant": true,
+    "interaction_motion_compliant": true,
+    "accessibility_compliant": true,
+    "test_build_passed": true,
+    "merge_ready": true,
+    "notes": "Added explicit primary variant while keeping default alias; includes semantic tokens, focus ring, disabled/loading states, and icon size 44x44 minimum."
+  },
+  {
+    "component_name": "FAB",
+    "file_path": "src/components/ui/fab.tsx",
+    "variant_compliant": true,
+    "states_compliant": true,
+    "size_spacing_compliant": true,
+    "colors_compliant": true,
+    "border_radius_shadow_compliant": true,
+    "interaction_motion_compliant": true,
+    "accessibility_compliant": true,
+    "test_build_passed": true,
+    "merge_ready": true,
+    "notes": "Uses Button icon size with semantic classes; motion updated to motion-pressable and tokenized shadows for consistent animation and elevation."
+  }
+]
