@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,6 +45,7 @@ export const LoginPage = ({
     isPage?: boolean;
 }) => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const shouldReduceMotion = useReducedMotion();
     const [showPassword, setShowPassword] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -59,6 +60,15 @@ export const LoginPage = ({
     });
 
     const { formState: { isSubmitting } } = form;
+
+    useEffect(() => {
+        if (searchParams.get('error') === 'google_oauth_failed') {
+            const message = 'Autentikasi Google gagal. Silakan coba lagi.';
+            setAuthError(message);
+            showToast(message, 'error');
+            router.replace('/');
+        }
+    }, [router, searchParams, showToast]);
 
     const handleLogin = async (values: z.infer<typeof formSchema>) => {
         try {
