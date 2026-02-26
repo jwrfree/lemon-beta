@@ -1,0 +1,6 @@
+{
+  "exists": true,
+  "matched_category_name": "Pemberian & Hadiah",
+  "match_type": "semantic",
+  "notes": "No exact category named 'Pemberian' was found, but default income category 'Pemberian & Hadiah' exists in both application config and Supabase migration seeds. This is a semantic match for gift/family support income."
+}

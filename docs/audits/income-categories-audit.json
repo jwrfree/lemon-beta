@@ -1,0 +1,15 @@
+{
+  "income_categories": [
+    "Gaji & Tetap",
+    "Bisnis & Freelance",
+    "Investasi & Pasif",
+    "Pemberian & Hadiah",
+    "Refund & Cashback",
+    "Penjualan Aset",
+    "Terima Piutang",
+    "Pendapatan Lain",
+    "Penyesuaian Saldo"
+  ],
+  "source": "src/lib/categories.ts",
+  "notes": "Daftar kategori pemasukan default aplikasi berdasarkan konfigurasi kategori saat ini."
+}

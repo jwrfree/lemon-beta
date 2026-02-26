@@ -1,8 +1,7 @@
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCategories } from '../hooks/use-transactions';
 import { suggestCategory } from '@/ai/flows/suggest-category-flow';
 import { UseFormSetValue } from 'react-hook-form';
-import { Transaction } from '@/types/models';
 
 interface UseAiCategorySuggestionProps {
     description: string;
@@ -36,8 +35,10 @@ export function useAiCategorySuggestion({
                 if (result && result.confidence > 0.7) {
                     const matchedCategory = categories.find(c => c.name.toLowerCase() === result.category.toLowerCase());
 
-                    // Only update if currently empty or if we are very confident and it matches a known category
-                    if (matchedCategory && currentCategory !== matchedCategory.name) {
+                    // Only auto-apply when category is still empty,
+                    // so AI suggestion does not override manual user selection.
+                    const hasManualCategory = !!currentCategory?.trim();
+                    if (matchedCategory && !hasManualCategory) {
                         setValue('category', matchedCategory.name, { shouldValidate: true });
                         setLastSuggestedDescription(description);
                     }
