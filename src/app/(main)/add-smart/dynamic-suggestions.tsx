@@ -5,6 +5,8 @@ interface PersonalizedSuggestionItem {
     text: string;
     reason: string;
     confidence: 'low' | 'medium' | 'high';
+    amountHint?: string;
+    sequenceHint?: string;
 }
 
 interface DynamicSuggestionsProps {
@@ -155,6 +157,16 @@ export const DynamicSuggestions = ({ onSuggestionClick, personalizedSuggestions 
                                 <span className="mt-1 block text-[10px] font-normal text-muted-foreground">
                                     {item.reason} · confidence {item.confidence}
                                 </span>
+                                {item.amountHint && (
+                                    <span className="mt-1 inline-flex rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] text-primary">
+                                        {item.amountHint}
+                                    </span>
+                                )}
+                                {item.sequenceHint && (
+                                    <span className="mt-1 inline-flex rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-600 dark:text-emerald-400">
+                                        {item.sequenceHint}
+                                    </span>
+                                )}
                             </button>
                         ))}
                     </div>

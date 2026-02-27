@@ -108,12 +108,13 @@ describe('DynamicSuggestions', () => {
         render(
             <DynamicSuggestions
                 onSuggestionClick={mockOnSuggestionClick}
-                personalizedSuggestions={[{ text: "Ngopi kantor 18000", reason: "sering muncul di waktu pagi", confidence: "high" }, { text: "Makan siang 30000", reason: "pola hari mirip", confidence: "medium" }]}
+                personalizedSuggestions={[{ text: "Ngopi kantor 18000", reason: "sering muncul di waktu pagi", confidence: "high", amountHint: "Biasanya sekitar Rp18.000", sequenceHint: "Biasanya lanjut ke kategori Transport" }, { text: "Makan siang 30000", reason: "pola hari mirip", confidence: "medium" }]}
             />
         );
 
         expect(screen.getByText('Berdasarkan transaksi terakhirmu')).toBeDefined();
         expect(screen.getByText('Ngopi kantor 18000')).toBeDefined();
+        expect(screen.getByText('Biasanya sekitar Rp18.000')).toBeDefined();
     });
 
     it('calls onSuggestionClick when a suggestion is clicked', () => {

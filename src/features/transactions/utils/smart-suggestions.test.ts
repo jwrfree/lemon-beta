@@ -37,4 +37,29 @@ describe('rankPersonalizedSuggestions', () => {
         expect(suggestions).toHaveLength(1);
         expect(suggestions[0].score).toBeGreaterThan(0);
     });
+
+    it('adds amount hint when category has enough historical data', () => {
+        const now = new Date('2024-01-10T08:30:00.000Z');
+        const suggestions = rankPersonalizedSuggestions([
+            tx({ description: 'Kopi', category: 'Ngopi', amount: 18000, date: '2024-01-10T08:00:00.000Z' }),
+            tx({ description: 'Kopi', category: 'Ngopi', amount: 20000, date: '2024-01-09T08:00:00.000Z' }),
+            tx({ description: 'Kopi', category: 'Ngopi', amount: 22000, date: '2024-01-08T08:00:00.000Z' }),
+        ], now, 3);
+
+        expect(suggestions[0].amountHint).toBeDefined();
+    });
+
+    it('adds sequence hint when transition pattern appears at least twice', () => {
+        const now = new Date('2024-01-10T09:00:00.000Z');
+        const suggestions = rankPersonalizedSuggestions([
+            tx({ description: 'Kopi pagi', category: 'Ngopi', date: '2024-01-07T08:00:00.000Z' }),
+            tx({ description: 'Parkir kantor', category: 'Transport', date: '2024-01-07T09:00:00.000Z' }),
+            tx({ description: 'Kopi lagi', category: 'Ngopi', date: '2024-01-08T08:00:00.000Z' }),
+            tx({ description: 'Parkir lagi', category: 'Transport', date: '2024-01-08T09:00:00.000Z' }),
+            tx({ description: 'Kopi hari ini', category: 'Ngopi', date: '2024-01-10T08:30:00.000Z' }),
+        ], now, 3);
+
+        const ngopiSuggestion = suggestions.find(item => item.text.includes('Kopi hari ini'));
+        expect(ngopiSuggestion?.sequenceHint).toContain('Transport');
+    });
 });

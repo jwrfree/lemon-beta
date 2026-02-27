@@ -5,6 +5,8 @@ export type RankedSuggestion = {
     reason: string;
     confidence: 'low' | 'medium' | 'high';
     score: number;
+    amountHint?: string;
+    sequenceHint?: string;
 };
 
 type TimeBucket = 'pagi' | 'siang' | 'sore' | 'malam';
@@ -34,34 +36,91 @@ const formatSuggestionText = (tx: Transaction): string => {
     return `${tx.description} ${amount}`;
 };
 
-const scoreTransaction = (tx: Transaction, now: Date, previousTx?: Transaction): RankedSuggestion => {
+const formatCurrency = (val: number): string => Math.round(val).toLocaleString('id-ID');
+
+const median = (values: number[]): number => {
+    if (values.length === 0) return 0;
+    const sorted = [...values].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+};
+
+const getAmountHint = (amounts: number[]): string | undefined => {
+    if (amounts.length < 2) return undefined;
+    const med = median(amounts);
+    const min = Math.min(...amounts);
+    const max = Math.max(...amounts);
+
+    if (Math.abs(max - min) <= med * 0.15) {
+        return `Biasanya sekitar Rp${formatCurrency(med)}`;
+    }
+
+    return `Rentang Rp${formatCurrency(min)}–Rp${formatCurrency(max)}`;
+};
+
+const getTopTransitionCategory = (transactions: Transaction[], anchorCategory: string): string | undefined => {
+    const sorted = [...transactions].sort((a, b) => +new Date(a.date) - +new Date(b.date));
+    const transitionCounts = new Map<string, number>();
+
+    for (let i = 0; i < sorted.length - 1; i += 1) {
+        if (sorted[i].category !== anchorCategory) continue;
+        const nextCategory = sorted[i + 1].category;
+        transitionCounts.set(nextCategory, (transitionCounts.get(nextCategory) ?? 0) + 1);
+    }
+
+    let topCategory: string | undefined;
+    let topCount = 0;
+    for (const [cat, count] of transitionCounts.entries()) {
+        if (count > topCount) {
+            topCount = count;
+            topCategory = cat;
+        }
+    }
+
+    return topCount >= 2 ? topCategory : undefined;
+};
+
+const scoreTransaction = (
+    tx: Transaction,
+    now: Date,
+    previousTx: Transaction | undefined,
+    allTransactions: Transaction[]
+): RankedSuggestion => {
     const txDate = new Date(tx.date);
     const ageHours = Math.max(1, (now.getTime() - txDate.getTime()) / (1000 * 60 * 60));
 
-    // Recency: newer transactions get higher score.
     const recencyScore = Math.max(0, 4 - Math.min(4, ageHours / 12));
-
-    // Time context alignment.
     const timeMatchScore = getTimeBucket(txDate) === getTimeBucket(now) ? 2 : 0;
-
-    // Day context alignment (weekday/weekend + payday window).
     const dayContextScore =
         (isWeekend(txDate) === isWeekend(now) ? 1 : 0) +
         (isPaydayWindow(txDate) === isPaydayWindow(now) ? 1 : 0);
 
-    // Habit sequencing (very lightweight phase 1): same category as previous transaction.
     const sequenceScore = previousTx && previousTx.category === tx.category ? 1.5 : 0;
 
-    const score = Number((recencyScore + timeMatchScore + dayContextScore + sequenceScore).toFixed(2));
+    const categoryAmounts = allTransactions
+        .filter(item => item.category === tx.category && item.amount > 0)
+        .map(item => item.amount);
+
+    const amountHint = getAmountHint(categoryAmounts);
+    const amountSimilarityScore = amountHint ? 1 : 0;
+
+    const topTransitionCategory = getTopTransitionCategory(allTransactions, tx.category);
+    const sequenceHint = topTransitionCategory ? `Biasanya lanjut ke kategori ${topTransitionCategory}` : undefined;
+    const transitionScore = sequenceHint ? 1 : 0;
+
+    const score = Number((
+        recencyScore + timeMatchScore + dayContextScore + sequenceScore + amountSimilarityScore + transitionScore
+    ).toFixed(2));
 
     const confidence: RankedSuggestion['confidence'] =
-        score >= 6.5 ? 'high' : score >= 4 ? 'medium' : 'low';
+        score >= 7.5 ? 'high' : score >= 5 ? 'medium' : 'low';
 
     const reasonParts: string[] = [];
     if (timeMatchScore > 0) reasonParts.push(`sering muncul di waktu ${getTimeBucket(now)}`);
     if (isWeekend(txDate) === isWeekend(now)) reasonParts.push('pola hari mirip');
     if (isPaydayWindow(txDate) === isPaydayWindow(now)) reasonParts.push('periode gajian serupa');
     if (sequenceScore > 0) reasonParts.push(`biasanya setelah kategori ${previousTx?.category}`);
+    if (amountHint) reasonParts.push('nominal kebiasaan terdeteksi');
     if (reasonParts.length === 0) reasonParts.push('transaksi terbaru kamu');
 
     return {
@@ -69,6 +128,8 @@ const scoreTransaction = (tx: Transaction, now: Date, previousTx?: Transaction):
         reason: reasonParts.join(' • '),
         confidence,
         score,
+        amountHint,
+        sequenceHint,
     };
 };
 
@@ -83,7 +144,7 @@ export const rankPersonalizedSuggestions = (
     const sortedByDate = [...valid].sort((a, b) => +new Date(b.date) - +new Date(a.date));
     const previousTx = sortedByDate[0];
 
-    const scored = sortedByDate.map(tx => scoreTransaction(tx, now, previousTx));
+    const scored = sortedByDate.map(tx => scoreTransaction(tx, now, previousTx, sortedByDate));
 
     const deduped = new Map<string, RankedSuggestion>();
     for (const suggestion of scored) {
