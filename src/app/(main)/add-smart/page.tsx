@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
     ArrowLeft, Sparkles, Tag, MapPin, CornerDownRight, 
-    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight
+    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight, BrainCircuit
 } from 'lucide-react';
 
 import { useUI } from '@/components/ui-provider';
@@ -18,6 +18,8 @@ import { HeroAmount } from '@/features/transactions/components/liquid-composer/H
 import { MagicBar } from '@/features/transactions/components/liquid-composer/MagicBar';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { DynamicSuggestions } from './dynamic-suggestions';
+import { useRecentTransactions } from '@/features/transactions/hooks/use-recent-transactions';
+import { rankPersonalizedSuggestions } from '@/features/transactions/utils/smart-suggestions';
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
@@ -82,8 +84,14 @@ export default function SmartAddPage() {
         processInput,
         saveTransaction,
         saveMultiTransactions,
-        resetFlow
+        resetFlow,
+        suggestionMeta,
+        aiStage
     } = useSmartAddFlow();
+
+    const { transactions: recentTransactions } = useRecentTransactions(12);
+
+    const personalizedSuggestions = React.useMemo(() => rankPersonalizedSuggestions(recentTransactions), [recentTransactions]);
 
     const handleMagicSubmit = async () => {
         if (!magicValue) return;
@@ -183,7 +191,7 @@ export default function SmartAddPage() {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="w-full overflow-y-auto no-scrollbar max-h-full pb-24"
                         >
-                            <DynamicSuggestions onSuggestionClick={(text) => {
+                            <DynamicSuggestions personalizedSuggestions={personalizedSuggestions} onSuggestionClick={(text) => {
                                 setMagicValue(text);
                                 processInput(text);
                                 setMagicValue('');
@@ -213,13 +221,24 @@ export default function SmartAddPage() {
                                                 <Loader2 className="h-10 w-10 text-primary animate-spin" strokeWidth={1.5} />
                                                 <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full animate-pulse" />
                                             </div>
-                                            <p className="text-xs font-medium uppercase tracking-widest text-primary">Menganalisis...</p>
+                                            <p className="text-xs font-medium uppercase tracking-widest text-primary">{aiStage === 'refining' ? 'Menyempurnakan...' : aiStage === 'predicting' ? 'Memprediksi kategori...' : 'Menganalisis...'}</p>
                                         </motion.div>
                                     ) : activeTx && (
                                         <motion.div key="tx-data" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4 w-full">
                                             
                                             {/* Category & Sub */}
                                             <div className="flex flex-col items-center gap-2">
+                                                {suggestionMeta && (
+                                                    <div className="flex flex-wrap items-center justify-center gap-2">
+                                                        <span className="inline-flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary">
+                                                            <BrainCircuit className="h-3 w-3" />
+                                                            {suggestionMeta.source === 'quick-parse' ? 'Smart cepat' : suggestionMeta.source === 'refined' ? 'Disesuaikan' : 'AI Suggestion'}
+                                                        </span>
+                                                        <span className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+                                                            Confidence {suggestionMeta.confidence}
+                                                        </span>
+                                                    </div>
+                                                )}
                                                 <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg shadow-primary/20">
                                                     <Tag className="h-3 w-3 fill-primary-foreground/20" />
                                                     <span className="text-xs font-medium uppercase tracking-widest">{activeTx.category}</span>
@@ -241,8 +260,11 @@ export default function SmartAddPage() {
                                                     </div>
                                                 )}
                                                 <div className="text-sm font-medium text-muted-foreground italic text-center max-w-[280px] min-h-[1.5em]">
-                                                    <TypewriterText text={`"${activeTx.description}"`} />
+                                                    <TypewriterText text={`\"${activeTx.description}\"`} />
                                                 </div>
+                                                {suggestionMeta?.reason && (
+                                                    <p className="max-w-[320px] text-center text-xs text-primary/80">{suggestionMeta.reason}</p>
+                                                )}
                                             </div>
                                         </motion.div>
                                     )}
