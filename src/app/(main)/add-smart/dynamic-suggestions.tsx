@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, Sun, CloudSun, Moon, Sunset, Calendar, Smile } from 'lucide-react';
+import { ArrowRight, Sun, CloudSun, Moon, Sunset, Calendar, Smile, History } from 'lucide-react';
+
+interface PersonalizedSuggestionItem {
+    text: string;
+    reason: string;
+    confidence: 'low' | 'medium' | 'high';
+}
 
 interface DynamicSuggestionsProps {
     onSuggestionClick: (text: string) => void;
+    personalizedSuggestions?: PersonalizedSuggestionItem[];
 }
 
 type TimeOfDay = 'pagi' | 'siang' | 'sore' | 'malam';
 type DayContext = 'normal' | 'weekend' | 'gajian';
 
-export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProps) => {
+export const DynamicSuggestions = ({ onSuggestionClick, personalizedSuggestions = [] }: DynamicSuggestionsProps) => {
     const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('pagi');
     const [dayContext, setDayContext] = useState<DayContext>('normal');
     
@@ -112,6 +119,7 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
 
     const greeting = getGreeting();
     const suggestions = getSuggestions();
+    const hasPersonalized = personalizedSuggestions.length > 0;
     const Icon = greeting.icon;
 
     return (
@@ -129,6 +137,30 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
                 }
             </p>
             
+
+            {hasPersonalized && (
+                <div className="mt-6 w-full rounded-card border border-primary/20 bg-primary/5 p-3 text-left">
+                    <p className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-primary">
+                        <History className="h-3.5 w-3.5" /> Berdasarkan transaksi terakhirmu
+                    </p>
+                    <div className="grid grid-cols-1 gap-2">
+                        {personalizedSuggestions.slice(0, 3).map((item, idx) => (
+                            <button
+                                key={`recent-${idx}`}
+                                type="button"
+                                onClick={() => onSuggestionClick(item.text)}
+                                className="rounded-md border border-primary/15 bg-background/80 px-3 py-2 text-xs font-medium text-foreground/90 transition-colors hover:bg-primary/10"
+                            >
+                                <span>{item.text}</span>
+                                <span className="mt-1 block text-[10px] font-normal text-muted-foreground">
+                                    {item.reason} · confidence {item.confidence}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <div className="mt-10 w-full">
                 <div className="flex items-center justify-between mb-4">
                     <p className="text-xs font-medium tracking-widest text-muted-foreground/60">

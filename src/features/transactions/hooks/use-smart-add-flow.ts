@@ -68,6 +68,12 @@ export type InsightData = {
     } | null;
 }
 
+export type SuggestionMeta = {
+    source: 'quick-parse' | 'ai' | 'refined';
+    confidence: 'low' | 'medium' | 'high';
+    reason?: string;
+};
+
 export const useSmartAddFlow = () => {
     const { wallets } = useWallets();
     const { transactions } = useMonthTransactions();
@@ -81,6 +87,8 @@ export const useSmartAddFlow = () => {
     const [parsedData, setParsedData] = useState<SmartTransactionData | null>(null);
     const [multiParsedData, setMultiParsedData] = useState<SmartTransactionData[]>([]);
     const [insightData, setInsightData] = useState<InsightData | null>(null);
+    const [suggestionMeta, setSuggestionMeta] = useState<SuggestionMeta | null>(null);
+    const [aiStage, setAiStage] = useState<'idle' | 'parsing' | 'predicting' | 'refining'>('idle');
     const [isSaving, setIsSaving] = useState(false);
 
     const removeMultiTransaction = useCallback((index: number) => {
@@ -98,6 +106,8 @@ export const useSmartAddFlow = () => {
         setParsedData(null);
         setMultiParsedData([]);
         setInsightData(null);
+        setSuggestionMeta(null);
+        setAiStage('idle');
         setMessages([]);
     }, []);
 
@@ -144,7 +154,7 @@ export const useSmartAddFlow = () => {
         return { walletInsight, budgetInsight };
     }, [wallets, budgets, transactions]);
 
-    const handleAISuccess = useCallback((result: AIResult, isReceipt = false) => {
+    const handleAISuccess = useCallback((result: AIResult, isReceipt = false, source: 'ai' | 'refined' = 'ai') => {
         // Remove thinking message first
         setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
 
@@ -248,6 +258,11 @@ export const useSmartAddFlow = () => {
 
         if (processedTransactions.length > 1) {
             setMultiParsedData(processedTransactions);
+            setSuggestionMeta({
+                source,
+                confidence: source === 'refined' ? 'high' : 'medium',
+                reason: source === 'refined' ? 'Disesuaikan dari instruksi koreksi Anda.' : 'Diprediksi dari analisis AI input Anda.'
+            });
             setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
             setPageState('MULTI_CONFIRMING');
         } else {
@@ -267,6 +282,11 @@ export const useSmartAddFlow = () => {
             const { walletInsight, budgetInsight } = calculateInsights(dataToConfirm);
             setInsightData({ wallet: walletInsight, budget: budgetInsight });
             setParsedData(dataToConfirm);
+            setSuggestionMeta({
+                source,
+                confidence: source === 'refined' ? 'high' : 'medium',
+                reason: source === 'refined' ? 'Disesuaikan dari instruksi koreksi Anda.' : 'Diprediksi dari analisis AI input Anda.'
+            });
             setMessages(prev => prev.filter(m => m.type !== 'ai-thinking'));
             setPageState('CONFIRMING');
         }
@@ -283,6 +303,7 @@ export const useSmartAddFlow = () => {
         }
 
         setPageState('ANALYZING');
+        setAiStage('parsing');
         setMessages(prev => [...prev, { id: `ai-thinking-${Date.now()}`, type: 'ai-thinking', content: '' }]);
 
         const availableCategories = [
@@ -316,6 +337,11 @@ export const useSmartAddFlow = () => {
                     };
 
                     setParsedData(optimisticData);
+                    setSuggestionMeta({
+                        source: 'quick-parse',
+                        confidence: quickResult.confidence,
+                        reason: quickResult.detectedKeyword ? `Kategori dipilih dari kata: ${quickResult.detectedKeyword}` : 'Diprediksi cepat dari pola teks transaksi.'
+                    });
                     // Show result immediately, but keep 'ai-thinking' message to show refinement is active
                     setPageState('CONFIRMING');
                 }
@@ -327,6 +353,7 @@ export const useSmartAddFlow = () => {
 
         try {
             if (isRefinement && typeof input === 'string') {
+                setAiStage('refining');
                 // Prepare current data for refinement
                 const currentTransactions = multiParsedData.length > 0 ? multiParsedData : (parsedData ? [parsedData] : []);
 
@@ -358,14 +385,16 @@ export const useSmartAddFlow = () => {
                     categories: availableCategories,
                     wallets: availableWallets
                 });
-                handleAISuccess(result);
+                handleAISuccess(result, false, 'refined');
             } else if (typeof input === 'string') {
+                setAiStage('predicting');
                 const result = await extractTransaction(input, {
                     categories: availableCategories,
                     wallets: availableWallets
                 });
                 handleAISuccess(result);
             } else {
+                setAiStage('predicting');
                 const result = await scanReceipt({ photoDataUri: input.dataUrl, availableCategories });
                 handleAISuccess(result, true);
             }
@@ -373,6 +402,8 @@ export const useSmartAddFlow = () => {
             console.error('AI processing failed:', error);
             showToast('Oops! Gagal menganalisis input. Coba lagi ya.', 'error');
             resetFlow(true);
+        } finally {
+            setAiStage('idle');
         }
     }, [wallets, expenseCategories, incomeCategories, handleAISuccess, showToast, resetFlow, pageState, parsedData, multiParsedData]);
 
@@ -457,6 +488,8 @@ export const useSmartAddFlow = () => {
         setMultiParsedData,
         removeMultiTransaction,
         insightData,
+        suggestionMeta,
+        aiStage,
         isSaving,
         processInput,
         saveTransaction,

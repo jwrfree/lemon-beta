@@ -100,6 +100,22 @@ describe('DynamicSuggestions', () => {
         expect(screen.queryByText('Happy Weekend!')).toBeNull();
     });
 
+
+    it('shows personalized suggestions when provided', () => {
+        const date = new Date(2024, 0, 10, 8, 0, 0);
+        vi.setSystemTime(date);
+
+        render(
+            <DynamicSuggestions
+                onSuggestionClick={mockOnSuggestionClick}
+                personalizedSuggestions={[{ text: "Ngopi kantor 18000", reason: "sering muncul di waktu pagi", confidence: "high" }, { text: "Makan siang 30000", reason: "pola hari mirip", confidence: "medium" }]}
+            />
+        );
+
+        expect(screen.getByText('Berdasarkan transaksi terakhirmu')).toBeDefined();
+        expect(screen.getByText('Ngopi kantor 18000')).toBeDefined();
+    });
+
     it('calls onSuggestionClick when a suggestion is clicked', () => {
         const date = new Date(2024, 0, 10, 8, 0, 0); // Normal Morning
         vi.setSystemTime(date);

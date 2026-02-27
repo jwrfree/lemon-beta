@@ -69,6 +69,7 @@ export interface QuickParseResult {
     type: 'income' | 'expense';
     isNeed: boolean;
     confidence: 'low' | 'medium' | 'high';
+    detectedKeyword?: string;
 }
 
 /**
@@ -112,6 +113,7 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
     let subCategory = '';
     let type: 'income' | 'expense' = 'expense';
     let foundMatch = false;
+    let detectedKeyword: string | undefined;
 
     // Helper to search categories
     const searchCats = (cats: Category[], txType: 'income' | 'expense') => {
@@ -121,6 +123,7 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
                 category = cat.name;
                 type = txType;
                 foundMatch = true;
+                detectedKeyword = cat.name;
                 return true;
             }
             // Check subcategories
@@ -132,6 +135,7 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
                         subCategory = sub;
                         type = txType;
                         foundMatch = true;
+                        detectedKeyword = sub;
                         return true;
                     }
                     // Word-level match: split sub-category by delimiters and check if
@@ -142,6 +146,7 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
                         subCategory = sub;
                         type = txType;
                         foundMatch = true;
+                        detectedKeyword = subWords.find(w => lowerText.includes(w));
                         return true;
                     }
                 }
@@ -163,6 +168,7 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
         category = 'Transfer';
         type = 'expense'; // Used as system trigger
         foundMatch = true;
+        detectedKeyword = transferKeywords.find(k => lowerText.includes(k));
     }
 
     // 3. Need vs Want Logic
@@ -210,6 +216,7 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
         date,
         type,
         isNeed,
-        confidence: amount > 0 && foundMatch ? 'medium' : 'low'
+        confidence: amount > 0 && foundMatch ? 'medium' : 'low',
+        detectedKeyword
     };
 };
