@@ -45,6 +45,7 @@ export interface SmartTransactionData {
     sourceWallet?: string;
     destinationWallet?: string;
     isNeed?: boolean;
+    reviewFlags?: Array<'type' | 'category' | 'wallet'>;
 }
 
 export type Message = {
@@ -243,7 +244,12 @@ export const useSmartAddFlow = () => {
                 counterparty: counterparty || undefined,
                 sourceWallet: sourceWallet || undefined,
                 destinationWallet: destinationWallet || undefined,
-                isNeed: isNeed !== undefined ? isNeed : true
+                isNeed: isNeed !== undefined ? isNeed : true,
+                reviewFlags: [
+                    ...(finalCategory === 'Lain-lain' ? ['category' as const] : []),
+                    ...(!matchingWallet && !walletName ? ['wallet' as const] : []),
+                    ...(transactionType !== type && !!type ? ['type' as const] : []),
+                ]
             };
         });
 
@@ -313,7 +319,12 @@ export const useSmartAddFlow = () => {
                         location: '',
                         date: quickResult.date,
                         type: quickResult.type,
-                        isNeed: quickResult.isNeed
+                        isNeed: quickResult.isNeed,
+                        reviewFlags: [
+                            ...(quickResult.needsTypeConfirmation ? ['type' as const] : []),
+                            ...(quickResult.category === 'Lain-lain' ? ['category' as const] : []),
+                            ...(!quickResult.walletName ? ['wallet' as const] : []),
+                        ]
                     };
 
                     setParsedData(optimisticData);

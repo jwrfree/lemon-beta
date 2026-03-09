@@ -18,6 +18,7 @@ import { HeroAmount } from '@/features/transactions/components/liquid-composer/H
 import { MagicBar } from '@/features/transactions/components/liquid-composer/MagicBar';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { DynamicSuggestions } from './dynamic-suggestions';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
@@ -67,6 +68,7 @@ const TypewriterText = ({ text }: { text: string }) => {
 export default function SmartAddPage() {
     const router = useRouter();
     const { showToast } = useUI();
+    const { wallets } = useWallets();
     const [magicValue, setMagicValue] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(0);
@@ -78,6 +80,7 @@ export default function SmartAddPage() {
         pageState,
         parsedData,
         multiParsedData,
+        messages,
         isSaving,
         processInput,
         saveTransaction,
@@ -136,6 +139,10 @@ export default function SmartAddPage() {
     const activeTx = multiParsedData.length > 0 ? multiParsedData[focusedIndex] : parsedData;
     const isAnalyzing = pageState === 'ANALYZING';
     const hasData = !!activeTx || isAnalyzing;
+    const activeWallet = wallets.find(w => w.id === activeTx?.walletId);
+    const latestClarification = [...messages].reverse().find(m => m.type === 'ai-clarification');
+    const reviewMap: Record<string, string> = { type: 'Tipe transaksi', category: 'Kategori', wallet: 'Dompet' };
+    const stateLabel = isAnalyzing ? 'Memproses input…' : activeTx ? 'Siap disimpan' : 'Tambah transaksi cepat';
 
     return (
         <div className="flex flex-col h-dvh bg-background relative overflow-hidden text-foreground">
@@ -164,7 +171,7 @@ export default function SmartAddPage() {
                     )}
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-popover/80 backdrop-blur-md border border-border/50">
                         <Sparkles className={cn("h-3.5 w-3.5 text-primary", isAnalyzing && "animate-pulse")} />
-                        <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Smart Add</span>
+                        <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">{stateLabel}</span>
                     </div>
                 </div>
             </div>
@@ -230,7 +237,27 @@ export default function SmartAddPage() {
                                                         <span className="text-xs font-medium">{activeTx.subCategory}</span>
                                                     </div>
                                                 )}
+                                                {activeWallet && (
+                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
+                                                        <span className="text-xs font-medium">Dompet: {activeWallet.name}</span>
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {!!activeTx.reviewFlags?.length && (
+                                                <div className="w-full max-w-xs rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-center">
+                                                    <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700 dark:text-amber-300">Perlu cek</p>
+                                                    <p className="text-xs text-amber-800/90 dark:text-amber-200/90">
+                                                        {activeTx.reviewFlags.map(flag => reviewMap[flag]).join(', ')}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {latestClarification && typeof latestClarification.content === 'string' && (
+                                                <div className="w-full max-w-xs rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-center">
+                                                    <p className="text-xs text-primary">{latestClarification.content}</p>
+                                                </div>
+                                            )}
 
                                             {/* Location & Description with Ghost Typing */}
                                             <div className="flex flex-col items-center gap-3 w-full">
@@ -329,7 +356,7 @@ export default function SmartAddPage() {
                                 ) : (
                                     <>
                                         <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                                        <span>Simpan {multiParsedData.length > 1 ? `${multiParsedData.length} Transaksi` : 'Transaksi'}</span>
+                                        <span>Simpan & update saldo{multiParsedData.length > 1 ? ` ${multiParsedData.length} transaksi` : ''}</span>
                                     </>
                                 )}
                             </Button>
