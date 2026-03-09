@@ -12,8 +12,8 @@ export const useTransactionActions = (user: User | null) => {
     const ui = useUI();
     const { refreshWallets } = useWalletData();
 
-    const addTransaction = useCallback(async (data: TransactionInput) => {
-        if (!user) return;
+    const addTransaction = useCallback(async (data: TransactionInput, options?: { silentSuccessToast?: boolean }): Promise<string | null> => {
+        if (!user) return null;
 
         // 1. Optimistic Update (Handled by Event Listener in WalletProvider)
         const optimisticTransaction: Transaction = {
@@ -53,7 +53,7 @@ export const useTransactionActions = (user: User | null) => {
             // Authoritative Refresh: Sync UI back with server state immediately
             await refreshWallets();
             transactionEvents.emit('transaction.deleted', optimisticTransaction.id);
-            return;
+            return null;
         }
 
         await logActivity({
@@ -63,7 +63,10 @@ export const useTransactionActions = (user: User | null) => {
         });
 
         ui.setIsTxModalOpen(false);
-        ui.showToast("Transaksi berhasil ditambahkan!", 'success');
+        if (!options?.silentSuccessToast) {
+            ui.showToast("Transaksi berhasil ditambahkan!", 'success');
+        }
+        return result.data;
     }, [user, ui, refreshWallets]);
 
     const updateTransaction = useCallback(async (transactionId: string, oldData: Transaction, newData: TransactionUpdate) => {

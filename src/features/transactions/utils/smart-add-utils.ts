@@ -69,7 +69,37 @@ export interface QuickParseResult {
     type: 'income' | 'expense';
     isNeed: boolean;
     confidence: 'low' | 'medium' | 'high';
+    normalizedAmountText?: string;
+    needsTypeConfirmation?: boolean;
 }
+
+const parseIndonesianAmount = (rawNumber: string, suffix?: string): number => {
+    let numeric = rawNumber.trim();
+
+    if (numeric.includes(',') && numeric.includes('.')) {
+        numeric = numeric.replace(/\./g, '').replace(',', '.');
+    } else if (numeric.includes(',')) {
+        const [, decimalPart = ''] = numeric.split(',');
+        numeric = decimalPart.length === 3 ? numeric.replace(/,/g, '') : numeric.replace(',', '.');
+    } else if (numeric.includes('.')) {
+        const [, decimalPart = ''] = numeric.split('.');
+        numeric = decimalPart.length === 3 ? numeric.replace(/\./g, '') : numeric;
+    }
+
+    let parsedValue = Number.parseFloat(numeric);
+    if (!Number.isFinite(parsedValue)) {
+        return 0;
+    }
+
+    const normalizedSuffix = suffix?.toLowerCase();
+    if (normalizedSuffix === 'rb' || normalizedSuffix === 'k' || normalizedSuffix === 'ribu') {
+        parsedValue *= 1000;
+    } else if (normalizedSuffix === 'jt' || normalizedSuffix === 'juta') {
+        parsedValue *= 1000000;
+    }
+
+    return Math.round(parsedValue);
+};
 
 /**
  * Perform instant regex-based parsing to give immediate feedback to user
@@ -85,26 +115,12 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
     // (\d+[.,]?\d*) -> Capture number (e.g., 50, 50.5, 50,000)
     // \s* -> Optional space
     // (rb|k|jt|juta|ribu)? -> Optional suffix
-    const amountMatch = lowerText.match(/(\d+[.,]?\d*)\s*(rb|k|jt|juta|ribu)?/i);
+    const amountMatch = lowerText.match(/(\d{1,3}(?:[.,]\d{3})+|\d+[.,]?\d*)\s*(rb|k|jt|juta|ribu)?/i);
+    let normalizedAmountText = '';
 
     if (amountMatch) {
-        let val = parseFloat(amountMatch[1].replace(/,/g, '.')); // Handle decimal comma if any, though ID uses dot usually. simple parse.
-        // If text uses dot for thousands (Indonesian), simple parseFloat might cut it off (50.000 -> 50).
-        // Let's refine: remove dots if it looks like thousand separator (more than 3 digits total or followed by 3 digits)
-        const rawNum = amountMatch[1];
-        if (rawNum.includes('.') && rawNum.split('.')[1].length === 3) {
-            val = parseFloat(rawNum.replace(/\./g, ''));
-        }
-
-        const suffix = amountMatch[2]?.toLowerCase();
-
-        if (suffix === 'rb' || suffix === 'k' || suffix === 'ribu') {
-            val *= 1000;
-        } else if (suffix === 'jt' || suffix === 'juta') {
-            val *= 1000000;
-        }
-
-        amount = val;
+        amount = parseIndonesianAmount(amountMatch[1], amountMatch[2]);
+        normalizedAmountText = new Intl.NumberFormat('id-ID').format(amount);
     }
 
     // 2. Extract Category & SubCategory
@@ -150,10 +166,25 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
         return false;
     };
 
+    const incomeHintKeywords = ['gaji', 'bonus', 'komisi', 'fee', 'pendapatan', 'income', 'thr', 'upah'];
+    const expenseHintKeywords = ['bayar', 'beli', 'belanja', 'makan', 'topup', 'top up', 'tagihan', 'listrik'];
+
     // Prioritize Expense search
     if (!searchCats(categories.expense, 'expense')) {
         searchCats(categories.income, 'income');
     }
+
+    if (!foundMatch) {
+        if (incomeHintKeywords.some(k => lowerText.includes(k))) {
+            type = 'income';
+        } else if (expenseHintKeywords.some(k => lowerText.includes(k))) {
+            type = 'expense';
+        }
+    }
+
+    const hasIncomeHint = incomeHintKeywords.some(k => lowerText.includes(k));
+    const hasExpenseHint = expenseHintKeywords.some(k => lowerText.includes(k));
+    const needsTypeConfirmation = hasIncomeHint && hasExpenseHint;
 
     // 2.5 Transfer Detection (Quick Regex)
     const transferKeywords = ['pindah', 'transfer', 'kirim', 'tf', 'mutasi'];
@@ -210,6 +241,8 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
         date,
         type,
         isNeed,
-        confidence: amount > 0 && foundMatch ? 'medium' : 'low'
+        confidence: amount > 0 && foundMatch ? 'medium' : 'low',
+        normalizedAmountText,
+        needsTypeConfirmation,
     };
 };

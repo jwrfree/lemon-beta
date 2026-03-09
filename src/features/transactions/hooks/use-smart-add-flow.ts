@@ -14,6 +14,7 @@ import { startOfMonth, parseISO } from 'date-fns';
 import type { TransactionExtractionOutput, SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
 import type { ScanReceiptOutput } from '@/ai/flows/scan-receipt-flow';
 import { resolveSubCategory, quickParseTransaction } from '@/features/transactions/utils/smart-add-utils';
+import type { Transaction } from '@/types/models';
 
 // Unified type for AI processing results
 type AIResult = TransactionExtractionOutput | ScanReceiptOutput;
@@ -72,7 +73,7 @@ export const useSmartAddFlow = () => {
     const { wallets } = useWallets();
     const { transactions } = useMonthTransactions();
     const { incomeCategories, expenseCategories } = useCategories();
-    const { addTransaction, addTransfer } = useActions();
+    const { addTransaction, addTransfer, deleteTransaction } = useActions();
     const { budgets } = useBudgets();
     const { setPreFilledTransfer, setIsTransferModalOpen, showToast } = useUI();
 
@@ -318,6 +319,17 @@ export const useSmartAddFlow = () => {
                     setParsedData(optimisticData);
                     // Show result immediately, but keep 'ai-thinking' message to show refinement is active
                     setPageState('CONFIRMING');
+
+                    if (quickResult.needsTypeConfirmation) {
+                        setMessages(prev => [
+                            ...prev.filter(m => m.type !== 'ai-thinking'),
+                            {
+                                id: `ai-clarify-type-${Date.now()}`,
+                                type: 'ai-clarification',
+                                content: 'Input terlihat ambigu (pemasukan vs pengeluaran). Tolong cek tipe transaksi sebelum simpan ya.'
+                            }
+                        ]);
+                    }
                 }
             } catch (e) {
                 console.warn("Quick parse failed, falling back to full AI", e);
@@ -406,8 +418,33 @@ export const useSmartAddFlow = () => {
                 }
             }
 
-            await addTransaction(parsedData);
-            showToast("Transaksi berhasil disimpan!", 'success');
+            const createdTransactionId = await addTransaction(parsedData, { silentSuccessToast: true });
+            if (!createdTransactionId) {
+                return false;
+            }
+
+            const undoPayload: Transaction = {
+                id: createdTransactionId,
+                amount: parsedData.amount,
+                category: parsedData.category,
+                subCategory: parsedData.subCategory || undefined,
+                date: parsedData.date,
+                description: parsedData.description,
+                type: parsedData.type,
+                walletId: parsedData.walletId,
+                userId: '',
+                createdAt: new Date().toISOString(),
+                location: parsedData.location || undefined,
+                isNeed: parsedData.isNeed,
+            };
+
+            showToast("Transaksi berhasil disimpan.", 'success', {
+                durationMs: 10000,
+                actionLabel: 'Urungkan',
+                onAction: () => {
+                    void deleteTransaction(undoPayload);
+                }
+            });
             if (andAddAnother) {
                 resetFlow();
             } else {
@@ -421,7 +458,7 @@ export const useSmartAddFlow = () => {
             setIsSaving(false);
         }
         return false;
-    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow]);
+    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow, deleteTransaction]);
 
     /**
      * Saves all transactions in `multiParsedData` to the database in sequence.

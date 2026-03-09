@@ -142,6 +142,14 @@ describe('quickParseTransaction - Regex-based Fast Parser', () => {
             expect(quickParseTransaction('makan 50.000', mockCats, MOCK_WALLETS).amount).toBe(50000);
         });
 
+        it('parses multi-thousand separator (e.g. 1.200.000)', () => {
+            expect(quickParseTransaction('bayar listrik 1.200.000', mockCats, MOCK_WALLETS).amount).toBe(1200000);
+        });
+
+        it('parses decimal comma with juta suffix (e.g. 2,5jt)', () => {
+            expect(quickParseTransaction('gaji freelance 2,5jt', mockCats, MOCK_WALLETS).amount).toBe(2500000);
+        });
+
         it('parses a plain integer with no suffix', () => {
             expect(quickParseTransaction('beli 30000', mockCats, MOCK_WALLETS).amount).toBe(30000);
         });
@@ -193,6 +201,11 @@ describe('quickParseTransaction - Regex-based Fast Parser', () => {
         it('returns "expense" type by default', () => {
             const r = quickParseTransaction('makan 25rb', mockCats, MOCK_WALLETS);
             expect(r.type).toBe('expense');
+        });
+
+        it('flags ambiguous type for mixed income and expense hints', () => {
+            const r = quickParseTransaction('bonus bayar listrik 500rb', mockCats, MOCK_WALLETS);
+            expect(r.needsTypeConfirmation).toBe(true);
         });
     });
 
