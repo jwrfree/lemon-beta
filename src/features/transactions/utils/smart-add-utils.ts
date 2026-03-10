@@ -71,6 +71,9 @@ export interface QuickParseResult {
     confidence: 'low' | 'medium' | 'high';
     normalizedAmountText?: string;
     needsTypeConfirmation?: boolean;
+    needsSplitConfirmation?: boolean;
+    parsedAmountCount?: number;
+    isRefund?: boolean;
 }
 
 const parseIndonesianAmount = (rawNumber: string, suffix?: string): number => {
@@ -115,8 +118,11 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
     // (\d+[.,]?\d*) -> Capture number (e.g., 50, 50.5, 50,000)
     // \s* -> Optional space
     // (rb|k|jt|juta|ribu)? -> Optional suffix
-    const amountMatch = lowerText.match(/(\d{1,3}(?:[.,]\d{3})+|\d+[.,]?\d*)\s*(rb|k|jt|juta|ribu)?/i);
+    const amountMatches = [...lowerText.matchAll(/(\d{1,3}(?:[.,]\d{3})+|\d+[.,]?\d*)\s*(rb|k|jt|juta|ribu)?/gi)];
+    const amountMatch = amountMatches[0];
     let normalizedAmountText = '';
+    const parsedAmountCount = amountMatches.length;
+    const needsSplitConfirmation = parsedAmountCount > 1;
 
     if (amountMatch) {
         amount = parseIndonesianAmount(amountMatch[1], amountMatch[2]);
@@ -188,12 +194,18 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
 
     // 2.5 Transfer Detection (Quick Regex)
     const transferKeywords = ['pindah', 'transfer', 'kirim', 'tf', 'mutasi'];
+    const refundKeywords = ['refund', 'pengembalian', 'retur', 'dibalikin', 'balik dana'];
     const isTransfer = transferKeywords.some(k => lowerText.includes(k));
+    const isRefund = refundKeywords.some(k => lowerText.includes(k));
     
     if (isTransfer) {
         category = 'Transfer';
         type = 'expense'; // Used as system trigger
         foundMatch = true;
+    }
+
+    if (!isTransfer && isRefund) {
+        type = 'income';
     }
 
     // 3. Need vs Want Logic
@@ -244,5 +256,8 @@ export const quickParseTransaction = (text: string, categories: { expense: Categ
         confidence: amount > 0 && foundMatch ? 'medium' : 'low',
         normalizedAmountText,
         needsTypeConfirmation,
+        needsSplitConfirmation,
+        parsedAmountCount,
+        isRefund,
     };
 };

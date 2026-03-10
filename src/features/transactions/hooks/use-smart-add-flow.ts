@@ -331,14 +331,25 @@ export const useSmartAddFlow = () => {
                     // Show result immediately, but keep 'ai-thinking' message to show refinement is active
                     setPageState('CONFIRMING');
 
-                    if (quickResult.needsTypeConfirmation) {
+                    if (quickResult.needsTypeConfirmation || quickResult.needsSplitConfirmation || quickResult.isRefund) {
+                        const clarifications: string[] = [];
+                        if (quickResult.needsTypeConfirmation) {
+                            clarifications.push('Input terlihat ambigu (pemasukan vs pengeluaran). Tolong cek tipe transaksi sebelum simpan ya.');
+                        }
+                        if (quickResult.needsSplitConfirmation) {
+                            clarifications.push(`Terdeteksi ${quickResult.parsedAmountCount} nominal. Kalau ini transaksi gabungan, sebaiknya pisahkan jadi beberapa transaksi.`);
+                        }
+                        if (quickResult.isRefund) {
+                            clarifications.push('Terdeteksi kata refund/pengembalian. Kami set sebagai pemasukan, mohon cek lagi tipe dan kategori.');
+                        }
+
                         setMessages(prev => [
                             ...prev.filter(m => m.type !== 'ai-thinking'),
-                            {
-                                id: `ai-clarify-type-${Date.now()}`,
-                                type: 'ai-clarification',
-                                content: 'Input terlihat ambigu (pemasukan vs pengeluaran). Tolong cek tipe transaksi sebelum simpan ya.'
-                            }
+                            ...clarifications.map((content, idx) => ({
+                                id: `ai-clarify-${Date.now()}-${idx}`,
+                                type: 'ai-clarification' as const,
+                                content,
+                            }))
                         ]);
                     }
                 }
@@ -429,6 +440,21 @@ export const useSmartAddFlow = () => {
                 }
             }
 
+            const duplicateWindowMs = 3 * 60 * 1000;
+            const parsedDate = new Date(parsedData.date).getTime();
+            const hasPotentialDuplicate = transactions.some(tx =>
+                tx.amount === parsedData.amount &&
+                tx.walletId === parsedData.walletId &&
+                tx.type === parsedData.type &&
+                Math.abs(new Date(tx.date).getTime() - parsedDate) <= duplicateWindowMs
+            );
+
+            if (hasPotentialDuplicate) {
+                showToast('Transaksi serupa baru saja tercatat. Cek riwayat untuk hindari duplikat.', 'error');
+                setPageState('CONFIRMING');
+                return false;
+            }
+
             const createdTransactionId = await addTransaction(parsedData, { silentSuccessToast: true });
             if (!createdTransactionId) {
                 return false;
@@ -469,7 +495,7 @@ export const useSmartAddFlow = () => {
             setIsSaving(false);
         }
         return false;
-    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow, deleteTransaction]);
+    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow, deleteTransaction, transactions]);
 
     /**
      * Saves all transactions in `multiParsedData` to the database in sequence.

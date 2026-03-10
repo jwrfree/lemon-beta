@@ -264,6 +264,22 @@ describe('quickParseTransaction - Regex-based Fast Parser', () => {
         });
     });
 
+
+    describe('Phase 3 edge-case helpers', () => {
+        it('flags split confirmation when multiple amounts are present', () => {
+            const r = quickParseTransaction('makan 30k + parkir 5k', mockCats, MOCK_WALLETS);
+            expect(r.needsSplitConfirmation).toBe(true);
+            expect(r.parsedAmountCount).toBeGreaterThan(1);
+            expect(r.amount).toBe(30000);
+        });
+
+        it('detects refund intent and suggests income type', () => {
+            const r = quickParseTransaction('refund kopi 25k', mockCats, MOCK_WALLETS);
+            expect(r.isRefund).toBe(true);
+            expect(r.type).toBe('income');
+        });
+    });
+
     describe('Description field', () => {
         it('uses the full raw input text as the description', () => {
             const input = 'makan siang di warteg 15rb';
