@@ -14,6 +14,7 @@ import { startOfMonth, parseISO } from 'date-fns';
 import type { TransactionExtractionOutput, SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
 import type { ScanReceiptOutput } from '@/ai/flows/scan-receipt-flow';
 import { resolveSubCategory, quickParseTransaction } from '@/features/transactions/utils/smart-add-utils';
+import type { Transaction } from '@/types/models';
 
 // Unified type for AI processing results
 type AIResult = TransactionExtractionOutput | ScanReceiptOutput;
@@ -44,6 +45,7 @@ export interface SmartTransactionData {
     sourceWallet?: string;
     destinationWallet?: string;
     isNeed?: boolean;
+    reviewFlags?: Array<'type' | 'category' | 'wallet'>;
 }
 
 export type Message = {
@@ -72,7 +74,7 @@ export const useSmartAddFlow = () => {
     const { wallets } = useWallets();
     const { transactions } = useMonthTransactions();
     const { incomeCategories, expenseCategories } = useCategories();
-    const { addTransaction, addTransfer } = useActions();
+    const { addTransaction, addTransfer, deleteTransaction } = useActions();
     const { budgets } = useBudgets();
     const { setPreFilledTransfer, setIsTransferModalOpen, showToast } = useUI();
 
@@ -82,6 +84,31 @@ export const useSmartAddFlow = () => {
     const [multiParsedData, setMultiParsedData] = useState<SmartTransactionData[]>([]);
     const [insightData, setInsightData] = useState<InsightData | null>(null);
     const [isSaving, setIsSaving] = useState(false);
+
+    const historySuggestions = useMemo(() => {
+        const seen = new Set<string>();
+
+        return transactions
+            .slice()
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((tx) => {
+                const compactAmount = tx.amount >= 1000000
+                    ? `${Number((tx.amount / 1000000).toFixed(1)).toString().replace('.', ',')}jt`
+                    : tx.amount >= 1000
+                        ? `${Math.round(tx.amount / 1000)}rb`
+                        : `${tx.amount}`;
+
+                const baseText = tx.description?.trim() || tx.category;
+                return `${baseText} ${compactAmount}`.trim();
+            })
+            .filter((text) => {
+                const normalized = text.toLowerCase();
+                if (!normalized || seen.has(normalized)) return false;
+                seen.add(normalized);
+                return true;
+            })
+            .slice(0, 5);
+    }, [transactions]);
 
     const removeMultiTransaction = useCallback((index: number) => {
         setMultiParsedData(prev => {
@@ -242,7 +269,12 @@ export const useSmartAddFlow = () => {
                 counterparty: counterparty || undefined,
                 sourceWallet: sourceWallet || undefined,
                 destinationWallet: destinationWallet || undefined,
-                isNeed: isNeed !== undefined ? isNeed : true
+                isNeed: isNeed !== undefined ? isNeed : true,
+                reviewFlags: [
+                    ...(finalCategory === 'Lain-lain' ? ['category' as const] : []),
+                    ...(!matchingWallet && !walletName ? ['wallet' as const] : []),
+                    ...(transactionType !== type && !!type ? ['type' as const] : []),
+                ]
             };
         });
 
@@ -312,12 +344,39 @@ export const useSmartAddFlow = () => {
                         location: '',
                         date: quickResult.date,
                         type: quickResult.type,
-                        isNeed: quickResult.isNeed
+                        isNeed: quickResult.isNeed,
+                        reviewFlags: [
+                            ...(quickResult.needsTypeConfirmation ? ['type' as const] : []),
+                            ...(quickResult.category === 'Lain-lain' ? ['category' as const] : []),
+                            ...(!quickResult.walletName ? ['wallet' as const] : []),
+                        ]
                     };
 
                     setParsedData(optimisticData);
                     // Show result immediately, but keep 'ai-thinking' message to show refinement is active
                     setPageState('CONFIRMING');
+
+                    if (quickResult.needsTypeConfirmation || quickResult.needsSplitConfirmation || quickResult.isRefund) {
+                        const clarifications: string[] = [];
+                        if (quickResult.needsTypeConfirmation) {
+                            clarifications.push('Input terlihat ambigu (pemasukan vs pengeluaran). Tolong cek tipe transaksi sebelum simpan ya.');
+                        }
+                        if (quickResult.needsSplitConfirmation) {
+                            clarifications.push(`Terdeteksi ${quickResult.parsedAmountCount} nominal. Kalau ini transaksi gabungan, sebaiknya pisahkan jadi beberapa transaksi.`);
+                        }
+                        if (quickResult.isRefund) {
+                            clarifications.push('Terdeteksi kata refund/pengembalian. Kami set sebagai pemasukan, mohon cek lagi tipe dan kategori.');
+                        }
+
+                        setMessages(prev => [
+                            ...prev.filter(m => m.type !== 'ai-thinking'),
+                            ...clarifications.map((content, idx) => ({
+                                id: `ai-clarify-${Date.now()}-${idx}`,
+                                type: 'ai-clarification' as const,
+                                content,
+                            }))
+                        ]);
+                    }
                 }
             } catch (e) {
                 console.warn("Quick parse failed, falling back to full AI", e);
@@ -406,8 +465,48 @@ export const useSmartAddFlow = () => {
                 }
             }
 
-            await addTransaction(parsedData);
-            showToast("Transaksi berhasil disimpan!", 'success');
+            const duplicateWindowMs = 3 * 60 * 1000;
+            const parsedDate = new Date(parsedData.date).getTime();
+            const hasPotentialDuplicate = transactions.some(tx =>
+                tx.amount === parsedData.amount &&
+                tx.walletId === parsedData.walletId &&
+                tx.type === parsedData.type &&
+                Math.abs(new Date(tx.date).getTime() - parsedDate) <= duplicateWindowMs
+            );
+
+            if (hasPotentialDuplicate) {
+                showToast('Transaksi serupa baru saja tercatat. Cek riwayat untuk hindari duplikat.', 'error');
+                setPageState('CONFIRMING');
+                return false;
+            }
+
+            const createdTransactionId = await addTransaction(parsedData, { silentSuccessToast: true });
+            if (!createdTransactionId) {
+                return false;
+            }
+
+            const undoPayload: Transaction = {
+                id: createdTransactionId,
+                amount: parsedData.amount,
+                category: parsedData.category,
+                subCategory: parsedData.subCategory || undefined,
+                date: parsedData.date,
+                description: parsedData.description,
+                type: parsedData.type,
+                walletId: parsedData.walletId,
+                userId: '',
+                createdAt: new Date().toISOString(),
+                location: parsedData.location || undefined,
+                isNeed: parsedData.isNeed,
+            };
+
+            showToast("Transaksi berhasil disimpan.", 'success', {
+                durationMs: 10000,
+                actionLabel: 'Urungkan',
+                onAction: () => {
+                    void deleteTransaction(undoPayload);
+                }
+            });
             if (andAddAnother) {
                 resetFlow();
             } else {
@@ -421,7 +520,7 @@ export const useSmartAddFlow = () => {
             setIsSaving(false);
         }
         return false;
-    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow]);
+    }, [parsedData, addTransaction, addTransfer, wallets, showToast, resetFlow, deleteTransaction, transactions]);
 
     /**
      * Saves all transactions in `multiParsedData` to the database in sequence.
@@ -458,6 +557,7 @@ export const useSmartAddFlow = () => {
         removeMultiTransaction,
         insightData,
         isSaving,
+        historySuggestions,
         processInput,
         saveTransaction,
         saveMultiTransactions,

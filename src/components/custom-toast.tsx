@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUI } from './ui-provider';
 import { CheckCircle2, XCircle, Info, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const toastIcons: { [key: string]: LucideIcon } = {
   success: CheckCircle2,
@@ -21,16 +22,16 @@ const toastColors: { [key: string]: string } = {
 
 export const CustomToast = () => {
   const { toastState, hideToast } = useUI();
-  const { show, message, type } = toastState;
+  const { show, message, type, durationMs, actionLabel, onAction } = toastState;
 
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
         hideToast();
-      }, 3000);
+      }, durationMs ?? 3000);
       return () => clearTimeout(timer);
     }
-  }, [show, hideToast]);
+  }, [show, hideToast, durationMs]);
 
   const ToastIcon = toastIcons[type];
 
@@ -52,6 +53,20 @@ export const CustomToast = () => {
               >
                 <ToastIcon className="h-5 w-5" />
                 <span>{message}</span>
+                {actionLabel && onAction && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      onAction();
+                      hideToast();
+                    }}
+                    className="h-7 px-2 text-white hover:bg-white/20"
+                  >
+                    {actionLabel}
+                  </Button>
+                )}
               </div>
             </motion.div>
         </div>

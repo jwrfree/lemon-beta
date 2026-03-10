@@ -15,6 +15,15 @@ interface ToastState {
     show: boolean;
     message: string;
     type: 'success' | 'error' | 'info';
+    durationMs?: number;
+    actionLabel?: string;
+    onAction?: () => void;
+}
+
+interface ToastOptions {
+    durationMs?: number;
+    actionLabel?: string;
+    onAction?: () => void;
 }
 
 interface UIContextType {
@@ -82,7 +91,7 @@ interface UIContextType {
     setIsSidebarCollapsed: (isCollapsed: boolean) => void;
 
     toastState: ToastState;
-    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+    showToast: (message: string, type: 'success' | 'error' | 'info', options?: ToastOptions) => void;
     hideToast: () => void;
 }
 
@@ -128,12 +137,19 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         type: 'info'
     });
 
-    const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-        setToastState({ show: true, message, type });
+    const showToast = (message: string, type: 'success' | 'error' | 'info', options?: ToastOptions) => {
+        setToastState({
+            show: true,
+            message,
+            type,
+            durationMs: options?.durationMs,
+            actionLabel: options?.actionLabel,
+            onAction: options?.onAction,
+        });
     };
 
     const hideToast = () => {
-        setToastState(prev => ({ ...prev, show: false }));
+        setToastState(prev => ({ ...prev, show: false, onAction: undefined, actionLabel: undefined }));
     };
 
     const openDeleteModal = (transaction: Transaction) => {

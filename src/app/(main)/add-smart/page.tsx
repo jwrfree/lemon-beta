@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
     ArrowLeft, Sparkles, Tag, MapPin, CornerDownRight, 
-    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight
+    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight, Plus
 } from 'lucide-react';
 
 import { useUI } from '@/components/ui-provider';
@@ -18,6 +18,7 @@ import { HeroAmount } from '@/features/transactions/components/liquid-composer/H
 import { MagicBar } from '@/features/transactions/components/liquid-composer/MagicBar';
 import { useSmartAddFlow } from '@/features/transactions/hooks/use-smart-add-flow';
 import { DynamicSuggestions } from './dynamic-suggestions';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
 
 const MAX_COMPRESSED_IMAGE_BYTES = 1024 * 1024;
 
@@ -67,6 +68,7 @@ const TypewriterText = ({ text }: { text: string }) => {
 export default function SmartAddPage() {
     const router = useRouter();
     const { showToast } = useUI();
+    const { wallets } = useWallets();
     const [magicValue, setMagicValue] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(0);
@@ -78,7 +80,9 @@ export default function SmartAddPage() {
         pageState,
         parsedData,
         multiParsedData,
+        messages,
         isSaving,
+        historySuggestions,
         processInput,
         saveTransaction,
         saveMultiTransactions,
@@ -92,25 +96,42 @@ export default function SmartAddPage() {
         setMagicValue('');
     };
 
-    const handleConfirmSave = async () => {
+    const handleConfirmSave = async (andAddAnother = false) => {
         triggerHaptic('success');
-        
-        // 1. Jalankan proses simpan di background (Optimistic)
-        const savePromise = multiParsedData.length > 0 ? saveMultiTransactions() : saveTransaction();
-        
-        // 2. Langsung tampilkan sukses & pindah halaman (Instant Feedback)
+
+        // Multi-save is always a finalizing flow, so keep default redirect behavior.
+        if (multiParsedData.length > 0) {
+            const success = await saveMultiTransactions();
+            if (!success) {
+                showToast('Gagal sinkronisasi data.', 'error');
+                return;
+            }
+
+            setShowSuccess(true);
+            setTimeout(() => {
+                setShowSuccess(false);
+                router.push('/home');
+            }, 800);
+            return;
+        }
+
+        const success = await saveTransaction(andAddAnother);
+        if (!success && !andAddAnother) {
+            showToast('Gagal sinkronisasi data.', 'error');
+            return;
+        }
+
+        if (andAddAnother) {
+            setMagicValue('');
+            setFocusedIndex(0);
+            return;
+        }
+
         setShowSuccess(true);
-        
-        // Timer lebih singkat untuk transisi yang terasa "snappy"
         setTimeout(() => {
             setShowSuccess(false);
             router.push('/home');
-        }, 800); 
-
-        // 3. Tangani hasil di background jika perlu
-        savePromise.then((success) => {
-            if (!success) showToast('Gagal sinkronisasi data.', 'error');
-        });
+        }, 800);
     };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,6 +157,10 @@ export default function SmartAddPage() {
     const activeTx = multiParsedData.length > 0 ? multiParsedData[focusedIndex] : parsedData;
     const isAnalyzing = pageState === 'ANALYZING';
     const hasData = !!activeTx || isAnalyzing;
+    const activeWallet = wallets.find(w => w.id === activeTx?.walletId);
+    const latestClarification = [...messages].reverse().find(m => m.type === 'ai-clarification');
+    const reviewMap: Record<string, string> = { type: 'Tipe transaksi', category: 'Kategori', wallet: 'Dompet' };
+    const stateLabel = isAnalyzing ? 'Memproses input…' : activeTx ? 'Siap disimpan' : 'Tambah transaksi cepat';
 
     return (
         <div className="flex flex-col h-dvh bg-background relative overflow-hidden text-foreground">
@@ -164,7 +189,7 @@ export default function SmartAddPage() {
                     )}
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-popover/80 backdrop-blur-md border border-border/50">
                         <Sparkles className={cn("h-3.5 w-3.5 text-primary", isAnalyzing && "animate-pulse")} />
-                        <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Smart Add</span>
+                        <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">{stateLabel}</span>
                     </div>
                 </div>
             </div>
@@ -183,7 +208,7 @@ export default function SmartAddPage() {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="w-full overflow-y-auto no-scrollbar max-h-full pb-24"
                         >
-                            <DynamicSuggestions onSuggestionClick={(text) => {
+                            <DynamicSuggestions historySuggestions={historySuggestions} onSuggestionClick={(text) => {
                                 setMagicValue(text);
                                 processInput(text);
                                 setMagicValue('');
@@ -230,7 +255,27 @@ export default function SmartAddPage() {
                                                         <span className="text-xs font-medium">{activeTx.subCategory}</span>
                                                     </div>
                                                 )}
+                                                {activeWallet && (
+                                                    <div className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
+                                                        <span className="text-xs font-medium">Dompet: {activeWallet.name}</span>
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {!!activeTx.reviewFlags?.length && (
+                                                <div className="w-full max-w-xs rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-center">
+                                                    <p className="text-[11px] font-semibold uppercase tracking-widest text-amber-700 dark:text-amber-300">Perlu cek</p>
+                                                    <p className="text-xs text-amber-800/90 dark:text-amber-200/90">
+                                                        {activeTx.reviewFlags.map(flag => reviewMap[flag]).join(', ')}
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {latestClarification && typeof latestClarification.content === 'string' && (
+                                                <div className="w-full max-w-xs rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-center">
+                                                    <p className="text-xs text-primary">{latestClarification.content}</p>
+                                                </div>
+                                            )}
 
                                             {/* Location & Description with Ghost Typing */}
                                             <div className="flex flex-col items-center gap-3 w-full">
@@ -320,7 +365,7 @@ export default function SmartAddPage() {
                             className="flex flex-col gap-3"
                         >
                             <Button 
-                                onClick={handleConfirmSave} 
+                                onClick={() => handleConfirmSave(false)} 
                                 disabled={isSaving}
                                 className="w-full h-14 rounded-card text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
                             >
@@ -329,10 +374,23 @@ export default function SmartAddPage() {
                                 ) : (
                                     <>
                                         <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                                        <span>Simpan {multiParsedData.length > 1 ? `${multiParsedData.length} Transaksi` : 'Transaksi'}</span>
+                                        <span>Simpan & update saldo{multiParsedData.length > 1 ? ` ${multiParsedData.length} transaksi` : ''}</span>
                                     </>
                                 )}
                             </Button>
+
+                            {multiParsedData.length <= 1 && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => handleConfirmSave(true)}
+                                    disabled={isSaving}
+                                    className="w-full h-11 rounded-card text-sm font-medium flex items-center justify-center gap-2"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Simpan & tambah lagi
+                                </Button>
+                            )}
                             
                             <button 
                                 onClick={() => { triggerHaptic('medium'); resetFlow(); setFocusedIndex(0); }}

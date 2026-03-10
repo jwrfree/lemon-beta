@@ -142,6 +142,14 @@ describe('quickParseTransaction - Regex-based Fast Parser', () => {
             expect(quickParseTransaction('makan 50.000', mockCats, MOCK_WALLETS).amount).toBe(50000);
         });
 
+        it('parses multi-thousand separator (e.g. 1.200.000)', () => {
+            expect(quickParseTransaction('bayar listrik 1.200.000', mockCats, MOCK_WALLETS).amount).toBe(1200000);
+        });
+
+        it('parses decimal comma with juta suffix (e.g. 2,5jt)', () => {
+            expect(quickParseTransaction('gaji freelance 2,5jt', mockCats, MOCK_WALLETS).amount).toBe(2500000);
+        });
+
         it('parses a plain integer with no suffix', () => {
             expect(quickParseTransaction('beli 30000', mockCats, MOCK_WALLETS).amount).toBe(30000);
         });
@@ -193,6 +201,11 @@ describe('quickParseTransaction - Regex-based Fast Parser', () => {
         it('returns "expense" type by default', () => {
             const r = quickParseTransaction('makan 25rb', mockCats, MOCK_WALLETS);
             expect(r.type).toBe('expense');
+        });
+
+        it('flags ambiguous type for mixed income and expense hints', () => {
+            const r = quickParseTransaction('bonus bayar listrik 500rb', mockCats, MOCK_WALLETS);
+            expect(r.needsTypeConfirmation).toBe(true);
         });
     });
 
@@ -248,6 +261,22 @@ describe('quickParseTransaction - Regex-based Fast Parser', () => {
 
         it('sets category to "Transfer" when "tf" keyword is present', () => {
             expect(quickParseTransaction('tf 200rb bca', mockCats, MOCK_WALLETS).category).toBe('Transfer');
+        });
+    });
+
+
+    describe('Phase 3 edge-case helpers', () => {
+        it('flags split confirmation when multiple amounts are present', () => {
+            const r = quickParseTransaction('makan 30k + parkir 5k', mockCats, MOCK_WALLETS);
+            expect(r.needsSplitConfirmation).toBe(true);
+            expect(r.parsedAmountCount).toBeGreaterThan(1);
+            expect(r.amount).toBe(30000);
+        });
+
+        it('detects refund intent and suggests income type', () => {
+            const r = quickParseTransaction('refund kopi 25k', mockCats, MOCK_WALLETS);
+            expect(r.isRefund).toBe(true);
+            expect(r.type).toBe('income');
         });
     });
 
