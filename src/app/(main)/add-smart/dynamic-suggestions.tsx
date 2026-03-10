@@ -3,12 +3,13 @@ import { Sparkles, ArrowRight, Sun, CloudSun, Moon, Sunset, Calendar, Smile } fr
 
 interface DynamicSuggestionsProps {
     onSuggestionClick: (text: string) => void;
+    historySuggestions?: string[];
 }
 
 type TimeOfDay = 'pagi' | 'siang' | 'sore' | 'malam';
 type DayContext = 'normal' | 'weekend' | 'gajian';
 
-export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProps) => {
+export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] }: DynamicSuggestionsProps) => {
     const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('pagi');
     const [dayContext, setDayContext] = useState<DayContext>('normal');
     
@@ -112,6 +113,8 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
 
     const greeting = getGreeting();
     const suggestions = getSuggestions();
+    const textSuggestions = suggestions.slice(0, 4);
+    const personalizedSuggestions = historySuggestions.slice(0, 4);
     const Icon = greeting.icon;
 
     return (
@@ -136,8 +139,28 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
                     </p>
                     <div className="h-px flex-1 bg-border/50 ml-3" />
                 </div>
+                {personalizedSuggestions.length > 0 && (
+                    <>
+                        <p className="text-[10px] font-medium tracking-widest text-muted-foreground/60 mb-2 text-left uppercase">Dari riwayat</p>
+                        <div className="grid grid-cols-1 gap-2 mb-4">
+                            {personalizedSuggestions.map((s, idx) => (
+                                <button
+                                    key={`history-${idx}`}
+                                    type="button"
+                                    onClick={() => onSuggestionClick(s)}
+                                    className="text-xs text-left bg-emerald-500/5 hover:bg-emerald-500/10 px-4 py-3 rounded-md active:scale-[0.98] transition-all flex items-center justify-between group border border-emerald-500/20"
+                                >
+                                    <span className="text-foreground/80 group-hover:text-emerald-600 font-medium">{s}</span>
+                                    <span className="text-[10px] uppercase tracking-widest text-emerald-600/80">Riwayat</span>
+                                </button>
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                <p className="text-[10px] font-medium tracking-widest text-muted-foreground/60 mb-2 text-left uppercase">Dari teks</p>
                 <div className="grid grid-cols-1 gap-2">
-                    {suggestions.map((s, idx) => (
+                    {textSuggestions.map((s, idx) => (
                         <button
                             key={`${timeOfDay}-${dayContext}-${idx}`}
                             type="button"
@@ -160,4 +183,3 @@ export const DynamicSuggestions = ({ onSuggestionClick }: DynamicSuggestionsProp
         </div>
     );
 };
-

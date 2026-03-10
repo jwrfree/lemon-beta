@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
     ArrowLeft, Sparkles, Tag, MapPin, CornerDownRight, 
-    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight
+    Loader2, RotateCcw, Camera, CheckCircle2, ChevronLeft, ChevronRight, Plus
 } from 'lucide-react';
 
 import { useUI } from '@/components/ui-provider';
@@ -82,6 +82,7 @@ export default function SmartAddPage() {
         multiParsedData,
         messages,
         isSaving,
+        historySuggestions,
         processInput,
         saveTransaction,
         saveMultiTransactions,
@@ -95,25 +96,42 @@ export default function SmartAddPage() {
         setMagicValue('');
     };
 
-    const handleConfirmSave = async () => {
+    const handleConfirmSave = async (andAddAnother = false) => {
         triggerHaptic('success');
-        
-        // 1. Jalankan proses simpan di background (Optimistic)
-        const savePromise = multiParsedData.length > 0 ? saveMultiTransactions() : saveTransaction();
-        
-        // 2. Langsung tampilkan sukses & pindah halaman (Instant Feedback)
+
+        // Multi-save is always a finalizing flow, so keep default redirect behavior.
+        if (multiParsedData.length > 0) {
+            const success = await saveMultiTransactions();
+            if (!success) {
+                showToast('Gagal sinkronisasi data.', 'error');
+                return;
+            }
+
+            setShowSuccess(true);
+            setTimeout(() => {
+                setShowSuccess(false);
+                router.push('/home');
+            }, 800);
+            return;
+        }
+
+        const success = await saveTransaction(andAddAnother);
+        if (!success && !andAddAnother) {
+            showToast('Gagal sinkronisasi data.', 'error');
+            return;
+        }
+
+        if (andAddAnother) {
+            setMagicValue('');
+            setFocusedIndex(0);
+            return;
+        }
+
         setShowSuccess(true);
-        
-        // Timer lebih singkat untuk transisi yang terasa "snappy"
         setTimeout(() => {
             setShowSuccess(false);
             router.push('/home');
-        }, 800); 
-
-        // 3. Tangani hasil di background jika perlu
-        savePromise.then((success) => {
-            if (!success) showToast('Gagal sinkronisasi data.', 'error');
-        });
+        }, 800);
     };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +208,7 @@ export default function SmartAddPage() {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="w-full overflow-y-auto no-scrollbar max-h-full pb-24"
                         >
-                            <DynamicSuggestions onSuggestionClick={(text) => {
+                            <DynamicSuggestions historySuggestions={historySuggestions} onSuggestionClick={(text) => {
                                 setMagicValue(text);
                                 processInput(text);
                                 setMagicValue('');
@@ -347,7 +365,7 @@ export default function SmartAddPage() {
                             className="flex flex-col gap-3"
                         >
                             <Button 
-                                onClick={handleConfirmSave} 
+                                onClick={() => handleConfirmSave(false)} 
                                 disabled={isSaving}
                                 className="w-full h-14 rounded-card text-base font-medium shadow-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-[1.02] active:scale-[0.95] transition-all flex items-center justify-center gap-3"
                             >
@@ -360,6 +378,19 @@ export default function SmartAddPage() {
                                     </>
                                 )}
                             </Button>
+
+                            {multiParsedData.length <= 1 && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => handleConfirmSave(true)}
+                                    disabled={isSaving}
+                                    className="w-full h-11 rounded-card text-sm font-medium flex items-center justify-center gap-2"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Simpan & tambah lagi
+                                </Button>
+                            )}
                             
                             <button 
                                 onClick={() => { triggerHaptic('medium'); resetFlow(); setFocusedIndex(0); }}

@@ -85,6 +85,31 @@ export const useSmartAddFlow = () => {
     const [insightData, setInsightData] = useState<InsightData | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
+    const historySuggestions = useMemo(() => {
+        const seen = new Set<string>();
+
+        return transactions
+            .slice()
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .map((tx) => {
+                const compactAmount = tx.amount >= 1000000
+                    ? `${Number((tx.amount / 1000000).toFixed(1)).toString().replace('.', ',')}jt`
+                    : tx.amount >= 1000
+                        ? `${Math.round(tx.amount / 1000)}rb`
+                        : `${tx.amount}`;
+
+                const baseText = tx.description?.trim() || tx.category;
+                return `${baseText} ${compactAmount}`.trim();
+            })
+            .filter((text) => {
+                const normalized = text.toLowerCase();
+                if (!normalized || seen.has(normalized)) return false;
+                seen.add(normalized);
+                return true;
+            })
+            .slice(0, 5);
+    }, [transactions]);
+
     const removeMultiTransaction = useCallback((index: number) => {
         setMultiParsedData(prev => {
             const newData = prev.filter((_, i) => i !== index);
@@ -532,6 +557,7 @@ export const useSmartAddFlow = () => {
         removeMultiTransaction,
         insightData,
         isSaving,
+        historySuggestions,
         processInput,
         saveTransaction,
         saveMultiTransactions,
