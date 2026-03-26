@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getVisualDNA } from '@/lib/visual-dna';
 
 export const QuickAddWidget = () => {
-    const { setIsTxModalOpen, showToast } = useUI();
+    const { openTransactionSheet, showToast } = useUI();
     const { addTransaction } = useActions();
     const { wallets } = useWallets();
     const router = useRouter();
@@ -83,7 +83,7 @@ export const QuickAddWidget = () => {
                     variant="ghost" 
                     size="sm" 
                     className="h-8 px-3 text-xs font-semibold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-full"
-                    onClick={() => setIsTxModalOpen(true)}
+                    onClick={() => openTransactionSheet()}
                 >
                     Manual Entry
                 </Button>

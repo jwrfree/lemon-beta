@@ -11,13 +11,13 @@ import { useUI } from '@/components/ui-provider';
 export const DashboardQuickActions = () => {
     const router = useRouter();
     const { 
-        setIsTxModalOpen, 
         setIsTransferModalOpen, 
         setIsDebtModalOpen, 
         setIsGoalModalOpen,
         setTransactionToEdit,
         setDebtToEdit,
-        setGoalToEdit
+        setGoalToEdit,
+        openTransactionSheet
     } = useUI();
 
     return (
@@ -27,7 +27,7 @@ export const DashboardQuickActions = () => {
                     <Button 
                         variant="outline" 
                         className="flex flex-col h-auto py-2 px-1 gap-1 border-primary/20 bg-primary/10 hover:bg-primary/20 hover:text-primary text-primary"
-                        onClick={() => router.push('/add-smart')}
+                        onClick={() => openTransactionSheet()}
                         title="Smart Add (AI)"
                     >
                         <Sparkles className="h-5 w-5" />
@@ -36,10 +36,7 @@ export const DashboardQuickActions = () => {
                     <Button 
                         variant="outline" 
                         className="flex flex-col h-auto py-2 px-1 gap-1 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:text-primary"
-                        onClick={() => {
-                            setTransactionToEdit(null);
-                            setIsTxModalOpen(true);
-                        }}
+                        onClick={() => openTransactionSheet()}
                         title="Transaksi Baru"
                     >
                         <Plus className="h-5 w-5" />

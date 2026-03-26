@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Mic, MicOff, X, Loader2 } from 'lucide-react';
+import { Sparkles, Mic, MicOff, X, Loader2, Camera } from 'lucide-react';
 import { cn, triggerHaptic } from '@/lib/utils';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -13,6 +13,7 @@ interface MagicBarProps {
     isProcessing?: boolean;
     placeholder?: string;
     onClear?: () => void;
+    onImageUpload?: (dataUrl: string) => void;
 }
 
 export const MagicBar = ({ 
@@ -21,7 +22,8 @@ export const MagicBar = ({
     onReturn,
     isProcessing = false, 
     placeholder = "Ada transaksi apa hari ini? Lemon siap catat...",
-    onClear 
+    onClear,
+    onImageUpload
 }: MagicBarProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isListening, setIsListening] = useState(false);
@@ -110,6 +112,34 @@ export const MagicBar = ({
                 />
 
                 <div className="ml-3 flex items-center gap-2 shrink-0">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        id="magic-image-upload"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file && onImageUpload) {
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                    if (event.target?.result) {
+                                        onImageUpload(event.target.result as string);
+                                    }
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        }}
+                    />
+                    
+                    {!value && !isListening && (
+                        <button
+                            onClick={() => document.getElementById('magic-image-upload')?.click()}
+                            className="p-2 rounded-full hover:bg-secondary text-muted-foreground transition-colors"
+                        >
+                            <Camera className="h-5 w-5" />
+                        </button>
+                    )}
+
                     <AnimatePresence mode="wait">
                         {value && !isListening ? (
                             <motion.button

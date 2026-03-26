@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
 import { Sidebar } from '@/components/sidebar';
-import { TransactionComposer } from '@/features/transactions/components/transaction-composer';
 import { AddWalletModal } from '@/features/wallets/components/add-wallet-modal';
 import { AddBudgetModal } from '@/features/budgets/components/add-budget-modal';
 import { ConfirmDeleteModal } from '@/features/transactions/components/confirm-delete-modal';
@@ -16,8 +15,7 @@ import { GoalForm } from '@/features/goals/components/goal-form';
 import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
-import { EditTransactionSheet } from '@/features/transactions/components/edit-transaction-sheet';
-import { SmartAddOverlay } from '@/features/transactions/components/smart-add-overlay';
+import { UnifiedTransactionSheet } from '@/features/transactions/components/unified-transaction-sheet';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
@@ -29,10 +27,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const pathname = usePathname();
     const containerRef = useRef<HTMLDivElement>(null);
     const {
-        isTxModalOpen,
-        setIsTxModalOpen,
-        isEditTxSheetOpen,
-        setIsEditTxSheetOpen,
+        isTxSheetOpen,
+        setIsTxSheetOpen,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -78,7 +74,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     }, [pathname]);
 
     const handleCloseTxModal = () => {
-        setIsTxModalOpen(false);
+        setIsTxSheetOpen(false);
         setTransactionToEdit(null);
     };
 
@@ -135,13 +131,12 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                 <CustomToast />
 
                 <AnimatePresence mode="wait">
-                    {isTxModalOpen && <TransactionComposer key="transaction-composer" initialData={transactionToEdit} onClose={handleCloseTxModal} />}
-                    {isEditTxSheetOpen && (
-                        <EditTransactionSheet
-                            key="edit-transaction-sheet"
-                            isOpen={isEditTxSheetOpen}
+                    {isTxSheetOpen && (
+                        <UnifiedTransactionSheet 
+                            key="unified-tx-sheet"
+                            isOpen={isTxSheetOpen}
                             onClose={() => {
-                                setIsEditTxSheetOpen(false);
+                                setIsTxSheetOpen(false);
                                 setTransactionToEdit(null);
                             }}
                             transaction={transactionToEdit}
@@ -150,7 +145,14 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}
                     {isBudgetModalOpen && <AddBudgetModal key="add-budget-modal" onClose={() => setIsBudgetModalOpen(false)} />}
                     {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal key="edit-budget-modal" budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
-                    {isTransferModalOpen && <TransactionComposer key="transfer-composer" initialData={{ type: 'transfer' }} onClose={() => setIsTransferModalOpen(false)} />}
+                    {isTransferModalOpen && (
+                        <UnifiedTransactionSheet 
+                            key="transfer-sheet" 
+                            isOpen={isTransferModalOpen} 
+                            initialType="transfer"
+                            onClose={() => setIsTransferModalOpen(false)} 
+                        />
+                    )}
                     {isEditWalletModalOpen && walletToEdit && <EditWalletModal key="edit-wallet-modal" wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
                     {isGoalModalOpen && <GoalForm key="goal-form" initialData={goalToEdit} onClose={handleCloseGoalModal} />}
                     {isReminderModalOpen && <ReminderForm key="reminder-form" initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
@@ -168,7 +170,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     )}
                 </AnimatePresence>
 
-                <SmartAddOverlay isOpen={isSmartAddOpen} onClose={() => setIsSmartAddOpen(false)} />
+                    {/* UnifiedTransactionSheet covers SmartAdd functionality now */}
 
                 <div className="md:hidden">
                     <AnimatePresence>

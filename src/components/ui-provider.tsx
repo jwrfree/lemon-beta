@@ -27,13 +27,11 @@ interface ToastOptions {
 }
 
 interface UIContextType {
-    isTxModalOpen: boolean;
-    setIsTxModalOpen: (isOpen: boolean) => void;
-    isEditTxSheetOpen: boolean;
-    setIsEditTxSheetOpen: (isOpen: boolean) => void;
+    isTxSheetOpen: boolean;
+    setIsTxSheetOpen: (isOpen: boolean) => void;
     transactionToEdit: Transaction | null;
     setTransactionToEdit: (transaction: Transaction | null) => void;
-    openEditTransactionModal: (transaction: Transaction) => void;
+    openTransactionSheet: (transaction?: Transaction) => void;
 
     deferredPrompt: any;
     setDeferredPrompt: (prompt: any) => void;
@@ -106,8 +104,7 @@ export const useUI = () => {
 };
 
 export const UIProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isTxModalOpen, setIsTxModalOpen] = useState(false);
-    const [isEditTxSheetOpen, setIsEditTxSheetOpen] = useState(false);
+    const [isTxSheetOpen, setIsTxSheetOpen] = useState(false);
     const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
@@ -172,13 +169,13 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsEditBudgetModalOpen(true);
     };
 
-    const openEditTransactionModal = (transaction: Transaction) => {
-        if (transaction.category === 'Transfer') {
+    const openTransactionSheet = (transaction?: Transaction) => {
+        if (transaction?.category === 'Transfer') {
             showToast("Mengedit transaksi transfer belum didukung.", 'error');
             return;
         }
-        setTransactionToEdit(transaction);
-        setIsEditTxSheetOpen(true);
+        setTransactionToEdit(transaction || null);
+        setIsTxSheetOpen(true);
     };
 
     const openEditGoalModal = (goal: Goal) => {
@@ -202,13 +199,11 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const contextValue = useMemo(() => ({
-        isTxModalOpen,
-        setIsTxModalOpen,
-        isEditTxSheetOpen,
-        setIsEditTxSheetOpen,
+        isTxSheetOpen,
+        setIsTxSheetOpen,
         transactionToEdit,
         setTransactionToEdit,
-        openEditTransactionModal,
+        openTransactionSheet,
         deferredPrompt,
         setDeferredPrompt,
         isWalletModalOpen,
@@ -259,8 +254,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         showToast,
         hideToast,
     }), [
-        isTxModalOpen,
-        isEditTxSheetOpen,
+        isTxSheetOpen,
         deferredPrompt,
         transactionToEdit,
         isWalletModalOpen,

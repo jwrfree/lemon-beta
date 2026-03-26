@@ -53,7 +53,7 @@ export default function HomePage() {
 
     const { debts, isLoading: isDebtLoading } = useDebts();
     const { reminders, isLoading: isReminderLoading } = useReminders();
-    const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit } = useUI();
+    const { setIsReminderModalOpen, setReminderToEdit, setIsDebtModalOpen, setDebtToEdit, openTransactionSheet } = useUI();
     const { userData } = useAuth();
     const router = useRouter();
 
@@ -119,7 +119,6 @@ export default function HomePage() {
         return userData.displayName.split(' ')[0];
     }, [userData]);
 
-    // Check for debts due in 3 days and trigger local notification
     useEffect(() => {
         if (isDebtLoading || debts.length === 0) return;
 
@@ -153,6 +152,16 @@ export default function HomePage() {
 
         checkDueDebts();
     }, [debts, isDebtLoading]);
+
+    // Handle deep link to open transaction sheet
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('add') === 'true') {
+            openTransactionSheet();
+            // Clear the param to avoid re-opening on manual refresh
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }, [openTransactionSheet]);
 
     if (isLoading) {
         return <HomeSkeleton />;

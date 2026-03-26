@@ -73,6 +73,8 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                     createdAt: t.created_at,
                     subCategory: t.sub_category || undefined,
                     location: t.location || undefined,
+                    isNeed: t.is_need,
+                    merchant: (t as any).merchant || undefined,
                     linkedDebtId: (t as any).linked_debt_id || undefined,
                 }));
                 setTransactions(mapped);

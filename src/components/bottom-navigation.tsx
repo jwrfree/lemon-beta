@@ -10,7 +10,7 @@ import Link from 'next/link';
 export const BottomNavigation = () => {
     const pathname = usePathname();
     const {
-        isTxModalOpen,
+        isTxSheetOpen,
         isWalletModalOpen,
         isBudgetModalOpen,
         isDeleteModalOpen,
@@ -20,8 +20,7 @@ export const BottomNavigation = () => {
         isReminderModalOpen,
         isDebtModalOpen,
         isDebtPaymentModalOpen,
-        isSmartAddOpen,
-        setIsSmartAddOpen,
+        openTransactionSheet,
     } = useUI();
 
     const navItems = [
@@ -35,7 +34,7 @@ export const BottomNavigation = () => {
             primary: true,
             onClick: (e: React.MouseEvent) => {
                 e.preventDefault();
-                setIsSmartAddOpen(true);
+                openTransactionSheet();
             }
         },
         { id: 'rencana', href: '/plan', icon: NotebookPen, name: 'Rencana' },
@@ -44,7 +43,7 @@ export const BottomNavigation = () => {
 
     // Check if any modal is open to hide the bottom nav
     const isModalOpen =
-        isTxModalOpen ||
+        isTxSheetOpen ||
         isWalletModalOpen ||
         isBudgetModalOpen ||
         isDeleteModalOpen ||
@@ -53,8 +52,7 @@ export const BottomNavigation = () => {
         isGoalModalOpen ||
         isReminderModalOpen ||
         isDebtModalOpen ||
-        isDebtPaymentModalOpen ||
-        isSmartAddOpen;
+        isDebtPaymentModalOpen;
 
     const isVisible = !isModalOpen;
 

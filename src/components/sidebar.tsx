@@ -20,7 +20,7 @@ import {
 export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useAuth();
-    const { isSidebarCollapsed, setIsSidebarCollapsed, deferredPrompt, setDeferredPrompt } = useUI();
+    const { isSidebarCollapsed, setIsSidebarCollapsed, deferredPrompt, setDeferredPrompt, openTransactionSheet } = useUI();
     const { isBalanceVisible, toggleBalanceVisibility } = useBalanceVisibility();
     const router = useRouter();
 
@@ -65,7 +65,7 @@ export const Sidebar = () => {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
-                                onClick={() => router.push('/add-smart')}
+                                onClick={() => openTransactionSheet()}
                                 className={cn(
                                     'shadow-lg shadow-primary/20 active:scale-95 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full',
                                     isSidebarCollapsed ? 'w-12 h-12 p-0' : 'w-full gap-3 px-5 h-12'

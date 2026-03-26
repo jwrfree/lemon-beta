@@ -76,14 +76,9 @@ const TransactionListItemContent = ({
             "flex items-center gap-4 p-4 transition-colors relative overflow-hidden",
             isExpense && transaction.amount >= 1000000 && "bg-rose-500/[0.03]"
         )}>
-            {/* Dynamic DNA Stripe */}
-            <div
-                className="absolute left-0 top-0 bottom-0 w-1 opacity-60"
-                style={{ background: dna.primary }}
-            />
 
             <div className={cn(
-                "flex-shrink-0 h-11 w-11 rounded-card flex items-center justify-center transition-all duration-500 overflow-hidden border border-border/20",
+                "flex-shrink-0 h-11 w-11 rounded-squircle flex items-center justify-center transition-all duration-500 overflow-hidden",
                 iconBg
             )}>
                 {primaryLogo && logoSource === 'primary' && (
@@ -114,46 +109,59 @@ const TransactionListItemContent = ({
                     <DefaultIcon className={cn("h-5 w-5", iconColor)} strokeWidth={2.5} />
                 )}
             </div>
-            <div className="flex-1 overflow-hidden">
-                <div className="font-semibold text-foreground text-sm leading-tight mb-1.5 tracking-tight">
+            <div className="flex-1 overflow-hidden min-w-0">
+                <div className="font-semibold text-foreground text-sm leading-snug tracking-tight truncate">
                     {transaction.description || transaction.category}
                 </div>
-                <div className="text-xs font-semibold text-muted-foreground/40 flex items-center gap-2 flex-wrap uppercase tracking-widest">
-                    {/* Want Tag */}
+                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                    {/* Need / Want Tag */}
+                    {transaction.type === 'expense' && transaction.isNeed === true && (
+                        <span className="flex items-center gap-1 text-emerald-600 bg-emerald-500/8 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-emerald-500/15">
+                            Need
+                        </span>
+                    )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-2 py-0.5 rounded-full text-xs font-semibold border border-primary/10">
+                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-primary/10">
                             <ShoppingBag className="h-2 w-2 fill-current" />
                             Want
                         </span>
                     )}
-                    <span className="truncate max-w-[80px]">
+                    <span className="text-[10px] font-medium text-muted-foreground/50 truncate max-w-[110px]">
                         {transaction.category}
                     </span>
-                    {transaction.subCategory && <span className="opacity-30">•</span>}
                     {transaction.subCategory && (
-                        <span className="truncate max-w-[80px]">{transaction.subCategory}</span>
+                        <>
+                            <span className="text-muted-foreground/30 text-[10px]">·</span>
+                            <span className="text-[10px] font-medium text-muted-foreground/40 truncate max-w-[80px]">{transaction.subCategory}</span>
+                        </>
                     )}
-                    {wallet && <span className="opacity-30">•</span>}
-                    {wallet && <span>{wallet?.name || '-'}</span>}
+                    {wallet && (
+                        <>
+                            <span className="text-muted-foreground/30 text-[10px]">·</span>
+                            <span className="text-[10px] font-medium text-muted-foreground/50 truncate max-w-[100px]">{wallet.name}</span>
+                        </>
+                    )}
                 </div>
             </div>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-end gap-1 shrink-0">
                 <div
                     className={cn(
                         "text-sm font-semibold tracking-tighter tabular-nums",
                         amountColor,
                         !isBalanceVisible && 'blur-sm transition-all duration-300',
-                        isExpense && transaction.amount >= 1000000 && "text-lg"
+                        isExpense && transaction.amount >= 1000000 && "text-base"
                     )}
                     aria-label={isBalanceVisible ? `Jumlah: ${formatCurrency(transaction.amount)}` : 'Jumlah disembunyikan'}
                 >
                     <span aria-hidden="true">
-                        {isExpense ? '- ' : '+ '}
-                        {isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
+                        {isExpense ? '−' : '+'}{isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
                     </span>
                 </div>
+                <span className="text-[10px] font-medium text-muted-foreground/30 tabular-nums">
+                    {format(parseISO(transaction.date), 'HH:mm')}
+                </span>
                 {isExpense && transaction.amount >= 1000000 && (
-                    <span className="text-xs font-semibold bg-rose-500/10 text-rose-600 px-1.5 rounded-full uppercase tracking-widest border border-rose-500/10">Large Item</span>
+                    <span className="text-[9px] font-bold bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded-full uppercase tracking-widest">Big</span>
                 )}
             </div>
         </div>
@@ -164,7 +172,7 @@ const TransactionListItemContent = ({
 export const TransactionListItem = (props: TransactionListItemProps) => {
     const { transaction, hideDate = false } = props;
     const itemRef = useRef<HTMLDivElement>(null);
-    const { openDeleteModal, openEditTransactionModal } = useUI();
+    const { openDeleteModal, openTransactionSheet } = useUI();
 
     const deleteVibrated = useRef(false);
     const editVibrated = useRef(false);
@@ -255,7 +263,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                 stiffness: 500,
                 damping: 50,
                 onComplete: () => {
-                    openEditTransactionModal(transaction);
+                    openTransactionSheet(transaction);
                     setTimeout(() => x.set(0), 500);
                 }
             });
@@ -306,7 +314,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                 onTap={() => {
                     // Only open edit modal if we haven't dragged significantly
                     if (Math.abs(x.get()) < 5) {
-                        openEditTransactionModal(transaction);
+                        openTransactionSheet(transaction);
                     }
                 }}
             >

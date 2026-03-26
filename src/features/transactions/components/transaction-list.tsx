@@ -10,6 +10,7 @@ import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar, Loader
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useUI } from '@/components/ui-provider';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { DesktopTransactionTable } from './desktop-transaction-table';
 import { groupTransactionsByDate } from '@/features/transactions/utils';
@@ -26,6 +27,7 @@ interface TransactionListProps {
 export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMore, isLoading }: TransactionListProps) => {
     const { wallets } = useWallets();
     const { getCategoryVisuals } = useCategories();
+    const { openTransactionSheet } = useUI();
     const router = useRouter();
 
     const finalTransactions = useMemo(() => {
@@ -51,7 +53,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                     Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini.
                 </p>
                 <Button 
-                    onClick={() => router.push('/add-smart')} 
+                    onClick={() => openTransactionSheet()} 
                     className="rounded-full h-12 px-8 font-semibold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all relative z-10"
                 >
                     <PlusCircle className="mr-2 h-4 w-4" />
@@ -76,10 +78,10 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
       <div className="md:hidden space-y-6">
         {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
           <div key={date} className="space-y-2">
-                        <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-4">
+                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-2 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="bg-card rounded-card shadow-card border border-border/40 overflow-hidden divide-y divide-border/30">
+                        <div className="bg-card rounded-card shadow-card overflow-hidden">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 

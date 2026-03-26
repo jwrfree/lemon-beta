@@ -54,7 +54,7 @@ import { isWeekend } from 'date-fns';
 
 function ChartContent() {
     const router = useRouter();
-    const { setIsTxModalOpen, setTransactionToEdit } = useUI();
+    const { openTransactionSheet, setTransactionToEdit } = useUI();
     const { budgets } = useBudgets();
     const { wallets } = useWallets();
     const { reminders } = useReminders();
@@ -578,8 +578,7 @@ function ChartContent() {
                                     transaction={tx}
                                     rank={idx + 1}
                                     onClick={() => {
-                                        setTransactionToEdit(tx);
-                                        setIsTxModalOpen(true);
+                                        openTransactionSheet(tx);
                                     }}
                                 />
                             ))

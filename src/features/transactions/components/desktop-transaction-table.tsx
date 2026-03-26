@@ -51,10 +51,10 @@ type SortConfig = {
     direction: 'asc' | 'desc';
 };
 
-const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal }: {
+const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
     t: Transaction,
     wallets: Wallet[],
-    openEditTransactionModal: (t: Transaction) => void,
+    openTransactionSheet: (t: Transaction) => void,
     openDeleteModal: (t: Transaction) => void
 }) => {
     const isExpense = t.type === 'expense';
@@ -225,7 +225,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10"
-                        onClick={() => { triggerHaptic('light'); openEditTransactionModal(t); }}
+                        onClick={() => { triggerHaptic('light'); openTransactionSheet(t); }}
                     >
                         <Pencil className="h-3.5 w-3.5" />
                     </Button>
@@ -244,7 +244,7 @@ const TransactionRow = ({ t, wallets, openEditTransactionModal, openDeleteModal 
 };
 
 export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransactionTableProps) => {
-    const { openEditTransactionModal, openDeleteModal } = useUI();
+    const { openTransactionSheet, openDeleteModal } = useUI();
     const [sortConfig, setSortConfig] = useState<SortConfig | null>({ key: 'date', direction: 'desc' });
 
     const sortedTransactions = useMemo(() => {
@@ -362,7 +362,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                 key={t.id}
                                 t={t}
                                 wallets={wallets}
-                                openEditTransactionModal={openEditTransactionModal}
+                                openTransactionSheet={openTransactionSheet}
                                 openDeleteModal={openDeleteModal}
                             />
                         ))}

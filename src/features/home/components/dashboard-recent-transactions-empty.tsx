@@ -6,7 +6,7 @@ import { Receipt, Plus } from 'lucide-react';
 import { useUI } from '@/components/ui-provider';
 
 export const DashboardRecentTransactionsEmpty = () => {
-    const { setIsTxModalOpen } = useUI();
+    const { openTransactionSheet } = useUI();
 
     return (
         <Card className="h-full border-border rounded-card bg-card shadow-card overflow-hidden relative">
@@ -30,7 +30,7 @@ export const DashboardRecentTransactionsEmpty = () => {
                 </p>
 
                 <Button 
-                    onClick={() => setIsTxModalOpen(true)} 
+                    onClick={() => openTransactionSheet()} 
                     size="lg" 
                     className="gap-2 rounded-lg px-8 shadow-lg shadow-primary/20 active:scale-95 transition-all"
                 >

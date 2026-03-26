@@ -3,6 +3,15 @@ import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  redirects: async () => {
+    return [
+      {
+        source: '/add-smart',
+        destination: '/home?add=true',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

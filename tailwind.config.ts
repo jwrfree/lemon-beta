@@ -141,6 +141,7 @@ export default {
         'card-premium': 'var(--radius-card-premium)',  // 32px — DNA-gradient premium cards
         'card-glass':   'var(--radius-card-glass)',    // 24px — glass inset panels inside premium cards
         'card-icon':    'var(--radius-card-icon)',     // 20px — icon containers inside premium cards
+        'squircle':     '36%',                         // Samsung OneUI-style squircle icon shape
       },
       fontSize: {
         // Design-system label token — use `text-label` instead of text-[10px], text-[9px], text-[11px]

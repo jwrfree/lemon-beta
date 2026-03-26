@@ -3,29 +3,19 @@
 import OpenAI from "openai";
 
 import { config } from "@/lib/config";
+import type { UnifiedFinancialContext } from "@/lib/services/financial-context-service";
 
 const openai = new OpenAI({
   apiKey: config.ai.deepseek.apiKey,
   baseURL: config.ai.deepseek.baseURL,
 });
 
-export type FinancialData = {
-    monthlyIncome: number;
-    monthlyExpense: number;
-    totalBalance: number;
-    topExpenseCategories: { category: string; amount: number }[];
-    recentTransactionsCount: number;
-    debtInfo?: {
-        totalDebt: number;
-        debtChangeMonth: number; // positive means debt increased
-        hasSilentGrowth: boolean;
-        projectedPayoffMonths?: number;
-    }
-};
+export type InsightFocus = 'general' | 'expense' | 'income' | 'net' | 'debt' | 'goals' | 'wealth';
 
-export type InsightFocus = 'general' | 'expense' | 'income' | 'net' | 'debt';
-
-export async function generateFinancialInsight(data: FinancialData, focus: InsightFocus = 'general'): Promise<string> {
+export async function generateFinancialInsight(
+    data: UnifiedFinancialContext, 
+    focus: InsightFocus = 'general'
+): Promise<string> {
     const systemPrompt = `Anda adalah "Lemon Coach", pelatih keuangan Socratic yang cerdas dan suportif.
 Tugas Anda adalah memberikan insight finansial menggunakan framework 50/30/20 (Needs/Wants/Savings) dan Logika Dana Darurat.
 
@@ -36,9 +26,9 @@ Tugas Anda adalah memberikan insight finansial menggunakan framework 50/30/20 (N
 4. **Empati**: Tetap suportif bahkan saat kondisi keuangan user kurang ideal.
 
 ### ATURAN LOGIKA:
-- **Dana Darurat**: Jika totalBalance < (3 * monthlyExpense), prioritaskan penghematan pada 'Wants'.
-- **Debt focus**: Jika ada debtInfo, berikan strategi spesifik atau tanya tentang rencana pelunasan.
-- **Silent Growth**: Peringatan tegas tapi tetap memberikan solusi/harapan.`;
+- **Dana Darurat**: Jika wealth.cash < (3 * monthly.expense), prioritaskan penghematan pada 'Wants'.
+- **Wealth Focus**: Jika assets > liabilities, apresiasi pertumbuhan kekayaan bersih.
+- **Budget Alerts**: Jika ada budget yang > 90% (percent), tanyakan urgensi pengeluaran tersebut.`;
 
     let focusInstruction = "";
     switch (focus) {
@@ -51,36 +41,29 @@ Tugas Anda adalah memberikan insight finansial menggunakan framework 50/30/20 (N
         case 'net':
             focusInstruction = "Fokus pada rasio tabungan dan apakah user sedang 'tambah kaya' atau 'tambah miskin' bulan ini.";
             break;
-        case 'debt':
-            focusInstruction = "Fokus pada efisiensi pelunasan hutang dan menghindari bunga yang menjerat.";
+        case 'wealth':
+            focusInstruction = "Fokus pada kekayaan bersih dan perbandingan aset vs hutang.";
+            break;
+        case 'goals':
+            focusInstruction = "Fokus pada progres impian dan konsistensi menabung.";
             break;
         default:
             focusInstruction = "Insight umum tentang rasio 50/30/20 dan kesehatan dana darurat.";
     }
 
-    let debtContext = "";
-    if (data.debtInfo) {
-        debtContext = `
-Data Hutang:
-- Total: ${data.debtInfo.totalDebt}
-- Tren: ${data.debtInfo.debtChangeMonth > 0 ? 'Meningkat' : 'Menurun'} ${Math.abs(data.debtInfo.debtChangeMonth)}
-- Silent Growth: ${data.debtInfo.hasSilentGrowth ? 'BEHAYA (Bunga > Bayar)' : 'Terkendali'}
-- Proyeksi Bebas Hutang: ${data.debtInfo.projectedPayoffMonths ? `${data.debtInfo.projectedPayoffMonths} bulan` : 'Tidak menentu'}
-`;
-    }
-
-    const userPrompt = `### DATA KEUANGAN BULAN INI:
-- Saldo Sekarang: ${data.totalBalance}
-- Pemasukan (Bulan ini): ${data.monthlyIncome}
-- Pengeluaran (Bulan ini): ${data.monthlyExpense}
-- Top Boros: ${data.topExpenseCategories.map(c => `${c.category} (${c.amount})`).join(', ')}
-- Aktivitas: ${data.recentTransactionsCount} transaksi
-${debtContext}
+    const userPrompt = `### DATA KEUANGAN TERPADU (UFC):
+- Saldo Sekarang: ${data.wealth.cash}
+- Kekayaan Bersih: ${data.wealth.net_worth} (Aset: ${data.wealth.assets}, Hutang: ${data.wealth.liabilities})
+- Pemasukan (Bulan ini): ${data.monthly.income}
+- Pengeluaran (Bulan ini): ${data.monthly.expense}
+- Status Risiko: ${data.risk.level} (Score: ${data.risk.score})
+- Top Pengeluaran: ${data.top_categories.map(c => `${c.category} (${c.amount})`).join(', ')}
+- Budget Kritis: ${data.budgets.filter(b => b.percent > 80).map(b => `${b.name} (${b.percent}%)`).join(', ') || 'Semua aman'}
+- Progres Impian: ${data.goals.map(g => `${g.name} (${g.percent.toFixed(1)}%)`).join(', ')}
 
 ### INSTRUKSI REFINEMENT:
 - Konteks: ${focusInstruction}
-- Berikan 1-2 kalimat insight yang cerdas, Socratic (ada unsur pertanyaan), dan memotivasi.
-- Jika ada Silent Growth, wajib bahas dampaknya secara halus tapi nyata.`;
+- Berikan 1-2 kalimat insight yang cerdas, Socratic (ada unsur pertanyaan), dan memotivasi.`;
 
     try {
         const completion = await openai.chat.completions.create({
@@ -90,7 +73,7 @@ ${debtContext}
                 { role: "user", content: userPrompt }
             ],
             temperature: 0.7,
-            max_tokens: 200,
+            max_tokens: 300,
         });
 
         return completion.choices[0].message.content || "Tetap semangat mengatur keuanganmu!";

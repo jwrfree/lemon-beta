@@ -61,7 +61,7 @@ export const MobileDashboard = ({
 }: MobileDashboardProps) => {
     const router = useRouter();
     const {
-        setIsTxModalOpen,
+        openTransactionSheet,
         setTransactionToEdit,
         setIsTransferModalOpen,
         setIsDebtModalOpen,
@@ -95,17 +95,14 @@ export const MobileDashboard = ({
             icon: Sparkles,
             color: 'text-warning',
             bg: 'bg-warning/10',
-            onClick: () => setIsSmartAddOpen(true)
+            onClick: () => openTransactionSheet()
         },
         {
             label: 'Manual',
             icon: Plus,
             color: 'text-success',
             bg: 'bg-success/10',
-            onClick: () => {
-                setTransactionToEdit(null);
-                setIsTxModalOpen(true);
-            }
+            onClick: () => openTransactionSheet()
         },
         {
             label: 'Transfer',

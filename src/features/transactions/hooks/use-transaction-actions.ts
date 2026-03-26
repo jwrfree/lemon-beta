@@ -62,7 +62,7 @@ export const useTransactionActions = (user: User | null) => {
             details: { amount: data.amount, type: data.type, category: data.category }
         });
 
-        ui.setIsTxModalOpen(false);
+        ui.setIsTxSheetOpen(false);
         if (!options?.silentSuccessToast) {
             ui.showToast("Transaksi berhasil ditambahkan!", 'success');
         }
@@ -108,7 +108,7 @@ export const useTransactionActions = (user: User | null) => {
         }
 
         ui.showToast("Transaksi berhasil diperbarui!", 'success');
-        ui.setIsTxModalOpen(false);
+        ui.setIsTxSheetOpen(false);
         ui.setTransactionToEdit(null);
 
     }, [user, ui, refreshWallets]);

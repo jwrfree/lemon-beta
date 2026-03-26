@@ -57,6 +57,7 @@ const SingleTransactionSchema = z.object({
 const ExtractionSchema = z.object({
   transactions: z.array(SingleTransactionSchema).optional().default([]),
   clarificationQuestion: z.string().optional().nullable(),
+  socraticInsight: z.string().optional().nullable(), // For proactive feedback/coaching
 });
 
 export type TransactionExtractionOutput = z.infer<typeof ExtractionSchema>;
@@ -96,33 +97,17 @@ export async function extractTransaction(text: string, context?: ExtractionConte
   const systemPrompt = `## INSTRUKSI PARSING TRANSAKSI LEMON AI ##
 Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap makna implisit!
 
-### ATURAN UTAMA:
-1. **MULTI-TRANSACTION SUPPORT**: Jika user menyebut beberapa transaksi (misal: "beli bensin 50rb dan makan 30rb"), pecah menjadi objek terpisah dalam array 'transactions'.
-2. **DETEKSI HUTANG/PIUTANG**: Jika mendeteksi pembayaran hutang, set 'isDebtPayment': true dan isi 'counterparty'.
-3. **TRANSFER LOGIC**: 
-   - Internal: Jika dompet asal/tujuan ada di daftar -> set 'category': 'Transfer'.
-   - External: Jika transfer ke orang luar -> set 'type': 'expense' dan masukkan nama ke 'description'.
-4. **NEED VS WANT (CRITICAL)**: 
-   - **Need (Kebutuhan)**: Pengeluaran wajib untuk bertahan hidup atau bekerja. Contoh: Beras, minyak goreng, tagihan listrik/air, bensin/transportasi kerja, cicilan hutang, obat-obatan, biaya sekolah.
-   - **Want (Keinginan)**: Pengeluaran untuk kesenangan atau status. Contoh: Kopi kekinian (Starbucks/Mixue), makan di mall (restoran), bioskop, langganan Netflix/Spotify, topup game, gadget baru yang sifatnya upgrade.
-5. **MERCHANT & DOMAIN**: Ekstrak brand (misal: "Gojek", "McD", "Pertamina") dan tebak domain resminya (misal: "gojek.com", "mcdonalds.co.id", "pertamina.com"). Jika tidak tahu, biarkan kosong.
+### ATURAN SOCRATIC (CRITICAL):
+1. **CLARIFICATION FIRST**: Jika input ambigu (misal: "beli makan" tanpa nominal, atau "topup" tanpa dompet tujuan), JANGAN menebak. Tanyakan via 'clarificationQuestion' dengan nada Socratic.
+2. **VALUABLE INSIGHT**: Gunakan 'socraticInsight' untuk memberikan feedback edukatif cepat (misal: apresiasi jika itu 'Need' yang hemat, atau tanya urgensi jika itu 'Want' mahal).
+3. **50/30/20 LOGIC**: Masukkan logika dana darurat dan rasio budget dalam insight jika memungkinkan.
+4. **MULTI-TRANSACTION**: Pecah array 'transactions' jika ada lebih dari satu.
 
 ### OUTPUT JSON FORMAT:
 {
-  "transactions": [
-    {
-      "type": "income|expense",
-      "category": "...",
-      "merchant": "...",
-      "merchantDomain": "...",
-      "description": "...",
-      "amount": number,
-      "date": "YYYY-MM-DD",
-      "wallet": "...",
-      "isNeed": boolean
-    }
-  ],
-  "clarificationQuestion": "string (optional)"
+  "transactions": [...],
+  "clarificationQuestion": "Tanya balik jika kurang data...",
+  "socraticInsight": "Edukasi singkat ala Lemon Coach..."
 }`;
 
   // 2. DYNAMIC CONTEXT (User Messaging)
@@ -239,19 +224,13 @@ ${JSON.stringify(previousData, null, 2)}
 
 ### TUGAS ANDA:
 1. Perbarui data transaksi di atas berdasarkan instruksi terbaru dari user.
-2. **KOREKSI SUMBER DANA (WALLET)**:
-   - Sangat sensitif terhadap kata kunci seperti: "pake", "ganti dompet", "dari bca", "via gopay", "pindah ke cash", dll.
-   - Jika user menyebutkan nama dompet, pastikan field 'wallet' diupdate sesuai daftar: ${walletList}.
-3. **KOREKSI NEED VS WANT**:
-   - Jika user bilang "ini kebutuhan" -> set 'isNeed': true.
-   - Jika user bilang "ini keinginan/hiburan/lifestyle" -> set 'isNeed': false.
-4. Jika user memberikan informasi yang memperbaiki field tertentu (nominal, kategori, deskripsi), update field tersebut.
-5. Jika user memberikan informasi tambahan untuk transaksi yang belum lengkap, lengkapi datanya.
-6. Tetap gunakan format JSON yang sama.
-7. Jika instruksi user masih ambigu, Anda boleh menggunakan 'clarificationQuestion'.
+2. **SOCRATIC DIALOGUE**: Bersikaplah seperti pelatih. Jika user memperbaiki data, berikan feedback di 'socraticInsight' (misal: "Oke, Lemon ganti ke kategori Jajan ya. Hati-hati, minggu ini pengeluaran jajannya sudah cukup tinggi lho!").
+3. **KOREKSI SUMBER DANA (WALLET)**: Update 'wallet' jika user menyebutkan.
+4. **KOREKSI NEED VS WANT**: Update 'isNeed' berdasarkan konteks percakapan.
+5. Tetap gunakan format JSON yang sama.
 
 ### OUTPUT JSON FORMAT:
-Sama seperti sebelumnya.`;
+Sama seperti sebelumnya, wajib sertakan 'socraticInsight' setiap kali ada interaksi.`;
 
   try {
     const completion = await openai.chat.completions.create({

@@ -99,19 +99,19 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
 
             <div className="grid grid-cols-2 gap-6 mt-10 pt-8 border-t border-white/10 relative z-10">
                 <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                         Assets
-                    </p>
+                    </span>
                     <p className="text-xl font-semibold tabular-nums tracking-tighter">
                         {formatCurrency(data[data.length - 1]?.assets || 0)}
                     </p>
                 </div>
                 <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner text-right">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center justify-end gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center justify-end gap-2">
                         Liabilities
-                        <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                    </p>
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
+                    </span>
                     <p className="text-xl font-semibold tabular-nums tracking-tighter">
                         {formatCurrency(data[data.length - 1]?.liabilities || 0)}
                     </p>

@@ -46,7 +46,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: "Catat Cepat",
         short_name: "Catat",
-        url: "/add-smart",
+        url: "/home?add=true",
       },
     ],
     prefer_related_applications: false,
