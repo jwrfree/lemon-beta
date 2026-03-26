@@ -25,8 +25,8 @@ export const GoalsDashboard = () => {
             <div className="flex flex-col h-full min-h-[400px] animate-in fade-in duration-500">
                 <EmptyState
                     icon={Target}
-                    title="Belum Ada Target"
-                    description="Mulai menabung untuk impianmu hari ini. Tetapkan target dan raih satu per satu."
+                    title="Wujudkan Impianmu Bersama Lemon"
+                    description="Mulai menabung untuk impianmu hari ini. Tetapkan target dan raih satu per satu dengan bantuan Lemon."
                     actionLabel="Buat Target Baru"
                     onAction={() => setIsGoalModalOpen(true)}
                     variant="default"

@@ -20,7 +20,7 @@ export const MagicBar = ({
     onChange, 
     onReturn,
     isProcessing = false, 
-    placeholder = "Ketik atau bicara...",
+    placeholder = "Ada transaksi apa hari ini? Lemon siap catat...",
     onClear 
 }: MagicBarProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -152,7 +152,7 @@ export const MagicBar = ({
                         exit={{ opacity: 0 }}
                         className="text-center text-xs font-medium text-primary uppercase tracking-widest mt-3"
                     >
-                        {isListening ? "Suara Anda Sedang Direkam..." : "Lemon Sedang Berpikir..."}
+                        {isListening ? "Suara Anda Sedang Direkam..." : "Lemon lagi ngitung-ngitung nih..."}
                     </motion.p>
                 )}
             </AnimatePresence>

@@ -102,7 +102,7 @@ export const LiquidPreview = () => {
                             animate={{ opacity: 0.3 }}
                             className="text-xs font-medium text-muted-foreground uppercase tracking-widest animate-pulse"
                         >
-                            Ceritakan transaksimu...
+                            Yuk, cerita ke Lemon kita habis jajan apa...
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -132,7 +132,7 @@ export const LiquidPreview = () => {
                 value={text}
                 onChange={setText}
                 isProcessing={isProcessing}
-                placeholder="Kopi 35rb di Grand Indonesia..."
+                placeholder="Misal: Kopi 35rb di Grand Indonesia..."
                 onClear={() => {
                     setText('');
                     setAmount(25000);

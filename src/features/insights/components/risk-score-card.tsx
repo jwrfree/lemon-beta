@@ -24,8 +24,8 @@ export const RiskScoreCard = () => {
                     <Sparkles className="h-6 w-6 opacity-30" />
                 </div>
                 <div className="space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-widest opacity-40">Co-Pilot sedang belajar</p>
-                    <p className="text-xs text-muted-foreground max-w-[200px]">Catat beberapa transaksi lagi untuk melihat momentum keuanganmu.</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest opacity-40">Lemon Coach lagi belajar nih</p>
+                    <p className="text-xs text-muted-foreground max-w-[200px]">Kasih Lemon beberapa transaksi lagi ya, biar kita bisa pantau bareng kesehatan keuanganmu!</p>
                 </div>
             </Card>
         );

@@ -50,8 +50,8 @@ export const BudgetingDashboard = () => {
             <div className="flex flex-col h-full min-h-[400px] animate-in fade-in duration-500">
                 <EmptyState
                     icon={HandCoins}
-                    title="Belum Ada Anggaran"
-                    description="Buat pos pengeluaran bulanan agar keuanganmu lebih teratur dan terkendali."
+                    title="Pos Anggaran Masih Kosong"
+                    description="Sudah punya alokasi pos 50/30/20 bulan ini? Yuk, buat budget pertamamu supaya pengeluaranmu lebih terjaga."
                     actionLabel="Buat Anggaran Baru"
                     onAction={() => setIsBudgetModalOpen(true)}
                     variant="default"
