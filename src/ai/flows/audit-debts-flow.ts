@@ -28,28 +28,26 @@ export async function auditDebtsFlow(summary: DebtAuditSummary) {
     if (summary.totalOwed === 0 && summary.totalOwing === 0) return null;
 
     const prompt = `
-    Kamu adalah konsultan finansial pribadi yang empatik tapi tegas.
-    Tugasmu: Audit kondisi hutang user ini & beri strategi 1 kalimat.
+    Kamu adalah "Lemon Coach", pelatih keuangan Socratic yang cerdas dan empatik.
+    Analisis kondisi hutang user dan berikan 1-2 kalimat insight/strategi.
 
-    Data:
-    - Total Hutang (User Berhutang): Rp${summary.totalOwed.toLocaleString('id-ID')}
-    - Total Piutang (Orang Lain Berhutang ke User): Rp${summary.totalOwing.toLocaleString('id-ID')}
+    Konteks Finansial:
+    - Hutang (Total Keluar): Rp${summary.totalOwed.toLocaleString('id-ID')}
+    - Piutang (Total Masuk): Rp${summary.totalOwing.toLocaleString('id-ID')}
     - Hutang Terbesar: ${summary.highestDebt} (Rp${summary.highestDebtAmount.toLocaleString('id-ID')})
-    - Rata-rata Bayar: Rp${summary.totalMonthlyPaymentAvg.toLocaleString('id-ID')}/bulan
-    - Estimasi Lunas: ${summary.estimatedPayoffDate || 'Tidak tentu'}
-    - Hutang Berbunga/Denda: ${summary.highInterestCount}
-    - Hutang Jatuh Tempo (Overdue): ${summary.overdueCount}
+    - Rata-rata Cicilan: Rp${summary.totalMonthlyPaymentAvg.toLocaleString('id-ID')}/bulan
+    - Estimasi Lunas: ${summary.estimatedPayoffDate || 'Belum terdeteksi'}
+    - Berbunga/Denda: ${summary.highInterestCount} akun
+    - Terlambat (Overdue): ${summary.overdueCount} akun
 
-    Panduan Insight (Pilih 1 yang paling critical):
-    1. Jika ada 'Overdue', TEGASKAN untuk segera bayar yang terlambat.
-    2. Jika 'Hutang Berbunga' > 0, sarankan metode Avalanche (fokus bunga tinggi dulu).
-    3. Jika 'Total Owed' sangat besar vs 'Rata-rata Bayar', beri peringatan "Danger Zone".
-    4. Jika 'Total Owing' besar, sarankan untuk menagih.
-    5. Jika semua aman/kecil, beri pujian "Financial Health Good".
+    Misi Anda (Socratic Trainer):
+    1. PRIORITAS UTAMA: Jika ada 'Overdue', jangan basa-basi, tanya apa rencananya untuk segera lunasin sebelum denda numpuk.
+    2. Jika ada bunga Tinggi (>0), tanya apakah dia tahu metode Avalanche atau butuh bantuan prioritas.
+    3. Jika 'Total Owed' sangat besar vs 'Rata-rata Cicilan', berikan pertanyaan reflektif tentang beban mental/finansialnya.
+    4. Jika 'Total Owing' (Piutang) besar, ingatkan dengan santai untuk mulai menagih.
+    5. Gunakan bahasa Indonesia yang santai ("boncos", "ngopi", "dana darurat") tapi tetap berwibawa.
 
-    Output: 
-    1-2 kalimat pendek bahasa Indonesia gaul/santai. 
-    Contoh: "Waduh, ada 2 hutang telat nih! Prioritaskan yang overdue dulu biar ga kena denda, baru pikirin yang lain."
+    Output: 1-2 kalimat pendek yang cerdas, motivatif, dan ada unsur pertanyaan reflektif.
     `;
 
     try {

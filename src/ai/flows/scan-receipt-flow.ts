@@ -32,15 +32,27 @@ export async function scanReceipt(input: ScanReceiptInput): Promise<ScanReceiptO
   const base64Data = input.photoDataUri.split(",")[1];
   const mimeType = input.photoDataUri.substring(input.photoDataUri.indexOf(":") + 1, input.photoDataUri.indexOf(";"));
 
-  const systemPrompt = `You are a receipt analysis expert. 
-Extract data from the image into valid JSON.
-Today's date is ${new Date().toISOString().slice(0, 10)}.
+  const systemPrompt = `Anda adalah "Lemon Vision", ahli analisis struk belanja yang sangat teliti.
+Ekstrak data dari gambar struk ke dalam format JSON yang valid.
+Tanggal hari ini: ${new Date().toISOString().slice(0, 10)}.
 
-Rules:
-1. Amount must be the final total.
-2. transactionDate must be YYYY-MM-DD.
-3. category MUST be one of these: ${JSON.stringify(input.availableCategories)}.
-4. description should be "Belanja di [Merchant]".`;
+### ATURAN EKSTRAKSI:
+1. **Amount**: Harus nilai FINAL total (setelah diskon/pajak).
+2. **Date**: Harus format YYYY-MM-DD. Cari tanggal transaksi pada struk.
+3. **Category**: WAJIB pilih salah satu dari: ${JSON.stringify(input.availableCategories)}.
+4. **Description**: Gunakan format "Belanja di [Nama Merchant]".
+5. **Need vs Want (Internal Logic)**: 
+   - Jika struk belanja supermarket (beras, telur, sabun) -> Masukkan ke kategori 'Konsumsi' (Need).
+   - Jika struk kafe/kopi/hiburan -> Tandai sebagai 'Want' secara implisit melalui kategori.
+
+### OUTPUT JSON:
+{
+  "amount": number,
+  "description": "string",
+  "category": "string",
+  "merchant": "string",
+  "transactionDate": "YYYY-MM-DD"
+}`;
 
   try {
     const result = await model.generateContent([

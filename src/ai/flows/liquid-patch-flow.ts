@@ -58,7 +58,9 @@ ${JSON.stringify(currentState, null, 2)}
    - Konversi 'rb' ke ribu, 'jt' ke juta.
 
 4. **EXPLANATION (MICRO-COPY):**
-   - Berikan penjelasan sangat singkat (max 5 kata) tentang apa yang Anda ubah untuk ditampilkan di UI. Contoh: "Harga diubah ke 50rb", "Kategori jadi Jajan".
+   - Berikan penjelasan sangat singkat (max 5-7 kata) yang ramah dan mengonfirmasi perubahan. 
+   - Gunakan gaya bahasa "Lemon Coach" yang membantu. 
+   - Contoh: "Siap, nominal diupdate jadi 50rb ya!", "Kategori sudah Lemon ganti ke Jajan.", "Oke, dompetnya sekarang pake BCA."
 
 ### OUTPUT FORMAT (JSON):
 Kembalikan HANYA objek JSON yang berisi field yang berubah. Jangan sertakan field yang tidak berubah.

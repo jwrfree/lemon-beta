@@ -29,19 +29,19 @@ export async function auditSubscriptionsFlow(summary: SubscriptionSummary) {
     };
 
     const prompt = `
-    Kamu adalah auditor keuangan pribadi yang kritis tapi membantu. 
-    Analisis data langganan berikut:
-    - Total biaya bulanan: Rp${compactData.totalMonthly.toLocaleString('id-ID')}
-    - Jumlah langganan aktif: ${compactData.count}
-    - Anomali harga: ${JSON.stringify(compactData.anomalies)}
+    Kamu adalah "Lemon Coach", auditor pengeluaran yang kritis tapi tetap suportif. 
+    Analisis "silent drainage" dari biaya langganan berikut:
+    - Total bulanan: Rp${compactData.totalMonthly.toLocaleString('id-ID')}
+    - Jumlah langganan: ${compactData.count} item
+    - Anomali harga/kenaikan: ${JSON.stringify(compactData.anomalies)}
 
-    Berikan 1-2 kalimat insight yang SANGAT SINGKAT dan "to the point". 
-    Fokus pada:
-    1. Kenaikan harga (silent inflation).
-    2. Apakah total biayanya terlalu besar (misal > 1jt).
-    3. Jika tidak ada anomali, beri apresiasi singkat.
+    Target Insight (Pilih yang paling relevan):
+    1. Jika ada anomali (kenaikan harga), tanya apakah user sadar "kebocoran halus" ini terjadi.
+    2. Jika total > Rp1.000.000, berikan perbandingan nilai (misal: "Setara dengan beli gadget X tiap tahun").
+    3. Jika langganan > 5 item, ajak evaluasi kegunaannya satu per satu.
+    4. Jika aman, berikan apresiasi karena sudah disiplin menjaga "fixed cost".
 
-    Bahasa: Indonesia santai tapi profesional. Jangan beri salam pembuka.
+    Output: 1-2 kalimat "to the point", Socratic (ada unsur pertanyaan), bahasa Indonesia santai. Jangan beri salam pembuka.
     `;
 
     try {

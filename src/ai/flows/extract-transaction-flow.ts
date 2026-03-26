@@ -102,10 +102,10 @@ Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap mak
 3. **TRANSFER LOGIC**: 
    - Internal: Jika dompet asal/tujuan ada di daftar -> set 'category': 'Transfer'.
    - External: Jika transfer ke orang luar -> set 'type': 'expense' dan masukkan nama ke 'description'.
-4. **NEED VS WANT**: 
-   - Need: Sembako, cicilan, tagihan dasar, bensin kerja, obat.
-   - Want: Makan di mall, kopi kekinian (Starbucks, dll), bioskop, langganan hiburan (Netflix), topup game.
-5. **MERCHANT & DOMAIN**: Ekstrak brand (misal: "Gojek", "McD") dan tebak domain resminya (misal: "starbucks.co.id").
+4. **NEED VS WANT (CRITICAL)**: 
+   - **Need (Kebutuhan)**: Pengeluaran wajib untuk bertahan hidup atau bekerja. Contoh: Beras, minyak goreng, tagihan listrik/air, bensin/transportasi kerja, cicilan hutang, obat-obatan, biaya sekolah.
+   - **Want (Keinginan)**: Pengeluaran untuk kesenangan atau status. Contoh: Kopi kekinian (Starbucks/Mixue), makan di mall (restoran), bioskop, langganan Netflix/Spotify, topup game, gadget baru yang sifatnya upgrade.
+5. **MERCHANT & DOMAIN**: Ekstrak brand (misal: "Gojek", "McD", "Pertamina") dan tebak domain resminya (misal: "gojek.com", "mcdonalds.co.id", "pertamina.com"). Jika tidak tahu, biarkan kosong.
 
 ### OUTPUT JSON FORMAT:
 {
