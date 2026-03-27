@@ -40,6 +40,7 @@ export const SemanticTransactionReview = ({
     const isNeed = form.watch('isNeed');
     
     const amount = form.watch('amount');
+    const amountNumber = Number((amount || '0').toString().replace(/[^0-9]/g, ''));
     
     const activeCategories = type === 'expense' ? expenseCategories : incomeCategories;
     const categoryObj = activeCategories.find(c => c.name === categoryName);
@@ -84,15 +85,15 @@ export const SemanticTransactionReview = ({
                         className={cn(
                             "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
                             activeEditor === 'amount' && "ring-2 ring-primary ring-offset-2",
-                            Number(amount || 0) > 0
+                            amountNumber > 0
                                 ? type === 'income'
                                     ? "bg-primary/10 border-primary/30 text-primary"
                                     : "bg-foreground/5 border-border text-foreground"
                                 : "bg-amber-500/10 border-amber-400/40 text-amber-600 shadow-amber-500/10 animate-pulse"
                         )}
                     >
-                        {Number(amount || 0) > 0
-                            ? formatCurrency(Number(amount || 0))
+                        {amountNumber > 0
+                            ? formatCurrency(amountNumber)
                             : '❓ Nominal'}
                     </button>
 

@@ -304,7 +304,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         const currentData = data as any;
         const formattedData = {
             type: currentData.type,
-            amount: parseFloat(currentData.amount),
+            amount: currentData.amount,
             description: currentData.description,
             category: currentData.category,
             subCategory: currentData.subCategory,
