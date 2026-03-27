@@ -99,7 +99,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
     const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-secondary";
 
     return (
-        <TableRow className="group">
+        <TableRow className="group hover:bg-muted/30 transition-colors">
             {/* 1. Tanggal */}
             <TableCell className="pl-8 text-xs font-medium text-muted-foreground whitespace-nowrap">
                 {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
@@ -109,7 +109,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
             <TableCell>
                 <div className="flex items-center gap-3">
                     <div className={cn(
-                        "h-10 w-10 rounded-lg flex items-center justify-center shrink-0 border border-border overflow-hidden transition-transform group-hover:scale-105",
+                        "h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border border-border overflow-hidden transition-transform group-hover:scale-105",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (
@@ -176,7 +176,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                         {t.category}
                     </span>
                     {t.subCategory && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1 ml-1">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1 ml-1 px-1 py-0.5 rounded-md bg-muted/30 w-fit">
                             <CornerDownRight className="w-2.5 h-2.5" />
                             <span>{t.subCategory}</span>
                         </div>
@@ -224,7 +224,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        className="h-8 w-8 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
                         onClick={() => { triggerHaptic('light'); openTransactionSheet(t); }}
                     >
                         <Pencil className="h-3.5 w-3.5" />
@@ -232,7 +232,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                         onClick={() => { triggerHaptic('medium'); openDeleteModal(t); }}
                     >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -313,13 +313,13 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="gap-2 h-10 rounded-lg px-4 border-border hover:bg-muted transition-all font-medium text-xs uppercase tracking-widest"
+                    className="gap-2 h-10 rounded-xl px-4 border-border hover:bg-muted transition-all font-medium text-xs uppercase tracking-widest"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-md bg-card shadow-card border border-border">
+            <div className="overflow-hidden rounded-2xl bg-card shadow-card border border-border/50">
                 <Table className="table-fixed">
                     <TableHeader className="bg-muted/50">
                         <TableRow className="hover:bg-muted/50 border-b border-border">

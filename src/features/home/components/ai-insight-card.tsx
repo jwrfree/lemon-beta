@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles, RefreshCw, Lightbulb } from 'lucide-react';
-import { generateFinancialInsight, FinancialData } from '@/ai/flows/generate-insight-flow';
+import { generateFinancialInsight } from '@/ai/flows/generate-insight-flow';
 import { Transaction, Wallet, Debt } from '@/types/models';
 import { isSameMonth, parseISO, subMonths, isAfter } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -80,7 +80,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
             const avgMonthlyPayment = recentPayments.reduce((sum, p) => sum + p.amount, 0) / 3;
             const projectedPayoffMonths = avgMonthlyPayment > 0 ? Math.ceil(totalDebt / avgMonthlyPayment) : undefined;
 
-            const data: FinancialData = {
+            const data = {
                 monthlyIncome,
                 monthlyExpense,
                 totalBalance,
@@ -94,7 +94,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                 } : undefined
             };
 
-            const result = await generateFinancialInsight(data);
+            const result = await generateFinancialInsight(data as any);
             setInsight(result);
         } catch (error) {
             console.error("Failed to generate insight:", error);

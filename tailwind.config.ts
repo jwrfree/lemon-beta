@@ -133,6 +133,7 @@ export default {
         },
       },
       borderRadius: {
+        DEFAULT: 'var(--radius)',         // Responsive: 14px mobile / 8px desktop
         sm: 'var(--radius-sm)',           // 6px — chips, badges, small elements
         md: 'var(--radius-md)',           // 8px — inputs, buttons, secondary cards
         lg: 'var(--radius-lg)',           // 12px — standard cards, panels

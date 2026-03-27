@@ -13,7 +13,7 @@ export const transactionSchema = z.object({
   category: z.string().min(1, { message: 'Kategori wajib diisi' }),
   subCategory: z.string().optional(),
   walletId: z.string().min(1, { message: 'Dompet wajib dipilih' }),
-  description: z.string().min(1, { message: 'Deskripsi wajib diisi' }),
+  description: z.string().optional().default(''),
   location: z.string().optional(),
   date: z.date({ required_error: 'Tanggal wajib diisi' }),
 });
@@ -31,7 +31,7 @@ export const transferSchema = z.object({
       return isNaN(number) ? 0 : number;
     })
     .refine((val) => val > 0, { message: 'Jumlah harus lebih dari 0' }),
-  description: z.string().min(1, { message: 'Deskripsi wajib diisi' }),
+  description: z.string().optional().default(''),
   date: z.date({ required_error: 'Tanggal wajib diisi' }),
 }).refine((data) => data.fromWalletId !== data.toWalletId, {
   message: "Dompet asal dan tujuan tidak boleh sama",
@@ -50,7 +50,7 @@ const baseSchema = z.object({
       return isNaN(number) ? 0 : number;
     })
     .refine((val) => val > 0, { message: 'Jumlah harus lebih dari 0' }),
-  description: z.string().min(1, { message: 'Deskripsi wajib diisi' }),
+  description: z.string().optional().default(''),
   date: z.date({ required_error: 'Tanggal wajib diisi' }),
 });
 

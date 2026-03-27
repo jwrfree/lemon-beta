@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress as UIProgress } from '@/components/ui/progress';
-import { generateFinancialInsight, FinancialData } from '@/ai/flows/generate-insight-flow';
+import { generateFinancialInsight } from '@/ai/flows/generate-insight-flow';
 import { subMonths, isAfter, differenceInMonths } from 'date-fns';
 
 import type { Transaction } from '@/types/models';
@@ -70,7 +70,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 .slice(0, 3)
                 .map(([category, amount]) => ({ category, amount }));
 
-            const data: FinancialData = {
+            const data = {
                 monthlyIncome: income,
                 monthlyExpense: expense,
                 totalBalance,
@@ -85,7 +85,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             };
 
             const focus = type === 'expense' ? 'expense' : type === 'income' ? 'income' : type === 'net' ? 'net' : 'debt';
-            const result = await generateFinancialInsight(data, focus);
+            const result = await generateFinancialInsight(data as any, focus as any);
             setAiInsight(result);
         } catch (error) {
             console.error("Failed to generate insight:", error);

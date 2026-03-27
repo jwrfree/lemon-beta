@@ -1,5 +1,8 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, Sun, CloudSun, Moon, Sunset, Calendar, Smile } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface DynamicSuggestionsProps {
     onSuggestionClick: (text: string) => void;
@@ -7,178 +10,62 @@ interface DynamicSuggestionsProps {
 }
 
 type TimeOfDay = 'pagi' | 'siang' | 'sore' | 'malam';
-type DayContext = 'normal' | 'weekend' | 'gajian';
 
 export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] }: DynamicSuggestionsProps) => {
     const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('pagi');
-    const [dayContext, setDayContext] = useState<DayContext>('normal');
-    
-    useEffect(() => {
-        const now = new Date();
-        const hour = now.getHours();
-        const date = now.getDate();
-        const day = now.getDay(); // 0 = Sunday, 6 = Saturday
 
-        // Determine Time of Day
+    useEffect(() => {
+        const hour = new Date().getHours();
         if (hour >= 4 && hour < 11) setTimeOfDay('pagi');
         else if (hour >= 11 && hour < 15) setTimeOfDay('siang');
         else if (hour >= 15 && hour < 19) setTimeOfDay('sore');
         else setTimeOfDay('malam');
-
-        // Determine Day Context (Priority: Payday > Weekend > Normal)
-        if (date >= 25 || date <= 5) {
-            setDayContext('gajian');
-        } else if (day === 0 || day === 6) {
-            setDayContext('weekend');
-        } else {
-            setDayContext('normal');
-        }
     }, []);
 
-    const getGreeting = () => {
-        // Special Greetings based on Context
-        if (dayContext === 'gajian') {
-            return { text: "Saatnya Atur Gaji!", icon: Calendar, color: "text-emerald-500", bg: "bg-emerald-500/10", ring: "ring-emerald-500/5" };
-        }
-        if (dayContext === 'weekend') {
-            return { text: "Happy Weekend!", icon: Smile, color: "text-pink-500", bg: "bg-pink-500/10", ring: "ring-pink-500/5" };
-        }
-
-        // Fallback to Time of Day Greetings
-        switch (timeOfDay) {
-            case 'pagi': return { text: "Selamat Pagi!", icon: Sun, color: "text-orange-500", bg: "bg-orange-500/10", ring: "ring-orange-500/5" };
-            case 'siang': return { text: "Selamat Siang!", icon: CloudSun, color: "text-sky-500", bg: "bg-sky-500/10", ring: "ring-sky-500/5" };
-            case 'sore': return { text: "Selamat Sore!", icon: Sunset, color: "text-amber-500", bg: "bg-amber-500/10", ring: "ring-amber-500/5" };
-            case 'malam': return { text: "Selamat Malam!", icon: Moon, color: "text-indigo-500", bg: "bg-indigo-500/10", ring: "ring-indigo-500/5" };
-        }
+    const contextualSuggestions: Record<TimeOfDay, string[]> = {
+        pagi: ['Sarapan 15rb', 'Kopi 20rb', 'Ojek ke kantor 25rb', 'Commuter line 4rb'],
+        siang: ['Makan siang 25rb', 'Es teh 5rb', 'Parkir 2rb', 'Jajan kantin 15rb'],
+        sore: ['Gorengan 10rb', 'Belanja minimarket 50rb', 'Ojek pulang 20rb', 'Boba 35rb'],
+        malam: ['Makan malam 25rb', 'Martabak 35rb', 'Bayar listrik 200rb', 'Langganan Netflix 54rb'],
     };
 
-    const getSuggestions = () => {
-        const common = [
-            "Pindah 500rb dari BCA ke Kas"
-        ];
+    const onboardingPrompts = [
+        { text: '🎙️ Coba bilang "Beli bensin 20 ribu"', isSpecial: true },
+        { text: '📸 Scan struk minimarket', isSpecial: true },
+    ];
 
-        if (dayContext === 'gajian') {
-            return [
-                "Gaji masuk 10jt di Mandiri",
-                "Bayar listrik 500rb",
-                "Bayar kosan 1.5jt",
-                "Belanja bulanan 1jt",
-                "Topup investasi 500rb"
-            ];
-        }
+    const currentSuggestions = [
+        ...(historySuggestions.length > 0 ? historySuggestions.slice(0, 2).map(s => ({ text: s, isSpecial: false })) : []),
+        ...contextualSuggestions[timeOfDay].map(s => ({ text: s, isSpecial: false })),
+    ].slice(0, 4);
 
-        if (dayContext === 'weekend') {
-            const weekendActivity = timeOfDay === 'malam' ? "Makan malam di mall 200rb" : "Tiket bioskop 50rb";
-            return [
-                weekendActivity,
-                "Bayar parkir mall 15rb",
-                "Jajan snack 35rb",
-                "Isi bensin full tank 50rb",
-                ...common
-            ];
-        }
-        
-        switch (timeOfDay) {
-            case 'pagi':
-                return [
-                    "Sarapan bubur ayam 15rb",
-                    "Kopi susu gula aren 20rb",
-                    "Ojek online ke kantor 25rb",
-                    ...common
-                ];
-            case 'siang':
-                return [
-                    "Makan siang paket hemat 25rb",
-                    "Es teh manis 5rb",
-                    "Bayar parkir 2rb",
-                    ...common
-                ];
-            case 'sore':
-                return [
-                    "Beli gorengan 10rb",
-                    "Belanja di minimarket 50rb",
-                    "Ojek online pulang kerja 20rb",
-                    ...common
-                ];
-            case 'malam':
-                return [
-                    "Makan malam nasi goreng 18rb",
-                    "Martabak manis keju 35rb",
-                    "Bayar listrik 200rb",
-                    ...common
-                ];
-        }
-    };
-
-    const greeting = getGreeting();
-    const suggestions = getSuggestions();
-    const textSuggestions = suggestions.slice(0, 4);
-    const personalizedSuggestions = historySuggestions.slice(0, 4);
-    const Icon = greeting.icon;
+    const allOptions = [...onboardingPrompts, ...currentSuggestions];
 
     return (
-        <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8 animate-in fade-in duration-500 max-w-sm mx-auto">
-            <div className={`p-4 rounded-card mb-6 ring-8 ${greeting.bg} ${greeting.ring}`}>
-                <Icon className={`h-10 w-10 ${greeting.color}`} strokeWidth={1.5} />
-            </div>
-            <h2 className="text-xl font-medium text-foreground">{greeting.text}</h2>
-            <p className="mt-2 text-sm leading-relaxed">
-                {dayContext === 'gajian' 
-                    ? "Sudah alokasikan pos-pos pengeluaran bulan ini?" 
-                    : dayContext === 'weekend'
-                        ? "Nikmati akhir pekanmu! Jangan lupa catat pengeluaran ya."
-                        : `Ada pengeluaran apa ${timeOfDay === 'malam' ? 'hari ini' : 'saat ini'}? Ceritakan saja.`
-                }
-            </p>
-            
-            <div className="mt-10 w-full">
-                <div className="flex items-center justify-between mb-4">
-                    <p className="text-xs font-medium tracking-widest text-muted-foreground/60">
-                        {dayContext === 'gajian' ? 'Rutin Bulanan' : dayContext === 'weekend' ? 'Ide Akhir Pekan' : `Contoh ${timeOfDay} ini`}
-                    </p>
-                    <div className="h-px flex-1 bg-border/50 ml-3" />
-                </div>
-                {personalizedSuggestions.length > 0 && (
-                    <>
-                        <p className="text-[10px] font-medium tracking-widest text-muted-foreground/60 mb-2 text-left uppercase">Dari riwayat</p>
-                        <div className="grid grid-cols-1 gap-2 mb-4">
-                            {personalizedSuggestions.map((s, idx) => (
-                                <button
-                                    key={`history-${idx}`}
-                                    type="button"
-                                    onClick={() => onSuggestionClick(s)}
-                                    className="text-xs text-left bg-emerald-500/5 hover:bg-emerald-500/10 px-4 py-3 rounded-md active:scale-[0.98] transition-all flex items-center justify-between group border border-emerald-500/20"
-                                >
-                                    <span className="text-foreground/80 group-hover:text-emerald-600 font-medium">{s}</span>
-                                    <span className="text-[10px] uppercase tracking-widest text-emerald-600/80">Riwayat</span>
-                                </button>
-                            ))}
-                        </div>
-                    </>
-                )}
-
-                <p className="text-[10px] font-medium tracking-widest text-muted-foreground/60 mb-2 text-left uppercase">Dari teks</p>
-                <div className="grid grid-cols-1 gap-2">
-                    {textSuggestions.map((s, idx) => (
-                        <button
-                            key={`${timeOfDay}-${dayContext}-${idx}`}
-                            type="button"
-                            onClick={() => onSuggestionClick(s)}
-                            className="text-xs text-left bg-card hover:bg-primary/5 px-4 py-3 rounded-md active:scale-[0.98] transition-all flex items-center justify-between group"
-                        >
-                            <span className="text-foreground/80 group-hover:text-primary font-medium">{s}</span>
-                            <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-primary" />
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="mt-8 p-4 bg-muted/50 rounded-card w-full">
-                <p className="text-xs font-medium text-muted-foreground mb-2">💡 Tips Cerdas</p>
-                <p className="text-xs text-muted-foreground leading-relaxed text-left">
-                    Gunakan kata hubung seperti <b>"dan"</b> atau <b>tanda koma</b> untuk mencatat banyak transaksi sekaligus.
+        <div className="w-full animate-in fade-in duration-300 px-1">
+            <div className="flex items-center gap-1.5 mb-3">
+                <Clock className="h-3 w-3 text-muted-foreground/50" />
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                    Saran Interaktif
                 </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {allOptions.map((item, idx) => (
+                    <button
+                        key={idx}
+                        type="button"
+                        onClick={() => onSuggestionClick(item.isSpecial ? item.text.replace(/^[🎙️📸]\s*/, '') : item.text)}
+                        className={cn(
+                            "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[13px] font-medium border transition-all active:scale-95",
+                            item.isSpecial 
+                                ? "bg-primary/10 border-primary/20 text-primary shadow-sm hover:bg-primary/20 hover:shadow-primary/10 font-semibold"
+                                : "bg-card border-border/60 text-foreground/70 hover:bg-secondary/60 hover:text-foreground shadow-sm"
+                        )}
+                    >
+                        <span>{item.text}</span>
+                        {!item.isSpecial && <ArrowRight className="h-3 w-3 opacity-40 ml-1" />}
+                    </button>
+                ))}
             </div>
         </div>
     );

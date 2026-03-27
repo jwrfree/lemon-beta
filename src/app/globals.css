@@ -162,7 +162,7 @@
 
     @media (min-width: 768px) {
       :root {
-        --radius: 0.5rem; /* 8px for desktop */
+        --radius: 1rem; /* 16px for ultra modern desktop softness */
       }
     }
 

@@ -37,7 +37,7 @@ export const Sidebar = () => {
         <aside
             className={cn(
                 'hidden md:flex flex-col fixed left-4 top-4 bottom-4 z-50 transition-[width,padding] duration-300 ease-in-out',
-                'bg-background/85 backdrop-blur-xl border border-border/20 shadow-card rounded-md overflow-hidden',
+                'bg-background/85 backdrop-blur-xl border border-border/20 shadow-card rounded-2xl overflow-hidden',
                 isSidebarCollapsed ? cn(SIDEBAR_CONFIG.collapsedWidth, 'py-10 px-2') : cn(SIDEBAR_CONFIG.expandedWidth, 'p-4 py-10')
             )}
         >
@@ -67,8 +67,8 @@ export const Sidebar = () => {
                             <Button
                                 onClick={() => openTransactionSheet()}
                                 className={cn(
-                                    'shadow-lg shadow-primary/20 active:scale-95 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full',
-                                    isSidebarCollapsed ? 'w-12 h-12 p-0' : 'w-full gap-3 px-5 h-12'
+                                    'shadow-lg shadow-primary/20 active:scale-95 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl',
+                                    isSidebarCollapsed ? 'w-12 h-12 p-0 rounded-full' : 'w-full gap-3 px-5 h-12 rounded-xl'
                                 )}
                             >
                                 <Sparkles className="h-5 w-5 shrink-0" />
@@ -103,8 +103,8 @@ export const Sidebar = () => {
                                         href={item.href}
                                         prefetch={false}
                                         className={cn(
-                                            'group flex items-center h-11 rounded-full text-sm font-medium transition-all duration-300 relative',
-                                            isSidebarCollapsed ? 'justify-center w-12 h-12 mx-auto' : 'px-4 w-full gap-4',
+                                            'group flex items-center h-11 rounded-xl text-sm font-medium transition-all duration-300 relative',
+                                            isSidebarCollapsed ? 'justify-center w-12 h-12 mx-auto rounded-full' : 'px-4 w-full gap-4 md:rounded-xl',
                                             isActive
                                                 ? 'text-primary'
                                                 : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
@@ -113,7 +113,7 @@ export const Sidebar = () => {
                                         {isActive && (
                                             <motion.div
                                                 layoutId="sidebar-active-bg"
-                                                className="absolute inset-0 bg-primary/20 dark:bg-primary/30 rounded-full"
+                                                className="absolute inset-0 bg-primary/20 dark:bg-primary/30 rounded-xl"
                                                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                                             />
                                         )}
@@ -146,8 +146,8 @@ export const Sidebar = () => {
                                     variant="ghost"
                                     onClick={handleInstallClick}
                                     className={cn(
-                                        'text-primary hover:bg-primary/10 rounded-full transition-all duration-300 text-label uppercase',
-                                        isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                        'text-primary hover:bg-primary/10 rounded-xl transition-all duration-300 text-label uppercase',
+                                        isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center rounded-full' : 'w-full justify-start gap-4 px-4 h-11 rounded-xl'
                                     )}
                                 >
                                     <Download className="h-5 w-5 shrink-0" />
@@ -168,8 +168,8 @@ export const Sidebar = () => {
                                 variant="ghost"
                                 onClick={toggleBalanceVisibility}
                                 className={cn(
-                                    'text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-full transition-all duration-300 text-label uppercase',
-                                    isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                    'text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-xl transition-all duration-300 text-label uppercase',
+                                    isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11 rounded-xl'
                                 )}
                             >
                                 {isBalanceVisible ? <Eye className="h-5 w-5 shrink-0" /> : <EyeOff className="h-5 w-5 shrink-0" />}
@@ -189,8 +189,8 @@ export const Sidebar = () => {
                                 variant="ghost"
                                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                                 className={cn(
-                                    'text-muted-foreground hover:bg-muted/50 rounded-full transition-all duration-300 text-label uppercase',
-                                    isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                    'text-muted-foreground hover:bg-muted/50 rounded-xl transition-all duration-300 text-label uppercase',
+                                    isSidebarCollapsed ? 'w-12 h-12 p-0 mx-auto flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11 rounded-xl'
                                 )}
                             >
                                 {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4 shrink-0" />}
@@ -211,8 +211,8 @@ export const Sidebar = () => {
                                     variant="ghost"
                                     onClick={handleSignOut}
                                     className={cn(
-                                        'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-all duration-300 text-label uppercase',
-                                        isSidebarCollapsed ? 'w-12 h-12 p-0 flex items-center justify-center' : 'w-full justify-start gap-4 px-4 h-11'
+                                        'text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-300 text-label uppercase',
+                                        isSidebarCollapsed ? 'w-12 h-12 p-0 flex items-center justify-center rounded-full' : 'w-full justify-start gap-4 px-4 h-11 rounded-xl'
                                     )}
                                 >
                                     <LogOut className="h-5 w-5 shrink-0" />

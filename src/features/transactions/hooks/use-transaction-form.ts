@@ -102,6 +102,18 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         }
     }, [initialData, form]);
 
+    // 3. Debug Validation Errors
+    useEffect(() => {
+        const errors = form.formState.errors;
+        if (Object.keys(errors).length > 0) {
+            console.error("Form Validation Errors:", errors);
+            const firstError = Object.values(errors)[0]?.message;
+            if (firstError && typeof firstError === 'string') {
+                showToast(`Validasi gagal: ${firstError}`, 'error');
+            }
+        }
+    }, [form.formState.submitCount]);
+
     // 4. Power AI Processing (Multi + OCR)
     const processMagicInput = useCallback(async (input: string | { type: 'image', dataUrl: string }) => {
         if (!user || !context) return;

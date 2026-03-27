@@ -12,7 +12,7 @@ const openai = new OpenAI({
 
 // Define flexible output schema with defaults to prevent validation crashes
 const SingleTransactionSchema = z.object({
-  amount: z.union([z.number(), z.string()]).transform((val) => {
+  amount: z.union([z.number(), z.string()]).optional().transform((val) => {
     if (typeof val === 'number') return val;
     if (!val) return 0;
 
@@ -36,17 +36,17 @@ const SingleTransactionSchema = z.object({
     const num = parseInt(numericOnly, 10);
     return isNaN(num) ? 0 : num;
   }).default(0),
-  description: z.string().nullable().transform(v => v || "Transaksi Baru"),
+  description: z.string().optional().nullable().transform(v => v || "Transaksi Baru"),
   merchant: z.string().optional().nullable(), // New field for brand intelligence
   merchantDomain: z.string().optional().nullable(), // AI guesses domain for free logo APIs
-  category: z.string().nullable().transform(v => v || "Lain-lain"),
+  category: z.string().optional().nullable().transform(v => v || "Lain-lain"),
   subCategory: z.string().optional().nullable(),
-  wallet: z.string().nullable().transform(v => v || "Tunai"),
+  wallet: z.string().optional().nullable().transform(v => v || "Tunai"),
   sourceWallet: z.string().optional().nullable(),
   destinationWallet: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
-  date: z.string().nullable().transform(v => v || new Date().toISOString().slice(0, 10)),
-  type: z.enum(['income', 'expense']).nullable().transform(v => v || 'expense'),
+  date: z.string().optional().nullable().transform(v => v || new Date().toISOString().slice(0, 10)),
+  type: z.enum(['income', 'expense']).optional().nullable().transform(v => v || 'expense'),
   // Debt integration
   isDebtPayment: z.boolean().optional().default(false),
   debtId: z.string().optional().nullable(),
@@ -98,16 +98,24 @@ export async function extractTransaction(text: string, context?: ExtractionConte
 Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap makna implisit!
 
 ### ATURAN SOCRATIC (CRITICAL):
-1. **CLARIFICATION FIRST**: Jika input ambigu (misal: "beli makan" tanpa nominal, atau "topup" tanpa dompet tujuan), JANGAN menebak. Tanyakan via 'clarificationQuestion' dengan nada Socratic.
-2. **VALUABLE INSIGHT**: Gunakan 'socraticInsight' untuk memberikan feedback edukatif cepat (misal: apresiasi jika itu 'Need' yang hemat, atau tanya urgensi jika itu 'Want' mahal).
-3. **50/30/20 LOGIC**: Masukkan logika dana darurat dan rasio budget dalam insight jika memungkinkan.
+1. **CLARIFICATION FIRST**: Jika input ambigu (misal: "beli makan" tanpa nominal), JANGAN menebak. Tanyakan via 'clarificationQuestion'. HARUS SINGKAT (max 1 kalimat).
+2. **VALUABLE INSIGHT**: Gunakan 'socraticInsight' untuk memberikan feedback edukatif. HARUS SANGAT SINGKAT (Maks 1-2 kalimat pendek, misal: "Sandal termasuk Want, yakin mendesak?"). Jangan panjang lebar!
+3. **50/30/20 LOGIC**: Masukkan logika budget dalam insight HANYA JIKA kalimatnya tetap pendek.
 4. **MULTI-TRANSACTION**: Pecah array 'transactions' jika ada lebih dari satu.
 
 ### OUTPUT JSON FORMAT:
 {
-  "transactions": [...],
-  "clarificationQuestion": "Tanya balik jika kurang data...",
-  "socraticInsight": "Edukasi singkat ala Lemon Coach..."
+  "transactions": [{
+    "amount": 15000,
+    "description": "Beli roti",
+    "category": "Konsumsi & F&B",
+    "wallet": "Tunai",
+    "type": "expense",
+    "isNeed": true,
+    "isDebtPayment": false
+  }],
+  "clarificationQuestion": "Tanya balik (singkat, max 1 kalimat)...",
+  "socraticInsight": "Edukasi (sangat singkat, max 10-15 kata)..."
 }`;
 
   // 2. DYNAMIC CONTEXT (User Messaging)
@@ -224,13 +232,13 @@ ${JSON.stringify(previousData, null, 2)}
 
 ### TUGAS ANDA:
 1. Perbarui data transaksi di atas berdasarkan instruksi terbaru dari user.
-2. **SOCRATIC DIALOGUE**: Bersikaplah seperti pelatih. Jika user memperbaiki data, berikan feedback di 'socraticInsight' (misal: "Oke, Lemon ganti ke kategori Jajan ya. Hati-hati, minggu ini pengeluaran jajannya sudah cukup tinggi lho!").
+2. **SOCRATIC DIALOGUE**: Bersikaplah seperti pelatih. Berikan feedback di 'socraticInsight'. HARUS SANGAT SINGKAT (Maks 1-2 kalimat pendek). Jangan ceramah panjang lebar!
 3. **KOREKSI SUMBER DANA (WALLET)**: Update 'wallet' jika user menyebutkan.
 4. **KOREKSI NEED VS WANT**: Update 'isNeed' berdasarkan konteks percakapan.
 5. Tetap gunakan format JSON yang sama.
 
 ### OUTPUT JSON FORMAT:
-Sama seperti sebelumnya, wajib sertakan 'socraticInsight' setiap kali ada interaksi.`;
+Sama seperti sebelumnya, wajib sertakan 'socraticInsight' (singkat, max 10-15 kata) setiap kali ada interaksi.`;
 
   try {
     const completion = await openai.chat.completions.create({

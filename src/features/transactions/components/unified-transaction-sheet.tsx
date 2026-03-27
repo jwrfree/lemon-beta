@@ -11,14 +11,11 @@ import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useCategories } from '../hooks/use-transactions';
 import { Transaction } from '@/types/models';
 
-// Partials
-import { AmountInput } from './form-partials/amount-input';
-import { CategorySelector } from './form-partials/category-selector';
-import { WalletSelector } from './form-partials/wallet-selector';
-import { DatePicker } from './form-partials/date-picker';
 import { HeroAmount } from './liquid-composer/HeroAmount';
 import { MagicBar } from './liquid-composer/MagicBar';
 import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
+import { SemanticTransactionReview } from './form-partials/semantic-review';
+
 
 interface UnifiedTransactionSheetProps {
     isOpen: boolean;
@@ -36,7 +33,6 @@ export const UnifiedTransactionSheet = ({
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
     const [magicValue, setMagicValue] = useState('');
-    const [showManualForm, setShowManualForm] = useState(false);
 
     const context = useMemo(() => ({
         wallets: wallets.map(w => ({ id: w.id, name: w.name })),
@@ -101,11 +97,11 @@ export const UnifiedTransactionSheet = ({
                     <SheetDescription>Interaksi cerdas dengan Socratic Lemon Coach.</SheetDescription>
                 </SheetHeader>
 
-                {/* --- STAGE 1: MAGIC HEADER --- */}
-                <div className="relative bg-gradient-to-b from-secondary/30 to-background px-6 pt-10 pb-8 border-b border-border/40">
+                {/* --- STAGE 1: HEADER --- */}
+                <div className="pt-6 px-5 pb-2">
                     {/* Batch Navigation */}
                     {totalTxs > 1 && (
-                        <div className="flex items-center justify-between mb-6 px-4 py-2 bg-primary/10 rounded-2xl border border-primary/20 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-center justify-between mb-2 px-4 py-2 bg-primary/10 rounded-xl border border-primary/20 animate-in fade-in slide-in-from-top-2">
                             <Button variant="ghost" size="icon" onClick={goToPrev} disabled={currentTxIndex === 0} className="h-8 w-8 rounded-full">
                                 <ChevronLeft className="h-4 w-4" />
                             </Button>
@@ -117,194 +113,144 @@ export const UnifiedTransactionSheet = ({
                             </Button>
                         </div>
                     )}
+                </div>
 
-                    <div className="flex justify-center mb-8">
-                        <HeroAmount amount={amountNumber} type={type} onAmountClick={() => setShowManualForm(true)} />
-                    </div>
+                {/* --- STAGE 2: ADAPTIVE CONTENT --- */}
+                <motion.div layout className="flex-1 overflow-y-auto px-6 py-6 space-y-6 flex flex-col">
+                    {/* Suggestions (Only when idle or typing before submit) */}
+                    <AnimatePresence mode="popLayout">
+                        {!isEditMode && amountNumber === 0 && totalTxs === 0 && (
+                            <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="pt-2">
+                                <DynamicSuggestions 
+                                    historySuggestions={historySuggestions} 
+                                    onSuggestionClick={(text) => processMagicInput(text)} 
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                    {/* Magic Input */}
-                    <div className="max-w-md mx-auto relative">
-                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60">
-                            <Sparkles className="h-3 w-3" />
-                            Lemon Magic
-                        </div>
-                        <MagicBar 
-                            value={magicValue}
-                            onChange={setMagicValue}
-                            onReturn={handleMagicSubmit}
-                            onClear={() => setMagicValue('')}
-                            onImageUpload={handleImageUpload}
-                            isProcessing={isAiProcessing}
-                            placeholder="Contoh: beli boba 25rb atau upload struk"
-                        />
-                    </div>
+                    {/* Summary Chips (Non-interactive unless clicked) */}
+                    <AnimatePresence mode="popLayout">
+                        {(amountNumber > 0 || totalTxs > 0 || isEditMode) && (
+                            <motion.div layout initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="pt-2">
+                                 <SemanticTransactionReview 
+                                    form={form}
+                                    expenseCategories={expenseCategories}
+                                    incomeCategories={incomeCategories}
+                                    wallets={wallets}
+                                 />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </motion.div>
 
+                {/* --- FOOTER: AI INPUT & ACTIONS --- */}
+                <div className="px-4 pb-4 pt-3 bg-background/95 backdrop-blur-md border-t border-border/40 flex flex-col gap-3">
+                    
                     {/* Socratic & Clarification Feed */}
-                    <div className="max-w-md mx-auto space-y-3 mt-6">
+                    <motion.div layout className="max-w-md mx-auto w-full space-y-3 px-1">
                         <AnimatePresence mode="wait">
                             {clarificationQuestion && (
                                 <motion.div 
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    className="flex items-start gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20"
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    className="relative flex items-start gap-3 p-3.5 pr-4 rounded-2xl rounded-tr-none bg-amber-500/10 border border-amber-500/20 max-w-[90%] mr-auto shadow-sm"
                                 >
-                                    <div className="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                                        <HelpCircle className="h-4 w-4 text-amber-600" />
-                                    </div>
-                                    <p className="text-sm leading-relaxed text-amber-950 font-semibold">
+                                    <p className="text-[13px] leading-relaxed text-amber-950 font-medium">
                                         {clarificationQuestion}
                                     </p>
+                                    <div className="h-6 w-6 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                                        <HelpCircle className="h-3 w-3 text-amber-600" />
+                                    </div>
+                                    {/* Chat Bubble Tail */}
+                                    <div className="absolute -top-1.5 left-0 w-3 h-3 bg-amber-500/10 border-l border-t border-amber-500/20 transform rotate-45" />
                                 </motion.div>
                             )}
 
                             {socraticInsight && (
                                 <motion.div 
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="flex items-start gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10"
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                    className="relative flex items-start gap-3 p-3.5 pr-4 rounded-2xl rounded-tr-none bg-primary/10 border border-primary/20 max-w-[90%] mr-auto shadow-sm"
                                 >
-                                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                        <MessageSquareQuote className="h-4 w-4 text-primary" />
-                                    </div>
-                                    <p className="text-sm leading-relaxed text-foreground/80 italic font-medium">
-                                        "{socraticInsight}"
+                                    <p className="text-[13px] leading-relaxed text-primary/90 font-medium">
+                                        {socraticInsight}
                                     </p>
+                                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                                        <Sparkles className="h-3 w-3 text-primary" />
+                                    </div>
+                                    {/* Chat Bubble Tail */}
+                                    <div className="absolute -top-1.5 left-0 w-3 h-3 bg-primary/10 border-l border-t border-primary/20 transform rotate-45" />
                                 </motion.div>
                             )}
                         </AnimatePresence>
-                    </div>
-                </div>
+                    </motion.div>
 
-                {/* --- STAGE 2: ADAPTIVE CONTENT --- */}
-                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 flex flex-col">
-                    {/* Suggestions (Only when idle) */}
-                    {!isEditMode && amountNumber === 0 && !magicValue && totalTxs === 0 && (
-                        <div className="flex-1 flex flex-col justify-center py-4">
-                            <DynamicSuggestions 
-                                historySuggestions={historySuggestions} 
-                                onSuggestionClick={(text) => processMagicInput(text)} 
-                            />
-                        </div>
-                    )}
+                    <MagicBar 
+                        value={magicValue}
+                        onChange={setMagicValue}
+                        onReturn={handleMagicSubmit}
+                        onClear={() => setMagicValue('')}
+                        onImageUpload={handleImageUpload}
+                        isProcessing={isAiProcessing}
+                        placeholder="Ketik pengeluaran di sini..."
+                    />
 
-                    {/* Summary Chips (Non-interactive unless clicked) */}
-                    {(amountNumber > 0 || totalTxs > 0) && (
-                        <div className="flex flex-wrap justify-center gap-2">
-                             <button 
-                                onClick={() => setShowManualForm(true)} 
-                                className="px-4 py-2 rounded-full border border-border/60 bg-card hover:bg-secondary/50 transition-colors flex items-center gap-2 text-xs font-medium"
-                            >
-                                <span className="w-2 h-2 rounded-full bg-primary" />
-                                {category || 'Pilih Kategori'}
-                            </button>
-                            <button 
-                                onClick={() => setShowManualForm(true)} 
-                                className="px-4 py-2 rounded-full border border-border/60 bg-card hover:bg-secondary/50 transition-colors flex items-center gap-2 text-xs font-medium"
-                            >
-                                <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                                {wallets.find(w => w.id === walletId)?.name || 'Pilih Dompet'}
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Manual Form (Collapsible) */}
-                    <AnimatePresence>
-                        {showManualForm && (
-                            <motion.div 
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="overflow-hidden"
-                            >
-                                <div className="space-y-6 pt-4 border-t border-border/40">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <WalletSelector control={control} name="walletId" wallets={wallets} label="Dompet" error={(errors as any).walletId?.message} />
-                                        <DatePicker control={control} name="date" error={(errors as any).date?.message} />
+                    <AnimatePresence mode="popLayout">
+                        {(isEditMode || totalTxs > 0 || amountNumber > 0) && (
+                            <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: 20, height: 0 }} className="flex gap-3 w-full mt-3 overflow-hidden">
+                                {isEditMode && (
+                                    <Button variant="outline" size="icon" onClick={handleDelete} className="h-14 w-14 rounded-2xl border-destructive/20 text-destructive hover:bg-destructive/10 shrink-0">
+                                        <Trash2 className="h-5 w-5" />
+                                    </Button>
+                                )}
+                                {totalTxs > 1 ? (
+                                         <Button 
+                                            onClick={saveAll} 
+                                            disabled={isAiProcessing}
+                                            className="flex-1 h-14 rounded-2xl font-bold text-base bg-emerald-600 text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
+                                        >
+                                        {isAiProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+                                            <span className="flex items-center gap-2">
+                                                <CheckCheck className="h-5 w-5" />
+                                                Simpan Semua ({totalTxs})
+                                            </span>
+                                        )}
+                                    </Button>
+                                ) : (
+                                    <div className="flex-1 flex flex-col gap-3">
+                                        <Button 
+                                            onClick={handleSubmit} 
+                                            disabled={isSubmitting} 
+                                            className="w-full h-14 rounded-2xl font-bold text-base bg-primary text-white shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                        >
+                                            {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+                                                <span className="flex items-center gap-2">
+                                                    <Save className="h-5 w-5" />
+                                                    {isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}
+                                                </span>
+                                            )}
+                                        </Button>
+                                        {!isEditMode && amountNumber > 0 && (
+                                            <Button 
+                                                variant="outline"
+                                                onClick={handleSubmitAndAddAnother} 
+                                                disabled={isSubmitting} 
+                                                className="w-full h-11 rounded-xl font-medium text-xs border-primary/20 text-primary hover:bg-primary/5 transition-all"
+                                            >
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                Simpan & Tambah Lagi
+                                            </Button>
+                                        )}
                                     </div>
-                                    <CategorySelector 
-                                        control={control} 
-                                        name="category" 
-                                        value={subCategory} 
-                                        categories={activeCategories} 
-                                        error={(errors as any).category?.message}
-                                        onSubCategoryChange={(val) => setValue('subCategory', val)}
-                                    />
-                                    <div className="space-y-2">
-                                        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Deskripsi</p>
-                                        <div className="relative">
-                                            <input 
-                                                {...form.register('description')} 
-                                                placeholder="Makan siang, bensin, dll..." 
-                                                className="w-full h-12 px-4 rounded-xl bg-secondary/50 border border-border/40 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium" 
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>
-
-                    {!showManualForm && (
-                        <Button 
-                            variant="ghost" 
-                            className="w-full text-xs text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-2 py-4"
-                            onClick={() => setShowManualForm(true)}
-                        >
-                            <ChevronDown className="h-4 w-4" />
-                            Lihat detail manual
-                        </Button>
-                    )}
-                </div>
-
-                {/* --- FOOTER: ACTIONS --- */}
-                <div className="p-6 bg-background/80 backdrop-blur-md border-t border-border/40 flex gap-3">
-                    {isEditMode && (
-                        <Button variant="outline" size="icon" onClick={handleDelete} className="h-14 w-14 rounded-2xl border-destructive/20 text-destructive hover:bg-destructive/10">
-                            <Trash2 className="h-5 w-5" />
-                        </Button>
-                    )}
-                    {totalTxs > 1 ? (
-                         <Button 
-                            onClick={saveAll} 
-                            disabled={isAiProcessing}
-                            className="flex-1 h-14 rounded-2xl font-bold text-base bg-emerald-600 text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
-                        >
-                            {isAiProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : (
-                                <span className="flex items-center gap-2">
-                                    <CheckCheck className="h-5 w-5" />
-                                    Simpan Semua ({totalTxs})
-                                </span>
-                            )}
-                        </Button>
-                    ) : (
-                        <div className="flex-1 flex flex-col gap-3">
-                            <Button 
-                                onClick={handleSubmit} 
-                                disabled={isSubmitting} 
-                                className="w-full h-14 rounded-2xl font-bold text-base bg-primary text-white shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                            >
-                                {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : (
-                                    <span className="flex items-center gap-2">
-                                        <Save className="h-5 w-5" />
-                                        {isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}
-                                    </span>
-                                )}
-                            </Button>
-                            {!isEditMode && amountNumber > 0 && (
-                                <Button 
-                                    variant="outline"
-                                    onClick={handleSubmitAndAddAnother} 
-                                    disabled={isSubmitting} 
-                                    className="w-full h-11 rounded-2xl font-medium text-xs border-primary/20 text-primary hover:bg-primary/5 transition-all"
-                                >
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Simpan & Tambah Lagi
-                                </Button>
-                            )}
-                        </div>
-                    )}
                 </div>
             </SheetContent>
         </Sheet>
