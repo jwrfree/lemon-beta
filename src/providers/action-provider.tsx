@@ -19,8 +19,8 @@ interface TransferPayload {
 
 interface ActionContextType {
     addTransaction: (data: TransactionInput, options?: { silentSuccessToast?: boolean }) => Promise<string | null>;
-    updateTransaction: (transactionId: string, oldData: Transaction, newData: TransactionUpdate) => Promise<void>;
-    deleteTransaction: (transaction: Transaction) => Promise<void>;
+    updateTransaction: (transactionId: string, oldData: Transaction, newData: TransactionUpdate) => Promise<boolean>;
+    deleteTransaction: (transaction: Transaction) => Promise<boolean>;
     addWallet: (walletData: WalletInput) => Promise<void>;
     updateWallet: (walletId: string, walletData: Partial<Wallet>) => Promise<void>;
     deleteWallet: (walletId: string) => Promise<void>;

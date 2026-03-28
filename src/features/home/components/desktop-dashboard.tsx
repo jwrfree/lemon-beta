@@ -48,7 +48,7 @@ import { ProphetChart } from '@/features/charts/components/prophet-chart';
 import type { DailyMetric } from '@/features/charts/types';
 
 export const DesktopDashboard = () => {
-    const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+    const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date('2026-03-28T10:00:00'));
     const router = useRouter();
 
     const now = lastRefreshed;

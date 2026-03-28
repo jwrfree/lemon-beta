@@ -1,11 +1,13 @@
 import { useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 import { useUI } from '@/components/ui-provider';
 import type { Wallet, WalletInput } from '@/types/models';
 import { walletService } from '@/lib/services/wallet-service';
 
 export const useWalletActions = (user: User | null) => {
     const ui = useUI();
+    const router = useRouter();
 
     const addWallet = useCallback(async (walletData: WalletInput) => {
         if (!user) throw new Error("User not authenticated.");
@@ -46,6 +48,7 @@ export const useWalletActions = (user: User | null) => {
 
             ui.showToast("Dompet berhasil dihapus.", 'success');
             ui.setIsEditWalletModalOpen(false);
+            router.refresh();
         } catch (err: any) {
             console.error("[useWalletActions] Delete Error:", err);
             ui.showToast(`Gagal menghapus dompet: ${err.message}`, 'error');
@@ -59,6 +62,7 @@ export const useWalletActions = (user: User | null) => {
             await walletService.reconcileWallet(user.id, walletId, currentBalance, targetBalance);
             ui.showToast("Saldo berhasil dikoreksi!", 'success');
             ui.setIsEditWalletModalOpen(false);
+            router.refresh();
         } catch (err: any) {
             console.error("[useWalletActions] Reconcile Error:", err);
             ui.showToast(`Gagal koreksi saldo: ${err.message}`, 'error');

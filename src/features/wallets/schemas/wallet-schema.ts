@@ -3,8 +3,10 @@ import { z } from 'zod';
 export const walletSchema = z.object({
   name: z.string().min(1, 'Nama dompet wajib diisi'),
   balance: z.string()
-    .min(1, 'Saldo awal wajib diisi')
+    .optional()
+    .default('0')
     .transform((val) => {
+      if (!val) return 0;
       const cleaned = val.replace(/[^0-9]/g, '');
       const number = parseInt(cleaned, 10);
       return isNaN(number) ? 0 : number;

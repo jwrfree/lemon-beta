@@ -31,7 +31,8 @@ interface UIContextType {
     setIsTxSheetOpen: (isOpen: boolean) => void;
     transactionToEdit: Transaction | null;
     setTransactionToEdit: (transaction: Transaction | null) => void;
-    openTransactionSheet: (transaction?: Transaction) => void;
+    txSheetMode: 'smart' | 'manual';
+    openTransactionSheet: (transaction?: Transaction | null, mode?: 'smart' | 'manual') => void;
 
     deferredPrompt: any;
     setDeferredPrompt: (prompt: any) => void;
@@ -106,6 +107,7 @@ export const useUI = () => {
 export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [isTxSheetOpen, setIsTxSheetOpen] = useState(false);
     const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
+    const [txSheetMode, setTxSheetMode] = useState<'smart' | 'manual'>('smart');
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
@@ -169,12 +171,13 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsEditBudgetModalOpen(true);
     };
 
-    const openTransactionSheet = (transaction?: Transaction) => {
+    const openTransactionSheet = (transaction?: Transaction | null, mode: 'smart' | 'manual' = 'smart') => {
         if (transaction?.category === 'Transfer') {
             showToast("Mengedit transaksi transfer belum didukung.", 'error');
             return;
         }
         setTransactionToEdit(transaction || null);
+        setTxSheetMode(mode);
         setIsTxSheetOpen(true);
     };
 
@@ -203,6 +206,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxSheetOpen,
         transactionToEdit,
         setTransactionToEdit,
+        txSheetMode,
         openTransactionSheet,
         deferredPrompt,
         setDeferredPrompt,
@@ -257,6 +261,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         isTxSheetOpen,
         deferredPrompt,
         transactionToEdit,
+        txSheetMode,
         isWalletModalOpen,
         isBudgetModalOpen,
         isEditBudgetModalOpen,

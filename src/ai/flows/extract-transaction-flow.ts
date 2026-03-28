@@ -99,9 +99,13 @@ Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap mak
 
 ### ATURAN SOCRATIC (CRITICAL):
 1. **CLARIFICATION FIRST**: Jika input ambigu (misal: "beli makan" tanpa nominal), JANGAN menebak. Tanyakan via 'clarificationQuestion'. HARUS SINGKAT (max 1 kalimat).
-2. **VALUABLE INSIGHT**: Gunakan 'socraticInsight' untuk memberikan feedback edukatif. HARUS SANGAT SINGKAT (Maks 1-2 kalimat pendek, misal: "Sandal termasuk Want, yakin mendesak?"). Jangan panjang lebar!
+2. **VALUABLE INSIGHT**: Gunakan 'socraticInsight' untuk memberikan feedback edukatif. HARUS SANGAT SINGKAT (Maks 1-2 kalimat pendek). Jangan panjang lebar!
 3. **50/30/20 LOGIC**: Masukkan logika budget dalam insight HANYA JIKA kalimatnya tetap pendek.
-4. **MULTI-TRANSACTION**: Pecah array 'transactions' jika ada lebih dari satu.
+4. **NEED vs WANT LOGIC**: 
+   - **Need (Kebutuhan)**: Hal mendasar untuk hidup (makan harian sederhana [Mie Ayam, Nasi Goreng, Warteg], sewa/cicilan rumah, transportasi kerja, kesehatan, tagihan rutin).
+   - **Want (Keinginan)**: Gaya hidup/hiburan (Bioskop, Kopi Mahal/Starbucks, Baju baru non-seragam, Game, Langganan Netflix). 
+   - **KHUSUS MAKAN**: Jika harga di bawah Rp 30.000 atau di tempat biasa (Mie Ayam, Bakso), kategorikan sebagai **isNeed: true**. Jika makan di Mall/Resto atau harganya premium, baru kategorikan sebagai **isNeed: false**.
+5. **MULTI-TRANSACTION**: Pecah array 'transactions' jika ada lebih dari satu.
 
 ### OUTPUT JSON FORMAT:
 {
@@ -115,7 +119,7 @@ Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap mak
     "isDebtPayment": false
   }],
   "clarificationQuestion": "Tanya balik (singkat, max 1 kalimat)...",
-  "socraticInsight": "Edukasi (sangat singkat, max 10-15 kata)..."
+  "socraticInsight": "Edukasi (sangat singkat, misal: 'Makan harian tercatat sebagai kebutuhan. Mantap!')"
 }`;
 
   // 2. DYNAMIC CONTEXT (User Messaging)

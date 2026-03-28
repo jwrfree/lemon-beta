@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 import { useUI } from '@/components/ui-provider';
 import { logActivity } from '@/lib/audit';
 import type { Transaction, TransactionInput, TransactionUpdate } from '@/types/models';
@@ -10,6 +11,7 @@ import { transactionEvents } from '@/lib/transaction-events';
 
 export const useTransactionActions = (user: User | null) => {
     const ui = useUI();
+    const router = useRouter();
     const { refreshWallets } = useWalletData();
 
     const addTransaction = useCallback(async (data: TransactionInput, options?: { silentSuccessToast?: boolean }): Promise<string | null> => {
@@ -55,6 +57,8 @@ export const useTransactionActions = (user: User | null) => {
             transactionEvents.emit('transaction.deleted', optimisticTransaction.id);
             return null;
         }
+        
+        transactionEvents.emit('transaction.sync');
 
         await logActivity({
             action: 'CREATE_TRANSACTION',
@@ -66,8 +70,9 @@ export const useTransactionActions = (user: User | null) => {
         if (!options?.silentSuccessToast) {
             ui.showToast("Transaksi berhasil ditambahkan!", 'success');
         }
+        router.refresh();
         return result.data;
-    }, [user, ui, refreshWallets]);
+    }, [user, ui, refreshWallets, router]);
 
     const updateTransaction = useCallback(async (transactionId: string, oldData: Transaction, newData: TransactionUpdate) => {
         if (!user) throw new Error("User not authenticated.");
@@ -104,17 +109,19 @@ export const useTransactionActions = (user: User | null) => {
             // Authority Sync: Revert client local state with real data
             await refreshWallets();
             transactionEvents.emit('transaction.updated', oldData);
-            return;
+            return false;
         }
 
         ui.showToast("Transaksi berhasil diperbarui!", 'success');
+        transactionEvents.emit('transaction.sync');
         ui.setIsTxSheetOpen(false);
         ui.setTransactionToEdit(null);
-
-    }, [user, ui, refreshWallets]);
+        router.refresh();
+        return true;
+    }, [user, ui, refreshWallets, router]);
 
     const deleteTransaction = useCallback(async (transaction: Transaction) => {
-        if (!user || !transaction) return;
+        if (!user || !transaction) return false;
 
         // 1. Optimistic Revert (Handled by Event Listener)
         transactionEvents.emit('transaction.deleted', transaction.id);
@@ -126,7 +133,7 @@ export const useTransactionActions = (user: User | null) => {
             // Conflict Resolution: Fetch real balance if delete fails
             await refreshWallets();
             transactionEvents.emit('transaction.created', transaction);
-            return;
+            return false;
         }
 
         await logActivity({
@@ -135,8 +142,11 @@ export const useTransactionActions = (user: User | null) => {
             entityId: transaction.id
         });
 
+        transactionEvents.emit('transaction.sync');
         ui.showToast("Transaksi berhasil dihapus!", 'success');
-    }, [user, ui, refreshWallets]);
+        router.refresh();
+        return true;
+    }, [user, ui, refreshWallets, router]);
 
     return {
         addTransaction,

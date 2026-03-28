@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   title: "Lemon - Personal Finance Tracker",
   description: "Take control of your finances with Lemon.",
   applicationName: "Lemon",
-  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

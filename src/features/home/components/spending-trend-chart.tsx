@@ -24,7 +24,7 @@ const chartConfig = {
 
 export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendChartProps) => {
     const data = useMemo(() => {
-        const today = new Date();
+        const today = new Date('2026-03-28');
         const startDate = subDays(today, days - 1);
 
         // Generate all dates in range

@@ -29,6 +29,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const {
         isTxSheetOpen,
         setIsTxSheetOpen,
+        txSheetMode,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -135,6 +136,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         <UnifiedTransactionSheet 
                             key="unified-tx-sheet"
                             isOpen={isTxSheetOpen}
+                            initialMode={txSheetMode}
                             onClose={() => {
                                 setIsTxSheetOpen(false);
                                 setTransactionToEdit(null);

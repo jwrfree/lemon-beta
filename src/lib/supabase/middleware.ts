@@ -37,9 +37,12 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Redirect unauthenticated users to the login page (on root '/')
-  // if they are trying to access protected routes.
-  // Allowed public routes: '/', '/auth' and its subpaths, '/api' routes (handled by their own auth).
+  console.log("Middleware auth check:", { 
+    path: request.nextUrl.pathname, 
+    hasUser: !!user,
+    userId: user?.id 
+  });
+
   if (
     !user &&
     request.nextUrl.pathname !== '/' &&
@@ -48,14 +51,45 @@ export async function updateSession(request: NextRequest) {
   ) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    
+    // Ensure any cookies that were updated (like deleted invalid session cookies) are copied to the redirect response
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set({
+        name: cookie.name,
+        value: cookie.value,
+        domain: cookie.domain,
+        path: cookie.path,
+        secure: cookie.secure,
+        httpOnly: cookie.httpOnly,
+        sameSite: cookie.sameSite,
+        maxAge: cookie.maxAge
+      })
+    })
+
+    return redirectResponse
   }
 
   // Redirect authenticated users to /home if they try to access the login page ('/')
   if (user && request.nextUrl.pathname === '/') {
     const url = request.nextUrl.clone()
     url.pathname = '/home'
-    return NextResponse.redirect(url)
+    const redirectResponse = NextResponse.redirect(url)
+    
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set({
+        name: cookie.name,
+        value: cookie.value,
+        domain: cookie.domain,
+        path: cookie.path,
+        secure: cookie.secure,
+        httpOnly: cookie.httpOnly,
+        sameSite: cookie.sameSite,
+        maxAge: cookie.maxAge
+      })
+    })
+
+    return redirectResponse
   }
 
   return supabaseResponse

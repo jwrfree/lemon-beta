@@ -167,48 +167,56 @@ export const MagicBar = ({
                         </button>
                     )}
 
-                    <AnimatePresence mode="wait">
-                        {value && !isRecording && !isTranscribing ? (
-                            <div className="flex items-center gap-1" key="actions">
+                        <AnimatePresence mode="wait">
+                            {value && !isRecording && !isTranscribing ? (
+                                <div className="flex items-center gap-1" key="actions">
+                                    <motion.button
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        onClick={onClear}
+                                        className="p-2 rounded-full hover:bg-secondary text-muted-foreground mr-1"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </motion.button>
+                                    <motion.button
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        onClick={() => {
+                                            triggerHaptic('medium');
+                                            onReturn?.();
+                                        }}
+                                        disabled={isProcessing || isTranscribing}
+                                        className="p-3 rounded-full shadow-card transition-all active:scale-90 bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
+                                        title="Simpan Transaksi"
+                                    >
+                                        {(isProcessing || isTranscribing) ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <Send className="h-4 w-4" />
+                                        )}
+                                    </motion.button>
+                                </div>
+                            ) : (
                                 <motion.button
+                                    key="mic"
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
-                                    onClick={onClear}
-                                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground mr-1"
+                                    onClick={toggleListening}
+                                    disabled={isProcessing || isTranscribing}
+                                    className={cn(
+                                        "p-3 rounded-full shadow-card transition-all active:scale-90",
+                                        isRecording 
+                                            ? "bg-violet-500 text-white animate-pulse" 
+                                            : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
+                                    )}
                                 >
-                                    <X className="h-4 w-4" />
+                                    {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
                                 </motion.button>
-                                <motion.button
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    onClick={onReturn}
-                                    disabled={isProcessing}
-                                    className="p-3 rounded-full shadow-card transition-all active:scale-90 bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
-                                >
-                                    <Send className="h-4 w-4" />
-                                </motion.button>
-                            </div>
-                        ) : (
-                            <motion.button
-                                key="mic"
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                onClick={toggleListening}
-                                disabled={isProcessing || isTranscribing}
-                                className={cn(
-                                    "p-3 rounded-full shadow-card transition-all active:scale-90",
-                                    isRecording 
-                                        ? "bg-violet-500 text-white animate-pulse" 
-                                        : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
-                                )}
-                            >
-                                {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                            </motion.button>
-                        )}
-                    </AnimatePresence>
+                            )}
+                        </AnimatePresence>
                 </div>
             </div>
             

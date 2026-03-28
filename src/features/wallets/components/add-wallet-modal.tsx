@@ -39,7 +39,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     resolver: zodResolver(walletSchema) as any,
     defaultValues: {
       name: '',
-      balance: '',
+      balance: '0',
       icon: '',
       isDefault: false,
     }

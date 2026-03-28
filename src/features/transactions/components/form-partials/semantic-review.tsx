@@ -11,7 +11,7 @@ import { CategoryGrid } from '../category-grid';
 import { SubCategorySheet } from '../sub-category-sheet';
 
 import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, Calendar as CalendarIcon, Edit3 } from 'lucide-react';
+import { Wallet as WalletIcon, Calendar as CalendarIcon, Edit3, ShieldCheck, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -144,7 +144,17 @@ export const SemanticTransactionReview = ({
                                         : "text-violet-700 bg-violet-500/10 border-violet-400/40"
                                 )}
                             >
-                                {isNeed ? '✅ Kebutuhan' : '🛍 Keinginan'}
+                                {isNeed ? (
+                                    <>
+                                        <ShieldCheck className="h-4 w-4" />
+                                        <span>Kebutuhan</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="h-4 w-4 text-violet-600" />
+                                        <span>Keinginan</span>
+                                    </>
+                                )}
                             </button>
                         </>
                     )}

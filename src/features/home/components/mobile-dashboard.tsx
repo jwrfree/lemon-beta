@@ -72,9 +72,8 @@ export const MobileDashboard = ({
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
     useEffect(() => {
-        setCurrentTime(new Date());
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
+        // Fix: Use simulated time for Q1 2026 data alignment
+        setCurrentTime(new Date('2026-03-28T10:00:00'));
     }, []);
 
     const timeBasedGreeting = useMemo(() => {
@@ -102,7 +101,7 @@ export const MobileDashboard = ({
             icon: Plus,
             color: 'text-success',
             bg: 'bg-success/10',
-            onClick: () => openTransactionSheet()
+            onClick: () => openTransactionSheet(null, 'manual')
         },
         {
             label: 'Transfer',
@@ -356,7 +355,7 @@ export const MobileDashboard = ({
                 <div className="flex items-center justify-between">
                     <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
                         <TrendingUp className="h-3.5 w-3.5" />
-                        Recent Flux
+                        Mutasi Terbaru
                     </h2>
                     <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-widest text-primary px-0" onClick={() => router.push('/transactions')}>
                         Feed

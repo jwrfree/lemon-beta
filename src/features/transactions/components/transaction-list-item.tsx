@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
-import { Trash2, Pencil, Sparkles, ShoppingBag } from 'lucide-react';
+import { Trash2, Pencil, Sparkles, ShieldCheck } from 'lucide-react';
 import type { Wallet, Transaction } from '@/types/models';
 import type { CategoryVisuals } from '@/types/visuals';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -117,12 +117,13 @@ const TransactionListItemContent = ({
                     {/* Need / Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === true && (
                         <span className="flex items-center gap-1 text-emerald-600 bg-emerald-500/8 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-emerald-500/15">
+                            <ShieldCheck className="h-2 w-2" />
                             Need
                         </span>
                     )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
                         <span className="flex items-center gap-1 text-primary bg-primary/5 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-primary/10">
-                            <ShoppingBag className="h-2 w-2 fill-current" />
+                            <Sparkles className="h-2 w-2" />
                             Want
                         </span>
                     )}

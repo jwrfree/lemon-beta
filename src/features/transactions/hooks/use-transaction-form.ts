@@ -311,16 +311,28 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
             walletId: currentData.walletId,
             location: currentData.location,
             isNeed: currentData.isNeed,
-            date: currentData.date instanceof Date ? currentData.date.toISOString() : currentData.date,
+            date: (() => {
+                const selectedDate = currentData.date instanceof Date ? currentData.date : parseISO(currentData.date);
+                const now = new Date();
+                
+                // If it's today, preserve current time. Otherwise, use what was selected.
+                if (selectedDate.toDateString() === now.toDateString()) {
+                    selectedDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+                }
+                
+                return selectedDate.toISOString();
+            })(),
         };
 
         try {
             if (isEditMode && initialData) {
-                await updateTransaction(initialData.id, initialData, formattedData);
+                const success = await updateTransaction(initialData.id, initialData, formattedData);
+                if (!success) return;
             } else {
                 // If in multi-mode, save this one and move to next or finish
                 if (multiTransactions.length > 1) {
-                    await addTransaction(formattedData);
+                    const txId = await addTransaction(formattedData);
+                    if (!txId) return;
                     
                     const remaining = multiTransactions.filter((_, i) => i !== currentTxIndex);
                     if (remaining.length > 0) {
@@ -332,7 +344,8 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                         return; // Don't close yet
                     }
                 } else {
-                    await addTransaction(formattedData);
+                    const txId = await addTransaction(formattedData);
+                    if (!txId) return;
                 }
             }
 

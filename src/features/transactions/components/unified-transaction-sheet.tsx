@@ -22,13 +22,15 @@ interface UnifiedTransactionSheetProps {
     onClose: () => void;
     transaction?: Transaction | null;
     initialType?: 'expense' | 'income' | 'transfer';
+    initialMode?: 'smart' | 'manual';
 }
 
 export const UnifiedTransactionSheet = ({ 
     isOpen, 
     onClose, 
     transaction = null,
-    initialType = 'expense'
+    initialType = 'expense',
+    initialMode = 'smart'
 }: UnifiedTransactionSheetProps) => {
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
@@ -119,7 +121,7 @@ export const UnifiedTransactionSheet = ({
                 <motion.div layout className="flex-1 overflow-y-auto px-6 py-6 space-y-6 flex flex-col">
                     {/* Suggestions (Only when idle or typing before submit) */}
                     <AnimatePresence mode="popLayout">
-                        {!isEditMode && amountNumber === 0 && totalTxs === 0 && (
+                        {!isEditMode && amountNumber === 0 && totalTxs === 0 && initialMode !== 'manual' && (
                             <motion.div layout initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="pt-2">
                                 <DynamicSuggestions 
                                     historySuggestions={historySuggestions} 
@@ -131,7 +133,7 @@ export const UnifiedTransactionSheet = ({
 
                     {/* Summary Chips (Non-interactive unless clicked) */}
                     <AnimatePresence mode="popLayout">
-                        {(amountNumber > 0 || totalTxs > 0 || isEditMode) && (
+                        {(amountNumber > 0 || totalTxs > 0 || isEditMode || initialMode === 'manual') && (
                             <motion.div layout initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="pt-2">
                                  <SemanticTransactionReview 
                                     form={form}
@@ -190,18 +192,20 @@ export const UnifiedTransactionSheet = ({
                         </AnimatePresence>
                     </motion.div>
 
-                    <MagicBar 
-                        value={magicValue}
-                        onChange={setMagicValue}
-                        onReturn={handleMagicSubmit}
-                        onClear={() => setMagicValue('')}
-                        onImageUpload={handleImageUpload}
-                        isProcessing={isAiProcessing}
-                        placeholder="Ketik pengeluaran di sini..."
-                    />
+                    {initialMode === 'smart' && (
+                        <MagicBar 
+                            value={magicValue}
+                            onChange={setMagicValue}
+                            onReturn={handleMagicSubmit}
+                            onClear={() => setMagicValue('')}
+                            onImageUpload={handleImageUpload}
+                            isProcessing={isAiProcessing}
+                            placeholder="Ketik pengeluaran di sini..."
+                        />
+                    )}
 
                     <AnimatePresence mode="popLayout">
-                        {(isEditMode || totalTxs > 0 || amountNumber > 0) && (
+                        {(isEditMode || totalTxs > 0 || amountNumber > 0 || initialMode === 'manual') && (
                             <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: 20, height: 0 }} className="flex gap-3 w-full mt-3 overflow-hidden">
                                 {isEditMode && (
                                     <Button variant="outline" size="icon" onClick={handleDelete} className="h-14 w-14 rounded-2xl border-destructive/20 text-destructive hover:bg-destructive/10 shrink-0">

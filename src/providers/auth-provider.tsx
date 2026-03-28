@@ -90,9 +90,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             await supabase.auth.signOut();
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('lemon_biometric_user');
+                sessionStorage.clear();
             }
             ui.showToast("Kamu berhasil keluar.", 'info');
-            router.push('/');
+            
+            // Hard Redirect to clear all React state and Next.js router cache
+            window.location.href = '/';
         } catch (error) {
             ui.showToast("Gagal keluar.", 'error');
             console.error("Sign out error:", error);

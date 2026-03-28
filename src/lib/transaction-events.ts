@@ -5,6 +5,7 @@ type TransactionEvents = {
     'transaction.created': (transaction: Transaction) => void;
     'transaction.updated': (transaction: Transaction) => void;
     'transaction.deleted': (transactionId: string) => void;
+    'transaction.sync': () => void;
 };
 
 class TypedEventEmitter extends EventEmitter {

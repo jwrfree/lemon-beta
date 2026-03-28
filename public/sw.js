@@ -69,8 +69,13 @@ self.addEventListener("fetch", (event) => {
   // A. Navigation (Main Page Shell) - Network First
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { redirect: 'manual' })
         .then((response) => {
+          // If it's an opaque redirect (status 0 or 3xx), let the browser handle it.
+          // We don't want to cache redirects as the final page content.
+          if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400)) {
+             return response;
+          }
           if (response.status === 200) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
