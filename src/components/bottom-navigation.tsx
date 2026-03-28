@@ -10,16 +10,7 @@ import Link from 'next/link';
 export const BottomNavigation = () => {
     const pathname = usePathname();
     const {
-        isTxSheetOpen,
-        isWalletModalOpen,
-        isBudgetModalOpen,
-        isDeleteModalOpen,
-        isTransferModalOpen,
-        isEditWalletModalOpen,
-        isGoalModalOpen,
-        isReminderModalOpen,
-        isDebtModalOpen,
-        isDebtPaymentModalOpen,
+        isAnyModalOpen,
         openTransactionSheet,
     } = useUI();
 
@@ -41,20 +32,7 @@ export const BottomNavigation = () => {
         { id: 'profil', href: '/settings', icon: User, name: 'Profil' },
     ];
 
-    // Check if any modal is open to hide the bottom nav
-    const isModalOpen =
-        isTxSheetOpen ||
-        isWalletModalOpen ||
-        isBudgetModalOpen ||
-        isDeleteModalOpen ||
-        isTransferModalOpen ||
-        isEditWalletModalOpen ||
-        isGoalModalOpen ||
-        isReminderModalOpen ||
-        isDebtModalOpen ||
-        isDebtPaymentModalOpen;
-
-    const isVisible = !isModalOpen;
+    const isVisible = !isAnyModalOpen;
 
     return (
         <AnimatePresence>
@@ -64,11 +42,13 @@ export const BottomNavigation = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 50 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border shadow-[0_-1px_3px_0_rgba(0,0,0,0.05)] pb-safe"
+                    className="fixed bottom-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-[20px] border-t border-border shadow-[0_-1px_3px_0_rgba(0,0,0,0.05)] pb-safe"
                 >
                     <div className="w-full max-w-lg mx-auto grid grid-cols-5 items-center h-16">
                         {navItems.map(item => {
-                            const isActive = pathname.startsWith(item.href);
+                            const isActive = item.href === '/home' 
+                                ? pathname === '/home' 
+                                : pathname.startsWith(item.href);
 
                             if (item.primary) {
                                 return (
@@ -82,7 +62,7 @@ export const BottomNavigation = () => {
                                                     if (item.onClick) item.onClick(e);
                                                 }}
                                                 className={cn(
-                                                    'flex items-center justify-center rounded-full h-full w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 hover:scale-105 active:scale-95 relative overflow-hidden shadow-emerald-500/20 shadow-xl'
+                                                    'flex items-center justify-center rounded-full h-full w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 hover:scale-110 active:scale-95 relative overflow-hidden shadow-2xl shadow-primary/40'
                                                 )}
                                                 aria-label={item.name}
                                             >
@@ -116,7 +96,12 @@ export const BottomNavigation = () => {
                                             />
                                         )}
                                         <item.icon className={cn("h-5 w-5 transition-transform z-10", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
-                                        <span className="text-[10px] font-semibold tracking-tight uppercase leading-none opacity-80">{item.name}</span>
+                                        <span className={cn(
+                                            "text-xs font-semibold leading-none transition-opacity",
+                                            isActive ? "opacity-100" : "opacity-90"
+                                        )}>
+                                            {item.name}
+                                        </span>
                                     </div>
                                 </Link>
                             );

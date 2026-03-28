@@ -21,69 +21,73 @@ interface SubscriptionAuditProps {
 
 export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProps) {
     return (
-        <Card className="p-6 border-none rounded-card bg-card shadow-card">
-            <div className="flex justify-between items-center mb-6">
+        <Card className="p-7 border-none rounded-card-glass bg-card shadow-card relative overflow-hidden group">
+            {/* Ambient Background Ornament */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-700 rounded-full blur-2xl -z-0" />
+
+            <div className="flex justify-between items-start mb-10 relative z-10">
                 <div className="space-y-1">
-                    <h3 className="text-xl font-medium tracking-tight flex items-center gap-2">
-                        <RefreshCcw className="w-5 h-5 text-primary" />
-                        Biaya Berulang
+                    <h3 className="text-label text-muted-foreground/40 flex items-center gap-2">
+                        <RefreshCcw className="w-3.5 h-3.5" />
+                        Audit biaya rutin
                     </h3>
-                    <p className="text-sm text-muted-foreground">Total langganan & biaya tetap bulanan</p>
+                    <p className="text-xl font-bold tracking-tight text-foreground/90">Beban Tetap Bulanan</p>
                 </div>
                 <div className="text-right">
-                    <p className="text-2xl font-medium tracking-tighter tabular-nums">
+                    <p className="text-2xl font-bold tracking-tighter tabular-nums text-foreground/90">
                         {formatCurrency(totalMonthly)}
                     </p>
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Per Bulan</p>
+                    <p className="text-label text-muted-foreground/30">Per siklus tagihan</p>
                 </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4 relative z-10">
                 {items.length > 0 ? (
                     items.map((item) => (
                         <div
                             key={item.id}
                             className={cn(
-                                "flex items-center justify-between p-4 rounded-lg border transition-all",
+                                "group/item flex items-center justify-between p-4 rounded-card-glass border transition-all duration-300",
                                 item.isDueSoon
-                                    ? "bg-warning/5 border-warning/20"
-                                    : "bg-secondary border-border"
+                                    ? "bg-error/5 border-error/20"
+                                    : "bg-secondary/40 border-border/10 hover:bg-secondary/60 hover:border-border/30"
                             )}
                         >
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-4">
                                 <div className={cn(
-                                    "h-10 w-10 rounded-lg flex items-center justify-center",
-                                    item.isDueSoon ? "bg-warning/10" : "bg-muted"
+                                    "h-11 w-11 rounded-xl flex items-center justify-center transition-colors duration-300",
+                                    item.isDueSoon ? "bg-error/10" : "bg-muted group-hover/item:bg-muted/80"
                                 )}>
-                                    <Bell className={cn("h-5 w-5", item.isDueSoon ? "text-warning" : "text-muted-foreground")} />
+                                    <Bell className={cn("h-5 w-5", item.isDueSoon ? "text-error" : "text-muted-foreground/60")} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium">{item.name}</p>
-                                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">{item.category}</p>
+                                    <p className="text-sm font-bold tracking-tight text-foreground/80">{item.name}</p>
+                                    <p className="text-label text-muted-foreground/40">{item.category}</p>
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-sm font-medium tabular-nums">{formatCurrency(item.amount)}</p>
+                            <div className="text-right space-y-1">
+                                <p className="text-sm font-bold tabular-nums text-foreground/90">{formatCurrency(item.amount)}</p>
                                 {item.isDueSoon && (
-                                    <Badge variant="outline" className="text-xs h-4 border-warning/30 text-warning bg-warning/5">
-                                        Segera Jatuh Tempo
+                                    <Badge className="text-label px-1.5 py-0.5 border-none bg-error/10 text-error rounded-full">
+                                        Segera
                                     </Badge>
                                 )}
                             </div>
                         </div>
                     ))
                 ) : (
-                    <div className="py-12 flex flex-col items-center justify-center text-center opacity-50">
-                        <AlertCircle className="h-8 w-8 mb-2" />
-                        <p className="text-sm font-medium">Tidak ada biaya berulang terdeteksi</p>
+                    <div className="py-16 flex flex-col items-center justify-center text-center bg-muted/20 border border-dashed border-border/50 rounded-card-glass">
+                        <AlertCircle className="h-10 w-10 mb-4 text-muted-foreground/30" />
+                        <h4 className="text-label text-muted-foreground/50">Audit Bersih</h4>
+                        <p className="text-label text-muted-foreground/30 tracking-tight">Tidak ada item rutin terdeteksi</p>
                     </div>
                 )}
             </div>
 
-            <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/10 flex items-center gap-3">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <p className="text-xs font-medium text-primary leading-snug">
-                    Tips: Mengurangi satu biaya langganan yang jarang terpakai bisa menghemat <span className="font-medium">{(totalMonthly * 12).toLocaleString()}</span> per tahun.
+            <div className="mt-8 p-5 rounded-card-glass bg-success/5 border border-success/10 flex items-center gap-4 group/tip hover:bg-success/10 transition-colors cursor-default">
+                <TrendingUp className="h-5 w-5 text-success group-hover/tip:scale-110 transition-transform" />
+                <p className="text-label text-success/60 leading-relaxed">
+                    Tips efisiensi: Batalkan satu langganan tak terpakai untuk berhemat <span className="text-success">{(totalMonthly * 12).toLocaleString()}</span> per tahun.
                 </p>
             </div>
         </Card>

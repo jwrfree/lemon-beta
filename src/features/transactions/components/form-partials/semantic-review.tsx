@@ -69,7 +69,7 @@ export const SemanticTransactionReview = ({
         <div className="space-y-6 px-1">
             {/* Mad Libs Sentence */}
             <div className="space-y-3">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground/50">Ringkasan</p>
+                <p className="text-label text-muted-foreground/40 px-1">Ringkasan</p>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-3 text-lg leading-loose">
                     <span className="text-muted-foreground/60 font-medium">
                         {type === 'income' ? 'Saya menerima' : 'Saya menghabiskan'}
@@ -87,9 +87,9 @@ export const SemanticTransactionReview = ({
                             activeEditor === 'amount' && "ring-2 ring-primary ring-offset-2",
                             amountNumber > 0
                                 ? type === 'income'
-                                    ? "bg-primary/10 border-primary/30 text-primary"
-                                    : "bg-foreground/5 border-border text-foreground"
-                                : "bg-amber-500/10 border-amber-400/40 text-amber-600 shadow-amber-500/10 animate-pulse"
+                                    ? "bg-primary/10 border-primary/20 text-primary"
+                                    : "bg-secondary text-foreground border-border/10"
+                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
                         )}
                     >
                         {amountNumber > 0
@@ -110,8 +110,8 @@ export const SemanticTransactionReview = ({
                             "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
                             activeEditor === 'category' && "ring-2 ring-primary ring-offset-2",
                             categoryObj
-                                ? "bg-card border-border hover:bg-secondary/60 text-foreground"
-                                : "bg-amber-500/10 border-amber-400/40 text-amber-600 shadow-amber-500/10 animate-pulse"
+                                ? "bg-secondary text-foreground border-border/10"
+                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
                         )}
                     >
                         {categoryObj ? (
@@ -140,8 +140,8 @@ export const SemanticTransactionReview = ({
                                 className={cn(
                                     "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
                                     isNeed
-                                        ? "text-emerald-700 bg-emerald-500/10 border-emerald-400/40"
-                                        : "text-violet-700 bg-violet-500/10 border-violet-400/40"
+                                        ? "text-success bg-success/10 border-success/20"
+                                        : "text-violet-600 bg-violet-500/10 border-violet-500/20"
                                 )}
                             >
                                 {isNeed ? (
@@ -173,10 +173,10 @@ export const SemanticTransactionReview = ({
                             activeEditor === 'wallet' && "ring-2 ring-primary ring-offset-2",
                             walletObj
                                 ? "bg-card border-border hover:bg-secondary/60 text-foreground"
-                                : "bg-amber-500/10 border-amber-400/40 text-amber-600 shadow-amber-500/10 animate-pulse"
+                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
                         )}
                     >
-                        <WalletIcon className="h-4 w-4" />
+                        <WalletIcon className="h-4 w-4 text-muted-foreground/60" />
                         <span>{walletObj ? walletObj.name : '❓ Dompet'}</span>
                     </button>
 
@@ -217,7 +217,7 @@ export const SemanticTransactionReview = ({
                         <div className="p-4 bg-secondary/20 rounded-card border border-border pb-5 mb-4 shadow-inner">
                             {activeEditor === 'amount' && (
                                 <div className="space-y-4">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground text-center">Ubah Nominal</p>
+                                    <p className="text-label text-muted-foreground/40 text-center">Ubah nominal</p>
                                     <AmountInput control={form.control as any} name="amount" />
                                     <Button className="w-full mt-2 rounded-xl" onClick={() => setActiveEditor(null)}>Selesai</Button>
                                 </div>
@@ -225,7 +225,7 @@ export const SemanticTransactionReview = ({
 
                             {activeEditor === 'wallet' && (
                                 <div className="space-y-3">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">Pilih Dompet</p>
+                                    <p className="text-label text-muted-foreground/40 ml-2">Pilih dompet</p>
                                     <div className="flex gap-2 overflow-x-auto pb-2 snap-x hide-scrollbar">
                                         {wallets.map(w => (
                                             <button
@@ -248,7 +248,7 @@ export const SemanticTransactionReview = ({
 
                             {activeEditor === 'category' && (
                                 <div className="space-y-3">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">Pilih Kategori</p>
+                                    <p className="text-label text-muted-foreground/40 ml-2">Pilih kategori</p>
                                     <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x hide-scrollbar">
                                         {activeCategories.map(c => {
                                             const Icon = getCategoryIcon(c.icon);

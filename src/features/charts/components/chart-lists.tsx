@@ -22,7 +22,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
 
     // Extract background color from tailwind class if possible, or use a default
     const getGradientColor = () => {
-        if (isOverBudget) return 'from-rose-500 to-rose-600';
+        if (isOverBudget) return 'from-error to-destructive';
         const colorName = color.replace('bg-', '').replace('-500', '');
         return `from-${colorName}-500 to-${colorName}-600`;
     };
@@ -41,26 +41,26 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
                 <div className="flex justify-between items-start mb-4">
                     <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                            <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-rose-500" : color)} />
-                            <p className={cn("font-medium text-xs uppercase tracking-widest", isOverBudget ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
+                            <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-error" : color)} />
+                            <p className={cn("text-label text-muted-foreground", isOverBudget && "text-error")}>
                                 {category}
                             </p>
                         </div>
-                        <p className={cn("text-xl md:text-2xl font-medium tracking-tighter tabular-nums", isOverBudget ? "text-rose-700 dark:text-rose-300" : "text-foreground")}>
+                        <p className={cn("text-xl md:text-2xl font-medium tracking-tighter tabular-nums", isOverBudget ? "text-destructive" : "text-foreground")}>
                             {formatCurrency(amount)}
                         </p>
                     </div>
                     {isOverBudget && (
-                        <div className="bg-rose-500/10 text-rose-600 dark:text-rose-400 p-2 rounded-md">
+                        <div className="bg-error/10 text-error p-2 rounded-md">
                             <AlertTriangle className="w-5 h-5" />
                         </div>
                     )}
                 </div>
 
                 <div className="space-y-2">
-                    <div className="flex justify-between items-center text-xs font-medium uppercase tracking-widest">
+                    <div className="flex justify-between items-center text-label">
                         <div className="flex items-center gap-2">
-                            <span className={isOverBudget ? "text-rose-500" : "text-zinc-400"}>
+                            <span className={isOverBudget ? "text-error" : "text-muted-foreground/60"}>
                                 {percentage.toFixed(0)}% Terpakai
                             </span>
                         </div>
@@ -94,16 +94,20 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
     return (
         <button
             onClick={onClick}
-            className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border-none hover:bg-muted/50 transition-all w-full text-left active:scale-[0.98]"
+            className="group flex items-center gap-4 p-4 bg-card rounded-card-glass border border-transparent hover:border-border/50 hover:bg-muted/30 transition-all w-full text-left active:scale-[0.98] shadow-sm hover:shadow-md"
         >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-foreground text-background font-semibold text-xs">
-                {rank}
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground font-bold text-xs transition-colors shadow-inner">
+                #{rank}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate tracking-tight">{transaction.description || transaction.category}</p>
-                <p className="text-xs uppercase font-semibold tracking-widest text-muted-foreground/50">{format(parseISO(transaction.date), 'dd MMM yyyy')}</p>
+                <p className="font-bold text-sm truncate tracking-tight text-foreground/90">{transaction.description || transaction.category}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-label text-muted-foreground/40">{format(parseISO(transaction.date), 'dd MMM yyyy')}</span>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <span className="text-label text-muted-foreground/60">{transaction.category}</span>
+                </div>
             </div>
-            <p className="font-medium text-base tabular-nums">{formatCurrency(transaction.amount)}</p>
+            <p className="font-bold text-base tabular-nums text-foreground">{formatCurrency(transaction.amount)}</p>
         </button>
     );
 }

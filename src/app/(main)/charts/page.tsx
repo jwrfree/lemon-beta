@@ -482,16 +482,16 @@ function ChartContent() {
     }
 
     return (
-        <div className="min-h-screen bg-background pb-40">
+        <div className="min-h-full bg-background">
             {/* STICKY HEADER */}
-            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/50">
-                <div className="flex justify-between items-center py-3">
-                    <h2 className="text-xl font-semibold tracking-tight">Financial Analytics</h2>
+            <div className="pt-safe-top px-4 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/10">
+                <div className="flex justify-between items-center py-4 px-2">
+                    <h2 className="text-lg font-bold tracking-tight">Statistics</h2>
                     <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs uppercase font-semibold tracking-widest px-3 py-1 rounded-full bg-muted/50 border-none">
-                            <Calendar className="w-3 h-3 mr-1.5 opacity-50" />
-                            {format(now, 'MMM yyyy')}
-                        </Badge>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/50 border border-border/50">
+                            <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                            <span className="text-label text-muted-foreground/60">{format(now, 'MMM yyyy')}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -509,18 +509,18 @@ function ChartContent() {
             />
 
             {/* ADVANCED STATS GRID */}
-            <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="px-5 mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <NetWorthTrend data={netWorthData} />
                 <SavingPotential data={savingData} />
             </div>
 
-            <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="px-5 mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <BehaviorAnalytics data={behaviorData} />
                 <SubscriptionAudit items={subscriptionData.items} totalMonthly={subscriptionData.totalMonthly} />
             </div>
 
-            <div className="px-4 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-1">
+            <div className="px-5 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                <div className="md:col-span-1 h-full">
                     <HealthGauge savingsRate={savingsRate} />
                 </div>
                 <div className="md:col-span-2 grid grid-cols-2 gap-4">
@@ -591,7 +591,7 @@ function ChartContent() {
                                     <Info className="w-8 h-8 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
-                                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
+                                <p className="text-label text-muted-foreground/60 max-w-[250px]">
                                     Semua transaksi besarmu akan dianalisis secara otomatis di sini.
                                 </p>
                             </div>
@@ -605,13 +605,13 @@ function ChartContent() {
                         <h3 className="text-lg font-semibold tracking-tight">Breakdown Kategori</h3>
 
                         {/* Toggle Expense / Income */}
-                        <div className="flex bg-muted/50 p-1 rounded-full">
+                        <div className="flex bg-muted/60 p-1.5 rounded-full border border-border/10 backdrop-blur-sm self-start">
                             <button
                                 onClick={() => setCategoryView('expense')}
                                 className={cn(
-                                    "px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-all",
+                                    "px-5 py-1.5 text-label rounded-full transition-all duration-300",
                                     categoryView === 'expense'
-                                        ? "bg-card text-primary"
+                                        ? "bg-card text-teal-600 shadow-sm"
                                         : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
@@ -620,9 +620,9 @@ function ChartContent() {
                             <button
                                 onClick={() => setCategoryView('income')}
                                 className={cn(
-                                    "px-4 py-1.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-all",
+                                    "px-5 py-1.5 text-label rounded-full transition-all duration-300",
                                     categoryView === 'income'
-                                        ? "bg-card text-primary"
+                                        ? "bg-card text-teal-600 shadow-sm"
                                         : "text-muted-foreground hover:text-foreground"
                                 )}
                             >
@@ -664,7 +664,7 @@ function ChartContent() {
                                             <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pengeluaran</h3>
-                                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
+                                        <p className="text-label text-muted-foreground/60 max-w-[250px]">
                                             Mulai catat pengeluaranmu untuk melihat breakdown kategori secara mendalam.
                                         </p>
                                     </div>
@@ -690,7 +690,7 @@ function ChartContent() {
                                             <PieChart className="w-8 h-8 text-muted-foreground" />
                                         </div>
                                         <h3 className="text-lg font-semibold tracking-tight mb-1">Belum Ada Pemasukan</h3>
-                                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 max-w-[250px]">
+                                        <p className="text-label text-muted-foreground/60 max-w-[250px]">
                                             Catat setiap pendapatanmu untuk melihat analisis sumber keuangan yang komprehensif.
                                         </p>
                                     </div>

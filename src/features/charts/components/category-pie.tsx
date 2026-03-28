@@ -18,23 +18,23 @@ interface CategoryPieProps {
 }
 
 const COLORS = [
-    '#f43f5e', // rose-500
-    '#f97316', // orange-500
-    '#f59e0b', // amber-500
-    '#eab308', // yellow-500
-    '#84cc16', // lime-500
-    '#10b981', // emerald-500
-    '#14b8a6', // teal-500
-    '#06b6d4', // cyan-500
-    '#0ea5e9', // sky-500
-    '#3b82f6'  // blue-500
+    'hsl(var(--rose-500))',
+    'hsl(var(--orange-500))',
+    'hsl(var(--yellow-500))',
+    'hsl(var(--emerald-500))',
+    'hsl(var(--teal-500))',
+    'hsl(var(--cyan-500))',
+    'hsl(var(--blue-500))',
+    'hsl(var(--indigo-500))',
+    'hsl(var(--violet-500))',
+    'hsl(var(--fuchsia-500))',
 ];
 
 const INCOME_COLORS = [
-    '#10b981', // emerald-500
-    '#34d399', // emerald-400
-    '#6ee7b7', // emerald-300
-    '#a7f3d0', // emerald-200
+    'hsl(var(--emerald-600))',
+    'hsl(var(--emerald-500))',
+    'hsl(var(--emerald-500) / 0.6)',
+    'hsl(var(--emerald-500) / 0.3)',
 ];
 
 // Config is required for ChartContainer, even if simple
@@ -49,32 +49,51 @@ const renderActiveShape = (props: any) => {
 
     return (
         <g>
-            <text x={cx} y={cy - 10} dy={8} textAnchor="middle" fill={fill} className="text-xs font-medium uppercase tracking-widest">
-                {payload.name}
+            {/* Center Labels with improved spacing */}
+            <text 
+                x={cx} 
+                y={cy} 
+                dy={-8} 
+                textAnchor="middle" 
+                fill={fill} 
+                className="text-label"
+            >
+                {payload.name.length > 20 ? payload.name.slice(0, 18) + '...' : payload.name}
             </text>
-            <text x={cx} y={cy + 10} dy={8} textAnchor="middle" fill="#999" className="text-sm font-medium">
+            <text 
+                x={cx} 
+                y={cy} 
+                dy={16} 
+                textAnchor="middle" 
+                fill="currentColor" 
+                className="text-base font-semibold tabular-nums text-foreground/80"
+            >
                 {formatCurrency(value)}
             </text>
+
+            {/* Main Active Sector */}
             <Sector
                 cx={cx}
                 cy={cy}
                 innerRadius={innerRadius}
-                outerRadius={outerRadius + 6}
+                outerRadius={outerRadius + 8}
                 startAngle={startAngle}
                 endAngle={endAngle}
                 fill={fill}
-                cornerRadius={4}
+                cornerRadius={6}
             />
+            
+            {/* Subtle Inner Highlight Ring - Adjusted to be less intrusive */}
             <Sector
                 cx={cx}
                 cy={cy}
                 startAngle={startAngle}
                 endAngle={endAngle}
-                innerRadius={innerRadius - 8}
-                outerRadius={innerRadius - 4}
+                innerRadius={innerRadius - 6}
+                outerRadius={innerRadius - 2}
                 fill={fill}
-                fillOpacity={0.2}
-                cornerRadius={4}
+                fillOpacity={0.15}
+                cornerRadius={2}
             />
         </g>
     );

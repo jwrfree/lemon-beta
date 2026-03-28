@@ -125,7 +125,7 @@ export const MobileDashboard = ({
     if (isLoading) return null;
 
     return (
-        <main className="flex-1 pb-24 space-y-6">
+        <main className="flex-1 space-y-6">
             {/* 1. Header Section */}
             <div className="px-5 pt-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">

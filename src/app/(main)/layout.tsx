@@ -119,12 +119,10 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
             )}>
                 <div
                     ref={containerRef}
-                    className={cn(
-                        'flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth',
-                        showBottomNav && 'pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0'
-                    )}
+                    className="main-content-scroll"
+                    data-nav={showBottomNav ? "true" : "false"}
                 >
-                    <div className="flex-1 flex flex-col min-h-full">
+                    <div className="flex flex-col min-h-full relative w-full">
                         {children}
                     </div>
                 </div>

@@ -54,8 +54,8 @@ export const DeepSeekUsageCard = () => {
 
     const getStatusColor = (amount: number) => {
         if (amount <= 0.5) return 'text-error';
-        if (amount <= 2.0) return 'text-amber-500';
-        return 'text-emerald-500';
+        if (amount <= 2.0) return 'text-warning';
+        return 'text-success';
     };
 
     return (
@@ -63,8 +63,8 @@ export const DeepSeekUsageCard = () => {
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none" />
 
             <CardHeader className="flex flex-row items-center justify-between pb-2 relative z-10">
-                <CardTitle className="text-sm font-medium uppercase tracking-widest text-indigo-200/70 flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-yellow-400" fill="currentColor" />
+                <CardTitle className="text-label font-bold text-indigo-200/70 flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-warning" fill="currentColor" />
                     DeepSeek AI Balance
                 </CardTitle>
                 <Button
@@ -91,7 +91,7 @@ export const DeepSeekUsageCard = () => {
                                     {currency === 'CNY' ? '¥' : '$'}
                                     {balance ? totalBalance.toFixed(2) : '...'}
                                 </span>
-                                <span className="text-xs text-indigo-300 font-semibold uppercase tracking-widest opacity-60">tersisa</span>
+                                <span className="text-[11px] text-indigo-300 font-bold opacity-60">Tersisa</span>
                             </div>
                             {balance && (
                                 <span className="text-sm font-semibold text-indigo-200/50 tracking-tight">
@@ -105,7 +105,7 @@ export const DeepSeekUsageCard = () => {
                                 <span>Estimasi Token</span>
                                 <span>{balance ? estimatedTokens.toLocaleString() : '...'}</span>
                             </div>
-                            <div className="flex justify-between text-xs text-indigo-400/50 font-semibold uppercase tracking-widest">
+                            <div className="flex justify-between text-xs text-indigo-400/50 font-bold">
                                 <span>Penggunaan Harian</span>
                                 <span>~4,000 Token</span>
                             </div>
@@ -118,8 +118,8 @@ export const DeepSeekUsageCard = () => {
                                     transition={{ duration: 1, ease: "easeOut" }}
                                 />
                             </div>
-                            <p className="text-xs text-indigo-400/60 text-right pt-1 font-semibold uppercase tracking-widest">
-                                Estimasi habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari lagi (5 tx/hari)
+                            <p className="text-[10px] text-indigo-400/60 text-right pt-1 font-bold">
+                                Estimasi habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari (5 tx/hari)
                             </p>
                         </div>
                     </div>

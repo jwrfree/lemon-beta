@@ -98,7 +98,7 @@ function SettingsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground pb-24">
+        <div className="min-h-screen bg-background text-foreground">
 
             {/* Header Bersih */}
             <PageHeader
@@ -121,23 +121,25 @@ function SettingsContent() {
                 {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
                 <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
                     {/* Identity Card */}
-                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl rounded-card-premium p-7 flex flex-col justify-between" delay={0.05}>
-                        <div className="flex justify-between items-start">
+                    <BentoItem className="col-span-12 md:col-span-8 bg-gradient-to-br from-primary/90 via-violet-600/80 to-indigo-600/80 text-white shadow-xl rounded-card p-7 flex flex-col justify-between overflow-hidden relative" delay={0.05}>
+                        <div className="relative z-10 flex justify-between items-start">
                             <div className="space-y-1">
-                                <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">Digital ID</p>
-                                <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter leading-none">{userData?.displayName || 'Guest User'}</h2>
-                                <p className="text-white/80 font-medium text-sm mt-1">{user?.email}</p>
+                                <p className="text-white/60 text-xs font-bold">Identitas Digital</p>
+                                <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-none">{userData?.displayName || 'Setia Lemon'}</h1>
+                                <p className="text-white/80 text-label mt-1">{user?.email}</p>
                             </div>
-                            <ShieldCheck className="w-8 h-8 text-white/50" />
+                            <div className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                                <ShieldCheck className="w-6 h-6 text-white" />
+                            </div>
                         </div>
-                        <div className="mt-8 flex items-end justify-between">
+                        <div className="relative z-10 mt-8 flex items-end justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-widest border border-white/10 shadow-lg text-white">PRO MEMBER</span>
-                                <span className="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-xs font-semibold uppercase tracking-widest border border-white/5 text-white/80">LEVEL 4</span>
+                                <span className="px-3 py-1.5 rounded-lg bg-white/20 backdrop-blur-md text-[10px] font-bold border border-white/10 text-white">Pro Member</span>
+                                <span className="px-3 py-1.5 rounded-lg bg-black/20 backdrop-blur-md text-[10px] font-bold border border-white/5 text-white/80">Level 4</span>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-white/60 font-semibold uppercase tracking-widest">Sejak</p>
-                                <p className="text-sm font-semibold">2024</p>
+                                <p className="text-[10px] text-white/60 font-bold">Bergabung Sejak</p>
+                                <p className="text-sm font-bold">2024</p>
                             </div>
                         </div>
 
@@ -148,7 +150,7 @@ function SettingsContent() {
                     {/* Theme Switcher - Visual */}
                     <BentoItem
                         onClick={toggleTheme}
-                        className="col-span-12 md:col-span-4 bg-foreground text-background dark:bg-foreground dark:text-background p-6 flex flex-col justify-center items-center relative gap-4 rounded-card-premium"
+                        className="col-span-12 md:col-span-4 bg-muted hover:bg-muted/80 p-6 flex flex-col justify-center items-center relative gap-4 rounded-card border border-border/40"
                         delay={0.1}
                     >
                         <div className="relative">
@@ -176,27 +178,27 @@ function SettingsContent() {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <p className="font-semibold text-xs tracking-widest uppercase mt-4">
-                            {mounted && theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                        <p className="text-label text-foreground font-bold leading-none">
+                            {mounted && theme === 'dark' ? 'Mode Gelap' : 'Mode Terang'}
                         </p>
-                        <p className="text-xs font-semibold opacity-40 uppercase tracking-widest">Tap to switch</p>
+                        <p className="text-[10px] font-bold text-muted-foreground leading-none">Ketuk untuk ganti</p>
                     </BentoItem>
                 </div>
 
                 {/* BARIS 2: Core Actions (Grid 2) */}
                 <div className="grid grid-cols-2 gap-4">
-                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-card-glass">
-                        <div className="p-3 rounded-full bg-info/10 text-info">
+                    <BentoItem onClick={() => router.push('/wallets')} delay={0.15} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-card border border-border/40">
+                        <div className="p-3 rounded-xl bg-info/10 text-info">
                             <Wallet className="w-6 h-6" />
                         </div>
-                        <span className="font-semibold text-xs uppercase tracking-widest text-muted-foreground/80">Dompet</span>
+                        <span className="text-label text-muted-foreground font-bold">Dompet</span>
                     </BentoItem>
-
-                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-card-glass">
-                        <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+ 
+                    <BentoItem onClick={() => router.push('/goals')} delay={0.2} className="h-32 flex flex-col items-center justify-center p-6 gap-3 hover:bg-muted/50 rounded-card border border-border/40">
+                        <div className="p-3 rounded-xl bg-success/10 text-success">
                             <Target className="w-6 h-6" />
                         </div>
-                        <span className="font-semibold text-xs uppercase tracking-widest text-muted-foreground/80">Target</span>
+                        <span className="text-label text-muted-foreground font-bold">Target</span>
                     </BentoItem>
                 </div>
 
@@ -207,45 +209,43 @@ function SettingsContent() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* App Installation - Always Visible */}
                     {mounted && (
-                        <BentoItem
+                     <BentoItem
                             onClick={deferredPrompt ? handleInstallClick : undefined}
                             className={cn(
-                                "col-span-1 md:col-span-3 text-white shadow-xl rounded-card-premium p-7 flex items-center justify-between group overflow-hidden relative",
+                                "col-span-1 md:col-span-3 text-white shadow-xl rounded-card p-6 flex items-center justify-between group overflow-hidden relative",
                                 isStandalone
-                                    ? "bg-emerald-900 cursor-default"
+                                    ? "bg-success select-none"
                                     : deferredPrompt
-                                        ? "bg-teal-900"
-                                        : "bg-teal-900/60 cursor-default"
+                                        ? "bg-primary"
+                                        : "bg-muted text-foreground border border-border/40"
                             )}
                             delay={0.32}
                         >
-                            <div className={cn("absolute inset-0 opacity-50", isStandalone ? "bg-gradient-to-r from-emerald-800 to-emerald-900" : "bg-gradient-to-r from-teal-800 to-teal-900")} />
-                            <div className="relative z-10 flex items-center gap-6">
-                                <div className="h-16 w-16 rounded-card-glass bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                                    <Download className="h-8 w-8 text-white" />
+                            <div className={cn("absolute inset-0 opacity-20", isStandalone ? "bg-success" : deferredPrompt ? "bg-primary" : "bg-muted")} />
+                            <div className="relative z-10 flex items-center gap-5">
+                                <div className={cn(
+                                    "h-14 w-14 rounded-xl flex items-center justify-center border transition-all duration-500",
+                                    (isStandalone || deferredPrompt) ? "bg-white/10 backdrop-blur-md border-white/20" : "bg-card border-border/40"
+                                )}>
+                                    <Download className={cn("h-7 w-7", (isStandalone || deferredPrompt) ? "text-white" : "text-muted-foreground")} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-semibold tracking-tighter flex items-center gap-2">
-                                        {isStandalone ? 'Sudah Terinstal' : 'Instal Lemon'}
-                                        <Sparkles className="h-4 w-4 text-yellow-300 animate-pulse" />
+                                    <h3 className={cn("text-xl font-bold tracking-tight flex items-center gap-2 leading-none", (isStandalone || deferredPrompt) ? "text-white" : "text-foreground")}>
+                                        {isStandalone ? 'Aplikasi Terinstal' : 'Pasang Lemon'}
+                                        <Sparkles className="h-4 w-4 text-warning animate-pulse" />
                                     </h3>
-                                    <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">
+                                    <p className={cn("text-[10px] font-bold mt-1.5", (isStandalone || deferredPrompt) ? "text-white/60" : "text-muted-foreground/60")}>
                                         {isStandalone
-                                            ? 'Aplikasi berjalan di mode terpasang'
+                                            ? 'Berjalan dalam mode native'
                                             : deferredPrompt
-                                                ? 'Akses lebih cepat & mode luring penuh'
-                                                : 'Gunakan menu browser untuk memasang aplikasi'}
+                                                ? 'Akses lebih cepat & luring penuh'
+                                                : 'Gunakan browser untuk menambah'}
                                     </p>
                                 </div>
                             </div>
-                            {!isStandalone && (
-                                <div className={cn(
-                                    "relative z-10 font-semibold text-xs uppercase tracking-widest px-5 py-2.5 rounded-full shadow-lg transition-colors",
-                                    deferredPrompt
-                                        ? "bg-white text-teal-900 group-hover:bg-teal-50"
-                                        : "bg-white/20 text-white/60 cursor-not-allowed"
-                                )}>
-                                    Pasang
+                            {!isStandalone && deferredPrompt && (
+                                <div className="relative z-10 font-bold text-[10px] bg-white text-primary px-4 py-2 rounded-lg shadow-lg group-hover:bg-white/90 transition-all active:scale-95">
+                                    PASANG
                                 </div>
                             )}
 
@@ -255,8 +255,8 @@ function SettingsContent() {
                     )}
 
 
-                    <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1 rounded-card-premium">
-                        <div className="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Pengaturan Lanjutan</div>
+                    <BentoItem delay={0.35} className="md:col-span-2 p-2 flex flex-col gap-1 rounded-card border border-border/40">
+                        <div className="px-6 py-4 text-label text-muted-foreground/60 font-bold">Pengaturan Lanjutan</div>
                         <div className="space-y-1 px-2 pb-2">
                             {[
                                 { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
@@ -269,10 +269,10 @@ function SettingsContent() {
                                     className="flex items-center justify-between p-4 rounded-card hover:bg-muted/50 transition-colors cursor-pointer group"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="p-2 rounded-md bg-secondary/50 group-hover:bg-card transition-colors shadow-card">
-                                            <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                        <div className="p-2.5 rounded-xl bg-secondary/80 group-hover:bg-card transition-colors shadow-sm">
+                                            <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
                                         </div>
-                                        <span className="font-semibold text-sm tracking-tight">{item.name}</span>
+                                        <span className="font-bold text-sm tracking-tight">{item.name}</span>
                                     </div>
                                     <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-muted-foreground" />
                                 </div>
@@ -280,41 +280,41 @@ function SettingsContent() {
                         </div>
                     </BentoItem>
 
-                    <BentoItem delay={0.4} className="p-7 flex flex-col justify-center gap-6 bg-muted/30 border-dashed border-2 border-border/50 rounded-card-premium">
+                    <BentoItem delay={0.4} className="p-7 flex flex-col justify-center gap-6 bg-muted/30 border-dashed border-2 border-border/50 rounded-card">
                         <div className="flex flex-col gap-1 opacity-40">
                             <div className="flex items-center gap-2">
                                 <Monitor className="w-4 h-4" />
-                                <span className="text-xs font-semibold uppercase tracking-widest">Platform</span>
+                                <span className="text-label font-bold">Platform</span>
                             </div>
-                            <span className="text-sm font-semibold">Web Desktop (Beta)</span>
+                            <span className="text-sm font-bold">Web Desktop (Beta)</span>
                         </div>
                         <div className="h-px bg-border/50 w-full" />
-
+ 
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <div className="flex items-center gap-3 text-destructive cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-md">
+                                <div className="flex items-center gap-3 text-error cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-md">
                                     <LogOut className="w-5 h-5" />
-                                    <span className="font-semibold text-xs uppercase tracking-widest">Keluar Akun</span>
+                                    <span className="text-label font-bold">Keluar Akun</span>
                                 </div>
                             </AlertDialogTrigger>
-                            <AlertDialogContent className="rounded-card-premium border-none shadow-xl bg-popover/95 backdrop-blur-xl">
+                             <AlertDialogContent className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-2xl font-semibold tracking-tighter">Konfirmasi Logout</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-sm font-medium text-muted-foreground">
+                                    <AlertDialogTitle className="text-2xl font-bold tracking-tight">Konfirmasi Logout</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
                                         Apakah Anda yakin ingin keluar? Sesi aktif Anda akan segera diakhiri.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
-                                <AlertDialogFooter className="mt-6 flex-row gap-3">
-                                    <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-semibold text-xs uppercase tracking-widest mt-0">Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleSignOut} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-semibold text-xs uppercase tracking-widest">Logout</AlertDialogAction>
+                                <AlertDialogFooter className="mt-8 flex flex-col gap-3">
+                                    <AlertDialogAction onClick={handleSignOut} className="w-full h-14 bg-error text-error-foreground rounded-card font-bold shadow-xl shadow-error/20 hover:opacity-90">Ya, Logout</AlertDialogAction>
+                                    <AlertDialogCancel className="w-full h-12 rounded-lg border-border font-bold text-label text-primary">Batal</AlertDialogCancel>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
                     </BentoItem>
                 </div>
 
-                <div className="pt-8 pb-12 text-center">
-                    <p className="text-xs font-semibold tracking-widest uppercase opacity-20">Designed by Lemon AI</p>
+                <div className="pt-12 pb-32 text-center">
+                    <p className="text-[10px] font-bold tracking-tight opacity-20 uppercase">Lemon AI Dashboard v2.0</p>
                 </div>
             </div>
         </div>

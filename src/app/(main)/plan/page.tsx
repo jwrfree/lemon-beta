@@ -25,7 +25,7 @@ export default function PlanPage() {
     ];
 
     return (
-        <main className="pb-40 bg-background min-h-screen">
+        <main className="bg-background min-h-full">
             {/* Header Area */}
             <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/50">
                 <header className="flex items-center justify-between mb-4 mt-4 px-1">

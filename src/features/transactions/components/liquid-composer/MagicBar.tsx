@@ -243,9 +243,9 @@ export const MagicBar = ({
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        className="text-center text-xs font-medium text-primary uppercase tracking-widest mt-3"
+                        className="text-center text-label text-primary mt-3"
                     >
-                        {isRecording ? "Suara Anda Sedang Direkam..." : isTranscribing ? "Mendengarkan AI..." : "Lemon lagi ngitung-ngitung nih..."}
+                        {isRecording ? "Sedang merekam suara..." : isTranscribing ? "Menerjemahkan audio..." : "Sedang menganalisis transaksi..."}
                     </motion.p>
                 )}
             </AnimatePresence>

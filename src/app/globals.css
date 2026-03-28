@@ -180,11 +180,12 @@
     --motion-translate: 8px;
 
     /* Chart Colors */
-    --chart-1: hsl(var(--teal-600));
-    --chart-2: hsl(var(--blue-600));
-    --chart-3: hsl(var(--orange-500));
-    --chart-4: hsl(var(--rose-600));
     --chart-5: hsl(var(--purple-600));
+
+    /* Layout Tokens */
+    --bottom-nav-height: 88px;
+    --header-height: 64px;
+    --safe-observer-bottom: env(safe-area-inset-bottom);
   }
 
   .dark {
@@ -419,5 +420,21 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /**
+   * Main content scroll container logic
+   * Standardizes bottom spacing for mobile navigation and safe areas.
+   */
+  .main-content-scroll {
+    @apply flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth;
+    padding-bottom: 0;
+  }
+
+  @media (max-width: 767px) {
+    .main-content-scroll[data-nav="true"] {
+      /* Accounts for nav height + extra breathing room + safe area */
+      padding-bottom: calc(var(--bottom-nav-height) + 2rem + var(--safe-observer-bottom));
+    }
   }
 }

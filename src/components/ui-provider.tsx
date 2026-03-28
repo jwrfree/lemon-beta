@@ -89,6 +89,7 @@ interface UIContextType {
     isSidebarCollapsed: boolean;
     setIsSidebarCollapsed: (isCollapsed: boolean) => void;
 
+    isAnyModalOpen: boolean;
     toastState: ToastState;
     showToast: (message: string, type: 'success' | 'error' | 'info', options?: ToastOptions) => void;
     hideToast: () => void;
@@ -201,6 +202,20 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsDebtPaymentModalOpen(true);
     };
 
+    const isAnyModalOpen =
+        isTxSheetOpen ||
+        isWalletModalOpen ||
+        isBudgetModalOpen ||
+        isEditBudgetModalOpen ||
+        isTransferModalOpen ||
+        isDeleteModalOpen ||
+        isEditWalletModalOpen ||
+        isGoalModalOpen ||
+        isReminderModalOpen ||
+        isDebtModalOpen ||
+        isDebtPaymentModalOpen ||
+        isSmartAddOpen;
+
     const contextValue = useMemo(() => ({
         isTxSheetOpen,
         setIsTxSheetOpen,
@@ -254,6 +269,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsSmartAddOpen,
         isSidebarCollapsed,
         setIsSidebarCollapsed,
+        isAnyModalOpen,
         toastState,
         showToast,
         hideToast,
@@ -282,6 +298,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         debtForPayment,
         isSmartAddOpen,
         isSidebarCollapsed,
+        isAnyModalOpen,
         toastState
     ]);
 
