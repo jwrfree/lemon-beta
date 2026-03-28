@@ -29,7 +29,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/70 flex items-end justify-center"
             onClick={onClose}
         >
             <motion.div
@@ -37,27 +37,31 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-lg flex flex-col h-fit md:h-auto border-none"
+                className="w-full max-w-md bg-card rounded-t-card-premium shadow-2xl flex flex-col h-fit md:h-auto border-t border-border"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
-                <div className="p-6 flex items-center justify-between sticky top-0 z-10">
-                    <h2 className="text-xl font-semibold text-destructive tracking-tighter">Konfirmasi Hapus</h2>
+                <div className="p-6 pb-2 flex items-center justify-between sticky top-0 z-10">
+                    <h2 className="text-xl font-bold text-destructive tracking-tight">Hapus Transaksi?</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
                 <div className="p-6 pt-0 space-y-6">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest leading-relaxed">Yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.</p>
-                    
+                    <p className="text-sm font-medium text-muted-foreground/80 leading-snug">
+                        Tindakan ini akan menghapus data transaksi secara permanen dan mengembalikan saldo dompet Anda.
+                    </p>
+
                     <div className="flex items-center gap-4 rounded-card-glass bg-secondary/30 p-4 border border-border/20 shadow-card relative overflow-hidden">
                         <div className={cn("flex-shrink-0 p-3 rounded-card text-white", bgColor.replace('bg-', 'bg-').replace('/50', ''))}>
                             <CategoryIcon className="h-5 w-5" />
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <div className="font-semibold text-sm leading-tight mb-1 tracking-tight">{transaction.description || transaction.category}</div>
-                            <div className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-1.5 flex-wrap uppercase tracking-widest">
+                            <div className="font-bold text-[15px] leading-tight mb-0.5 tracking-tight text-foreground">
+                                {transaction.description || transaction.category}
+                            </div>
+                            <div className="text-[11px] font-bold text-muted-foreground/50 flex items-center gap-1.5 flex-wrap uppercase tracking-widest">
                                 <span>{transaction.category}</span>
                                 <span className="opacity-30">•</span>
                                 <span>{format(parseISO(transaction.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
@@ -71,10 +75,10 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <Button onClick={onConfirm} variant="destructive" className="w-full h-14 rounded-full font-semibold shadow-xl shadow-destructive/20">
-                            Ya, Hapus Transaksi
+                        <Button onClick={onConfirm} variant="destructive" className="w-full h-14 rounded-2xl font-bold text-base shadow-xl shadow-destructive/20 active:scale-[0.98] transition-all">
+                            Ya, Hapus Sekarang
                         </Button>
-                        <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-full font-semibold text-xs uppercase tracking-widest text-muted-foreground">
+                        <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-2xl font-bold text-xs uppercase tracking-[0.1em] text-muted-foreground/60 hover:text-foreground transition-colors">
                             Batalkan
                         </Button>
                     </div>

@@ -29,6 +29,7 @@ export const MagicBar = ({
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { isRecording, startRecording, stopRecording } = useAudioRecorder();
     const [isTranscribing, setIsTranscribing] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
     const toggleListening = async () => {
         if (isRecording) {
@@ -100,14 +101,14 @@ export const MagicBar = ({
                 "absolute inset-0 bg-primary/20 blur-2xl rounded-full transition-all duration-1000",
                 (isProcessing || isTranscribing) ? "opacity-100 animate-pulse bg-primary/30" : 
                 isRecording ? "opacity-100 animate-pulse scale-110 bg-violet-500/40" : 
-                "opacity-0 group-focus-within:opacity-50"
+                isFocused ? "opacity-50" : "opacity-0"
             )} />
 
             <div className={cn(
                 "relative flex items-center bg-card border border-border rounded-card shadow-card transition-all duration-500 overflow-hidden px-5 py-3",
                 (isProcessing || isTranscribing) ? "border-primary/50 ring-4 ring-primary/10" : 
                 isRecording ? "border-violet-500/50 ring-4 ring-violet-500/20 bg-violet-500/5" :
-                "group-focus-within:border-primary/30 group-focus-within:ring-4 group-focus-within:ring-primary/5"
+                isFocused ? "border-primary/30 ring-4 ring-primary/5" : ""
             )}>
                 <div className="mr-3 shrink-0">
                     {(isProcessing || isTranscribing) ? (
@@ -119,12 +120,7 @@ export const MagicBar = ({
                         >
                             <Waves className="h-5 w-5 text-violet-500" />
                         </motion.div>
-                    ) : (
-                        <Sparkles className={cn(
-                            "h-5 w-5 transition-colors",
-                            value ? "text-primary fill-primary/20" : "text-muted-foreground"
-                        )} />
-                    )}
+                    ) : null}
                 </div>
 
                 <TextareaAutosize
@@ -133,12 +129,14 @@ export const MagicBar = ({
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     onKeyDown={handleKeyDown}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Small delay to allow button clicks
                     disabled={isRecording || isTranscribing}
                     placeholder={isTranscribing ? "Mentranskripsi..." : isRecording ? "Mendengarkan..." : placeholder}
                     className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none focus-visible:outline-none text-sm md:text-base font-medium placeholder:text-muted-foreground/40 resize-none py-1 text-foreground disabled:opacity-70"
                 />
 
-                <div className="ml-3 flex items-center gap-2 shrink-0">
+                <div className="ml-2 flex items-center gap-1.5 shrink-0">
                     <input
                         type="file"
                         accept="image/*"
@@ -158,65 +156,83 @@ export const MagicBar = ({
                         }}
                     />
                     
-                    {!value && !isRecording && !isTranscribing && (
-                        <button
-                            onClick={() => document.getElementById('magic-image-upload')?.click()}
-                            className="p-2 rounded-full hover:bg-secondary text-muted-foreground transition-colors"
-                        >
-                            <Camera className="h-5 w-5" />
-                        </button>
-                    )}
+                    <AnimatePresence mode="popLayout" initial={false}>
+                        {/* Camera Icon: Hide if value exists or focusing/active */}
+                        {!value && !isFocused && !isRecording && !isTranscribing && (
+                            <motion.button
+                                key="camera"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                onClick={() => document.getElementById('magic-image-upload')?.click()}
+                                className="p-2 rounded-full hover:bg-secondary text-muted-foreground transition-colors"
+                            >
+                                <Camera className="h-5 w-5" />
+                            </motion.button>
+                        )}
 
-                        <AnimatePresence mode="wait">
-                            {value && !isRecording && !isTranscribing ? (
-                                <div className="flex items-center gap-1" key="actions">
-                                    <motion.button
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        onClick={onClear}
-                                        className="p-2 rounded-full hover:bg-secondary text-muted-foreground mr-1"
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </motion.button>
-                                    <motion.button
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        onClick={() => {
-                                            triggerHaptic('medium');
-                                            onReturn?.();
-                                        }}
-                                        disabled={isProcessing || isTranscribing}
-                                        className="p-3 rounded-full shadow-card transition-all active:scale-90 bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
-                                        title="Simpan Transaksi"
-                                    >
-                                        {(isProcessing || isTranscribing) ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <Send className="h-4 w-4" />
-                                        )}
-                                    </motion.button>
-                                </div>
-                            ) : (
-                                <motion.button
-                                    key="mic"
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    onClick={toggleListening}
-                                    disabled={isProcessing || isTranscribing}
-                                    className={cn(
-                                        "p-3 rounded-full shadow-card transition-all active:scale-90",
-                                        isRecording 
-                                            ? "bg-violet-500 text-white animate-pulse" 
-                                            : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-110"
-                                    )}
-                                >
-                                    {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                                </motion.button>
-                            )}
-                        </AnimatePresence>
+                        {/* Clear (X) Icon: Show when typing OR focused with value */}
+                        {value && (
+                            <motion.button
+                                key="clear"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                onClick={onClear}
+                                className="p-2 rounded-full hover:bg-secondary text-muted-foreground"
+                            >
+                                <X className="h-4 w-4" />
+                            </motion.button>
+                        )}
+
+                        {/* Toggle between Mic and Send: Show Send if typing OR focused */}
+                        {(value || isFocused) && !isRecording && !isTranscribing ? (
+                            <motion.button
+                                key="send"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                onClick={() => {
+                                    triggerHaptic('medium');
+                                    onReturn?.();
+                                }}
+                                disabled={isProcessing || !value.trim()}
+                                className={cn(
+                                    "p-3 rounded-full transition-all active:scale-95 shadow-lg",
+                                    value.trim() 
+                                        ? "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105" 
+                                        : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+                                )}
+                            >
+                                {isProcessing ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Send className="h-4 w-4" />
+                                )}
+                            </motion.button>
+                        ) : (
+                            <motion.button
+                                key="mic"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                onClick={toggleListening}
+                                disabled={isProcessing || isTranscribing}
+                                className={cn(
+                                    "p-3 rounded-full shadow-lg transition-all active:scale-95",
+                                    isRecording 
+                                        ? "bg-violet-500 text-white animate-pulse" 
+                                        : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105"
+                                )}
+                            >
+                                {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                            </motion.button>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
             
