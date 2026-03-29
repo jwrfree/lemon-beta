@@ -31,13 +31,13 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-background p-6 shadow-lg motion-panel data-[state=closed]:duration-[var(--motion-duration-fast)] data-[state=open]:duration-[var(--motion-duration-normal)] data-[state=open]:ease-[var(--motion-easing-standard)] data-[state=closed]:ease-in",
+  "fixed z-50 gap-4 bg-background p-6 border-border/40 shadow-none motion-panel data-[state=closed]:duration-[var(--motion-duration-fast)] data-[state=open]:duration-[var(--motion-duration-normal)] data-[state=open]:ease-[var(--motion-easing-standard)] data-[state=closed]:ease-in",
   {
     variants: {
       side: {
         top: "inset-x-0 top-0 border-b data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:translate-y-2 data-[state=open]:translate-y-0",
         bottom:
-          "inset-x-0 bottom-0 border-t data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:-translate-y-2 data-[state=open]:translate-y-0",
+          "inset-x-0 bottom-0 border-t rounded-t-card overflow-hidden data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:-translate-y-2 data-[state=open]:translate-y-0",
         left: "inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:translate-x-2 data-[state=open]:translate-x-0",
         right:
           "inset-y-0 right-0 h-full w-3/4  border-l sm:max-w-sm data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:-translate-x-2 data-[state=open]:translate-x-0",

@@ -46,7 +46,7 @@ export function HealthGauge({ savingsRate }: { savingsRate: number }) {
     const rotation = (clampedRate + 50) * 1.8;
 
     return (
-        <Card className="p-7 bg-card border-none rounded-card-glass shadow-card flex flex-col justify-between h-full relative overflow-hidden group">
+        <Card className="p-7 bg-card border-none rounded-card-glass shadow-none border border-border/40 flex flex-col justify-between h-full relative overflow-hidden group">
             {/* Ambient Background Ornament */}
             <div className={cn(
                 "absolute top-0 right-0 w-32 h-32 bg-gradient-to-br opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700 rounded-full blur-2xl -z-0",
@@ -130,7 +130,7 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
     trend?: { value: number }
 }) {
     return (
-        <Card className="group p-5 bg-card border-none rounded-card-glass shadow-card hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+        <Card className="group p-5 bg-card border-none rounded-card-glass shadow-none border border-border/40 hover:shadow-lg transition-all duration-300 relative overflow-hidden">
             {/* Subtle Gradient Accent */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full -mr-10 -mt-10" />
             
@@ -162,4 +162,5 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
         </Card>
     );
 }
+
 

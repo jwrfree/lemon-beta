@@ -63,17 +63,16 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                         aria-label={`Edit target ${goal.name}`}
                     >
                         <Card 
-                            className="border-none shadow-card rounded-card-premium overflow-hidden transition-all duration-500 relative"
+                            className="border border-white/10 shadow-none rounded-card-premium overflow-hidden transition-all duration-500 relative"
                             style={{ 
-                                background: dna.gradient,
-                                boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
+                                background: dna.gradient
                             }}
                         >
                             {/* Ambient Decor */}
                             <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10 blur-2xl"></div>
 
                             <CardHeader className="flex-row items-center gap-4 space-y-0 pb-2 p-7 relative z-10 text-white">
-                                <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-card-icon shadow-inner border border-white/10">
+                                <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-card-icon border border-white/10">
                                     <Icon className="h-6 w-6 text-white" strokeWidth={2.5} />
                                 </div>
                                 <div className='flex-1 min-w-0'>
@@ -89,13 +88,13 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                             
                             <CardContent className="space-y-6 p-7 pt-2 relative z-10 text-white">
                                 <div className="space-y-4">
-                                    <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner flex justify-between items-end">
+                                    <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 flex justify-between items-end">
                                         <div className="flex flex-col">
-                                            <span className="label-xs text-white/40 mb-1.5">Accumulated</span>
+                                            <span className="text-label text-white/40 mb-1.5">Accumulated</span>
                                             <span className="text-2xl font-semibold tracking-tighter tabular-nums text-white">{formatCurrency(goal.currentAmount)}</span>
                                         </div>
                                         <div className="flex flex-col items-end">
-                                            <span className="label-xs text-white/40 mb-1.5 text-right">Target Goal</span>
+                                            <span className="text-label text-white/40 mb-1.5 text-right">Target Goal</span>
                                             <span className="text-sm font-semibold tracking-tight text-white/70">{formatCurrency(goal.targetAmount)}</span>
                                         </div>
                                     </div>
@@ -109,7 +108,7 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
                                                 className="absolute inset-y-0 left-0 rounded-full bg-white"
                                             />
                                         </div>
-                                        <p className="label-xs text-white/40 text-right">{Math.round(progress)}% Completion</p>
+                                        <p className="text-label text-white/40 text-right">{Math.round(progress)}% Completion</p>
                                     </div>
                                 </div>
                             </CardContent>

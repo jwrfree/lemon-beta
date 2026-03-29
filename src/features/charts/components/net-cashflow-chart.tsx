@@ -169,7 +169,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
     };
 
     return (
-        <Card className="overflow-hidden border-none shadow-card bg-card rounded-card-glass">
+        <Card className="overflow-hidden border-none shadow-none border border-border/40 bg-card rounded-card-glass">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
                 <div className="flex items-center justify-between gap-3">
@@ -223,7 +223,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                 <div className="grid grid-cols-2 gap-3">
                     <div className="col-span-2 rounded-card-glass bg-primary/[0.03] border border-primary/10 p-6">
                         <div className="flex flex-col gap-1">
-                            <p className="text-xs font-medium uppercase tracking-widest text-primary/70">Total Net</p>
+                            <p className="text-xs font-medium text-label text-primary/70">Total Net</p>
                             <p className={cn('text-3xl font-medium tracking-tight', filteredTotals.net >= 0 ? 'text-teal-600' : 'text-destructive')}>
                                 {formatCurrency(filteredTotals.net)}
                             </p>
@@ -231,11 +231,11 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                         </div>
                     </div>
                     <div className="rounded-card-glass bg-muted/30 p-5 border border-border/50">
-                        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Pemasukan</p>
+                        <p className="text-xs font-medium text-label text-muted-foreground mb-1">Pemasukan</p>
                         <p className="text-xl font-medium text-foreground tracking-tight">{formatCurrency(filteredTotals.income)}</p>
                     </div>
                     <div className="rounded-card-glass bg-muted/30 p-5 border border-border/50">
-                        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Pengeluaran</p>
+                        <p className="text-xs font-medium text-label text-muted-foreground mb-1">Pengeluaran</p>
                         <p className="text-xl font-medium text-foreground tracking-tight">{formatCurrency(filteredTotals.expense)}</p>
                     </div>
                 </div>
@@ -248,7 +248,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                     >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="space-y-0.5">
-                                <p className="text-xs font-medium uppercase tracking-widest text-primary/70">Fokus Bulan</p>
+                                <p className="text-xs font-medium text-label text-primary/70">Fokus Bulan</p>
                                 <p className="text-xl font-medium text-foreground tracking-tight">{selectedMonthData.fullLabel}</p>
                             </div>
                             <Badge
@@ -266,14 +266,14 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
-                                    <p className="text-xs font-medium uppercase tracking-widest text-teal-600/70">Pemasukan</p>
+                                    <p className="text-xs font-medium text-label text-teal-600/70">Pemasukan</p>
                                     <span className="text-sm font-medium text-foreground">{formatCurrency(selectedMonthData.income)}</span>
                                 </div>
                                 {renderBreakdown(selectedMonthData.incomeBreakdown, 'Kosong', 'bg-teal-600')}
                             </div>
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between px-1">
-                                    <p className="text-xs font-medium uppercase tracking-widest text-destructive/70">Pengeluaran</p>
+                                    <p className="text-xs font-medium text-label text-destructive/70">Pengeluaran</p>
                                     <span className="text-sm font-medium text-foreground">{formatCurrency(selectedMonthData.expense)}</span>
                                 </div>
                                 {renderBreakdown(selectedMonthData.expenseBreakdown, 'Kosong', 'bg-destructive')}
@@ -285,4 +285,5 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
         </Card>
     );
 };
+
 

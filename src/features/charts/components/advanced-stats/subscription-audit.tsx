@@ -21,7 +21,7 @@ interface SubscriptionAuditProps {
 
 export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProps) {
     return (
-        <Card className="p-7 border-none rounded-card-glass bg-card shadow-card relative overflow-hidden group">
+        <Card className="p-7 border-none rounded-card-glass bg-card shadow-none border border-border/40 relative overflow-hidden group">
             {/* Ambient Background Ornament */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-700 rounded-full blur-2xl -z-0" />
 
@@ -93,4 +93,5 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
         </Card>
     );
 }
+
 

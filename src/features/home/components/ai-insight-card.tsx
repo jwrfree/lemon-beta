@@ -104,7 +104,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
     };
 
     return (
-        <Card className="border-none shadow-card bg-card">
+        <Card className="border-none shadow-none border border-border/40 bg-card">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium flex items-center gap-2 text-violet-700 dark:text-violet-400">
                     <Lightbulb className="h-4 w-4" />
@@ -161,4 +161,5 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
         </Card>
     );
 }
+
 

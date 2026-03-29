@@ -42,7 +42,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
         <div className="space-y-4 mb-8">
             {/* AI Auditor Insight Pill */}
             {(aiInsight || isAiLoading) && (
-                <div className="bg-primary/5 rounded-card-glass p-4 flex items-start gap-4 shadow-card transition-all">
+                <div className="bg-primary/5 rounded-card-glass p-4 flex items-start gap-4 shadow-none transition-all border border-primary/10">
                     <div className="bg-primary/10 p-2 rounded-card shrink-0">
                         {isAiLoading ? (
                             <Loader2 className="h-4 w-4 text-primary animate-spin" />
@@ -51,7 +51,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                         )}
                     </div>
                     <div className="flex-1">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-1">
+                        <p className="text-label text-primary mb-1">
                             AI Subscription Auditor
                         </p>
                         {isAiLoading ? (
@@ -67,9 +67,9 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* 1. Monthly Burn Rate Card */}
-                <Card className="border-none shadow-card bg-card rounded-card-premium overflow-hidden">
+                <Card className="border border-border/40 shadow-none bg-card rounded-card-premium overflow-hidden">
                     <CardHeader className="pb-2 px-6 pt-6">
-                        <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-widest">
+                        <CardTitle className="text-label text-muted-foreground/60 flex items-center gap-2">
                             <CreditCard className="h-3.5 w-3.5 text-indigo-500" />
                             Biaya Langganan
                         </CardTitle>
@@ -79,11 +79,11 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                             <span className="text-4xl font-semibold tracking-tighter text-foreground tabular-nums">
                                 {formatCurrency(totalMonthlyBurn)}
                             </span>
-                            <span className="text-xs font-semibold text-muted-foreground/40 uppercase tracking-widest">/ bln</span>
+                            <span className="text-label text-muted-foreground/40">/ bln</span>
                         </div>
 
                         <div className="flex items-center gap-2 mt-3">
-                            <Badge variant="secondary" className="bg-muted/50 text-muted-foreground border-none text-xs font-semibold px-2 py-0.5 rounded-full uppercase tracking-widest">
+                            <Badge variant="secondary" className="bg-muted/50 text-muted-foreground border-none text-label px-2 py-0.5 rounded-full">
                                 {activeSubscriptions} Layanan
                             </Badge>
                         </div>
@@ -91,9 +91,9 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 </Card>
 
                 {/* 2. Silent Inflation Alerts */}
-                <Card className="border-none shadow-card bg-card relative overflow-hidden rounded-card-premium">
+                <Card className="border border-border/40 shadow-none bg-card relative overflow-hidden rounded-card-premium">
                     <CardHeader className="pb-2 px-6 pt-6">
-                        <CardTitle className="text-xs font-semibold text-muted-foreground/60 flex items-center gap-2 uppercase tracking-widest">
+                        <CardTitle className="text-label text-muted-foreground/60 flex items-center gap-2">
                             <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
                             Status Harga
                         </CardTitle>
@@ -110,11 +110,11 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                             <TrendingUp className="h-3 w-3 text-rose-600 dark:text-rose-400" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold text-rose-600 dark:text-rose-200 leading-tight uppercase tracking-tight">
+                                            <p className="text-label text-rose-600 dark:text-rose-200 leading-tight">
                                                 {anomaly.merchantName} naik!
                                             </p>
                                             <p className="text-xs text-rose-500/80 mt-0.5 font-semibold tracking-tighter tabular-nums">
-                                                +{formatCurrency(anomaly.difference)} <span className="opacity-50 text-xs font-medium tracking-normal">vs BLN LALU</span>
+                                                +{formatCurrency(anomaly.difference)} <span className="opacity-50 text-label tracking-normal">vs BLN LALU</span>
                                             </p>
                                         </div>
                                     </div>
@@ -125,7 +125,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                 <div className="flex items-center gap-3 text-emerald-600 bg-emerald-500/5 p-4 rounded-card border border-emerald-500/10">
                                     <CheckCircle2 className="h-5 w-5 shrink-0 opacity-80" />
                                     <div>
-                                        <p className="text-xs font-semibold uppercase tracking-widest">Normal</p>
+                                        <p className="text-label">Normal</p>
                                         <p className="text-xs font-medium opacity-70">
                                             Biaya bulanan stabil.
                                         </p>

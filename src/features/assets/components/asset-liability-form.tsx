@@ -128,7 +128,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="categoryKey" className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Kategori</Label>
+                        <Label htmlFor="categoryKey" className="text-xs font-medium text-label text-muted-foreground">Kategori</Label>
                         <Select onValueChange={setCategoryKey} value={categoryKey}>
                             <SelectTrigger id="categoryKey" className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
                                 <SelectValue placeholder="Pilih kategori" />
@@ -137,7 +137,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                 {type === 'asset' ? (
                                     Object.entries(assetGroups).map(([groupName, cats]) => (
                                         <SelectGroup key={groupName}>
-                                            <SelectLabel className="px-2 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground/60">{groupName}</SelectLabel>
+                                            <SelectLabel className="px-2 py-1.5 text-xs font-medium text-label text-muted-foreground/60">{groupName}</SelectLabel>
                                             {cats.map((cat) => (
                                                 <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
                                                     {cat.label}
@@ -157,7 +157,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="name" className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
+                        <Label htmlFor="name" className="text-xs font-medium text-label text-muted-foreground">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
                         <Input
                             id="name"
                             placeholder={type === 'asset' ? 'e.g., Rumah, Saham BBCA' : 'e.g., KPR, Cicilan Mobil'}
@@ -171,7 +171,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     <div className={cn("grid gap-4", hasUnit ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1")}>
                         {hasUnit && (
                             <div className="space-y-2">
-                                <Label htmlFor="quantity" className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                                <Label htmlFor="quantity" className="text-xs font-medium text-label text-muted-foreground">
                                     Jumlah ({selectedCategory?.unit})
                                 </Label>
                                 <Input
@@ -189,7 +189,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="value" className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                            <Label htmlFor="value" className="text-xs font-medium text-label text-muted-foreground">
                                 {hasUnit ? 'Estimasi Nilai Saat Ini' : 'Nilai / Saldo'}
                             </Label>
                             <div className="relative">
@@ -208,7 +208,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="notes" className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Catatan (Opsional)</Label>
+                        <Label htmlFor="notes" className="text-xs font-medium text-label text-muted-foreground">Catatan (Opsional)</Label>
                         <Textarea
                             id="notes"
                             placeholder="Tambahkan catatan di sini..."
@@ -228,4 +228,5 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         </div >
     );
 };
+
 

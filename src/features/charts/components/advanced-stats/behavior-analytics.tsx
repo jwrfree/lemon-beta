@@ -25,7 +25,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
     const isWeekendHeavy = data.weekendAvg > data.weekdayAvg;
 
     return (
-        <Card className="p-7 border-none rounded-card-glass bg-card shadow-card relative overflow-hidden group">
+        <Card className="p-7 border-none rounded-card-glass bg-card shadow-none border border-border/40 relative overflow-hidden group">
             {/* Ambient Background Ornament */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-700 rounded-full blur-2xl -z-0" />
 
@@ -66,7 +66,7 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
 
                 {/* Behavioral Insights */}
                 <div className="space-y-5">
-                    <div className="p-5 rounded-card-glass bg-secondary/40 border border-border/50 backdrop-blur-md flex items-center gap-4 group/insight shadow-inner">
+                    <div className="p-5 rounded-card-glass bg-secondary/40 border border-border/50 backdrop-blur-md flex items-center gap-4 group/insight">
                         <div className="h-12 w-12 rounded-xl bg-warning/10 flex items-center justify-center border border-warning/20 group-hover/insight:bg-warning/20 transition-colors">
                             <Zap className="h-6 w-6 text-warning" />
                         </div>
@@ -97,4 +97,5 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
         </Card>
     );
 }
+
 

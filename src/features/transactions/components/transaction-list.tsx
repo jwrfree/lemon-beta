@@ -6,7 +6,7 @@ import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, ReceiptText, MapPin, Wallet as WalletIcon, Calendar, Loader2 } from 'lucide-react';
+import { ReceiptText, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import type { Transaction } from '@/types/models';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
@@ -14,6 +14,7 @@ import { useUI } from '@/components/ui-provider';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { DesktopTransactionTable } from './desktop-transaction-table';
 import { groupTransactionsByDate } from '@/features/transactions/utils';
+import { EmptyState } from '@/components/empty-state';
 
 interface TransactionListProps {
     transactions?: Transaction[];
@@ -41,27 +42,16 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
 
   if (finalTransactions.length === 0 && !isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center text-center py-20 px-6 bg-card rounded-card-premium shadow-card relative overflow-hidden motion-surface">
-                {/* Ambient Glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-16 -mt-16" />
-                
-                <div className="p-6 bg-primary/10 rounded-card-glass mb-6 relative z-10 shadow-inner">
-                    <ReceiptText className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <h2 className="text-2xl font-semibold tracking-tighter mb-2 relative z-10">Kosong Melompong</h2>
-                <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-8 max-w-[240px] leading-relaxed relative z-10">
-                    Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini.
-                </p>
-                <Button 
-                    onClick={() => openTransactionSheet()} 
-                    className="rounded-full h-12 px-8 font-semibold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 active:scale-95 transition-all relative z-10"
-                >
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Mulai Catat
-                </Button>
-            </div>
-        );
-    }
+      <EmptyState
+        title="Kosong Melompong"
+        description="Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini."
+        actionLabel="Mulai Catat"
+        onAction={() => openTransactionSheet()}
+        icon={ReceiptText}
+        className="pt-10"
+      />
+    );
+  }
     
     return (
     <div
@@ -77,11 +67,11 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
             {/* Mobile List View (Grouped) */}
       <div className="md:hidden space-y-6">
         {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
-          <div key={date} className="space-y-2">
-                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-2 px-4">
+          <div key={date} className="space-y-3">
+                        <h3 className="text-label text-muted-foreground/60 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="bg-card rounded-card shadow-card overflow-hidden">
+                        <div className="bg-card rounded-card border border-border/40 overflow-hidden">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 

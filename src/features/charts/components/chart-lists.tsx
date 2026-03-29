@@ -31,7 +31,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
         <button
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-card transition-all text-left w-full",
+                "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-none border border-border/40 transition-all text-left w-full",
                 isOverBudget
                     ? "ring-1 ring-rose-500/10"
                     : "hover:bg-muted/50"
@@ -96,11 +96,23 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
             onClick={onClick}
             className="group flex items-center gap-4 p-4 bg-card rounded-card-glass border border-transparent hover:border-border/50 hover:bg-muted/30 transition-all w-full text-left active:scale-[0.98] shadow-sm hover:shadow-md"
         >
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground font-bold text-xs transition-colors shadow-inner">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground font-bold text-xs transition-colors">
                 #{rank}
             </div>
             <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm truncate tracking-tight text-foreground/90">{transaction.description || transaction.category}</p>
+                <div className="flex items-center gap-2">
+                    <p className="font-bold text-sm truncate tracking-tight text-foreground/90">{transaction.description || transaction.category}</p>
+                    {transaction.type === 'expense' && typeof transaction.isNeed === 'boolean' && (
+                        <span className={cn(
+                            "text-[8px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-sm border shrink-0",
+                            transaction.isNeed 
+                                ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
+                                : "bg-violet-500/10 text-violet-600 border-violet-500/20"
+                        )}>
+                            {transaction.isNeed ? 'Need' : 'Want'}
+                        </span>
+                    )}
+                </div>
                 <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-label text-muted-foreground/40">{format(parseISO(transaction.date), 'dd MMM yyyy')}</span>
                     <span className="w-1 h-1 rounded-full bg-border" />
@@ -111,4 +123,5 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
         </button>
     );
 }
+
 

@@ -85,10 +85,9 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 className="w-full h-full text-left focus:outline-none group"
             >
                 <Card 
-                    className="h-full overflow-hidden border-none rounded-card-premium shadow-card transition-all duration-500 relative"
+                    className="h-full overflow-hidden border border-white/10 shadow-none rounded-card-premium transition-all duration-500 relative"
                     style={{ 
-                        background: dna.gradient,
-                        boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
+                        background: dna.gradient
                     }}
                 >
                     {/* Ambient Glows */}
@@ -98,13 +97,13 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                         {/* Header: Identity & Status */}
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-4">
-                                <div className={cn("p-3 rounded-card-icon backdrop-blur-xl border border-white/10 shadow-inner transition-all", currentHealth.bg)}>
+                                <div className={cn("p-3 rounded-card-icon backdrop-blur-xl border border-white/10 transition-all", currentHealth.bg)}>
                                     <CategoryIcon className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                                 </div>
                                 <div className="space-y-0.5">
                                     <h3 className="font-semibold text-lg tracking-tight leading-tight group-hover:underline decoration-white/30">{budget.name}</h3>
                                     <div className="flex items-center gap-2">
-                                        <span className={cn("text-xs font-semibold uppercase tracking-widest text-white/50")}>
+                                        <span className={cn("text-label text-white/50")}>
                                             {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : currentHealth.label}
                                         </span>
                                     </div>
@@ -117,7 +116,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
 
                         {/* Middle: The Living Bar */}
                         <div className="space-y-3 flex-1">
-                            <div className="flex justify-between items-end text-xs font-semibold uppercase tracking-widest text-white/40">
+                            <div className="flex justify-between items-end text-label text-white/40">
                                 <span>Utilization</span>
                                 <span className="tabular-nums text-white/80">{Math.min(progress, 100).toFixed(0)}%</span>
                             </div>
@@ -138,18 +137,18 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                         </div>
 
                         {/* Footer: Projection & Numbers (Glass Inset) */}
-                        <div className="space-y-4 bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner">
+                        <div className="space-y-4 bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Residual</p>
+                                    <p className="text-label text-white/40">Residual</p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums text-white")}>
                                         {formatCurrency(remaining)}
                                     </p>
                                 </div>
                                 <div className="text-right space-y-1">
-                                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Burn Runway</p>
+                                    <p className="text-label text-white/40">Burn Runway</p>
                                     <div className="flex items-center justify-end gap-1.5">
-                                        <span className={cn("text-xs font-semibold uppercase tracking-tight text-white")}>
+                                        <span className={cn("text-label text-white")}>
                                             {daysToZero === Infinity ? '∞ Days' : `${daysToZero} Days`}
                                         </span>
                                         <Flame className={cn("h-3.5 w-3.5", daysToZero <= 5 ? "text-yellow-300 animate-pulse" : "text-white/20")} />
@@ -160,7 +159,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                             {/* Safe Limit Inset */}
                             {remaining > 0 && (
                                 <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                                    <span className="text-xs font-semibold text-white/40 uppercase tracking-widest">Safe Daily Quota</span>
+                                    <span className="text-label text-white/40">Safe Daily Quota</span>
                                     <span className="text-sm font-semibold text-white tabular-nums tracking-tighter">
                                         {formatCurrency(safeDailyLimit)}
                                     </span>

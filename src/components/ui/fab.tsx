@@ -52,7 +52,7 @@ export const FAB = ({
         size="icon"
         className={cn(
           'h-14 w-14 rounded-full',
-          'motion-pressable shadow-card hover:shadow-lg',
+          'motion-pressable active:scale-95 transition-all',
           className,
         )}
         aria-label={label}

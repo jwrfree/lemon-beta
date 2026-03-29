@@ -109,7 +109,7 @@ export function CategorySelector<T extends FieldValues>({
                                 <div className="flex items-center gap-3">
                                     {selectedCategory ? (
                                         <>
-                                            <div className={cn("h-10 w-10 rounded-lg flex items-center justify-center shadow-card", selectedCategory.bg_color, selectedCategory.color)}>
+                                            <div className={cn("h-10 w-10 rounded-lg flex items-center justify-center shadow-none border border-border/40", selectedCategory.bg_color, selectedCategory.color)}>
                                                 {(() => {
                                                     const Icon = getCategoryIcon(selectedCategory.icon);
                                                     return <Icon size={20} />;
@@ -181,4 +181,5 @@ export function CategorySelector<T extends FieldValues>({
         />
     );
 }
+
 

@@ -124,11 +124,21 @@ export interface Transaction extends BaseRecord {
   isNeed?: boolean;
 }
 
+export interface OnboardingStatus {
+  steps: {
+    wallet: boolean;
+    transaction: boolean;
+    goal: boolean;
+  };
+  isDismissed: boolean;
+}
+
 export interface UserProfile extends BaseRecord {
   isBiometricEnabled?: boolean;
   displayName?: string;
   email?: string;
   photoURL?: string;
+  onboardingStatus?: OnboardingStatus;
 }
 
 export interface SpendingRisk {

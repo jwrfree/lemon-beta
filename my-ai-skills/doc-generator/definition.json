@@ -1,0 +1,5 @@
+{
+  "name": "doc-generator",
+  "description": "Expert in scanning source code and generating high-quality READMEs or technical documentation with Mermaid diagrams and clear logical flows.",
+  "instructions": "When using this skill, analyze the current file's imports, exports, state management, and side effects. Generate documentation that follows the 'Modern Fluidity' design principles: clean headings, concise bullet points, and high-impact visual aids (like Mermaid). Always include a 'Quick Start' or 'Consumer Guide' section for complex components."
+}

@@ -149,13 +149,13 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         <div className="flex flex-col space-y-6 p-6 max-w-[1600px] mx-auto w-full min-h-screen">
             {/* 1. EMPOWERING HERO HEADER - Compact Command Center */}
             <header className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                <div className="lg:col-span-5 relative overflow-hidden rounded-card bg-teal-950 p-6 shadow-card min-h-[160px] flex flex-col justify-center">
+                <div className="lg:col-span-5 relative overflow-hidden rounded-card bg-teal-950 p-6 border border-white/10 shadow-none min-h-[160px] flex flex-col justify-center">
                     {/* Subtle Pattern Overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
 
                     <div className="relative z-10 flex flex-col h-full justify-between">
                         <div className="space-y-0.5">
-                            <span className="text-xs font-medium text-teal-100/40 uppercase tracking-widest">Net Worth Portfolio</span>
+                            <span className="text-label text-teal-100/40">Net Worth Portfolio</span>
                             <div className="flex items-center gap-3">
                                 <h1 className={cn("text-4xl font-medium text-white tracking-tighter transition-all duration-300", !isBalanceVisible && "blur-xl")}>
                                     {isBalanceVisible ? formatCurrency(totalBalance) : "Rp •••••••••"}
@@ -174,12 +174,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/5" />
                             <div className="flex items-center gap-6">
                                 <div className="flex flex-col">
-                                    <p className="text-xs font-medium text-white/20 uppercase tracking-widest">Instruments</p>
+                                    <p className="text-label text-white/20">Instruments</p>
                                     <p className="text-lg font-medium text-white">{wallets.length} <span className="text-xs font-normal opacity-30">Accounts</span></p>
                                 </div>
                                 <div className="h-8 w-[1px] bg-white/5" />
                                 <div className="flex flex-col">
-                                    <p className="text-xs font-medium text-white/20 uppercase tracking-widest">Status</p>
+                                    <p className="text-label text-white/20">Status</p>
                                     <div className="flex items-center gap-2">
                                         <div className="h-1.5 w-1.5 rounded-full bg-success" />
                                         <p className="text-lg font-medium text-white tracking-tight">Prime</p>
@@ -191,16 +191,16 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 </div>
 
                 <div className="lg:col-span-4 grid grid-cols-2 gap-4">
-                    <Card className="bg-card shadow-card rounded-card p-5 group flex flex-col justify-center border-none">
+                    <Card className="bg-card shadow-none rounded-card p-5 group flex flex-col justify-center border border-border/40">
                         <div className="flex items-start justify-between mb-2">
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Inflow</p>
+                            <p className="text-label text-muted-foreground">Inflow</p>
                             <TrendingUp className="h-3.5 w-3.5 text-success" />
                         </div>
                         <p className="text-xl font-medium tracking-tight text-foreground">{formatCurrency(income30)}</p>
                     </Card>
-                    <Card className="bg-card shadow-card rounded-card p-5 group flex flex-col justify-center border-none">
+                    <Card className="bg-card shadow-none rounded-card p-5 group flex flex-col justify-center border border-border/40">
                         <div className="flex items-start justify-between mb-2">
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">Outflow</p>
+                            <p className="text-label text-muted-foreground">Outflow</p>
                             <TrendingDown className="h-3.5 w-3.5 text-destructive" />
                         </div>
                         <p className="text-xl font-medium tracking-tight text-foreground">{formatCurrency(expense30)}</p>
@@ -212,9 +212,9 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                         <Target className="h-6 w-6" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-xs uppercase tracking-widest text-primary mb-0.5">Wealth Goal</h4>
+                        <h4 className="text-label text-primary mb-0.5">Wealth Goal</h4>
                         <p className="text-xs text-muted-foreground leading-tight opacity-70 truncate">Financial freedom target</p>
-                        <Button variant="link" size="sm" className="h-auto p-0 text-xs uppercase font-medium tracking-widest text-primary mt-1">
+                        <Button variant="link" size="sm" className="h-auto p-0 text-label text-primary mt-1">
                             Configure
                         </Button>
                     </div>
@@ -226,9 +226,9 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                 {/* LEFT NAVIGATOR: MASTER COLLECTION */}
                 <div className="flex flex-col space-y-4 xl:sticky xl:top-6">
-                    <div className="space-y-4 bg-card p-5 rounded-card shadow-card">
+                    <div className="space-y-4 bg-card p-5 rounded-card shadow-none border border-border/40">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground opacity-60">Portfolio Accounts</h2>
+                            <h2 className="text-label text-muted-foreground opacity-60">Portfolio Accounts</h2>
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-secondary" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
                                 <ArrowUpDown className="h-3 w-3 opacity-40" />
                             </Button>
@@ -250,7 +250,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     key={f}
                                     onClick={() => setFilter(f)}
                                     className={cn(
-                                        "px-2.5 py-1.5 rounded-md text-xs font-medium uppercase tracking-widest transition-all shrink-0 border-none",
+                                        "px-2.5 py-1.5 rounded-md text-label transition-all shrink-0 border-none",
                                         filter === f
                                             ? "bg-primary text-white"
                                             : "bg-transparent text-muted-foreground hover:text-foreground"
@@ -300,7 +300,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-1.5 mb-0">
-                                                <p className={cn("text-xs font-medium uppercase tracking-widest truncate", isActive ? "text-primary" : "text-muted-foreground/60")}>
+                                                <p className={cn("text-label truncate", isActive ? "text-primary" : "text-muted-foreground/60")}>
                                                     {wallet.name}
                                                 </p>
                                                 {wallet.isDefault && <div className="h-1 w-1 rounded-full bg-primary" />}
@@ -325,7 +325,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     {activeWallet ? (
                         <div className="space-y-6">
                             {/* Detailed Asset Header Card */}
-                            <Card className="relative bg-card shadow-card rounded-card overflow-hidden group border-none">
+                            <Card className="relative bg-card shadow-none rounded-card overflow-hidden group border border-border/40">
                                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                     <div className="flex items-center gap-6">
                                         <div
@@ -347,7 +347,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-3">
                                                 <h2 className="text-2xl font-medium tracking-tighter text-foreground">{activeWallet.name}</h2>
-                                                <Badge className={cn("rounded-full px-2 py-0.5 border-none text-xs font-medium uppercase tracking-widest", getHealthBadgeClass(getHealth(activeWallet).variant))}>
+                                                <Badge className={cn("rounded-full px-2 py-0.5 border-none text-label", getHealthBadgeClass(getHealth(activeWallet).variant))}>
                                                     {getHealth(activeWallet).label}
                                                 </Badge>
                                             </div>
@@ -365,7 +365,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </div>
 
                                     <div className="flex flex-col md:items-end justify-center space-y-0.5 bg-secondary rounded-lg px-6 py-4">
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest opacity-60">Liquid Balance</p>
+                                        <p className="text-label text-muted-foreground opacity-60">Liquid Balance</p>
                                         <h3 className={cn("text-3xl font-medium tracking-tighter text-foreground transition-all duration-300", !isBalanceVisible && "blur-xl")}>
                                             {isBalanceVisible ? formatCurrency(activeWallet.balance) : "Rp •••••••••"}
                                         </h3>
@@ -380,7 +380,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 <TabsTrigger
                                                     key={tab}
                                                     value={tab}
-                                                    className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground bg-transparent transition-all px-0 text-xs font-medium uppercase tracking-widest opacity-30 data-[state=active]:opacity-100"
+                                                    className="h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground bg-transparent transition-all px-0 text-label opacity-30 data-[state=active]:opacity-100"
                                                 >
                                                     {tab}
                                                 </TabsTrigger>
@@ -391,7 +391,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="h-8 px-4 rounded-lg text-xs font-medium uppercase tracking-widest border-border hover:border-primary/30 hover:bg-primary/5 transition-all"
+                                            className="h-8 px-4 rounded-lg text-xs font-medium text-label border-border hover:border-primary/30 hover:bg-primary/5 transition-all"
                                             onClick={() => openEditWalletModal(activeWallet)}
                                         >
                                             Modify
@@ -416,25 +416,25 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                     <TabsContent value="analytics" className="m-0 p-0">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <Card className="p-6 bg-card rounded-card shadow-card space-y-6 border-none">
+                                            <Card className="p-6 bg-card rounded-card shadow-none space-y-6 border border-border/40">
                                                 <div className="flex items-center justify-between">
-                                                    <h4 className="text-xs font-medium uppercase tracking-widest opacity-40">Cashflow Stats</h4>
+                                                    <h4 className="text-label opacity-40">Cashflow Stats</h4>
                                                     <Badge className="bg-primary/5 text-primary rounded-full px-3 py-1 text-xs border-none">30D</Badge>
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-xs font-medium text-muted-foreground uppercase opacity-40">Net Position</p>
+                                                    <p className="text-label text-muted-foreground opacity-40">Net Position</p>
                                                     <p className={cn("text-2xl font-medium tracking-tighter", (activeAnalytics.income30 - activeAnalytics.expense30) >= 0 ? "text-success" : "text-destructive")}>
                                                         {formatCurrency(activeAnalytics.income30 - activeAnalytics.expense30)}
                                                     </p>
                                                 </div>
                                             </Card>
 
-                                            <Card className="p-6 bg-card rounded-card shadow-card flex flex-col items-center justify-center text-center space-y-4 border-none">
+                                            <Card className="p-6 bg-card rounded-card shadow-none flex flex-col items-center justify-center text-center space-y-4 border border-border/40">
                                                 <div className="h-10 w-10 bg-primary/5 rounded-full flex items-center justify-center text-primary border-none">
                                                     <Sparkles className="h-5 w-5" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <h4 className="font-medium text-xs uppercase tracking-widest">Forecast</h4>
+                                                    <h4 className="text-label">Forecast</h4>
                                                     <p className="text-xs text-muted-foreground leading-tight max-w-[200px] opacity-70">
                                                         AI Analyzing patterns...
                                                     </p>
@@ -444,7 +444,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </TabsContent>
 
                                     <TabsContent value="settings" className="m-0 p-0">
-                                        <Card className="max-w-2xl mx-auto bg-card rounded-card border border-border overflow-hidden shadow-card">
+                                        <Card className="max-w-2xl mx-auto bg-card rounded-card border border-border/40 overflow-hidden shadow-none">
                                             <div className="p-7 space-y-6">
                                                 <div className="space-y-3">
                                                     <h4 className="text-2xl font-semibold tracking-tighter">Asset Control Center</h4>
@@ -457,7 +457,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                             <p className="text-sm font-semibold tracking-tight">Instrument Identity</p>
                                                             <p className="text-xs text-muted-foreground opacity-70">Manage labels, categories, and visual identification.</p>
                                                         </div>
-                                                        <Button variant="outline" size="sm" className="rounded-lg text-xs font-semibold uppercase tracking-widest" onClick={() => openEditWalletModal(activeWallet)}>
+                                                        <Button variant="outline" size="sm" className="rounded-lg text-label" onClick={() => openEditWalletModal(activeWallet)}>
                                                             Modify
                                                         </Button>
                                                     </div>
@@ -470,11 +470,11 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                             </div>
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
-                                                                    <Button variant="destructive" size="sm" className="rounded-lg text-xs font-semibold uppercase tracking-widest" disabled={isDeleting}>
+                                                                    <Button variant="destructive" size="sm" className="rounded-lg text-label" disabled={isDeleting}>
                                                                         {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Terminate'}
                                                                     </Button>
                                                                 </AlertDialogTrigger>
-                                                                <AlertDialogContent className="rounded-card border-border/40">
+                                                                <AlertDialogContent className="rounded-card border border-border/40">
                                                                     <AlertDialogHeader>
                                                                         <AlertDialogTitle className="font-semibold tracking-tight text-2xl">Yakin ingin menghapus ini?</AlertDialogTitle>
                                                                         <AlertDialogDescription className="text-sm leading-relaxed">
@@ -504,7 +504,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                         </div>
                                                     ) : (
                                                         <div className="p-6 bg-muted/20 rounded-lg border border-dashed border-border flex items-center justify-center">
-                                                            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
+                                                            <p className="text-label text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -532,3 +532,4 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         </div>
     );
 };
+

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 export interface EmptyStateProps {
     /**
@@ -97,19 +98,24 @@ export const EmptyState = ({
     const styles = variantStyles[variant];
 
     return (
-        <div className={cn(
-            // Mobile: top-aligned with padding
-            "flex items-start justify-center pt-12 px-6",
-            // Desktop: vertically centered with consistent min-height
-            "md:items-center md:pt-0 md:min-h-[460px]",
-            className
-        )}>
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+            className={cn(
+                // Mobile: top-aligned with padding
+                "flex items-start justify-center pt-12 px-6",
+                // Desktop: vertically centered with consistent min-height
+                "md:items-center md:pt-0 md:min-h-[460px]",
+                className
+            )}
+        >
             <Card className={cn(
                 // Max width for readability
                 "max-w-[320px] md:max-w-md w-full",
                 // Card hierarchy - align with card token (24px)
-                "border-none rounded-card",
-                "shadow-card bg-card",
+                "border border-border/40 rounded-card",
+                "bg-card/80 backdrop-blur-md shadow-none",
                 // Overflow for background decoration
                 "relative overflow-hidden"
             )}>
@@ -172,9 +178,7 @@ export const EmptyState = ({
                                 // Mobile: rounded-full, Desktop: rounded-lg
                                 "rounded-full md:rounded-lg",
                                 "h-12 md:h-14 px-8 md:px-10",
-                                "font-semibold text-xs md:text-sm uppercase tracking-widest",
-                                // Add shadow for default variant
-                                variant === 'default' && "shadow-lg shadow-primary/20",
+                                "font-semibold text-xs md:text-sm uppercase tracking-widest border-none shadow-none",
                                 // Active state
                                 "active:scale-95 transition-all"
                             )}
@@ -184,6 +188,6 @@ export const EmptyState = ({
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </motion.div>
     );
 };

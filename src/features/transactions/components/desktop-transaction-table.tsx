@@ -169,7 +169,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
             <TableCell>
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-xs font-semibold uppercase tracking-widest px-2 py-0.5 rounded-lg w-fit border border-transparent bg-opacity-50",
+                        "text-label px-2 py-0.5 rounded-lg w-fit border border-transparent bg-opacity-50",
                         categoryData.color,
                         categoryData.bg_color || "bg-secondary"
                     )}>
@@ -188,7 +188,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
             <TableCell>
                 <div className="flex items-center gap-2">
                     <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-muted')} />
-                    <span className="font-medium text-muted-foreground text-xs uppercase tracking-widest whitespace-nowrap">
+                    <span className="text-label text-muted-foreground whitespace-nowrap">
                         {wallet?.name || '-'}
                     </span>
                 </div>
@@ -206,12 +206,12 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                 </div>
                 <div className="flex flex-col items-end gap-0.5 mt-0.5">
                     {t.amount >= 1000000 && isExpense && (
-                        <span className="text-xs font-semibold text-destructive uppercase tracking-widest px-1 bg-destructive/10 rounded">
+                        <span className="text-label text-destructive px-1 bg-destructive/10 rounded">
                             Transaksi Besar
                         </span>
                     )}
                     {isExpense && t.isNeed === false && (
-                        <span className="text-xs font-semibold text-accent-foreground/70 uppercase tracking-widest">
+                        <span className="text-label text-accent-foreground/70">
                             Gaya Hidup
                         </span>
                     )}
@@ -313,47 +313,47 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="gap-2 h-10 rounded-xl px-4 border-border hover:bg-muted transition-all font-medium text-xs uppercase tracking-widest"
+                    className="gap-2 h-10 rounded-xl px-4 border-border hover:bg-muted transition-all text-label"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-2xl bg-card shadow-card border border-border/50">
+            <div className="overflow-hidden rounded-2xl bg-card shadow-none border border-border/50">
                 <Table className="table-fixed">
                     <TableHeader className="bg-muted/50">
                         <TableRow className="hover:bg-muted/50 border-b border-border">
-                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-32" onClick={() => handleSort('date')}>
+                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors text-label w-32" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
                                     Tanggal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest" onClick={() => handleSort('description')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors text-label" onClick={() => handleSort('description')}>
                                 <div className="flex items-center gap-2">
                                     Transaksi
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-44" onClick={() => handleSort('category')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-44" onClick={() => handleSort('category')}>
                                 <div className="flex items-center gap-2">
                                     Kategori
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-40" onClick={() => handleSort('wallet')}>
+                            <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-40" onClick={() => handleSort('wallet')}>
                                 <div className="flex items-center gap-2">
                                     Metode
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors font-medium text-xs uppercase tracking-widest w-40" onClick={() => handleSort('amount')}>
+                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors text-label w-40" onClick={() => handleSort('amount')}>
                                 <div className="flex items-center justify-end gap-2">
                                     Nominal
                                     <ArrowUpDown className="h-3 w-3 opacity-50" />
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right pr-8 font-medium text-xs uppercase tracking-widest w-24">Aksi</TableHead>
+                            <TableHead className="text-right pr-8 text-label w-24">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

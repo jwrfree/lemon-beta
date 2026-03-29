@@ -16,6 +16,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { cn, triggerHaptic } from '@/lib/utils';
 import { PageHeader } from "@/components/page-header";
+import { Button } from '@/components/ui/button';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -62,9 +63,9 @@ function BentoItem({
 
 function SettingsContent() {
     const router = useRouter();
-    const { user, userData, handleSignOut } = useAuth();
+    const { user, userData, handleSignOut, updateOnboardingStatus } = useAuth();
     const { theme, setTheme } = useTheme();
-    const { deferredPrompt, setDeferredPrompt } = useUI();
+    const { deferredPrompt, setDeferredPrompt, showToast } = useUI();
     const [mounted, setMounted] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
 
@@ -262,10 +263,25 @@ function SettingsContent() {
                                 { name: 'Pengingat & Notifikasi', icon: BellRing, path: '/reminders' },
                                 { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts' },
                                 { name: 'Aset & Liabilitas', icon: Landmark, path: '/assets-liabilities' },
+                                { 
+                                    name: 'Atur Ulang Onboarding', 
+                                    icon: Sparkles, 
+                                    onClick: () => {
+                                        triggerHaptic('medium');
+                                        updateOnboardingStatus({ 
+                                            steps: { wallet: false, transaction: false, goal: false },
+                                            isDismissed: false
+                                        });
+                                        showToast("Onboarding telah diatur ulang.", "success");
+                                    } 
+                                },
                             ].map((item, idx) => (
                                 <div
                                     key={idx}
-                                    onClick={() => router.push(item.path)}
+                                    onClick={() => {
+                                        if (item.path) router.push(item.path);
+                                        if (item.onClick) item.onClick();
+                                    }}
                                     className="flex items-center justify-between p-4 rounded-card hover:bg-muted/50 transition-colors cursor-pointer group"
                                 >
                                     <div className="flex items-center gap-4">
@@ -280,41 +296,64 @@ function SettingsContent() {
                         </div>
                     </BentoItem>
 
-                    <BentoItem delay={0.4} className="p-7 flex flex-col justify-center gap-6 bg-muted/30 border-dashed border-2 border-border/50 rounded-card">
-                        <div className="flex flex-col gap-1 opacity-40">
+                    <BentoItem delay={0.4} className="p-7 flex flex-col justify-center gap-4 bg-muted/30 border-dashed border-2 border-border/50 rounded-card opacity-40">
+                        <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                                 <Monitor className="w-4 h-4" />
-                                <span className="text-label font-bold">Platform</span>
+                                <span className="text-label font-bold uppercase tracking-wide">Platform</span>
                             </div>
-                            <span className="text-sm font-bold">Web Desktop (Beta)</span>
+                            <span className="text-sm font-bold uppercase tracking-wide">Web Desktop (Beta)</span>
                         </div>
-                        <div className="h-px bg-border/50 w-full" />
- 
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <div className="flex items-center gap-3 text-error cursor-pointer hover:opacity-80 transition-opacity p-2 -ml-2 rounded-md">
-                                    <LogOut className="w-5 h-5" />
-                                    <span className="text-label font-bold">Keluar Akun</span>
-                                </div>
-                            </AlertDialogTrigger>
-                             <AlertDialogContent className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl">
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-2xl font-bold tracking-tight">Konfirmasi Logout</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
-                                        Apakah Anda yakin ingin keluar? Sesi aktif Anda akan segera diakhiri.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter className="mt-8 flex flex-col gap-3">
-                                    <AlertDialogAction onClick={handleSignOut} className="w-full h-14 bg-error text-error-foreground rounded-card font-bold shadow-xl shadow-error/20 hover:opacity-90">Ya, Logout</AlertDialogAction>
-                                    <AlertDialogCancel className="w-full h-12 rounded-lg border-border font-bold text-label text-primary">Batal</AlertDialogCancel>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
                     </BentoItem>
                 </div>
 
-                <div className="pt-12 pb-32 text-center">
-                    <p className="text-[10px] font-bold tracking-tight opacity-20 uppercase">Lemon AI Dashboard v2.0</p>
+                {/* LOGOUT ACTION - STANDARDIZED MOBILE UI */}
+                <div className="pt-8 pb-32">
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button 
+                                variant="ghost" 
+                                className="w-full h-16 bg-error/10 text-error hover:bg-error/20 border border-error/20 rounded-card-premium font-bold tracking-tight gap-3 justify-center transition-all active:rotate-1 active:scale-95 group"
+                                onClick={() => triggerHaptic('medium')}
+                            >
+                                <div className="p-2 rounded-lg bg-error/20 group-hover:bg-error/30 transition-colors">
+                                    <LogOut className="w-4 h-4" />
+                                </div>
+                                <span className="text-base">Keluar dari Akun</span>
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="rounded-card border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)]">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="text-2xl font-bold tracking-tight">Konfirmasi Logout</AlertDialogTitle>
+                                <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
+                                    Apakah Anda yakin ingin keluar? Sesi aktif Anda akan segera diakhiri dan draf transaksi yang belum disimpan akan hilang.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter className="mt-10 flex flex-col gap-3">
+                                <AlertDialogAction asChild>
+                                    <Button 
+                                        onClick={handleSignOut} 
+                                        variant="error" 
+                                        className="w-full h-14 rounded-2xl font-bold active:scale-95 transition-all"
+                                    >
+                                        Ya, Keluar Sekarang
+                                    </Button>
+                                </AlertDialogAction>
+                                <AlertDialogCancel asChild>
+                                    <Button 
+                                        variant="ghost" 
+                                        className="w-full h-12 rounded-xl border-none font-bold text-label text-muted-foreground hover:bg-muted/50 transition-colors"
+                                    >
+                                        Batal
+                                    </Button>
+                                </AlertDialogCancel>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+
+                    <div className="mt-12 text-center">
+                        <p className="text-[10px] font-bold tracking-wide opacity-10 uppercase">Lemon AI Dashboard v2.0</p>
+                    </div>
                 </div>
             </div>
         </div>

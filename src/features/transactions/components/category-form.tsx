@@ -61,7 +61,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 initial={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                 animate={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }}
                 exit={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
-                className="w-full max-w-md bg-background rounded-t-card md:rounded-card shadow-card flex flex-col max-h-[90vh] overflow-hidden"
+                className="w-full max-w-md bg-background rounded-t-card md:rounded-card shadow-none border border-border/40 flex flex-col max-h-[90vh] overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-6 border-b flex items-center justify-between bg-background">
@@ -156,4 +156,5 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
         </motion.div>
     );
 };
+
 

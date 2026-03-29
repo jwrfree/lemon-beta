@@ -40,7 +40,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 >
                     <div className="flex items-center gap-2">
                         {isOverBudget ? <AlertCircle className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
-                        <span className="uppercase tracking-widest">Sisa {category}:</span>
+                        <span className="text-label">Sisa {category}:</span>
                     </div>
                     <span className="tabular-nums text-sm font-medium">
                         {formatCurrency(remainingBudget)}
@@ -54,11 +54,12 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                         className="flex items-center gap-2 px-1 text-xs font-semibold text-amber-600"
                     >
                         <TrendingUp className="h-3 w-3" />
-                        <span className="uppercase tracking-widest">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>
+                        <span className="text-label">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>
                     </motion.div>
                 )}
             </motion.div>
         </AnimatePresence>
     );
 };
+
 

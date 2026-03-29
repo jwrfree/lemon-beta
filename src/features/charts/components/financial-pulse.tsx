@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import type { DailyExpense } from '../types';
@@ -43,7 +44,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="relative overflow-hidden rounded-card-premium bg-teal-950 text-white p-8 shadow-card mx-4 mt-6 border border-white/5 group">
+        <div className="relative overflow-hidden rounded-card-premium bg-teal-950 text-white p-8 shadow-none mx-4 mt-6 border border-white/5 group">
             {/* Dynamic Background Background */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-success/10 rounded-full blur-[100px] -mr-48 -mt-48 animate-pulse duration-[4000ms]" />
             <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-teal-300/5 rounded-full blur-[80px] -ml-24 -mb-24" />
@@ -92,12 +93,16 @@ export function FinancialPulse({
                         {formatCurrency(net)}
                     </h1>
 
-                    <div className="mt-8 flex items-center gap-2.5 text-white/90 text-label bg-white/10 w-fit px-4 py-2.5 rounded-full border border-white/10 backdrop-blur-md shadow-sm transition-transform hover:scale-105 cursor-pointer">
+                    <Button 
+                        variant="ghost" 
+                        onClick={() => triggerHaptic('light')}
+                        className="mt-8 flex items-center gap-2.5 text-white/90 text-label bg-white/10 w-fit px-4 py-2.5 rounded-full border border-white/10 backdrop-blur-md transition-all hover:bg-white/20 hover:scale-105 active:scale-95 cursor-pointer h-auto"
+                    >
                         <TrendingUp className="w-3.5 h-3.5 text-success" />
                         <span>Keuangan <b className="text-white font-black text-xs ml-1">Surplus</b></span>
                         <div className="h-3 w-px bg-white/20 mx-1" />
                         <span className="text-success-foreground">Siap investasi</span>
-                    </div>
+                    </Button>
 
                     <div className="flex items-center justify-center md:justify-start gap-2 text-white/30 text-label mt-8">
                         <span>Proyeksi saldo:</span>
@@ -107,7 +112,7 @@ export function FinancialPulse({
 
                 {/* Right: Quick Stats */}
                 <div className="grid grid-cols-2 gap-5">
-                    <div className="p-6 rounded-card-glass bg-white/5 border border-white/10 backdrop-blur-md shadow-inner group/stat hover:bg-white/10 transition-colors duration-300">
+                    <div className="p-6 rounded-card-glass bg-white/5 border border-white/10 backdrop-blur-md group/stat hover:bg-white/10 transition-colors duration-300">
                         <div className="flex items-center gap-2 text-white/40 mb-3 group-hover/stat:text-white/60 transition-colors">
                             <TrendingUp className="w-4 h-4" />
                             <span className="text-label">Income</span>
@@ -125,10 +130,10 @@ export function FinancialPulse({
                         </div>
                     </div>
 
-                    <div className="p-6 rounded-card-glass bg-white/5 border border-white/10 backdrop-blur-md shadow-inner group/stat hover:bg-white/10 transition-colors duration-300">
+                    <div className="p-6 rounded-card-glass bg-white/5 border border-white/10 backdrop-blur-md group/stat hover:bg-white/10 transition-colors duration-300">
                         <div className="flex items-center gap-2 text-white/40 mb-3 group-hover/stat:text-white/60 transition-colors">
                             <TrendingDown className="w-4 h-4" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-[0.1em]">Expenses</span>
+                            <span className="text-xs font-bold text-white/40">Expenses</span>
                         </div>
                         <p className="text-xl md:text-2xl font-bold tabular-nums tracking-tighter">{formatCurrency(expense)}</p>
                         <div className="w-full bg-white/10 h-1 mt-4 mb-3 rounded-full overflow-hidden">

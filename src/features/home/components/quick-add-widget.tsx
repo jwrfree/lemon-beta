@@ -66,14 +66,14 @@ export const QuickAddWidget = () => {
     };
 
     return (
-        <Card className="border-none shadow-card bg-card rounded-card-premium overflow-hidden relative">
+        <Card className="border-none shadow-none border border-border/40 bg-card rounded-card-premium overflow-hidden relative">
             {/* Ambient Accent */}
             <div className="absolute top-0 right-0 p-6 opacity-[0.03] -rotate-12 pointer-events-none">
                 <Sparkles className="h-20 w-20" />
             </div>
 
             <CardHeader className="pb-3 flex flex-row items-center justify-between px-6 pt-6 relative z-10">
-                <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground/60 uppercase tracking-widest">
+                <CardTitle className="text-xs font-semibold flex items-center gap-2 text-muted-foreground/60 text-label">
                     <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
                         <Sparkles className="h-3.5 w-3.5" />
                     </div>
@@ -82,7 +82,7 @@ export const QuickAddWidget = () => {
                 <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-8 px-3 text-xs font-semibold uppercase tracking-widest text-primary hover:bg-primary/5 rounded-full"
+                    className="h-8 px-3 text-xs font-semibold text-label text-primary hover:bg-primary/5 rounded-full"
                     onClick={() => openTransactionSheet()}
                 >
                     Manual Entry
@@ -100,7 +100,7 @@ export const QuickAddWidget = () => {
                         >
                             <Input 
                                 placeholder="e.g. 'coffee 25k' or 'salary 5m'" 
-                                className="pr-12 h-12 bg-muted/30 border-none rounded-card focus-visible:ring-4 focus-visible:ring-primary/5 shadow-inner transition-all"
+                                className="pr-12 h-12 bg-muted/30 border-none rounded-card focus-visible:ring-4 focus-visible:ring-primary/5 transition-all"
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleQuickAdd()}
@@ -125,11 +125,11 @@ export const QuickAddWidget = () => {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-muted/30 rounded-card p-4 border border-border/10 shadow-inner relative overflow-hidden"
+                            className="bg-muted/30 rounded-card p-4 border border-border/10 relative overflow-hidden"
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex flex-col">
-                                    <span className="text-xs text-muted-foreground/50 font-semibold uppercase tracking-widest mb-1">Verify Entry</span>
+                                    <span className="text-xs text-muted-foreground/50 font-semibold text-label mb-1">Verify Entry</span>
                                     <div className="flex items-center gap-3">
                                         <span className={cn(
                                             "text-xl font-semibold tracking-tighter tabular-nums",
@@ -152,9 +152,9 @@ export const QuickAddWidget = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground/60 bg-background/50 backdrop-blur-sm py-1.5 px-3 rounded-full w-fit border border-border/20">
-                                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full uppercase tracking-widest">{parsedData.category}</span>
+                                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-label">{parsedData.category}</span>
                                 <ArrowRight className="h-3 w-3 opacity-30" />
-                                <span className="italic uppercase tracking-widest">{parsedData.wallet}</span>
+                                <span className="italic text-label">{parsedData.wallet}</span>
                             </div>
                         </motion.div>
                     )}
@@ -163,4 +163,5 @@ export const QuickAddWidget = () => {
         </Card>
     );
 };
+
 

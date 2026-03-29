@@ -146,7 +146,7 @@ export default {
       },
       fontSize: {
         // Design-system label token — use `text-label` instead of text-[10px], text-[9px], text-[11px]
-        'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.1em', fontWeight: '600' }],
+        'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.025em', fontWeight: '600' }],
       },
       keyframes: {
         'accordion-down': {

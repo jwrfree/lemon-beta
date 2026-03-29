@@ -47,7 +47,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 >
                     <div className="flex items-center gap-2 text-success mb-1">
                         <TrendingUp className="h-3 w-3" />
-                        <span className="text-xs font-semibold uppercase tracking-widest">Pemasukan</span>
+                        <span className="text-label">Pemasukan</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(income)}
@@ -62,7 +62,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                 >
                     <div className="flex items-center gap-2 text-destructive mb-1">
                         <TrendingDown className="h-3 w-3" />
-                        <span className="text-xs font-semibold uppercase tracking-widest">Pengeluaran</span>
+                        <span className="text-label">Pengeluaran</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
                         {formatCurrency(expense)}
@@ -77,7 +77,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                     <h2 className="text-sm font-medium tracking-tight">Alokasi Pengeluaran</h2>
                 </div>
 
-                <div className="bg-card border border-border/50 rounded-card p-4 overflow-hidden shadow-card">
+                <div className="bg-card border border-border/50 rounded-card p-4 overflow-hidden">
                     <CategoryPie data={topCategories} total={expense} type="expense" />
                     
                     {/* Legend-ish List */}

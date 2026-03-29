@@ -328,7 +328,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             </Card>
 
             {summary.type !== 'net' && summary.topCategory ? (
-                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-card hover:shadow-card transition-all group overflow-hidden">
+                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-none border border-border/40 hover:shadow-none border border-border/40 transition-all group overflow-hidden">
                     <CardHeader className="flex flex-row items-center gap-3 sm:gap-4 pb-3 sm:pb-4 p-4 sm:p-6">
                         <div className={cn("p-2 sm:p-3 rounded-md sm:rounded-card shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
@@ -339,12 +339,12 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </div>
                         <div className="text-right">
                             <p className="text-lg sm:text-xl font-medium text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
-                            <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-widest mt-1">Kontribusi</p>
+                            <p className="text-xs sm:text-xs font-medium text-muted-foreground text-label mt-1">Kontribusi</p>
                         </div>
                     </CardHeader>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 sm:space-y-6">
                         <div className="space-y-1.5 sm:space-y-2">
-                            <div className="flex justify-between text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                            <div className="flex justify-between text-xs sm:text-xs font-medium text-label text-muted-foreground">
                                 <span>Total di kategori ini</span>
                                 <span className="text-foreground tabular-nums">{formatCurrency(summary.topCategory.value)}</span>
                             </div>
@@ -360,7 +360,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground uppercase tracking-widest mb-0.5">Transaksi Terbesar</p>
+                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground text-label mb-0.5">Transaksi Terbesar</p>
                                     <p className="text-xs sm:text-sm font-medium text-foreground truncate">{summary.topTransaction.description}</p>
                                 </div>
                                 <div className="text-right">
@@ -384,7 +384,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             ) : null}
 
             {/* AI INSIGHT SECTION */}
-            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-card border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
+            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-none border border-border/40 border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
                 {/* Decorative background elements */}
                 <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
                 <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
@@ -396,7 +396,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
                             <div>
-                                <CardTitle className="text-xs sm:text-sm font-medium text-primary uppercase tracking-widest">AI Financial Insight</CardTitle>
+                                <CardTitle className="text-xs sm:text-sm font-medium text-primary text-label">AI Financial Insight</CardTitle>
                                 <p className="text-xs sm:text-xs font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
                             </div>
                         </div>
@@ -457,4 +457,5 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
         </section>
     );
 };
+
 

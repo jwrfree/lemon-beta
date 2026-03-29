@@ -19,7 +19,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
     const efficiency = (data.actualSavings / data.potentialSavings) * 100;
 
     return (
-        <Card className="p-7 border-none rounded-card-glass bg-card text-foreground shadow-card overflow-hidden relative group">
+        <Card className="p-7 border-none rounded-card-glass bg-card text-foreground shadow-none border border-border/40 overflow-hidden relative group">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-success/5 group-hover:bg-success/10 transition-colors duration-700 blur-[80px] rounded-full -mr-20 -mt-20 -z-0" />
 
@@ -55,7 +55,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
                             <span>Indeks efisiensi</span>
                             <span className="text-success font-bold">{Math.round(efficiency)}%</span>
                         </div>
-                        <div className="relative h-2.5 w-full bg-secondary rounded-full overflow-hidden shadow-inner">
+                        <div className="relative h-2.5 w-full bg-secondary rounded-full overflow-hidden">
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${Math.min(efficiency, 100)}%` }}
@@ -82,4 +82,5 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
         </Card>
     );
 }
+
 

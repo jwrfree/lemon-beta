@@ -105,7 +105,7 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative flex items-center bg-card border border-border rounded-card shadow-card transition-all duration-500 overflow-hidden px-5 py-3",
+                "relative flex items-center bg-card border border-border rounded-card shadow-none border border-border/40 transition-all duration-500 overflow-hidden px-5 py-3",
                 (isProcessing || isTranscribing) ? "border-primary/50 ring-4 ring-primary/10" : 
                 isRecording ? "border-violet-500/50 ring-4 ring-violet-500/20 bg-violet-500/5" :
                 isFocused ? "border-primary/30 ring-4 ring-primary/5" : ""
@@ -252,3 +252,4 @@ export const MagicBar = ({
         </div>
     );
 };
+

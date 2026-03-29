@@ -1,0 +1,12 @@
+{
+  "name": "Supabase Expert",
+  "description": "Expert guidance on optimizing Supabase queries, indexing, and Postgres schema design for performance and scalability.",
+  "version": "1.0.0",
+  "category": "Database Optimization",
+  "capabilities": [
+    "Query Optimization",
+    "Postgres Schema Design",
+    "Supabase Best Practices",
+    "Performance Tuning"
+  ]
+}

@@ -27,7 +27,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const growth = previousNetWorth !== 0 ? ((currentNetWorth - previousNetWorth) / Math.abs(previousNetWorth)) * 100 : 0;
 
     return (
-        <Card className="p-7 border-none rounded-card-premium bg-[#064e4b] text-white shadow-card overflow-hidden relative">
+        <Card className="p-7 border-none rounded-card-premium bg-[#064e4b] text-white shadow-none border border-border/40 overflow-hidden relative">
             {/* Ambient Background Ornaments */}
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 pointer-events-none">
                 <Landmark className="h-40 w-40" />
@@ -40,7 +40,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         <ShieldCheck className="w-5 h-5 text-emerald-400" />
                         Net Worth Flow
                     </h3>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Equity Accumulation Trend</p>
+                    <p className="text-xs font-semibold text-white/40">Equity accumulation trend</p>
                 </div>
                 <div className="flex flex-col items-start md:items-end gap-2">
                     <p className="text-4xl font-semibold tracking-tighter tabular-nums drop-">
@@ -48,7 +48,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                     </p>
                     <Badge
                         className={cn(
-                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-xs uppercase tracking-widest", 
+                            "rounded-full px-2.5 py-0.5 border-none font-semibold text-xs", 
                             growth >= 0 ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"
                         )}
                     >
@@ -98,8 +98,8 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
             </div>
 
             <div className="grid grid-cols-2 gap-6 mt-10 pt-8 border-t border-white/10 relative z-10">
-                <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner">
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center gap-2">
+                <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10">
+                    <span className="text-xs font-semibold text-white/40 mb-1.5 flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                         Assets
                     </span>
@@ -107,8 +107,8 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                         {formatCurrency(data[data.length - 1]?.assets || 0)}
                     </p>
                 </div>
-                <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 shadow-inner text-right">
-                    <span className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5 flex items-center justify-end gap-2">
+                <div className="bg-white/5 backdrop-blur-md p-4 rounded-card-glass border border-white/10 text-right">
+                    <span className="text-xs font-semibold text-white/40 mb-1.5 flex items-center justify-end gap-2">
                         Liabilities
                         <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
                     </span>
@@ -120,4 +120,5 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
         </Card>
     );
 }
+
 

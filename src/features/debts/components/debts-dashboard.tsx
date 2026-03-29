@@ -161,17 +161,17 @@ export const DebtsDashboard = () => {
             <div className="space-y-4">
                 {/* Visual Summary Card - Compact */}
                 <div className="grid grid-cols-2 gap-3">
-                    <Card className="shadow-card border-border/60 bg-gradient-to-br from-card to-destructive/5 overflow-hidden">
+                    <Card className="shadow-none border border-border/60 bg-gradient-to-br from-card to-destructive/5 overflow-hidden">
                         <CardContent className={spacing.cardFlat}>
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1">
+                            <p className="text-xs font-medium text-muted-foreground text-label mb-1 flex items-center gap-1">
                                 <ArrowUpRight className="h-3 w-3 text-destructive" /> Saya Berhutang
                             </p>
                             <p className="text-lg font-medium text-destructive">{formatCurrency(totals.totalOwed)}</p>
                         </CardContent>
                     </Card>
-                    <Card className="shadow-card border-border/60 bg-gradient-to-br from-card to-emerald-500/5 overflow-hidden">
+                    <Card className="shadow-none border border-border/60 bg-gradient-to-br from-card to-emerald-500/5 overflow-hidden">
                         <CardContent className={spacing.cardFlat}>
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 flex items-center gap-1">
+                            <p className="text-xs font-medium text-muted-foreground text-label mb-1 flex items-center gap-1">
                                 <ArrowDownRight className="h-3 w-3 text-emerald-600" /> Piutang Saya
                             </p>
                             <p className="text-lg font-medium text-emerald-600">{formatCurrency(totals.totalOwing)}</p>
@@ -183,7 +183,7 @@ export const DebtsDashboard = () => {
             <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
                 <TabsList className="bg-muted p-1 rounded-card h-12 w-full grid grid-cols-4">
                     {Object.entries(filterLabels).map(([value, label]) => (
-                        <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-xs uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 px-1">
+                        <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 px-1">
                             {label === 'Orang Lain Berhutang' ? 'Piutang' : label === 'Saya Berhutang' ? 'Hutang' : label}
                         </TabsTrigger>
                     ))}
@@ -197,7 +197,7 @@ export const DebtsDashboard = () => {
                     visibleDebts.map((debt: Debt) => (
                         <Card
                             key={debt.id}
-                            className="overflow-hidden hover:shadow-card transition-shadow cursor-pointer border-none shadow-card bg-card"
+                            className="overflow-hidden transition-all cursor-pointer border-none shadow-none border border-border/40 bg-card"
                             onClick={() => router.push(`/debts/${debt.id}`)}
                         >
                             <CardContent className={spacing.cardFlat}>
@@ -212,7 +212,7 @@ export const DebtsDashboard = () => {
 
                                 <div className="flex items-end justify-between">
                                     <div>
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1">
+                                        <p className="text-label text-muted-foreground mb-1">
                                             {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
                                         </p>
                                         <p className={cn(
@@ -223,7 +223,7 @@ export const DebtsDashboard = () => {
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1 text-right">Progress</p>
+                                        <p className="text-label text-muted-foreground mb-1 text-right">Progress</p>
                                         <div className="flex items-center gap-2">
                                             <Progress
                                                 value={Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))}
@@ -250,4 +250,5 @@ export const DebtsDashboard = () => {
         </div>
     );
 };
+
 

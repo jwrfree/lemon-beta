@@ -116,13 +116,13 @@ const TransactionListItemContent = ({
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {/* Need / Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === true && (
-                        <span className="flex items-center gap-1 text-emerald-600 bg-emerald-500/8 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-emerald-500/15">
+                        <span className="flex items-center gap-1 text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-full text-label border border-emerald-500/10">
                             <ShieldCheck className="h-2 w-2" />
                             Need
                         </span>
                     )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 text-primary bg-primary/5 px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-primary/10">
+                        <span className="flex items-center gap-1 text-primary bg-primary/10 px-1.5 py-0.5 rounded-full text-label border border-primary/10">
                             <Sparkles className="h-2 w-2" />
                             Want
                         </span>
@@ -162,7 +162,7 @@ const TransactionListItemContent = ({
                     {format(parseISO(transaction.date), 'HH:mm')}
                 </span>
                 {isExpense && transaction.amount >= 1000000 && (
-                    <span className="text-[9px] font-bold bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded-full uppercase tracking-widest">Big</span>
+                    <span className="text-label bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded-full">Besar</span>
                 )}
             </div>
         </div>

@@ -29,6 +29,7 @@ import type { Wallet, Transaction, Reminder, Debt } from '@/types/models';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { SpendingTrendChart } from './spending-trend-chart';
 import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
+import { OnboardingChecklist } from '@/components/onboarding-checklist';
 
 interface MobileDashboardProps {
     userData: any;
@@ -129,15 +130,22 @@ export const MobileDashboard = ({
             {/* 1. Header Section */}
             <div className="px-5 pt-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 border-2 border-background cursor-pointer" onClick={() => router.push('/settings')}>
-                        <AvatarImage src={userData?.photoURL} />
-                        <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                            {firstName[0]}
-                        </AvatarFallback>
-                    </Avatar>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        asChild 
+                        className="h-10 w-10 p-0 rounded-full border-2 border-background active:scale-95 transition-all overflow-hidden"
+                    >
+                        <Avatar className="h-full w-full cursor-pointer" onClick={() => router.push('/settings')}>
+                            <AvatarImage src={userData?.photoURL} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                                {firstName[0]}
+                            </AvatarFallback>
+                        </Avatar>
+                    </Button>
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground font-semibold uppercase tracking-widest">{timeBasedGreeting},</span>
+                            <span className="text-label text-muted-foreground">{timeBasedGreeting},</span>
                             {currentTime && (
                                 <span className="text-xs font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-md tabular-nums">
                                     {format(currentTime, 'HH:mm')}
@@ -158,6 +166,11 @@ export const MobileDashboard = ({
                 </div>
             </div>
 
+            {/* 1.5 Onboarding Checklist (Persona A) */}
+            <div className="px-4">
+                <OnboardingChecklist />
+            </div>
+
             {/* 2. Hero Card (Apple Music Style Dynamic Mesh) */}
             <div className="px-4">
                 <motion.div
@@ -165,7 +178,7 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 >
-                    <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white shadow-card">
+                    <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white border border-white/10 shadow-none">
                         {/* Dynamic Mesh Ornaments */}
                         <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-emerald-400/20 blur-[80px] animate-pulse"></div>
                         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-teal-300/10 blur-[80px]"></div>
@@ -175,12 +188,12 @@ export const MobileDashboard = ({
                             {/* Balance Section */}
                             <div>
                                 <div className="flex items-center justify-between mb-3">
-                                    <span className="text-white/50 text-xs uppercase font-semibold tracking-widest">Total Wealth</span>
-                                    <div className="bg-white/10 backdrop-blur-xl rounded-full px-2 py-0.5 border border-white/10 shadow-inner">
+                                    <span className="text-white/50 text-label">Total Wealth</span>
+                                    <div className="bg-white/10 backdrop-blur-xl rounded-full px-2 py-0.5 border border-white/10">
                                         <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
-                                <div className="text-5xl font-semibold tracking-tighter tabular-nums drop-">
+                                <div className="text-5xl font-semibold tracking-tighter tabular-nums">
                                     <AnimatedCounter value={totalBalance} />
                                 </div>
                                 <div className="mt-6 flex flex-col gap-3">
@@ -193,7 +206,7 @@ export const MobileDashboard = ({
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="w-fit h-8 px-4 text-xs font-semibold uppercase tracking-widest bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10 transition-all active:scale-95"
+                                        className="w-fit h-8 px-4 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10 transition-all active:scale-95"
                                         onClick={() => router.push('/charts')}
                                     >
                                         Financial Pulse
@@ -203,30 +216,30 @@ export const MobileDashboard = ({
 
                             {/* Income/Expense Pill (Glassmorphism Inset) */}
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 shadow-inner group">
+                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 group">
                                     <div className="flex items-center gap-2 text-white/60">
                                         <div className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-300">
                                             <ArrowUpRight className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="text-xs uppercase font-semibold tracking-widest">Inflow</span>
+                                        <span className="text-label">Inflow</span>
                                     </div>
                                     <div>
                                         <AnimatedCounter value={monthlyIncome} className="font-semibold text-base tracking-tight text-white" />
-                                        <p className="text-xs text-white/30 mt-1 font-semibold uppercase tracking-widest">
+                                        <p className="text-xs text-white/30 mt-1 font-semibold">
                                             {incomeDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(incomeDiff))} this month
                                         </p>
                                     </div>
                                 </div>
-                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 shadow-inner group">
+                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 group">
                                     <div className="flex items-center gap-2 text-white/60">
                                         <div className="p-1.5 rounded-md bg-rose-500/20 text-rose-300">
                                             <ArrowDownLeft className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="text-xs uppercase font-semibold tracking-widest">Outflow</span>
+                                        <span className="text-label">Outflow</span>
                                     </div>
                                     <div>
                                         <AnimatedCounter value={monthlyExpense} className="font-semibold text-base tracking-tight text-white" />
-                                        <p className="text-xs text-white/30 mt-1 font-semibold uppercase tracking-widest">
+                                        <p className="text-xs text-white/30 mt-1 font-semibold">
                                             {expenseDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(expenseDiff))} this month
                                         </p>
                                     </div>
@@ -252,10 +265,10 @@ export const MobileDashboard = ({
                             onClick={action.onClick}
                             className="flex flex-col items-center gap-3 group"
                         >
-                            <div className={cn("h-16 w-16 rounded-full flex items-center justify-center shadow-lg border border-border/40 transition-all group-active:shadow-inner bg-card", action.bg.replace('/10', '/5'))}>
+                            <div className={cn("h-16 w-16 rounded-full flex items-center justify-center border border-border/40 transition-all group-active:shadow-inner bg-card", action.bg.replace('/10', '/5'))}>
                                 <action.icon className={cn("h-7 w-7", action.color)} strokeWidth={1.5} />
                             </div>
-                            <span className="text-xs font-semibold text-muted-foreground/60 text-center leading-tight uppercase tracking-widest">
+                            <span className="text-label text-muted-foreground/60 text-center leading-tight">
                                 {action.label}
                             </span>
                         </motion.button>
@@ -266,11 +279,11 @@ export const MobileDashboard = ({
             {/* 4. Horizontal Wallets (Snap Scroll - Dynamic Branded DNA) */}
             <div className="space-y-4">
                 <div className="px-6 flex items-center justify-between">
-                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
+                    <h2 className="text-label text-muted-foreground/40 flex items-center gap-2">
                         <WalletIcon className="h-3.5 w-3.5" />
                         Wallet Stack
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-widest text-primary px-0 hover:bg-transparent" onClick={() => router.push('/wallets')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-label text-primary px-0 hover:bg-transparent" onClick={() => router.push('/wallets')}>
                         Manage
                     </Button>
                 </div>
@@ -291,10 +304,9 @@ export const MobileDashboard = ({
                                 onClick={() => router.push(`/wallets?id=${wallet.id}`)}
                             >
                                 <div 
-                                    className="w-44 h-32 rounded-card-premium p-4 flex flex-col justify-between relative overflow-hidden group shadow-card transition-all duration-500"
+                                    className="w-44 h-32 rounded-card-premium p-4 flex flex-col justify-between relative overflow-hidden group border border-white/20 shadow-none transition-all duration-500"
                                     style={{ 
                                         background: dna.gradient,
-                                        boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
                                     }}
                                 >
                                     {/* Ambient Glow Ornament */}
@@ -302,7 +314,7 @@ export const MobileDashboard = ({
                                     <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                                     <div className="flex items-start justify-between relative z-10">
-                                        <div className="p-2 rounded-card bg-white/10 backdrop-blur-xl flex items-center justify-center overflow-hidden h-9 w-9 shadow-inner border border-white/10">
+                                         <div className="p-2 rounded-card bg-white/10 backdrop-blur-xl flex items-center justify-center overflow-hidden h-9 w-9 border border-white/10">
                                             {logo ? (
                                                 <img
                                                     src={logo}
@@ -313,13 +325,13 @@ export const MobileDashboard = ({
                                                 <Icon className="h-5 w-5 text-white" strokeWidth={2.5} />
                                             )}
                                         </div>
-                                        <span className="text-xs font-semibold text-white/40 uppercase tracking-widest">
+                                        <span className="text-label text-white/40">
                                             {wallet.icon === 'e-wallet' ? 'E-Wallet' : wallet.icon === 'bank' ? 'Bank' : 'Cash'}
                                         </span>
                                     </div>
 
                                     <div className="relative z-10 space-y-1">
-                                        <p className="text-xs font-semibold text-white/60 uppercase tracking-widest truncate">{wallet.name}</p>
+                                        <p className="text-label text-white/60 truncate">{wallet.name}</p>
                                         {/* Dynamic Contrast Protection for Balance */}
                                         <div className="bg-white/10 backdrop-blur-sm px-2 py-1 rounded-md border border-white/5 w-fit">
                                             <p className="text-sm font-semibold text-white truncate tracking-tighter tabular-nums">
@@ -353,11 +365,11 @@ export const MobileDashboard = ({
             {/* 6. Recent Transactions */}
             <div className="space-y-4 px-6 pb-10">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40 flex items-center gap-2">
+                    <h2 className="text-label text-muted-foreground/40 flex items-center gap-2">
                         <TrendingUp className="h-3.5 w-3.5" />
                         Mutasi Terbaru
                     </h2>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold uppercase tracking-widest text-primary px-0" onClick={() => router.push('/transactions')}>
+                    <Button variant="ghost" size="sm" className="h-8 text-label text-primary px-0" onClick={() => router.push('/transactions')}>
                         Feed
                     </Button>
                 </div>

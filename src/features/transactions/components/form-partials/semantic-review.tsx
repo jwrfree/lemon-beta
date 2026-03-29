@@ -214,7 +214,7 @@ export const SemanticTransactionReview = ({
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <div className="p-4 bg-secondary/20 rounded-card border border-border pb-5 mb-4 shadow-inner">
+                        <div className="p-4 bg-secondary/20 rounded-card border border-border pb-5 mb-4">
                             {activeEditor === 'amount' && (
                                 <div className="space-y-4">
                                     <p className="text-label text-muted-foreground/40 text-center">Ubah nominal</p>

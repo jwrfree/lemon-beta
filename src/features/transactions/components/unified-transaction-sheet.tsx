@@ -116,7 +116,7 @@ export const UnifiedTransactionSheet = ({
             <SheetContent 
                 side="bottom" 
                 hideCloseButton={true}
-                className="h-[88dvh] sm:h-auto sm:max-w-2xl rounded-t-[2.5rem] p-0 flex flex-col overflow-hidden border-none shadow-2xl bg-background"
+                className="h-[88dvh] sm:h-auto sm:max-w-2xl rounded-t-[2.5rem] p-0 flex flex-col overflow-hidden border-none shadow-none bg-background"
             >
                 {/* Custom Standard Close Button */}
                 <div className="absolute right-6 top-6 z-50">
@@ -124,7 +124,7 @@ export const UnifiedTransactionSheet = ({
                         variant="ghost" 
                         size="icon" 
                         onClick={() => handleCloseAttempt(false)} 
-                        className="h-10 w-10 rounded-full bg-secondary/80 hover:bg-secondary backdrop-blur-sm text-muted-foreground transition-all active:scale-95 shadow-sm"
+                        className="h-10 w-10 rounded-full bg-secondary/80 hover:bg-secondary backdrop-blur-sm text-muted-foreground transition-all active:scale-95 border border-border/40"
                     >
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
@@ -194,7 +194,7 @@ export const UnifiedTransactionSheet = ({
                                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                    className="relative flex items-start gap-3 p-3.5 pr-4 rounded-card rounded-tr-none bg-warning/10 border border-warning/20 max-w-[90%] mr-auto shadow-sm"
+                                    className="relative flex items-start gap-3 p-3.5 pr-4 rounded-card rounded-tr-none bg-warning/10 border border-warning/20 max-w-[90%] mr-auto"
                                 >
                                     <p className="text-xs leading-relaxed text-warning-foreground font-medium">
                                         {clarificationQuestion}
@@ -213,7 +213,7 @@ export const UnifiedTransactionSheet = ({
                                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                    className="relative flex items-start gap-3 p-3.5 pr-4 rounded-card rounded-tr-none bg-primary/10 border border-primary/20 max-w-[90%] mr-auto shadow-sm"
+                                    className="relative flex items-start gap-3 p-3.5 pr-4 rounded-card rounded-tr-none bg-primary/10 border border-primary/20 max-w-[90%] mr-auto"
                                 >
                                     <p className="text-xs leading-relaxed text-primary/90 font-medium">
                                         {socraticInsight}
@@ -262,7 +262,7 @@ export const UnifiedTransactionSheet = ({
                                          <Button 
                                             onClick={saveAll} 
                                             disabled={isAiProcessing}
-                                            className="flex-1 h-14 rounded-card font-bold text-base bg-success text-success-foreground shadow-xl shadow-success/20 hover:opacity-90 transition-all"
+                                            className="flex-1 h-14 rounded-card font-bold text-base bg-success text-success-foreground border border-success/20 hover:opacity-90 transition-all"
                                         >
                                         {isAiProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : (
                                             <span className="flex items-center gap-2">
@@ -276,7 +276,7 @@ export const UnifiedTransactionSheet = ({
                                         <Button 
                                             onClick={handleSubmit} 
                                             disabled={isSubmitting} 
-                                            className="w-full h-14 rounded-card font-bold text-base bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                            className="w-full h-14 rounded-card font-bold text-base bg-primary text-primary-foreground border border-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
                                         >
                                             {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : (
                                                 <span className="flex items-center gap-2">
@@ -307,7 +307,7 @@ export const UnifiedTransactionSheet = ({
 
         {/* Discard Confirmation Dialog */}
         <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
-            <AlertDialogContent className="max-w-[90%] sm:max-w-md rounded-card border-none shadow-2xl p-7">
+            <AlertDialogContent className="max-w-[90%] sm:max-w-md rounded-card border border-border/40 overflow-hidden p-7">
                 <AlertDialogHeader className="space-y-3">
                     <AlertDialogTitle className="text-xl font-bold tracking-tight">Batalkan Transaksi?</AlertDialogTitle>
                     <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
@@ -320,7 +320,7 @@ export const UnifiedTransactionSheet = ({
                             setShowDiscardConfirm(false);
                             onClose();
                         }}
-                        className="w-full h-14 rounded-card font-bold bg-error text-error-foreground hover:opacity-90 border-none transition-all shadow-xl shadow-error/20"
+                        className="w-full h-14 rounded-card font-bold bg-error text-error-foreground hover:opacity-90 border border-error/20 transition-all"
                     >
                         Ya, Batalkan
                     </AlertDialogAction>

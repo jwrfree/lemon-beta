@@ -131,7 +131,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
             <td className="p-4 align-middle">
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-xs font-medium uppercase tracking-widest px-2 py-0.5 rounded-md w-fit mb-1 border",
+                        "text-xs font-medium text-label px-2 py-0.5 rounded-md w-fit mb-1 border",
                         categoryData.bg_color ? `${categoryData.bg_color} border-border` : "bg-secondary border-transparent",
                         categoryData.color
                     )}>
@@ -177,14 +177,14 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     };
 
     return (
-        <div className="overflow-hidden rounded-card border border-border bg-card shadow-card">
+        <div className="overflow-hidden rounded-card border border-border bg-card shadow-none border border-border/40">
             <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
                     <tr>
-                        <th className="p-4 pl-6 font-medium text-xs uppercase tracking-widest">Detail Transaksi</th>
-                        <th className="p-4 font-medium text-xs uppercase tracking-widest">Kategori / Sub</th>
-                        <th className="p-4 font-medium text-xs uppercase tracking-widest">Sumber Dana</th>
-                        <th className="p-4 text-right pr-6 font-medium text-xs uppercase tracking-widest">Nominal</th>
+                        <th className="p-4 pl-6 font-medium text-xs text-label">Detail Transaksi</th>
+                        <th className="p-4 font-medium text-xs text-label">Kategori / Sub</th>
+                        <th className="p-4 font-medium text-xs text-label">Sumber Dana</th>
+                        <th className="p-4 text-right pr-6 font-medium text-xs text-label">Nominal</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -211,7 +211,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push('/transactions')}
-                    className="text-xs font-medium uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
+                    className="text-xs font-medium text-label text-muted-foreground hover:text-primary transition-colors"
                 >
                     Lihat Riwayat Lengkap
                     <ArrowRight className="w-3.5 h-3.5 ml-2" />
@@ -220,3 +220,4 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
         </div>
     );
 };
+

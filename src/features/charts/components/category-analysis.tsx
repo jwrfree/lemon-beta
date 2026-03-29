@@ -105,7 +105,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     const parentVisuals = selectedCategory ? categoryDetails(selectedCategory) : null;
 
     return (
-        <Card className="shadow-card border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
+        <Card className="shadow-none border border-border/40 border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6 space-y-0">
                 <div className="flex items-center gap-2">
                     {selectedCategory && (
@@ -163,7 +163,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
                                         </div>
                                         <div className="min-w-0">
                                             <p className="truncate text-xs sm:text-sm font-medium leading-tight">{item.name}</p>
-                                            <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground/70 mt-0.5">
+                                            <p className="text-xs sm:text-xs font-medium text-label text-muted-foreground/70 mt-0.5">
                                                 {item.percentage.toFixed(1)}% TOTAL
                                             </p>
                                         </div>
@@ -184,4 +184,5 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
         </Card>
     );
 };
+
 

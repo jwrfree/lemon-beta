@@ -14,6 +14,7 @@ import {
 import { UserAvatar } from '@/components/user-avatar';
 import { useAuth } from '@/providers/auth-provider';
 import { LogOut, Settings, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export const UserProfileDropdown = () => {
     const router = useRouter();
@@ -35,16 +36,18 @@ export const UserProfileDropdown = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button 
-                    className="rounded-full outline-none ring-offset-background transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                <Button 
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full h-9 w-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label="Menu profil"
                 >
                     <UserAvatar 
                         name={userData.displayName} 
                         src={userData.photoURL} 
-                        className="h-9 w-9" 
+                        className="h-full w-full" 
                     />
-                </button>
+                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">

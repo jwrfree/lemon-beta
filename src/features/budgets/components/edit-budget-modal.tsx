@@ -103,13 +103,13 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
         <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-6 overflow-y-auto">
           <div className="space-y-3">
-            <Label htmlFor="budget-name" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Budget Name</Label>
+            <Label htmlFor="budget-name" className="text-xs font-semibold text-label text-muted-foreground ml-1">Budget Name</Label>
             <Input id="budget-name" placeholder="e.g. Daily Meals" value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-secondary/50 border-none shadow-inner" required />
           </div>
 
           <div className="space-y-6">
             <div className="space-y-2 text-center">
-              <Label htmlFor="target-amount" className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/40">Monthly Target</Label>
+              <Label htmlFor="target-amount" className="text-xs font-semibold text-label text-muted-foreground/40">Monthly Target</Label>
               <Input
                 id="target-amount"
                 value={formatCurrency(targetAmount)}
@@ -138,7 +138,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
           </div>
 
           <div className="space-y-4">
-            <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Main Category</Label>
+            <Label className="text-xs font-semibold text-label text-muted-foreground ml-1">Main Category</Label>
             <ScrollArea className="h-48">
               <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
                 {expenseCategories.map(cat => {
@@ -161,13 +161,13 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
           {hasSubCategories && (
             <div className="space-y-4 pt-2">
-                <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground ml-1">Sub-Category (Optional)</Label>
+                <Label className="text-xs font-semibold text-label text-muted-foreground ml-1">Sub-Category (Optional)</Label>
                 <div className="flex flex-wrap gap-2">
                 <Button 
                     type="button" 
                     variant={selectedSubCategory === null ? 'default' : 'outline'}
                     onClick={() => setSelectedSubCategory(null)}
-                    className="rounded-full h-10 px-5 text-xs font-semibold uppercase tracking-widest"
+                    className="rounded-full h-10 px-5 text-xs font-semibold text-label"
                 >
                     All {selectedCategories[0]}
                 </Button>
@@ -177,7 +177,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                         type="button" 
                         variant={selectedSubCategory === sub ? 'default' : 'outline'}
                         onClick={() => setSelectedSubCategory(sub)}
-                        className="rounded-full h-10 px-5 text-xs font-semibold uppercase tracking-widest"
+                        className="rounded-full h-10 px-5 text-xs font-semibold text-label"
                     >
                         {sub}
                     </Button>
@@ -188,7 +188,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         </form>
 
         <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md flex gap-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-          <Button type="submit" onClick={handleSubmit} className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest shadow-xl shadow-primary/20 bg-primary active:scale-95" disabled={isSubmitting || !hasChanges}>
+          <Button type="submit" onClick={handleSubmit} className="flex-1 h-14 rounded-full font-semibold text-xs text-label shadow-xl shadow-primary/20 bg-primary active:scale-95" disabled={isSubmitting || !hasChanges}>
             {isSubmitting ? 'Updating...' : 'Save Changes'}
           </Button>
           <AlertDialog>
@@ -205,8 +205,8 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter className="mt-6 flex-row gap-3">
-                <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-semibold text-xs uppercase tracking-widest mt-0">Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-semibold text-xs uppercase tracking-widest">
+                <AlertDialogCancel className="flex-1 rounded-full h-12 border-border font-semibold text-xs text-label mt-0">Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 font-semibold text-xs text-label">
                   {isDeleting ? 'Deleting...' : 'Delete'}
                 </AlertDialogAction>
               </AlertDialogFooter>
@@ -218,4 +218,5 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
     </motion.div>
   );
 };
+
 

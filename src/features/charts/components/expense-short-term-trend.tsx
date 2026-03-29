@@ -61,7 +61,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
     const gradientId = `expense-trend-${chartType}-${range}`;
 
     return (
-        <Card className="overflow-hidden border-none shadow-card bg-card rounded-md">
+        <Card className="overflow-hidden border-none shadow-none border border-border/40 bg-card rounded-md">
             <CardHeader className="space-y-4">
                 <div className="flex flex-col gap-1">
                     <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">Tren Pengeluaran</CardTitle>
@@ -73,7 +73,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
                                 <TabsTrigger 
                                     key={option} 
                                     value={option}
-                                    className="h-full rounded-full px-3 text-xs font-medium uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950"
+                                    className="h-full rounded-full px-3 text-xs font-medium text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950"
                                 >
                                     {option} Hari
                                 </TabsTrigger>
@@ -89,7 +89,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
                                 <TabsTrigger
                                     key={option.value}
                                     value={option.value}
-                                    className="h-full flex items-center gap-1 rounded-full px-3 text-xs font-medium uppercase tracking-wider transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950"
+                                    className="h-full flex items-center gap-1 rounded-full px-3 text-xs font-medium text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950"
                                 >
                                     <option.icon className="h-3 w-3" />
                                     {option.label}
@@ -102,23 +102,23 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
             <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none">
-                        <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Total</p>
+                        <p className="text-xs sm:text-xs font-medium text-label text-muted-foreground mb-1">Total</p>
                         <p className="text-base sm:text-lg font-medium text-foreground tabular-nums">{formatCurrency(totalSpent)}</p>
                         <p className={cn("text-xs sm:text-xs font-medium uppercase mt-1", delta > 0 ? "text-destructive" : "text-teal-600")}>
                             {percentChange ? (percentChange > 0 ? '+' : '') + percentChange.toFixed(1) + '%' : '—'}
                         </p>
                     </div>
                     <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none">
-                        <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Rata-rata</p>
+                        <p className="text-xs sm:text-xs font-medium text-label text-muted-foreground mb-1">Rata-rata</p>
                         <p className="text-base sm:text-lg font-medium text-foreground tabular-nums">{formatCurrency(average)}</p>
-                        <p className="text-xs sm:text-xs font-medium text-muted-foreground mt-1 uppercase tracking-widest">PER HARI</p>
+                        <p className="text-xs sm:text-xs font-medium text-muted-foreground mt-1 text-label">PER HARI</p>
                     </div>
                     <div className="rounded-lg bg-muted/50 p-3 sm:p-4 border-none col-span-2 sm:col-span-1">
-                        <p className="text-xs sm:text-xs font-medium uppercase tracking-widest text-muted-foreground mb-1">Puncak</p>
+                        <p className="text-xs sm:text-xs font-medium text-label text-muted-foreground mb-1">Puncak</p>
                         {peakDay ? (
                             <div className="flex items-center justify-between sm:block">
                                 <p className="text-base sm:text-lg font-medium text-foreground tabular-nums">{formatCurrency(peakDay.total)}</p>
-                                <p className="text-xs sm:text-xs font-medium text-muted-foreground sm:mt-1 uppercase tracking-widest">{peakDay.shortLabel}</p>
+                                <p className="text-xs sm:text-xs font-medium text-muted-foreground sm:mt-1 text-label">{peakDay.shortLabel}</p>
                             </div>
                         ) : (
                             <p className="text-sm text-muted-foreground">None</p>
@@ -138,4 +138,5 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
         </Card>
     );
 };
+
 

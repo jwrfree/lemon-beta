@@ -36,7 +36,7 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
                             isSelected ? 'border-primary bg-primary/10 ring-1 ring-primary' : 'border-transparent bg-secondary'
                         )}
                     >
-                        <div className={cn("p-2.5 rounded-lg shadow-card", isSelected ? 'bg-primary text-white' : bgColor)}>
+                        <div className={cn("p-2.5 rounded-lg shadow-none border border-border/40", isSelected ? 'bg-primary text-white' : bgColor)}>
                             <CategoryIcon className={cn("h-5 w-5", isSelected ? 'text-white' : color)} />
                         </div>
                         <span className="text-xs font-medium text-center leading-tight truncate w-full">{cat.name}</span>
@@ -46,3 +46,4 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
         </div>
     );
 };
+

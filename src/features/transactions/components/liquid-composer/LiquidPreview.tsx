@@ -43,7 +43,7 @@ export const LiquidPreview = () => {
     }, [text]);
 
     return (
-        <div className="w-full max-w-lg mx-auto bg-background rounded-card overflow-hidden border border-border shadow-card p-6 space-y-6">
+        <div className="w-full max-w-lg mx-auto bg-background rounded-card overflow-hidden border border-border shadow-none border border-border/40 p-6 space-y-6">
             
             {/* 1. The Hero Header */}
             <HeroAmount 
@@ -142,4 +142,5 @@ export const LiquidPreview = () => {
         </div>
     );
 };
+
 

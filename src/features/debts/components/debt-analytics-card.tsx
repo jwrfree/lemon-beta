@@ -175,7 +175,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                         )}
                     </div>
                     <div className="flex-1 z-10">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-0.5 flex items-center gap-1">
+                        <p className="text-label text-primary mb-0.5 flex items-center gap-1">
                             <Sparkles className="h-3 w-3" />
                             AI Debt Strategist
                         </p>
@@ -195,7 +195,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Trend Card */}
-                <Card className="border-border shadow-card bg-card">
+                <Card className="border border-border/40 shadow-none bg-card">
                     <CardHeader className="pb-2 px-4 pt-4">
                         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                             <Wallet className="h-4 w-4" />
@@ -238,7 +238,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                 </Card>
 
                 {/* Projection & Alerts Card */}
-                <Card className="border-border shadow-card bg-card">
+                <Card className="border border-border/40 shadow-none bg-card">
                     <CardHeader className="pb-2 px-4 pt-4">
                         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                             <Target className="h-4 w-4" />

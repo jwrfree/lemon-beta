@@ -66,12 +66,12 @@ export const BudgetingDashboard = () => {
 
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
-                    <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
-                    <Card className="border-none shadow-card rounded-card-premium bg-card overflow-hidden">
+                    <h2 className="text-label text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
+                    <Card className="border border-border/40 shadow-none rounded-card-premium bg-card overflow-hidden">
                         <CardContent className="p-7 space-y-6">
                             <div className="h-48 flex justify-center relative">
                                 <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
-                                    <p className="text-xs font-semibold text-muted-foreground/40 uppercase tracking-widest">Sisa</p>
+                                    <p className="text-label text-muted-foreground/40">Sisa</p>
                                     <p className="text-2xl font-semibold tracking-tighter tabular-nums text-primary">{Math.round((overview.totalRemaining / overview.totalBudget) * 100)}%</p>
                                 </div>
                                 <ChartContainer config={{}} className="aspect-square h-full relative z-10">
@@ -91,8 +91,8 @@ export const BudgetingDashboard = () => {
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
-                                <div className="p-5 rounded-card bg-muted/30 border border-border/20 shadow-inner">
-                                    <p className="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest mb-1">Total Limit Anggaran</p>
+                                <div className="p-5 rounded-card bg-muted/30 border border-border/20">
+                                    <p className="text-label text-muted-foreground/60 mb-1">Total Limit Anggaran</p>
                                     <p className="text-2xl font-semibold tracking-tighter tabular-nums">{formatCurrency(overview.totalBudget)}</p>
                                 </div>
                             </div>
@@ -103,8 +103,8 @@ export const BudgetingDashboard = () => {
                 {/* BUDGETS LIST */}
                 <div className="col-span-12 lg:col-span-8 space-y-4">
                     <div className="flex items-center justify-between px-2">
-                        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Pos Anggaran</h2>
-                        <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-xs font-semibold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+                        <h2 className="text-label text-muted-foreground/60">Pos Anggaran</h2>
+                        <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-label hover:bg-primary/10 hover:text-primary">
                             <Plus className="h-3.5 w-3.5 mr-1" />
                             Tambah
                         </Button>

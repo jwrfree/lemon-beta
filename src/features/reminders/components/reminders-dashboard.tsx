@@ -232,7 +232,7 @@ export const RemindersDashboard = () => {
                                         ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                         : undefined;
                                     return (
-                                        <Card key={reminder.id} className="p-4 border-none shadow-card hover:shadow-card transition-all">
+                                        <Card key={reminder.id} className="p-4 border-none shadow-none border border-border/40 hover:shadow-none border border-border/40 transition-all">
                                             <div className="flex items-start gap-3">
                                                 <div className={cn(
                                                     "p-2 rounded-full mt-0.5",
@@ -320,4 +320,5 @@ export const RemindersDashboard = () => {
         </div>
     );
 };
+
 

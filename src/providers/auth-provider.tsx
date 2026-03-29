@@ -14,6 +14,7 @@ interface AuthContextType {
     isLoading: boolean;
     handleSignOut: () => void;
     updateUserBiometricStatus: (isBiometricEnabled: boolean) => Promise<void>;
+    updateOnboardingStatus: (status: Partial<import('@/types/models').OnboardingStatus>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -65,7 +66,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 .single();
             
             if (data) {
-                setUserData(data as UserProfile);
+                setUserData({
+                    ...data,
+                    onboardingStatus: data.onboarding_status ? (data.onboarding_status as import('@/types/models').OnboardingStatus) : undefined
+                } as UserProfile);
             } else {
                 setUserData({ 
                     id: user.id,
@@ -83,6 +87,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (!user) throw new Error("User not authenticated.");
         await supabase.from('profiles').upsert({ id: user.id, is_biometric_enabled: isBiometricEnabled });
     }, [user, supabase]);
+
+    const updateOnboardingStatus = useCallback(async (statusUpdate: Partial<import('@/types/models').OnboardingStatus>) => {
+        if (!user || !userData) return;
+
+        const currentStatus = userData.onboardingStatus || {
+            steps: { wallet: false, transaction: false, goal: false },
+            isDismissed: false
+        };
+
+        const newStatus = {
+            ...currentStatus,
+            ...statusUpdate,
+            steps: {
+                ...currentStatus.steps,
+                ...statusUpdate.steps
+            }
+        };
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ onboarding_status: newStatus })
+            .eq('id', user.id);
+
+        if (!error) {
+            setUserData(prev => prev ? { ...prev, onboardingStatus: newStatus } : null);
+        } else {
+            console.error("Failed to update onboarding status:", error);
+        }
+    }, [user, userData, supabase]);
 
     const handleSignOut = useCallback(async () => {
         try {
@@ -107,8 +140,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         userData,
         isLoading,
         handleSignOut,
-        updateUserBiometricStatus
-    }), [user, userData, isLoading, handleSignOut, updateUserBiometricStatus]);
+        updateUserBiometricStatus,
+        updateOnboardingStatus
+    }), [user, userData, isLoading, handleSignOut, updateUserBiometricStatus, updateOnboardingStatus]);
 
     return (
         <AuthContext.Provider value={contextValue}>

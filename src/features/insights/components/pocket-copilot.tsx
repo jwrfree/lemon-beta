@@ -47,7 +47,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={cn(
-                    "p-4 rounded-card border flex flex-col gap-3 shadow-card",
+                    "p-4 rounded-card border flex flex-col gap-3 shadow-none",
                     config.bg,
                     config.border,
                     className
@@ -59,13 +59,13 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                             <Sparkles className="h-4 w-4" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-widest opacity-60">Pocket Co-Pilot</p>
+                            <p className="text-label opacity-60">Pocket Co-Pilot</p>
                             <p className={cn("text-xs font-semibold", config.color)}>{config.label}</p>
                         </div>
                     </div>
                     {showBurnRate && (
                         <div className="text-right">
-                            <p className="text-xs font-semibold uppercase tracking-widest opacity-40">Burn Rate</p>
+                            <p className="text-label opacity-40">Burn Rate</p>
                             <p className="text-xs font-semibold tabular-nums">
                                 Rp {new Intl.NumberFormat('id-ID').format(risk.burnRate)}/hari
                             </p>

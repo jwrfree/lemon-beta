@@ -25,7 +25,7 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
     };
 
     const Content = (
-        <Card className="hover:shadow-card transition-all duration-300 h-full border-none bg-card group rounded-card">
+        <Card className="hover:shadow-none border border-border/40 transition-all duration-300 h-full border-none bg-card group rounded-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
                 <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">{title}</CardTitle>
                 <div className={cn("p-1.5 rounded-md bg-muted group-hover:scale-110 transition-transform", getBgColor(color))}>
@@ -65,4 +65,5 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
 
     return Content;
 };
+
 

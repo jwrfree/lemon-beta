@@ -11,7 +11,7 @@ export const RiskScoreCard = () => {
 
     if (isLoading) {
         return (
-            <Card className="p-6 h-[200px] flex items-center justify-center border-none shadow-card bg-card/50 backdrop-blur-md">
+            <Card className="p-6 h-[200px] flex items-center justify-center border-none shadow-none bg-card/50 backdrop-blur-md">
                 <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
             </Card>
         );
@@ -24,7 +24,7 @@ export const RiskScoreCard = () => {
                     <Sparkles className="h-6 w-6 opacity-30" />
                 </div>
                 <div className="space-y-1">
-                    <p className="text-xs font-semibold uppercase tracking-widest opacity-40">Lemon Coach lagi belajar nih</p>
+                    <p className="text-label opacity-40">Lemon Coach lagi belajar nih</p>
                     <p className="text-xs text-muted-foreground max-w-[200px]">Kasih Lemon beberapa transaksi lagi ya, biar kita bisa pantau bareng kesehatan keuanganmu!</p>
                 </div>
             </Card>
@@ -60,10 +60,9 @@ export const RiskScoreCard = () => {
     return (
         <Card 
             className={cn(
-                "relative overflow-hidden border-none shadow-card transition-all duration-500 rounded-card-premium text-white",
+                "relative overflow-hidden border border-white/10 shadow-none transition-all duration-500 rounded-card-premium text-white",
                 config.bg
             )}
-            style={{ boxShadow: `0 20px 50px -12px ${config.glow}` }}
         >
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 translate-x-4 -translate-y-4">
                 <Sparkles className="h-40 w-40" />
@@ -73,11 +72,11 @@ export const RiskScoreCard = () => {
             <div className="p-7 space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className={cn("p-3 rounded-card bg-white/10 backdrop-blur-xl border border-white/10 shadow-inner")}>
+                        <div className={cn("p-3 rounded-card bg-white/10 backdrop-blur-xl border border-white/10")}>
                             <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold uppercase tracking-widest text-white/40">Flux Momentum</p>
+                            <p className="text-label text-white/40">Flux Momentum</p>
                             <h3 className="text-xl font-semibold tracking-tighter text-white">Co-Pilot Insight</h3>
                         </div>
                     </div>
@@ -106,12 +105,12 @@ export const RiskScoreCard = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
-                                <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">Burn Velocity</p>
+                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10">
+                                <p className="text-label text-white/40 mb-1.5">Burn Velocity</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
-                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10 shadow-inner">
-                                <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-1.5">Momentum</p>
+                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10">
+                                <p className="text-label text-white/40 mb-1.5">Momentum</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40">RATIO</span></p>
                             </div>
                         </div>
@@ -119,7 +118,7 @@ export const RiskScoreCard = () => {
 
                     <div className="hidden sm:block shrink-0">
                         {/* Vertical Score Bar */}
-                        <div className="h-32 w-2 relative bg-white/10 rounded-full overflow-hidden shadow-inner">
+                        <div className="h-32 w-2 relative bg-white/10 rounded-full overflow-hidden">
                             <motion.div
                                 initial={{ height: 0 }}
                                 animate={{ height: `${risk.score}%` }}
@@ -133,7 +132,7 @@ export const RiskScoreCard = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-widest text-white/30 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-4 text-label text-white/30 pt-4 border-t border-white/5">
                     <div className="flex items-center gap-2">
                         <div className="h-1 w-1 rounded-full bg-white/40" />
                         <span>Adaptive Risk Engine Active</span>

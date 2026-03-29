@@ -155,10 +155,10 @@
     --radius-lg: 0.75rem;   /* 12px — standard cards, panels */
 
     /* Design-system named tiers */
-    --radius-card:         1.5rem;                   /* 24px — hero cards, modals, bottom sheets */
-    --radius-card-premium: 2rem;                     /* 32px — DNA-gradient premium cards */
-    --radius-card-glass:   1.5rem;                   /* 24px — glass inset panels */
-    --radius-card-icon:    1.25rem;                  /* 20px — icon containers inside premium cards */
+    --radius-card:         0.75rem;                  /* 12px — hero cards, modals, bottom sheets */
+    --radius-card-premium: 1rem;                     /* 16px — DNA-gradient premium cards */
+    --radius-card-glass:   0.75rem;                  /* 12px — glass inset panels */
+    --radius-card-icon:    0.625rem;                 /* 10px — icon containers inside premium cards */
 
     @media (min-width: 768px) {
       :root {
