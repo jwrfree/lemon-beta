@@ -36,13 +36,13 @@ This page provides an overview of all documentation related to the transaction c
   - Monitoring queries
 
 ### Migration Files
-- **[supabase/migrations/20260222170000_add_missing_default_categories.sql](supabase/migrations/20260222170000_add_missing_default_categories.sql)** - The migration script
-- **[supabase/migrations/README_20260222170000.md](supabase/migrations/README_20260222170000.md)** - Migration documentation
-- **[supabase/migrations/VERIFY_20260222170000.sql](supabase/migrations/VERIFY_20260222170000.sql)** - Verification queries
+- **[supabase/migrations/20260222170000_add_missing_default_categories.sql](../../supabase/migrations/20260222170000_add_missing_default_categories.sql)** - The migration script
+- **[supabase/migrations/README_20260222170000.md](../../supabase/migrations/README_20260222170000.md)** - Migration documentation
+- **[supabase/migrations/VERIFY_20260222170000.sql](../../supabase/migrations/VERIFY_20260222170000.sql)** - Verification queries
 
 ### Project Documentation
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history (see v2.5.1)
-- **[README.md](README.md)** - Project overview (updated to v2.5.1)
+- **[CHANGELOG.md](../../CHANGELOG.md)** - Version history (see v2.5.1)
+- **[README.md](../../README.md)** - Project overview (updated to v2.5.1)
 
 ---
 
@@ -118,8 +118,8 @@ Deployment reference with:
 - ✅ Rollback procedures
 
 **Migration Files**:
-1. [20260222170000_add_missing_default_categories.sql](supabase/migrations/20260222170000_add_missing_default_categories.sql) - Run this
-2. [VERIFY_20260222170000.sql](supabase/migrations/VERIFY_20260222170000.sql) - Verify with this
+1. [20260222170000_add_missing_default_categories.sql](../../supabase/migrations/20260222170000_add_missing_default_categories.sql) - Run this
+2. [VERIFY_20260222170000.sql](../../supabase/migrations/VERIFY_20260222170000.sql) - Verify with this
 
 **Also Review**: [SOLUTION_SUMMARY.md](SOLUTION_SUMMARY.md) - Impact section
 
@@ -142,7 +142,7 @@ User-facing impact:
 - ✅ Use cases
 - ✅ Business value
 
-**Version Info**: [CHANGELOG.md](CHANGELOG.md) - Version 2.5.1
+**Version Info**: [CHANGELOG.md](../../CHANGELOG.md) - Version 2.5.1
 
 ---
 
@@ -201,7 +201,7 @@ User-facing impact:
 - **"How do I deploy this?"** → [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
 - **"Why was this needed?"** → [SOLUTION_SUMMARY.md](SOLUTION_SUMMARY.md)
 - **"What's the visual impact?"** → [CATEGORIES_VISUAL.md](CATEGORIES_VISUAL.md)
-- **"How do I verify it worked?"** → [supabase/migrations/VERIFY_20260222170000.sql](supabase/migrations/VERIFY_20260222170000.sql)
+- **"How do I verify it worked?"** → [supabase/migrations/VERIFY_20260222170000.sql](../../supabase/migrations/VERIFY_20260222170000.sql)
 
 ---
 

@@ -9,7 +9,7 @@
  *
  * Usage: node scripts/audit-design-system.mjs [--output <file>]
  *
- * @see DESIGN_SYSTEM.md for full token specifications.
+ * @see docs/standards/DESIGN_SYSTEM.md for full token specifications.
  */
 
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'fs';

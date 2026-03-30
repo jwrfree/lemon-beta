@@ -92,7 +92,7 @@ npx supabase start
 npx supabase db push
 ```
 
-The canonical schema lives in `supabase/migrations`. `SUPABASE_SETUP.sql` and `SUPABASE_RPC.sql` document the Postgres functions and triggers used for balance integrity and atomic ownership checks.
+The canonical schema lives in `supabase/migrations`. `supabase/reference/SUPABASE_SETUP.sql` and `supabase/reference/SUPABASE_RPC.sql` document the Postgres functions and triggers used for balance integrity and atomic ownership checks.
 
 ### 4. Run the development server
 
@@ -132,11 +132,13 @@ Open [http://localhost:3000](http://localhost:3000). Register an account — ema
 
 ## Documentation
 
+- [Docs Index](./docs/README.md) – overview of standards, audits, and feature-specific docs
 - [Product Blueprint](./docs/blueprint.md) – information architecture, detailed flows, and motion specs
-- [Design System](./docs/DESIGN_SYSTEM.md) – typography scale, color palette, spacing rules
+- [Design System](./docs/standards/DESIGN_SYSTEM.md) – typography scale, color palette, spacing rules
 - [Complexity Control Guide](./docs/complexity-control-guide.md) – guardrails for information density
-- [UX Writing Guide](./docs/UX_WRITING_GUIDE.md) – microcopy style guide
+- [UX Writing Guide](./docs/standards/UX_WRITING_GUIDE.md) – microcopy style guide
 - [Design Audit](./docs/design-audit.md) – heuristic evaluation and full flow assessment
+- [Category Fix Docs](./docs/categories-fix/DOCS_INDEX.md) – grouped documentation for the v2.5.1 category migration
 - [Changelog](./CHANGELOG.md) – version history
 
 ---

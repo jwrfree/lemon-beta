@@ -250,7 +250,7 @@ CREATE POLICY "Users can manage their own {table}" ON {table}
 
 **Balance Update Trigger:**
 ```sql
--- File: SUPABASE_MIGRATION_BALANCE_TRIGGER.sql
+-- File: supabase/reference/SUPABASE_MIGRATION_BALANCE_TRIGGER.sql
 CREATE TRIGGER on_transaction_change
 AFTER INSERT OR UPDATE OR DELETE ON transactions
 FOR EACH ROW EXECUTE FUNCTION handle_transaction_balance_update();
@@ -416,7 +416,7 @@ No results found
 **Biometric Implementation:**
 - File: `src/hooks/use-biometric.ts`
 - Uses: `@simplewebauthn/server` (v10.0.0)
-- Storage: Supabase table (SUPABASE_MIGRATION_BIOMETRIC.sql)
+- Storage: Supabase table (`supabase/reference/SUPABASE_MIGRATION_BIOMETRIC.sql`)
 
 ---
 
@@ -796,7 +796,7 @@ NEXT_PUBLIC_APP_URL=
 | **design-audit.md** | ✅ Complete | Excellent | Sep 2025 |
 | **ARCHITECTURE_AUDIT_REPORT.md** | ✅ Complete | Excellent | Jan 2026 |
 | **MIGRATION_PLAN.md** | ✅ Complete | Good | Jan 2026 |
-| **UX_WRITING_GUIDE.md** | ✅ Complete | Good | - |
+| **standards/UX_WRITING_GUIDE.md** | ✅ Complete | Good | - |
 | **CONTRIBUTING.md** | ✅ Complete | Good | - |
 | **SECURITY.md** | ✅ Complete | Good | - |
 

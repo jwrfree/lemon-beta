@@ -42,7 +42,7 @@ const eslintConfig = [
       "no-useless-escape": "off",
       "react-hooks/set-state-in-effect": "warn",
       /**
-       * Design-system anti-pattern rules (see DESIGN_SYSTEM.md §7).
+       * Design-system anti-pattern rules (see docs/standards/DESIGN_SYSTEM.md §7).
        *
        * These rules warn when forbidden patterns are used directly in JSX className
        * string literals. They do NOT catch patterns inside cn() calls or template
@@ -53,27 +53,27 @@ const eslintConfig = [
         // §2 Typography — ban arbitrary pixel font sizes; use text-xs / text-label instead
         {
           "selector": "JSXAttribute[name.name='className'] > Literal[value=/text-\\[(8|9|10|11|15)px\\]/]",
-          "message": "[DS §2] Forbidden arbitrary font size. Use `text-xs` (body) or `text-label` (micro-label) instead. See DESIGN_SYSTEM.md §2."
+          "message": "[DS §2] Forbidden arbitrary font size. Use `text-xs` (body) or `text-label` (micro-label) instead. See docs/standards/DESIGN_SYSTEM.md §2."
         },
         // §5 Spacing — ban non-standard nav-clearance bottom padding
         {
           "selector": "JSXAttribute[name.name='className'] > Literal[value=/(^|\\s)(pb-20|pb-28|pb-32|pb-safe)(\\s|$)/]",
-          "message": "[DS §5] Use `pb-24` for mobile nav clearance. pb-20, pb-28, pb-32, pb-safe are non-standard. See DESIGN_SYSTEM.md §5."
+          "message": "[DS §5] Use `pb-24` for mobile nav clearance. pb-20, pb-28, pb-32, pb-safe are non-standard. See docs/standards/DESIGN_SYSTEM.md §5."
         },
         // §4 FAB — ban hardcoded literal color FABs (bg-purple-600, bg-blue-600)
         {
           "selector": "JSXAttribute[name.name='className'] > Literal[value=/bg-(purple|blue|green|pink|orange|indigo|cyan|violet|fuchsia)-[0-9]+/]",
-          "message": "[DS §4] Forbidden literal color on interactive element. Use semantic tokens: bg-primary, bg-destructive, bg-success. See DESIGN_SYSTEM.md §4."
+          "message": "[DS §4] Forbidden literal color on interactive element. Use semantic tokens: bg-primary, bg-destructive, bg-success. See docs/standards/DESIGN_SYSTEM.md §4."
         },
         // §2 Typography — ban arbitrary tracking values (tracking-[0.Xem])
         {
           "selector": "JSXAttribute[name.name='className'] > Literal[value=/tracking-\\[[^\\]]+\\]/]",
-          "message": "[DS §2] Forbidden arbitrary tracking value. Use `tracking-widest` for micro-labels or `tracking-tight` for headings. See DESIGN_SYSTEM.md §2."
+          "message": "[DS §2] Forbidden arbitrary tracking value. Use `tracking-widest` for micro-labels or `tracking-tight` for headings. See docs/standards/DESIGN_SYSTEM.md §2."
         },
         // §2.6 Typography — ban arbitrary leading values (leading-[X])
         {
           "selector": "JSXAttribute[name.name='className'] > Literal[value=/leading-\\[[^\\]]+\\]/]",
-          "message": "[DS §2.6] Forbidden arbitrary line-height value. Use `leading-tight` (headings), `leading-relaxed` (body), `leading-snug` (labels), or `leading-none` (numbers). See DESIGN_SYSTEM.md §2.6."
+          "message": "[DS §2.6] Forbidden arbitrary line-height value. Use `leading-tight` (headings), `leading-relaxed` (body), `leading-snug` (labels), or `leading-none` (numbers). See docs/standards/DESIGN_SYSTEM.md §2.6."
         }
       ],
     },

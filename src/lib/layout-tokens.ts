@@ -1,13 +1,13 @@
 /**
  * Semantic spacing tokens — Phase 4 Token Abstraction Layer
  *
- * Maps structural layout patterns to named tokens per DESIGN_SYSTEM.md §5.
+ * Maps structural layout patterns to named tokens per docs/standards/DESIGN_SYSTEM.md §5.
  * Use these tokens instead of repeating raw Tailwind utility strings in
  * page containers, section wrappers, CardContent, grid layouts, and form stacks.
  *
- * @see DESIGN_SYSTEM.md §5.1 Page Layout
- * @see DESIGN_SYSTEM.md §5.2 Spacing Scale
- * @see DESIGN_SYSTEM.md §4.2 Card Tiers
+ * @see docs/standards/DESIGN_SYSTEM.md §5.1 Page Layout
+ * @see docs/standards/DESIGN_SYSTEM.md §5.2 Spacing Scale
+ * @see docs/standards/DESIGN_SYSTEM.md §4.2 Card Tiers
  */
 
 export const spacing = {

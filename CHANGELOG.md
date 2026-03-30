@@ -35,7 +35,7 @@ All updates and improvements to the Lemon app will be documented here.
   - `src/components/ui/error-alert.tsx` — `ErrorAlert` / `ErrorBanner` component for block-level inline errors (network / server / validation / empty) with `role="alert"` and `aria-live="assertive"`, optional retry button
   - `src/components/ui/retry-section.tsx` — `RetrySection` component for self-contained retry prompts with `role="status"` and `aria-live="polite"`
   - `Alert` component extended with `error` variant (`border-error-border bg-error-surface text-error`)
-  - `DESIGN_SYSTEM.md §10 Error State Guidelines` — tone categories, component reference, visual hierarchy, accessibility requirements, Do/Don't examples
+  - `docs/standards/DESIGN_SYSTEM.md §10 Error State Guidelines` — tone categories, component reference, visual hierarchy, accessibility requirements, Do/Don't examples
 
 ### Changed
 - **Standardized error messaging tone** across `showToast` call sites — messages are human, actionable, and in Bahasa Indonesia
@@ -107,7 +107,7 @@ Pengguna tidak bisa mencatat hutang baru karena tiga masalah utama yang ditemuka
 
 ### ♻️ Refactor — Full Design System Enforcement (Phase 2–5 Complete)
 
-This release completes the mechanical enforcement of the design system (`docs/DESIGN_SYSTEM.md`) across the entire codebase. **No business logic was changed.**
+This release completes the mechanical enforcement of the design system (`docs/standards/DESIGN_SYSTEM.md`) across the entire codebase. **No business logic was changed.**
 
 #### Summary
 
@@ -167,7 +167,7 @@ All changes are **presentation-layer only** (CSS class names in JSX). No TypeScr
 
 ### 🎨 UI — Design System Consistency Audit (Phase 2–5)
 
-This release enforces the design system standards documented in `DESIGN_SYSTEM.md` across the entire presentation layer. **No business logic was changed.**
+This release enforces the design system standards documented in `docs/standards/DESIGN_SYSTEM.md` across the entire presentation layer. **No business logic was changed.**
 
 #### Typography
 
@@ -408,7 +408,7 @@ This release enforces the design system standards documented in `DESIGN_SYSTEM.m
 ### 🏗 Architecture & Engineering Standardization
 
 - **Design System v1.1.0 Update**:
-  - Formalized **Modularity & Scalability** as core engineering mandates in `docs/DESIGN_SYSTEM.md`.
+  - Formalized **Modularity & Scalability** as core engineering mandates in `docs/standards/DESIGN_SYSTEM.md`.
   - Defined **Atomic Component** hierarchy: Atoms (basic UI), Molecules (combined logic), and Organisms (feature blocks).
   - Established strict **Naming Conventions**: `kebab-case` for files, `PascalCase` for components, and `camelCase` for utilities/hooks.
   - Specified **State Management** tiers: Global (Context), Server (Real-time hooks), and Local (React state).

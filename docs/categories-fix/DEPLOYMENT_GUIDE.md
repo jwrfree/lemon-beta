@@ -213,8 +213,8 @@ HAVING COUNT(*) > 1;
 - **User Guide**: [KATEGORI_FIX_README.md](KATEGORI_FIX_README.md) (Indonesian + English)
 - **Visual Docs**: [CATEGORIES_VISUAL.md](CATEGORIES_VISUAL.md) (Diagrams and comparisons)
 - **Technical Analysis**: [SOLUTION_SUMMARY.md](SOLUTION_SUMMARY.md) (Root cause & solution)
-- **Migration Docs**: [supabase/migrations/README_20260222170000.md](supabase/migrations/README_20260222170000.md)
-- **Changelog**: [CHANGELOG.md](CHANGELOG.md) (Version 2.5.1)
+- **Migration Docs**: [supabase/migrations/README_20260222170000.md](../../supabase/migrations/README_20260222170000.md)
+- **Changelog**: [CHANGELOG.md](../../CHANGELOG.md) (Version 2.5.1)
 
 ---
 
