@@ -49,6 +49,7 @@ export async function updateSession(request: NextRequest) {
     !request.nextUrl.pathname.startsWith('/auth') &&
     // Allow public API routes (auth, icons, etc.)
     !request.nextUrl.pathname.startsWith('/api/auth') &&
+    !request.nextUrl.pathname.startsWith('/api/ai/chat') &&
     !request.nextUrl.pathname.startsWith('/api/pwa-icon') &&
     !request.nextUrl.pathname.startsWith('/api/logo')
   ) {

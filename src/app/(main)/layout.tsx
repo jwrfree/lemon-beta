@@ -171,13 +171,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                             onConfirm={handleConfirmDelete}
                         />
                     )}
-                    {isAIChatOpen && (
-                        <AIChatDrawer 
-                            key="ai-chat-drawer"
-                            isOpen={isAIChatOpen} 
-                            onClose={() => setIsAIChatOpen(false)} 
-                        />
-                    )}
+                    <AIChatDrawer 
+                        key="ai-chat-drawer"
+                        isOpen={isAIChatOpen} 
+                        onClose={() => setIsAIChatOpen(false)} 
+                    />
                 </AnimatePresence>
 
                     {/* UnifiedTransactionSheet covers SmartAdd functionality now */}

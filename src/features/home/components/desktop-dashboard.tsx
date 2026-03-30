@@ -256,7 +256,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-9 w-9 rounded-xl border border-primary/20 shadow-none bg-primary/5 text-primary hover:bg-primary/10 transition-all active:scale-95"
+                                className="h-9 w-9 rounded-xl border border-primary/30 shadow-none bg-primary/10 text-primary hover:bg-primary/20 transition-all active:scale-95"
                                 onClick={() => setIsAIChatOpen(true)}
                                 title="Tanya Lemon AI"
                             >

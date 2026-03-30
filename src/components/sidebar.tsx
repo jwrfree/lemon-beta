@@ -99,7 +99,7 @@ export const Sidebar = () => {
                                 onClick={() => setIsAIChatOpen(true)}
                                 variant="outline"
                                 className={cn(
-                                    'active:scale-95 transition-all duration-300 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 rounded-xl',
+                                    'active:scale-95 transition-all duration-300 border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 rounded-xl',
                                     isSidebarCollapsed ? 'w-12 h-12 p-0 rounded-full' : 'w-full gap-3 px-5 h-12 rounded-xl'
                                 )}
                             >
@@ -110,7 +110,7 @@ export const Sidebar = () => {
                             </Button>
                         </TooltipTrigger>
                         {isSidebarCollapsed && (
-                            <TooltipContent side="right" sideOffset={20} className="text-label bg-primary/10 text-primary border-primary/20 shadow-none">
+                            <TooltipContent side="right" sideOffset={20} className="text-label bg-primary/20 text-primary border-primary/30 shadow-none">
                                 Tanya Lemon AI
                             </TooltipContent>
                         )}

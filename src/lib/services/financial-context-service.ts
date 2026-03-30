@@ -1,3 +1,4 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 
 export interface UnifiedFinancialContext {
@@ -41,8 +42,11 @@ export interface UnifiedFinancialContext {
 }
 
 class FinancialContextService {
-    async getUnifiedContext(userId: string): Promise<UnifiedFinancialContext | null> {
-        const supabase = createClient();
+    async getUnifiedContext(
+        userId: string,
+        client?: Pick<SupabaseClient, 'rpc'>
+    ): Promise<UnifiedFinancialContext | null> {
+        const supabase = client ?? createClient();
         const { data, error } = await supabase.rpc('get_unified_context', {
             p_user_id: userId
         });
