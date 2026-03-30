@@ -14,7 +14,10 @@ export const useTransactionActions = (user: User | null) => {
     const router = useRouter();
     const { refreshWallets } = useWalletData();
 
-    const addTransaction = useCallback(async (data: TransactionInput, options?: { silentSuccessToast?: boolean }): Promise<string | null> => {
+    const addTransaction = useCallback(async (
+        data: TransactionInput,
+        options?: { silentSuccessToast?: boolean; closeSheet?: boolean; refresh?: boolean }
+    ): Promise<string | null> => {
         if (!user) return null;
 
         // 1. Optimistic Update (Handled by Event Listener in WalletProvider)
@@ -66,11 +69,15 @@ export const useTransactionActions = (user: User | null) => {
             details: { amount: data.amount, type: data.type, category: data.category }
         });
 
-        ui.setIsTxSheetOpen(false);
+        if (options?.closeSheet !== false) {
+            ui.setIsTxSheetOpen(false);
+        }
         if (!options?.silentSuccessToast) {
             ui.showToast("Transaksi berhasil ditambahkan!", 'success');
         }
-        router.refresh();
+        if (options?.refresh !== false) {
+            router.refresh();
+        }
         return result.data;
     }, [user, ui, refreshWallets, router]);
 

@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
-import { getCategoryIcon } from '@/lib/category-utils';
 import { Category } from '@/lib/categories';
 import { Wallet } from '@/types/models';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { CategoryGrid } from '../category-grid';
-import { SubCategorySheet } from '../sub-category-sheet';
-
 import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, Calendar as CalendarIcon, Edit3, ShieldCheck, Sparkles } from 'lucide-react';
+import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
+import { getCategoryIcon } from '@/lib/category-utils';
 import { UnifiedTransactionInputValues } from '../../schemas/transaction-schema';
 import { AmountInput } from './amount-input';
+import { SubCategorySheet } from '../sub-category-sheet';
 
 interface SemanticTransactionReviewProps {
     form: UseFormReturn<UnifiedTransactionInputValues>;
@@ -39,44 +36,54 @@ export const SemanticTransactionReview = ({
     const date = form.watch('date');
     const isNeed = form.watch('isNeed');
     const description = form.watch('description');
-    
     const amount = form.watch('amount');
+
     const amountNumber = Number((amount || '0').toString().replace(/[^0-9]/g, ''));
-    
     const activeCategories = type === 'expense' ? expenseCategories : incomeCategories;
-    const categoryObj = activeCategories.find(c => c.name === categoryName);
-    const walletObj = wallets.find(w => w.id === walletId);
-    
+    const categoryObj = activeCategories.find((category) => category.name === categoryName);
+    const walletObj = wallets.find((wallet) => wallet.id === walletId);
+    const completionCount = [amountNumber > 0, !!categoryObj, !!description, !!walletObj].filter(Boolean).length;
+
     const [activeEditor, setActiveEditor] = useState<null | 'category' | 'wallet' | 'amount' | 'description'>(null);
-    
-    // SubCategory logic mirroring CategorySelector
     const [subCatSheetOpen, setSubCatSheetOpen] = useState(false);
     const [selectedCatForSub, setSelectedCatForSub] = useState<Category | null>(null);
 
-    const handleCategorySelect = (cat: Category) => {
+    const handleCategorySelect = (category: Category) => {
         triggerHaptic('light');
-        form.setValue('category', cat.name);
+        form.setValue('category', category.name);
         form.setValue('subCategory', '');
-        
-        if (cat.sub_categories && cat.sub_categories.length > 0) {
-            setSelectedCatForSub(cat);
+
+        if (category.sub_categories && category.sub_categories.length > 0) {
+            setSelectedCatForSub(category);
             setSubCatSheetOpen(true);
-        } else {
-            setActiveEditor(null);
+            return;
         }
+
+        setActiveEditor(null);
     };
 
     return (
-        <div className="space-y-6 px-1">
-            {/* Mad Libs Sentence */}
-            <div className="space-y-3">
-                <p className="text-label text-muted-foreground/40 px-1">Ringkasan</p>
+        <div className="space-y-5 px-1">
+            <div className="rounded-[28px] border border-border/50 bg-background/80 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.55)]">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/45">
+                            Review Cepat
+                        </p>
+                        <p className="mt-1 px-1 text-sm text-muted-foreground/70">
+                            Ketuk bagian yang ingin disesuaikan sebelum disimpan.
+                        </p>
+                    </div>
+                    <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-label font-semibold uppercase tracking-widest text-primary">
+                        {completionCount}/4 siap
+                    </div>
+                </div>
+
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-3 text-lg leading-loose">
-                    <span className="text-muted-foreground/60 font-medium">
+                    <span className="font-medium text-muted-foreground/60">
                         {type === 'income' ? 'Saya menerima' : 'Saya menghabiskan'}
                     </span>
 
-                    {/* Amount Pill */}
                     <button
                         type="button"
                         onClick={() => {
@@ -84,23 +91,20 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'amount' ? null : 'amount');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
+                            "inline-flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'amount' && "ring-2 ring-primary ring-offset-2",
                             amountNumber > 0
                                 ? type === 'income'
-                                    ? "bg-primary/10 border-primary/20 text-primary"
-                                    : "bg-secondary text-foreground border-border/10"
-                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
+                                    ? "border-primary/20 bg-primary/10 text-primary"
+                                    : "border-border/10 bg-secondary text-foreground"
+                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
                         )}
                     >
-                        {amountNumber > 0
-                            ? formatCurrency(amountNumber)
-                            : '❓ Nominal'}
+                        {amountNumber > 0 ? formatCurrency(amountNumber) : 'Isi Nominal'}
                     </button>
 
-                    <span className="text-muted-foreground/60 font-medium">untuk</span>
+                    <span className="font-medium text-muted-foreground/60">untuk</span>
 
-                    {/* Category Pill */}
                     <button
                         type="button"
                         onClick={() => {
@@ -108,11 +112,11 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'category' ? null : 'category');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
+                            "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'category' && "ring-2 ring-primary ring-offset-2",
                             categoryObj
-                                ? "bg-secondary text-foreground border-border/10"
-                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
+                                ? "border-border/10 bg-secondary text-foreground"
+                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
                         )}
                     >
                         {categoryObj ? (
@@ -124,27 +128,27 @@ export const SemanticTransactionReview = ({
                                 <span>{categoryObj.name}</span>
                             </>
                         ) : (
-                            <span>❓ Kategori</span>
+                            <span>Pilih Kategori</span>
                         )}
                     </button>
-                    
-                    {/* Sub-Category Pill (if exists or selected) */}
+
                     {subCategoryName && (
                         <button
                             type="button"
                             onClick={() => {
                                 triggerHaptic('light');
-                                handleCategorySelect(categoryObj!);
+                                if (categoryObj) {
+                                    handleCategorySelect(categoryObj);
+                                }
                             }}
-                            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 border-border/10 bg-secondary/40 text-foreground transition-all active:scale-95 hover:scale-105"
+                            className="inline-flex items-center gap-2 rounded-2xl border-2 border-border/10 bg-secondary/50 px-3.5 py-2 text-base font-bold text-foreground transition-all active:scale-95 hover:scale-[1.03]"
                         >
                             <span>{subCategoryName}</span>
                         </button>
                     )}
 
-                    <span className="text-muted-foreground/60 font-medium">yaitu</span>
+                    <span className="font-medium text-muted-foreground/60">yaitu</span>
 
-                    {/* Description Pill */}
                     <button
                         type="button"
                         onClick={() => {
@@ -152,24 +156,23 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'description' ? null : 'description');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
+                            "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'description' && "ring-2 ring-primary ring-offset-2",
                             description
-                                ? "bg-secondary text-foreground border-border/10"
-                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
+                                ? "border-border/10 bg-secondary text-foreground"
+                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
                         )}
                     >
                         {description ? (
-                            <span className="line-clamp-1 max-w-[150px]">{description}</span>
+                            <span className="max-w-[170px] line-clamp-1">{description}</span>
                         ) : (
-                            <span>❓ Keterangan</span>
+                            <span>Tambah Keterangan</span>
                         )}
                     </button>
 
-                    {/* Need/Want Toggle (expense only) */}
                     {type === 'expense' && (
                         <>
-                            <span className="text-muted-foreground/60 font-medium">sebagai</span>
+                            <span className="font-medium text-muted-foreground/60">sebagai</span>
                             <button
                                 type="button"
                                 onClick={() => {
@@ -177,10 +180,10 @@ export const SemanticTransactionReview = ({
                                     form.setValue('isNeed', !isNeed);
                                 }}
                                 className={cn(
-                                    "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
+                                    "inline-flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
                                     isNeed
-                                        ? "text-success bg-success/10 border-success/20"
-                                        : "text-violet-600 bg-violet-500/10 border-violet-500/20"
+                                        ? "border-success/20 bg-success/10 text-success"
+                                        : "border-violet-500/20 bg-violet-500/10 text-violet-600"
                                 )}
                             >
                                 {isNeed ? (
@@ -198,9 +201,8 @@ export const SemanticTransactionReview = ({
                         </>
                     )}
 
-                    <span className="text-muted-foreground/60 font-medium">dari</span>
+                    <span className="font-medium text-muted-foreground/60">dari</span>
 
-                    {/* Wallet Pill */}
                     <button
                         type="button"
                         onClick={() => {
@@ -208,23 +210,25 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'wallet' ? null : 'wallet');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
+                            "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'wallet' && "ring-2 ring-primary ring-offset-2",
                             walletObj
-                                ? "bg-card border-border hover:bg-secondary/60 text-foreground"
-                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
+                                ? "border-border bg-card text-foreground hover:bg-secondary/60"
+                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
                         )}
                     >
                         <WalletIcon className="h-4 w-4 text-muted-foreground/60" />
-                        <span>{walletObj ? walletObj.name : '❓ Dompet'}</span>
+                        <span>{walletObj ? walletObj.name : 'Pilih Dompet'}</span>
                     </button>
 
-                    <span className="text-muted-foreground/60 font-medium">pada</span>
+                    <span className="font-medium text-muted-foreground/60">pada</span>
 
-                    {/* Date Pill */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button type="button" className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 border-border bg-card shadow-sm hover:bg-secondary/60 hover:scale-105 transition-all active:scale-95 text-foreground">
+                            <button
+                                type="button"
+                                className="inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-card px-3.5 py-2 text-base font-bold text-foreground shadow-sm transition-all hover:scale-[1.03] hover:bg-secondary/60 active:scale-95"
+                            >
                                 <CalendarIcon className="h-4 w-4" />
                                 <span>{format(date || new Date(), 'dd MMM', { locale: localeId })}</span>
                             </button>
@@ -233,9 +237,11 @@ export const SemanticTransactionReview = ({
                             <Calendar
                                 mode="single"
                                 selected={date}
-                                onSelect={(d) => {
+                                onSelect={(nextDate) => {
                                     triggerHaptic('light');
-                                    d && form.setValue('date', d);
+                                    if (nextDate) {
+                                        form.setValue('date', nextDate);
+                                    }
                                 }}
                                 initialFocus
                             />
@@ -244,56 +250,64 @@ export const SemanticTransactionReview = ({
                 </div>
             </div>
 
-            {/* Inline Quick Editors */}
             <AnimatePresence mode="popLayout">
                 {activeEditor && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <div className="p-4 bg-secondary/20 rounded-card border border-border pb-5 mb-4">
+                        <div className="mb-4 rounded-[28px] border border-border/50 bg-background/90 p-4 pb-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.55)]">
                             {activeEditor === 'amount' && (
                                 <div className="space-y-4">
-                                    <p className="text-label text-muted-foreground/40 text-center">Ubah nominal</p>
+                                    <p className="text-center text-label text-muted-foreground/40">Ubah nominal</p>
                                     <AmountInput control={form.control as any} name="amount" />
-                                    <Button className="w-full mt-2 rounded-xl h-12 font-bold" onClick={() => setActiveEditor(null)}>Simpan Nominal</Button>
+                                    <Button className="mt-2 h-12 w-full rounded-xl font-bold" onClick={() => setActiveEditor(null)}>
+                                        Simpan Nominal
+                                    </Button>
                                 </div>
                             )}
 
                             {activeEditor === 'description' && (
                                 <div className="space-y-4">
-                                    <p className="text-label text-muted-foreground/40 text-center">Tulis keterangan transaksi</p>
-                                    <Input 
-                                        value={description} 
+                                    <p className="text-center text-label text-muted-foreground/40">Tulis keterangan transaksi</p>
+                                    <Input
+                                        value={description}
                                         onChange={(e) => form.setValue('description', e.target.value)}
-                                        placeholder="Misal: Makan sate kambing..."
-                                        className="h-14 text-lg font-medium rounded-xl border-border bg-background focus-visible:ring-primary"
+                                        placeholder="Misal: makan siang tim, kopi client, bayar parkir"
+                                        className="h-14 rounded-xl border-border bg-background text-lg font-medium focus-visible:ring-primary"
                                         autoFocus
                                         onKeyDown={(e) => e.key === 'Enter' && setActiveEditor(null)}
                                     />
-                                    <Button className="w-full mt-2 rounded-xl h-12 font-bold" onClick={() => setActiveEditor(null)}>Selesai</Button>
+                                    <Button className="mt-2 h-12 w-full rounded-xl font-bold" onClick={() => setActiveEditor(null)}>
+                                        Selesai
+                                    </Button>
                                 </div>
                             )}
 
                             {activeEditor === 'wallet' && (
                                 <div className="space-y-3">
-                                    <p className="text-label text-muted-foreground/40 ml-2">Pilih dompet</p>
-                                    <div className="flex gap-2 overflow-x-auto pb-2 snap-x hide-scrollbar">
-                                        {wallets.map(w => (
+                                    <p className="ml-2 text-label text-muted-foreground/40">Pilih dompet</p>
+                                    <div className="hide-scrollbar flex snap-x gap-2 overflow-x-auto pb-2">
+                                        {wallets.map((wallet) => (
                                             <button
-                                                key={w.id}
-                                                onClick={() => { form.setValue('walletId', w.id); setActiveEditor(null); }}
+                                                key={wallet.id}
+                                                onClick={() => {
+                                                    form.setValue('walletId', wallet.id);
+                                                    setActiveEditor(null);
+                                                }}
                                                 className={cn(
-                                                    "snap-center shrink-0 w-[140px] flex flex-col items-start gap-1 p-3 rounded-xl border transition-all active:scale-[0.98]",
-                                                    walletId === w.id 
-                                                        ? "ring-2 ring-primary border-transparent bg-primary/10 shadow-sm" 
-                                                        : "bg-background border-border hover:bg-secondary"
+                                                    "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-xl border p-3 transition-all active:scale-[0.98]",
+                                                    walletId === wallet.id
+                                                        ? "border-transparent bg-primary/10 shadow-sm ring-2 ring-primary"
+                                                        : "border-border bg-background hover:bg-secondary"
                                                 )}
                                             >
-                                                <span className="font-semibold text-sm line-clamp-1">{w.name}</span>
-                                                <span className="text-[11px] font-bold text-muted-foreground">{formatCurrency(w.balance || 0)}</span>
+                                                <span className="line-clamp-1 text-sm font-semibold">{wallet.name}</span>
+                                                <span className="text-label font-bold text-muted-foreground">
+                                                    {formatCurrency(wallet.balance || 0)}
+                                                </span>
                                             </button>
                                         ))}
                                     </div>
@@ -302,25 +316,31 @@ export const SemanticTransactionReview = ({
 
                             {activeEditor === 'category' && (
                                 <div className="space-y-3">
-                                    <p className="text-label text-muted-foreground/40 ml-2">Pilih kategori</p>
-                                    <div className="flex gap-2.5 overflow-x-auto pb-2 snap-x hide-scrollbar">
-                                        {activeCategories.map(c => {
-                                            const Icon = getCategoryIcon(c.icon);
+                                    <p className="ml-2 text-label text-muted-foreground/40">Pilih kategori</p>
+                                    <div className="hide-scrollbar flex snap-x gap-2.5 overflow-x-auto pb-2">
+                                        {activeCategories.map((category) => {
+                                            const Icon = getCategoryIcon(category.icon);
                                             return (
                                                 <button
-                                                    key={c.id}
-                                                    onClick={() => handleCategorySelect(c)}
+                                                    key={category.id}
+                                                    onClick={() => handleCategorySelect(category)}
                                                     className={cn(
-                                                        "snap-center shrink-0 w-[85px] flex flex-col items-center gap-2 p-3 rounded-xl border transition-all active:scale-[0.98]",
-                                                        categoryName === c.name 
-                                                            ? "ring-2 ring-primary border-transparent bg-primary/10 shadow-sm" 
-                                                            : "bg-background border-border hover:bg-secondary"
+                                                        "snap-center flex w-[85px] shrink-0 flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98]",
+                                                        categoryName === category.name
+                                                            ? "border-transparent bg-primary/10 shadow-sm ring-2 ring-primary"
+                                                            : "border-border bg-background hover:bg-secondary"
                                                     )}
                                                 >
-                                                    <div className={cn("p-2.5 rounded-full flex items-center justify-center", c.color, categoryName === c.name ? "opacity-100" : "opacity-80")}>
+                                                    <div className={cn(
+                                                        "flex items-center justify-center rounded-full p-2.5",
+                                                        category.color,
+                                                        categoryName === category.name ? "opacity-100" : "opacity-80"
+                                                    )}>
                                                         <Icon className="h-5 w-5" />
                                                     </div>
-                                                    <span className="font-semibold text-[10px] leading-tight text-center line-clamp-2 w-full">{c.name}</span>
+                                                    <span className="text-label w-full line-clamp-2 text-center font-semibold leading-tight">
+                                                        {category.name}
+                                                    </span>
                                                 </button>
                                             );
                                         })}
@@ -337,9 +357,9 @@ export const SemanticTransactionReview = ({
                     <SubCategorySheet
                         category={selectedCatForSub}
                         selectedValue={subCategoryName || ''}
-                        onSelect={(val: string) => {
+                        onSelect={(value: string) => {
                             triggerHaptic('light');
-                            form.setValue('subCategory', val);
+                            form.setValue('subCategory', value);
                             setSubCatSheetOpen(false);
                             setActiveEditor(null);
                         }}

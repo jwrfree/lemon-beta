@@ -25,6 +25,10 @@ interface UseTransactionFormProps {
     context?: { wallets: { id: string, name: string }[], categories: string[] }; // Context for AI
 }
 
+interface MagicInputResult {
+    shouldClearComposer: boolean;
+}
+
 export const useTransactionForm = ({ initialData, onSuccess, type, context }: UseTransactionFormProps = {}) => {
     const { user } = useAuth();
     const { showToast } = useUI();
@@ -140,8 +144,10 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
     }, [form.formState.submitCount]);
 
     // 4. Power AI Processing (Multi + OCR)
-    const processMagicInput = useCallback(async (input: string | { type: 'image', dataUrl: string }) => {
-        if (!user || !context) return;
+    const processMagicInput = useCallback(async (
+        input: string | { type: 'image', dataUrl: string }
+    ): Promise<MagicInputResult> => {
+        if (!user || !context) return { shouldClearComposer: false };
 
         setIsAiProcessing(true);
         setAiExplanation(null);
@@ -266,9 +272,14 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 }
                 triggerHaptic('success');
             }
+
+            return {
+                shouldClearComposer: typeof input === 'string' && !!input.trim() && !result.clarificationQuestion,
+            };
         } catch (err) {
             console.error("[useTransactionForm] Magic Processing Error:", err);
             showToast("Gagal memproses input AI.", "error");
+            return { shouldClearComposer: false };
         } finally {
             setIsAiProcessing(false);
         }
@@ -382,7 +393,11 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
             } else {
                 // If in multi-mode, save this one and move to next or finish
                 if (multiTransactions.length > 1) {
-                    const txId = await addTransaction(formattedData);
+                    const txId = await addTransaction(formattedData, {
+                        silentSuccessToast: true,
+                        closeSheet: false,
+                        refresh: false,
+                    });
                     if (!txId) return;
                     
                     const remaining = multiTransactions.filter((_, i) => i !== currentTxIndex);
@@ -395,7 +410,11 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                         return; // Don't close yet
                     }
                 } else {
-                    const txId = await addTransaction(formattedData);
+                    const txId = await addTransaction(formattedData, {
+                        silentSuccessToast: true,
+                        closeSheet: !andAddAnother,
+                        refresh: false,
+                    });
                     if (!txId) return;
                 }
             }
@@ -416,6 +435,8 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                     isNeed: true,
                 } as any);
                 showToast("Transaksi disimpan. Siap catat yang lain!", "success");
+            } else if (!isEditMode) {
+                showToast("Transaksi berhasil ditambahkan!", "success");
             } else if (onSuccess) {
                 setTimeout(() => onSuccess(), 100);
             }
@@ -430,23 +451,57 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         
         setIsAiProcessing(true);
         try {
+            const failedTransactions: typeof multiTransactions = [];
+            let successCount = 0;
+
             for (const tx of multiTransactions) {
                 const formatted = {
                     ...tx,
                     amount: parseFloat(tx.amount),
                     date: tx.date instanceof Date ? tx.date.toISOString() : tx.date,
                 };
-                await addTransaction(formatted);
+                const txId = await addTransaction(formatted, {
+                    silentSuccessToast: true,
+                    closeSheet: false,
+                    refresh: false,
+                });
+
+                if (txId) {
+                    successCount += 1;
+                } else {
+                    failedTransactions.push(tx);
+                }
             }
-            showToast(`${multiTransactions.length} transaksi berhasil disimpan!`, 'success');
-            if (onSuccess) onSuccess();
-            router.refresh();
+
+            if (successCount > 0) {
+                triggerHaptic('success');
+                router.refresh();
+            }
+
+            if (failedTransactions.length === 0) {
+                showToast(`${successCount} transaksi berhasil disimpan!`, 'success');
+                if (onSuccess) onSuccess();
+                return;
+            }
+
+            setMultiTransactions(failedTransactions);
+            setCurrentTxIndex(0);
+            form.reset(failedTransactions[0] as any);
+
+            if (successCount > 0) {
+                showToast(
+                    `${successCount} transaksi tersimpan, ${failedTransactions.length} masih perlu dicek.`,
+                    'info'
+                );
+            } else {
+                showToast("Belum ada transaksi yang berhasil disimpan. Cek data lalu coba lagi.", "error");
+            }
         } catch (err) {
             showToast("Beberapa transaksi gagal disimpan.", "error");
         } finally {
             setIsAiProcessing(false);
         }
-    }, [multiTransactions, addTransaction, showToast, onSuccess, router]);
+    }, [multiTransactions, addTransaction, showToast, onSuccess, router, form]);
 
     // 5. Delete Handler
     const onDeleteHandler = useCallback(async () => {

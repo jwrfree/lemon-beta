@@ -4,13 +4,20 @@ import { useTransactionActions } from './use-transaction-actions';
 
 // Define independent mocks for clarity
 const mockShowToast = vi.fn();
-const mockSetIsTxModalOpen = vi.fn();
+const mockSetIsTxSheetOpen = vi.fn();
 const mockLogActivity = vi.fn();
+const mockRefresh = vi.fn();
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    refresh: mockRefresh,
+  }),
+}));
 
 vi.mock('@/components/ui-provider', () => ({
   useUI: () => ({
     showToast: mockShowToast,
-    setIsTxModalOpen: mockSetIsTxModalOpen,
+    setIsTxSheetOpen: mockSetIsTxSheetOpen,
     setTransactionToEdit: vi.fn(),
   }),
 }));
@@ -63,7 +70,7 @@ describe('useTransactionActions', () => {
 
     expect(transactionService.createTransaction).toHaveBeenCalledTimes(1);
     expect(mockShowToast).toHaveBeenCalledWith("Transaksi berhasil ditambahkan!", 'success');
-    expect(mockSetIsTxModalOpen).toHaveBeenCalledWith(false);
+    expect(mockSetIsTxSheetOpen).toHaveBeenCalledWith(false);
   });
 
   it('should add an income transaction successfully', async () => {

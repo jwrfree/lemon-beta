@@ -17,8 +17,14 @@ interface TransferPayload {
     description: string;
 }
 
+interface AddTransactionOptions {
+    silentSuccessToast?: boolean;
+    closeSheet?: boolean;
+    refresh?: boolean;
+}
+
 interface ActionContextType {
-    addTransaction: (data: TransactionInput, options?: { silentSuccessToast?: boolean }) => Promise<string | null>;
+    addTransaction: (data: TransactionInput, options?: AddTransactionOptions) => Promise<string | null>;
     updateTransaction: (transactionId: string, oldData: Transaction, newData: TransactionUpdate) => Promise<boolean>;
     deleteTransaction: (transaction: Transaction) => Promise<boolean>;
     addWallet: (walletData: WalletInput) => Promise<void>;

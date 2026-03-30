@@ -1,26 +1,27 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, Clock } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, Clock, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DynamicSuggestionsProps {
+    // eslint-disable-next-line no-unused-vars
     onSuggestionClick: (text: string) => void;
     historySuggestions?: string[];
 }
 
 type TimeOfDay = 'pagi' | 'siang' | 'sore' | 'malam';
 
-export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] }: DynamicSuggestionsProps) => {
-    const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('pagi');
+const getTimeOfDay = (): TimeOfDay => {
+    const hour = new Date().getHours();
+    if (hour >= 4 && hour < 11) return 'pagi';
+    if (hour >= 11 && hour < 15) return 'siang';
+    if (hour >= 15 && hour < 19) return 'sore';
+    return 'malam';
+};
 
-    useEffect(() => {
-        const hour = new Date().getHours();
-        if (hour >= 4 && hour < 11) setTimeOfDay('pagi');
-        else if (hour >= 11 && hour < 15) setTimeOfDay('siang');
-        else if (hour >= 15 && hour < 19) setTimeOfDay('sore');
-        else setTimeOfDay('malam');
-    }, []);
+export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] }: DynamicSuggestionsProps) => {
+    const timeOfDay = getTimeOfDay();
 
     const contextualSuggestions: Record<TimeOfDay, string[]> = {
         pagi: ['Sarapan 15rb', 'Kopi 20rb', 'Ojek ke kantor 25rb', 'Commuter line 4rb'],
@@ -30,40 +31,50 @@ export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] 
     };
 
     const onboardingPrompts = [
-        { text: '🎙️ Coba bilang "Beli bensin 20 ribu"', isSpecial: true },
-        { text: '📸 Scan struk minimarket', isSpecial: true },
+        { text: 'Coba bilang "Beli bensin 20 ribu"', isSpecial: true },
+        { text: 'Scan struk minimarket', isSpecial: true },
     ];
 
     const currentSuggestions = [
-        ...(historySuggestions.length > 0 ? historySuggestions.slice(0, 2).map(s => ({ text: s, isSpecial: false })) : []),
-        ...contextualSuggestions[timeOfDay].map(s => ({ text: s, isSpecial: false })),
+        ...(historySuggestions.length > 0 ? historySuggestions.slice(0, 2).map((suggestion) => ({ text: suggestion, isSpecial: false })) : []),
+        ...contextualSuggestions[timeOfDay].map((suggestion) => ({ text: suggestion, isSpecial: false })),
     ].slice(0, 4);
 
     const allOptions = [...onboardingPrompts, ...currentSuggestions];
 
     return (
         <div className="w-full animate-in fade-in duration-300 px-1">
-            <div className="flex items-center gap-1.5 mb-3">
-                <Clock className="h-3 w-3 text-muted-foreground/50" />
-                <p className="text-label text-muted-foreground/50">
-                    Saran Interaktif
-                </p>
+            <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                    <div className="mb-1 flex items-center gap-1.5">
+                        <Clock className="h-3 w-3 text-muted-foreground/50" />
+                        <p className="text-label text-muted-foreground/50">
+                            Mulai Cepat
+                        </p>
+                    </div>
+                    <p className="text-sm leading-relaxed text-muted-foreground/75">
+                        Pilih contoh di bawah atau mulai dari histori terakhirmu.
+                    </p>
+                </div>
+                <div className="rounded-full border border-primary/20 bg-primary/10 p-2 text-primary">
+                    <Sparkles className="h-4 w-4" />
+                </div>
             </div>
             <div className="flex flex-wrap gap-2">
-                {allOptions.map((item, idx) => (
+                {allOptions.map((item) => (
                     <button
-                        key={idx}
+                        key={item.text}
                         type="button"
-                        onClick={() => onSuggestionClick(item.isSpecial ? item.text.replace(/^[🎙️📸]\s*/, '') : item.text)}
+                        onClick={() => onSuggestionClick(item.text)}
                         className={cn(
-                            "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[13px] font-medium border transition-all active:scale-95",
-                            item.isSpecial 
-                                ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 hover:shadow-primary/10 font-semibold"
-                                : "bg-card border-border/60 text-foreground/70 hover:bg-secondary/60 hover:text-foreground shadow-none"
+                            "inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-[13px] font-medium transition-all active:scale-95 hover:-translate-y-0.5",
+                            item.isSpecial
+                                ? "border-primary/20 bg-primary/10 font-semibold text-primary shadow-[0_12px_30px_-24px_rgba(16,185,129,0.75)] hover:bg-primary/20"
+                                : "border-border/60 bg-card text-foreground/70 shadow-none hover:bg-secondary/60 hover:text-foreground"
                         )}
                     >
                         <span>{item.text}</span>
-                        {!item.isSpecial && <ArrowRight className="h-3 w-3 opacity-40 ml-1" />}
+                        {!item.isSpecial && <ArrowRight className="ml-1 h-3 w-3 opacity-40" />}
                     </button>
                 ))}
             </div>
