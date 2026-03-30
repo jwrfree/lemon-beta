@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import OpenAI from "openai";
+import type { ChatCompletionChunk } from "openai/resources/chat/completions/completions";
 import { OpenAIStream, StreamingTextResponse, type Message } from "ai";
 import { financialContextService } from "@/lib/services/financial-context-service";
-import { buildChatContextMessage, buildChatSystemPrompt } from "@/ai/flows/chat-flow";
+import { buildChatContextMessage, buildChatSystemPrompt, tryBuildDeterministicChatReply } from "@/ai/flows/chat-flow";
 
 export const maxDuration = 30;
 
@@ -13,6 +14,47 @@ const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
 const ALLOWED_CLIENT_ROLES = new Set(["user", "assistant"]);
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+type NormalizedChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+const stripControlChars = (value: string) =>
+  Array.from(value)
+    .filter((char) => {
+      const code = char.charCodeAt(0);
+      return code >= 32 && code !== 127;
+    })
+    .join("");
+
+const sanitizeAssistantText = (value: string) =>
+  stripControlChars(value)
+    .replace(/\*\*/g, "")
+    .replace(/__/g, "")
+    .replace(/`/g, "")
+    .replace(/^[ \t]*#{1,6}\s*/gm, "")
+    .replace(/[ \t]+\n/g, "\n");
+
+const createStaticTextStream = (content: string) =>
+  new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode(sanitizeAssistantText(content)));
+      controller.close();
+    },
+  });
+
+const sanitizeTextStream = (stream: ReadableStream<Uint8Array>) =>
+  stream
+    .pipeThrough(new TextDecoderStream())
+    .pipeThrough(
+      new TransformStream<string, string>({
+        transform(chunk, controller) {
+          controller.enqueue(sanitizeAssistantText(chunk));
+        },
+      })
+    )
+    .pipeThrough(new TextEncoderStream());
 
 const deepseekClient = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
@@ -51,7 +93,7 @@ const consumeRateLimit = (userId: string) => {
   };
 };
 
-const normalizeClientMessages = (messages: Message[]) => {
+const normalizeClientMessages = (messages: Message[]): NormalizedChatMessage[] => {
   const trimmedMessages = messages.slice(-MAX_MESSAGES);
   let totalChars = 0;
 
@@ -64,7 +106,7 @@ const normalizeClientMessages = (messages: Message[]) => {
       throw new Error("Isi pesan harus berupa teks.");
     }
 
-    const content = message.content.replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ").trim();
+    const content = stripControlChars(message.content).replace(/\s+/g, " ").trim();
     if (!content) {
       throw new Error("Isi pesan tidak boleh kosong.");
     }
@@ -79,7 +121,7 @@ const normalizeClientMessages = (messages: Message[]) => {
     }
 
     return {
-      role: message.role,
+      role: message.role as NormalizedChatMessage["role"],
       content,
     };
   });
@@ -96,7 +138,7 @@ const toProviderMessages = (
   messages: Message[],
   systemPrompt: string,
   contextMessage: string | null
-) => {
+) : OpenAI.Chat.Completions.ChatCompletionMessageParam[] => {
   const normalizedMessages = normalizeClientMessages(messages);
 
   return [
@@ -167,6 +209,16 @@ export async function POST(req: Request) {
     }
 
     const context = await financialContextService.getUnifiedContext(user.id, supabase);
+    const lastUserMessage = messages.at(-1)?.content;
+
+    if (typeof lastUserMessage === "string") {
+      const deterministicReply = tryBuildDeterministicChatReply(lastUserMessage, context);
+
+      if (deterministicReply) {
+        return new StreamingTextResponse(createStaticTextStream(deterministicReply));
+      }
+    }
+
     const systemPrompt = buildChatSystemPrompt();
     const contextMessage = context
       ? buildChatContextMessage(context)
@@ -179,8 +231,8 @@ export async function POST(req: Request) {
       temperature: 0.7,
     });
 
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
+    const stream = OpenAIStream(response as unknown as AsyncIterable<ChatCompletionChunk>);
+    return new StreamingTextResponse(sanitizeTextStream(stream));
   } catch (error) {
     console.error("[AI Chat] Request failed:", error);
     return Response.json(
