@@ -6,6 +6,7 @@ import { formatCurrency } from '@/lib/utils';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { EmptyState } from '@/components/empty-state';
 import type { MonthlyMetric } from '../types';
 
 const chartConfig = {
@@ -26,7 +27,19 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
         setMounted(true);
     }, []);
 
-    if (!mounted || data.length === 0) {
+    if (data.length === 0) {
+        return (
+            <EmptyState
+                variant="filter"
+                title="Riwayat 6 Bulan"
+                description="Data pemasukan dan pengeluaran 6 bulan terakhir akan muncul di sini."
+                icon={BarChart3}
+                className="h-[240px]"
+            />
+        );
+    }
+
+    if (!mounted) {
         return <div className="h-64 bg-zinc-100 dark:bg-zinc-900 rounded-card-glass animate-pulse" />;
     }
 

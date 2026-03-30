@@ -4,25 +4,35 @@ import { useAssets } from '../hooks/use-assets';
 import { formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { Button } from '@/components/ui/button';
-import { MoreVertical, TrendingUp } from 'lucide-react';
+import { MoreVertical, TrendingUp, Landmark, HandCoins } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import type { Asset, Liability } from '@/types/models';
+import { EmptyState } from '@/components/empty-state';
 
 interface AssetLiabilityListProps {
     items: (Asset | Liability)[];
     type: 'asset' | 'liability';
     onEdit: (item: Asset | Liability, type: 'asset' | 'liability') => void;
+    onAdd?: () => void;
 }
 
-export const AssetLiabilityList = ({ items, type, onEdit }: AssetLiabilityListProps) => {
+export const AssetLiabilityList = ({ items, type, onEdit, onAdd }: AssetLiabilityListProps) => {
     const { deleteAssetLiability, goldPrice } = useAssets();
 
     if (items.length === 0) {
-        const message = type === 'asset' ? "Aset yang kamu miliki akan muncul di sini." : "Daftar utang atau cicilanmu akan muncul di sini.";
-        return <p className="text-muted-foreground text-sm text-center py-4">{message}</p>;
+        return (
+            <EmptyState
+                title={type === 'asset' ? "Mulai Bangun Aset" : "Kelola Kewajiban"}
+                description={type === 'asset' ? "Aset yang kamu miliki akan muncul di sini." : "Daftar utang atau cicilanmu akan muncul di sini."}
+                icon={type === 'asset' ? Landmark : HandCoins}
+                actionLabel={onAdd ? (type === 'asset' ? "Tambah Aset" : "Tambah Hutang") : undefined}
+                onAction={onAdd}
+                className="pt-4 md:min-h-[300px]"
+            />
+        );
     }
 
     return (

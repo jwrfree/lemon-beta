@@ -47,7 +47,10 @@ export async function updateSession(request: NextRequest) {
     !user &&
     request.nextUrl.pathname !== '/' &&
     !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/api')
+    // Allow public API routes (auth, icons, etc.)
+    !request.nextUrl.pathname.startsWith('/api/auth') &&
+    !request.nextUrl.pathname.startsWith('/api/pwa-icon') &&
+    !request.nextUrl.pathname.startsWith('/api/logo')
   ) {
     const url = request.nextUrl.clone()
     url.pathname = '/'

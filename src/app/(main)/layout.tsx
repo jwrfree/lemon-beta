@@ -16,6 +16,7 @@ import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { UnifiedTransactionSheet } from '@/features/transactions/components/unified-transaction-sheet';
+import { AIChatDrawer } from '@/features/ai-chat/components/ai-chat-drawer';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
@@ -66,6 +67,8 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         isSidebarCollapsed,
         isSmartAddOpen,
         setIsSmartAddOpen,
+        isAIChatOpen,
+        setIsAIChatOpen,
     } = useUI();
 
     const { deleteTransaction } = useActions();
@@ -166,6 +169,13 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                             transaction={transactionToDelete}
                             onClose={closeDeleteModal}
                             onConfirm={handleConfirmDelete}
+                        />
+                    )}
+                    {isAIChatOpen && (
+                        <AIChatDrawer 
+                            key="ai-chat-drawer"
+                            isOpen={isAIChatOpen} 
+                            onClose={() => setIsAIChatOpen(false)} 
                         />
                     )}
                 </AnimatePresence>

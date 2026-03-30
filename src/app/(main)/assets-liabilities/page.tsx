@@ -259,6 +259,7 @@ export default function AssetsLiabilitiesPage() {
                                                 items={assets}
                                                 type="asset"
                                                 onEdit={(item) => handleEdit(item, 'asset')}
+                                                onAdd={() => handleOpenForm({ type: 'asset' })}
                                             />
                                         </TabsContent>
                                         <TabsContent value="productive" className="mt-0 h-full">
@@ -286,6 +287,7 @@ export default function AssetsLiabilitiesPage() {
                                                 items={totals.realAssets}
                                                 type="asset"
                                                 onEdit={(item) => handleEdit(item, 'asset')}
+                                                onAdd={() => handleOpenForm({ type: 'asset' })}
                                             />
                                         </TabsContent>
                                         <TabsContent value="consumptive" className="mt-0 h-full">
@@ -297,6 +299,7 @@ export default function AssetsLiabilitiesPage() {
                                                 items={totals.depreciatingAssets}
                                                 type="asset"
                                                 onEdit={(item) => handleEdit(item, 'asset')}
+                                                onAdd={() => handleOpenForm({ type: 'asset' })}
                                             />
                                         </TabsContent>
                                     </CardContent>
@@ -330,6 +333,7 @@ export default function AssetsLiabilitiesPage() {
                                         items={liabilities}
                                         type="liability"
                                         onEdit={(item) => handleEdit(item, 'liability')}
+                                        onAdd={() => handleOpenForm({ type: 'liability' })}
                                     />
                                 </CardContent>
                             </Card>

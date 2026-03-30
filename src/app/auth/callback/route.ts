@@ -7,14 +7,18 @@ export async function GET(request: NextRequest) {
   const next = requestUrl.searchParams.get('next') ?? '/home'
   const safeNext = next.startsWith('/') ? next : '/home'
 
-  if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-
-    if (!error) {
-      return NextResponse.redirect(new URL(safeNext, requestUrl.origin))
+    if (code) {
+      const supabase = await createClient()
+      const { error } = await supabase.auth.exchangeCodeForSession(code)
+  
+      if (!error) {
+        // Log success
+        const { logActivity } = await import('@/lib/audit');
+        await logActivity({ action: 'LOGIN', entity: 'USER' });
+        
+        return NextResponse.redirect(new URL(safeNext, requestUrl.origin))
+      }
     }
-  }
 
   return NextResponse.redirect(new URL('/?error=google_oauth_failed', requestUrl.origin))
 }

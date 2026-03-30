@@ -4,15 +4,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Wallet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import type { Wallet } from '@/types/models';
+import type { Wallet as WalletType } from '@/types/models';
+import { EmptyState } from '@/components/empty-state';
 
 interface DashboardWalletsProps {
-    wallets: Wallet[];
+    wallets: WalletType[];
 }
 
 export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
@@ -28,12 +29,14 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
             </CardHeader>
             <CardContent>
                 {wallets.length === 0 ? (
-                    <div className="rounded-md border border-dashed border-primary/30 p-4 text-sm text-muted-foreground flex items-center justify-between">
-                        <span>Tidak ada dompet untuk filter ini.</span>
-                        <Button size="sm" variant="outline" onClick={() => router.push('/wallets')}>
-                            Kelola Dompet
-                        </Button>
-                    </div>
+                    <EmptyState
+                        title="Buka Dompet"
+                        description="Tidak ada dompet aktif ditemukan. Mulai kelola keuanganmu dengan membuat dompet pertama."
+                        icon={Wallet}
+                        actionLabel="Kelola Dompet"
+                        onAction={() => router.push('/wallets')}
+                        className="pt-0 md:min-h-[200px]"
+                    />
                 ) : (
                     <div className="space-y-3">
                         {wallets.slice(0, 4).map(wallet => {

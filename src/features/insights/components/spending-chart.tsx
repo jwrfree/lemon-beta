@@ -6,6 +6,8 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { categoryDetails } from "@/lib/categories"
 import type { Transaction } from "@/types/models"
+import { EmptyState } from "@/components/empty-state"
+import { BarChart3 } from "lucide-react"
 
 interface SpendingChartProps {
     transactions: Transaction[]
@@ -52,7 +54,17 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
             .slice(0, 5)
     }, [transactions])
 
-    if (data.length === 0) return null
+    if (data.length === 0) {
+        return (
+            <EmptyState
+                variant="filter"
+                title="Belum Ada Data"
+                description="Catat lebih banyak transaksi untuk melihat riwayat pengeluaran kamu di sini."
+                icon={BarChart3}
+                className="pt-0 md:min-h-[300px] border border-border/40 bg-card rounded-card mb-8"
+            />
+        );
+    }
 
     return (
         <Card className="border-none shadow-none border border-border/40">

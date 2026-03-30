@@ -85,6 +85,9 @@ interface UIContextType {
     isSmartAddOpen: boolean;
     setIsSmartAddOpen: (isOpen: boolean) => void;
 
+    isAIChatOpen: boolean;
+    setIsAIChatOpen: (isOpen: boolean) => void;
+
 
     isSidebarCollapsed: boolean;
     setIsSidebarCollapsed: (isCollapsed: boolean) => void;
@@ -129,6 +132,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [isDebtPaymentModalOpen, setIsDebtPaymentModalOpen] = useState(false);
     const [debtForPayment, setDebtForPayment] = useState<Debt | null>(null);
     const [isSmartAddOpen, setIsSmartAddOpen] = useState(false);
+    const [isAIChatOpen, setIsAIChatOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     const [toastState, setToastState] = useState<ToastState>({
@@ -214,7 +218,8 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         isReminderModalOpen ||
         isDebtModalOpen ||
         isDebtPaymentModalOpen ||
-        isSmartAddOpen;
+        isSmartAddOpen ||
+        isAIChatOpen;
 
     const contextValue = useMemo(() => ({
         isTxSheetOpen,
@@ -267,6 +272,8 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         openDebtPaymentModal,
         isSmartAddOpen,
         setIsSmartAddOpen,
+        isAIChatOpen,
+        setIsAIChatOpen,
         isSidebarCollapsed,
         setIsSidebarCollapsed,
         isAnyModalOpen,
@@ -297,6 +304,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         isDebtPaymentModalOpen,
         debtForPayment,
         isSmartAddOpen,
+        isAIChatOpen,
         isSidebarCollapsed,
         isAnyModalOpen,
         toastState

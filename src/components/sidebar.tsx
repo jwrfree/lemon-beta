@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Sparkles, LogOut, Eye, EyeOff, Download } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, LogOut, Eye, EyeOff, Download, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
@@ -20,7 +20,7 @@ import {
 export const Sidebar = () => {
     const pathname = usePathname();
     const { handleSignOut } = useAuth();
-    const { isSidebarCollapsed, setIsSidebarCollapsed, deferredPrompt, setDeferredPrompt, openTransactionSheet } = useUI();
+    const { isSidebarCollapsed, setIsSidebarCollapsed, deferredPrompt, setDeferredPrompt, openTransactionSheet, setIsAIChatOpen } = useUI();
     const { isBalanceVisible, toggleBalanceVisibility } = useBalanceVisibility();
     const router = useRouter();
 
@@ -80,6 +80,38 @@ export const Sidebar = () => {
                         {isSidebarCollapsed && (
                             <TooltipContent side="right" sideOffset={20} className="text-label bg-primary text-primary-foreground border-none">
                                 Smart Add
+                            </TooltipContent>
+                        )}
+                    </Tooltip>
+                </div>
+            </div>
+
+            <div className="mb-12 w-full">
+                {!isSidebarCollapsed && (
+                    <p className="label-xs px-5 mb-4">
+                        AI Coach
+                    </p>
+                )}
+                <div className={isSidebarCollapsed ? "flex justify-center" : "px-1"}>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                onClick={() => setIsAIChatOpen(true)}
+                                variant="outline"
+                                className={cn(
+                                    'active:scale-95 transition-all duration-300 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 rounded-xl',
+                                    isSidebarCollapsed ? 'w-12 h-12 p-0 rounded-full' : 'w-full gap-3 px-5 h-12 rounded-xl'
+                                )}
+                            >
+                                <Bot className="h-5 w-5 shrink-0" />
+                                {!isSidebarCollapsed && (
+                                    <span className="font-semibold text-sm truncate">Tanya Lemon</span>
+                                )}
+                            </Button>
+                        </TooltipTrigger>
+                        {isSidebarCollapsed && (
+                            <TooltipContent side="right" sideOffset={20} className="text-label bg-primary/10 text-primary border-primary/20 shadow-none">
+                                Tanya Lemon AI
                             </TooltipContent>
                         )}
                     </Tooltip>

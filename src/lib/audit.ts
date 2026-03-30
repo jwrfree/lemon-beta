@@ -35,7 +35,7 @@ export const logActivity = async ({ action, entity, entityId, details }: AuditLo
       entity,
       entity_id: entityId,
       details,
-      user_agent: window.navigator.userAgent,
+      user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : 'Server-side Runtime',
     });
   } catch (error) {
     console.error('Failed to write audit log:', error);

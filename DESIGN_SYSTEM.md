@@ -287,6 +287,49 @@ import { StatusBadge } from '@/components/status-badge';
 
 ---
 
+### 4.5 EmptyState (Data-Absent View)
+
+**File:** `src/components/empty-state.tsx`
+
+Used to provide feedback, visual interest, and actionable paths when a chart, list, or filter result is empty.
+
+#### API
+
+```tsx
+import { EmptyState } from '@/components/empty-state';
+
+<EmptyState
+  title="Belum Ada Transaksi"
+  description="Catat transaksi pertama kamu untuk melihat analisis pengeluaran."
+  icon={PlusCircle}             // Lucide icon
+  actionLabel="Catat Sekarang"   // Optional
+  onAction={handleAction}        // Optional
+  variant="default"              // 'default' (centered) or 'filter' (compact)
+/>
+```
+
+#### Rules
+
+1. **Standard Iconography**: Use `Lucide` icons that clearly communicate the context (e.g., `HandCoins` for debts, `CheckCircle2` for clean audits).
+2. **Contextual Messaging**: Descriptions must be human-centered and provide clear "next steps".
+3. **Variant Selection**:
+   - `default`: Used for primary lists (e.g., Transactions, Goals). Takes up more horizontal spacing.
+   - `filter`: Used for chart containers or sub-lists where space is constrained or the state is a result of a filter/search.
+4. **Mobile Ergonomics**: Standard top padding is `pt-8` to ensure content starts above the fold on most devices.
+5. **No Nesting**: Do not nest `EmptyState` inside another scrollable area with its own padding.
+
+#### Forbidden
+
+```tsx
+// ❌ Legacy dashed-border box pattern
+<div className="border-dashed border-2 p-10 text-center"> ... </div>
+
+// ❌ Null return without feedback
+if (data.length === 0) return null; // Use <EmptyState variant="filter" /> instead.
+```
+
+---
+
 ### 4.4 Card
 
 **File:** `src/components/ui/card.tsx`

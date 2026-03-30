@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getDailyTrendData } from '../lib/chart-utils';
-import { PlaceholderContent } from './placeholder-content';
+import { EmptyState } from '@/components/empty-state';
 import dynamic from 'next/dynamic';
 
 import type { Transaction } from '@/types/models';
@@ -50,10 +50,12 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
 
     if (!hasActivity) {
         return (
-            <PlaceholderContent
-                label="Tren Pengeluaran Harian"
+            <EmptyState
+                variant="filter"
+                title="Tren Pengeluaran Harian"
+                description="Belum ada data pengeluaran dalam 30 hari terakhir. Catat transaksi untuk melihat grafik ini."
                 icon={ChartAreaIcon}
-                text="Belum ada data pengeluaran dalam 30 hari terakhir. Catat transaksi untuk melihat grafik ini."
+                className="pt-10 md:min-h-[460px]"
             />
         );
     }

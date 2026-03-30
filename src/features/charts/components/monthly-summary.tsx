@@ -8,7 +8,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
-import { PlaceholderContent } from './placeholder-content';
+import { EmptyState } from '@/components/empty-state';
 import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
@@ -235,10 +235,12 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
 
     if (type !== 'net' && summary.value === 0) {
         return (
-            <PlaceholderContent
-                label={`Ringkasan ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+            <EmptyState
+                variant="filter"
+                title={`Ringkasan ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+                description={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini.`}
                 icon={type === 'expense' ? ArrowDownLeft : ArrowUpRight}
-                text={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini.`}
+                className="pt-10 md:min-h-[460px]"
             />
         );
     }

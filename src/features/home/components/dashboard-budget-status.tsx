@@ -7,14 +7,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, cn } from '@/lib/utils';
-import { ChevronRight, AlertCircle } from 'lucide-react';
+import { ChevronRight, AlertCircle, Target } from 'lucide-react';
 import type { Budget } from '@/types/models';
+import { useRouter } from 'next/navigation';
+import { EmptyState } from '@/components/empty-state';
 
 interface DashboardBudgetStatusProps {
     budgets: Budget[];
 }
 
 export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) => {
+    const router = useRouter();
     // Sort by percentage spent (highest first) to show critical budgets
     const sortedBudgets = [...budgets].sort((a, b) => {
         const aPercent = ((a.spent ?? 0) / a.targetAmount);
@@ -37,12 +40,14 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
             </CardHeader>
             <CardContent className="space-y-4">
                 {sortedBudgets.length === 0 ? (
-                    <div className="text-center py-4 text-xs text-muted-foreground bg-muted/30 rounded-lg border border-dashed border-border">
-                        <p>Belum ada anggaran dibuat.</p>
-                        <Button variant="link" size="sm" asChild className="px-0 h-auto text-xs mt-1">
-                            <Link href="/budgeting">Buat Anggaran</Link>
-                        </Button>
-                    </div>
+                    <EmptyState
+                        title="Atur Anggaran"
+                        description="Belum ada anggaran dibuat untuk memantau pengeluaran kamu."
+                        icon={Target}
+                        actionLabel="Buat Anggaran"
+                        onAction={() => router.push('/budgeting')}
+                        className="pt-0 md:min-h-[200px]"
+                    />
                 ) : (
                     sortedBudgets.map(budget => {
                         const spent = budget.spent ?? 0;

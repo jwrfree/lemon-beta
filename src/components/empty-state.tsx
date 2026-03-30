@@ -104,7 +104,7 @@ export const EmptyState = ({
             transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
             className={cn(
                 // Mobile: top-aligned with padding
-                "flex items-start justify-center pt-12 px-6",
+                "flex items-start justify-center pt-8 px-6",
                 // Desktop: vertically centered with consistent min-height
                 "md:items-center md:pt-0 md:min-h-[460px]",
                 className

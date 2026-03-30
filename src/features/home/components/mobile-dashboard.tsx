@@ -30,6 +30,7 @@ import { TransactionList } from '@/features/transactions/components/transaction-
 import { SpendingTrendChart } from './spending-trend-chart';
 import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
 import { OnboardingChecklist } from '@/components/onboarding-checklist';
+import { AiBriefingCard } from '@/features/insights/components/ai-briefing-card';
 
 interface MobileDashboardProps {
     userData: any;
@@ -68,6 +69,7 @@ export const MobileDashboard = ({
         setIsDebtModalOpen,
         setDebtToEdit,
         setIsSmartAddOpen,
+        setIsAIChatOpen,
     } = useUI();
 
     const [currentTime, setCurrentTime] = useState<Date | null>(null);
@@ -159,6 +161,11 @@ export const MobileDashboard = ({
                     <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted" onClick={() => router.push('/search')}>
                         <Search className="h-5 w-5 text-muted-foreground" />
                     </Button>
+                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted relative" onClick={() => setIsAIChatOpen(true)}>
+                        <Sparkles className="h-5 w-5 text-primary animate-pulse fill-current" />
+                        {/* <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive border-2 border-background"></span> */}
+                    </Button>
+
                     <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted relative" onClick={() => router.push('/notifications')}>
                         <Bell className="h-5 w-5 text-muted-foreground" />
                         <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive border-2 border-background"></span>
@@ -166,10 +173,12 @@ export const MobileDashboard = ({
                 </div>
             </div>
 
-            {/* 1.5 Onboarding Checklist (Persona A) */}
             <div className="px-4">
                 <OnboardingChecklist />
             </div>
+
+            {/* 1.7 AI Briefing */}
+            <AiBriefingCard />
 
             {/* 2. Hero Card (Apple Music Style Dynamic Mesh) */}
             <div className="px-4">
@@ -344,14 +353,20 @@ export const MobileDashboard = ({
                         );
                     })}
 
-                    <div className="snap-center shrink-0">
+                    <div className="snap-center shrink-0 pr-6">
                         <button
                             onClick={() => router.push('/wallets')}
-                            className="w-16 h-32 rounded-card-premium border-2 border-dashed border-border/40 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-all group"
+                            className="w-44 h-32 rounded-card-premium border border-border/40 bg-card/50 backdrop-blur-md flex flex-col items-center justify-center gap-3 hover:bg-muted/50 transition-all group relative overflow-hidden active:scale-95"
                         >
-                            <div className="p-3 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">
-                                <Plus className="h-6 w-6 text-muted-foreground/40 group-hover:text-primary" />
+                            {/* Ambient Glow */}
+                            <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full blur-2xl opacity-20 bg-primary/30"></div>
+                            
+                            <div className="p-4 rounded-card-icon bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                <Plus className="h-6 w-6 text-primary" strokeWidth={2.5} />
                             </div>
+                            <span className="text-label text-muted-foreground font-semibold uppercase tracking-widest">
+                                Add Wallet
+                            </span>
                         </button>
                     </div>
                 </div>

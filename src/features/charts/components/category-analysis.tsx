@@ -11,7 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { formatCurrency, cn } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { groupTransactionsByCategory, groupTransactionsBySubCategory } from '../lib/chart-utils';
-import { PlaceholderContent } from './placeholder-content';
+import { EmptyState } from '@/components/empty-state';
 import dynamic from 'next/dynamic';
 
 import type { Transaction } from '@/types/models';
@@ -91,10 +91,12 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
 
     if (chartData.length === 0 && !selectedCategory) {
         return (
-            <PlaceholderContent
-                label={`Distribusi ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+            <EmptyState
+                variant="filter"
+                title={`Visualisasi ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
+                description={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini untuk dianalisis.`}
                 icon={type === 'expense' ? TrendingDown : TrendingUp}
-                text={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini untuk dianalisis.`}
+                className="pt-10 md:min-h-[460px]"
             />
         );
     }

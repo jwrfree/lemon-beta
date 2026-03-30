@@ -5,16 +5,22 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Added
-- **Tokenized Amount Input Engine** for transaction forms
-  - `AmountInput` now tokenizes numeric expressions into explicit `number` + `operator` tokens before evaluation.
-  - Added deterministic evaluator with operator precedence (`*`/`/` first, then `+`/`-`) and clamped non-negative output for safer amount parsing.
-  - Added optional **custom numeric keypad** (`useCustomKeyboard`) with operators, backspace, and explicit dismiss action (`Selesai`) to support non-native keyboard amount entry.
+- **Standardized Empty States (Phase 2 Component Migration)**
+  - Migrated 7+ chart and list views to the new `@/components/empty-state` component.
+  - Applied to: `CategoryAnalysis`, `NetCashflowChart`, `MonthlyTrendChart`, `MonthlySummary`, `ExpenseShortTermTrend`, `HistoryChart`, `ProphetChart`, and `SubscriptionAudit`.
+  - Added support for dynamic iconography and context-aware messaging (e.g., search-specific empty states).
+- **Rencana Keuangan (Plan) Dashboard Redesign**
+  - **Contextual Clarity**: Moved `SubscriptionAuditCard` from the global page header to a dedicated placement within the "Tagihan" (Bills) tab for better mobile ergonomics.
+  - **Modern Fluidity**: Completely redesigned the **Tagihan** (Reminders) and **Hutang** (Debts) dashboards with a glassmorphic aesthetic.
+  - **Hutang Dashboard**: Added high-contrast summary cards for "Saya Berhutang" (Destructive) and "Piutang Saya" (Emerald) with `font-bold tracking-tighter tabular-nums`.
+  - **Tagihan Dashboard**: Integrated a new pill-style segmented control for reminder filtering and added detailed "Metadata Panels" for individual items.
 
 ### Changed
-- **Edit Transaction Drawer (`EditTransactionSheet`) UX iteration**
-  - Amount field now enables custom keypad mode to reduce input friction on mobile and keep users in-context during edit flows.
-  - Error extraction for wallet/category was aligned to union-safe form error access, fixing build-time type issues in production compilation.
-  - Expression apply flow now uses explicit tokenization action (`Gunakan hasil tokenisasi ekspresi`) when operators are detected.
+- **UX Logic Refinement — Fixed Monthly Expenses**
+  - Updated `SubscriptionAudit` logic to hide efficiency tips when `totalMonthly` is 0, preventing useless "IDR 0 savings" messages.
+  - Upgraded the audit card to use the standardized `EmptyState` with a "Clean Audit" (`CheckCircle2`) variant.
+- **Mobile Ergonomics Polish**
+  - Reduced global `EmptyState` top padding from `pt-12` to `pt-8` across all views to improve content density on small screens.
 
 ### Documentation
 - Added `docs/EDIT_TRANSACTION_SHEET_GUIDE.md` covering:

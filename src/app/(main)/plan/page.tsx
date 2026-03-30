@@ -65,8 +65,6 @@ export default function PlanPage() {
 
             {/* Content Area */}
             <div className="px-6 pt-4">
-                {/* AI Subscription Audit Section */}
-                <SubscriptionAuditCard transactions={transactions} />
 
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -80,7 +78,12 @@ export default function PlanPage() {
                         {activeTab === 'budget' && <BudgetingDashboard />}
                         {activeTab === 'goals' && <GoalsDashboard />}
                         {activeTab === 'debts' && <DebtsDashboard />}
-                        {activeTab === 'bills' && <RemindersDashboard />}
+                        {activeTab === 'bills' && (
+                            <>
+                                <SubscriptionAuditCard transactions={transactions} />
+                                <RemindersDashboard />
+                            </>
+                        )}
                     </motion.div>
                 </AnimatePresence>
             </div>

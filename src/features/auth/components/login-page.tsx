@@ -88,10 +88,15 @@ export const LoginPage = ({
                 throw new Error(data.error ?? 'Gagal masuk. Coba lagi ya.');
             }
 
+            // Log activity after successful login
+            const { logActivity } = await import('@/lib/audit');
+            await logActivity({ action: 'LOGIN', entity: 'USER' });
+
             showToast("Login berhasil! Selamat datang kembali.", 'success');
             onClose();
-            router.refresh();
-            router.push('/home');
+            // Using window.location.href instead of router.push ensures a clean state 
+            // and correct session detection by the AuthProvider after the API login.
+            window.location.href = '/home';
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Gagal masuk. Coba lagi ya.';
             setAuthError(message);

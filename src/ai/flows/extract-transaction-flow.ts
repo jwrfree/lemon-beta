@@ -84,6 +84,8 @@ function parseRawAiResponse(text: string): unknown {
 export type ExtractionContext = {
   wallets: string[];
   categories: string[];
+  recentTransactions?: { description: string, amount: number, category: string, wallet: string, date: string }[];
+  budgetSummary?: { category: string, limit: number, spent: number, remaining: number }[];
 };
 
 export async function extractTransaction(text: string, context?: ExtractionContext): Promise<TransactionExtractionOutput> {
@@ -105,7 +107,9 @@ Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap mak
    - **Need (Kebutuhan)**: Hal mendasar untuk hidup (makan harian sederhana [Mie Ayam, Nasi Goreng, Warteg], sewa/cicilan rumah, transportasi kerja, kesehatan, tagihan rutin).
    - **Want (Keinginan)**: Gaya hidup/hiburan (Bioskop, Kopi Mahal/Starbucks, Baju baru non-seragam, Game, Langganan Netflix). 
    - **KHUSUS MAKAN**: Jika harga di bawah Rp 30.000 atau di tempat biasa (Mie Ayam, Bakso), kategorikan sebagai **isNeed: true**. Jika makan di Mall/Resto atau harganya premium, baru kategorikan sebagai **isNeed: false**.
-5. **MULTI-TRANSACTION**: Pecah array 'transactions' jika ada lebih dari satu.
+5. **HISTORY MATCHING (NEW)**: Jika input user mirip dengan transaksi di 'Recent Transactions', prioritaskan menggunakan 'category' dan 'wallet' yang sama dari sejarah tersebut.
+6. **BUDGET AWARENESS (NEW)**: Gunakan data 'Budget Status' untuk memberikan insight di 'socraticInsight'. Jika pengeluaran ini membuat budget kategori menipis atau habis, berikan peringatan halus.
+7. **MULTI-TRANSACTION**: Pecah array 'transactions' jika ada lebih dari satu.
 
 ### OUTPUT JSON FORMAT:
 {
@@ -128,6 +132,10 @@ Anda adalah parsing expert untuk input bahasa Indonesia sehari-hari. Tangkap mak
 - Jam sekarang: ${currentTime}
 - Dompet Tersedia: ${walletList}
 - Kategori Tersedia: ${categoryList}
+
+### KONTEKS HISTORIS & BUDGET:
+- **Recent Transactions (Last 5)**: ${JSON.stringify(context?.recentTransactions || [], null, 1)}
+- **Budget Status**: ${JSON.stringify(context?.budgetSummary || [], null, 1)}
 
 ### INPUT USER:
 "${text}"`;
@@ -233,10 +241,12 @@ ${JSON.stringify(previousData, null, 2)}
 ### KONTEKS SISTEM:
 - **Dompet Tersedia**: ${walletList}
 - **Kategori Tersedia**: ${categoryList}
+- **Recent Transactions**: ${JSON.stringify(context?.recentTransactions || [], null, 1)}
+- **Budget Status**: ${JSON.stringify(context?.budgetSummary || [], null, 1)}
 
 ### TUGAS ANDA:
 1. Perbarui data transaksi di atas berdasarkan instruksi terbaru dari user.
-2. **SOCRATIC DIALOGUE**: Bersikaplah seperti pelatih. Berikan feedback di 'socraticInsight'. HARUS SANGAT SINGKAT (Maks 1-2 kalimat pendek). Jangan ceramah panjang lebar!
+2. **SOCRATIC DIALOGUE**: Bersikaplah seperti pelatih. Berikan feedback di 'socraticInsight'. HARUS SANGAT SINGKAT (Maks 1-2 kalimat pendek). Jika terkait budget, ingatkan sisa budgetnya.
 3. **KOREKSI SUMBER DANA (WALLET)**: Update 'wallet' jika user menyebutkan.
 4. **KOREKSI NEED VS WANT**: Update 'isNeed' berdasarkan konteks percakapan.
 5. Tetap gunakan format JSON yang sama.

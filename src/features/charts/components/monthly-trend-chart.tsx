@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { getMonthlyTrendData } from '../lib/chart-utils';
-import { PlaceholderContent } from './placeholder-content';
+import { EmptyState } from '@/components/empty-state';
 import dynamic from 'next/dynamic';
 
 import type { Transaction } from '@/types/models';
@@ -48,12 +48,14 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
 
     if (!hasActivity) {
         return (
-            <PlaceholderContent
-                label={`Tren ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'} Bulanan`}
-                icon={BarChart}
-                text={`Grafik bulanan akan muncul setelah kamu memiliki transaksi ${
+            <EmptyState
+                variant="filter"
+                title={`Tren ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'} Bulanan`}
+                description={`Grafik bulanan akan muncul setelah kamu memiliki transaksi ${
                     type === 'expense' ? 'pengeluaran' : 'pemasukan'
                 } dalam 12 bulan terakhir.`}
+                icon={BarChart}
+                className="pt-10 md:min-h-[460px]"
             />
         );
     }

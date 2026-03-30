@@ -13,6 +13,7 @@ export const mapMonthlySummaryFromDb = (row: MonthlySummaryRow): MonthlySummary 
 });
 
 import { generateSpendingInsight } from '@/features/insights/logic';
+import { generateDailyBriefing, BriefingOutput } from '@/ai/flows/briefing-flow';
 
 class InsightService {
     /**
@@ -72,6 +73,51 @@ class InsightService {
         }
 
         return (data as MonthlySummaryRow[]).map(mapMonthlySummaryFromDb);
+    }
+
+    /**
+     * Data aggregator for AI Briefing.
+     */
+    async getDailyBriefing(userId: string, userName: string): Promise<BriefingOutput | null> {
+        const supabase = createClient();
+        
+        try {
+            // 1. Fetch Wallets
+            const { data: wallets } = await supabase.from('wallets').select('*').eq('user_id', userId);
+            
+            // 2. Fetch Current Month Summary
+            const { data: summary } = await supabase.from('monthly_summaries').select('*').eq('user_id', userId).order('month_date', { ascending: false }).limit(1).single();
+            
+            // 3. Fetch Budgets
+            const { data: budgets } = await supabase.from('budgets').select('*').eq('user_id', userId);
+            
+            // 4. Fetch Reminders
+            const { data: reminders } = await supabase.from('reminders').select('*').eq('user_id', userId).eq('status', 'upcoming').order('due_date', { ascending: true }).limit(3);
+
+            if (!wallets || !summary) return null;
+
+            return await generateDailyBriefing({
+                userName,
+                totalBalance: wallets.reduce((acc, w) => acc + Number(w.balance), 0),
+                monthlyIncome: Number(summary.total_income),
+                monthlyExpense: Number(summary.total_expense),
+                wallets: wallets.map(w => ({ name: w.name, balance: Number(w.balance) })),
+                budgets: (budgets || []).map(b => ({
+                    name: b.name,
+                    limit: Number(b.amount),
+                    spent: Number(b.spent),
+                    remaining: Number(b.amount) - Number(b.spent)
+                })),
+                reminders: (reminders || []).map(r => ({
+                    title: r.title,
+                    amount: Number(r.amount),
+                    dueDate: r.due_date || 'N/A'
+                }))
+            });
+        } catch (error) {
+            console.error('[InsightService] Briefing Error:', error);
+            return null;
+        }
     }
 }
 

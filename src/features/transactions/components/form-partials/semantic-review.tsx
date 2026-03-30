@@ -38,6 +38,7 @@ export const SemanticTransactionReview = ({
     const walletId = form.watch('walletId');
     const date = form.watch('date');
     const isNeed = form.watch('isNeed');
+    const description = form.watch('description');
     
     const amount = form.watch('amount');
     const amountNumber = Number((amount || '0').toString().replace(/[^0-9]/g, ''));
@@ -46,7 +47,7 @@ export const SemanticTransactionReview = ({
     const categoryObj = activeCategories.find(c => c.name === categoryName);
     const walletObj = wallets.find(w => w.id === walletId);
     
-    const [activeEditor, setActiveEditor] = useState<null | 'category' | 'wallet' | 'amount'>(null);
+    const [activeEditor, setActiveEditor] = useState<null | 'category' | 'wallet' | 'amount' | 'description'>(null);
     
     // SubCategory logic mirroring CategorySelector
     const [subCatSheetOpen, setSubCatSheetOpen] = useState(false);
@@ -120,10 +121,48 @@ export const SemanticTransactionReview = ({
                                     const Icon = getCategoryIcon(categoryObj.icon);
                                     return <Icon className={cn("h-4 w-4", categoryObj.color)} />;
                                 })()}
-                                <span>{categoryObj.name}{subCategoryName ? ` · ${subCategoryName}` : ''}</span>
+                                <span>{categoryObj.name}</span>
                             </>
                         ) : (
                             <span>❓ Kategori</span>
+                        )}
+                    </button>
+                    
+                    {/* Sub-Category Pill (if exists or selected) */}
+                    {subCategoryName && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                triggerHaptic('light');
+                                handleCategorySelect(categoryObj!);
+                            }}
+                            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 border-border/10 bg-secondary/40 text-foreground transition-all active:scale-95 hover:scale-105"
+                        >
+                            <span>{subCategoryName}</span>
+                        </button>
+                    )}
+
+                    <span className="text-muted-foreground/60 font-medium">yaitu</span>
+
+                    {/* Description Pill */}
+                    <button
+                        type="button"
+                        onClick={() => {
+                            triggerHaptic('light');
+                            setActiveEditor(activeEditor === 'description' ? null : 'description');
+                        }}
+                        className={cn(
+                            "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-base font-bold border-2 shadow-sm transition-all active:scale-95 hover:scale-105",
+                            activeEditor === 'description' && "ring-2 ring-primary ring-offset-2",
+                            description
+                                ? "bg-secondary text-foreground border-border/10"
+                                : "bg-warning/10 border-warning/30 text-warning animate-pulse"
+                        )}
+                    >
+                        {description ? (
+                            <span className="line-clamp-1 max-w-[150px]">{description}</span>
+                        ) : (
+                            <span>❓ Keterangan</span>
                         )}
                     </button>
 
@@ -219,7 +258,22 @@ export const SemanticTransactionReview = ({
                                 <div className="space-y-4">
                                     <p className="text-label text-muted-foreground/40 text-center">Ubah nominal</p>
                                     <AmountInput control={form.control as any} name="amount" />
-                                    <Button className="w-full mt-2 rounded-xl" onClick={() => setActiveEditor(null)}>Selesai</Button>
+                                    <Button className="w-full mt-2 rounded-xl h-12 font-bold" onClick={() => setActiveEditor(null)}>Simpan Nominal</Button>
+                                </div>
+                            )}
+
+                            {activeEditor === 'description' && (
+                                <div className="space-y-4">
+                                    <p className="text-label text-muted-foreground/40 text-center">Tulis keterangan transaksi</p>
+                                    <Input 
+                                        value={description} 
+                                        onChange={(e) => form.setValue('description', e.target.value)}
+                                        placeholder="Misal: Makan sate kambing..."
+                                        className="h-14 text-lg font-medium rounded-xl border-border bg-background focus-visible:ring-primary"
+                                        autoFocus
+                                        onKeyDown={(e) => e.key === 'Enter' && setActiveEditor(null)}
+                                    />
+                                    <Button className="w-full mt-2 rounded-xl h-12 font-bold" onClick={() => setActiveEditor(null)}>Selesai</Button>
                                 </div>
                             )}
 

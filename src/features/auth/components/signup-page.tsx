@@ -94,12 +94,28 @@ export const SignUpPage = ({
     const handleSignUp = async (values: z.infer<typeof formSchema>) => {
         try {
             setAuthError(null);
-            const { error } = await supabase.auth.signUp({
-                email: values.email,
-                password: values.password,
+            const res = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: values.email,
+                    password: values.password,
+                }),
             });
 
-            if (error) throw error;
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error ?? 'Gagal mendaftar. Coba lagi ya.');
+            }
+
+            // Log activity after successful signup (if session is established)
+            // Even if it's just a signup, logging it is good for security trails.
+            try {
+                const { logActivity } = await import('@/lib/audit');
+                await logActivity({ action: 'LOGIN', entity: 'USER' });
+            } catch {
+                // Ignore if session not yet active (e.g. email confirmation required)
+            }
 
             showToast("Akun berhasil dibuat! Silakan masuk.", 'success');
             setAuthModal('login');

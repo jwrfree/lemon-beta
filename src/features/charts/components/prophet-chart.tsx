@@ -18,6 +18,7 @@ import { generateForecast, DataPoint } from '@/lib/prediction-engine';
 import { Transaction } from '@/types/models';
 import { Scatter } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { EmptyState } from '@/components/empty-state';
 
 interface ProphetChartProps {
     transactions: Transaction[];
@@ -52,9 +53,12 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
 
     if (data.length === 0) {
         return (
-            <div className="h-[350px] flex items-center justify-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-card-glass bg-zinc-50/50 dark:bg-zinc-900/50">
-                Butuh minimal 3 hari data untuk prediksi.
-            </div>
+            <EmptyState
+                title="Prophet Engine"
+                description="Butuh minimal 3 hari data transaksi untuk mulai memprediksi arus kas masa depan kamu."
+                icon={BrainCircuit}
+                className="md:min-h-[350px] border-2 border-dashed border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50"
+            />
         );
     }
 

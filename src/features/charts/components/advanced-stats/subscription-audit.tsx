@@ -3,8 +3,9 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCcw, Bell, AlertCircle, TrendingUp } from 'lucide-react';
+import { RefreshCcw, Bell, AlertCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
+import { EmptyState } from '@/components/empty-state';
 
 interface SubscriptionItem {
     id: string;
@@ -76,20 +77,24 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
                         </div>
                     ))
                 ) : (
-                    <div className="py-16 flex flex-col items-center justify-center text-center bg-muted/20 border border-dashed border-border/50 rounded-card-glass">
-                        <AlertCircle className="h-10 w-10 mb-4 text-muted-foreground/30" />
-                        <h4 className="text-label text-muted-foreground/50">Audit Bersih</h4>
-                        <p className="text-label text-muted-foreground/30 tracking-tight">Tidak ada item rutin terdeteksi</p>
-                    </div>
+                    <EmptyState
+                        title="Audit Bersih"
+                        description="Tidak ada item rutin terdeteksi. Keuangan kamu aman dari pengeluaran berulang!"
+                        icon={CheckCircle2}
+                        variant="default"
+                        className="py-12 border-dashed bg-muted/5 group-hover:bg-muted/10 transition-colors"
+                    />
                 )}
             </div>
 
-            <div className="mt-8 p-5 rounded-card-glass bg-success/5 border border-success/10 flex items-center gap-4 group/tip hover:bg-success/10 transition-colors cursor-default">
-                <TrendingUp className="h-5 w-5 text-success group-hover/tip:scale-110 transition-transform" />
-                <p className="text-label text-success/60 leading-relaxed">
-                    Tips efisiensi: Batalkan satu langganan tak terpakai untuk berhemat <span className="text-success">{(totalMonthly * 12).toLocaleString()}</span> per tahun.
-                </p>
-            </div>
+            {totalMonthly > 0 && (
+                <div className="mt-8 p-5 rounded-card-glass bg-success/5 border border-success/10 flex items-center gap-4 group/tip hover:bg-success/10 transition-colors cursor-default animate-in fade-in slide-in-from-top-4 duration-500">
+                    <TrendingUp className="h-5 w-5 text-success group-hover/tip:scale-110 transition-transform" />
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-success/60 leading-relaxed">
+                        Tips efisiensi: Batalkan satu langganan tak terpakai untuk berhemat <span className="text-success">{formatCurrency(totalMonthly * 12)}</span> per tahun.
+                    </p>
+                </div>
+            )}
         </Card>
     );
 }

@@ -10,8 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import { useUI } from '@/components/ui-provider';
 import { format, formatDistanceToNow, isBefore, parseISO, addDays, isSameDay, startOfDay, differenceInCalendarDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarClock, Clock, Check, Plus, BellRing, EllipsisVertical, Filter } from 'lucide-react';
+import { CalendarClock, Clock, Check, Plus, BellRing, EllipsisVertical, Filter, AlertCircle, Sparkles } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
+import { EmptyState } from '@/components/empty-state';
 import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
@@ -138,17 +139,63 @@ export const RemindersDashboard = () => {
     }).length, [reminders]);
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {/* Filter Tabs and Actions */}
-            <div className="space-y-3">
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {/* Status Integration (Modern Fluidity) */}
+            <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="rounded-card-premium border border-destructive/20 bg-destructive/5 p-4 flex flex-col justify-between group hover:bg-destructive/10 transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-3.5 w-3.5 text-destructive opacity-70" />
+                        <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.1em]">Terlambat</p>
+                    </div>
+                    <div className="flex items-baseline gap-1">
+                        <p className="text-3xl font-semibold tracking-tighter text-destructive tabular-nums leading-none">{overdueRemindersCount}</p>
+                        <span className="text-xs font-medium text-destructive/60 uppercase tracking-wider">Tagihan</span>
+                    </div>
+                </div>
+                <div className="rounded-card-premium border border-primary/20 bg-primary/5 p-4 flex flex-col justify-between group hover:bg-primary/10 transition-all">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Sparkles className="h-3.5 w-3.5 text-primary opacity-70" />
+                        <p className="text-[10px] uppercase font-bold text-primary tracking-[0.1em]">Segera</p>
+                    </div>
+                    <div className="flex items-baseline gap-1">
+                        <p className="text-3xl font-semibold tracking-tighter text-primary tabular-nums leading-none">{upcomingRemindersCount}</p>
+                        <span className="text-xs font-medium text-primary/60 uppercase tracking-wider">Jadwal</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Smart Filter & Action Bar */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                    <div className="relative flex-1 group">
+                        <Input
+                            placeholder="Cari pengingat..."
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            className="h-11 text-sm bg-muted/30 border-none rounded-full px-4 focus-visible:ring-primary/20 transition-all"
+                        />
+                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-11 w-11 p-0 rounded-full bg-muted/30 hover:bg-muted/50 border-none">
+                                <Filter className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-card-glass border-border/40">
+                            <DropdownMenuItem onClick={() => setRange('week')} className="text-xs font-medium">Minggu Ini</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setRange('30')} className="text-xs font-medium">30 Hari Kedepan</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="bg-transparent h-auto p-0 gap-2 justify-start w-full">
+                        <TabsList className="bg-muted/50 h-10 p-1 gap-1 justify-start w-full rounded-full border border-border/20">
                             {Object.entries(statusLabels).map(([key, label]) => (
                                 <TabsTrigger
                                     key={key}
                                     value={key}
-                                    className="rounded-full border bg-background data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-7 text-xs px-3"
+                                    className="flex-1 rounded-full h-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
                                 >
                                     {label}
                                 </TabsTrigger>
@@ -156,62 +203,20 @@ export const RemindersDashboard = () => {
                         </TabsList>
                     </Tabs>
                 </div>
-
-                <div className="flex items-center gap-2">
-                    <div className="relative flex-1">
-                        <Input
-                            placeholder="Cari pengingat..."
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            className="h-9 text-sm"
-                        />
-                    </div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm" className="h-9 px-3 gap-2">
-                                <Filter className="h-3.5 w-3.5" />
-                                <span className="text-xs font-medium">{range === 'week' ? 'Minggu Ini' : '30 Hari'}</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setRange('week')}>Minggu Ini</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setRange('30')}>30 Hari Kedepan</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-            </div>
-
-            {/* Status Cards */}
-            <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 flex flex-col justify-between">
-                    <p className="text-xs uppercase font-medium text-destructive tracking-wider">Terlambat</p>
-                    <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-medium text-destructive">{overdueRemindersCount}</p>
-                        <span className="text-xs text-destructive/80">invoice</span>
-                    </div>
-                </div>
-                <div className="rounded-md border border-primary/20 bg-primary/5 p-3 flex flex-col justify-between">
-                    <p className="text-xs uppercase font-medium text-primary tracking-wider">Segera</p>
-                    <div className="flex items-baseline gap-1">
-                        <p className="text-2xl font-medium text-primary">{upcomingRemindersCount}</p>
-                        <span className="text-xs text-primary/80">jadwal</span>
-                    </div>
-                </div>
             </div>
 
             {/* Reminders List */}
             <div className="space-y-3 pb-24">
                 {groupedByDate.length === 0 ? (
-                    <Card className="p-6 text-center flex flex-col items-center justify-center min-h-[200px] border-dashed">
-                        <div className="bg-muted rounded-full p-4 mb-3">
-                            <BellRing className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                        <p className="text-sm font-medium text-muted-foreground">Tidak ada pengingat</p>
-                        <p className="text-xs text-muted-foreground mb-4">Semua tagihan aman terkendali.</p>
-                        <Button size="sm" onClick={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}>
-                            Buat Pengingat
-                        </Button>
-                    </Card>
+                    <EmptyState
+                        variant="filter"
+                        title="Tidak Ada Tagihan"
+                        description={search ? "Tidak ditemukan tagihan yang sesuai dengan pencarian kamu." : "Semua tagihan aman terkendali. Belum ada pengingat yang dibuat."}
+                        icon={BellRing}
+                        actionLabel="Buat Pengingat"
+                        onAction={() => { setReminderToEdit(null); setIsReminderModalOpen(true); }}
+                        className="pt-10 md:min-h-[400px]"
+                    />
                 ) : (
                     groupedByDate.map(([dateKey, items]) => {
                         const isNoDate = dateKey === 'no-date';
@@ -232,7 +237,7 @@ export const RemindersDashboard = () => {
                                         ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                         : undefined;
                                     return (
-                                        <Card key={reminder.id} className="p-4 border-none shadow-none border border-border/40 hover:shadow-none border border-border/40 transition-all">
+                                        <Card key={reminder.id} className="transition-all border border-border/40 bg-card overflow-hidden rounded-card group hover:border-primary/20 hover:bg-primary/[0.02]">
                                             <div className="flex items-start gap-3">
                                                 <div className={cn(
                                                     "p-2 rounded-full mt-0.5",
@@ -243,60 +248,66 @@ export const RemindersDashboard = () => {
                                                 )}>
                                                     <Clock className="h-4.5 w-4.5" />
                                                 </div>
-                                                <div className="flex-1 space-y-2 min-w-0">
+                                                <div className="flex-1 space-y-3 min-w-0">
                                                     <div className="flex items-center justify-between gap-2">
-                                                        <h2 className="font-medium text-sm truncate pr-2">{reminder.title}</h2>
+                                                        <h2 className="font-semibold text-sm tracking-tight text-foreground truncate pr-2 group-hover:text-primary transition-colors">{reminder.title}</h2>
                                                         {renderStatusBadge(status)}
                                                     </div>
 
-                                                    <div className="space-y-1">
+                                                    <div className="space-y-1.5 p-3 rounded-card-glass bg-muted/30 border border-border/20">
                                                         {dueDate && (
-                                                            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-                                                                <CalendarClock className="h-3.5 w-3.5" />
+                                                            <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-2">
+                                                                <CalendarClock className="h-3.5 w-3.5 text-primary opacity-60" />
                                                                 {format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
                                                             </p>
                                                         )}
                                                         {linkedDebt && (
-                                                            <p className="text-xs text-muted-foreground/80 bg-muted/50 px-2 py-1 rounded w-fit">
-                                                                Terkait: <span className="font-medium">{linkedDebt.title}</span> ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
+                                                            <p className="text-[11px] text-muted-foreground/80 flex items-center gap-2 bg-background/50 px-2 py-1 rounded-sm w-fit border border-border/10">
+                                                                <AlertCircle className="h-3 w-3 text-indigo-500" />
+                                                                Terkait: <span className="font-semibold">{linkedDebt.title}</span> ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
                                                             </p>
                                                         )}
                                                         {reminder.amount ? (
-                                                            <p className="text-sm font-medium text-foreground">{formatCurrency(reminder.amount)}</p>
+                                                            <p className="text-base font-bold tracking-tighter text-foreground pt-1">{formatCurrency(reminder.amount)}</p>
                                                         ) : null}
                                                         {reminder.notes && (
-                                                            <p className="text-xs text-muted-foreground italic line-clamp-2">{reminder.notes}</p>
+                                                            <p className="text-[11px] text-muted-foreground leading-relaxed italic line-clamp-2 px-1 border-l-2 border-primary/20 bg-primary/5 py-1 rounded-r-sm">{reminder.notes}</p>
                                                         )}
                                                     </div>
 
-                                                    <div className="flex items-center gap-2 pt-2 border-t mt-2 border-border/40">
+                                                    <div className="flex items-center gap-2 pt-1">
                                                         {status !== 'completed' && (
-                                                            <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 hover:bg-emerald-500/10 hover:text-emerald-700 -ml-2" onClick={() => handleComplete(reminder)}>
+                                                            <Button 
+                                                                size="sm" 
+                                                                variant="ghost" 
+                                                                className="h-8 text-[11px] font-bold uppercase tracking-widest gap-2 hover:bg-emerald-500/10 hover:text-emerald-700 -ml-2 rounded-full px-4" 
+                                                                onClick={() => handleComplete(reminder)}
+                                                            >
                                                                 <Check className="h-3.5 w-3.5" /> Selesai
                                                             </Button>
                                                         )}
                                                         <div className="flex-1" />
-                                                        <DropdownMenu>
-                                                            <DropdownMenuTrigger asChild>
-                                                                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-full">
-                                                                    <EllipsisVertical className="h-3.5 w-3.5 text-muted-foreground" />
-                                                                </Button>
-                                                            </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
-                                                                {status !== 'completed' && dueDate && (
-                                                                    <>
-                                                                        <DropdownMenuItem onClick={() => handleSnooze(reminder, 1)}>Tunda 1 hari</DropdownMenuItem>
-                                                                        <DropdownMenuItem onClick={() => handleSnooze(reminder, 3)}>Tunda 3 hari</DropdownMenuItem>
-                                                                    </>
-                                                                )}
-                                                                <DropdownMenuItem onClick={() => { setReminderToEdit(reminder); setIsReminderModalOpen(true); }}>
-                                                                    Edit
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem onClick={() => handleDelete(reminder)} className="text-destructive">
-                                                                    Hapus
-                                                                </DropdownMenuItem>
-                                                            </DropdownMenuContent>
-                                                        </DropdownMenu>
+														<DropdownMenu>
+															<DropdownMenuTrigger asChild>
+																<Button size="sm" variant="ghost" className="h-8 w-8 p-0 rounded-full hover:bg-muted">
+																	<EllipsisVertical className="h-4 w-4 text-muted-foreground opacity-40" />
+																</Button>
+															</DropdownMenuTrigger>
+															<DropdownMenuContent align="end" className="rounded-card-glass">
+																{status !== 'completed' && dueDate && (
+																	<>
+																		<DropdownMenuItem onClick={() => handleSnooze(reminder, 1)} className="text-xs">Tunda 1 hari</DropdownMenuItem>
+																		<DropdownMenuItem onClick={() => handleSnooze(reminder, 3)} className="text-xs">Tunda 3 hari</DropdownMenuItem>
+																	</>
+																)}
+																<DropdownMenuItem onClick={() => { setReminderToEdit(reminder); setIsReminderModalOpen(true); }} className="text-xs">
+																	Edit
+																</DropdownMenuItem>
+																<DropdownMenuItem onClick={() => handleDelete(reminder)} className="text-destructive text-xs">
+																	Hapus
+																</DropdownMenuItem>
+															</DropdownMenuContent>
+														</DropdownMenu>
                                                     </div>
                                                 </div>
                                             </div>

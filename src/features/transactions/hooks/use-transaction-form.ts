@@ -14,7 +14,9 @@ import { extractTransaction, refineTransaction, TransactionExtractionOutput, Sin
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { useActions } from '@/providers/action-provider';
 import { useMonthTransactions } from './use-month-transactions';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useMemo } from 'react';
+import { getHours, getDate } from 'date-fns';
 
 interface UseTransactionFormProps {
     initialData?: Transaction | null;
@@ -28,6 +30,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
     const { showToast } = useUI();
     const { addTransaction, updateTransaction, deleteTransaction, addTransfer } = useActions();
     const { transactions } = useMonthTransactions();
+    const { budgets } = useBudgets();
     const [isAiProcessing, setIsAiProcessing] = useState(false);
     const [aiExplanation, setAiExplanation] = useState<string | null>(null);
     const [clarificationQuestion, setClarificationQuestion] = useState<string | null>(null);
@@ -40,9 +43,30 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
     // History suggestions logic
     const historySuggestions = useMemo(() => {
+        const now = new Date();
+        const hour = getHours(now);
+        const day = getDate(now);
+        
         const seen = new Set<string>();
+        
+        // 1. Contextual Base Suggestions
+        const timeContextSpecs = [
+            { check: () => hour >= 5 && hour < 10, keyword: 'Sarapan', fallback: 'Kopi Pagi' },
+            { check: () => hour >= 11 && hour < 14, keyword: 'Makan Siang', fallback: 'Gojek' },
+            { check: () => hour >= 17 && hour < 21, keyword: 'Makan Malam', fallback: 'GrabFood' },
+            { check: () => day >= 25 || day <= 2, keyword: 'Tabungan', fallback: 'Investasi' }
+        ];
 
-        return transactions
+        const activeSpec = timeContextSpecs.find(s => s.check());
+        const contextualSuggestions: string[] = [];
+        if (activeSpec) {
+            contextualSuggestions.push(activeSpec.keyword, activeSpec.fallback);
+            seen.add(activeSpec.keyword.toLowerCase());
+            seen.add(activeSpec.fallback.toLowerCase());
+        }
+
+        // 2. Dynamic History Suggestions
+        const historical = transactions
             .slice()
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .map((tx) => {
@@ -60,8 +84,9 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 if (!normalized || seen.has(normalized)) return false;
                 seen.add(normalized);
                 return true;
-            })
-            .slice(0, 5);
+            });
+
+        return [...contextualSuggestions, ...historical].slice(0, 5);
     }, [transactions]);
 
     const isEditMode = !!initialData;
@@ -143,12 +168,38 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                     };
                     result = await refineTransaction(previousData, input, {
                         wallets: context.wallets.map(w => w.name),
-                        categories: context.categories
+                        categories: context.categories,
+                        recentTransactions: transactions.slice(0, 5).map(tx => ({
+                            description: tx.description || tx.category,
+                            amount: tx.amount,
+                            category: tx.category,
+                            wallet: context.wallets.find(w => w.id === tx.walletId)?.name || 'Tunai',
+                            date: tx.date
+                        })),
+                        budgetSummary: budgets.map(b => ({
+                            category: b.categories[0],
+                            limit: b.targetAmount,
+                            spent: b.spent || 0,
+                            remaining: b.targetAmount - (b.spent || 0)
+                        }))
                     });
                 } else {
                     result = await extractTransaction(input, {
                         wallets: context.wallets.map(w => w.name),
-                        categories: context.categories
+                        categories: context.categories,
+                        recentTransactions: transactions.slice(0, 5).map(tx => ({
+                            description: tx.description || tx.category,
+                            amount: tx.amount,
+                            category: tx.category,
+                            wallet: context.wallets.find(w => w.id === tx.walletId)?.name || 'Tunai',
+                            date: tx.date
+                        })),
+                        budgetSummary: budgets.map(b => ({
+                            category: b.categories[0],
+                            limit: b.targetAmount,
+                            spent: b.spent || 0,
+                            remaining: b.targetAmount - (b.spent || 0)
+                        }))
                     });
                 }
             } else {

@@ -3,16 +3,12 @@ import { createServerClient } from '@supabase/ssr';
 
 export const runtime = 'edge';
 
-const THIRTY_DAYS_IN_SECONDS = 30 * 24 * 60 * 60;
-
 export async function POST(req: NextRequest) {
-    const { email, password, remember } = await req.json();
+    const { email, password } = await req.json();
 
     if (!email || !password) {
         return NextResponse.json({ error: 'Email dan password wajib diisi.' }, { status: 400 });
     }
-
-    const shouldRemember = remember === true;
 
     const response = NextResponse.json({ success: true });
 
@@ -33,7 +29,6 @@ export async function POST(req: NextRequest) {
                             httpOnly: true,
                             secure: process.env.NODE_ENV === 'production',
                             sameSite: 'lax',
-                            ...(shouldRemember ? { maxAge: THIRTY_DAYS_IN_SECONDS } : {}),
                         });
                     });
                 },
@@ -41,17 +36,15 @@ export async function POST(req: NextRequest) {
         },
     );
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+    });
 
     if (error) {
-        let message = 'Gagal masuk. Coba lagi ya.';
-        if (error.message.includes('Invalid login credentials')) {
-            message = 'Email atau password salah.';
-        } else {
-            message = error.message;
-        }
-        return NextResponse.json({ error: message }, { status: 401 });
+        return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    // Return the response object that has cookies attached from the setAll callback
     return response;
 }

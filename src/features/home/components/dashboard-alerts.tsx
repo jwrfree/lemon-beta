@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
 import type { Reminder, Debt } from '@/types/models';
+import { EmptyState } from '@/components/empty-state';
 
 interface DashboardAlertsProps {
     reminderSummary: {
@@ -58,7 +59,15 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                             </p>
                         </div>
                     ) : (
-                        <p className="text-sm text-muted-foreground">Tidak ada pengingat dalam rentang ini.</p>
+                        <div className="py-2">
+                           <EmptyState 
+                             title="Tidak Ada Pengingat"
+                             description="Semua tagihanmu sudah aman terjadwal."
+                             icon={Bell}
+                             variant="filter"
+                             className="md:min-h-0 pt-0"
+                           />
+                        </div>
                     )}
                 </CardContent>
             </Card>
@@ -86,7 +95,15 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                             </p>
                         </div>
                     ) : (
-                        <p className="text-sm text-muted-foreground">Tidak ada jatuh tempo.</p>
+                        <div className="py-2">
+                            <EmptyState 
+                                title="Bebas Hutang"
+                                description="Tidak ada kewajiban mendesak saat ini."
+                                icon={AlertCircle}
+                                variant="filter"
+                                className="md:min-h-0 pt-0"
+                            />
+                        </div>
                     )}
                     {debtSummary.largestDebt && (
                         <div className="rounded-md border border-border p-3">

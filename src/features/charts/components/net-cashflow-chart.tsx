@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getNetCashflowData } from '../lib/chart-utils';
 import { spacing } from '@/lib/layout-tokens';
-import { PlaceholderContent } from './placeholder-content';
+import { EmptyState } from '@/components/empty-state';
 import dynamic from 'next/dynamic';
 
 const NetCashflowComposedChart = dynamic(() => import('./lazy-charts').then(mod => mod.NetCashflowComposedChart), {
@@ -97,10 +97,12 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
 
     if (!hasActivity) {
         return (
-            <PlaceholderContent
-                label="Arus Kas Tahunan"
+            <EmptyState
+                variant="filter"
+                title="Arus Kas Tahunan"
+                description="Catat pemasukan dan pengeluaranmu untuk melihat arus kas bersih per bulan."
                 icon={Scale}
-                text="Catat pemasukan dan pengeluaranmu untuk melihat arus kas bersih per bulan."
+                className="pt-10 md:min-h-[460px]"
             />
         );
     }

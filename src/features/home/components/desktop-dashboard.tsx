@@ -21,7 +21,8 @@ import {
     CalendarRange,
     Activity,
     ListTodo,
-    TrendingUp
+    TrendingUp,
+    Sparkles
 } from 'lucide-react';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays, endOfMonth, subDays, eachDayOfInterval, format, isSameDay } from 'date-fns';
 
@@ -31,6 +32,7 @@ import { DashboardBudgetStatus } from './dashboard-budget-status';
 import { DashboardGoals } from './dashboard-goals';
 import { DashboardSkeleton } from './dashboard-skeleton';
 import { DashboardRecentTransactionsEmpty } from './dashboard-recent-transactions-empty';
+import { EmptyState } from '@/components/empty-state';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -251,6 +253,16 @@ export const DesktopDashboard = () => {
                                 <RefreshCw className="h-4 w-4" />
                             </Button>
 
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-9 w-9 rounded-xl border border-primary/20 shadow-none bg-primary/5 text-primary hover:bg-primary/10 transition-all active:scale-95"
+                                onClick={() => setIsAIChatOpen(true)}
+                                title="Tanya Lemon AI"
+                            >
+                                <Sparkles className="h-4 w-4 fill-current" />
+                            </Button>
+
                             <UserProfileDropdown />
                         </div>
                     </div>
@@ -343,7 +355,13 @@ export const DesktopDashboard = () => {
                                                     );
                                                 })}
                                                 {currentMonthData.expenseCategories.length === 0 && (
-                                                    <p className="text-muted-foreground text-xs text-center py-8 font-medium">No data available for analysis.</p>
+                                                    <EmptyState 
+                                                        title="Data Tidak Cukup"
+                                                        description="Belum ada transaksi pengeluaran bulan ini untuk dianalisis."
+                                                        icon={PieIcon}
+                                                        variant="filter"
+                                                        className="md:min-h-0 pt-0 py-12"
+                                                    />
                                                 )}
                                             </div>
                                         </div>

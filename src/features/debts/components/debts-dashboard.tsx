@@ -8,12 +8,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn } from '@/lib/utils';
-import { parseISO, differenceInCalendarDays } from 'date-fns';
+import { parseISO, differenceInCalendarDays, format } from 'date-fns';
+import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { CalendarClock, ArrowUpRight, ArrowDownRight, ArrowUpDown, Plus } from 'lucide-react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { spacing } from '@/lib/layout-tokens';
+import { BellRing, HandCoins, AlertCircle, Sparkles, TrendingDown, TrendingUp } from 'lucide-react';
 
 import { Progress } from '@/components/ui/progress';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
@@ -141,105 +143,132 @@ export const DebtsDashboard = () => {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {/* Header / Filter Toolbar */}
-            <div className="flex justify-end mb-2">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-[140px] h-9 text-xs bg-background border-input/60">
-                        <ArrowUpDown className="w-3 h-3 mr-2 text-muted-foreground" />
-                        <SelectValue placeholder="Urutkan" />
-                    </SelectTrigger>
-                    <SelectContent align="end">
-                        <SelectItem value="updated_desc">Terbaru Update</SelectItem>
-                        <SelectItem value="due_soon">Jatuh Tempo</SelectItem>
-                        <SelectItem value="amount_desc">Nominal Tertinggi</SelectItem>
-                        <SelectItem value="amount_asc">Nominal Terendah</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
-            {/* Summary & Analytics */}
-            <div className="space-y-4">
-                {/* Visual Summary Card - Compact */}
+            {/* Header: Actions & Filter Integration */}
+            <div className="flex flex-col gap-4">
+                {/* Summary & Analytics Grid */}
                 <div className="grid grid-cols-2 gap-3">
-                    <Card className="shadow-none border border-border/60 bg-gradient-to-br from-card to-destructive/5 overflow-hidden">
-                        <CardContent className={spacing.cardFlat}>
-                            <p className="text-xs font-medium text-muted-foreground text-label mb-1 flex items-center gap-1">
-                                <ArrowUpRight className="h-3 w-3 text-destructive" /> Saya Berhutang
-                            </p>
-                            <p className="text-lg font-medium text-destructive">{formatCurrency(totals.totalOwed)}</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="shadow-none border border-border/60 bg-gradient-to-br from-card to-emerald-500/5 overflow-hidden">
-                        <CardContent className={spacing.cardFlat}>
-                            <p className="text-xs font-medium text-muted-foreground text-label mb-1 flex items-center gap-1">
-                                <ArrowDownRight className="h-3 w-3 text-emerald-600" /> Piutang Saya
-                            </p>
-                            <p className="text-lg font-medium text-emerald-600">{formatCurrency(totals.totalOwing)}</p>
-                        </CardContent>
-                    </Card>
+                    <div className="rounded-card-premium border border-destructive/20 bg-destructive/5 p-4 flex flex-col justify-between group hover:bg-destructive/10 transition-all">
+                        <div className="flex items-center gap-2 mb-2">
+                            <TrendingDown className="h-3.5 w-3.5 text-destructive opacity-70" />
+                            <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.1em]">Saya Berhutang</p>
+                        </div>
+                        <div className="flex items-baseline gap-1">
+                            <p className="text-3xl font-semibold tracking-tighter text-destructive tabular-nums leading-none">{formatCurrency(totals.totalOwed)}</p>
+                        </div>
+                    </div>
+                    <div className="rounded-card-premium border border-primary/20 bg-primary/5 p-4 flex flex-col justify-between group hover:bg-primary/10 transition-all">
+                        <div className="flex items-center gap-2 mb-2">
+                            <TrendingUp className="h-3.5 w-3.5 text-primary opacity-70" />
+                            <p className="text-[10px] uppercase font-bold text-primary tracking-[0.1em]">Piutang Saya</p>
+                        </div>
+                        <div className="flex items-baseline gap-1">
+                            <p className="text-3xl font-semibold tracking-tighter text-primary tabular-nums leading-none">{formatCurrency(totals.totalOwing)}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                    <div className="flex-1 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+                        <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
+                            <TabsList className="bg-muted/50 h-10 p-1 gap-1 justify-start w-full rounded-full border border-border/20">
+                                {Object.entries(filterLabels).map(([value, label]) => (
+                                    <TabsTrigger 
+                                        key={value} 
+                                        value={value} 
+                                        className="flex-1 rounded-full h-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                                    >
+                                        {label === 'Orang Lain Berhutang' ? 'Piutang' : label === 'Saya Berhutang' ? 'Hutang' : label}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
+                        </Tabs>
+                    </div>
+
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className="w-[44px] h-10 p-0 flex items-center justify-center rounded-full bg-muted/30 border-none shadow-none hover:bg-muted/50 transition-colors">
+                            <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+                        </SelectTrigger>
+                        <SelectContent align="end" className="rounded-card-glass border-border/40 min-w-[160px]">
+                            <SelectItem value="updated_desc" className="text-xs font-medium">✨ Terbaru Update</SelectItem>
+                            <SelectItem value="due_soon" className="text-xs font-medium">⏰ Jatuh Tempo</SelectItem>
+                            <SelectItem value="amount_desc" className="text-xs font-medium">💰 Nominal Tertinggi</SelectItem>
+                            <SelectItem value="amount_asc" className="text-xs font-medium">💸 Nominal Terendah</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
-
-            <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                <TabsList className="bg-muted p-1 rounded-card h-12 w-full grid grid-cols-4">
-                    {Object.entries(filterLabels).map(([value, label]) => (
-                        <TabsTrigger key={value} value={value} className="h-full rounded-md font-medium text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950 px-1">
-                            {label === 'Orang Lain Berhutang' ? 'Piutang' : label === 'Saya Berhutang' ? 'Hutang' : label}
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
-            </Tabs>
 
             <div className="space-y-3 pb-24">
                 {visibleDebts.length === 0 ? (
                     <DebtsEmptyState />
                 ) : (
-                    visibleDebts.map((debt: Debt) => (
-                        <Card
-                            key={debt.id}
-                            className="overflow-hidden transition-all cursor-pointer border-none shadow-none border border-border/40 bg-card"
-                            onClick={() => router.push(`/debts/${debt.id}`)}
-                        >
-                            <CardContent className={spacing.cardFlat}>
-                                <div className="flex items-start justify-between gap-4 mb-3">
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-medium text-sm truncate">{debt.title}</h3>
-                                        <p className="text-xs text-muted-foreground mt-0.5">{debt.direction === 'owed' ? 'Kepada: ' : 'Dari: '} {debt.counterparty}</p>
-                                        {getDebtDueStatus(debt)}
+                    visibleDebts.map((debt: Debt) => {
+                         const outstanding = debt.outstandingBalance ?? debt.principal ?? 0;
+                         const progressValue = Math.max(0, Math.min(100, (1 - outstanding / (debt.principal ?? 1)) * 100));
+                         return (
+                            <Card
+                                key={debt.id}
+                                className="overflow-hidden transition-all border border-border/40 bg-card group hover:border-primary/20 hover:bg-primary/[0.02]"
+                                onClick={() => router.push(`/debts/${debt.id}`)}
+                            >
+                                <CardContent className="p-4 space-y-4">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1 min-w-0 space-y-1">
+                                            <h3 className="font-semibold text-sm tracking-tight text-foreground group-hover:text-primary transition-colors truncate">{debt.title}</h3>
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-muted/50 border border-border/10">
+                                                    {debt.direction === 'owed' ? 'Kepada: ' : 'Dari: '} 
+                                                    <span className="text-foreground/80">{debt.counterparty}</span>
+                                                </p>
+                                                {getDebtDueStatus(debt)}
+                                            </div>
+                                        </div>
+                                        {getDebtStatusBadge(debt)}
                                     </div>
-                                    {getDebtStatusBadge(debt)}
-                                </div>
 
-                                <div className="flex items-end justify-between">
-                                    <div>
-                                        <p className="text-label text-muted-foreground mb-1">
-                                            {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
-                                        </p>
-                                        <p className={cn(
-                                            "text-base font-medium tabular-nums",
-                                            debt.direction === 'owed' ? "text-destructive" : "text-emerald-600"
-                                        )}>
-                                            {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-label text-muted-foreground mb-1 text-right">Progress</p>
-                                        <div className="flex items-center gap-2">
+                                    <div className="space-y-3 p-3 rounded-card-glass bg-muted/30 border border-border/20">
+                                        <div className="flex items-end justify-between">
+                                            <div>
+                                                <p className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider mb-0.5">
+                                                    {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
+                                                </p>
+                                                <p className={cn(
+                                                    "text-xl font-bold tracking-tighter tabular-nums",
+                                                    debt.direction === 'owed' ? "text-destructive" : "text-emerald-600"
+                                                )}>
+                                                    {formatCurrency(outstanding)}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider mb-1">PROGRES</p>
+                                                <p className="text-sm font-bold tracking-tighter">{Math.round(progressValue)}%</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-1.5">
                                             <Progress
-                                                value={Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100))}
-                                                className="w-16 h-1.5 bg-muted"
+                                                value={progressValue}
+                                                className={cn(
+                                                    "h-2 overflow-hidden bg-background/50",
+                                                    debt.direction === 'owed' ? "text-destructive" : "text-emerald-500"
+                                                )}
                                             />
-                                            <span className="text-xs font-medium">{Math.round((1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100)}%</span>
+                                            {debt.dueDate && (
+                                                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+                                                    <span>Mulai: {debt.createdAt ? format(new Date(debt.createdAt), 'd MMM') : '-'}</span>
+                                                    <span>Tempo: {format(parseISO(debt.dueDate), 'd MMM')}</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))
+                                </CardContent>
+                            </Card>
+                        );
+                    })
                 )}
             </div>
 
-            {/* Contextual FAB handled by this component for consistency */}
+            {/* Contextual FAB */}
             <FAB
                 onClick={() => {
                     setDebtToEdit(null);

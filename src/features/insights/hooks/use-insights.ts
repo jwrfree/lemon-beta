@@ -5,22 +5,28 @@ import { insightService } from '@/lib/services/insight-service';
 import type { SpendingRisk, MonthlySummary } from '@/types/models';
 
 export const useInsights = () => {
-    const { user } = useAuth();
+    const { user, userData } = useAuth();
     const { showToast } = useUI();
     const [risk, setRisk] = useState<SpendingRisk | null>(null);
     const [summaries, setSummaries] = useState<MonthlySummary[]>([]);
+    const [briefing, setBriefing] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const refreshInsights = useCallback(async () => {
-        if (!user) return;
+        if (!user) {
+            setIsLoading(false);
+            return;
+        }
         setIsLoading(true);
         try {
-            const [riskData, summariesData] = await Promise.all([
+            const [riskData, summariesData, briefingData] = await Promise.all([
                 insightService.getSpendingRisk(user.id),
-                insightService.getMonthlySummaries(user.id)
+                insightService.getMonthlySummaries(user.id),
+                insightService.getDailyBriefing(user.id, userData?.displayName || 'Sobat Lemon')
             ]);
             setRisk(riskData);
             setSummaries(summariesData);
+            setBriefing(briefingData);
         } catch (error) {
             console.error('[useInsights] Hook Error:', error);
             showToast('Gagal memuat insight keuangan. Coba lagi.', 'error');
@@ -36,6 +42,7 @@ export const useInsights = () => {
     return {
         risk,
         summaries,
+        briefing,
         isLoading,
         refreshInsights
     };

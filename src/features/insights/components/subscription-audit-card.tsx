@@ -14,6 +14,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { analyzeSubscriptions } from '@/lib/subscription-analysis';
 import type { Transaction } from '@/types/models';
 import { auditSubscriptionsFlow } from '@/ai/flows/audit-subscriptions-flow';
+import { EmptyState } from '@/components/empty-state';
 
 interface SubscriptionAuditCardProps {
     transactions: Transaction[];
@@ -36,7 +37,21 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
         }
     }, [activeSubscriptions, summary, aiInsight, isAiLoading]);
 
-    if (activeSubscriptions === 0 && anomalies.length === 0) return null;
+    if (activeSubscriptions === 0 && anomalies.length === 0) {
+        return (
+            <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-card-premium p-6 flex items-center gap-5 transition-all mb-8">
+                <div className="bg-emerald-500/10 p-3 rounded-full shrink-0">
+                    <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                </div>
+                <div className="flex-1">
+                    <h3 className="text-base font-semibold text-emerald-800 dark:text-emerald-200">Status Langganan Aman</h3>
+                    <p className="text-xs text-emerald-600/70 font-medium leading-relaxed mt-0.5">
+                        Kami tidak mendeteksi adanya tagihan langganan aktif dari riwayat transaksi kamu. Semua aman!
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-4 mb-8">
