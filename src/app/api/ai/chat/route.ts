@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import OpenAI from "openai";
-import type { ChatCompletionChunk } from "openai/resources/chat/completions/completions";
-import { OpenAIStream, StreamingTextResponse, type Message } from "ai";
+import { StreamingTextResponse, type Message } from "ai";
 import { financialContextService } from "@/lib/services/financial-context-service";
 import { buildChatContextMessage, buildChatSystemPrompt, tryBuildDeterministicChatReply } from "@/ai/flows/chat-flow";
 
@@ -44,17 +43,53 @@ const createStaticTextStream = (content: string) =>
     },
   });
 
-const sanitizeTextStream = (stream: ReadableStream<Uint8Array>) =>
-  stream
-    .pipeThrough(new TextDecoderStream())
-    .pipeThrough(
-      new TransformStream<string, string>({
-        transform(chunk, controller) {
-          controller.enqueue(sanitizeAssistantText(chunk));
-        },
-      })
-    )
-    .pipeThrough(new TextEncoderStream());
+const sanitizeTextStream = (stream: ReadableStream<Uint8Array>) => {
+  const decoder = new TextDecoder();
+  const encoder = new TextEncoder();
+
+  return stream.pipeThrough(
+    new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        const text = decoder.decode(chunk, { stream: true });
+        if (text) {
+          controller.enqueue(encoder.encode(sanitizeAssistantText(text)));
+        }
+      },
+      flush(controller) {
+        const tail = decoder.decode();
+        if (tail) {
+          controller.enqueue(encoder.encode(sanitizeAssistantText(tail)));
+        }
+      },
+    })
+  );
+};
+
+const createCompletionTextStream = (
+  response: AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>
+) =>
+  new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const encoder = new TextEncoder();
+
+      try {
+        for await (const chunk of response) {
+          const text = chunk.choices
+            .map((choice) => choice.delta?.content ?? "")
+            .join("");
+
+          if (text) {
+            controller.enqueue(encoder.encode(text));
+          }
+        }
+      } catch (error) {
+        controller.error(error);
+        return;
+      }
+
+      controller.close();
+    },
+  });
 
 const deepseekClient = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
@@ -231,7 +266,7 @@ export async function POST(req: Request) {
       temperature: 0.7,
     });
 
-    const stream = OpenAIStream(response as unknown as AsyncIterable<ChatCompletionChunk>);
+    const stream = createCompletionTextStream(response);
     return new StreamingTextResponse(sanitizeTextStream(stream));
   } catch (error) {
     console.error("[AI Chat] Request failed:", error);

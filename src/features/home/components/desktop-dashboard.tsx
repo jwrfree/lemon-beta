@@ -68,6 +68,7 @@ export const DesktopDashboard = () => {
     const { debts } = useDebts();
     const { budgets } = useBudgets();
     const { goals } = useGoals();
+    const { setIsAIChatOpen } = useUI();
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);

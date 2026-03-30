@@ -1,11 +1,10 @@
 'use server';
 
-import { generateText } from 'ai';
-import { createDeepSeek } from '@ai-sdk/deepseek';
+import OpenAI from "openai";
 import { config } from '@/lib/config';
 
-const deepseek = createDeepSeek({
-    apiKey: config.ai.deepseek.apiKey || '',
+const openai = new OpenAI({
+    apiKey: config.ai.deepseek.apiKey,
     baseURL: config.ai.deepseek.baseURL,
 });
 
@@ -51,14 +50,17 @@ export async function auditDebtsFlow(summary: DebtAuditSummary) {
     `;
 
     try {
-        const { text } = await generateText({
-            model: deepseek('deepseek-chat'),
-            prompt: prompt,
+        const completion = await openai.chat.completions.create({
+            model: "deepseek-chat",
+            messages: [
+                { role: "system", content: 'Anda adalah Lemon Coach. Jawab ringkas, jelas, dan tanpa markdown.' },
+                { role: "user", content: prompt },
+            ],
             temperature: 0.6,
-            // maxTokens: 150,
+            max_tokens: 180,
         });
 
-        return text.trim();
+        return completion.choices[0].message.content?.trim() || null;
     } catch (error) {
         console.error("Audit Debt Error:", error);
         return null;
