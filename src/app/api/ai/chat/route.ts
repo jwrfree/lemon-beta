@@ -2,33 +2,116 @@ import { createClient } from "@/lib/supabase/server";
 import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse, type Message } from "ai";
 import { financialContextService } from "@/lib/services/financial-context-service";
-import { buildChatSystemPrompt } from "@/ai/flows/chat-flow";
+import { buildChatContextMessage, buildChatSystemPrompt } from "@/ai/flows/chat-flow";
 
 export const maxDuration = 30;
+
+const MAX_MESSAGES = 12;
+const MAX_MESSAGE_CHARS = 800;
+const MAX_TOTAL_CHARS = 4000;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 12;
+const ALLOWED_CLIENT_ROLES = new Set(["user", "assistant"]);
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
 const deepseekClient = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
   baseURL: "https://api.deepseek.com/v1",
 });
 
-const toProviderMessages = (messages: Message[], systemPrompt: string) => {
-  const normalizedMessages = messages
-    .filter(
-      message =>
-        (message.role === "user" || message.role === "assistant" || message.role === "system") &&
-        typeof message.content === "string" &&
-        message.content.trim().length > 0
-    )
-    .map(message => ({
+const pruneRateLimitStore = (now: number) => {
+  for (const [key, value] of rateLimitStore.entries()) {
+    if (value.resetAt <= now) {
+      rateLimitStore.delete(key);
+    }
+  }
+};
+
+const consumeRateLimit = (userId: string) => {
+  const now = Date.now();
+  pruneRateLimitStore(now);
+  const existing = rateLimitStore.get(userId);
+
+  if (!existing || existing.resetAt <= now) {
+    const next = { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS };
+    rateLimitStore.set(userId, next);
+    return { allowed: true as const, remaining: RATE_LIMIT_MAX_REQUESTS - 1, resetAt: next.resetAt };
+  }
+
+  if (existing.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return { allowed: false as const, remaining: 0, resetAt: existing.resetAt };
+  }
+
+  existing.count += 1;
+  rateLimitStore.set(userId, existing);
+  return {
+    allowed: true as const,
+    remaining: RATE_LIMIT_MAX_REQUESTS - existing.count,
+    resetAt: existing.resetAt,
+  };
+};
+
+const normalizeClientMessages = (messages: Message[]) => {
+  const trimmedMessages = messages.slice(-MAX_MESSAGES);
+  let totalChars = 0;
+
+  const normalizedMessages = trimmedMessages.map(message => {
+    if (!ALLOWED_CLIENT_ROLES.has(message.role)) {
+      throw new Error(`Peran pesan tidak diizinkan: ${message.role}`);
+    }
+
+    if (typeof message.content !== "string") {
+      throw new Error("Isi pesan harus berupa teks.");
+    }
+
+    const content = message.content.replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ").trim();
+    if (!content) {
+      throw new Error("Isi pesan tidak boleh kosong.");
+    }
+
+    if (content.length > MAX_MESSAGE_CHARS) {
+      throw new Error(`Panjang satu pesan melebihi batas ${MAX_MESSAGE_CHARS} karakter.`);
+    }
+
+    totalChars += content.length;
+    if (totalChars > MAX_TOTAL_CHARS) {
+      throw new Error(`Total percakapan melebihi batas ${MAX_TOTAL_CHARS} karakter.`);
+    }
+
+    return {
       role: message.role,
-      content: message.content,
-    }));
+      content,
+    };
+  });
+
+  const lastMessage = normalizedMessages.at(-1);
+  if (!lastMessage || lastMessage.role !== "user") {
+    throw new Error("Pesan terakhir harus berasal dari user.");
+  }
+
+  return normalizedMessages;
+};
+
+const toProviderMessages = (
+  messages: Message[],
+  systemPrompt: string,
+  contextMessage: string | null
+) => {
+  const normalizedMessages = normalizeClientMessages(messages);
 
   return [
     {
       role: "system" as const,
       content: systemPrompt,
     },
+    ...(contextMessage
+      ? [
+          {
+            role: "assistant" as const,
+            content: contextMessage,
+          },
+        ]
+      : []),
     ...normalizedMessages,
   ];
 };
@@ -36,10 +119,19 @@ const toProviderMessages = (messages: Message[], systemPrompt: string) => {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const messages = Array.isArray(body?.messages) ? (body.messages.slice(-12) as Message[]) : null;
+    const messages = Array.isArray(body?.messages) ? (body.messages as Message[]) : null;
 
     if (!messages || messages.length === 0) {
       return Response.json({ error: "Payload chat tidak valid." }, { status: 400 });
+    }
+
+    try {
+      normalizeClientMessages(messages);
+    } catch (error) {
+      return Response.json(
+        { error: error instanceof Error ? error.message : "Payload chat ditolak." },
+        { status: 400 }
+      );
     }
 
     if (!process.env.DEEPSEEK_API_KEY) {
@@ -61,14 +153,28 @@ export async function POST(req: Request) {
       return Response.json({ error: "Gagal memvalidasi sesi." }, { status: 500 });
     }
 
+    const rateLimit = consumeRateLimit(user.id);
+    if (!rateLimit.allowed) {
+      return Response.json(
+        { error: "Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.max(1, Math.ceil((rateLimit.resetAt - Date.now()) / 1000))),
+          },
+        }
+      );
+    }
+
     const context = await financialContextService.getUnifiedContext(user.id, supabase);
-    const systemPrompt = context
-      ? buildChatSystemPrompt(context)
-      : "Anda adalah Lemon Coach, asisten keuangan pribadi. Maaf, saya sedang tidak bisa mengakses data keuangan Anda saat ini.";
+    const systemPrompt = buildChatSystemPrompt();
+    const contextMessage = context
+      ? buildChatContextMessage(context)
+      : "Konteks finansial user sedang tidak tersedia. Jika pertanyaan membutuhkan data spesifik user, katakan akses data sedang tidak tersedia.";
 
     const response = await deepseekClient.chat.completions.create({
       model: "deepseek-chat",
-      messages: toProviderMessages(messages, systemPrompt),
+      messages: toProviderMessages(messages, systemPrompt, contextMessage),
       stream: true,
       temperature: 0.7,
     });
