@@ -16,6 +16,7 @@ import type { Debt, DebtPayment } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 
 import { PageHeader } from '@/components/page-header';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 const PaymentItem = ({ payment, direction }: { payment: DebtPayment; direction: string }) => {
     const paymentDate = payment.paymentDate ? parseISO(payment.paymentDate) : null;
@@ -58,12 +59,12 @@ export default function DebtDetailPage() {
 
     if (!debt) {
         return (
-            <div className="flex flex-col h-full">
-                <PageHeader title="Detail Hutang" />
+            <AppPageShell>
+                <PageHeader title="Detail Hutang" width="compact" />
                 <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                     Catatan tidak ditemukan.
                 </div>
-            </div>
+            </AppPageShell>
         );
     }
 
@@ -74,10 +75,9 @@ export default function DebtDetailPage() {
     const nextPaymentDate = debt.nextPaymentDate ? parseISO(debt.nextPaymentDate) : null;
 
     return (
-        <div className="flex flex-col h-full">
-            <PageHeader title={debt.title || "Detail Hutang"} />
-            <main className="flex-1 overflow-y-auto">
-                <div className="p-4 space-y-6">
+        <AppPageShell>
+            <PageHeader title={debt.title || "Detail Hutang"} width="compact" />
+            <AppPageBody width="compact" className="space-y-6">
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base font-semibold">Ringkasan</CardTitle>
@@ -219,8 +219,7 @@ export default function DebtDetailPage() {
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>
-                </div>
-            </main>
-        </div>
+            </AppPageBody>
+        </AppPageShell>
     );
 }

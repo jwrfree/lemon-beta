@@ -99,12 +99,12 @@ function SettingsContent() {
     };
 
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="flex min-h-0 flex-1 flex-col bg-background text-foreground">
 
             {/* Header Bersih */}
             <PageHeader
-                title="Profil"
-                showBackButton={true}
+                title="Pengaturan"
+                showBackButton={false}
                 extraActions={
                     <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-background">
                         {userData?.photoURL ? (
@@ -117,7 +117,7 @@ function SettingsContent() {
             />
 
             {/* BENTO GRID LAYOUT */}
-            <div className="px-4 md:px-6 w-full max-w-5xl mx-auto space-y-4 mt-4">
+            <main className="mx-auto w-full max-w-5xl space-y-4 px-4 py-4 pb-6 md:px-6 md:py-6 md:pb-24">
 
                 {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
                 <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
@@ -308,7 +308,7 @@ function SettingsContent() {
                 </div>
 
                 {/* LOGOUT ACTION - STANDARDIZED MOBILE UI */}
-                <div className="pt-8 pb-32">
+                <div className="pb-6 pt-8 md:pb-12">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button 
@@ -355,7 +355,7 @@ function SettingsContent() {
                         <p className="text-[10px] font-bold tracking-wide opacity-10 uppercase">Lemon AI Dashboard v2.0</p>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 }

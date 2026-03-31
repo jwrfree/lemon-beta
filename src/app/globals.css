@@ -266,7 +266,6 @@
     min-height: 100vh;
     min-height: 100dvh;
     line-height: 1.5;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   h1, h2, h3, h4, h5, h6 {

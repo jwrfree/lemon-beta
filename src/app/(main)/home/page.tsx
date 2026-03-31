@@ -20,6 +20,7 @@ import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useHomeSummary } from '@/features/home/hooks/use-home-summary';
 import dynamic from 'next/dynamic';
+import { AppPageShell } from '@/components/app-page-shell';
 import { AIInsightCard } from '@/features/home/components/ai-insight-card';
 import { HomeSkeleton } from '@/features/home/components/home-skeleton';
 
@@ -169,12 +170,12 @@ export default function HomePage() {
     }
 
     return (
-        <>
-            <div className="hidden md:block h-full">
+        <AppPageShell>
+            <div className="hidden min-h-0 flex-1 md:block">
                 <DesktopDashboard />
             </div>
 
-            <div className="md:hidden min-h-full flex flex-col bg-background">
+            <div className="flex min-h-0 flex-1 flex-col bg-background md:hidden">
                 <PullToRefresh onRefresh={async () => {
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }}>
@@ -193,6 +194,6 @@ export default function HomePage() {
                     />
                 </PullToRefresh>
             </div>
-        </>
+        </AppPageShell>
     );
 }

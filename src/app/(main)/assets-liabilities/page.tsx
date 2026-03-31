@@ -109,10 +109,10 @@ export default function AssetsLiabilitiesPage() {
     };
 
     return (
-        <div className="h-full flex flex-col">
+        <div className="flex h-full min-h-0 flex-col bg-background">
             <PageHeader
                 title="Aset & Liabilitas"
-                showBackButton={true}
+                showBackButton={false}
                 actionButton={{
                     icon: Plus,
                     label: 'Tambah entri baru',
@@ -120,7 +120,7 @@ export default function AssetsLiabilitiesPage() {
                 }}
             />
 
-            <main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+            <main className="flex-1 space-y-6 px-4 py-4 pb-6 md:px-6 md:py-6 md:pb-24">
                 <div className="max-w-6xl mx-auto space-y-6">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <Card className="lg:col-span-2 bg-primary text-primary-foreground border-none shadow-lg shadow-primary/30 rounded-card overflow-hidden relative min-h-[200px] flex flex-col justify-between p-8">

@@ -38,6 +38,7 @@ import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
 import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
+import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 // Import Analyst Charts Components
 import { FinancialPulse } from '@/features/charts/components/financial-pulse';
@@ -48,6 +49,14 @@ import { CashflowComposedChart } from '@/features/charts/components/cashflow-com
 import { ExpenseHeatmap } from '@/features/charts/components/expense-heatmap';
 import { ProphetChart } from '@/features/charts/components/prophet-chart';
 import type { DailyMetric } from '@/features/charts/types';
+
+interface CashflowPoint {
+    date: string;
+    income: number;
+    expense: number;
+    net: number;
+    accumulatedNet: number;
+}
 
 export const DesktopDashboard = () => {
     const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date('2026-03-28T10:00:00'));
@@ -148,9 +157,8 @@ export const DesktopDashboard = () => {
 
     const cashflowData = useMemo(() => {
         const days = eachDayOfInterval({ start: startOfMonth(subMonths(now, 2)), end: now });
-        let runningBalance = 0;
-
-        return days.map(day => {
+        return days.reduce<CashflowPoint[]>((acc, day) => {
+            const previousAccumulatedNet = acc[acc.length - 1]?.accumulatedNet ?? 0;
             const dateKey = format(day, 'yyyy-MM-dd');
             let dailyInc = 0;
             let dailyExp = 0;
@@ -162,16 +170,16 @@ export const DesktopDashboard = () => {
                 }
             });
 
-            runningBalance += (dailyInc - dailyExp);
-
-            return {
+            acc.push({
                 date: dateKey,
                 income: dailyInc,
                 expense: dailyExp,
                 net: dailyInc - dailyExp,
-                accumulatedNet: runningBalance
-            };
-        });
+                accumulatedNet: previousAccumulatedNet + dailyInc - dailyExp
+            });
+
+            return acc;
+        }, []);
     }, [filteredTransactions, now]);
 
     const projectedExpense = useMemo(() => {
@@ -221,26 +229,22 @@ export const DesktopDashboard = () => {
 
     return (
         <TooltipProvider>
-            <div className="min-h-screen bg-background pb-24 text-foreground">
-                <div className="max-w-[1920px] mx-auto p-4 lg:p-6 space-y-6">
-
-                    {/* Header */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <h1 className="text-2xl font-medium tracking-tight flex items-center gap-2">
-                                <Activity className="w-6 h-6 text-primary" />
-                                Financial Command Center
+            <AppPageShell className="text-foreground">
+                <AppPageHeaderChrome width="wide">
+                    <div className="flex flex-col gap-4 px-4 py-4 md:flex-row md:items-end md:justify-between md:px-6">
+                        <div className="space-y-1">
+                            <h1 className="text-base font-semibold tracking-tight text-foreground md:text-lg">
+                                Beranda
                             </h1>
-                            <p className="text-sm text-muted-foreground mt-1 font-medium">Real-time data analysis & portfolio tracking.</p>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-2">
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="w-[180px] bg-card border border-border/40 shadow-none rounded-xl h-9 text-xs font-medium">
+                                <SelectTrigger className="h-10 w-[190px] rounded-full border border-border/40 bg-card shadow-none text-sm font-medium">
                                     <SelectValue placeholder="Pilih Dompet" />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-xl border-border/50">
-                                    <SelectItem value="all">Global View</SelectItem>
+                                <SelectContent className="rounded-2xl border-border/50">
+                                    <SelectItem value="all">Semua Dompet</SelectItem>
                                     {wallets.map(w => <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>)}
                                 </SelectContent>
                             </Select>
@@ -248,7 +252,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className={cn("h-9 w-9 rounded-xl border border-border/40 shadow-none bg-card", isPending && "animate-spin")}
+                                className={cn("h-10 w-10 rounded-full border border-border/40 bg-card shadow-none", isPending && "animate-spin")}
                                 onClick={handleRefresh}
                             >
                                 <RefreshCw className="h-4 w-4" />
@@ -257,7 +261,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-9 w-9 rounded-xl border border-primary/30 shadow-none bg-primary/10 text-primary hover:bg-primary/20 transition-all active:scale-95"
+                                className="h-10 w-10 rounded-full border border-primary/30 bg-primary/10 text-primary shadow-none transition-all hover:bg-primary/20 active:scale-95"
                                 onClick={() => setIsAIChatOpen(true)}
                                 title="Tanya Lemon AI"
                             >
@@ -267,7 +271,9 @@ export const DesktopDashboard = () => {
                             <UserProfileDropdown />
                         </div>
                     </div>
+                </AppPageHeaderChrome>
 
+                <AppPageBody width="wide" className="space-y-6 text-foreground">
                     {/* MAIN GRID 70:30 RATIO */}
                     <div className="grid grid-cols-12 gap-6 items-start">
 
@@ -430,8 +436,8 @@ export const DesktopDashboard = () => {
                             {activeGoals.length > 0 && <DashboardGoals goals={activeGoals} />}
                         </div>
                     </div>
-                </div>
-            </div>
+                </AppPageBody>
+            </AppPageShell>
         </TooltipProvider>
     );
 };

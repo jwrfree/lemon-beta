@@ -19,6 +19,7 @@ import { useDebts } from '@/features/debts/hooks/use-debts';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { PageHeader } from "@/components/page-header";
 import { EmptyState } from '@/components/empty-state';
+import { AppPageBody, AppPageShell, AppPageStickyFooter } from '@/components/app-page-shell';
 
 const statusLabels: Record<string, string> = {
     all: 'Semua',
@@ -52,17 +53,6 @@ export default function RemindersPage() {
     const [search, setSearch] = useState('');
     const [range, setRange] = useState<'week' | '30'>('week');
     
-    // Use mounting pattern without useEffect to avoid cascading renders
-    const [isMounted] = useState(() => {
-        // This runs only once during initial render
-        return true;
-    });
-    
-    // Avoid hydration mismatch by returning null until mounted
-    if (!isMounted) {
-        return null;
-    }
-
     const sortedReminders = useMemo<Reminder[]>(() => {
         return [...reminders].sort((a, b) => {
             const aDue = a.dueDate ? new Date(a.dueDate).getTime() : 0;
@@ -153,10 +143,11 @@ export default function RemindersPage() {
     }).length, [reminders]);
 
     return (
-        <div className="flex flex-col h-full relative">
+        <AppPageShell className="relative">
             <PageHeader 
                 title="Pengingat" 
-                showBackButton={true}
+                width="wide"
+                showBackButton={false}
                 extraActions={
                     <div className="flex items-center gap-1 md:gap-2">
                         <div className="hidden md:flex items-center gap-2 mr-2">
@@ -182,8 +173,7 @@ export default function RemindersPage() {
                     </div>
                 }
             />
-            <main className="flex-1 overflow-y-auto">
-                <div className="p-4 md:p-6 grid md:grid-cols-[2fr_1fr] gap-4 md:gap-6 pb-24 md:pb-6">
+            <AppPageBody width="wide" className="grid gap-4 md:grid-cols-[2fr_1fr] md:gap-6">
                     <div className="space-y-4">
                         {/* Mobile chip filters */}
                         <div className="md:hidden space-y-3">
@@ -537,11 +527,11 @@ export default function RemindersPage() {
                             </CardContent>
                         </Card>
                     </div>
-                </div>
-            </main>
+            </AppPageBody>
 
             {/* Mobile bottom bar */}
-            <div className="md:hidden sticky bottom-0 inset-x-0 bg-background/80 backdrop-blur-xl border-t border-border/50 p-4 flex items-center justify-between gap-4 pb-[calc(1rem+env(safe-area-inset-bottom))] z-30">
+            <AppPageStickyFooter width="wide" className="md:hidden">
+                <div className="flex items-center justify-between gap-4">
                 <Button 
                     variant="outline" 
                     className="flex-1 h-14 rounded-full font-semibold text-xs uppercase tracking-widest border-border"
@@ -555,8 +545,9 @@ export default function RemindersPage() {
                 >
                     Tambah
                 </Button>
-            </div>
-        </div>
+                </div>
+            </AppPageStickyFooter>
+        </AppPageShell>
     );
 }
 

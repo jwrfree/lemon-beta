@@ -117,7 +117,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">
             <Sidebar />
             <div className={cn(
-                "flex-1 flex flex-col relative w-full h-full max-w-lg md:max-w-none mx-auto overflow-hidden transition-all duration-300",
+                "relative flex h-full w-full min-w-0 flex-1 flex-col overflow-hidden transition-all duration-300",
                 isSidebarCollapsed ? "md:ml-16" : "md:ml-64"
             )}>
                 <div
@@ -125,7 +125,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     className="main-content-scroll"
                     data-nav={showBottomNav ? "true" : "false"}
                 >
-                    <div className="flex flex-col min-h-full relative w-full">
+                    <div className="relative flex min-h-full w-full flex-1 flex-col">
                         {children}
                     </div>
                 </div>

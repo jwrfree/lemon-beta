@@ -162,9 +162,10 @@ interface GoalRow {
   const totalProgress = calculateProgress(totalSavings, totalTarget);
 
   return (
-    <div className="flex flex-col h-full min-h-screen font-sans relative">
+    <div className="relative flex h-full min-h-0 flex-col bg-background font-sans">
       <PageHeader 
-        title="Target Keuangan" 
+        title="Target"
+        showBackButton={false}
         extraActions={
           <Button variant="ghost" size="icon" className="rounded-full">
             <MoreVertical className="w-5 h-5 md:h-6 md:w-6 text-muted-foreground" strokeWidth={1.75} />

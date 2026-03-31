@@ -15,6 +15,7 @@ import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 export default function BudgetDetailPage() {
     const router = useRouter();
@@ -69,8 +70,8 @@ export default function BudgetDetailPage() {
 
     if (!budget) {
         return (
-            <div className="h-full bg-zinc-50 dark:bg-black">
-                <PageHeader title="Detail Anggaran" />
+            <AppPageShell className="bg-zinc-50 dark:bg-black">
+                <PageHeader title="Detail Anggaran" width="compact" />
                 <main className="flex justify-center text-center p-8 pt-20">
                     <div className="max-w-xs flex flex-col items-center">
                         <div className="p-5 bg-rose-500/10 rounded-card-premium mb-6">
@@ -84,7 +85,7 @@ export default function BudgetDetailPage() {
                         </Button>
                     </div>
                 </main>
-            </div>
+            </AppPageShell>
         );
     }
 
@@ -101,9 +102,10 @@ export default function BudgetDetailPage() {
     const CategoryIcon = visuals.icon as React.ElementType;
 
     return (
-        <div className="flex flex-col h-full bg-zinc-50 dark:bg-black">
+        <AppPageShell className="bg-zinc-50 dark:bg-black">
             <PageHeader
                 title="Detail Anggaran"
+                width="compact"
                 actionButton={{
                     icon: Pencil,
                     label: "Ubah",
@@ -111,7 +113,7 @@ export default function BudgetDetailPage() {
                 }}
             />
 
-            <main className="flex-1 overflow-y-auto px-4 md:px-6 space-y-6 pb-24 pt-4">
+            <AppPageBody width="compact" className="space-y-6 pt-4">
 
                 {/* 1. Identity & Health Card */}
                 <motion.div
@@ -231,7 +233,7 @@ export default function BudgetDetailPage() {
                         isLoading={isTransactionsLoading}
                     />
                 </motion.div>
-            </main>
-        </div>
+            </AppPageBody>
+        </AppPageShell>
     )
 }

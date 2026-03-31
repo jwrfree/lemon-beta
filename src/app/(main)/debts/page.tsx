@@ -22,6 +22,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { DebtAnalyticsCard } from '@/features/debts/components/debt-analytics-card';
 import { StatusBadge } from '@/components/status-badge';
 import { motion } from 'framer-motion';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
@@ -144,10 +145,10 @@ export default function DebtsPage() {
     }, [debts, activeFilter, sortBy]);
 
     return (
-        <div className="flex flex-col h-full relative">
+        <AppPageShell className="relative">
             <PageHeader 
                 title="Hutang & Piutang" 
-                showBackButton={true}
+                showBackButton={false}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
                         <SelectTrigger className="w-[140px] h-9 text-xs font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none">
@@ -163,8 +164,7 @@ export default function DebtsPage() {
                     </Select>
                 }
             />
-            <main className="flex-1 overflow-y-auto pb-24">
-                <div className="p-4 space-y-6">
+            <AppPageBody className="space-y-6">
                     {/* Summary Hero Card */}
                     <Card className="border-none rounded-card-premium bg-teal-900 text-white shadow-card overflow-hidden relative">
                         <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12">
@@ -278,8 +278,7 @@ export default function DebtsPage() {
                             })
                         )}
                     </div>
-                </div>
-            </main>
+            </AppPageBody>
 
             {/* Floating Action Button */}
             <FAB
@@ -290,7 +289,7 @@ export default function DebtsPage() {
                 label="Tambah catatan hutang"
                 mobileOnly={false}
             />
-        </div>
+        </AppPageShell>
     );
 }
 

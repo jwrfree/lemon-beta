@@ -24,6 +24,7 @@ import { SavingPotential } from '@/features/charts/components/advanced-stats/sav
 import { SubscriptionAudit } from '@/features/charts/components/advanced-stats/subscription-audit';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
+import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 // Dynamically import heavy chart components
 const FinancialPulse = dynamic(() => import('@/features/charts/components/financial-pulse').then(mod => mod.FinancialPulse), { 
@@ -481,12 +482,11 @@ function ChartContent() {
         return <AnalyticsPageSkeleton />;
     }
 
-    return (
-        <div className="min-h-full bg-background">
-            {/* STICKY HEADER */}
-            <div className="pt-safe-top px-4 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/10">
-                <div className="flex justify-between items-center py-4 px-2">
-                    <h2 className="text-lg font-bold tracking-tight">Statistics</h2>
+        return (
+        <AppPageShell>
+            <AppPageHeaderChrome width="wide">
+                <div className="flex items-center justify-between px-4 py-4 md:px-6">
+                    <h1 className="text-base font-semibold tracking-tight text-foreground md:text-lg">Statistik</h1>
                     <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/50 border border-border/50">
                             <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
@@ -494,9 +494,10 @@ function ChartContent() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </AppPageHeaderChrome>
 
-            {/* SECTIONS */}
+            <AppPageBody width="wide" className="space-y-8">
+
             <FinancialPulse
                 net={currentMonthData.net}
                 income={currentMonthData.income}
@@ -509,17 +510,17 @@ function ChartContent() {
             />
 
             {/* ADVANCED STATS GRID */}
-            <div className="px-5 mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <NetWorthTrend data={netWorthData} />
                 <SavingPotential data={savingData} />
             </div>
 
-            <div className="px-5 mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <BehaviorAnalytics data={behaviorData} />
                 <SubscriptionAudit items={subscriptionData.items} totalMonthly={subscriptionData.totalMonthly} />
             </div>
 
-            <div className="px-5 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-3">
                 <div className="md:col-span-1 h-full">
                     <HealthGauge savingsRate={savingsRate} />
                 </div>
@@ -553,7 +554,7 @@ function ChartContent() {
             </div>
 
             {/* DESKTOP CHART GRID */}
-            <div className="px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <div className="lg:col-span-2">
                     <TrendAnalytics data={trendData} />
                 </div>
@@ -563,7 +564,7 @@ function ChartContent() {
             </div>
 
             {/* DESKTOP LISTS GRID */}
-            <div className="px-4 mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
                 {/* Top Transactions */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between px-2">
@@ -699,7 +700,8 @@ function ChartContent() {
                     </div>
                 </div>
             </div>
-        </div>
+            </AppPageBody>
+        </AppPageShell>
     );
 }
 

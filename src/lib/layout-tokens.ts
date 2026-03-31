@@ -1,32 +1,47 @@
 /**
- * Semantic spacing tokens — Phase 4 Token Abstraction Layer
+ * Semantic layout tokens for shared page shells.
  *
- * Maps structural layout patterns to named tokens per docs/standards/DESIGN_SYSTEM.md §5.
- * Use these tokens instead of repeating raw Tailwind utility strings in
- * page containers, section wrappers, CardContent, grid layouts, and form stacks.
- *
- * @see docs/standards/DESIGN_SYSTEM.md §5.1 Page Layout
- * @see docs/standards/DESIGN_SYSTEM.md §5.2 Spacing Scale
- * @see docs/standards/DESIGN_SYSTEM.md §4.2 Card Tiers
+ * These tokens standardize scroll ownership, width tiers, sticky page chrome,
+ * and body spacing across mobile and desktop internal pages.
  */
 
-export const spacing = {
-  /** DS §5.1 — Canonical scrollable page container */
-  container: 'flex-1 p-4 md:p-6 space-y-6 pb-24',
+export type PageWidth = 'compact' | 'standard' | 'wide' | 'full';
 
-  /** DS §5.2 — Section gap inside a page (vertical rhythm between sections) */
+export const pageWidth = {
+  compact: 'max-w-5xl',
+  standard: 'max-w-7xl',
+  wide: 'max-w-[1600px]',
+  full: 'max-w-none',
+} as const;
+
+export const pageShell = {
+  root: 'flex min-h-0 flex-1 flex-col bg-background',
+  bodyBase: 'mx-auto w-full min-h-0 px-4 py-4 pb-6 md:px-6 md:py-6 md:pb-10',
+  headerChrome:
+    'sticky top-0 z-30 shrink-0 border-b border-border/15 bg-background/88 backdrop-blur-md',
+  stickyFooter:
+    'sticky bottom-0 inset-x-0 z-30 border-t border-border/15 bg-background/92 px-4 py-3 backdrop-blur-md pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:px-6 md:py-4',
+} as const;
+
+export const spacing = {
+  /** Canonical standard-width page body */
+  container: `${pageShell.bodyBase} ${pageWidth.standard} space-y-6`,
+  containerCompact: `${pageShell.bodyBase} ${pageWidth.compact} space-y-6`,
+  containerWide: `${pageShell.bodyBase} ${pageWidth.wide} space-y-6`,
+
+  /** Vertical rhythm between sections */
   section: 'space-y-6',
 
-  /** DS §4.2 Tier 2 — Premium card inner content padding */
+  /** Premium card inner content padding */
   cardPremium: 'p-7',
 
-  /** DS §4.2 Tier 1 — Flat card inner content padding */
+  /** Flat card inner content padding */
   cardFlat: 'p-4',
 
-  /** DS §5.2 — Card grid gap (between grid children) */
+  /** Card grid gap */
   gridGap: 'gap-4',
 
-  /** DS §5.2 — Form / stack field gap (between form fields) */
+  /** Form / stack field gap */
   stack: 'space-y-4',
 } as const;
 

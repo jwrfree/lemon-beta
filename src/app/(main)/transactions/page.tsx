@@ -17,7 +17,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Label } from '@/components/ui/label';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
-import { PageHeader } from "@/components/page-header";
+import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 function TransactionsPageContent() {
     const router = useRouter();
@@ -110,12 +110,13 @@ function TransactionsPageContent() {
     const displayedWallets = showAllWallets ? wallets : wallets.slice(0, 8);
 
     return (
-        <div className="flex flex-col h-full overflow-hidden bg-background">
-            <div className="px-4 py-3 flex flex-col gap-3 bg-card/80 backdrop-blur-xl border-b z-20 sticky top-0">
+        <AppPageShell>
+            <AppPageHeaderChrome>
+                <div className="flex flex-col gap-3 px-4 py-3 md:px-6">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0 -ml-2 rounded-full">
-                        <X className="h-5 w-5" />
-                    </Button>
+                    <h1 className="min-w-0 flex-1 truncate text-base font-semibold tracking-tight text-foreground md:text-lg">
+                        Transaksi
+                    </h1>
                     <div className="relative flex-1 group">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
@@ -263,9 +264,10 @@ function TransactionsPageContent() {
                         })}
                     </div>
                 )}
-            </div>
+                </div>
+            </AppPageHeaderChrome>
 
-            <main className="flex-1 overflow-y-auto p-4 space-y-2">
+            <AppPageBody className="space-y-2">
                 {activeTab === 'debt' ? (
                     <div className="space-y-2">
                         {debts.length === 0 ? (
@@ -303,8 +305,8 @@ function TransactionsPageContent() {
                         isLoading={isLoading}
                     />
                 )}
-            </main>
-        </div>
+            </AppPageBody>
+        </AppPageShell>
     );
 }
 

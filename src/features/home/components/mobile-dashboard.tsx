@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { format } from 'date-fns';
 import {
     Bell,
     ArrowUpRight,
@@ -22,6 +21,7 @@ import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
+import { AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 import { useUI } from '@/components/ui-provider';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
@@ -64,29 +64,11 @@ export const MobileDashboard = ({
     const router = useRouter();
     const {
         openTransactionSheet,
-        setTransactionToEdit,
         setIsTransferModalOpen,
         setIsDebtModalOpen,
         setDebtToEdit,
-        setIsSmartAddOpen,
         setIsAIChatOpen,
     } = useUI();
-
-    const [currentTime, setCurrentTime] = useState<Date | null>(null);
-
-    useEffect(() => {
-        // Fix: Use simulated time for Q1 2026 data alignment
-        setCurrentTime(new Date('2026-03-28T10:00:00'));
-    }, []);
-
-    const timeBasedGreeting = useMemo(() => {
-        const hour = new Date().getHours();
-        if (hour < 5) return 'Selamat Malam';
-        if (hour < 11) return 'Selamat Pagi';
-        if (hour < 15) return 'Selamat Siang';
-        if (hour < 18) return 'Selamat Sore';
-        return 'Selamat Malam';
-    }, []);
 
     const firstName = userData?.displayName?.split(' ')[0] || 'User';
 
@@ -128,15 +110,14 @@ export const MobileDashboard = ({
     if (isLoading) return null;
 
     return (
-        <main className="flex-1 space-y-6">
-            {/* 1. Header Section */}
-            <div className="px-5 pt-6 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        asChild 
-                        className="h-10 w-10 p-0 rounded-full border-2 border-background active:scale-95 transition-all overflow-hidden"
+        <AppPageShell className="gap-6 bg-background pb-6">
+            <AppPageHeaderChrome width="full" className="z-20">
+                <div className="grid min-h-14 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2.5 sm:px-4">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        asChild
+                        className="h-9 w-9 rounded-full border border-border/30 bg-card p-0 shadow-none transition-all active:scale-95 overflow-hidden"
                     >
                         <Avatar className="h-full w-full cursor-pointer" onClick={() => router.push('/settings')}>
                             <AvatarImage src={userData?.photoURL} />
@@ -145,33 +126,42 @@ export const MobileDashboard = ({
                             </AvatarFallback>
                         </Avatar>
                     </Button>
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                            <span className="text-label text-muted-foreground">{timeBasedGreeting},</span>
-                            {currentTime && (
-                                <span className="text-xs font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-md tabular-nums">
-                                    {format(currentTime, 'HH:mm')}
-                                </span>
-                            )}
-                        </div>
-                        <h1 className="text-xl font-semibold leading-tight tracking-tighter">{firstName}</h1>
+
+                    <div className="min-w-0">
+                        <h1 className="truncate text-left text-base font-semibold tracking-tight text-foreground">
+                            Beranda
+                        </h1>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-9 w-9 rounded-full border border-border/30 bg-card text-muted-foreground shadow-none hover:bg-muted hover:text-foreground"
+                            onClick={() => router.push('/search')}
+                        >
+                            <Search className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="relative h-9 w-9 rounded-full border border-primary/25 bg-primary/10 text-primary shadow-none hover:bg-primary/15"
+                            onClick={() => setIsAIChatOpen(true)}
+                        >
+                            <Sparkles className="h-4 w-4 fill-current" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="relative h-9 w-9 rounded-full border border-border/30 bg-card text-muted-foreground shadow-none hover:bg-muted hover:text-foreground"
+                            onClick={() => router.push('/notifications')}
+                        >
+                            <Bell className="h-4 w-4" />
+                            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />
+                        </Button>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted" onClick={() => router.push('/search')}>
-                        <Search className="h-5 w-5 text-muted-foreground" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted relative" onClick={() => setIsAIChatOpen(true)}>
-                        <Sparkles className="h-5 w-5 text-primary animate-pulse fill-current" />
-                        {/* <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive border-2 border-background"></span> */}
-                    </Button>
-
-                    <Button variant="ghost" size="icon" className="rounded-full hover:bg-muted relative" onClick={() => router.push('/notifications')}>
-                        <Bell className="h-5 w-5 text-muted-foreground" />
-                        <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive border-2 border-background"></span>
-                    </Button>
-                </div>
-            </div>
+            </AppPageHeaderChrome>
 
             <div className="px-4">
                 <OnboardingChecklist />
@@ -187,45 +177,34 @@ export const MobileDashboard = ({
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 >
-                    <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white border border-white/10 shadow-none">
-                        {/* Dynamic Mesh Ornaments */}
-                        <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-emerald-400/20 blur-[80px] animate-pulse"></div>
-                        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-teal-300/10 blur-[80px]"></div>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full bg-gradient-to-br from-transparent via-black/5 to-black/20"></div>
+                    <div className="relative overflow-hidden rounded-card-premium border border-white/10 bg-[#064e4b] text-white shadow-none">
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/10" />
 
-                        <div className="relative p-7 space-y-6">
+                        <div className="relative space-y-5 p-5">
                             {/* Balance Section */}
                             <div>
-                                <div className="flex items-center justify-between mb-3">
+                                <div className="mb-3 flex items-center justify-between">
                                     <span className="text-white/50 text-label">Total Wealth</span>
-                                    <div className="bg-white/10 backdrop-blur-xl rounded-full px-2 py-0.5 border border-white/10">
+                                    <div className="rounded-full border border-white/10 bg-white/10 px-2 py-0.5">
                                         <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                     </div>
                                 </div>
-                                <div className="text-5xl font-semibold tracking-tighter tabular-nums">
+                                <div className="text-4xl font-semibold tracking-tighter tabular-nums">
                                     <AnimatedCounter value={totalBalance} />
                                 </div>
-                                <div className="mt-6 flex flex-col gap-3">
-                                    <div className="text-xs text-white/70 font-semibold leading-relaxed max-w-[280px] bg-white/5 w-fit px-3 py-1.5 rounded-full border border-white/5 backdrop-blur-sm">
+                                <div className="mt-4">
+                                    <div className="w-fit max-w-[280px] rounded-full border border-white/5 bg-white/5 px-3 py-1.5 text-xs font-semibold leading-relaxed text-white/70 backdrop-blur-sm">
                                         <Sparkles className="h-3 w-3 inline mr-2 text-yellow-300 fill-current" />
                                         {expenseDiff > 0
                                             ? `Pengeluaran naik ${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}% bulan ini.`
                                             : 'Pengeluaran terkontrol. Kerja bagus!'}
                                     </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="w-fit h-8 px-4 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white rounded-full border border-white/10 transition-all active:scale-95"
-                                        onClick={() => router.push('/charts')}
-                                    >
-                                        Financial Pulse
-                                    </Button>
                                 </div>
                             </div>
 
                             {/* Income/Expense Pill (Glassmorphism Inset) */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 group">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="flex h-20 flex-col justify-between rounded-card-glass border border-white/10 bg-white/5 p-3 backdrop-blur-md">
                                     <div className="flex items-center gap-2 text-white/60">
                                         <div className="p-1.5 rounded-md bg-emerald-500/20 text-emerald-300">
                                             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -233,13 +212,13 @@ export const MobileDashboard = ({
                                         <span className="text-label">Inflow</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyIncome} className="font-semibold text-base tracking-tight text-white" />
-                                        <p className="text-xs text-white/30 mt-1 font-semibold">
+                                        <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold tracking-tight text-white" />
+                                        <p className="mt-1 text-[10px] font-semibold text-white/40">
                                             {incomeDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(incomeDiff))} this month
                                         </p>
                                     </div>
                                 </div>
-                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 flex flex-col justify-between h-24 border border-white/10 group">
+                                <div className="flex h-20 flex-col justify-between rounded-card-glass border border-white/10 bg-white/5 p-3 backdrop-blur-md">
                                     <div className="flex items-center gap-2 text-white/60">
                                         <div className="p-1.5 rounded-md bg-rose-500/20 text-rose-300">
                                             <ArrowDownLeft className="h-3.5 w-3.5" />
@@ -247,8 +226,8 @@ export const MobileDashboard = ({
                                         <span className="text-label">Outflow</span>
                                     </div>
                                     <div>
-                                        <AnimatedCounter value={monthlyExpense} className="font-semibold text-base tracking-tight text-white" />
-                                        <p className="text-xs text-white/30 mt-1 font-semibold">
+                                        <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold tracking-tight text-white" />
+                                        <p className="mt-1 text-[10px] font-semibold text-white/40">
                                             {expenseDiff >= 0 ? '+' : ''}{new Intl.NumberFormat('id-ID', { notation: "compact" }).format(Math.abs(expenseDiff))} this month
                                         </p>
                                     </div>
@@ -287,7 +266,7 @@ export const MobileDashboard = ({
 
             {/* 4. Horizontal Wallets (Snap Scroll - Dynamic Branded DNA) */}
             <div className="space-y-4">
-                <div className="px-6 flex items-center justify-between">
+                <div className="px-4 flex items-center justify-between">
                     <h2 className="text-label text-muted-foreground/40 flex items-center gap-2">
                         <WalletIcon className="h-3.5 w-3.5" />
                         Wallet Stack
@@ -297,7 +276,7 @@ export const MobileDashboard = ({
                     </Button>
                 </div>
 
-                <div className="flex gap-4 overflow-x-auto px-6 pb-6 snap-x snap-mandatory scrollbar-hide">
+                <div className="flex gap-4 overflow-x-auto px-4 pb-6 snap-x snap-mandatory scrollbar-hide">
                     {wallets.slice(0, 5).map((wallet, idx) => {
                         const { Icon, logo, textColor } = getWalletVisuals(wallet.name, wallet.icon ?? undefined);
                         const dna = getVisualDNA(extractBaseColor(textColor));
@@ -353,7 +332,7 @@ export const MobileDashboard = ({
                         );
                     })}
 
-                    <div className="snap-center shrink-0 pr-6">
+                    <div className="snap-center shrink-0">
                         <button
                             onClick={() => router.push('/wallets')}
                             className="w-44 h-32 rounded-card-premium border border-border/40 bg-card/50 backdrop-blur-md flex flex-col items-center justify-center gap-3 hover:bg-muted/50 transition-all group relative overflow-hidden active:scale-95"
@@ -373,12 +352,12 @@ export const MobileDashboard = ({
             </div>
 
             {/* 5. Spending Trend */}
-            <div className="px-2">
+            <div className="px-4">
                 <SpendingTrendChart transactions={transactions} days={14} />
             </div>
 
             {/* 6. Recent Transactions */}
-            <div className="space-y-4 px-6 pb-10">
+            <div className="space-y-4 px-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-label text-muted-foreground/40 flex items-center gap-2">
                         <TrendingUp className="h-3.5 w-3.5" />
@@ -397,7 +376,7 @@ export const MobileDashboard = ({
                     />
                 </div>
             </div>
-        </main>
+        </AppPageShell>
     );
 };
 

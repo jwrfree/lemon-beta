@@ -39,16 +39,17 @@ export default function WalletsPage() {
   );
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="relative flex h-full min-h-0 flex-col">
       {/* Mobile View */}
-      <div className="md:hidden flex flex-col h-full">
+      <div className="md:hidden flex min-h-0 flex-1 flex-col bg-background">
         <PageHeader
-          title="Dompet Kamu"
+          title="Dompet"
+          showBackButton={false}
           extraActions={<BalanceVisibilityToggle variant="ghost" size="icon" />}
         />
 
         {wallets.length === 0 ? (
-          <main className="flex-1 flex flex-col bg-background">
+          <main className="flex flex-1 flex-col bg-background">
             <EmptyState
               icon={Wallet}
               title="Belum Ada Dompet"
@@ -59,7 +60,7 @@ export default function WalletsPage() {
             />
           </main>
         ) : (
-          <main className="flex-1 overflow-y-auto pb-24">
+          <main className="flex flex-1 flex-col bg-background pb-6 md:pb-24">
             <WalletCardStack
               wallets={wallets}
               setActiveIndex={setActiveIndex}
@@ -68,7 +69,7 @@ export default function WalletsPage() {
 
             <div className="mt-4">
               <Tabs value={mobileTab} onValueChange={(v) => setMobileTab(v as any)} className="w-full">
-                <div className="px-5 mb-6">
+                <div className="mb-6 px-4">
                   <TabsList className="bg-muted/50 p-1 rounded-full h-11 w-full grid grid-cols-2">
                     <TabsTrigger value="mutasi" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary">Mutasi</TabsTrigger>
                     <TabsTrigger value="analitik" className="h-full rounded-full font-semibold text-label transition-all data-[state=active]:bg-card data-[state=active]:text-primary">Analitik</TabsTrigger>
@@ -76,7 +77,7 @@ export default function WalletsPage() {
                 </div>
 
                 <TabsContent value="mutasi" className="mt-0">
-                  <div className="px-6 flex items-center justify-between mb-4">
+                  <div className="mb-4 flex items-center justify-between px-4">
                     <h2 className="label-xs">10 Transaksi Terakhir</h2>
                     <Button variant="link" size="sm" className="text-label text-primary px-0 h-auto" onClick={() => router.push('/transactions')}>Lihat Semua</Button>
                   </div>
@@ -108,9 +109,10 @@ export default function WalletsPage() {
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:flex flex-col min-h-screen">
+      <div className="hidden min-h-0 flex-1 flex-col md:flex">
         <PageHeader
-          title="Dompet Kamu"
+          title="Dompet"
+          showBackButton={false}
           extraActions={
             <div className="flex items-center gap-2">
               <BalanceVisibilityToggle variant="ghost" size="icon" />

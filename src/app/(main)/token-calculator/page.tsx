@@ -15,6 +15,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { formatCurrency } from '@/lib/utils';
 import { spacing } from '@/lib/layout-tokens';
 import { PageHeader } from '@/components/page-header';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 const DEEPSEEK_V3_INPUT_PRICE_PER_1M = 0.14; // USD
 const DEEPSEEK_V3_OUTPUT_PRICE_PER_1M = 0.28; // USD
@@ -74,9 +75,9 @@ export default function TokenCalculatorPage() {
     };
 
     return (
-        <div className="flex flex-col h-full">
-            <PageHeader title="Kalkulator Token AI" />
-            <main className="flex-1 overflow-y-auto p-4 space-y-6">
+        <AppPageShell>
+            <PageHeader title="Kalkulator Token AI" width="compact" />
+            <AppPageBody width="compact" className="space-y-6">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-lg">Hitung Token & Biaya (DeepSeek V3)</CardTitle>
@@ -212,8 +213,8 @@ export default function TokenCalculatorPage() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </main>
-        </div>
+            </AppPageBody>
+        </AppPageShell>
     );
 }
 

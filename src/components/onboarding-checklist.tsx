@@ -99,61 +99,22 @@ export const OnboardingChecklist = () => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
         className={cn(
-          "relative overflow-hidden mb-6 rounded-2xl border border-white/40",
-          "bg-white/80 backdrop-blur-xl shadow-xl shadow-emerald-900/5",
-          isMinimized ? "p-3 px-4" : "p-5"
+          "mb-4 rounded-2xl border border-border/40 bg-card/90 shadow-none",
+          isMinimized ? "p-3 px-4" : "p-4"
         )}
       >
-        {/* Progress Background Glow */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5 pointer-events-none"
-          animate={{ 
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 4, repeat: Infinity }}
-        />
-
-        <div className="relative z-10">
+        <div>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <div className="relative w-8 h-8 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90">
-                  <circle
-                    cx="16"
-                    cy="16"
-                    r="14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    className="text-emerald-100"
-                  />
-                  <motion.circle
-                    cx="16"
-                    cy="16"
-                    r="14"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeDasharray="87.96"
-                    initial={{ strokeDashoffset: 87.96 }}
-                    animate={{ strokeDashoffset: 87.96 - (87.96 * progress) / 100 }}
-                    transition={{ type: 'spring', damping: 20 }}
-                    className="text-emerald-500"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-[10px] font-bold text-emerald-700">
-                    {Math.round(progress)}%
-                  </span>
-                </div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <span className="text-[10px] font-bold">{Math.round(progress)}%</span>
               </div>
               <div>
-                <h3 className="font-semibold text-sm text-slate-800 flex items-center gap-2">
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   Memulai dengan Lemon
-                  {isAllCompleted && <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />}
+                  {isAllCompleted && <Sparkles className="h-4 w-4 text-amber-500" />}
                 </h3>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-muted-foreground">
                   {isAllCompleted 
                     ? 'Hebat! Kamu sudah siap mengelola keuangan.' 
                     : `${ONBOARDING_TASKS.length - completedCount} langkah lagi untuk selesai.`}
@@ -165,7 +126,7 @@ export const OnboardingChecklist = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 rounded-full hover:bg-slate-100/50"
+                className="h-7 w-7 rounded-full hover:bg-muted"
                 onClick={() => setIsMinimized(!isMinimized)}
               >
                 {isMinimized ? <ChevronRight className="w-4 h-4" /> : <X className="w-4 h-4" />}
@@ -173,8 +134,17 @@ export const OnboardingChecklist = () => {
             </div>
           </div>
 
+          <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-muted">
+            <motion.div
+              className="h-full rounded-full bg-primary"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ type: 'spring', damping: 20 }}
+            />
+          </div>
+
           {!isMinimized && (
-            <div className="space-y-2 mt-4">
+            <div className="mt-3 space-y-2">
               {ONBOARDING_TASKS.map((task) => {
                 const isDone = status.steps[task.id];
                 return (
@@ -183,14 +153,14 @@ export const OnboardingChecklist = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleStepToggle(task.id)}
                     className={cn(
-                      "w-full flex items-center gap-3 p-2.5 rounded-xl transition-all border",
+                      "flex w-full items-center gap-3 rounded-xl border p-2.5 transition-all",
                       isDone 
-                        ? "bg-emerald-50/50 border-emerald-100" 
-                        : "bg-white/50 border-slate-100 hover:border-slate-200"
+                        ? "border-emerald-200/70 bg-emerald-500/5" 
+                        : "border-border/50 bg-background hover:border-border"
                     )}
                   >
                     <div className={cn(
-                      "w-9 h-9 rounded-lg flex items-center justify-center shrink-0",
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
                       task.bgColor,
                       task.color
                     )}>
@@ -200,20 +170,20 @@ export const OnboardingChecklist = () => {
                     <div className="flex-1 text-left">
                       <div className={cn(
                         "text-xs font-semibold",
-                        isDone ? "text-emerald-700" : "text-slate-700"
+                        isDone ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"
                       )}>
                         {task.title}
                       </div>
-                      <div className="text-[10px] text-slate-500 leading-tight">
+                      <div className="text-[10px] leading-tight text-muted-foreground">
                         {task.description}
                       </div>
                     </div>
 
                     <div className="shrink-0 ml-2">
                       {isDone ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-50/50" />
+                        <CheckCircle2 className="h-5 w-5 text-emerald-500" />
                       ) : (
-                        <Circle className="w-5 h-5 text-slate-200" />
+                        <Circle className="h-5 w-5 text-muted-foreground/30" />
                       )}
                     </div>
                   </motion.button>
@@ -226,7 +196,7 @@ export const OnboardingChecklist = () => {
                   animate={{ opacity: 1, scale: 1 }}
                 >
                   <Button 
-                    className="w-full mt-2 bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-200 border-none h-10"
+                    className="mt-2 h-10 w-full border-none bg-emerald-500 text-white shadow-none hover:bg-emerald-600"
                     onClick={() => updateOnboardingStatus({ isDismissed: true })}
                   >
                     Selesaikan Onboarding

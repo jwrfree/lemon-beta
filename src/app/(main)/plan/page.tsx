@@ -12,6 +12,7 @@ import { DebtsDashboard } from '@/features/debts/components/debts-dashboard';
 import { RemindersDashboard } from '@/features/reminders/components/reminders-dashboard';
 import { SubscriptionAuditCard } from '@/features/insights/components/subscription-audit-card';
 import { useTransactions } from '@/features/transactions/hooks/use-transactions';
+import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 export default function PlanPage() {
     const [activeTab, setActiveTab] = useState<'budget' | 'goals' | 'debts' | 'bills'>('budget');
@@ -25,18 +26,16 @@ export default function PlanPage() {
     ];
 
     return (
-        <main className="bg-background min-h-full">
-            {/* Header Area */}
-            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/50">
-                <header className="flex items-center justify-between mb-4 mt-4 px-1">
+        <AppPageShell>
+            <AppPageHeaderChrome>
+                <header className="mb-4 mt-1 flex items-center justify-between px-1 px-4 pt-3 md:px-6">
                     <div>
-                        <h1 className="text-xl font-semibold tracking-tight text-foreground">Rencana Keuangan</h1>
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mt-0.5">Masa Depan Finansial</p>
+                        <h1 className="text-base font-semibold tracking-tight text-foreground md:text-lg">Rencana</h1>
                     </div>
                 </header>
 
                 {/* Tab Navigation (Segmented Control) */}
-                <div className="flex p-1 bg-muted/50 rounded-full overflow-x-auto scrollbar-hide mb-2">
+                <div className="mb-2 flex overflow-x-auto scrollbar-hide rounded-full bg-muted/50 p-1 px-4 md:px-6">
                     {tabs.map((tab) => {
                         const isActive = activeTab === tab.id;
                         return (
@@ -61,10 +60,10 @@ export default function PlanPage() {
                         );
                     })}
                 </div>
-            </div>
+            </AppPageHeaderChrome>
 
             {/* Content Area */}
-            <div className="px-6 pt-4">
+            <AppPageBody className="pt-4">
 
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -86,8 +85,8 @@ export default function PlanPage() {
                         )}
                     </motion.div>
                 </AnimatePresence>
-            </div>
-        </main>
+            </AppPageBody>
+        </AppPageShell>
     );
 }
 
