@@ -183,9 +183,9 @@
     --chart-5: hsl(var(--purple-600));
 
     /* Layout Tokens */
-    --bottom-nav-height: 88px;
+    --bottom-nav-height: 120px;
     --header-height: 64px;
-    --safe-observer-bottom: env(safe-area-inset-bottom);
+    --safe-observer-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .dark {
@@ -427,13 +427,24 @@
    */
   .main-content-scroll {
     @apply flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth;
-    padding-bottom: 0;
+  }
+
+  .app-page-body-padding {
+    /* Mobile default padding to clear bottom nav */
+    padding-bottom: calc(var(--bottom-nav-height, 120px) + 2.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (min-width: 768px) {
+    .app-page-body-padding {
+      /* Desktop padding */
+      padding-bottom: 2.5rem; /* md:pb-10 */
+    }
   }
 
   @media (max-width: 767px) {
-    .main-content-scroll[data-nav="true"] {
-      /* Accounts for nav height + extra breathing room + safe area */
-      padding-bottom: calc(var(--bottom-nav-height) + 2rem + var(--safe-observer-bottom));
+    /* Offset sticky footers when the bottom nav is present */
+    .main-content-scroll[data-nav="true"] .sticky.bottom-0 {
+      bottom: calc(var(--bottom-nav-height) - 1.5rem);
     }
   }
 }

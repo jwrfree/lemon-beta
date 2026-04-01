@@ -56,7 +56,7 @@ export const AppPageBody = ({
   as: Component = 'main',
 }: AppPageBodyProps) => {
   return (
-    <Component className={cn(pageShell.bodyBase, pageWidth[width], className)}>
+    <Component className={cn(pageShell.bodyBase, pageWidth[width], 'app-page-body-padding', className)}>
       {children}
     </Component>
   );

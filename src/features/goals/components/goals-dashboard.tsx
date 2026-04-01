@@ -36,7 +36,7 @@ export const GoalsDashboard = () => {
     }
 
     return (
-        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in pb-24">
+        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in app-page-body-padding">
             {/* Summary Cards could go here */}
 
             {/* List */}

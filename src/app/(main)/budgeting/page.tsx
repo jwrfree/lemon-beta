@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ChartContainer } from '@/components/ui/chart';
 import { spacing } from '@/lib/layout-tokens';
 import { EmptyState } from '@/components/empty-state';
+import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 function BudgetingPageSkeleton() {
     return (
@@ -70,10 +71,10 @@ export default function BudgetingPage() {
     }
 
     return (
-        <div className="relative flex h-full min-h-0 flex-col bg-background">
+        <AppPageShell>
             <PageHeader title="Anggaran" showBackButton={false} />
 
-            <main className="flex-1 pb-6 md:pb-24">
+            <AppPageBody>
                 <AnimatePresence mode="wait">
                     {budgets.length === 0 ? (
                         <motion.div
@@ -81,7 +82,7 @@ export default function BudgetingPage() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className="flex flex-col h-full min-h-[70vh]"
+                            className="flex flex-col"
                         >
                             <EmptyState
                                 icon={HandCoins}
@@ -93,7 +94,7 @@ export default function BudgetingPage() {
                             />
                         </motion.div>
                     ) : (
-                        <div className="max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
+                        <div className="max-w-7xl mx-auto w-full space-y-6">
 
                             <div className="grid grid-cols-12 gap-8 items-start">
                                 {/* 1. Premium Overview Card */}
@@ -146,7 +147,7 @@ export default function BudgetingPage() {
                                             </div>
 
                                             <div className="space-y-4">
-                                                <div className="p-4 rounded-card-glass bg-white/10 backdrop-blur-md border border-white/10 flex justify-between items-center">
+                                                <div className="p-4 rounded-card-glass bg-white/10 backdrop-blur-md flex justify-between items-center">
                                                     <div className="flex items-center gap-3">
                                                         <div className="h-10 w-10 rounded-card-icon bg-white p-2 flex items-center justify-center shrink-0">
                                                             <Sparkles className="h-5 w-5 text-primary" />
@@ -209,7 +210,7 @@ export default function BudgetingPage() {
                         </div>
                     )}
                 </AnimatePresence>
-            </main>
+            </AppPageBody>
 
             {/* Floating Action Button */}
             <AnimatePresence>
@@ -221,7 +222,7 @@ export default function BudgetingPage() {
                     />
                 )}
             </AnimatePresence>
-        </div>
+        </AppPageShell>
     );
 }
 

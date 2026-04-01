@@ -61,13 +61,13 @@ export const BudgetingDashboard = () => {
     }
 
     return (
-        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in">
+        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in app-page-body-padding">
             <div className="grid grid-cols-12 gap-6">
 
                 {/* OVERVIEW SECTION */}
                 <div className="col-span-12 lg:col-span-4 space-y-4">
                     <h2 className="text-label text-muted-foreground/60 px-2">Ringkasan Bulan Ini</h2>
-                    <Card className="border border-border/40 shadow-none rounded-card-premium bg-card overflow-hidden">
+                    <Card className="border-none shadow-none rounded-card-premium bg-card overflow-hidden">
                         <CardContent className="p-7 space-y-6">
                             <div className="h-48 flex justify-center relative">
                                 <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
@@ -91,7 +91,7 @@ export const BudgetingDashboard = () => {
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
-                                <div className="p-5 rounded-card bg-muted/30 border border-border/20">
+                                <div className="p-5 rounded-card bg-muted/30">
                                     <p className="text-label text-muted-foreground/60 mb-1">Total Limit Anggaran</p>
                                     <p className="text-2xl font-semibold tracking-tighter tabular-nums">{formatCurrency(overview.totalBudget)}</p>
                                 </div>

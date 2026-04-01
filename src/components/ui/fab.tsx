@@ -43,7 +43,7 @@ export const FAB = ({
   return (
     <div
       className={cn(
-        'fixed bottom-24 right-6 z-40 md:bottom-8 md:right-8',
+        'fixed bottom-[136px] right-6 z-40 md:bottom-8 md:right-8',
         mobileOnly && 'lg:hidden',
       )}
     >

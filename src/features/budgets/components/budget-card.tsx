@@ -85,7 +85,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 className="w-full h-full text-left focus:outline-none group"
             >
                 <Card 
-                    className="h-full overflow-hidden border border-white/10 shadow-none rounded-card-premium transition-all duration-500 relative"
+                    className="h-full overflow-hidden border-none shadow-none rounded-card-premium transition-all duration-500 relative"
                     style={{ 
                         background: dna.gradient
                     }}
@@ -97,7 +97,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                         {/* Header: Identity & Status */}
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-4">
-                                <div className={cn("p-3 rounded-card-icon backdrop-blur-xl border border-white/10 transition-all", currentHealth.bg)}>
+                                <div className={cn("p-3 rounded-card-icon backdrop-blur-xl transition-all", currentHealth.bg)}>
                                     <CategoryIcon className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                                 </div>
                                 <div className="space-y-0.5">

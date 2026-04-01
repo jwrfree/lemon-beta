@@ -198,7 +198,7 @@ export const DebtsDashboard = () => {
                 </div>
             </div>
 
-            <div className="space-y-3 pb-24">
+            <div className="space-y-3 app-page-body-padding">
                 {visibleDebts.length === 0 ? (
                     <DebtsEmptyState />
                 ) : (
