@@ -36,7 +36,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
     }, [debtRatio, netWorth]);
 
     return (
-        <Card className="border-none shadow-none border border-border/40 bg-card rounded-card">
+        <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                     <PiggyBank className="h-4 w-4" />
@@ -48,7 +48,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                     <AnimatedCounter value={displayNetWorth} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
+                <div className="grid grid-cols-2 gap-4 pt-4">
                     <div className="space-y-1">
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <Wallet className="h-3 w-3" /> Aset
@@ -77,7 +77,7 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
                             {debtRatio.toFixed(1)}%
                         </span>
                     </div>
-                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden border border-border">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                         <div
                             className={cn("h-full rounded-full transition-all duration-1000 ease-out", barColor)}
                             style={{ width: `${Math.min(progress, 100)}%` }}

@@ -16,6 +16,7 @@ import { usePaginatedTransactions } from '@/features/transactions/hooks/use-pagi
 import { WalletAnalyticsMobile } from '@/features/wallets/components/wallet-analytics-mobile';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/empty-state';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 export default function WalletsPage() {
   const { wallets } = useWallets();
@@ -39,12 +40,13 @@ export default function WalletsPage() {
   );
 
   return (
-    <div className="relative flex h-full min-h-0 flex-col">
+    <AppPageShell>
       {/* Mobile View */}
       <div className="md:hidden flex min-h-0 flex-1 flex-col bg-background">
         <PageHeader
           title="Dompet"
           showBackButton={false}
+          width="full"
           extraActions={<BalanceVisibilityToggle variant="ghost" size="icon" />}
         />
 
@@ -113,6 +115,7 @@ export default function WalletsPage() {
         <PageHeader
           title="Dompet"
           showBackButton={false}
+          width="wide"
           extraActions={
             <div className="flex items-center gap-2">
               <BalanceVisibilityToggle variant="ghost" size="icon" />
@@ -123,9 +126,9 @@ export default function WalletsPage() {
             </div>
           }
         />
-        <div className="flex-1">
+        <AppPageBody width="wide" className="flex-1 py-6">
           {wallets.length === 0 ? (
-            <main className="flex h-full items-center justify-center bg-background">
+            <div className="flex h-full items-center justify-center">
               <EmptyState
                 icon={Wallet}
                 title="Mulai Kelola Asetmu"
@@ -134,7 +137,7 @@ export default function WalletsPage() {
                 onAction={() => setIsWalletModalOpen(true)}
                 variant="default"
               />
-            </main>
+            </div>
           ) : (
             <DesktopWalletView
               wallets={wallets}
@@ -142,9 +145,9 @@ export default function WalletsPage() {
               setActiveIndex={setActiveIndex}
             />
           )}
-        </div>
+        </AppPageBody>
       </div>
-    </div>
+    </AppPageShell>
   );
 };
 

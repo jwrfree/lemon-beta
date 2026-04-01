@@ -73,7 +73,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
             <td className="p-4 pl-6">
                 <div className="flex items-center gap-4">
                     <div className={cn(
-                        "w-11 h-11 rounded-md flex items-center justify-center shrink-0 border border-border transition-all group-hover:scale-110 overflow-hidden",
+                        "w-11 h-11 rounded-md flex items-center justify-center shrink-0 transition-all group-hover:scale-110 overflow-hidden shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (
@@ -131,8 +131,8 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
             <td className="p-4 align-middle">
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-xs font-medium text-label px-2 py-0.5 rounded-md w-fit mb-1 border",
-                        categoryData.bg_color ? `${categoryData.bg_color} border-border` : "bg-secondary border-transparent",
+                        "mb-1 w-fit rounded-md px-2 py-0.5 text-xs font-medium text-label shadow-[0_10px_20px_-18px_rgba(15,23,42,0.1)]",
+                        categoryData.bg_color ? `${categoryData.bg_color}` : "bg-secondary",
                         categoryData.color
                     )}>
                         {t.category}
@@ -177,9 +177,9 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     };
 
     return (
-        <div className="overflow-hidden rounded-card border border-border bg-card shadow-none border border-border/40">
+        <div className="overflow-hidden rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <table className="w-full text-sm text-left">
-                <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border">
+                <thead className="bg-muted/50 text-muted-foreground font-medium">
                     <tr>
                         <th className="p-4 pl-6 font-medium text-xs text-label">Detail Transaksi</th>
                         <th className="p-4 font-medium text-xs text-label">Kategori / Sub</th>
@@ -187,7 +187,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                         <th className="p-4 text-right pr-6 font-medium text-xs text-label">Nominal</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody>
                     {transactions.length === 0 && (
                         <tr>
                             <td colSpan={4} className="p-6 text-center text-sm text-muted-foreground italic">
@@ -206,7 +206,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                 </tbody>
             </table>
 
-            <div className="bg-muted/20 border-t border-border p-3 text-center">
+            <div className="bg-muted/20 p-3 text-center">
                 <Button
                     variant="ghost"
                     size="sm"

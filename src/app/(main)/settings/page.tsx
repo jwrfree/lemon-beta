@@ -29,6 +29,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { DeepSeekUsageCard } from '@/features/settings/components/deepseek-usage-card';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 // --- VISI SAYA: BENTO GRID COMMAND CENTER ---
 
@@ -99,12 +100,13 @@ function SettingsContent() {
     };
 
     return (
-        <div className="flex min-h-0 flex-1 flex-col bg-background text-foreground">
+        <AppPageShell className="text-foreground">
 
             {/* Header Bersih */}
             <PageHeader
                 title="Pengaturan"
                 showBackButton={false}
+                width="compact"
                 extraActions={
                     <div className="w-10 h-10 rounded-full bg-muted overflow-hidden border-2 border-background">
                         {userData?.photoURL ? (
@@ -116,8 +118,7 @@ function SettingsContent() {
                 }
             />
 
-            {/* BENTO GRID LAYOUT */}
-            <main className="mx-auto w-full max-w-5xl space-y-4 px-4 py-4 pb-6 md:px-6 md:py-6 md:pb-24">
+            <AppPageBody width="compact" className="space-y-4 pb-24 md:pb-12">
 
                 {/* BARIS 1: Identity Card (Besar) + Theme Switcher (Kecil) */}
                 <div className="grid grid-cols-12 gap-4 h-auto md:h-64">
@@ -355,8 +356,8 @@ function SettingsContent() {
                         <p className="text-[10px] font-bold tracking-wide opacity-10 uppercase">Lemon AI Dashboard v2.0</p>
                     </div>
                 </div>
-            </main>
-        </div>
+            </AppPageBody>
+        </AppPageShell>
     );
 }
 

@@ -178,10 +178,10 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col h-fit max-h-[85vh]"
+                className="flex h-fit max-h-[85vh] w-full max-w-md flex-col rounded-t-card bg-background/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
+                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background/96 p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <div>
                         <h2 className="text-xl font-medium">{isEditMode ? 'Edit Pengingat' : 'Pengingat Baru'}</h2>
                         <p className="text-sm text-muted-foreground">Atur tagihan, langganan, atau pengingat hutang.</p>
@@ -260,7 +260,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className={cn('w-full justify-start text-left font-normal', !dueDate && 'text-muted-foreground')}
+                                        className={cn('w-full justify-start border-0 bg-background/94 text-left font-normal shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)]', !dueDate && 'text-muted-foreground')}
                                     >
                                         <CalendarClock className="mr-2 h-4 w-4" />
                                         {dueDateLabel}
@@ -297,12 +297,12 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                             </SelectContent>
                         </Select>
                         {repeatFrequency === 'custom' && (
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Input
-                                    value={customInterval}
-                                    onChange={e => setCustomInterval(e.target.value.replace(/[^0-9]/g, ''))}
-                                    className="w-20"
-                                    inputMode="numeric"
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Input
+                                value={customInterval}
+                                onChange={e => setCustomInterval(e.target.value.replace(/[^0-9]/g, ''))}
+                                className="w-20"
+                                inputMode="numeric"
                                 />
                                 <span>hari sekali</span>
                             </div>
@@ -338,7 +338,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                         </div>
                     </div>
                 </form>
-                <div className="p-4 border-t sticky bottom-0 bg-background flex gap-2">
+                <div className="sticky bottom-0 flex gap-2 bg-background/96 p-4 shadow-[0_-10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Pengingat'}`}
                     </Button>

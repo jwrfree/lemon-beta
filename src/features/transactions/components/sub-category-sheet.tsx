@@ -29,10 +29,10 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col h-fit max-h-[60vh]"
+                className="flex h-fit max-h-[60vh] w-full max-w-md flex-col rounded-t-card bg-background/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
+                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background/96 p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <h2 className="text-xl font-medium tracking-tight">Pilih Sub-kategori {category.name}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
@@ -49,7 +49,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                                     e.stopPropagation();
                                     onSelect(subCat);
                                 }}
-                                className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-accent text-left"
+                                className="flex w-full items-center justify-between rounded-lg bg-background/70 p-3 text-left shadow-[0_10px_20px_-18px_rgba(15,23,42,0.14)] transition-colors hover:bg-accent"
                             >
                                 <span className={cn(selectedValue === subCat && "font-medium text-primary")}>
                                     {subCat}

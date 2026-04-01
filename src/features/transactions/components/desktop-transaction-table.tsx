@@ -109,7 +109,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
             <TableCell>
                 <div className="flex items-center gap-3">
                     <div className={cn(
-                        "h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border border-border overflow-hidden transition-transform group-hover:scale-105",
+                        "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)] transition-transform group-hover:scale-105",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (
@@ -169,7 +169,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
             <TableCell>
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-label px-2 py-0.5 rounded-lg w-fit border border-transparent bg-opacity-50",
+                        "text-label w-fit rounded-lg px-2 py-0.5 bg-opacity-50 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.12)]",
                         categoryData.color,
                         categoryData.bg_color || "bg-secondary"
                     )}>
@@ -313,16 +313,16 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="gap-2 h-10 rounded-xl px-4 border-border hover:bg-muted transition-all text-label"
+                    className="h-10 gap-2 rounded-xl border-0 bg-background/94 px-4 text-label shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] transition-all hover:bg-muted"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-2xl bg-card shadow-none border border-border/50">
+            <div className="overflow-hidden rounded-2xl bg-card/98 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.22)]">
                 <Table className="table-fixed">
-                    <TableHeader className="bg-muted/50">
-                        <TableRow className="hover:bg-muted/50 border-b border-border">
+                    <TableHeader className="bg-muted/52">
+                        <TableRow className="hover:bg-muted/52">
                             <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors text-label w-32" onClick={() => handleSort('date')}>
                                 <div className="flex items-center gap-2">
                                     Tanggal

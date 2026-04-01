@@ -20,7 +20,6 @@ import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useHomeSummary } from '@/features/home/hooks/use-home-summary';
 import dynamic from 'next/dynamic';
-import { AppPageShell } from '@/components/app-page-shell';
 import { AIInsightCard } from '@/features/home/components/ai-insight-card';
 import { HomeSkeleton } from '@/features/home/components/home-skeleton';
 
@@ -170,7 +169,7 @@ export default function HomePage() {
     }
 
     return (
-        <AppPageShell>
+        <>
             <div className="hidden min-h-0 flex-1 md:block">
                 <DesktopDashboard />
             </div>
@@ -194,6 +193,6 @@ export default function HomePage() {
                     />
                 </PullToRefresh>
             </div>
-        </AppPageShell>
+        </>
     );
 }

@@ -142,7 +142,7 @@ export const RemindersDashboard = () => {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {/* Status Integration (Modern Fluidity) */}
             <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="rounded-card-premium border border-destructive/20 bg-destructive/5 p-4 flex flex-col justify-between group hover:bg-destructive/10 transition-all">
+                <div className="rounded-card-premium bg-destructive/7 p-4 flex flex-col justify-between shadow-[0_18px_34px_-28px_rgba(225,29,72,0.18)] group hover:bg-destructive/10 transition-all">
                     <div className="flex items-center gap-2 mb-2">
                         <AlertCircle className="h-3.5 w-3.5 text-destructive opacity-70" />
                         <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.1em]">Terlambat</p>
@@ -152,7 +152,7 @@ export const RemindersDashboard = () => {
                         <span className="text-xs font-medium text-destructive/60 uppercase tracking-wider">Tagihan</span>
                     </div>
                 </div>
-                <div className="rounded-card-premium border border-primary/20 bg-primary/5 p-4 flex flex-col justify-between group hover:bg-primary/10 transition-all">
+                <div className="rounded-card-premium bg-primary/7 p-4 flex flex-col justify-between shadow-[0_18px_34px_-28px_rgba(13,148,136,0.18)] group hover:bg-primary/10 transition-all">
                     <div className="flex items-center gap-2 mb-2">
                         <Sparkles className="h-3.5 w-3.5 text-primary opacity-70" />
                         <p className="text-[10px] uppercase font-bold text-primary tracking-[0.1em]">Segera</p>
@@ -181,7 +181,7 @@ export const RemindersDashboard = () => {
                                 <Filter className="h-4 w-4 text-muted-foreground" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-card-glass border-border/40">
+                        <DropdownMenuContent align="end" className="rounded-card-glass">
                             <DropdownMenuItem onClick={() => setRange('week')} className="text-xs font-medium">Minggu Ini</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setRange('30')} className="text-xs font-medium">30 Hari Kedepan</DropdownMenuItem>
                         </DropdownMenuContent>
@@ -190,7 +190,7 @@ export const RemindersDashboard = () => {
 
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="bg-muted/50 h-10 p-1 gap-1 justify-start w-full rounded-full border border-border/20">
+                        <TabsList className="h-10 w-full justify-start gap-1 rounded-full bg-muted/55 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]">
                             {Object.entries(statusLabels).map(([key, label]) => (
                                 <TabsTrigger
                                     key={key}
@@ -237,7 +237,7 @@ export const RemindersDashboard = () => {
                                         ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                         : undefined;
                                     return (
-                                        <Card key={reminder.id} className="transition-all border border-border/40 bg-card overflow-hidden rounded-card group hover:border-primary/20 hover:bg-primary/[0.02]">
+                                        <Card key={reminder.id} className="rounded-card bg-card/98 overflow-hidden transition-all group hover:bg-primary/[0.02] shadow-[0_18px_34px_-28px_rgba(15,23,42,0.2)]">
                                             <div className="flex items-start gap-3">
                                                 <div className={cn(
                                                     "p-2 rounded-full mt-0.5",
@@ -254,7 +254,7 @@ export const RemindersDashboard = () => {
                                                         {renderStatusBadge(status)}
                                                     </div>
 
-                                                    <div className="space-y-1.5 p-3 rounded-card-glass bg-muted/30 border border-border/20">
+                                                    <div className="space-y-1.5 rounded-card-glass bg-muted/32 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                                                         {dueDate && (
                                                             <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-2">
                                                                 <CalendarClock className="h-3.5 w-3.5 text-primary opacity-60" />
@@ -262,7 +262,7 @@ export const RemindersDashboard = () => {
                                                             </p>
                                                         )}
                                                         {linkedDebt && (
-                                                            <p className="text-[11px] text-muted-foreground/80 flex items-center gap-2 bg-background/50 px-2 py-1 rounded-sm w-fit border border-border/10">
+                                                            <p className="text-[11px] text-muted-foreground/80 flex items-center gap-2 rounded-sm bg-background/60 px-2 py-1 w-fit shadow-[0_8px_20px_-18px_rgba(15,23,42,0.18)]">
                                                                 <AlertCircle className="h-3 w-3 text-indigo-500" />
                                                                 Terkait: <span className="font-semibold">{linkedDebt.title}</span> ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
                                                             </p>
@@ -271,7 +271,7 @@ export const RemindersDashboard = () => {
                                                             <p className="text-base font-bold tracking-tighter text-foreground pt-1">{formatCurrency(reminder.amount)}</p>
                                                         ) : null}
                                                         {reminder.notes && (
-                                                            <p className="text-[11px] text-muted-foreground leading-relaxed italic line-clamp-2 px-1 border-l-2 border-primary/20 bg-primary/5 py-1 rounded-r-sm">{reminder.notes}</p>
+                                                            <p className="text-[11px] text-muted-foreground leading-relaxed italic line-clamp-2 rounded-md bg-primary/6 px-2 py-1.5">{reminder.notes}</p>
                                                         )}
                                                     </div>
 

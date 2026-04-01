@@ -63,7 +63,7 @@ export function DatePicker<T extends FieldValues>({ control, name, label = "Tang
                                         id={name}
                                         variant="outline"
                                         className={cn(
-                                            "flex-1 justify-start text-left font-normal h-12 rounded-lg border-border",
+                                            "h-12 flex-1 justify-start rounded-lg bg-background/96 text-left font-normal shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)]",
                                             !field.value && "text-muted-foreground",
                                             error && "border-destructive hover:bg-destructive/10"
                                         )}
@@ -96,7 +96,7 @@ export function DatePicker<T extends FieldValues>({ control, name, label = "Tang
                                     value={timeStr}
                                     onChange={handleTimeChange}
                                     className={cn(
-                                        "h-12 pl-9 rounded-lg border-border bg-transparent",
+                                        "h-12 rounded-lg bg-background/96 pl-9 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)]",
                                         error && "border-destructive"
                                     )}
                                 />

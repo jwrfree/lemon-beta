@@ -26,7 +26,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
     }).slice(0, 3);
 
     return (
-        <Card className="border-none shadow-none border border-border/40 bg-card rounded-card">
+        <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium">Status Anggaran</CardTitle>

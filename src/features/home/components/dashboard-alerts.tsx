@@ -29,7 +29,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
 
     return (
         <div className="grid gap-4">
-            <Card className="border-none shadow-none border border-border/40 bg-card rounded-card">
+            <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -51,7 +51,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                         </div>
                     </div>
                     {reminderSummary.nextReminder ? (
-                        <div className="rounded-md border border-border p-3">
+                        <div className="rounded-md bg-muted/32 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                             <p className="text-sm font-medium">{reminderSummary.nextReminder.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Calendar className="h-3.5 w-3.5" />
@@ -72,7 +72,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 </CardContent>
             </Card>
 
-            <Card className="border-none shadow-none border border-border/40 bg-card rounded-card">
+            <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -86,7 +86,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 </CardHeader>
                 <CardContent className="space-y-2">
                     {debtSummary.nextDueDebt ? (
-                        <div className="rounded-md border border-border p-3">
+                        <div className="rounded-md bg-muted/32 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                             <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Jatuh Tempo</p>
                             <p className="text-sm font-medium">{debtSummary.nextDueDebt.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -106,7 +106,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                         </div>
                     )}
                     {debtSummary.largestDebt && (
-                        <div className="rounded-md border border-border p-3">
+                        <div className="rounded-md bg-muted/32 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                             <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Outstanding Terbesar</p>
                             <p className="text-sm font-medium">{debtSummary.largestDebt.title}</p>
                             <p className="text-xs text-muted-foreground">{debtSummary.largestDebt.counterparty}</p>

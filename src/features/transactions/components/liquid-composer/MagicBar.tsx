@@ -111,10 +111,10 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative overflow-hidden rounded-[24px] border border-border/50 bg-background/95 px-3 py-2.5 shadow-[0_20px_50px_-40px_rgba(15,23,42,0.45)] transition-all duration-500 sm:px-4 sm:py-3",
-                (isProcessing || isTranscribing) ? "border-primary/50 ring-2 ring-inset ring-primary/15" : 
-                isRecording ? "border-violet-500/50 ring-2 ring-inset ring-violet-500/25 bg-violet-500/5" :
-                isFocused ? "border-primary/30 ring-2 ring-inset ring-primary/15" : ""
+                "relative overflow-hidden rounded-[24px] border border-transparent bg-background/95 px-3 py-2.5 shadow-[0_20px_50px_-40px_rgba(15,23,42,0.32)] transition-all duration-500 sm:px-4 sm:py-3",
+                (isProcessing || isTranscribing) ? "bg-primary/[0.04] ring-2 ring-inset ring-primary/15" : 
+                isRecording ? "bg-violet-500/5 ring-2 ring-inset ring-violet-500/25" :
+                isFocused ? "bg-primary/[0.03] ring-2 ring-inset ring-primary/15" : ""
             )}>
                 <div className="flex items-end gap-2">
                 <div className="flex min-w-0 flex-1 items-end gap-2">
@@ -178,7 +178,7 @@ export const MagicBar = ({
                                 transition={{ duration: 0.2, ease: "easeOut" }}
                                 onClick={() => document.getElementById('magic-image-upload')?.click()}
                                 aria-label="Unggah foto struk"
-                                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                             >
                                 <Camera className="h-5 w-5" />
                             </motion.button>
@@ -194,7 +194,7 @@ export const MagicBar = ({
                                 transition={{ duration: 0.2, ease: "easeOut" }}
                                 onClick={onClear}
                                 aria-label="Kosongkan input"
-                                className="rounded-full p-2 text-muted-foreground hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                                className="rounded-full p-2 text-muted-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                             >
                                 <X className="h-4 w-4" />
                             </motion.button>
@@ -215,7 +215,7 @@ export const MagicBar = ({
                                 disabled={isProcessing || !value.trim()}
                                 aria-label="Kirim input Smart Add"
                                 className={cn(
-                                    "rounded-full p-3 shadow-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+                                    "rounded-full p-3 shadow-[0_16px_30px_-18px_rgba(15,23,42,0.24)] transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
                                     value.trim() 
                                         ? "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105" 
                                         : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
@@ -238,7 +238,7 @@ export const MagicBar = ({
                                 disabled={isProcessing || isTranscribing}
                                 aria-label={isRecording ? "Hentikan rekaman" : "Mulai rekam suara"}
                                 className={cn(
-                                    "rounded-full p-3 shadow-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+                                    "rounded-full p-3 shadow-[0_16px_30px_-18px_rgba(15,23,42,0.24)] transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
                                     isRecording 
                                         ? "bg-violet-500 text-white animate-pulse" 
                                         : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105"

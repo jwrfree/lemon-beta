@@ -130,10 +130,10 @@ function TransactionsPageContent() {
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button
-                                variant="outline"
+                                variant="ghost"
                                 className={cn(
-                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 border-border/50",
-                                    activeFilterCount > 0 && "bg-primary/5 text-primary border-primary/20"
+                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 bg-card/90 shadow-[0_16px_28px_-24px_rgba(15,23,42,0.2)] hover:bg-card",
+                                    activeFilterCount > 0 && "bg-primary/10 text-primary shadow-[0_18px_30px_-24px_rgba(13,148,136,0.28)]"
                                 )}
                             >
                                 <div className="relative">
@@ -177,7 +177,7 @@ function TransactionsPageContent() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="border-t border-border/50 pt-6">
+                                <div className="bg-muted/35 rounded-[24px] p-4">
                                     <div className="flex items-center justify-between mb-3">
                                         <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pilih Dompet</Label>
                                         {selectedWallets.length > 0 && (
@@ -202,8 +202,8 @@ function TransactionsPageContent() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-auto grid grid-cols-2 gap-3 pt-6 border-t border-border">
-                                <Button variant="outline" className="h-12 rounded-full text-sm font-semibold" onClick={resetFilters}>Reset Semua</Button>
+                            <div className="mt-auto grid grid-cols-2 gap-3 pt-6">
+                                <Button variant="ghost" className="h-12 rounded-full bg-muted/45 text-sm font-semibold hover:bg-muted/65" onClick={resetFilters}>Reset Semua</Button>
                                 <SheetTrigger asChild>
                                     <Button className="h-12 rounded-full text-sm font-semibold shadow-lg shadow-primary/20">Terapkan</Button>
                                 </SheetTrigger>
@@ -234,7 +234,7 @@ function TransactionsPageContent() {
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         {selectedCategories.map(category => (
-                            <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/5 text-primary border-primary/20 rounded-md">
+                            <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-[0_12px_24px_-20px_rgba(13,148,136,0.25)]">
                                 {category}
                                 <button
                                     type="button"
@@ -249,7 +249,7 @@ function TransactionsPageContent() {
                         {selectedWallets.map(walletId => {
                             const wallet = wallets.find(w => w.id === walletId);
                             return wallet && (
-                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/5 text-primary border-primary/20 rounded-md">
+                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-[0_12px_24px_-20px_rgba(13,148,136,0.25)]">
                                     {wallet.name}
                                     <button
                                         type="button"

@@ -91,10 +91,10 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background rounded-t-card shadow-lg flex flex-col"
+        className="flex w-full max-w-md flex-col rounded-t-card bg-background/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card">
+        <div className="sticky top-0 flex items-center justify-between rounded-t-card bg-background/96 p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
           <h2 className="text-xl font-medium">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
         </div>
@@ -117,7 +117,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
               {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
             </div>
 
-            <div className="flex items-center justify-between rounded-lg border p-3">
+            <div className="flex items-center justify-between rounded-lg bg-secondary/55 p-3 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.16)]">
               <div className="space-y-0.5">
                 <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
                 <p className="text-xs text-muted-foreground">
@@ -152,7 +152,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
           </form>
 
           {/* BALANCE CORRECTION SECTION */}
-          <div className="space-y-3 pt-6 border-t border-border">
+          <div className="space-y-3 pt-6">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-primary">Koreksi Saldo</Label>
               <p className="text-xs text-muted-foreground leading-normal">
@@ -198,7 +198,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                     Hapus Dompet
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-[90vw] rounded-card md:max-w-md">
+                  <AlertDialogContent className="max-w-[90vw] rounded-card md:max-w-md">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Yakin mau menghapus dompet?</AlertDialogTitle>
                     <AlertDialogDescription>
@@ -206,7 +206,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter className="flex-row gap-2 pt-2">
-                    <AlertDialogCancel className="flex-1 mt-0 rounded-md">Batal</AlertDialogCancel>
+                    <AlertDialogCancel className="mt-0 flex-1 rounded-md border-0 bg-muted/70">Batal</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDelete}
                       disabled={isDeleting}

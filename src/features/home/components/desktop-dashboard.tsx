@@ -240,10 +240,10 @@ export const DesktopDashboard = () => {
 
                         <div className="flex flex-wrap items-center gap-2">
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="h-10 w-[190px] rounded-full border border-border/40 bg-card shadow-none text-sm font-medium">
+                                <SelectTrigger className="h-10 w-[190px] rounded-full bg-card/96 text-sm font-medium shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)]">
                                     <SelectValue placeholder="Pilih Dompet" />
                                 </SelectTrigger>
-                                <SelectContent className="rounded-2xl border-border/50">
+                                <SelectContent className="rounded-2xl">
                                     <SelectItem value="all">Semua Dompet</SelectItem>
                                     {wallets.map(w => <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>)}
                                 </SelectContent>
@@ -252,7 +252,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className={cn("h-10 w-10 rounded-full border border-border/40 bg-card shadow-none", isPending && "animate-spin")}
+                                className={cn("h-10 w-10 rounded-full bg-card/96 shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)]", isPending && "animate-spin")}
                                 onClick={handleRefresh}
                             >
                                 <RefreshCw className="h-4 w-4" />
@@ -261,7 +261,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-10 w-10 rounded-full border border-primary/30 bg-primary/10 text-primary shadow-none transition-all hover:bg-primary/20 active:scale-95"
+                                className="h-10 w-10 rounded-full bg-primary/10 text-primary shadow-[0_10px_22px_-18px_rgba(13,148,136,0.2)] transition-all hover:bg-primary/20 active:scale-95"
                                 onClick={() => setIsAIChatOpen(true)}
                                 title="Tanya Lemon AI"
                             >
@@ -292,12 +292,12 @@ export const DesktopDashboard = () => {
                                     projectedExpense={projectedExpense}
                                 />
                                 <div className="absolute top-8 right-12 z-20">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className={cn(
-                                            "bg-white/10 border-white/20 text-white hover:bg-white/20 h-8 text-label font-medium transition-all rounded-xl",
-                                            isAnalystView && "bg-white/30 border-white/40"
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className={cn(
+                                            "h-8 rounded-xl bg-white/10 text-label font-medium text-white shadow-[0_10px_22px_-18px_rgba(15,23,42,0.2)] transition-all hover:bg-white/20",
+                                            isAnalystView && "bg-white/30"
                                         )}
                                         onClick={() => setIsAnalystView(!isAnalystView)}
                                     >
@@ -327,7 +327,7 @@ export const DesktopDashboard = () => {
                                     {/* ROW 2: Category Matrix */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {/* Pie Chart */}
-                                        <div className="bg-card rounded-2xl p-6 shadow-none border border-border/40">
+                                        <div className="rounded-2xl bg-card/98 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center gap-2">
                                                     <PieIcon className="w-5 h-5 text-primary" />
@@ -342,7 +342,7 @@ export const DesktopDashboard = () => {
                                         </div>
 
                                         {/* List Breakdown */}
-                                        <div className="bg-card rounded-2xl p-6 shadow-none border border-border/40">
+                                        <div className="rounded-2xl bg-card/98 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                             <div className="flex items-center gap-2 mb-6">
                                                 <ArrowUpRight className="w-5 h-5 text-destructive" />
                                                 <h3 className="font-medium text-sm">Top Spenders</h3>
@@ -376,7 +376,7 @@ export const DesktopDashboard = () => {
                                 </motion.div>
                             ) : (
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-none flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                    <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <PieIcon className="w-8 h-8" />
                                         </div>
@@ -384,9 +384,9 @@ export const DesktopDashboard = () => {
                                             <h4 className="font-medium">Analysis Ready</h4>
                                             <p className="text-xs text-muted-foreground max-w-[200px]">Aktifkan Analyst View untuk melihat prediksi AI dan rincian alokasi.</p>
                                         </div>
-                                        <Button variant="outline" className="rounded-xl border-border/30" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
+                                        <Button variant="outline" className="rounded-xl border-0 bg-background/94 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
                                     </div>
-                                    <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-none flex flex-col items-center justify-center text-center space-y-4 min-h-[200px]">
+                                    <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <TrendingUp className="w-8 h-8" />
                                         </div>
@@ -394,7 +394,7 @@ export const DesktopDashboard = () => {
                                             <h4 className="font-medium">Predictive Insights</h4>
                                             <p className="text-xs text-muted-foreground max-w-[200px]">Gunakan DeepSeek V3 untuk memproyeksikan pengeluaranmu.</p>
                                         </div>
-                                        <Button variant="outline" className="rounded-xl border-border/30" size="sm" onClick={() => setIsAnalystView(true)}>Lihat Prediksi</Button>
+                                        <Button variant="outline" className="rounded-xl border-0 bg-background/94 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]" size="sm" onClick={() => setIsAnalystView(true)}>Lihat Prediksi</Button>
                                     </div>
                                 </div>
                             )}
@@ -406,7 +406,7 @@ export const DesktopDashboard = () => {
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
 
                             {/* Recent Activity (Moved to Sidebar) */}
-                            <div className="bg-card rounded-2xl p-5 shadow-none border border-border/50">
+                            <div className="rounded-2xl bg-card/98 p-5 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-sm font-medium flex items-center gap-2">
                                         <ListTodo className="w-4 h-4 text-primary" />

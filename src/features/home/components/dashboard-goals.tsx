@@ -29,7 +29,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         .slice(0, 3);
 
     return (
-        <Card className="border-none shadow-none border border-border/40 bg-card rounded-card">
+        <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -45,7 +45,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
             </CardHeader>
             <CardContent className="space-y-4">
                 {activeGoals.length === 0 ? (
-                    <div className="text-center py-4 text-xs text-muted-foreground bg-muted/30 rounded-lg border border-dashed border-muted">
+                    <div className="rounded-lg bg-muted/35 py-4 text-center text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                         <p>Belum ada target aktif.</p>
                         <Button
                             variant="link"

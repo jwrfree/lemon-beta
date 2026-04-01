@@ -18,9 +18,9 @@ export const pageShell = {
   root: 'flex min-h-0 flex-1 flex-col bg-background',
   bodyBase: 'mx-auto w-full min-h-0 px-4 py-4 pb-6 md:px-6 md:py-6 md:pb-10',
   headerChrome:
-    'sticky top-0 z-30 shrink-0 border-b border-border/15 bg-background/88 backdrop-blur-md',
+    'sticky top-0 z-30 shrink-0 bg-background/84 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.32)] backdrop-blur-xl',
   stickyFooter:
-    'sticky bottom-0 inset-x-0 z-30 border-t border-border/15 bg-background/92 px-4 py-3 backdrop-blur-md pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:px-6 md:py-4',
+    'sticky bottom-0 inset-x-0 z-30 bg-background/90 px-4 py-3 shadow-[0_-12px_28px_-24px_rgba(15,23,42,0.28)] backdrop-blur-xl pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] md:px-6 md:py-4',
 } as const;
 
 export const spacing = {

@@ -108,10 +108,10 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium border border-border/40 shadow-none flex flex-col h-fit md:h-auto"
+        className="flex h-fit w-full max-w-md flex-col rounded-t-card-premium bg-background/97 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] backdrop-blur-xl md:h-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 flex items-center justify-between sticky top-0 z-10">
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-background/94 p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
           <div className="w-11">
             {step === 2 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
@@ -146,7 +146,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   <div
                     key={cat.key}
                     onClick={() => handleCategorySelect(cat)}
-                    className="flex flex-col items-center justify-center gap-3 p-6 bg-card rounded-card-glass border border-border/40 transition-all cursor-pointer group active:scale-95"
+                    className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-[0_16px_32px_-26px_rgba(15,23,42,0.18)] transition-all active:scale-95"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -197,7 +197,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   {popularWallets[selectedCategory.key] && (
                     <div className="flex flex-wrap gap-2 px-1">
                       {popularWallets[selectedCategory.key].map(name => (
-                        <Button key={name} type="button" variant="outline" size="sm" className="rounded-full h-8 px-4 text-xs font-semibold" onClick={() => setValue('name', name, { shouldValidate: true })}>
+                        <Button key={name} type="button" variant="outline" size="sm" className="h-8 rounded-full border-0 bg-background/92 px-4 text-xs font-semibold shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)]" onClick={() => setValue('name', name, { shouldValidate: true })}>
                           {name}
                         </Button>
                       ))}

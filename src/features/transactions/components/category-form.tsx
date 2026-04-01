@@ -61,10 +61,10 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 initial={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                 animate={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }}
                 exit={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
-                className="w-full max-w-md bg-background rounded-t-card md:rounded-card shadow-none border border-border/40 flex flex-col max-h-[90vh] overflow-hidden"
+                className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-card bg-background/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] md:rounded-card"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-6 border-b flex items-center justify-between bg-background">
+                <div className="flex items-center justify-between bg-background/96 p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <h2 className="text-lg font-medium">{initialData ? 'Edit Kategori' : 'Kategori Baru'}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted" aria-label="Tutup">
                         <X className="h-5 w-5" />
@@ -109,8 +109,8 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                                         onClick={() => setSelectedIcon(opt.name)}
                                         aria-label={`Pilih ikon ${opt.name}`}
                                         className={cn(
-                                            "p-3 rounded-lg transition-all border-2",
-                                            isSelected ? "border-primary bg-primary/10" : "border-transparent bg-secondary hover:bg-muted"
+                                            "rounded-lg p-3 transition-all shadow-[0_10px_22px_-20px_rgba(15,23,42,0.16)]",
+                                            isSelected ? "bg-primary/10 ring-2 ring-primary/25" : "bg-secondary hover:bg-muted"
                                         )}
                                     >
                                         <Icon className={cn("h-5 w-5", isSelected ? "text-primary" : "text-muted-foreground")} />
@@ -134,9 +134,9 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                                             setSelectedBg(opt.bg);
                                         }}
                                         className={cn(
-                                            "h-10 w-full rounded-lg transition-all border-2 flex items-center justify-center",
+                                            "flex h-10 w-full items-center justify-center rounded-lg transition-all shadow-[0_10px_22px_-20px_rgba(15,23,42,0.16)]",
                                             opt.bg,
-                                            isSelected ? "border-primary shadow-inner" : "border-transparent"
+                                            isSelected ? "ring-2 ring-primary/25 shadow-inner" : ""
                                         )}
                                     >
                                         {isSelected && <Check className={cn("h-5 w-5", opt.color)} />}
@@ -147,7 +147,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                     </div>
                 </form>
 
-                <div className="p-6 border-t bg-background">
+                <div className="bg-background/96 p-6 shadow-[0_-10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <Button type="submit" className="w-full h-12 rounded-lg text-base font-medium" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : 'Simpan Kategori'}
                     </Button>

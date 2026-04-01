@@ -37,11 +37,11 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-card rounded-t-card-premium shadow-none flex flex-col h-fit md:h-auto border-t border-border"
+                className="flex h-fit w-full max-w-md flex-col rounded-t-card-premium bg-card/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] md:h-auto"
                 onClick={(e) => e.stopPropagation()}
                 {...handlers}
             >
-                <div className="p-6 pb-2 flex items-center justify-between sticky top-0 z-10">
+                <div className="sticky top-0 z-10 flex items-center justify-between bg-card/96 p-6 pb-2 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.18)]">
                     <h2 className="text-xl font-bold text-destructive tracking-tight">Hapus Transaksi?</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
                         <X className="h-5 w-5" />
@@ -53,7 +53,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                         Tindakan ini akan menghapus data transaksi secara permanen dan mengembalikan saldo dompet Anda.
                     </p>
 
-                    <div className="flex items-center gap-4 rounded-card-glass bg-secondary/30 p-4 border border-border/20 relative overflow-hidden">
+                    <div className="relative flex items-center gap-4 overflow-hidden rounded-card-glass bg-secondary/35 p-4 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)]">
                         <div className={cn("flex-shrink-0 p-3 rounded-card text-white", bgColor.replace('bg-', 'bg-').replace('/50', ''))}>
                             <CategoryIcon className="h-5 w-5" />
                         </div>
@@ -75,7 +75,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <Button onClick={onConfirm} variant="destructive" className="w-full h-14 rounded-2xl font-bold text-base active:scale-[0.98] transition-all border border-destructive/20">
+                        <Button onClick={onConfirm} variant="destructive" className="w-full h-14 rounded-2xl font-bold text-base shadow-[0_18px_34px_-24px_rgba(225,29,72,0.38)] transition-all active:scale-[0.98]">
                             Ya, Hapus Sekarang
                         </Button>
                         <Button onClick={onClose} variant="ghost" className="w-full h-12 rounded-2xl text-label text-muted-foreground/60 hover:text-foreground transition-colors">

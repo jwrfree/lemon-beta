@@ -101,7 +101,8 @@ const evaluateTokens = (tokens: Token[]): number => {
   return Math.max(0, Math.floor(total));
 };
 
-const normalizeExpressionInput = (value: string): string => value.replace(/[^0-9+\-*/]/g, '').replace(/([+\-*/]){2,}/g, '$1');
+const normalizeExpressionInput = (value: string): string =>
+  value.replace(/[^0-9+\-*/]/g, '').replace(/([+\-*/]){2,}/g, '$1');
 
 export function AmountInput<T extends FieldValues>({
   control,
@@ -117,8 +118,8 @@ export function AmountInput<T extends FieldValues>({
     () => [
       ['1', '2', '3', '+'],
       ['4', '5', '6', '-'],
-      ['7', '8', '9', '×'],
-      ['00', '0', '⌫', '÷'],
+      ['7', '8', '9', '*'],
+      ['00', '0', 'del', '/'],
     ],
     []
   );
@@ -143,13 +144,12 @@ export function AmountInput<T extends FieldValues>({
           };
 
           const appendFromKeyboard = (key: string) => {
-            if (key === '⌫') {
+            if (key === 'del') {
               field.onChange(fieldString.slice(0, -1));
               return;
             }
 
-            const mapped = key === '×' ? '*' : key === '÷' ? '/' : key;
-            const next = normalizeExpressionInput(`${fieldString}${mapped}`);
+            const next = normalizeExpressionInput(`${fieldString}${key}`);
             field.onChange(next);
           };
 
@@ -171,7 +171,7 @@ export function AmountInput<T extends FieldValues>({
                   onBlur={applyExpression}
                   inputMode={useCustomKeyboard ? 'none' : 'text'}
                   className={cn(
-                    'text-2xl font-medium h-14 rounded-card bg-muted/20 border-border/50 focus-visible:border-primary/50 focus-visible:ring-primary/20 pr-20',
+                    'h-14 rounded-card bg-muted/22 pr-20 text-2xl font-medium shadow-[0_14px_28px_-24px_rgba(15,23,42,0.18)] focus-visible:ring-primary/20',
                     error && 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
                   )}
                 />
@@ -180,7 +180,7 @@ export function AmountInput<T extends FieldValues>({
                     <button
                       type="button"
                       onClick={() => setIsKeyboardOpen((prev) => !prev)}
-                      className="rounded-md p-1 hover:bg-muted/60 transition-colors"
+                      className="rounded-md p-1 transition-colors hover:bg-muted/60"
                     >
                       <Keyboard className="h-4 w-4" />
                     </button>
@@ -193,7 +193,7 @@ export function AmountInput<T extends FieldValues>({
                 <button
                   type="button"
                   onClick={applyExpression}
-                  className="text-xs px-3 py-1.5 rounded-full border border-border bg-background hover:bg-muted/60 transition-colors"
+                  className="rounded-full bg-background/96 px-3 py-1.5 text-xs shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)] transition-colors hover:bg-muted/60"
                 >
                   Gunakan hasil tokenisasi ekspresi
                 </button>
@@ -205,15 +205,19 @@ export function AmountInput<T extends FieldValues>({
                     key={amount}
                     type="button"
                     onClick={() => field.onChange(formatAmount(amount))}
-                    className="px-3 py-1.5 rounded-full bg-muted/50 hover:bg-primary/10 hover:text-primary text-xs font-medium border border-border/50 transition-colors whitespace-nowrap active:scale-95"
+                    className="whitespace-nowrap rounded-full bg-muted/55 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-primary/10 hover:text-primary active:scale-95"
                   >
-                    {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount)}
+                    {new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 0,
+                    }).format(amount)}
                   </button>
                 ))}
               </div>
 
               {useCustomKeyboard && isKeyboardOpen && (
-                <div className="rounded-2xl border border-border/70 bg-card p-3 space-y-2">
+                <div className="space-y-2 rounded-2xl bg-card/96 p-3 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.24)]">
                   {keypadRows.map((row, index) => (
                     <div key={`row-${index}`} className="grid grid-cols-4 gap-2">
                       {row.map((key) => (
@@ -222,15 +226,15 @@ export function AmountInput<T extends FieldValues>({
                           type="button"
                           onClick={() => appendFromKeyboard(key)}
                           className={cn(
-                            'h-10 rounded-lg text-sm font-medium border transition-colors',
-                            ['+', '-', '×', '÷'].includes(key)
-                              ? 'border-primary/30 bg-primary/5 text-primary hover:bg-primary/10'
-                              : key === '⌫'
-                                ? 'border-border bg-muted/60 text-muted-foreground hover:bg-muted'
-                                : 'border-border/80 bg-background hover:bg-muted/40'
+                            'h-10 rounded-lg text-sm font-medium shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)] transition-colors',
+                            ['+', '-', '*', '/'].includes(key)
+                              ? 'bg-primary/7 text-primary hover:bg-primary/12'
+                              : key === 'del'
+                                ? 'bg-muted/65 text-muted-foreground hover:bg-muted'
+                                : 'bg-background hover:bg-muted/40'
                           )}
                         >
-                          {key === '⌫' ? <Delete className="h-4 w-4 mx-auto" /> : key}
+                          {key === 'del' ? <Delete className="mx-auto h-4 w-4" /> : key}
                         </button>
                       ))}
                     </div>
@@ -238,7 +242,7 @@ export function AmountInput<T extends FieldValues>({
                   <button
                     type="button"
                     onClick={() => setIsKeyboardOpen(false)}
-                    className="w-full h-9 rounded-lg border border-border text-xs text-muted-foreground hover:bg-muted/50"
+                    className="h-9 w-full rounded-lg bg-muted/55 text-xs text-muted-foreground transition-colors hover:bg-muted/70"
                   >
                     Selesai
                   </button>

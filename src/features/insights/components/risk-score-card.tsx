@@ -9,17 +9,17 @@ import { Button } from '@/components/ui/button';
 export const RiskScoreCard = () => {
     const { risk, isLoading, refreshInsights } = useInsights();
 
-    if (isLoading) {
+        if (isLoading) {
         return (
-            <Card className="p-6 h-[200px] flex items-center justify-center border-none shadow-none bg-card/50 backdrop-blur-md">
+            <Card className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                 <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
             </Card>
         );
     }
 
-    if (!risk) {
+        if (!risk) {
         return (
-            <Card className="p-6 h-[180px] flex flex-col items-center justify-center border-dashed border-2 border-border bg-card/30 text-center space-y-3">
+            <Card className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
                     <Sparkles className="h-6 w-6 opacity-30" />
                 </div>
@@ -60,7 +60,7 @@ export const RiskScoreCard = () => {
     return (
         <Card 
             className={cn(
-                "relative overflow-hidden border border-white/10 shadow-none transition-all duration-500 rounded-card-premium text-white",
+                "relative overflow-hidden rounded-card-premium text-white shadow-[0_24px_48px_-32px_rgba(15,23,42,0.35)] transition-all duration-500",
                 config.bg
             )}
         >
@@ -72,7 +72,7 @@ export const RiskScoreCard = () => {
             <div className="p-7 space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className={cn("p-3 rounded-card bg-white/10 backdrop-blur-xl border border-white/10")}>
+                        <div className={cn("rounded-card bg-white/10 p-3 backdrop-blur-xl shadow-[0_10px_20px_-16px_rgba(15,23,42,0.25)]")}>
                             <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
                         </div>
                         <div>
@@ -84,7 +84,7 @@ export const RiskScoreCard = () => {
                         variant="ghost"
                         size="icon"
                         onClick={refreshInsights}
-                        className="h-10 w-10 hover:bg-white/10 rounded-full border border-white/5 backdrop-blur-sm"
+                        className="h-10 w-10 rounded-full backdrop-blur-sm hover:bg-white/10"
                     >
                         <RefreshCw className="h-4 w-4 text-white/40" />
                     </Button>
@@ -105,11 +105,11 @@ export const RiskScoreCard = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10">
+                            <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
                                 <p className="text-label text-white/40 mb-1.5">Burn Velocity</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
-                            <div className="p-4 rounded-card-glass bg-white/5 backdrop-blur-md border border-white/10">
+                            <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
                                 <p className="text-label text-white/40 mb-1.5">Momentum</p>
                                 <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40">RATIO</span></p>
                             </div>
@@ -132,7 +132,7 @@ export const RiskScoreCard = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-label text-white/30 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-4 pt-4 text-label text-white/30">
                     <div className="flex items-center gap-2">
                         <div className="h-1 w-1 rounded-full bg-white/40" />
                         <span>Adaptive Risk Engine Active</span>

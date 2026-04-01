@@ -64,7 +64,7 @@ export const SemanticTransactionReview = ({
 
     return (
         <div className="space-y-5 px-1">
-            <div className="rounded-[28px] border border-border/50 bg-background/80 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.55)]">
+            <div className="rounded-[28px] bg-background/86 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.32)]">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                     <div>
                         <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/45">
@@ -74,7 +74,7 @@ export const SemanticTransactionReview = ({
                             Ketuk bagian yang ingin disesuaikan sebelum disimpan.
                         </p>
                     </div>
-                    <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-label font-semibold uppercase tracking-widest text-primary">
+                    <div className="rounded-full bg-primary/10 px-3 py-1 text-label font-semibold uppercase tracking-widest text-primary shadow-[0_10px_22px_-18px_rgba(13,148,136,0.3)]">
                         {completionCount}/4 siap
                     </div>
                 </div>
@@ -91,13 +91,13 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'amount' ? null : 'amount');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
+                            "inline-flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'amount' && "ring-2 ring-primary ring-offset-2",
                             amountNumber > 0
                                 ? type === 'income'
-                                    ? "border-primary/20 bg-primary/10 text-primary"
-                                    : "border-border/10 bg-secondary text-foreground"
-                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
+                                    ? "bg-primary/10 text-primary"
+                                    : "bg-secondary text-foreground"
+                                : "animate-pulse bg-warning/10 text-warning"
                         )}
                     >
                         {amountNumber > 0 ? formatCurrency(amountNumber) : 'Isi Nominal'}
@@ -112,11 +112,11 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'category' ? null : 'category');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
+                            "inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'category' && "ring-2 ring-primary ring-offset-2",
                             categoryObj
-                                ? "border-border/10 bg-secondary text-foreground"
-                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
+                                ? "bg-secondary text-foreground"
+                                : "animate-pulse bg-warning/10 text-warning"
                         )}
                     >
                         {categoryObj ? (
@@ -141,7 +141,7 @@ export const SemanticTransactionReview = ({
                                     handleCategorySelect(categoryObj);
                                 }
                             }}
-                            className="inline-flex items-center gap-2 rounded-2xl border-2 border-border/10 bg-secondary/50 px-3.5 py-2 text-base font-bold text-foreground transition-all active:scale-95 hover:scale-[1.03]"
+                            className="inline-flex items-center gap-2 rounded-2xl bg-secondary/55 px-3.5 py-2 text-base font-bold text-foreground shadow-[0_12px_24px_-20px_rgba(15,23,42,0.16)] transition-all active:scale-95 hover:scale-[1.03]"
                         >
                             <span>{subCategoryName}</span>
                         </button>
@@ -156,11 +156,11 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'description' ? null : 'description');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
+                            "inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'description' && "ring-2 ring-primary ring-offset-2",
                             description
-                                ? "border-border/10 bg-secondary text-foreground"
-                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
+                                ? "bg-secondary text-foreground"
+                                : "animate-pulse bg-warning/10 text-warning"
                         )}
                     >
                         {description ? (
@@ -180,10 +180,10 @@ export const SemanticTransactionReview = ({
                                     form.setValue('isNeed', !isNeed);
                                 }}
                                 className={cn(
-                                    "inline-flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
+                                    "inline-flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
                                     isNeed
-                                        ? "border-success/20 bg-success/10 text-success"
-                                        : "border-violet-500/20 bg-violet-500/10 text-violet-600"
+                                        ? "bg-success/10 text-success"
+                                        : "bg-violet-500/10 text-violet-600"
                                 )}
                             >
                                 {isNeed ? (
@@ -210,11 +210,11 @@ export const SemanticTransactionReview = ({
                             setActiveEditor(activeEditor === 'wallet' ? null : 'wallet');
                         }}
                         className={cn(
-                            "inline-flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-base font-bold shadow-sm transition-all active:scale-95 hover:scale-[1.03]",
+                            "inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
                             activeEditor === 'wallet' && "ring-2 ring-primary ring-offset-2",
                             walletObj
-                                ? "border-border bg-card text-foreground hover:bg-secondary/60"
-                                : "animate-pulse border-warning/30 bg-warning/10 text-warning"
+                                ? "bg-card text-foreground hover:bg-secondary/60"
+                                : "animate-pulse bg-warning/10 text-warning"
                         )}
                     >
                         <WalletIcon className="h-4 w-4 text-muted-foreground/60" />
@@ -227,7 +227,7 @@ export const SemanticTransactionReview = ({
                         <PopoverTrigger asChild>
                             <button
                                 type="button"
-                                className="inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-card px-3.5 py-2 text-base font-bold text-foreground shadow-sm transition-all hover:scale-[1.03] hover:bg-secondary/60 active:scale-95"
+                                className="inline-flex items-center gap-2 rounded-2xl bg-card px-3.5 py-2 text-base font-bold text-foreground shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all hover:scale-[1.03] hover:bg-secondary/60 active:scale-95"
                             >
                                 <CalendarIcon className="h-4 w-4" />
                                 <span>{format(date || new Date(), 'dd MMM', { locale: localeId })}</span>
@@ -258,7 +258,7 @@ export const SemanticTransactionReview = ({
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
                     >
-                        <div className="mb-4 rounded-[28px] border border-border/50 bg-background/90 p-4 pb-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.55)]">
+                        <div className="mb-4 rounded-[28px] bg-background/92 p-4 pb-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.3)]">
                             {activeEditor === 'amount' && (
                                 <div className="space-y-4">
                                     <p className="text-center text-label text-muted-foreground/40">Ubah nominal</p>
@@ -298,10 +298,10 @@ export const SemanticTransactionReview = ({
                                                     setActiveEditor(null);
                                                 }}
                                                 className={cn(
-                                                    "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-xl border p-3 transition-all active:scale-[0.98]",
-                                                    walletId === wallet.id
-                                                        ? "border-transparent bg-primary/10 shadow-sm ring-2 ring-primary"
-                                                        : "border-border bg-background hover:bg-secondary"
+                                                        "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-xl p-3 shadow-[0_12px_24px_-22px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98]",
+                                                        walletId === wallet.id
+                                                            ? "bg-primary/10 ring-2 ring-primary/30"
+                                                            : "bg-background hover:bg-secondary"
                                                 )}
                                             >
                                                 <span className="line-clamp-1 text-sm font-semibold">{wallet.name}</span>
@@ -325,10 +325,10 @@ export const SemanticTransactionReview = ({
                                                     key={category.id}
                                                     onClick={() => handleCategorySelect(category)}
                                                     className={cn(
-                                                        "snap-center flex w-[85px] shrink-0 flex-col items-center gap-2 rounded-xl border p-3 transition-all active:scale-[0.98]",
+                                                        "snap-center flex w-[85px] shrink-0 flex-col items-center gap-2 rounded-xl p-3 shadow-[0_12px_24px_-22px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98]",
                                                         categoryName === category.name
-                                                            ? "border-transparent bg-primary/10 shadow-sm ring-2 ring-primary"
-                                                            : "border-border bg-background hover:bg-secondary"
+                                                            ? "bg-primary/10 ring-2 ring-primary/30"
+                                                            : "bg-background hover:bg-secondary"
                                                     )}
                                                 >
                                                     <div className={cn(

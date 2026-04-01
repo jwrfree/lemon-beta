@@ -32,11 +32,11 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
                         key={cat.id}
                         onClick={() => onCategorySelect(cat)}
                         className={cn(
-                            "p-2 text-center border rounded-lg flex flex-col items-center justify-center gap-1 aspect-square transition-all active:scale-95",
-                            isSelected ? 'border-primary bg-primary/10 ring-1 ring-primary' : 'border-transparent bg-secondary'
+                            "aspect-square rounded-lg p-2 text-center flex flex-col items-center justify-center gap-1 transition-all active:scale-95",
+                            isSelected ? 'bg-primary/10 shadow-[0_14px_28px_-22px_rgba(13,148,136,0.22)] ring-2 ring-primary/25' : 'bg-secondary/72 hover:bg-secondary'
                         )}
                     >
-                        <div className={cn("p-2.5 rounded-lg shadow-none border border-border/40", isSelected ? 'bg-primary text-white' : bgColor)}>
+                        <div className={cn("rounded-lg p-2.5 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]", isSelected ? 'bg-primary text-white' : bgColor)}>
                             <CategoryIcon className={cn("h-5 w-5", isSelected ? 'text-white' : color)} />
                         </div>
                         <span className="text-xs font-medium text-center leading-tight truncate w-full">{cat.name}</span>

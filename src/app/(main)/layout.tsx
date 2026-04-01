@@ -20,7 +20,7 @@ import { AIChatDrawer } from '@/features/ai-chat/components/ai-chat-drawer';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
-import { SIDEBAR_NAV_ITEMS } from '@/lib/sidebar-config';
+import { isTopLevelMobileRoute } from '@/lib/sidebar-config';
 
 
 
@@ -109,9 +109,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     };
 
 
-    const showBottomNav = SIDEBAR_NAV_ITEMS.some(item =>
-        item.href === '/home' ? pathname === '/home' : pathname.startsWith(item.href)
-    ) || pathname === '/plan';
+    const showBottomNav = isTopLevelMobileRoute(pathname);
 
     return (
         <div className="w-full h-dvh bg-background relative flex flex-col md:flex-row overflow-hidden">

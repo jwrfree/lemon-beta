@@ -56,7 +56,7 @@ export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] 
                         Pilih contoh di bawah atau mulai dari histori terakhirmu.
                     </p>
                 </div>
-                <div className="rounded-full border border-primary/20 bg-primary/10 p-2 text-primary">
+                <div className="rounded-full bg-primary/10 p-2 text-primary shadow-[0_12px_24px_-20px_rgba(13,148,136,0.35)]">
                     <Sparkles className="h-4 w-4" />
                 </div>
             </div>
@@ -67,10 +67,10 @@ export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] 
                         type="button"
                         onClick={() => onSuggestionClick(item.text)}
                         className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-[13px] font-medium transition-all active:scale-95 hover:-translate-y-0.5",
+                            "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[13px] font-medium transition-all active:scale-95 hover:-translate-y-0.5",
                             item.isSpecial
-                                ? "border-primary/20 bg-primary/10 font-semibold text-primary shadow-[0_12px_30px_-24px_rgba(16,185,129,0.75)] hover:bg-primary/20"
-                                : "border-border/60 bg-card text-foreground/70 shadow-none hover:bg-secondary/60 hover:text-foreground"
+                                ? "bg-primary/10 font-semibold text-primary shadow-[0_12px_30px_-24px_rgba(16,185,129,0.45)] hover:bg-primary/20"
+                                : "bg-card/96 text-foreground/70 shadow-[0_10px_22px_-20px_rgba(15,23,42,0.18)] hover:bg-secondary/60 hover:text-foreground"
                         )}
                     >
                         <span>{item.text}</span>

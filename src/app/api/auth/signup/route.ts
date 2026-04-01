@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
                         const { maxAge: _m, expires: _e, ...restOptions } = options ?? {};
                         response.cookies.set(name, value, {
                             ...restOptions,
-                            httpOnly: true,
                             secure: process.env.NODE_ENV === 'production',
                             sameSite: 'lax',
                         });

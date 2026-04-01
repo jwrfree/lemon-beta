@@ -20,7 +20,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
     const router = useRouter();
 
     return (
-        <Card className="border border-border shadow-none border border-border/40 bg-card rounded-card">
+        <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <CardHeader>
                 <CardTitle className="text-sm font-medium">Dompet</CardTitle>
                 <CardDescription className="text-xs">
@@ -45,7 +45,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
                                 <Link
                                     href="/wallets"
                                     key={wallet.id}
-                                    className="flex items-center justify-between p-3 rounded-md hover:bg-primary/5 transition-all group border border-transparent hover:border-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                    className="group flex items-center justify-between rounded-md p-3 transition-all hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className={cn("p-2.5 rounded-md bg-primary/10 overflow-hidden flex items-center justify-center", textColor.replace('text-white', 'text-primary'))}>
