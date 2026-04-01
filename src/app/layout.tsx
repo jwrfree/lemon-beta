@@ -53,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
-      <body className="antialiased font-sans bg-background text-foreground h-full overflow-hidden">
+      <body className="antialiased font-sans bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ThemeTransition />
           <TooltipProvider delayDuration={300}>

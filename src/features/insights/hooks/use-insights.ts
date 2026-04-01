@@ -33,7 +33,7 @@ export const useInsights = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [user]);
+    }, [user?.id, userData?.displayName]); // Only re-create if user.id or displayName changes
 
     useEffect(() => {
         refreshInsights();

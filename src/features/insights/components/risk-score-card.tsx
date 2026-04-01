@@ -5,6 +5,7 @@ import { Sparkles, TrendingUp, AlertCircle, RefreshCw, Clock } from 'lucide-reac
 import { cn, formatCurrency } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Button } from '@/components/ui/button';
+import { HelpTooltip } from '@/components/help-tooltip';
 
 export const RiskScoreCard = () => {
     const { risk, isLoading, refreshInsights } = useInsights();
@@ -37,21 +38,24 @@ export const RiskScoreCard = () => {
             bg: 'bg-[#064e3b]',
             accent: 'bg-emerald-500/20',
             glow: 'rgba(16, 185, 129, 0.3)',
-            desc: 'Stable Flux'
+            desc: 'Flux Stabil',
+            label: 'Aman'
         },
         Moderate: {
             color: 'text-amber-400',
             bg: 'bg-[#451a03]',
             accent: 'bg-amber-500/20',
             glow: 'rgba(245, 158, 11, 0.3)',
-            desc: 'Moderate Drift'
+            desc: 'Drift Moderat',
+            label: 'Waspada'
         },
         Critical: {
             color: 'text-rose-400',
             bg: 'bg-[#450a0a]',
             accent: 'bg-rose-500/20',
             glow: 'rgba(244, 63, 94, 0.3)',
-            desc: 'High Burn Risk'
+            desc: 'Risiko Burn Tinggi',
+            label: 'Bahaya'
         }
     };
 
@@ -72,12 +76,8 @@ export const RiskScoreCard = () => {
             <div className="p-7 space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className={cn("rounded-card bg-white/10 p-3 backdrop-blur-xl shadow-[0_10px_20px_-16px_rgba(15,23,42,0.25)]")}>
-                            <TrendingUp className={cn("h-6 w-6 text-white")} strokeWidth={2.5} />
-                        </div>
                         <div>
-                            <p className="text-label text-white/40">Flux Momentum</p>
-                            <h3 className="text-xl font-semibold tracking-tighter text-white">Co-Pilot Insight</h3>
+                            <p className="text-label font-semibold uppercase tracking-widest text-white/40">Analisis Risiko</p>
                         </div>
                     </div>
                     <Button
@@ -94,24 +94,36 @@ export const RiskScoreCard = () => {
                     <div className="space-y-6 flex-1">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
-                                <span className={cn("text-5xl font-medium tracking-tighter tabular-nums drop-", config.color)}>
-                                    {risk.level}
+                                <span className={cn("text-5xl font-medium tracking-tighter tabular-nums", config.color)}>
+                                    {config.label}
                                 </span>
                                 <div className="h-2 w-2 rounded-full bg-white/20 animate-ping" />
                             </div>
-                            <p className="text-sm font-semibold text-white/70 leading-relaxed italic pr-4">
-                                "{risk.insight}"
+                            <p className="text-sm font-semibold text-white/70 leading-relaxed pr-4">
+                                {risk.insight}
                             </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
-                                <p className="text-label text-white/40 mb-1.5">Burn Velocity</p>
+                                <div className="flex items-center gap-1.5 mb-1.5">
+                                    <p className="text-label text-white/40">Laju Pengeluaran</p>
+                                    <HelpTooltip 
+                                        content="Laju rata-rata pengeluaran harianmu dalam 14 hari terakhir." 
+                                        iconClassName="text-white/20 hover:text-white/40" 
+                                    />
+                                </div>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
                             <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
-                                <p className="text-label text-white/40 mb-1.5">Momentum</p>
-                                <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40">RATIO</span></p>
+                                <div className="flex items-center gap-1.5 mb-1.5">
+                                    <p className="text-label text-white/40">Momentum</p>
+                                    <HelpTooltip 
+                                        content="Indikator seberapa stabil arus kasmu saat ini (100% = sangat stabil)." 
+                                        iconClassName="text-white/20 hover:text-white/40" 
+                                    />
+                                </div>
+                                <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40 uppercase">RASIO</span></p>
                             </div>
                         </div>
                     </div>
@@ -129,13 +141,6 @@ export const RiskScoreCard = () => {
                                 )}
                             />
                         </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-4 pt-4 text-label text-white/30">
-                    <div className="flex items-center gap-2">
-                        <div className="h-1 w-1 rounded-full bg-white/40" />
-                        <span>Adaptive Risk Engine Active</span>
                     </div>
                 </div>
             </div>

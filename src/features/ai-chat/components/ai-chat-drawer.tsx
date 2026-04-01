@@ -19,25 +19,23 @@ import {
     ChevronRight, 
     Trash2, 
     Loader2,
-    Square
+    Square,
+    X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAIChat } from '../hooks/use-ai-chat';
 import { ErrorAlert } from '@/components/ui/error-alert';
 
+import { useInsights } from '@/features/insights/hooks/use-insights';
+
 interface AIChatDrawerProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const QUICK_ACTIONS = [
-    { label: 'Berapa saldo saya?', value: 'Berapa total saldo saya di semua dompet saat ini?' },
-    { label: 'Budget aman?', value: 'Apakah ada budget saya yang hampir habis bulan ini?' },
-    { label: 'Saran hemat', value: 'Berikan saran penghematan cerdas berdasarkan pola pengeluaran saya.' },
-];
-
 export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
+    const { briefing } = useInsights();
     const {
         messages,
         input,
@@ -50,6 +48,13 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
         stop,
         clearChat,
     } = useAIChat();
+
+    const QUICK_ACTIONS = [
+        ...(briefing?.suggestion ? [{ label: '💡 Saran AI', value: briefing.suggestion }] : []),
+        { label: 'Berapa saldo saya?', value: 'Berapa total saldo saya di semua dompet saat ini?' },
+        { label: 'Budget aman?', value: 'Apakah ada budget saya yang hampir habis bulan ini?' },
+        { label: 'Saran hemat', value: 'Berikan saran penghematan cerdas berdasarkan pola pengeluaran saya.' },
+    ];
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -64,39 +69,49 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <SheetContent 
                 side="right" 
-                className="w-full sm:max-w-[440px] p-0 flex flex-col h-full bg-background border-l border-border/50 text-foreground"
+                hideCloseButton
+                className="w-full sm:max-w-[440px] p-0 flex flex-col h-full bg-background border-l border-border/50 text-foreground shadow-2xl"
             >
-                <SheetHeader className="p-6 pb-4 border-b border-border/30 bg-background">
+                <SheetHeader className="px-6 py-5 bg-background">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-xl bg-primary/10 text-primary">
-                                <Sparkles className="h-5 w-5" />
-                            </div>
-                            <div>
-                                <SheetTitle className="text-xl font-semibold tracking-tight text-foreground">Lemon Coach</SheetTitle>
-                                <SheetDescription className="text-xs text-muted-foreground">Asisten Keuangan Pintar Anda</SheetDescription>
-                            </div>
+                        <div className="flex flex-col gap-0.5">
+                            <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                                Lemon Coach
+                            </h2>
+                            <SheetTitle className="sr-only">Lemon Coach</SheetTitle>
+                            <SheetDescription className="text-[11px] font-medium text-muted-foreground/40 uppercase tracking-tight">
+                                Asisten Keuangan Pintar
+                            </SheetDescription>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                             {isLoading && (
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     onClick={stop}
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground transition-colors"
                                     title="Hentikan Respons"
                                 >
-                                    <Square className="h-4 w-4 fill-current" />
+                                    <Square className="h-3.5 w-3.5 fill-current" />
                                 </Button>
                             )}
                             <Button 
                                 variant="ghost" 
                                 size="icon" 
                                 onClick={clearChat}
-                                className="text-muted-foreground hover:text-destructive transition-colors"
+                                className="h-9 w-9 rounded-full text-muted-foreground hover:text-destructive transition-colors"
                                 title="Hapus Chat"
                             >
                                 <Trash2 className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={onClose}
+                                className="h-9 w-9 rounded-full bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+                                title="Tutup"
+                            >
+                                <X className="h-4.5 w-4.5" />
                             </Button>
                         </div>
                     </div>
@@ -131,10 +146,10 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                             m.role === 'user' ? "flex-row-reverse" : "flex-row"
                                         )}>
                                             <div className={cn(
-                                                "h-8 w-8 rounded-full shrink-0 flex items-center justify-center border",
+                                                "h-8 w-8 rounded-full shrink-0 flex items-center justify-center",
                                                 m.role === 'user' 
-                                                    ? "bg-primary border-primary/20 text-primary-foreground" 
-                                                    : "bg-card border-border/50 text-primary"
+                                                    ? "bg-primary text-primary-foreground" 
+                                                    : "bg-card text-primary"
                                             )}>
                                                 {m.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                                             </div>
@@ -142,7 +157,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                 "p-3 rounded-2xl text-sm leading-relaxed",
                                                 m.role === 'user' 
                                                     ? "bg-primary text-primary-foreground rounded-tr-none" 
-                                                    : "bg-card text-foreground border border-border/60 rounded-tl-none"
+                                                    : "bg-card text-foreground rounded-tl-none"
                                             )}>
                                                 {m.content}
                                             </div>
@@ -154,10 +169,10 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                             {isLoading && (
                                 <div className="flex justify-start">
                                     <div className="flex gap-3 max-w-[85%]">
-                                        <div className="h-8 w-8 rounded-full shrink-0 flex items-center justify-center border bg-card border-border/50 text-primary">
+                                        <div className="h-8 w-8 rounded-full shrink-0 flex items-center justify-center bg-card text-primary">
                                             <Bot className="h-4 w-4" />
                                         </div>
-                                        <div className="p-3 rounded-2xl bg-card border border-border/60 rounded-tl-none text-foreground">
+                                        <div className="p-3 rounded-2xl bg-card rounded-tl-none text-foreground">
                                             <Loader2 className="h-4 w-4 animate-spin opacity-60" />
                                         </div>
                                     </div>
@@ -175,7 +190,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                         key={action.label}
                                         onClick={() => void submitQuickAction(action.value)}
                                         disabled={isLoading}
-                                        className="flex items-center justify-between p-3 rounded-xl bg-card text-foreground border border-border/60 text-xs font-medium hover:bg-muted transition-all hover:translate-x-1 group"
+                                        className="flex items-center justify-between p-3 rounded-xl bg-card text-foreground text-xs font-medium hover:bg-muted transition-all hover:translate-x-1 group"
                                     >
                                         <span className="opacity-90 group-hover:opacity-100">{action.label}</span>
                                         <ChevronRight className="h-3 w-3 text-muted-foreground/70 group-hover:text-foreground" />
@@ -186,7 +201,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                     )}
                 </div>
 
-                <div className="p-6 pt-0 border-t border-border/30 bg-background">
+                <div className="p-6 pt-0 bg-background">
                     <form 
                         onSubmit={handleSubmit}
                         className="relative flex items-center mt-6"
@@ -196,7 +211,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                             value={input}
                             onChange={handleInputChange}
                             disabled={isLoading}
-                            className="pr-12 h-12 rounded-2xl border-border/50 bg-card text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/20"
+                            className="pr-12 h-12 rounded-2xl bg-card text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/20"
                         />
                         <Button 
                             type="submit" 

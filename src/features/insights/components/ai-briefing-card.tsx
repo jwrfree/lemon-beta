@@ -6,9 +6,11 @@ import { Sparkles, MessageSquare, ArrowRight, Zap, Target, AlertCircle } from 'l
 import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useUI } from '@/components/ui-provider';
 
 export const AiBriefingCard = () => {
     const { briefing, isLoading } = useInsights();
+    const { setIsAIChatOpen } = useUI();
 
     if (isLoading) {
         return <Skeleton className="h-[120px] w-full rounded-card-premium bg-card/50" />;
@@ -59,10 +61,10 @@ export const AiBriefingCard = () => {
                     
                     <div className="space-y-3 flex-1">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">Financial Co-Pilot</span>
+                            <span className="text-[10px] font-semibold uppercase tracking-widest opacity-50">Lemon Coach</span>
                             <div className="flex items-center gap-1.5">
-                                <span className={cn("h-1.5 w-1.5 rounded-full animate-pulse", mood.iconColor.replace('text-', 'bg-'))}></span>
-                                <span className="text-[10px] font-medium opacity-40">Live Analysis</span>
+                                <span className={cn("h-1 w-1 rounded-full animate-pulse", mood.iconColor.replace('text-', 'bg-'))}></span>
+                                <span className="text-[10px] font-semibold uppercase tracking-widest opacity-40">Analisis Langsung</span>
                             </div>
                         </div>
                         
@@ -73,15 +75,13 @@ export const AiBriefingCard = () => {
                         {briefing.suggestion && (
                             <motion.button
                                 whileTap={{ scale: 0.98 }}
-                                className="flex items-center gap-2 group pt-1"
+                                onClick={() => setIsAIChatOpen(true)}
+                                className="flex items-center gap-2 group pt-1.5"
                             >
-                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 shadow-[0_10px_18px_-16px_rgba(13,148,136,0.3)] transition-colors group-hover:bg-primary/20">
-                                    <Target className="h-3 w-3 text-primary" />
-                                </div>
                                 <span className="text-xs font-semibold text-primary/80 group-hover:text-primary transition-colors">
                                     {briefing.suggestion}
                                 </span>
-                                <ArrowRight className="h-3 w-3 text-primary/40 group-hover:translate-x-0.5 transition-transform" />
+                                <ArrowRight className="h-3.5 w-3.5 text-primary/40 group-hover:translate-x-0.5 transition-transform" />
                             </motion.button>
                         )}
                     </div>

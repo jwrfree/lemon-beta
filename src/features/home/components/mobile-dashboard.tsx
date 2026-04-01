@@ -191,21 +191,7 @@ export const MobileDashboard = ({
     return (
         <AppPageShell className="bg-background">
             <AppPageHeaderChrome width="full" className="z-20">
-                <div className="grid min-h-14 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2.5 sm:px-4">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        asChild
-                        className="h-9 w-9 overflow-hidden rounded-full bg-card/96 p-0 shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] transition-all active:scale-95"
-                    >
-                        <Avatar className="h-full w-full cursor-pointer" onClick={() => router.push('/settings')}>
-                            <AvatarImage src={userData?.photoURL} />
-                            <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                                {firstName[0]}
-                            </AvatarFallback>
-                        </Avatar>
-                    </Button>
-
+                <div className="flex min-h-14 items-center justify-between gap-3 px-3 py-2.5 sm:px-4">
                     <div className="min-w-0">
                         <h1 className="truncate text-left text-base font-semibold tracking-tight text-foreground">
                             Beranda
@@ -216,7 +202,7 @@ export const MobileDashboard = ({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 rounded-full bg-card/96 text-muted-foreground shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] hover:bg-muted hover:text-foreground"
+                            className="h-9 w-9 rounded-full bg-white dark:bg-slate-900 text-muted-foreground shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] hover:bg-muted hover:text-foreground"
                             onClick={() => router.push('/search')}
                         >
                             <Search className="h-4 w-4" />
@@ -232,7 +218,7 @@ export const MobileDashboard = ({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="relative h-9 w-9 rounded-full bg-card/96 text-muted-foreground shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] hover:bg-muted hover:text-foreground"
+                            className="relative h-9 w-9 rounded-full bg-white dark:bg-slate-900 text-muted-foreground shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] hover:bg-muted hover:text-foreground"
                             onClick={() => router.push('/notifications')}
                         >
                             <Bell className="h-4 w-4" />
@@ -263,7 +249,7 @@ export const MobileDashboard = ({
                             <div className="relative space-y-5 p-5">
                                 <div>
                                     <div className="mb-3 flex items-center justify-between">
-                                        <span className="text-white/50 text-label">Total Wealth</span>
+                                        <span className="text-white/50 text-label font-semibold uppercase tracking-widest">Total Kekayaan</span>
                                         <div className="rounded-full bg-white/10 px-2 py-0.5 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.2)]">
                                             <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
                                         </div>
@@ -273,7 +259,6 @@ export const MobileDashboard = ({
                                     </div>
                                     <div className="mt-4">
                                         <div className="w-fit max-w-[280px] rounded-full bg-white/6 px-3 py-1.5 text-xs font-semibold leading-relaxed text-white/70 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)] backdrop-blur-sm">
-                                            <Sparkles className="mr-2 inline h-3 w-3 fill-current text-yellow-300" />
                                             {expenseDiff > 0
                                                 ? `Pengeluaran naik ${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}% bulan ini.`
                                                 : 'Pengeluaran terkontrol. Kerja bagus!'}
@@ -282,37 +267,31 @@ export const MobileDashboard = ({
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="flex h-20 flex-col justify-between rounded-card-glass bg-white/6 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md">
-                                        <div className="flex items-center gap-2 text-white/60">
-                                            <div className="rounded-md bg-emerald-500/20 p-1.5 text-emerald-300">
-                                                <ArrowUpRight className="h-3.5 w-3.5" />
+                                        <div className="flex h-20 flex-col justify-between rounded-card-glass bg-white/6 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md">
+                                            <div className="flex items-center gap-2 text-white/60">
+                                                <span className="text-label font-semibold uppercase tracking-widest">Pemasukan</span>
                                             </div>
-                                            <span className="text-label">Inflow</span>
+                                            <div>
+                                                <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold tracking-tight text-white" />
+                                                <p className="mt-1 text-[10px] font-semibold text-white/40">
+                                                    {incomeDiff >= 0 ? '+' : ''}
+                                                    {new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(Math.abs(incomeDiff))} bulan ini
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold tracking-tight text-white" />
-                                            <p className="mt-1 text-[10px] font-semibold text-white/40">
-                                                {incomeDiff >= 0 ? '+' : ''}
-                                                {new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(Math.abs(incomeDiff))} this month
-                                            </p>
+                                        <div className="flex h-20 flex-col justify-between rounded-card-glass bg-white/6 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md">
+                                            <div className="flex items-center gap-2 text-white/60">
+                                                <span className="text-label font-semibold uppercase tracking-widest">Pengeluaran</span>
+                                            </div>
+                                            <div>
+                                                <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold tracking-tight text-white" />
+                                                <p className="mt-1 text-[10px] font-semibold text-white/40">
+                                                    {expenseDiff >= 0 ? '+' : ''}
+                                                    {new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(Math.abs(expenseDiff))} bulan ini
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex h-20 flex-col justify-between rounded-card-glass bg-white/6 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md">
-                                        <div className="flex items-center gap-2 text-white/60">
-                                            <div className="rounded-md bg-rose-500/20 p-1.5 text-rose-300">
-                                                <ArrowDownLeft className="h-3.5 w-3.5" />
-                                            </div>
-                                            <span className="text-label">Outflow</span>
-                                        </div>
-                                        <div>
-                                            <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold tracking-tight text-white" />
-                                            <p className="mt-1 text-[10px] font-semibold text-white/40">
-                                                {expenseDiff >= 0 ? '+' : ''}
-                                                {new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(Math.abs(expenseDiff))} this month
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </motion.div>
@@ -344,12 +323,11 @@ export const MobileDashboard = ({
 
                 <section className="space-y-4">
                     <div className="flex items-center justify-between px-4">
-                        <h2 className="flex items-center gap-2 text-label text-muted-foreground/40">
-                            <WalletIcon className="h-3.5 w-3.5" />
-                            Wallet Stack
+                        <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                            Daftar Dompet
                         </h2>
                         <Button variant="ghost" size="sm" className="h-8 px-0 text-label text-primary hover:bg-transparent" onClick={() => router.push('/wallets')}>
-                            Manage
+                            Kelola
                         </Button>
                     </div>
 
@@ -414,8 +392,8 @@ export const MobileDashboard = ({
                                 <div className="rounded-card-icon bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
                                     <Plus className="h-6 w-6 text-primary" strokeWidth={2.5} />
                                 </div>
-                                <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground">
-                                    Add Wallet
+                                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                                    Tambah Dompet
                                 </span>
                             </button>
                         </div>
@@ -428,8 +406,7 @@ export const MobileDashboard = ({
 
                 <section className="space-y-4 px-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="flex items-center gap-2 text-label text-muted-foreground/40">
-                            <TrendingUp className="h-3.5 w-3.5" />
+                        <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
                             Mutasi Terbaru
                         </h2>
                         <Button variant="ghost" size="sm" className="h-8 px-0 text-label text-primary" onClick={() => router.push('/transactions')}>
