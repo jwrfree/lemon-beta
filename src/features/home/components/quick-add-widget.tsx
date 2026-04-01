@@ -1,40 +1,61 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, PlusCircle, Send, Loader2, Check, X, ArrowRight } from 'lucide-react';
+import { Sparkles, Send, Loader2, Check, X, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { extractTransaction, type SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
+import {
+    extractTransaction,
+    parseSimpleTransactionInput,
+    type SingleTransactionOutput,
+} from '@/ai/flows/extract-transaction-flow';
 import { useActions } from '@/providers/action-provider';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 import { formatCurrency, cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-
-import { getVisualDNA } from '@/lib/visual-dna';
+import { categories } from '@/lib/categories';
 
 export const QuickAddWidget = () => {
     const { openTransactionSheet, showToast } = useUI();
     const { addTransaction } = useActions();
     const { wallets } = useWallets();
-    const router = useRouter();
 
     const [inputValue, setInputValue] = useState('');
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [parsedData, setParsedData] = useState<SingleTransactionOutput | null>(null);
+
+    const preferredCashWallet =
+        wallets.find((wallet) => ['tunai', 'dompet', 'cash', 'kas'].includes(wallet.name.trim().toLowerCase())) ||
+        wallets.find((wallet) => ['tunai', 'dompet', 'cash', 'kas'].some((alias) => wallet.name.trim().toLowerCase().includes(alias))) ||
+        wallets.find((wallet) => wallet.isDefault) ||
+        wallets[0];
 
     const handleQuickAdd = async () => {
         if (!inputValue.trim()) return;
         
         setIsAnalyzing(true);
         try {
-            const result = await extractTransaction(inputValue);
+            const result = await parseSimpleTransactionInput(inputValue, {
+                wallets: wallets.map((wallet) => wallet.name),
+            }, {
+                allowBareInput: true,
+            }) ?? await extractTransaction(inputValue, {
+                wallets: wallets.map((wallet) => wallet.name),
+                categories: [
+                    ...categories.expense.map((category) => category.name),
+                    ...categories.income.map((category) => category.name),
+                ],
+            });
+
             if (result.transactions && result.transactions.length > 0) {
                 setParsedData(result.transactions[0]);
             } else if (result.clarificationQuestion) {
                 showToast(result.clarificationQuestion, 'info');
+            } else {
+                showToast('Transaksi belum kebaca. Coba tulis seperti "kopi 18rb" atau "gaji 5jt".', 'info');
             }
-        } catch (error) {
+        } catch {
             showToast('Gagal menganalisis transaksi', 'error');
         } finally {
             setIsAnalyzing(false);
@@ -46,21 +67,34 @@ export const QuickAddWidget = () => {
 
         try {
             // Find wallet ID by name or use default
-            const wallet = wallets.find(w => w.name.toLowerCase() === parsedData.wallet.toLowerCase()) || wallets.find(w => w.isDefault) || wallets[0];
+            const wallet =
+                wallets.find(w => w.name.toLowerCase() === parsedData.wallet.toLowerCase()) ||
+                wallets.find(w => parsedData.wallet && (w.name.toLowerCase().includes(parsedData.wallet.toLowerCase()) || parsedData.wallet.toLowerCase().includes(w.name.toLowerCase()))) ||
+                preferredCashWallet;
             
-            await addTransaction({
+            const transactionId = await addTransaction({
                 amount: parsedData.amount,
                 description: parsedData.description,
                 category: parsedData.category,
+                subCategory: parsedData.subCategory || undefined,
                 walletId: wallet?.id || '',
-                date: new Date(parsedData.date).toISOString(),
-                type: parsedData.type as 'income' | 'expense'
+                date: normalizeTransactionTimestamp(parsedData.date),
+                type: parsedData.type as 'income' | 'expense',
+                location: parsedData.location || undefined,
+                isNeed: parsedData.isNeed ?? parsedData.type !== 'income',
+            }, {
+                silentSuccessToast: true,
             });
+
+            if (!transactionId) {
+                showToast('Gagal menyimpan transaksi', 'error');
+                return;
+            }
 
             showToast('Transaksi berhasil dicatat!', 'success');
             setParsedData(null);
             setInputValue('');
-        } catch (error) {
+        } catch {
             showToast('Gagal menyimpan transaksi', 'error');
         }
     };
@@ -154,7 +188,7 @@ export const QuickAddWidget = () => {
                             <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground/60 bg-background/50 backdrop-blur-sm py-1.5 px-3 rounded-full w-fit border border-border/20">
                                 <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-label">{parsedData.category}</span>
                                 <ArrowRight className="h-3 w-3 opacity-30" />
-                                <span className="italic text-label">{parsedData.wallet}</span>
+                                <span className="italic text-label">{parsedData.wallet || preferredCashWallet?.name || 'Tunai'}</span>
                             </div>
                         </motion.div>
                     )}

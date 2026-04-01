@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import { X } from 'lucide-react';
@@ -22,7 +23,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
     const CategoryIcon = getCategoryIcon(details.icon);
     const bgColor = details.bg_color;
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-destructive' : 'text-teal-600 dark:text-teal-500';
+    const amountColor = isExpense ? 'text-foreground' : 'text-teal-600 dark:text-teal-500';
 
     return (
         <motion.div
@@ -55,7 +56,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
 
                     <div className="relative flex items-center gap-4 overflow-hidden rounded-card-glass bg-secondary/35 p-4 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)]">
                         <div className={cn("flex-shrink-0 p-3 rounded-card text-white", bgColor.replace('bg-', 'bg-').replace('/50', ''))}>
-                            <CategoryIcon className="h-5 w-5" />
+                            {React.createElement(CategoryIcon, { className: "h-5 w-5" })}
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="font-bold text-[15px] leading-tight mb-0.5 tracking-tight text-foreground">

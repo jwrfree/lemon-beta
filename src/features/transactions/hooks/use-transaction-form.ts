@@ -10,13 +10,20 @@ import { useUI } from '@/components/ui-provider';
 import { triggerHaptic } from '@/lib/utils';
 import { Transaction, Wallet } from '@/types/models';
 import { patchTransactionLiquid } from '@/ai/flows/liquid-patch-flow';
-import { extractTransaction, refineTransaction, TransactionExtractionOutput, SingleTransactionOutput } from '@/ai/flows/extract-transaction-flow';
+import {
+    extractTransaction,
+    parseSimpleTransactionInput,
+    refineTransaction,
+    TransactionExtractionOutput,
+    SingleTransactionOutput,
+} from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { useActions } from '@/providers/action-provider';
 import { useMonthTransactions } from './use-month-transactions';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useMemo } from 'react';
 import { getHours, getDate } from 'date-fns';
+import { getCurrentIsoTimestamp, normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 
 interface UseTransactionFormProps {
     initialData?: Transaction | null;
@@ -28,6 +35,16 @@ interface UseTransactionFormProps {
 interface MagicInputResult {
     shouldClearComposer: boolean;
 }
+
+const getPreferredCashWalletId = (wallets: { id: string; name: string }[]) => {
+    const exactMatch = wallets.find((wallet) => ['tunai', 'dompet', 'cash', 'kas'].includes(wallet.name.trim().toLowerCase()));
+    if (exactMatch) return exactMatch.id;
+
+    const partialMatch = wallets.find((wallet) =>
+        ['tunai', 'dompet', 'cash', 'kas'].some((alias) => wallet.name.trim().toLowerCase().includes(alias))
+    );
+    return partialMatch?.id || wallets[0]?.id || '';
+};
 
 export const useTransactionForm = ({ initialData, onSuccess, type, context }: UseTransactionFormProps = {}) => {
     const { user } = useAuth();
@@ -166,7 +183,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                             category: tx.category,
                             subCategory: tx.subCategory,
                             wallet: context.wallets.find(w => w.id === tx.walletId)?.name || 'Tunai',
-                            date: tx.date instanceof Date ? tx.date.toISOString().slice(0, 10) : tx.date,
+                            date: tx.date instanceof Date ? tx.date.toISOString() : normalizeTransactionTimestamp(tx.date),
                             type: tx.type as any,
                             isNeed: tx.isNeed,
                             isDebtPayment: tx.isDebtPayment || false
@@ -190,7 +207,11 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                         }))
                     });
                 } else {
-                    result = await extractTransaction(input, {
+                    result = await parseSimpleTransactionInput(input, {
+                        wallets: context.wallets.map(w => w.name),
+                    }, {
+                        allowBareInput: true,
+                    }) ?? await extractTransaction(input, {
                         wallets: context.wallets.map(w => w.name),
                         categories: context.categories,
                         recentTransactions: transactions.slice(0, 5).map(tx => ({
@@ -221,7 +242,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                         description: ocrResult.description || 'Transaksi dari Struk',
                         merchant: ocrResult.merchant,
                         category: ocrResult.category || 'Lain-lain',
-                        date: ocrResult.transactionDate || new Date().toISOString().slice(0, 10),
+                        date: normalizeTransactionTimestamp(ocrResult.transactionDate || getCurrentIsoTimestamp()),
                         type: 'expense',
                         isNeed: true,
                         wallet: 'Tunai',
@@ -239,18 +260,29 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 setAiExplanation(result.socraticInsight);
             }
 
+            const hasMeaningfulTransactions = !!result.transactions?.some((tx) => Number(tx.amount) > 0);
+
+            if (!hasMeaningfulTransactions && !result.clarificationQuestion) {
+                setClarificationQuestion('Detail transaksinya belum kebaca. Coba tulis seperti "makan malam 25rb pakai BCA".');
+                return {
+                    shouldClearComposer: false,
+                };
+            }
+
             if (result.transactions && result.transactions.length > 0) {
                 const processed = result.transactions.map(tx => {
                     const matchingWallet = context.wallets.find(w => 
-                        w.name.toLowerCase().includes((tx.wallet || '').toLowerCase())
+                        w.name.toLowerCase() === (tx.wallet || '').toLowerCase() ||
+                        w.name.toLowerCase().includes((tx.wallet || '').toLowerCase()) ||
+                        (tx.wallet || '').toLowerCase().includes(w.name.toLowerCase())
                     );
                     return {
                         amount: tx.amount.toString(),
                         description: tx.description || '',
                         category: tx.category || 'Lain-lain',
                         subCategory: tx.subCategory || '',
-                        walletId: matchingWallet?.id || context.wallets[0]?.id || '',
-                        date: tx.date ? parseISO(tx.date) : new Date(),
+                        walletId: matchingWallet?.id || getPreferredCashWalletId(context.wallets),
+                        date: parseISO(normalizeTransactionTimestamp(tx.date)),
                         type: tx.type || 'expense',
                         location: tx.location || tx.merchant || '',
                         isNeed: tx.isNeed ?? true,

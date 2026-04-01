@@ -14,10 +14,23 @@ describe('extractTransactionSearchQuery', () => {
 
     it('returns null when there is no specific transaction keyword', () => {
         expect(extractTransactionSearchQuery('berapa total saldo saya?')).toBeNull();
+        expect(extractTransactionSearchQuery('apa transaksi terbaru saya?')).toBeNull();
     });
 });
 
 describe('classifyChatIntent', () => {
+    it('routes transaction capture requests to add-transaction', () => {
+        expect(classifyChatIntent('catat makan 25rb pakai BCA')).toEqual({
+            kind: 'add-transaction',
+        });
+    });
+
+    it('routes recent mutation questions to the recent-transactions path', () => {
+        expect(classifyChatIntent('Apa mutasi terbaru saya?')).toEqual({
+            kind: 'recent-transactions',
+        });
+    });
+
     it('routes transaction-specific questions before aggregate context', () => {
         expect(classifyChatIntent('kapan terakhir beli kopi?')).toEqual({
             kind: 'transaction-search',
@@ -39,7 +52,8 @@ describe('classifyChatIntent', () => {
 });
 
 describe('buildStaticChatReply', () => {
-    it('returns a direct reply for non-data intents', () => {
-        expect(buildStaticChatReply({ kind: 'data-entry' })).toContain('belum bisa mencatat transaksi');
+    it('returns a direct reply for static non-data intents only', () => {
+        expect(buildStaticChatReply({ kind: 'destructive-action' })).toContain('tidak punya akses');
+        expect(buildStaticChatReply({ kind: 'add-transaction' })).toBeNull();
     });
 });

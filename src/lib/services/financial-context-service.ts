@@ -122,6 +122,7 @@ type TransactionRow = {
     type: 'income' | 'expense' | string | null;
     description?: string | null;
     date?: string | null;
+    created_at?: string | null;
 };
 
 type WalletRow = {
@@ -144,6 +145,19 @@ type DebtRow = {
 const toNumber = (value: unknown) => {
     const parsed = Number(value ?? 0);
     return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const toTimestamp = (value?: string | null) => {
+    if (!value) return 0;
+    const parsed = new Date(value).getTime();
+    return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const compareTransactionsByNewest = (a: TransactionRow, b: TransactionRow) => {
+    const dateDiff = toTimestamp(b.date) - toTimestamp(a.date);
+    if (dateDiff !== 0) return dateDiff;
+
+    return toTimestamp(b.created_at) - toTimestamp(a.created_at);
 };
 
 const normalizeSearchText = (value: string) =>
@@ -335,9 +349,10 @@ class FinancialContextService {
 
         const { data, error } = await supabase
             .from('transactions')
-            .select('amount,category,sub_category,merchant,type,description,date')
+            .select('amount,category,sub_category,merchant,type,description,date,created_at')
             .eq('user_id', userId)
             .order('date', { ascending: false })
+            .order('created_at', { ascending: false })
             .limit(limit)
             .or(orFilters.join(','));
 
@@ -346,7 +361,7 @@ class FinancialContextService {
             return [];
         }
 
-        const rows = (data ?? []) as TransactionRow[];
+        const rows = ((data ?? []) as TransactionRow[]).sort(compareTransactionsByNewest);
         return rows.map((row) => ({
             description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
             category: row.category?.trim() || 'Lainnya',
@@ -365,6 +380,37 @@ class FinancialContextService {
     ): Promise<TransactionSearchResult | null> {
         const [latestMatch] = await this.findTransactionsByQuery(userId, query, client, 1);
         return latestMatch ?? null;
+    }
+
+    async getRecentTransactions(
+        userId: string,
+        client?: ContextClient,
+        limit = 3
+    ): Promise<TransactionSearchResult[]> {
+        const supabase = client ?? createClient();
+        const { data, error } = await supabase
+            .from('transactions')
+            .select('amount,category,sub_category,merchant,type,description,date,created_at')
+            .eq('user_id', userId)
+            .order('date', { ascending: false })
+            .order('created_at', { ascending: false })
+            .limit(limit);
+
+        if (error) {
+            console.error('[FinancialContextService] Recent transactions error:', error);
+            return [];
+        }
+
+        const rows = ((data ?? []) as TransactionRow[]).sort(compareTransactionsByNewest);
+        return rows.map((row) => ({
+            description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
+            category: row.category?.trim() || 'Lainnya',
+            sub_category: row.sub_category?.trim() || null,
+            merchant: row.merchant?.trim() || null,
+            amount: toNumber(row.amount),
+            type: row.type || 'expense',
+            date: row.date || new Date().toISOString(),
+        }));
     }
 
     private async getRiskContext(userId: string, supabase: ContextClient) {

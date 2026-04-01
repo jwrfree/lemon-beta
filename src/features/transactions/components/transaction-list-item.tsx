@@ -69,12 +69,12 @@ const TransactionListItemContent = ({
     const iconBg = merchantVisuals?.bgColor || categoryVisuals.bgColor;
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400';
+    const amountColor = isExpense ? 'text-foreground' : 'text-emerald-600 dark:text-emerald-400';
 
     return (
         <div className={cn(
             "flex items-center gap-4 p-4 transition-colors relative overflow-hidden",
-            isExpense && transaction.amount >= 1000000 && "bg-rose-500/[0.03]"
+            isExpense && transaction.amount >= 1000000 && "bg-foreground/[0.03]"
         )}>
 
             <div className={cn(
@@ -110,19 +110,19 @@ const TransactionListItemContent = ({
                 )}
             </div>
             <div className="flex-1 overflow-hidden min-w-0">
-                <div className="font-semibold text-foreground text-sm leading-snug tracking-tight truncate">
+                <div className="font-medium text-foreground text-sm leading-snug tracking-tight truncate">
                     {transaction.description || transaction.category}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {/* Need / Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === true && (
-                        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-label text-emerald-600 shadow-[0_10px_20px_-18px_rgba(16,185,129,0.3)]">
+                        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-label font-medium text-emerald-600 shadow-[0_4px_12px_-6px_rgba(16,185,129,0.2)]">
                             <ShieldCheck className="h-2 w-2" />
                             Need
                         </span>
                     )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 rounded-full bg-primary/10 px-1.5 py-0.5 text-label text-primary shadow-[0_10px_20px_-18px_rgba(13,148,136,0.28)]">
+                        <span className="flex items-center gap-1 rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-label font-medium text-indigo-600 shadow-[0_4px_12px_-6px_rgba(99,102,241,0.2)]">
                             <Sparkles className="h-2 w-2" />
                             Want
                         </span>
@@ -147,7 +147,7 @@ const TransactionListItemContent = ({
             <div className="flex flex-col items-end gap-1 shrink-0">
                 <div
                     className={cn(
-                        "text-sm font-semibold tracking-tighter tabular-nums",
+                        "text-sm font-medium tracking-tighter tabular-nums",
                         amountColor,
                         !isBalanceVisible && 'blur-sm transition-all duration-300',
                         isExpense && transaction.amount >= 1000000 && "text-base"
@@ -324,4 +324,3 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
         </div>
     );
 };
-

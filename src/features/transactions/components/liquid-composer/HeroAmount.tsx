@@ -23,7 +23,7 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
     const valueStr = formatted.replace("Rp", "").trim();
 
     const typeColors = {
-        expense: "text-rose-600 dark:text-rose-400",
+        expense: "text-foreground",
         income: "text-emerald-600 dark:text-emerald-400",
         transfer: "text-blue-600 dark:text-blue-400"
     };
@@ -63,7 +63,7 @@ export const HeroAmount = ({ amount, type, onAmountClick, compact = false }: Her
                         layoutId="activeUnderline"
                         className={cn(
                             "absolute -bottom-1 left-0 right-0 h-1 rounded-full blur-sm opacity-20",
-                            type === 'expense' ? "bg-rose-500" : "bg-emerald-500"
+                            type === 'expense' ? "bg-foreground" : "bg-emerald-500"
                         )}
                     />
                 </div>

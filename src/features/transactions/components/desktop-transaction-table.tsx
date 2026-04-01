@@ -197,8 +197,8 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
             {/* 5. Nominal */}
             <TableCell className={cn(
                 "text-right font-medium text-sm tabular-nums tracking-tight",
-                isExpense ? "text-destructive" : "text-success",
-                t.amount >= 1000000 && isExpense && "bg-destructive/5 font-semibold"
+                isExpense ? "text-foreground" : "text-success",
+                t.amount >= 1000000 && isExpense && "bg-foreground/5 font-semibold"
             )}>
                 <div className="flex items-center justify-end gap-1.5">
                     {isExpense ? <ArrowDownLeft className="h-3.5 w-3.5" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
@@ -206,7 +206,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                 </div>
                 <div className="flex flex-col items-end gap-0.5 mt-0.5">
                     {t.amount >= 1000000 && isExpense && (
-                        <span className="text-label text-destructive px-1 bg-destructive/10 rounded">
+                        <span className="text-label text-muted-foreground px-1 bg-muted rounded">
                             Transaksi Besar
                         </span>
                     )}

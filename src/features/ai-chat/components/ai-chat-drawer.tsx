@@ -45,23 +45,26 @@ const PLACEHOLDERS = [
 ];
 
 const ShinyText = ({ text }: { text: string }) => (
-    <motion.span
-        animate={{
-            opacity: [0.5, 1, 0.5],
-            backgroundPosition: ['-100% 0', '100% 0'],
-        }}
-        transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'linear',
-        }}
-        className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-foreground/40 via-foreground to-foreground/40 font-medium"
-        style={{
-            backgroundSize: '200% auto',
-        }}
-    >
-        {text}
-    </motion.span>
+    <div className="flex items-center gap-2">
+        <motion.span
+            animate={{
+                backgroundPosition: ["200% 0", "-200% 0"],
+            }}
+            transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear",
+            }}
+            className="font-semibold bg-[linear-gradient(110deg,rgba(156,163,175,0.5),45%,#fff,55%,rgba(156,163,175,0.5))] bg-[length:200%_100%] bg-clip-text text-transparent dark:bg-[linear-gradient(110deg,#4b5563,45%,#fff,55%,#4b5563)]"
+        >
+            {text}
+        </motion.span>
+        <span className="flex gap-1">
+            <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1, times: [0, 0.5, 1] }} className="h-1 w-1 rounded-full bg-foreground/30" />
+            <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2, times: [0, 0.5, 1] }} className="h-1 w-1 rounded-full bg-foreground/30" />
+            <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4, times: [0, 0.5, 1] }} className="h-1 w-1 rounded-full bg-foreground/30" />
+        </span>
+    </div>
 );
 
 const getMessageText = (message: UIMessage) =>
@@ -230,13 +233,19 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                     {message.role === 'user' ? (
                                                         getMessageText(message)
                                                     ) : (
-                                                        <ReactMarkdown
-                                                            components={{
-                                                                p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                                                            }}
-                                                        >
-                                                            {getMessageText(message)}
-                                                        </ReactMarkdown>
+                                                        <>
+                                                            {getMessageText(message) ? (
+                                                                <ReactMarkdown
+                                                                    components={{
+                                                                        p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                                                    }}
+                                                                >
+                                                                    {getMessageText(message)}
+                                                                </ReactMarkdown>
+                                                            ) : (
+                                                                isLoading && <ShinyText text="Lemon Coach sedang berpikir..." />
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                                 {message.role === 'assistant' &&
@@ -267,13 +276,13 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                 ))}
                             </AnimatePresence>
 
-                            {isLoading && (
+                            {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
                                 <div className="flex justify-start">
                                     <div className="flex gap-3 max-w-[85%]">
                                         <div className="h-8 w-8 rounded-full shrink-0 flex items-center justify-center bg-card text-primary">
                                             <Bot className="h-4 w-4" />
                                         </div>
-                                        <div className="p-3 rounded-2xl bg-card rounded-tl-none text-foreground flex items-center gap-2">
+                                        <div className="p-3 rounded-2xl bg-card rounded-tl-none text-foreground flex items-center gap-2 text-sm">
                                             <ShinyText text="Lemon Coach sedang berpikir..." />
                                         </div>
                                     </div>

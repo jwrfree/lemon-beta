@@ -81,5 +81,15 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         return financialContextService.findTransactionsByQuery(userId, query, supabase, limit ?? 3);
       },
     }),
+
+    get_recent_transactions: tool({
+      description: 'Mengambil daftar mutasi atau transaksi terbaru user. Gunakan ini untuk pertanyaan seperti "apa mutasi terbaru saya?" atau "riwayat transaksi terakhir".',
+      inputSchema: z.object({
+        limit: z.number().int().min(1).max(5).optional(),
+      }),
+      execute: async ({ limit }) => {
+        return financialContextService.getRecentTransactions(userId, supabase, limit ?? 3);
+      },
+    }),
   };
 };

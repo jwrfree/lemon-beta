@@ -4,6 +4,22 @@ All updates and improvements to the Lemon app will be documented here.
 
 ## [Unreleased]
 
+### Changed
+- **Lemon Coach & Smart Add Conversation Flow Refresh**
+  - Refined Lemon Coach routing so recent mutations, transaction search, deterministic finance answers, and add-via-chat requests use more direct paths before LLM fallback.
+  - Added follow-up suggestion rows below assistant replies, improved chat auto-scroll behavior, and made recent mutation ordering consistently newest-first.
+  - Standardized transaction timestamps so chat capture, Smart Add, and quick add now preserve full date-time values instead of truncating to date only.
+- **Transaction Parsing Expansion**
+  - Strengthened parser heuristics to infer valid subcategories, normalize AI extraction outputs, and better detect Indonesian daily-spend merchants.
+  - Added mapping coverage for coffee brands, minimarkets, fuel stations, utilities, marketplaces, game top-ups, and selected digital services.
+- **Lower-Noise Expense Amount Styling**
+  - Changed expense amount presentation in key transaction surfaces from strong destructive coloring to neutral foreground styling while keeping income visually distinct.
+
+### Fixed
+- **Lemon Coach Chat Reliability**
+  - Fixed direct transaction capture regressions introduced during routing redesign, including better wallet fallback handling and safer timestamp normalization when models return date-only values.
+  - Fixed recent transaction ordering edge cases by sorting with both `date` and `created_at`, ensuring the newest mutation appears at the top.
+
 ### Added
 - **Standardized Empty States (Phase 2 Component Migration)**
   - Migrated 7+ chart and list views to the new `@/components/empty-state` component.
