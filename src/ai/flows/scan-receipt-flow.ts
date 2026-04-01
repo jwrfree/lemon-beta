@@ -3,6 +3,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 
+import { 
+  LEMON_COACH_IDENTITY, 
+  TONE_AND_LANGUAGE, 
+  INDONESIAN_FORMAT_RULES 
+} from "@/ai/prompts";
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const ReceiptSchema = z.object({
@@ -32,9 +38,15 @@ export async function scanReceipt(input: ScanReceiptInput): Promise<ScanReceiptO
   const base64Data = input.photoDataUri.split(",")[1];
   const mimeType = input.photoDataUri.substring(input.photoDataUri.indexOf(":") + 1, input.photoDataUri.indexOf(";"));
 
-  const systemPrompt = `Anda adalah "Lemon Vision", ahli analisis struk belanja yang sangat teliti.
+  const systemPrompt = `## LEMON VISION: RECEIPT ANALYST ##
+${LEMON_COACH_IDENTITY}
+
+${TONE_AND_LANGUAGE}
+
 Ekstrak data dari gambar struk ke dalam format JSON yang valid.
 Tanggal hari ini: ${new Date().toISOString().slice(0, 10)}.
+
+${INDONESIAN_FORMAT_RULES}
 
 ### ATURAN EKSTRAKSI:
 1. **Amount**: Harus nilai FINAL total (setelah diskon/pajak).

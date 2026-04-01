@@ -1,11 +1,18 @@
 'use server';
 
-import OpenAI from "openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText } from "ai";
 
 import { config } from "@/lib/config";
 import type { UnifiedFinancialContext } from "@/lib/services/financial-context-service";
+import { 
+  LEMON_COACH_IDENTITY, 
+  TONE_AND_LANGUAGE, 
+  FINANCIAL_FRAMEWORK,
+  INDONESIAN_FORMAT_RULES 
+} from "@/ai/prompts";
 
-const openai = new OpenAI({
+const deepseek = createOpenAI({
   apiKey: config.ai.deepseek.apiKey,
   baseURL: config.ai.deepseek.baseURL,
 });
@@ -16,19 +23,17 @@ export async function generateFinancialInsight(
     data: UnifiedFinancialContext, 
     focus: InsightFocus = 'general'
 ): Promise<string> {
-    const systemPrompt = `Anda adalah "Lemon Coach", pelatih keuangan Socratic yang cerdas dan suportif.
-Tugas Anda adalah memberikan insight finansial menggunakan framework 50/30/20 (Needs/Wants/Savings) dan Logika Dana Darurat.
+    const systemPrompt = `## INSTRUKSI GENERASI INSIGHT ##
+${LEMON_COACH_IDENTITY}
 
-### PERSONA & TONE:
-1. **Socratic**: Jangan langsung mendikte. Gunakan pertanyaan reflektif untuk mengajak user berpikir.
-2. **Framework-based**: Gunakan logika 50% Needs, 30% Wants, 20% Savings internal untuk menganalisis data.
-3. **Indonesian Context**: Gunakan bahasa yang relate (misal: "boncos", "ngopi", "dana darurat", "gajian").
-4. **Empati**: Tetap suportif bahkan saat kondisi keuangan user kurang ideal.
+${TONE_AND_LANGUAGE}
 
-### ATURAN LOGIKA:
-- **Dana Darurat**: Jika wealth.cash < (3 * monthly.expense), prioritaskan penghematan pada 'Wants'.
-- **Wealth Focus**: Jika assets > liabilities, apresiasi pertumbuhan kekayaan bersih.
-- **Budget Alerts**: Jika ada budget yang > 90% (percent), tanyakan urgensi pengeluaran tersebut.`;
+${FINANCIAL_FRAMEWORK}
+
+### ATURAN LOGIKA KHUSUS:
+1. **Dana Darurat**: Jika wealth.cash < (3 * monthly.expense), prioritaskan penghematan pada 'Wants'.
+2. **Wealth Focus**: Jika assets > liabilities, apresiasi pertumbuhan kekayaan bersih.
+3. **Budget Alerts**: Jika ada budget yang > 90% (percent), hubungkan dengan framework 50/30/20.`;
 
     let focusInstruction = "";
     switch (focus) {
@@ -66,17 +71,15 @@ Tugas Anda adalah memberikan insight finansial menggunakan framework 50/30/20 (N
 - Berikan 1-2 kalimat insight yang cerdas, Socratic (ada unsur pertanyaan), dan memotivasi.`;
 
     try {
-        const completion = await openai.chat.completions.create({
-            model: "deepseek-chat",
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt }
-            ],
+        const { text } = await generateText({
+            model: deepseek("deepseek-chat"),
+            system: systemPrompt,
+            prompt: userPrompt,
             temperature: 0.7,
-            max_tokens: 300,
+            maxOutputTokens: 300,
         });
 
-        return completion.choices[0].message.content || "Tetap semangat mengatur keuanganmu!";
+        return text || "Tetap semangat mengatur keuanganmu!";
     } catch (error) {
         console.error("Insight Generation Error:", error);
         return "Maaf, Lemon AI sedang istirahat. Teruslah mencatat transaksimu!";

@@ -1,10 +1,15 @@
 'use server';
 
-import OpenAI from "openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText } from "ai";
 import { SubscriptionSummary } from '@/lib/subscription-analysis';
 import { config } from '@/lib/config';
+import { 
+  LEMON_COACH_IDENTITY, 
+  TONE_AND_LANGUAGE, 
+} from "@/ai/prompts";
 
-const openai = new OpenAI({
+const deepseek = createOpenAI({
     apiKey: config.ai.deepseek.apiKey,
     baseURL: config.ai.deepseek.baseURL,
 });
@@ -44,17 +49,15 @@ export async function auditSubscriptionsFlow(summary: SubscriptionSummary) {
     `;
 
     try {
-        const completion = await openai.chat.completions.create({
-            model: "deepseek-chat",
-            messages: [
-                { role: "system", content: 'Anda adalah Lemon Coach. Jawab ringkas, jelas, dan tanpa markdown.' },
-                { role: "user", content: prompt },
-            ],
-            temperature: 0.7,
-            max_tokens: 140,
+        const { text } = await generateText({
+            model: deepseek("deepseek-chat"),
+            system: `${LEMON_COACH_IDENTITY}\n\n${TONE_AND_LANGUAGE}\n\nAnalisis langganan user dan berikan saran penghematan.`,
+            prompt: prompt,
+            temperature: 0.6,
+            maxOutputTokens: 200,
         });
 
-        return completion.choices[0].message.content?.trim() || null;
+        return text?.trim() || null;
     } catch (error) {
         console.error("Audit AI Error:", error);
         return null;

@@ -1,11 +1,18 @@
 'use server';
 
-import OpenAI from "openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateObject } from "ai";
 import { z } from "zod";
 
 import { config } from "@/lib/config";
 
-const openai = new OpenAI({
+import { 
+  LEMON_COACH_IDENTITY, 
+  TONE_AND_LANGUAGE, 
+  INDONESIAN_FORMAT_RULES 
+} from "@/ai/prompts";
+
+const deepseek = createOpenAI({
   apiKey: config.ai.deepseek.apiKey,
   baseURL: config.ai.deepseek.baseURL,
 });
@@ -18,42 +25,34 @@ const SuggestionSchema = z.object({
 export async function suggestCategory(description: string, type: 'income' | 'expense' = 'expense'): Promise<{category: string, confidence: number} | null> {
   if (!description || description.length < 3) return null;
 
-  const systemPrompt = `Anda adalah "Lemon Categorizer", asisten yang ahli dalam klasifikasi transaksi keuangan. 
-Tugas Anda adalah memilih kategori paling akurat berdasarkan deskripsi.
+  const systemPrompt = `## INSTRUKSI KLASIFIKASI TRANSAKSI ##
+${LEMON_COACH_IDENTITY}
+
+${TONE_AND_LANGUAGE}
+
 Tipe transaksi: ${type === 'income' ? 'Pemasukan' : 'Pengeluaran'}
 
+${INDONESIAN_FORMAT_RULES}
+
 ### ATURAN KLASIFIKASI:
-1. Pilih kategori yang paling spesifik.
-2. Gunakan konteks bahasa Indonesia (misal: "pecel" -> Konsumsi, "pertalite" -> Transportasi).
-3. Berikan tingkat kepercayaan (confidence) 0.0 - 1.0.
+1. Pilih kategori paling akurat dari daftar tersedia.
+2. Berikan output dalam JSON sesuai skema.
 
 ### KATEGORI TERSEDIA:
 ${type === 'expense' 
   ? 'Konsumsi & F&B, Belanja & Lifestyle, Transportasi, Tagihan & Utilitas, Langganan Digital, Hiburan & Wisata, Rumah & Properti, Kesehatan & Medis, Pendidikan, Bisnis & Produktivitas, Keluarga & Anak, Sosial & Donasi, Investasi & Aset, Cicilan & Pinjaman, Biaya Lain-lain' 
-  : 'Gaji & Tetap, Bisnis & Freelance, Investasi & Pasif, Pemberian & Hadiah, Refund & Cashback, Penjualan Aset, Terima Piutang, Pendapatan Lain'}
-
-Berikan output dalam JSON:
-{"category": "Nama Kategori", "confidence": 0.0-1.0}`;
+  : 'Gaji & Tetap, Bisnis & Freelance, Investasi & Pasif, Pemberian & Hadiah, Refund & Cashback, Penjualan Aset, Terima Piutang, Pendapatan Lain'}`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "deepseek-chat",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: `Deskripsi: "${description}"` }
-      ],
+    const { object } = await generateObject({
+      model: deepseek("deepseek-chat"),
+      schema: SuggestionSchema,
+      system: systemPrompt,
+      prompt: `Deskripsi: "${description}"`,
       temperature: 0,
-      response_format: { type: "json_object" },
     });
 
-    const responseText = completion.choices[0].message.content || "{}";
-    const parsed = JSON.parse(responseText);
-    const result = SuggestionSchema.safeParse(parsed);
-
-    if (result.success) {
-      return result.data;
-    }
-    return null;
+    return object;
   } catch (error) {
     console.error("AI Category Suggestion Error:", error);
     return null;

@@ -1,10 +1,17 @@
 'use server';
 
-import OpenAI from "openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateObject } from "ai";
 import { z } from "zod";
 import { config } from "@/lib/config";
 
-const openai = new OpenAI({
+import { 
+  LEMON_COACH_IDENTITY, 
+  TONE_AND_LANGUAGE, 
+  INDONESIAN_FORMAT_RULES 
+} from "@/ai/prompts";
+
+const deepseek = createOpenAI({
   apiKey: config.ai.deepseek.apiKey,
   baseURL: config.ai.deepseek.baseURL,
 });
@@ -34,7 +41,10 @@ export async function patchTransactionLiquid(
   const categoryList = context.categories.join(', ');
 
   const systemPrompt = `## LEMON LIQUID ENGINE: SEMANTIC PATCHER ##
-Anda adalah modul "Intelligent Patching" untuk aplikasi keuangan Lemon. 
+${LEMON_COACH_IDENTITY}
+
+${TONE_AND_LANGUAGE}
+
 Tugas Anda: Menerima 'userInput' dan 'currentState' transaksi, lalu mengembalikan HANYA field yang perlu diperbarui.
 
 ### DATA SAAT INI (STATE):
@@ -43,6 +53,8 @@ ${JSON.stringify(currentState, null, 2)}
 ### KONTEKS SISTEM:
 - **Dompet (PENTING: Gunakan ID)**: ${walletList}
 - **Kategori**: ${categoryList}
+
+${INDONESIAN_FORMAT_RULES}
 
 ### ATURAN PATCHING:
 1. **IDENTIFIKASI INTENT:** 
@@ -54,42 +66,23 @@ ${JSON.stringify(currentState, null, 2)}
 2. **BAHASA KOREKTIF:**
    - User mungkin menggunakan kata: "eh", "maksudnya", "tadi", "bukan", "ganti". Pahami bahwa ini adalah instruksi perubahan terhadap state saat ini.
 
-3. **NOMINAL:**
-   - Konversi 'rb' ke ribu, 'jt' ke juta.
-
-4. **EXPLANATION (MICRO-COPY):**
+3. **EXPLANATION (MICRO-COPY):**
    - Berikan penjelasan sangat singkat (max 5-7 kata) yang ramah dan mengonfirmasi perubahan. 
    - Gunakan gaya bahasa "Lemon Coach" yang membantu. 
-   - Contoh: "Siap, nominal diupdate jadi 50rb ya!", "Kategori sudah Lemon ganti ke Jajan.", "Oke, dompetnya sekarang pake BCA."
 
 ### OUTPUT FORMAT (JSON):
-Kembalikan HANYA objek JSON yang berisi field yang berubah. Jangan sertakan field yang tidak berubah.
-{
-  "amount": number,
-  "description": "string",
-  "category": "string",
-  "subCategory": "string",
-  "walletId": "string (UUID)",
-  "location": "string",
-  "confidence": number (0-1),
-  "explanation": "string"
-}`;
+Kembalikan HANYA objek JSON yang berisi field yang berubah. Jangan sertakan field yang tidak berubah.`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "deepseek-chat",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: `User Input: "${userInput}"` }
-      ],
+    const { object } = await generateObject({
+      model: deepseek("deepseek-chat"),
+      schema: PatchOutputSchema,
+      system: systemPrompt,
+      prompt: `User Input: "${userInput}"`,
       temperature: 0,
-      response_format: { type: "json_object" },
     });
-
-    const responseText = completion.choices[0].message.content || "{}";
-    const parsed = JSON.parse(responseText);
     
-    return PatchOutputSchema.parse(parsed);
+    return object;
   } catch (error) {
     console.error("[LiquidPatch] Error:", error);
     return { confidence: 0 };

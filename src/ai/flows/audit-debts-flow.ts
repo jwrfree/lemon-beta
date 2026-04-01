@@ -1,9 +1,15 @@
 'use server';
 
-import OpenAI from "openai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText } from "ai";
 import { config } from '@/lib/config';
+import { 
+  LEMON_COACH_IDENTITY, 
+  TONE_AND_LANGUAGE, 
+  FINANCIAL_FRAMEWORK 
+} from "@/ai/prompts";
 
-const openai = new OpenAI({
+const deepseek = createOpenAI({
     apiKey: config.ai.deepseek.apiKey,
     baseURL: config.ai.deepseek.baseURL,
 });
@@ -50,19 +56,18 @@ export async function auditDebtsFlow(summary: DebtAuditSummary) {
     `;
 
     try {
-        const completion = await openai.chat.completions.create({
-            model: "deepseek-chat",
-            messages: [
-                { role: "system", content: 'Anda adalah Lemon Coach. Jawab ringkas, jelas, dan tanpa markdown.' },
-                { role: "user", content: prompt },
-            ],
+        const { text } = await generateText({
+            model: deepseek("deepseek-chat"),
+            system: `${LEMON_COACH_IDENTITY}\n\n${TONE_AND_LANGUAGE}\n\nAnalisis kondisi hutang user dan berikan strategi pelunasan.`,
+            prompt: prompt,
             temperature: 0.6,
-            max_tokens: 180,
+            maxOutputTokens: 200,
         });
 
-        return completion.choices[0].message.content?.trim() || null;
+        return text?.trim() || null;
     } catch (error) {
         console.error("Audit Debt Error:", error);
         return null;
     }
 }
+

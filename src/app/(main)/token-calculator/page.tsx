@@ -152,7 +152,7 @@ export default function TokenCalculatorPage() {
                                     </div>
                                     
                                     <p className="text-xs text-center text-muted-foreground">
-                                        *Sudah termasuk estimasi overhead system prompt (~200 token).
+                                        *Sudah termasuk estimasi overhead system prompt (~400 token).
                                     </p>
                                 </CardContent>
                             </Card>
@@ -217,4 +217,3 @@ export default function TokenCalculatorPage() {
         </AppPageShell>
     );
 }
-
