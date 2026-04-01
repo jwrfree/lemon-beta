@@ -16,6 +16,7 @@ import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
 import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { UnifiedTransactionSheet } from '@/features/transactions/components/unified-transaction-sheet';
+import { TransactionDetailSheet } from '@/features/transactions/components/transaction-detail-sheet';
 import { AIChatDrawer } from '@/features/ai-chat/components/ai-chat-drawer';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
@@ -31,6 +32,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         isTxSheetOpen,
         setIsTxSheetOpen,
         txSheetMode,
+        isTransactionDetailOpen,
         isWalletModalOpen,
         setIsWalletModalOpen,
         isBudgetModalOpen,
@@ -47,7 +49,10 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         setIsEditWalletModalOpen,
         walletToEdit,
         transactionToEdit,
+        transactionToView,
         setTransactionToEdit,
+        setTransactionToView,
+        setIsTransactionDetailOpen,
         isGoalModalOpen,
         setIsGoalModalOpen,
         goalToEdit,
@@ -80,6 +85,11 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
     const handleCloseTxModal = () => {
         setIsTxSheetOpen(false);
         setTransactionToEdit(null);
+    };
+
+    const handleCloseTransactionDetail = () => {
+        setIsTransactionDetailOpen(false);
+        setTransactionToView(null);
     };
 
     const handleCloseGoalModal = () => {
@@ -141,6 +151,14 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                                 setTransactionToEdit(null);
                             }}
                             transaction={transactionToEdit}
+                        />
+                    )}
+                    {isTransactionDetailOpen && transactionToView && (
+                        <TransactionDetailSheet
+                            key={`tx-detail-${transactionToView.id}`}
+                            isOpen={isTransactionDetailOpen}
+                            onClose={handleCloseTransactionDetail}
+                            transaction={transactionToView}
                         />
                     )}
                     {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}

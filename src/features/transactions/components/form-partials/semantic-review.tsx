@@ -6,7 +6,7 @@ import { id as localeId } from 'date-fns/locale';
 import { Category } from '@/lib/categories';
 import { Wallet } from '@/types/models';
 import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkles } from 'lucide-react';
+import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkles, Pencil, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -15,6 +15,8 @@ import { getCategoryIcon } from '@/lib/category-utils';
 import { UnifiedTransactionInputValues } from '../../schemas/transaction-schema';
 import { AmountInput } from './amount-input';
 import { SubCategorySheet } from '../sub-category-sheet';
+import { CategoryPickerSheet } from '../category-picker-sheet';
+import { useMonthTransactions } from '../../hooks/use-month-transactions';
 
 interface SemanticTransactionReviewProps {
     form: UseFormReturn<UnifiedTransactionInputValues>;
@@ -42,137 +44,208 @@ export const SemanticTransactionReview = ({
     const activeCategories = type === 'expense' ? expenseCategories : incomeCategories;
     const categoryObj = activeCategories.find((category) => category.name === categoryName);
     const walletObj = wallets.find((wallet) => wallet.id === walletId);
-    const completionCount = [amountNumber > 0, !!categoryObj, !!description, !!walletObj].filter(Boolean).length;
-
-    const [activeEditor, setActiveEditor] = useState<null | 'category' | 'wallet' | 'amount' | 'description'>(null);
+    const [activeEditor, setActiveEditor] = useState<null | 'wallet' | 'amount' | 'description'>(null);
     const [subCatSheetOpen, setSubCatSheetOpen] = useState(false);
+    const [categorySheetOpen, setCategorySheetOpen] = useState(false);
     const [selectedCatForSub, setSelectedCatForSub] = useState<Category | null>(null);
+    const { transactions } = useMonthTransactions();
+    const dateValue = date || new Date();
+    const timeValue = format(dateValue, 'HH:mm');
+
+    const fieldButtonBase =
+        "inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-transparent px-4 py-3 text-left text-[15px] font-medium transition-all active:scale-[0.98]";
+
+    const sectionCardClass = "rounded-[22px] bg-background px-4 py-4";
+    const missingFieldClass = "bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100";
+
+    const recentCategories = activeCategories.filter((category) =>
+        transactions.some((transaction) => transaction.category === category.name && transaction.type === type)
+    ).sort((a, b) => {
+        const indexA = transactions.findIndex((transaction) => transaction.category === a.name && transaction.type === type);
+        const indexB = transactions.findIndex((transaction) => transaction.category === b.name && transaction.type === type);
+        return indexA - indexB;
+    }).slice(0, 4);
 
     const handleCategorySelect = (category: Category) => {
         triggerHaptic('light');
         form.setValue('category', category.name);
         form.setValue('subCategory', '');
+        setCategorySheetOpen(false);
 
         if (category.sub_categories && category.sub_categories.length > 0) {
             setSelectedCatForSub(category);
             setSubCatSheetOpen(true);
             return;
         }
+    };
 
-        setActiveEditor(null);
+    const handleDateSelect = (nextDate: Date) => {
+        const updatedDate = new Date(nextDate);
+        updatedDate.setHours(dateValue.getHours(), dateValue.getMinutes(), 0, 0);
+        form.setValue('date', updatedDate);
+    };
+
+    const handleTimeChange = (value: string) => {
+        if (!value) return;
+
+        const [hoursString, minutesString] = value.split(':');
+        const hours = Number(hoursString);
+        const minutes = Number(minutesString);
+
+        if (Number.isNaN(hours) || Number.isNaN(minutes)) return;
+
+        const updatedDate = new Date(dateValue);
+        updatedDate.setHours(hours, minutes, 0, 0);
+        form.setValue('date', updatedDate);
     };
 
     return (
-        <div className="space-y-5 px-1">
-            <div className="rounded-[28px] bg-background/86 p-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.32)]">
-                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                        <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/45">
-                            Review Cepat
-                        </p>
-                        <p className="mt-1 px-1 text-sm text-muted-foreground/70">
-                            Ketuk bagian yang ingin disesuaikan sebelum disimpan.
-                        </p>
-                    </div>
-                    <div className="rounded-full bg-primary/10 px-3 py-1 text-label font-semibold uppercase tracking-widest text-primary shadow-[0_10px_22px_-18px_rgba(13,148,136,0.3)]">
-                        {completionCount}/4 siap
-                    </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-3 text-lg leading-loose">
-                    <span className="font-medium text-muted-foreground/60">
-                        {type === 'income' ? 'Saya menerima' : 'Saya menghabiskan'}
-                    </span>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            triggerHaptic('light');
-                            setActiveEditor(activeEditor === 'amount' ? null : 'amount');
-                        }}
-                        className={cn(
-                            "inline-flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
-                            activeEditor === 'amount' && "ring-2 ring-primary ring-offset-2",
-                            amountNumber > 0
-                                ? type === 'income'
-                                    ? "bg-primary/10 text-primary"
-                                    : "bg-secondary text-foreground"
-                                : "animate-pulse bg-warning/10 text-warning"
-                        )}
-                    >
-                        {amountNumber > 0 ? formatCurrency(amountNumber) : 'Isi Nominal'}
-                    </button>
-
-                    <span className="font-medium text-muted-foreground/60">untuk</span>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            triggerHaptic('light');
-                            setActiveEditor(activeEditor === 'category' ? null : 'category');
-                        }}
-                        className={cn(
-                            "inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
-                            activeEditor === 'category' && "ring-2 ring-primary ring-offset-2",
-                            categoryObj
-                                ? "bg-secondary text-foreground"
-                                : "animate-pulse bg-warning/10 text-warning"
-                        )}
-                    >
-                        {categoryObj ? (
-                            <>
-                                {(() => {
-                                    const Icon = getCategoryIcon(categoryObj.icon);
-                                    return <Icon className={cn("h-4 w-4", categoryObj.color)} />;
-                                })()}
-                                <span>{categoryObj.name}</span>
-                            </>
-                        ) : (
-                            <span>Pilih Kategori</span>
-                        )}
-                    </button>
-
-                    {subCategoryName && (
+        <div className="space-y-4 px-1">
+            <div className="space-y-3">
+                <div className="rounded-[24px] bg-background px-4 py-4">
+                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                        Nominal
+                    </p>
+                    {activeEditor === 'amount' ? (
+                        <div className="mt-2 flex items-center gap-2 rounded-[18px] bg-muted p-3">
+                            <div className="min-w-0 flex-1">
+                                <AmountInput
+                                    control={form.control}
+                                    name="amount"
+                                    hideQuickAmounts
+                                    hideCalculatorIcon
+                                    hideLabel
+                                    showCurrencyPrefix
+                                />
+                            </div>
+                            <Button
+                                size="icon"
+                                className="h-11 w-11 shrink-0 rounded-2xl"
+                                onClick={() => setActiveEditor(null)}
+                                aria-label="Selesai edit nominal"
+                            >
+                                <Check className="h-5 w-5" />
+                            </Button>
+                        </div>
+                    ) : (
                         <button
                             type="button"
                             onClick={() => {
                                 triggerHaptic('light');
-                                if (categoryObj) {
-                                    handleCategorySelect(categoryObj);
-                                }
+                                setActiveEditor('amount');
                             }}
-                            className="inline-flex items-center gap-2 rounded-2xl bg-secondary/55 px-3.5 py-2 text-base font-bold text-foreground shadow-[0_12px_24px_-20px_rgba(15,23,42,0.16)] transition-all active:scale-95 hover:scale-[1.03]"
+                            className={cn(
+                                "mt-2 flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98]",
+                                amountNumber > 0
+                                    ? type === 'income'
+                                        ? "bg-secondary text-primary"
+                                        : "bg-muted text-foreground"
+                                    : "animate-pulse bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100"
+                            )}
                         >
-                            <span>{subCategoryName}</span>
+                            <span className="min-w-0 flex-1 text-2xl font-semibold tracking-tight">
+                                {amountNumber > 0 ? formatCurrency(amountNumber) : 'Isi nominal'}
+                            </span>
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
+                                <Pencil className="h-4 w-4" />
+                            </span>
                         </button>
                     )}
+                </div>
+            </div>
 
-                    <span className="font-medium text-muted-foreground/60">yaitu</span>
-
+            <div className="space-y-3">
+                <div className={cn(sectionCardClass, "space-y-2")}>
+                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                        Kategori
+                    </p>
                     <button
                         type="button"
                         onClick={() => {
                             triggerHaptic('light');
-                            setActiveEditor(activeEditor === 'description' ? null : 'description');
+                            setCategorySheetOpen(true);
                         }}
-                        className={cn(
-                            "inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
-                            activeEditor === 'description' && "ring-2 ring-primary ring-offset-2",
-                            description
-                                ? "bg-secondary text-foreground"
-                                : "animate-pulse bg-warning/10 text-warning"
-                        )}
+                        className="flex w-full items-center gap-3 rounded-[18px] bg-muted px-4 py-3 text-left transition-all active:scale-[0.98]"
                     >
-                        {description ? (
-                            <span className="max-w-[170px] line-clamp-1">{description}</span>
-                        ) : (
-                            <span>Tambah Keterangan</span>
-                        )}
+                        <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                                    {categoryObj ? (
+                                        <>
+                                            {(() => {
+                                                const Icon = getCategoryIcon(categoryObj.icon);
+                                                return (
+                                                    <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl", categoryObj.bg_color)}>
+                                                        <Icon className={cn("h-4 w-4", categoryObj.color)} />
+                                                    </span>
+                                                );
+                                            })()}
+                                            <div className="min-w-0">
+                                                <p className="line-clamp-1 text-sm font-medium text-foreground">{categoryObj.name}</p>
+                                        {subCategoryName && (
+                                            <p className="line-clamp-1 text-sm text-muted-foreground">{subCategoryName}</p>
+                                        )}
+                                    </div>
+                                </>
+                            ) : (
+                                <span className="text-sm font-medium text-yellow-900 dark:text-yellow-100">Pilih kategori</span>
+                            )}
+                        </div>
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
+                            <Pencil className="h-3.5 w-3.5" />
+                        </span>
                     </button>
+                </div>
 
-                    {type === 'expense' && (
-                        <>
-                            <span className="font-medium text-muted-foreground/60">sebagai</span>
+                <div className={cn(sectionCardClass, "space-y-2")}>
+                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                        Keterangan
+                    </p>
+                    {activeEditor === 'description' ? (
+                        <div className="flex items-center gap-2 rounded-[18px] bg-muted p-3">
+                            <Input
+                                value={description}
+                                onChange={(e) => form.setValue('description', e.target.value)}
+                                placeholder="Tambah keterangan transaksi"
+                                className="h-12 flex-1 rounded-2xl border-border bg-background text-base font-medium focus-visible:ring-primary"
+                                autoFocus
+                                onKeyDown={(e) => e.key === 'Enter' && setActiveEditor(null)}
+                            />
+                            <Button
+                                size="icon"
+                                className="h-11 w-11 shrink-0 rounded-2xl"
+                                onClick={() => setActiveEditor(null)}
+                                aria-label="Selesai edit keterangan"
+                            >
+                                <Check className="h-5 w-5" />
+                            </Button>
+                        </div>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                triggerHaptic('light');
+                                setActiveEditor('description');
+                            }}
+                            className={cn(
+                                "flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98]",
+                                description ? "bg-muted text-foreground" : missingFieldClass
+                            )}
+                        >
+                            <span className="line-clamp-1 min-w-0 flex-1 text-sm font-medium">
+                                {description || 'Tambah keterangan transaksi'}
+                            </span>
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
+                                <Pencil className="h-3.5 w-3.5" />
+                            </span>
+                        </button>
+                    )}
+                </div>
+
+                <div className={cn(sectionCardClass, "space-y-2")}>
+                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                        Detail
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                        {type === 'expense' && (
                             <button
                                 type="button"
                                 onClick={() => {
@@ -180,112 +253,92 @@ export const SemanticTransactionReview = ({
                                     form.setValue('isNeed', !isNeed);
                                 }}
                                 className={cn(
-                                    "inline-flex items-center gap-1.5 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
+                                    fieldButtonBase,
                                     isNeed
-                                        ? "bg-success/10 text-success"
-                                        : "bg-violet-500/10 text-violet-600"
+                                        ? "bg-emerald-100 text-emerald-900 dark:bg-emerald-900 dark:text-emerald-100"
+                                        : "bg-violet-100 text-violet-900 dark:bg-violet-900 dark:text-violet-100"
                                 )}
                             >
                                 {isNeed ? (
                                     <>
-                                        <ShieldCheck className="h-4 w-4" />
+                                        <ShieldCheck className="h-4 w-4 shrink-0" />
                                         <span>Kebutuhan</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Sparkles className="h-4 w-4 text-violet-600" />
+                                        <Sparkles className="h-4 w-4 shrink-0 text-violet-700" />
                                         <span>Keinginan</span>
                                     </>
                                 )}
                             </button>
-                        </>
-                    )}
-
-                    <span className="font-medium text-muted-foreground/60">dari</span>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            triggerHaptic('light');
-                            setActiveEditor(activeEditor === 'wallet' ? null : 'wallet');
-                        }}
-                        className={cn(
-                            "inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-base font-bold shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all active:scale-95 hover:scale-[1.03]",
-                            activeEditor === 'wallet' && "ring-2 ring-primary ring-offset-2",
-                            walletObj
-                                ? "bg-card text-foreground hover:bg-secondary/60"
-                                : "animate-pulse bg-warning/10 text-warning"
                         )}
-                    >
-                        <WalletIcon className="h-4 w-4 text-muted-foreground/60" />
-                        <span>{walletObj ? walletObj.name : 'Pilih Dompet'}</span>
-                    </button>
 
-                    <span className="font-medium text-muted-foreground/60">pada</span>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                triggerHaptic('light');
+                                setActiveEditor(activeEditor === 'wallet' ? null : 'wallet');
+                            }}
+                            className={cn(
+                                fieldButtonBase,
+                                activeEditor === 'wallet' && "ring-2 ring-primary/20 ring-offset-2 ring-offset-muted",
+                                walletObj ? "bg-muted text-foreground" : missingFieldClass
+                            )}
+                        >
+                            <WalletIcon className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                            <span>{walletObj ? walletObj.name : 'Pilih dompet'}</span>
+                        </button>
 
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <button
-                                type="button"
-                                className="inline-flex items-center gap-2 rounded-2xl bg-card px-3.5 py-2 text-base font-bold text-foreground shadow-[0_12px_24px_-20px_rgba(15,23,42,0.18)] transition-all hover:scale-[1.03] hover:bg-secondary/60 active:scale-95"
-                            >
-                                <CalendarIcon className="h-4 w-4" />
-                                <span>{format(date || new Date(), 'dd MMM', { locale: localeId })}</span>
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={(nextDate) => {
-                                    triggerHaptic('light');
-                                    if (nextDate) {
-                                        form.setValue('date', nextDate);
-                                    }
-                                }}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <button
+                                    type="button"
+                                    className={cn(fieldButtonBase, "bg-muted text-foreground")}
+                                >
+                                    <CalendarIcon className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                                    <span>{format(dateValue, 'dd MMM, HH:mm', { locale: localeId })}</span>
+                                </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto rounded-[24px] p-3" align="start">
+                                <div className="space-y-3">
+                                    <Calendar
+                                        mode="single"
+                                        selected={date}
+                                        onSelect={(nextDate) => {
+                                            triggerHaptic('light');
+                                            if (nextDate) {
+                                                handleDateSelect(nextDate);
+                                            }
+                                        }}
+                                        initialFocus
+                                    />
+                                    <div className="space-y-2 rounded-[18px] bg-muted p-3">
+                                        <p className="text-label font-semibold uppercase tracking-widest text-muted-foreground/55">
+                                            Waktu
+                                        </p>
+                                        <Input
+                                            type="time"
+                                            value={timeValue}
+                                            onChange={(event) => handleTimeChange(event.target.value)}
+                                            className="h-11 rounded-2xl bg-background"
+                                        />
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                 </div>
             </div>
 
             <AnimatePresence mode="popLayout">
-                {activeEditor && (
+                {activeEditor && activeEditor !== 'description' && activeEditor !== 'amount' && (
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
+                        className="overflow-hidden px-1"
                     >
-                        <div className="mb-4 rounded-[28px] bg-background/92 p-4 pb-5 shadow-[0_18px_50px_-42px_rgba(15,23,42,0.3)]">
-                            {activeEditor === 'amount' && (
-                                <div className="space-y-4">
-                                    <p className="text-center text-label text-muted-foreground/40">Ubah nominal</p>
-                                    <AmountInput control={form.control as any} name="amount" />
-                                    <Button className="mt-2 h-12 w-full rounded-xl font-bold" onClick={() => setActiveEditor(null)}>
-                                        Simpan Nominal
-                                    </Button>
-                                </div>
-                            )}
-
-                            {activeEditor === 'description' && (
-                                <div className="space-y-4">
-                                    <p className="text-center text-label text-muted-foreground/40">Tulis keterangan transaksi</p>
-                                    <Input
-                                        value={description}
-                                        onChange={(e) => form.setValue('description', e.target.value)}
-                                        placeholder="Misal: makan siang tim, kopi client, bayar parkir"
-                                        className="h-14 rounded-xl border-border bg-background text-lg font-medium focus-visible:ring-primary"
-                                        autoFocus
-                                        onKeyDown={(e) => e.key === 'Enter' && setActiveEditor(null)}
-                                    />
-                                    <Button className="mt-2 h-12 w-full rounded-xl font-bold" onClick={() => setActiveEditor(null)}>
-                                        Selesai
-                                    </Button>
-                                </div>
-                            )}
-
+                        <div className="mb-4 rounded-[24px] bg-background p-4 pb-5">
                             {activeEditor === 'wallet' && (
                                 <div className="space-y-3">
                                     <p className="ml-2 text-label text-muted-foreground/40">Pilih dompet</p>
@@ -298,10 +351,10 @@ export const SemanticTransactionReview = ({
                                                     setActiveEditor(null);
                                                 }}
                                                 className={cn(
-                                                        "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-xl p-3 shadow-[0_12px_24px_-22px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98]",
+                                                        "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-[18px] p-3 transition-all active:scale-[0.98]",
                                                         walletId === wallet.id
-                                                            ? "bg-primary/10 ring-2 ring-primary/30"
-                                                            : "bg-background hover:bg-secondary"
+                                                            ? "bg-secondary ring-2 ring-primary/25"
+                                                            : "bg-muted"
                                                 )}
                                             >
                                                 <span className="line-clamp-1 text-sm font-semibold">{wallet.name}</span>
@@ -314,45 +367,22 @@ export const SemanticTransactionReview = ({
                                 </div>
                             )}
 
-                            {activeEditor === 'category' && (
-                                <div className="space-y-3">
-                                    <p className="ml-2 text-label text-muted-foreground/40">Pilih kategori</p>
-                                    <div className="hide-scrollbar flex snap-x gap-2.5 overflow-x-auto pb-2">
-                                        {activeCategories.map((category) => {
-                                            const Icon = getCategoryIcon(category.icon);
-                                            return (
-                                                <button
-                                                    key={category.id}
-                                                    onClick={() => handleCategorySelect(category)}
-                                                    className={cn(
-                                                        "snap-center flex w-[85px] shrink-0 flex-col items-center gap-2 rounded-xl p-3 shadow-[0_12px_24px_-22px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98]",
-                                                        categoryName === category.name
-                                                            ? "bg-primary/10 ring-2 ring-primary/30"
-                                                            : "bg-background hover:bg-secondary"
-                                                    )}
-                                                >
-                                                    <div className={cn(
-                                                        "flex items-center justify-center rounded-full p-2.5",
-                                                        category.color,
-                                                        categoryName === category.name ? "opacity-100" : "opacity-80"
-                                                    )}>
-                                                        <Icon className="h-5 w-5" />
-                                                    </div>
-                                                    <span className="text-label w-full line-clamp-2 text-center font-semibold leading-tight">
-                                                        {category.name}
-                                                    </span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
             <AnimatePresence>
+                {categorySheetOpen && (
+                    <CategoryPickerSheet
+                        isOpen={categorySheetOpen}
+                        onClose={() => setCategorySheetOpen(false)}
+                        categories={activeCategories}
+                        recentCategories={recentCategories}
+                        selectedCategoryName={categoryName}
+                        onSelect={handleCategorySelect}
+                    />
+                )}
                 {subCatSheetOpen && selectedCatForSub && (
                     <SubCategorySheet
                         category={selectedCatForSub}

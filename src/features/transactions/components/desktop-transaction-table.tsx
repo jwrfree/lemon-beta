@@ -51,9 +51,10 @@ type SortConfig = {
     direction: 'asc' | 'desc';
 };
 
-const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
+const TransactionRow = ({ t, wallets, openTransactionDetail, openTransactionSheet, openDeleteModal }: {
     t: Transaction,
     wallets: Wallet[],
+    openTransactionDetail: (t: Transaction) => void,
     openTransactionSheet: (t: Transaction) => void,
     openDeleteModal: (t: Transaction) => void
 }) => {
@@ -99,7 +100,13 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
     const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-secondary";
 
     return (
-        <TableRow className="group hover:bg-muted/30 transition-colors">
+        <TableRow
+            className="group cursor-pointer hover:bg-muted/30 transition-colors"
+            onClick={() => {
+                triggerHaptic('light');
+                openTransactionDetail(t);
+            }}
+        >
             {/* 1. Tanggal */}
             <TableCell className="pl-8 text-xs font-medium text-muted-foreground whitespace-nowrap">
                 {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
@@ -225,7 +232,11 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
-                        onClick={() => { triggerHaptic('light'); openTransactionSheet(t); }}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            triggerHaptic('light');
+                            openTransactionSheet(t);
+                        }}
                     >
                         <Pencil className="h-3.5 w-3.5" />
                     </Button>
@@ -233,7 +244,11 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => { triggerHaptic('medium'); openDeleteModal(t); }}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            triggerHaptic('medium');
+                            openDeleteModal(t);
+                        }}
                     >
                         <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -244,7 +259,7 @@ const TransactionRow = ({ t, wallets, openTransactionSheet, openDeleteModal }: {
 };
 
 export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransactionTableProps) => {
-    const { openTransactionSheet, openDeleteModal } = useUI();
+    const { openTransactionDetail, openTransactionSheet, openDeleteModal } = useUI();
     const [sortConfig, setSortConfig] = useState<SortConfig | null>({ key: 'date', direction: 'desc' });
 
     const sortedTransactions = useMemo(() => {
@@ -362,6 +377,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                                 key={t.id}
                                 t={t}
                                 wallets={wallets}
+                                openTransactionDetail={openTransactionDetail}
                                 openTransactionSheet={openTransactionSheet}
                                 openDeleteModal={openDeleteModal}
                             />

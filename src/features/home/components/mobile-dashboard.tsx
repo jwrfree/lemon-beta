@@ -3,7 +3,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import {
     Bell,
     ArrowUpRight,
@@ -31,9 +30,8 @@ import { SpendingTrendChart } from './spending-trend-chart';
 import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
 import { OnboardingChecklist } from '@/components/onboarding-checklist';
 import { AiBriefingCard } from '@/features/insights/components/ai-briefing-card';
-import { categoryDetails } from '@/lib/categories';
-import { getCategoryIcon } from '@/lib/category-utils';
-import { getMerchantVisuals } from '@/lib/merchant-utils';
+import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { TransactionListItem } from '@/features/transactions/components/transaction-list-item';
 
 interface MobileDashboardProps {
     userData: any;
@@ -53,79 +51,6 @@ import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
 
 // ... (interface MobileDashboardProps remains same)
 
-const formatTransactionStamp = (date: string) => {
-    const parsed = parseISO(date);
-
-    if (isToday(parsed)) {
-        return format(parsed, 'HH:mm');
-    }
-
-    if (isYesterday(parsed)) {
-        return 'Kemarin';
-    }
-
-    return format(parsed, 'd MMM');
-};
-
-const MobileRecentTransactionRow = ({
-    transaction,
-    wallets,
-    onOpen,
-}: {
-    transaction: Transaction;
-    wallets: Wallet[];
-    onOpen: (transaction: Transaction) => void;
-}) => {
-    const wallet = wallets.find((item) => item.id === transaction.walletId);
-    const category = categoryDetails(transaction.category);
-    const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
-    const Icon = merchantVisuals?.icon || getCategoryIcon(category.icon);
-    const iconColor = merchantVisuals?.color || category.color;
-    const iconBg = merchantVisuals?.bgColor || category.bg_color;
-    const title = transaction.description || transaction.merchant || transaction.category;
-    const amountTone =
-        transaction.type === 'income'
-            ? 'text-emerald-600 dark:text-emerald-400'
-            : 'text-foreground';
-
-    return (
-        <button
-            type="button"
-            onClick={() => onOpen(transaction)}
-            className="flex w-full items-center gap-3 rounded-[24px] bg-card px-3.5 py-3 text-left shadow-[0_18px_32px_-26px_rgba(15,23,42,0.2)] transition-transform active:scale-[0.985]"
-        >
-            <div className={cn('flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] shadow-[0_10px_24px_-20px_rgba(15,23,42,0.18)]', iconBg)}>
-                <Icon className={cn('h-5 w-5', iconColor)} strokeWidth={2.2} />
-            </div>
-
-            <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-semibold tracking-tight text-foreground">
-                    {title}
-                </div>
-                <div className="mt-1 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground/55">
-                    <span className="truncate">{transaction.category}</span>
-                    {wallet?.name ? (
-                        <>
-                            <span className="h-1 w-1 rounded-full bg-muted-foreground/20" />
-                            <span className="truncate">{wallet.name}</span>
-                        </>
-                    ) : null}
-                </div>
-            </div>
-
-            <div className="shrink-0 text-right">
-                <div className={cn('text-sm font-semibold tracking-tight tabular-nums', amountTone)}>
-                    {transaction.type === 'income' ? '+' : '-'}
-                    {formatCurrency(transaction.amount)}
-                </div>
-                <div className="mt-1 text-[11px] font-medium text-muted-foreground/45">
-                    {formatTransactionStamp(transaction.date)}
-                </div>
-            </div>
-        </button>
-    );
-};
-
 export const MobileDashboard = ({
     userData,
     totalBalance,
@@ -138,6 +63,7 @@ export const MobileDashboard = ({
     isLoading
 }: MobileDashboardProps) => {
     const router = useRouter();
+    const { getCategoryVisuals } = useCategories();
     const {
         openTransactionSheet,
         setIsTransferModalOpen,
@@ -407,22 +333,27 @@ export const MobileDashboard = ({
                 <section className="space-y-4 px-4">
                     <div className="flex items-center justify-between">
                         <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
-                            Mutasi Terbaru
+                            Transaksi Terbaru
                         </h2>
                         <Button variant="ghost" size="sm" className="h-8 px-0 text-label text-primary" onClick={() => router.push('/transactions')}>
-                            Semua
+                            Lihat semua
                         </Button>
                     </div>
 
                     <div className="space-y-2 rounded-[30px] bg-muted/45 p-2.5 shadow-[0_20px_40px_-30px_rgba(15,23,42,0.16)]">
                         {recentTransactions.length > 0 ? (
                             recentTransactions.map((transaction) => (
-                                <MobileRecentTransactionRow
+                                <div
                                     key={transaction.id}
-                                    transaction={transaction}
-                                    wallets={wallets}
-                                    onOpen={openTransactionSheet}
-                                />
+                                    className="overflow-hidden rounded-[24px] bg-card shadow-[0_18px_32px_-26px_rgba(15,23,42,0.2)]"
+                                >
+                                    <TransactionListItem
+                                        transaction={transaction}
+                                        wallets={wallets}
+                                        getCategoryVisuals={getCategoryVisuals}
+                                        hideDate
+                                    />
+                                </div>
                             ))
                         ) : (
                             <button
@@ -449,4 +380,3 @@ export const MobileDashboard = ({
         </AppPageShell>
     );
 };
-

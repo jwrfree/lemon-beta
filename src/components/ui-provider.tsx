@@ -33,6 +33,11 @@ interface UIContextType {
     setTransactionToEdit: (transaction: Transaction | null) => void;
     txSheetMode: 'smart' | 'manual';
     openTransactionSheet: (transaction?: Transaction | null, mode?: 'smart' | 'manual') => void;
+    isTransactionDetailOpen: boolean;
+    setIsTransactionDetailOpen: (isOpen: boolean) => void;
+    transactionToView: Transaction | null;
+    setTransactionToView: (transaction: Transaction | null) => void;
+    openTransactionDetail: (transaction: Transaction) => void;
 
     deferredPrompt: any;
     setDeferredPrompt: (prompt: any) => void;
@@ -112,6 +117,8 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [isTxSheetOpen, setIsTxSheetOpen] = useState(false);
     const [transactionToEdit, setTransactionToEdit] = useState<Transaction | null>(null);
     const [txSheetMode, setTxSheetMode] = useState<'smart' | 'manual'>('smart');
+    const [isTransactionDetailOpen, setIsTransactionDetailOpen] = useState(false);
+    const [transactionToView, setTransactionToView] = useState<Transaction | null>(null);
     const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
     const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
     const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
@@ -186,6 +193,11 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTxSheetOpen(true);
     };
 
+    const openTransactionDetail = (transaction: Transaction) => {
+        setTransactionToView(transaction);
+        setIsTransactionDetailOpen(true);
+    };
+
     const openEditGoalModal = (goal: Goal) => {
         setGoalToEdit(goal);
         setIsGoalModalOpen(true);
@@ -208,6 +220,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
 
     const isAnyModalOpen =
         isTxSheetOpen ||
+        isTransactionDetailOpen ||
         isWalletModalOpen ||
         isBudgetModalOpen ||
         isEditBudgetModalOpen ||
@@ -228,6 +241,11 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setTransactionToEdit,
         txSheetMode,
         openTransactionSheet,
+        isTransactionDetailOpen,
+        setIsTransactionDetailOpen,
+        transactionToView,
+        setTransactionToView,
+        openTransactionDetail,
         deferredPrompt,
         setDeferredPrompt,
         isWalletModalOpen,
@@ -282,8 +300,10 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         hideToast,
     }), [
         isTxSheetOpen,
+        isTransactionDetailOpen,
         deferredPrompt,
         transactionToEdit,
+        transactionToView,
         txSheetMode,
         isWalletModalOpen,
         isBudgetModalOpen,

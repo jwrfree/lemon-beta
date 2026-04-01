@@ -410,7 +410,7 @@ export const DesktopDashboard = () => {
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-sm font-medium flex items-center gap-2">
                                         <ListTodo className="w-4 h-4 text-primary" />
-                                        Mutasi Terbaru
+                                        Transaksi Terbaru
                                     </h3>
                                     <Button
                                         variant="ghost"
@@ -418,7 +418,7 @@ export const DesktopDashboard = () => {
                                         className="h-7 text-label text-muted-foreground hover:text-primary px-2"
                                         onClick={() => router.push('/transactions')}
                                     >
-                                        Semua
+                                        Lihat semua
                                     </Button>
                                 </div>
                                 {filteredTransactions.length > 0 ? (

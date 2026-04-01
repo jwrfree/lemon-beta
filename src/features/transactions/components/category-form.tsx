@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,10 +18,12 @@ interface CategoryData {
     bg_color: string;
 }
 
+type SaveCategoryHandler = (data: CategoryData) => Promise<void>;
+
 interface CategoryFormProps {
     initialData?: CategoryData;
     onClose: () => void;
-    onSave: (data: CategoryData) => Promise<void>;
+    onSave: SaveCategoryHandler;
 }
 
 export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps) => {
@@ -54,24 +56,24 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center backdrop-blur-sm p-0 md:p-4"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/55 p-0 md:items-center md:p-4"
             onClick={onClose}
         >
             <motion.div
                 initial={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
                 animate={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: 0 } : { scale: 1, opacity: 1 }}
                 exit={typeof window !== 'undefined' && window.innerWidth < 768 ? { y: "100%" } : { scale: 0.95, opacity: 0 }}
-                className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-card bg-background/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] md:rounded-card"
+                className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-card border-t border-border/50 bg-background shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] md:rounded-card"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="flex items-center justify-between bg-background/96 p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+                <div className="flex items-center justify-between bg-background p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <h2 className="text-lg font-medium">{initialData ? 'Edit Kategori' : 'Kategori Baru'}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted" aria-label="Tutup">
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto">
+                <form id="category-form" onSubmit={handleSubmit} className="space-y-6 overflow-y-auto bg-muted/25 p-6">
                     <div className="space-y-2">
                         <Label htmlFor="cat-name">Nama Kategori</Label>
                         <Input 
@@ -147,8 +149,8 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                     </div>
                 </form>
 
-                <div className="bg-background/96 p-6 shadow-[0_-10px_30px_-28px_rgba(15,23,42,0.2)]">
-                    <Button type="submit" className="w-full h-12 rounded-lg text-base font-medium" disabled={isSubmitting}>
+                <div className="bg-background p-6 shadow-[0_-10px_30px_-28px_rgba(15,23,42,0.2)]">
+                    <Button form="category-form" type="submit" className="w-full h-12 rounded-lg text-base font-medium" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : 'Simpan Kategori'}
                     </Button>
                 </div>

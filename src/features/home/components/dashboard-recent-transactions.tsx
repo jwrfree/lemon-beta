@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
+import { useUI } from '@/components/ui-provider';
 import { CornerDownRight, ArrowRight, MapPin } from 'lucide-react';
 import type { Transaction, Wallet } from '@/types/models';
 import {
@@ -102,7 +103,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                         )}
                         {(logoSource === 'icon' || !merchantVisuals?.domain) && (
                             <div className={cn("w-5 h-5", iconColor)}>
-                                <DefaultIcon />
+                                {React.createElement(DefaultIcon)}
                             </div>
                         )}
                     </div>
@@ -171,9 +172,11 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
 
 export const DashboardRecentTransactions = ({ transactions, wallets }: DashboardRecentTransactionsProps) => {
     const router = useRouter();
+    const { openTransactionDetail } = useUI();
 
     const handleRowClick = (transaction: Transaction) => {
         triggerHaptic('light');
+        openTransactionDetail(transaction);
     };
 
     return (

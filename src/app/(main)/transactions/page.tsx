@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, X, ListFilter } from 'lucide-react';
@@ -20,7 +20,6 @@ import { usePaginatedTransactions } from '@/features/transactions/hooks/use-pagi
 import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 function TransactionsPageContent() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const { wallets } = useWallets();
     const { expenseCategories, incomeCategories } = useCategories();
@@ -29,17 +28,19 @@ function TransactionsPageContent() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
 
-    // Optimize: Initialize state from URL params directly to avoid double fetch
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
-        const categoryFromURL = searchParams.get('category');
-        return categoryFromURL ? [categoryFromURL] : [];
-    });
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [showAllWallets, setShowAllWallets] = useState(false);
 
-    // Sync activeTab with initial selected category if present
+    // Sync category filter from URL after hydration to keep the initial tree stable.
+    useEffect(() => {
+        const categoryFromURL = searchParams.get('category');
+        setSelectedCategories(categoryFromURL ? [categoryFromURL] : []);
+    }, [searchParams]);
+
+    // Sync activeTab with selected category if present
     useEffect(() => {
         const categoryFromURL = searchParams.get('category');
         if (categoryFromURL) {
@@ -50,6 +51,8 @@ function TransactionsPageContent() {
                 const isIncome = incomeCategories.some(c => c.name === categoryFromURL);
                 if (isIncome) setActiveTab('income');
             }
+        } else {
+            setActiveTab('all');
         }
     }, [searchParams, expenseCategories, incomeCategories]);
 
@@ -146,7 +149,7 @@ function TransactionsPageContent() {
                                 </div>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="bottom" className="rounded-t-card-premium max-h-[85vh] flex flex-col border-t-0 shadow-lg bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
+                        <SheetContent side="bottom" className="rounded-t-card-premium max-h-[85vh] flex flex-col border-t-0 shadow-lg bg-background">
                             <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mb-4 shrink-0" />
                             <SheetHeader className="text-left mb-6">
                                 <SheetTitle className="text-xl font-semibold tracking-tight">Atur Tampilan</SheetTitle>

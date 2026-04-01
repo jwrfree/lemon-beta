@@ -9,6 +9,7 @@ import { useTransactionForm } from '../hooks/use-transaction-form';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useCategories } from '../hooks/use-transactions';
 import { Transaction } from '@/types/models';
+import { cn } from '@/lib/utils';
 
 import { MagicBar } from './liquid-composer/MagicBar';
 import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
@@ -83,6 +84,7 @@ export const UnifiedTransactionSheet = ({
     const sheetTitle = isEditMode ? 'Edit transaksi' : initialMode === 'manual' ? 'Catat manual' : 'Smart Add';
     const shouldShowReview = amountNumber > 0 || totalTxs > 0 || isEditMode || initialMode === 'manual';
     const shouldShowComposer = initialMode === 'smart' && (amountNumber === 0 || clarificationQuestion) && !isEditMode;
+    const useCompactSheetLayout = isEditMode && !shouldShowComposer && totalTxs <= 1;
 
     const handleMagicSubmit = async () => {
         if (!magicValue.trim()) return;
@@ -117,15 +119,23 @@ export const UnifiedTransactionSheet = ({
             <SheetContent 
                 side="bottom" 
                 hideCloseButton={true}
-                className="grid h-[100dvh] max-h-[100dvh] grid-rows-[auto,minmax(0,1fr),auto] overflow-hidden rounded-t-[2.25rem] bg-background p-0 sm:h-auto sm:max-h-[92dvh] sm:max-w-2xl sm:rounded-t-[2.5rem]"
+                className={cn(
+                    "overflow-hidden rounded-t-[2.25rem] bg-muted p-0 sm:max-w-2xl sm:rounded-t-[2.5rem]",
+                    useCompactSheetLayout
+                        ? "flex max-h-[88dvh] flex-col sm:max-h-[92dvh]"
+                        : "grid h-[100dvh] max-h-[100dvh] grid-rows-[auto,minmax(0,1fr),auto] sm:h-auto sm:max-h-[92dvh]"
+                )}
             >
+                <div className="pointer-events-none absolute inset-x-0 top-3 z-40 flex justify-center">
+                    <div className="h-1.5 w-12 rounded-full bg-border" />
+                </div>
                 {/* Custom Standard Close Button */}
                 <div className="absolute right-4 top-3 z-50 sm:right-6 sm:top-6">
                     <Button 
                         variant="ghost" 
                         size="icon" 
                         onClick={() => handleCloseAttempt(false)} 
-                        className="h-9 w-9 rounded-full bg-background/92 text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
+                        className="h-9 w-9 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
                     >
                         <X className="h-5 w-5" />
                         <span className="sr-only">Tutup</span>
@@ -137,7 +147,12 @@ export const UnifiedTransactionSheet = ({
                 </SheetHeader>
 
                 {/* --- STAGE 1: HEADER --- */}
-                <div className="shrink-0 bg-background/96 px-4 pb-3 pt-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.22)] sm:px-5 sm:pb-4 sm:pt-5">
+                <div
+                    className={cn(
+                        "shrink-0 bg-muted shadow-[0_10px_30px_-28px_rgba(15,23,42,0.12)]",
+                        useCompactSheetLayout ? "px-4 pb-2 pt-7 sm:px-5 sm:pb-3 sm:pt-8" : "px-4 pb-3 pt-7 sm:px-5 sm:pb-4 sm:pt-8"
+                    )}
+                >
                     <div className="pr-14">
                         <h2 className="max-w-[28rem] text-2xl font-semibold tracking-tight text-foreground sm:text-[2rem]">
                             {sheetTitle}
@@ -146,14 +161,14 @@ export const UnifiedTransactionSheet = ({
 
                     {/* Batch Navigation */}
                     {totalTxs > 1 && (
-                        <div className="relative mt-5 flex items-center justify-between rounded-[24px] bg-card/92 px-3 py-3 shadow-[0_24px_60px_-40px_rgba(16,185,129,0.4)] backdrop-blur-sm animate-in fade-in slide-in-from-top-2">
+                        <div className="relative mt-5 flex items-center justify-between rounded-[24px] bg-card px-3 py-3 shadow-[0_24px_60px_-40px_rgba(16,185,129,0.4)] animate-in fade-in slide-in-from-top-2">
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 onClick={goToPrev}
                                 disabled={currentTxIndex === 0}
                                 aria-label="Transaksi sebelumnya"
-                                className="h-9 w-9 rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary"
                             >
                                 <ChevronLeft className="h-4 w-4" />
                             </Button>
@@ -171,7 +186,7 @@ export const UnifiedTransactionSheet = ({
                                     size="icon"
                                     onClick={() => setShowRemoveDraftConfirm(true)}
                                     aria-label="Hapus draft transaksi ini"
-                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-destructive"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -181,7 +196,7 @@ export const UnifiedTransactionSheet = ({
                                     onClick={goToNext}
                                     disabled={currentTxIndex === totalTxs - 1}
                                     aria-label="Transaksi berikutnya"
-                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary"
                                 >
                                     <ChevronRight className="h-4 w-4" />
                                 </Button>
@@ -191,7 +206,15 @@ export const UnifiedTransactionSheet = ({
                 </div>
 
                 {/* --- STAGE 2: ADAPTIVE CONTENT --- */}
-                <motion.div layout className="flex min-h-0 flex-col space-y-4 overflow-y-auto overscroll-y-contain px-4 py-4 pb-4 sm:space-y-5 sm:px-6 sm:py-6 sm:pb-0">
+                <motion.div
+                    layout
+                    className={cn(
+                        "flex flex-col overflow-y-auto overscroll-y-contain px-4 sm:px-6",
+                        useCompactSheetLayout
+                            ? "min-h-0 flex-1 space-y-3 py-3 pb-4 sm:py-4"
+                            : "min-h-0 space-y-4 py-4 pb-4 sm:space-y-5 sm:py-6 sm:pb-0"
+                    )}
+                >
                     {/* Suggestions (Only when idle or typing before submit) */}
                     <AnimatePresence mode="popLayout">
                         {!isEditMode && amountNumber === 0 && totalTxs === 0 && initialMode !== 'manual' && (
@@ -200,7 +223,7 @@ export const UnifiedTransactionSheet = ({
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                className="rounded-[32px] bg-card/88 p-4 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.38)]"
+                                className="rounded-[32px] bg-background p-4 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.2)]"
                             >
                                 <DynamicSuggestions 
                                     historySuggestions={historySuggestions} 
@@ -220,10 +243,10 @@ export const UnifiedTransactionSheet = ({
                                 className="space-y-3"
                             >
                                 {clarificationQuestion && (
-                                    <div className="rounded-[24px] bg-warning/10 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]">
+                                    <div className="rounded-[24px] bg-yellow-100 p-4 dark:bg-yellow-900">
                                         <div className="flex items-start gap-3">
-                                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/20">
-                                                <HelpCircle className="h-3 w-3 text-amber-600" />
+                                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yellow-500">
+                                                <HelpCircle className="h-3 w-3 text-white" />
                                             </div>
                                             <p className="text-sm leading-relaxed text-warning-foreground">
                                                 {clarificationQuestion}
@@ -233,12 +256,12 @@ export const UnifiedTransactionSheet = ({
                                 )}
 
                                 {socraticInsight && (
-                                    <div className="rounded-[24px] bg-primary/10 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]">
+                                    <div className="rounded-[24px] bg-teal-50 p-4 dark:bg-teal-950">
                                         <div className="flex items-start gap-3">
-                                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20">
-                                                <Sparkles className="h-3 w-3 text-primary" />
+                                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary">
+                                                <Sparkles className="h-3 w-3 text-primary-foreground" />
                                             </div>
-                                            <p className="text-sm leading-relaxed text-primary/90">
+                                            <p className="text-sm leading-relaxed text-foreground">
                                                 {socraticInsight}
                                             </p>
                                         </div>
@@ -269,7 +292,14 @@ export const UnifiedTransactionSheet = ({
                 </motion.div>
 
                 {/* --- FOOTER: AI INPUT & ACTIONS --- */}
-                <div className="flex shrink-0 flex-col gap-3 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 sm:px-5 sm:pb-4">
+                <div
+                    className={cn(
+                        "flex shrink-0 flex-col gap-3 bg-muted px-4 sm:px-5",
+                        useCompactSheetLayout
+                            ? "border-t border-border pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.18)] sm:pb-4"
+                            : "pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 sm:pb-4"
+                    )}
+                >
                     <AnimatePresence mode="wait">
                         {shouldShowComposer && (
                             <motion.div
@@ -302,7 +332,7 @@ export const UnifiedTransactionSheet = ({
                                             size="icon"
                                             onClick={handleDelete}
                                             aria-label="Hapus transaksi"
-                                            className="h-14 w-14 shrink-0 rounded-[22px] bg-error/6 text-error hover:bg-error/10"
+                                            className="h-14 w-14 shrink-0 rounded-[22px] bg-error-surface text-error hover:bg-error-muted"
                                         >
                                             <Trash2 className="h-5 w-5" />
                                         </Button>
@@ -339,7 +369,7 @@ export const UnifiedTransactionSheet = ({
                                                     variant="outline"
                                                     onClick={handleSubmitAndAddAnother} 
                                                     disabled={isSubmitting} 
-                                                    className="h-11 w-full rounded-[18px] bg-primary/8 text-label text-primary transition-all hover:bg-primary/12"
+                                                    className="h-11 w-full rounded-[18px] bg-secondary text-label text-primary transition-all hover:bg-secondary"
                                                 >
                                                     <Plus className="mr-2 h-4 w-4" />
                                                     Simpan & tambah lagi
@@ -360,7 +390,7 @@ export const UnifiedTransactionSheet = ({
             <AlertDialogContent className="max-w-[90%] sm:max-w-md rounded-card overflow-hidden p-7">
                 <AlertDialogHeader className="space-y-3">
                     <AlertDialogTitle className="text-xl font-bold tracking-tight">Batalkan Transaksi?</AlertDialogTitle>
-                    <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
+                    <AlertDialogDescription className="text-label leading-relaxed text-muted-foreground">
                         Anda memiliki perubahan yang belum disimpan. Yakin ingin keluar? Semua draf transaksi akan hilang secara permanen.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -374,7 +404,7 @@ export const UnifiedTransactionSheet = ({
                     >
                         Ya, Batalkan
                     </AlertDialogAction>
-                    <AlertDialogCancel className="w-full h-12 rounded-lg border-0 bg-primary/8 font-bold text-label text-primary transition-all hover:bg-primary/12">
+                    <AlertDialogCancel className="w-full h-12 rounded-lg border-0 bg-secondary font-bold text-label text-primary transition-all hover:bg-secondary">
                         Lanjutkan Mengisi
                     </AlertDialogCancel>
                 </AlertDialogFooter>
@@ -385,7 +415,7 @@ export const UnifiedTransactionSheet = ({
             <AlertDialogContent className="max-w-[90%] sm:max-w-md rounded-card overflow-hidden p-7">
                 <AlertDialogHeader className="space-y-3">
                     <AlertDialogTitle className="text-xl font-bold tracking-tight">Hapus draft ini?</AlertDialogTitle>
-                    <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
+                    <AlertDialogDescription className="text-label leading-relaxed text-muted-foreground">
                         Draft transaksi aktif akan dihapus dari batch. Draft lain tetap aman dan Anda bisa lanjut review setelah ini.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -399,7 +429,7 @@ export const UnifiedTransactionSheet = ({
                     >
                         Ya, hapus draft
                     </AlertDialogAction>
-                    <AlertDialogCancel className="w-full h-12 rounded-lg border-0 bg-primary/8 font-bold text-label text-primary transition-all hover:bg-primary/12">
+                    <AlertDialogCancel className="w-full h-12 rounded-lg border-0 bg-secondary font-bold text-label text-primary transition-all hover:bg-secondary">
                         Kembali review
                     </AlertDialogCancel>
                 </AlertDialogFooter>

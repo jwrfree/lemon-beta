@@ -6,7 +6,7 @@ import type { Wallet, Transaction } from '@/types/models';
 import type { CategoryVisuals } from '@/types/visuals';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
-import { format, parseISO } from 'date-fns';
+import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
 import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl, markLogoAsFailed, isLogoFailed } from '@/lib/merchant-utils';
@@ -24,9 +24,11 @@ const TransactionListItemContent = ({
     transaction,
     wallets,
     getCategoryVisuals,
+    hideDate = false,
 }: TransactionListItemProps) => {
     const { isBalanceVisible } = useBalanceVisibility();
     const wallet = wallets.find(w => w.id === transaction.walletId);
+    const transactionDate = parseISO(transaction.date);
 
     // Merchant Intelligence Logic
     const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
@@ -70,6 +72,13 @@ const TransactionListItemContent = ({
 
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-foreground' : 'text-emerald-600 dark:text-emerald-400';
+    const timeLabel = hideDate
+        ? isToday(transactionDate)
+            ? format(transactionDate, 'HH:mm')
+            : isYesterday(transactionDate)
+                ? 'Kemarin'
+                : format(transactionDate, 'EEE', { locale: dateFnsLocaleId })
+        : format(transactionDate, 'HH:mm');
 
     return (
         <div className={cn(
@@ -159,7 +168,7 @@ const TransactionListItemContent = ({
                     </span>
                 </div>
                 <span className="text-[10px] font-medium text-muted-foreground/30 tabular-nums">
-                    {format(parseISO(transaction.date), 'HH:mm')}
+                    {timeLabel}
                 </span>
                 {isExpense && transaction.amount >= 1000000 && (
                     <span className="text-label bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded-full">Besar</span>
@@ -171,9 +180,9 @@ const TransactionListItemContent = ({
 
 
 export const TransactionListItem = (props: TransactionListItemProps) => {
-    const { transaction, hideDate = false } = props;
+    const { transaction } = props;
     const itemRef = useRef<HTMLDivElement>(null);
-    const { openDeleteModal, openTransactionSheet } = useUI();
+    const { openDeleteModal, openTransactionDetail, openTransactionSheet } = useUI();
 
     const deleteVibrated = useRef(false);
     const editVibrated = useRef(false);
@@ -313,9 +322,9 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                 className="relative bg-card z-20"
                 whileTap={{ scale: 0.99, backgroundColor: "var(--muted)" }}
                 onTap={() => {
-                    // Only open edit modal if we haven't dragged significantly
+                    // Tap opens the read-only detail view. Editing stays on swipe right.
                     if (Math.abs(x.get()) < 5) {
-                        openTransactionSheet(transaction);
+                        openTransactionDetail(transaction);
                     }
                 }}
             >

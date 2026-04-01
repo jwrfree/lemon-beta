@@ -11,6 +11,10 @@ interface AmountInputProps<T extends FieldValues> {
   error?: string;
   placeholder?: string;
   useCustomKeyboard?: boolean;
+  hideQuickAmounts?: boolean;
+  hideCalculatorIcon?: boolean;
+  hideLabel?: boolean;
+  showCurrencyPrefix?: boolean;
 }
 
 type Token = { type: 'number'; value: number } | { type: 'operator'; value: '+' | '-' | '*' | '/' };
@@ -111,6 +115,10 @@ export function AmountInput<T extends FieldValues>({
   error,
   placeholder = 'Rp 0',
   useCustomKeyboard = false,
+  hideQuickAmounts = false,
+  hideCalculatorIcon = false,
+  hideLabel = false,
+  showCurrencyPrefix = false,
 }: AmountInputProps<T>) {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
@@ -126,13 +134,18 @@ export function AmountInput<T extends FieldValues>({
 
   return (
     <div className="space-y-2">
-      <p className="text-label tracking-wider text-muted-foreground">{label}</p>
+      {!hideLabel && <p className="text-label tracking-wider text-muted-foreground">{label}</p>}
       <Controller
         control={control}
         name={name}
         render={({ field }) => {
           const fieldString = (field.value ?? '').toString();
           const hasOperator = /[+\-*/]/.test(fieldString);
+          const displayValue = hasOperator
+            ? fieldString
+            : fieldString
+              ? formatAmount(Number(fieldString.replace(/[^0-9]/g, '')))
+              : '';
 
           const applyExpression = () => {
             const tokens = tokenizeExpression(fieldString);
@@ -159,7 +172,7 @@ export function AmountInput<T extends FieldValues>({
                 <Input
                   {...field}
                   id={name}
-                  value={fieldString}
+                  value={displayValue}
                   placeholder={placeholder}
                   onFocus={() => {
                     if (useCustomKeyboard) setIsKeyboardOpen(true);
@@ -172,9 +185,15 @@ export function AmountInput<T extends FieldValues>({
                   inputMode={useCustomKeyboard ? 'none' : 'text'}
                   className={cn(
                     'h-14 rounded-card bg-muted/22 pr-20 text-2xl font-medium shadow-[0_14px_28px_-24px_rgba(15,23,42,0.18)] focus-visible:ring-primary/20',
+                    showCurrencyPrefix && 'pl-14',
                     error && 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
                   )}
                 />
+                {showCurrencyPrefix && (
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base font-semibold text-muted-foreground">
+                    Rp
+                  </span>
+                )}
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-muted-foreground/40">
                   {useCustomKeyboard && (
                     <button
@@ -185,7 +204,7 @@ export function AmountInput<T extends FieldValues>({
                       <Keyboard className="h-4 w-4" />
                     </button>
                   )}
-                  <Calculator className="h-5 w-5" />
+                  {!hideCalculatorIcon && <Calculator className="h-5 w-5" />}
                 </div>
               </div>
 
@@ -199,22 +218,24 @@ export function AmountInput<T extends FieldValues>({
                 </button>
               )}
 
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                {QUICK_AMOUNTS.map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    onClick={() => field.onChange(formatAmount(amount))}
-                    className="whitespace-nowrap rounded-full bg-muted/55 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-primary/10 hover:text-primary active:scale-95"
-                  >
-                    {new Intl.NumberFormat('id-ID', {
-                      style: 'currency',
-                      currency: 'IDR',
-                      maximumFractionDigits: 0,
-                    }).format(amount)}
-                  </button>
-                ))}
-              </div>
+              {!hideQuickAmounts && (
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                  {QUICK_AMOUNTS.map((amount) => (
+                    <button
+                      key={amount}
+                      type="button"
+                      onClick={() => field.onChange(formatAmount(amount))}
+                      className="whitespace-nowrap rounded-full bg-muted/55 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-primary/10 hover:text-primary active:scale-95"
+                    >
+                      {new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        maximumFractionDigits: 0,
+                      }).format(amount)}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {useCustomKeyboard && isKeyboardOpen && (
                 <div className="space-y-2 rounded-2xl bg-card/96 p-3 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.24)]">
