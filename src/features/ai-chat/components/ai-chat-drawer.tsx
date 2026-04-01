@@ -1,38 +1,74 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import { 
-    Sheet, 
-    SheetContent, 
-    SheetHeader, 
-    SheetTitle, 
-    SheetDescription 
+import { type UIMessage } from 'ai';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-    Sparkles, 
-    Send, 
-    User, 
-    Bot, 
-    ChevronRight, 
-    Trash2, 
+import {
+    Send,
+    User,
+    Bot,
+    ChevronRight,
+    Trash2,
     Loader2,
     Square,
-    X
+    X,
+    MessageSquarePlus,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAIChat } from '../hooks/use-ai-chat';
 import { ErrorAlert } from '@/components/ui/error-alert';
-
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import ReactMarkdown from 'react-markdown';
 import { useInsights } from '@/features/insights/hooks/use-insights';
+import { buildFollowUpSuggestions } from '../lib/follow-up-suggestions';
 
 interface AIChatDrawerProps {
     isOpen: boolean;
     onClose: () => void;
 }
+
+const PLACEHOLDERS = [
+    "Coba tanya: 'Berapa sisa uangku?'",
+    "Coba tanya: 'Bulan ini paling boros buat apa?'",
+    "Coba tanya: 'Budget makan masih aman?'",
+    "Ketik pertanyaanmu di sini...",
+];
+
+const ShinyText = ({ text }: { text: string }) => (
+    <motion.span
+        animate={{
+            opacity: [0.5, 1, 0.5],
+            backgroundPosition: ['-100% 0', '100% 0'],
+        }}
+        transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'linear',
+        }}
+        className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-foreground/40 via-foreground to-foreground/40 font-medium"
+        style={{
+            backgroundSize: '200% auto',
+        }}
+    >
+        {text}
+    </motion.span>
+);
+
+const getMessageText = (message: UIMessage) =>
+    message.parts
+        .filter((part): part is Extract<UIMessage['parts'][number], { type: 'text' }> => part.type === 'text')
+        .map((part) => part.text)
+        .join('');
 
 export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
     const { briefing } = useInsights();
@@ -44,42 +80,58 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
         submitQuickAction,
         isLoading,
         error,
+        errorMessage,
         reload,
         stop,
         clearChat,
     } = useAIChat();
 
-    const QUICK_ACTIONS = [
-        ...(briefing?.suggestion ? [{ label: '💡 Saran AI', value: briefing.suggestion }] : []),
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
+    const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+
+    const quickActions = [
+        ...(briefing?.suggestion ? [{ label: 'Saran AI', value: briefing.suggestion }] : []),
         { label: 'Berapa saldo saya?', value: 'Berapa total saldo saya di semua dompet saat ini?' },
         { label: 'Budget aman?', value: 'Apakah ada budget saya yang hampir habis bulan ini?' },
         { label: 'Saran hemat', value: 'Berikan saran penghematan cerdas berdasarkan pola pengeluaran saya.' },
     ];
 
-    const scrollRef = useRef<HTMLDivElement>(null);
+    const bottomAnchorRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to bottom
     useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
+        bottomAnchorRef.current?.scrollIntoView({
+            block: 'end',
+            behavior: isLoading ? 'auto' : 'smooth',
+        });
     }, [messages, isLoading]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length);
+        }, 4000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const hasInteracted = messages.length > 1;
+    const lastMessage = messages[messages.length - 1];
+    const latestAssistantMessageId = !isLoading && !error && lastMessage?.role === 'assistant' ? lastMessage.id : null;
+    const followUpSuggestions = useMemo(() => buildFollowUpSuggestions(messages), [messages]);
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <SheetContent 
-                side="right" 
+            <SheetContent
+                side="right"
                 hideCloseButton
                 className="w-full sm:max-w-[440px] p-0 flex flex-col h-full bg-background border-l border-border/50 text-foreground shadow-2xl"
             >
-                <SheetHeader className="px-6 py-5 bg-background">
+                <SheetHeader className="px-6 py-5 bg-background border-b border-border/50">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col gap-0.5">
                             <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
                                 Lemon Coach
                             </h2>
                             <SheetTitle className="sr-only">Lemon Coach</SheetTitle>
-                            <SheetDescription className="text-[11px] font-medium text-muted-foreground/40 uppercase tracking-tight">
+                            <SheetDescription className="text-xs font-medium text-muted-foreground/40 uppercase tracking-tight">
                                 Asisten Keuangan Pintar
                             </SheetDescription>
                         </div>
@@ -95,18 +147,18 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                     <Square className="h-3.5 w-3.5 fill-current" />
                                 </Button>
                             )}
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={clearChat}
                                 className="h-9 w-9 rounded-full text-muted-foreground hover:text-destructive transition-colors"
                                 title="Hapus Chat"
                             >
                                 <Trash2 className="h-4 w-4" />
                             </Button>
-                            <Button 
-                                variant="ghost" 
-                                size="icon" 
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={onClose}
                                 className="h-9 w-9 rounded-full bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
                                 title="Tutup"
@@ -118,74 +170,126 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                 </SheetHeader>
 
                 <div className="flex-1 overflow-hidden flex flex-col">
-                    <ScrollArea className="flex-1 px-4 py-6" ref={scrollRef}>
-                        <div className="space-y-6 max-w-full overflow-x-hidden">
+                    <ScrollArea className="flex-1 px-4 py-6">
+                        <div className="space-y-6 max-w-full overflow-x-hidden pb-4">
                             {error && (
                                 <ErrorAlert
                                     variant="server"
                                     message="Lemon Coach gagal merespons."
-                                    description={error.message}
+                                    description={errorMessage}
                                     onRetry={() => void reload()}
                                     retryLabel="Coba Lagi"
                                 />
                             )}
                             <AnimatePresence initial={false}>
-                                {messages.map((m: any) => (
+                                {messages.map((message: UIMessage) => (
                                     <motion.div
-                                        key={m.id}
+                                        key={message.id}
                                         initial={{ opacity: 0, y: 10, scale: 0.98 }}
                                         animate={{ opacity: 1, y: 0, scale: 1 }}
                                         transition={{ duration: 0.2 }}
                                         className={cn(
-                                            "flex w-full mb-4",
-                                            m.role === 'user' ? "justify-end" : "justify-start"
+                                            'flex w-full mb-4',
+                                            message.role === 'user' ? 'justify-end' : 'justify-start'
                                         )}
                                     >
-                                        <div className={cn(
-                                            "flex gap-3 max-w-[85%]",
-                                            m.role === 'user' ? "flex-row-reverse" : "flex-row"
-                                        )}>
-                                            <div className={cn(
-                                                "h-8 w-8 rounded-full shrink-0 flex items-center justify-center",
-                                                m.role === 'user' 
-                                                    ? "bg-primary text-primary-foreground" 
-                                                    : "bg-card text-primary"
-                                            )}>
-                                                {m.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                                        <div
+                                            className={cn(
+                                                'flex gap-3 max-w-[85%]',
+                                                message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                                            )}
+                                        >
+                                            <div
+                                                className={cn(
+                                                    'h-8 w-8 rounded-full shrink-0 flex items-center justify-center',
+                                                    message.role === 'user'
+                                                        ? 'bg-primary text-primary-foreground'
+                                                        : 'bg-card text-primary'
+                                                )}
+                                            >
+                                                {message.role === 'user' ? (
+                                                    <User className="h-4 w-4" />
+                                                ) : (
+                                                    <Bot className="h-4 w-4" />
+                                                )}
                                             </div>
-                                            <div className={cn(
-                                                "p-3 rounded-2xl text-sm leading-relaxed",
-                                                m.role === 'user' 
-                                                    ? "bg-primary text-primary-foreground rounded-tr-none" 
-                                                    : "bg-card text-foreground rounded-tl-none"
-                                            )}>
-                                                {m.content}
+                                            <div
+                                                className={cn(
+                                                    'flex flex-col',
+                                                    message.role === 'user' ? 'items-end' : 'items-start'
+                                                )}
+                                            >
+                                                <div
+                                                    className={cn(
+                                                        'p-3 rounded-2xl text-sm leading-relaxed',
+                                                        message.role === 'user'
+                                                            ? 'bg-primary text-primary-foreground rounded-tr-none'
+                                                            : 'bg-card text-foreground rounded-tl-none prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:font-bold prose-strong:text-foreground prose-a:text-primary dark:prose-invert'
+                                                    )}
+                                                >
+                                                    {message.role === 'user' ? (
+                                                        getMessageText(message)
+                                                    ) : (
+                                                        <ReactMarkdown
+                                                            components={{
+                                                                p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                                                            }}
+                                                        >
+                                                            {getMessageText(message)}
+                                                        </ReactMarkdown>
+                                                    )}
+                                                </div>
+                                                {message.role === 'assistant' &&
+                                                    latestAssistantMessageId === message.id &&
+                                                    followUpSuggestions.length > 0 && (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 6 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ delay: 0.08, duration: 0.2 }}
+                                                            className="flex w-full max-w-[320px] flex-col gap-2 pt-1.5"
+                                                        >
+                                                            {followUpSuggestions.map((suggestion) => (
+                                                                <motion.button
+                                                                    key={suggestion.value}
+                                                                    type="button"
+                                                                    onClick={() => void submitQuickAction(suggestion.value)}
+                                                                    whileTap={{ scale: 0.99 }}
+                                                                    className="w-full rounded-2xl border border-border/45 bg-card/72 px-3 py-2.5 text-left text-xs font-medium leading-relaxed text-muted-foreground shadow-[0_8px_16px_-16px_rgba(15,23,42,0.18)] backdrop-blur-sm transition-all hover:border-border/70 hover:bg-card hover:text-foreground"
+                                                                >
+                                                                    {suggestion.value}
+                                                                </motion.button>
+                                                            ))}
+                                                        </motion.div>
+                                                    )}
                                             </div>
                                         </div>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
-                            
+
                             {isLoading && (
                                 <div className="flex justify-start">
                                     <div className="flex gap-3 max-w-[85%]">
                                         <div className="h-8 w-8 rounded-full shrink-0 flex items-center justify-center bg-card text-primary">
                                             <Bot className="h-4 w-4" />
                                         </div>
-                                        <div className="p-3 rounded-2xl bg-card rounded-tl-none text-foreground">
-                                            <Loader2 className="h-4 w-4 animate-spin opacity-60" />
+                                        <div className="p-3 rounded-2xl bg-card rounded-tl-none text-foreground flex items-center gap-2">
+                                            <ShinyText text="Lemon Coach sedang berpikir..." />
                                         </div>
                                     </div>
                                 </div>
                             )}
+                            <div ref={bottomAnchorRef} className="h-px w-full" aria-hidden="true" />
                         </div>
                     </ScrollArea>
 
-                    {messages.length <= 1 && !isLoading && (
+                    {!hasInteracted && !isLoading && (
                         <div className="px-6 py-4 space-y-3">
-                            <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/80 ml-1">Saran Pertanyaan</p>
+                            <p className="text-label uppercase tracking-widest text-muted-foreground/80 ml-1">
+                                Saran Pertanyaan
+                            </p>
                             <div className="flex flex-col gap-2">
-                                {QUICK_ACTIONS.map((action) => (
+                                {quickActions.map((action) => (
                                     <button
                                         key={action.label}
                                         onClick={() => void submitQuickAction(action.value)}
@@ -201,28 +305,90 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                     )}
                 </div>
 
-                <div className="p-6 pt-0 bg-background">
-                    <form 
-                        onSubmit={handleSubmit}
-                        className="relative flex items-center mt-6"
-                    >
-                        <Input
-                            placeholder="Tanya Lemon Coach..."
-                            value={input}
-                            onChange={handleInputChange}
-                            disabled={isLoading}
-                            className="pr-12 h-12 rounded-2xl bg-card text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/20"
-                        />
-                        <Button 
-                            type="submit" 
-                            size="icon" 
-                            disabled={isLoading || !input.trim()}
-                            className="absolute right-1.5 h-9 w-9 rounded-xl shadow-lg shadow-primary/20"
-                        >
-                            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                        </Button>
+                <div
+                    className="p-4 pt-2 bg-background border-t border-border/20"
+                    style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+                >
+                    <form onSubmit={handleSubmit} className="relative flex items-center gap-2 mt-2">
+                        {hasInteracted && (
+                            <Popover open={isQuickActionsOpen} onOpenChange={setIsQuickActionsOpen}>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="icon"
+                                        className="h-12 w-12 rounded-2xl shrink-0 border-border/50 text-muted-foreground hover:text-foreground"
+                                        disabled={isLoading}
+                                    >
+                                        <MessageSquarePlus className="h-5 w-5" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    side="top"
+                                    align="start"
+                                    className="w-[280px] p-2 rounded-2xl shadow-xl border-border/50 mb-2"
+                                >
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-xs font-medium text-muted-foreground/80 px-2 py-1 mb-1">
+                                            Saran Pertanyaan
+                                        </p>
+                                        {quickActions.map((action) => (
+                                            <button
+                                                key={action.label}
+                                                onClick={() => {
+                                                    void submitQuickAction(action.value);
+                                                    setIsQuickActionsOpen(false);
+                                                }}
+                                                className="text-left p-2.5 rounded-xl text-sm hover:bg-muted transition-colors"
+                                            >
+                                                {action.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                        )}
+
+                        <div className="relative flex-1">
+                            <AnimatePresence mode="wait">
+                                {!input && !isLoading && (
+                                    <motion.div
+                                        key={placeholderIndex}
+                                        initial={{ opacity: 0, y: 5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground/60 pointer-events-none"
+                                    >
+                                        {PLACEHOLDERS[placeholderIndex]}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                            <Input
+                                value={input}
+                                onChange={handleInputChange}
+                                disabled={isLoading}
+                                className="pr-12 h-12 rounded-2xl bg-card text-foreground focus-visible:ring-primary/20 w-full"
+                            />
+                            <Button
+                                type="submit"
+                                size="icon"
+                                disabled={isLoading || !input.trim()}
+                                className="absolute right-1.5 top-1.5 h-9 w-9 rounded-xl shadow-lg shadow-primary/20"
+                            >
+                                {isLoading ? (
+                                    <motion.div
+                                        animate={{ opacity: [0.4, 1, 0.4] }}
+                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                        className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                                    />
+                                ) : (
+                                    <Send className="h-4 w-4" />
+                                )}
+                            </Button>
+                        </div>
                     </form>
-                    <p className="text-[10px] text-center mt-4 text-muted-foreground/70">
+                    <p className="text-label text-center mt-3 text-muted-foreground/70 mb-2">
                         Lemon AI dapat membuat kesalahan. Periksa info penting.
                     </p>
                 </div>

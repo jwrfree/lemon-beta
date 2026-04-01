@@ -49,8 +49,40 @@ export interface UnifiedFinancialContext {
         spent: number;
         percent: number;
     }[];
+    previous_month: {
+        income: number;
+        expense: number;
+        cashflow: number;
+        top_categories: {
+            category: string;
+            amount: number;
+        }[];
+    };
+    spending_pattern: {
+        busiest_day: string;
+        average_daily_spend: number;
+        weekly_expense: number;
+        last_expense_date: string | null;
+    };
+    last_transaction: {
+        description: string;
+        category: string;
+        amount: number;
+        type: string;
+        date: string;
+    } | null;
     expense_transaction_count: number;
     timestamp: string;
+}
+
+export interface TransactionSearchResult {
+    description: string;
+    category: string;
+    sub_category?: string | null;
+    merchant?: string | null;
+    amount: number;
+    type: string;
+    date: string;
 }
 
 type ContextClient = Pick<SupabaseClient, 'rpc' | 'from'>;
@@ -85,8 +117,11 @@ type SummaryRow = {
 type TransactionRow = {
     amount: number | string | null;
     category: string | null;
+    sub_category?: string | null;
+    merchant?: string | null;
     type: 'income' | 'expense' | string | null;
     description?: string | null;
+    date?: string | null;
 };
 
 type WalletRow = {
@@ -111,8 +146,31 @@ const toNumber = (value: unknown) => {
     return Number.isFinite(parsed) ? parsed : 0;
 };
 
+const normalizeSearchText = (value: string) =>
+    value
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
 const monthRange = () => {
     const start = new Date();
+    start.setDate(1);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + 1);
+
+    return {
+        start: start.toISOString(),
+        end: end.toISOString(),
+        monthDate: start.toISOString().slice(0, 10),
+    };
+};
+
+const previousMonthRange = () => {
+    const start = new Date();
+    start.setMonth(start.getMonth() - 1);
     start.setDate(1);
     start.setHours(0, 0, 0, 0);
 
@@ -187,12 +245,46 @@ const normalizeContext = (data: Partial<UnifiedFinancialContext> | null): Unifie
                 percent: toNumber(budget.percent),
             }))
             : [],
+        previous_month: {
+            income: toNumber(data.previous_month?.income),
+            expense: toNumber(data.previous_month?.expense),
+            cashflow: toNumber(data.previous_month?.cashflow),
+            top_categories: Array.isArray(data.previous_month?.top_categories) 
+                ? data.previous_month?.top_categories.map(c => ({ category: c.category, amount: toNumber(c.amount) }))
+                : []
+        },
+        spending_pattern: {
+            busiest_day: data.spending_pattern?.busiest_day || 'Senin',
+            average_daily_spend: toNumber(data.spending_pattern?.average_daily_spend),
+            weekly_expense: toNumber(data.spending_pattern?.weekly_expense),
+            last_expense_date: data.spending_pattern?.last_expense_date || null,
+        },
+        last_transaction: data.last_transaction ? {
+            description: data.last_transaction.description || 'Transaksi',
+            category: data.last_transaction.category || 'Lainnya',
+            amount: toNumber(data.last_transaction.amount),
+            type: data.last_transaction.type || 'expense',
+            date: data.last_transaction.date || new Date().toISOString()
+        } : null,
         expense_transaction_count: toNumber(data.expense_transaction_count),
         timestamp: typeof data.timestamp === 'string' ? data.timestamp : new Date().toISOString(),
     };
 };
 
 class FinancialContextService {
+    private readonly transactionSearchStopWords = new Set([
+        'kapan', 'terakhir', 'kali', 'saya', 'aku', 'gue', 'gua', 'yang', 'dan',
+        'di', 'ke', 'untuk', 'apa', 'ada', 'itu', 'ini', 'beli', 'bayar', 'beliin',
+        'pesan', 'langganan', 'transaksi', 'belanja', 'minum', 'makan', 'top', 'up',
+    ]);
+
+    private readonly transactionKeywordAliases: Record<string, string[]> = {
+        kopi: ['coffee', 'starbucks', 'fore', 'kenangan', 'tuku', 'janji jiwa', 'point coffee', 'kapal api', 'kapalapi'],
+        coffee: ['kopi', 'starbucks', 'fore', 'kenangan', 'tuku', 'janji jiwa', 'point coffee', 'kapal api', 'kapalapi'],
+        'kapal api': ['kopi', 'coffee', 'kapalapi'],
+        kapalapi: ['kopi', 'coffee', 'kapal api'],
+    };
+
     private logRpcError(error: RpcErrorLike) {
         console.error('[FinancialContextService] RPC Error:', {
             message: error.message,
@@ -200,6 +292,79 @@ class FinancialContextService {
             hint: error.hint,
             details: error.details,
         });
+    }
+
+    private buildTransactionSearchTerms(query: string) {
+        const normalized = normalizeSearchText(query);
+        if (!normalized) return [];
+
+        const tokens = normalized
+            .split(' ')
+            .filter((token) => token.length >= 2 && !this.transactionSearchStopWords.has(token));
+
+        const terms = new Set<string>([normalized, ...tokens]);
+
+        for (const token of tokens) {
+            const aliases = this.transactionKeywordAliases[token] ?? [];
+            aliases.forEach((alias) => terms.add(alias));
+        }
+
+        return Array.from(terms).slice(0, 8);
+    }
+
+    async findTransactionsByQuery(
+        userId: string,
+        query: string,
+        client?: ContextClient,
+        limit = 5
+    ): Promise<TransactionSearchResult[]> {
+        const supabase = client ?? createClient();
+        const searchTerms = this.buildTransactionSearchTerms(query);
+        if (searchTerms.length === 0) return [];
+
+        const orFilters = searchTerms.flatMap((term) => {
+            const safeTerm = term.replace(/[%(),]/g, ' ').trim();
+            if (!safeTerm) return [];
+            return [
+                `description.ilike.%${safeTerm}%`,
+                `merchant.ilike.%${safeTerm}%`,
+                `sub_category.ilike.%${safeTerm}%`,
+                `category.ilike.%${safeTerm}%`,
+            ];
+        });
+
+        const { data, error } = await supabase
+            .from('transactions')
+            .select('amount,category,sub_category,merchant,type,description,date')
+            .eq('user_id', userId)
+            .order('date', { ascending: false })
+            .limit(limit)
+            .or(orFilters.join(','));
+
+        if (error) {
+            console.error('[FinancialContextService] Transaction search error:', error);
+            return [];
+        }
+
+        const rows = (data ?? []) as TransactionRow[];
+        return rows.map((row) => ({
+            description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
+            category: row.category?.trim() || 'Lainnya',
+            sub_category: row.sub_category?.trim() || null,
+            merchant: row.merchant?.trim() || null,
+            amount: toNumber(row.amount),
+            type: row.type || 'expense',
+            date: row.date || new Date().toISOString(),
+        }));
+    }
+
+    async findLatestTransactionByQuery(
+        userId: string,
+        query: string,
+        client?: ContextClient
+    ): Promise<TransactionSearchResult | null> {
+        const [latestMatch] = await this.findTransactionsByQuery(userId, query, client, 1);
+        return latestMatch ?? null;
     }
 
     private async getRiskContext(userId: string, supabase: ContextClient) {
@@ -252,7 +417,8 @@ class FinancialContextService {
     }
 
     private async getFallbackContext(userId: string, supabase: ContextClient): Promise<UnifiedFinancialContext | null> {
-        const { start, end, monthDate } = monthRange();
+        const { start: currentStart, end: currentEnd, monthDate: currentMonthDate } = monthRange();
+        const { start: prevStart, end: prevEnd, monthDate: prevMonthDate } = previousMonthRange();
 
         const [
             walletsResult,
@@ -263,6 +429,8 @@ class FinancialContextService {
             goalsResult,
             summaryResult,
             monthlyTransactionsResult,
+            prevSummaryResult,
+            prevTransactionsResult,
             riskFromRpc,
         ] = await Promise.all([
             supabase.from('wallets').select('balance').eq('user_id', userId),
@@ -275,14 +443,26 @@ class FinancialContextService {
                 .from('monthly_summaries')
                 .select('total_income,total_expense,net_cashflow,velocity_score')
                 .eq('user_id', userId)
-                .eq('month_date', monthDate)
+                .eq('month_date', currentMonthDate)
                 .maybeSingle(),
             supabase
                 .from('transactions')
-                .select('amount,category,type,description')
+                .select('amount,category,type,description,date')
                 .eq('user_id', userId)
-                .gte('date', start)
-                .lt('date', end),
+                .gte('date', currentStart)
+                .lt('date', currentEnd),
+            supabase
+                .from('monthly_summaries')
+                .select('total_income,total_expense,net_cashflow')
+                .eq('user_id', userId)
+                .eq('month_date', prevMonthDate)
+                .maybeSingle(),
+            supabase
+                .from('transactions')
+                .select('amount,type,date,category')
+                .eq('user_id', userId)
+                .gte('date', prevStart)
+                .lt('date', prevEnd),
             this.getRiskContext(userId, supabase),
         ]);
 
@@ -309,9 +489,14 @@ class FinancialContextService {
         const debts = (debtsResult.data ?? []) as DebtRow[];
         const budgets = (budgetsResult.data ?? []) as BudgetRow[];
         const goals = (goalsResult.data ?? []) as GoalRow[];
-        const monthlyTransactions = (monthlyTransactionsResult.data ?? []) as TransactionRow[];
+        const monthlyTransactions = (monthlyTransactionsResult.data ?? []) as (TransactionRow & { date: string })[];
         const monthlySummary = (summaryResult.data ?? null) as SummaryRow | null;
+        const prevSummary = (prevSummaryResult.data ?? null) as SummaryRow | null;
+        const prevTransactions = (prevTransactionsResult.data ?? []) as (TransactionRow & { date: string })[];
         const expenseTransactions = monthlyTransactions.filter((transaction) => transaction.type === 'expense');
+        const sortedTransactions = [...monthlyTransactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const lastTransaction = sortedTransactions[0] || null;
+        const lastExpense = expenseTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] || null;
 
         const cash = wallets.reduce((sum, wallet) => sum + toNumber(wallet.balance), 0);
         const totalAssets = assets.reduce((sum, asset) => sum + toNumber(asset.value), 0);
@@ -375,6 +560,37 @@ class FinancialContextService {
         const largestExpense = [...expenseTransactions]
             .sort((left, right) => toNumber(right.amount) - toNumber(left.amount))[0];
 
+        // Weekly expense (last 7 days)
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const weeklyExpense = expenseTransactions
+            .filter(t => new Date(t.date) >= sevenDaysAgo)
+            .reduce((s, t) => s + toNumber(t.amount), 0);
+
+        // Previous month logic expand
+        const prevIncome = toNumber(prevSummary?.total_income) ||
+            prevTransactions.filter(t => t.type === 'income').reduce((s, t) => s + toNumber(t.amount), 0);
+        const prevExpense = toNumber(prevSummary?.total_expense) ||
+            prevTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + toNumber(t.amount), 0);
+
+        const prevTopCategoryMap = new Map<string, number>();
+        prevTransactions.filter(t => t.type === 'expense').forEach(t => {
+            const key = t.category?.trim() || 'Lainnya';
+            prevTopCategoryMap.set(key, (prevTopCategoryMap.get(key) ?? 0) + toNumber(t.amount));
+        });
+        const prevTopCategories = Array.from(prevTopCategoryMap.entries())
+            .map(([category, amount]) => ({ category, amount }))
+            .sort((a, b) => b.amount - a.amount);
+
+        // Spending pattern (busiest day)
+        const dayCounts = new Map<string, number>();
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        expenseTransactions.forEach(t => {
+            const day = days[new Date(t.date).getDay()];
+            dayCounts.set(day, (dayCounts.get(day) ?? 0) + toNumber(t.amount));
+        });
+        const busiestDay = Array.from(dayCounts.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Senin';
+
         return normalizeContext({
             wealth: {
                 cash,
@@ -400,6 +616,25 @@ class FinancialContextService {
                 }
                 : null,
             budget_alerts: budgetAlerts,
+            previous_month: {
+                income: prevIncome,
+                expense: prevExpense,
+                cashflow: prevIncome - prevExpense,
+                top_categories: prevTopCategories,
+            },
+            spending_pattern: {
+                busiest_day: busiestDay,
+                average_daily_spend: monthlyExpense / Math.max(new Date().getDate(), 1),
+                weekly_expense: weeklyExpense,
+                last_expense_date: lastExpense?.date || null,
+            },
+            last_transaction: lastTransaction ? {
+                description: lastTransaction.description || 'Transaksi',
+                category: lastTransaction.category || 'Lainnya',
+                amount: toNumber(lastTransaction.amount),
+                type: lastTransaction.type || 'expense',
+                date: lastTransaction.date
+            } : null,
             expense_transaction_count: expenseTransactions.length,
             timestamp: new Date().toISOString(),
         });
