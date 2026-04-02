@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { financialContextService } from './financial-context-service';
+import { createFinancialTools } from '@/ai/tools';
 
 describe('financialContextService.getUnifiedContext', () => {
   afterEach(() => {
@@ -68,5 +69,125 @@ describe('financialContextService.getUnifiedContext', () => {
     expect(fallbackSpy).toHaveBeenCalledWith('user-1', client);
     expect(warnSpy).toHaveBeenCalled();
     expect(result).toEqual(fallbackContext);
+  });
+});
+
+describe('financialContextService transaction helpers', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('returns stable ids for searched and recent transactions', async () => {
+    const rows = [
+      {
+        id: 'tx-123',
+        amount: 25000,
+        category: 'Konsumsi & F&B',
+        sub_category: 'Jajanan & Kopi',
+        merchant: 'Kapal Api',
+        type: 'expense',
+        description: 'Kopi sore',
+        date: '2026-04-03T09:00:00.000Z',
+        created_at: '2026-04-03T09:00:00.000Z',
+      },
+    ];
+    const searchBuilder: any = {};
+    searchBuilder.eq = vi.fn().mockReturnValue(searchBuilder);
+    searchBuilder.order = vi.fn().mockReturnValue(searchBuilder);
+    searchBuilder.limit = vi.fn().mockReturnValue(searchBuilder);
+    searchBuilder.or = vi.fn().mockResolvedValue({ data: rows, error: null });
+
+    const recentBuilder: any = {};
+    recentBuilder.eq = vi.fn().mockReturnValue(recentBuilder);
+    recentBuilder.order = vi.fn().mockReturnValue(recentBuilder);
+    recentBuilder.limit = vi.fn().mockResolvedValue({ data: rows, error: null });
+
+    const client = {
+      from: vi
+        .fn()
+        .mockReturnValueOnce({
+          select: vi.fn().mockReturnValue(searchBuilder),
+        })
+        .mockReturnValueOnce({
+          select: vi.fn().mockReturnValue(recentBuilder),
+        }),
+    };
+
+    const searchResults = await financialContextService.findTransactionsByQuery('user-1', 'kopi', client as any, 1);
+    const recentResults = await financialContextService.getRecentTransactions('user-1', client as any, 1);
+
+    expect(searchResults[0]).toMatchObject({
+      transaction_id: 'tx-123',
+      id: 'tx-123',
+    });
+    expect(recentResults[0]).toMatchObject({
+      transaction_id: 'tx-123',
+      id: 'tx-123',
+    });
+  });
+
+  it('lets the update tool consume a transaction_id returned by find_transactions', async () => {
+    const toolSupabase = {
+      from: vi.fn(),
+      rpc: vi.fn(),
+    };
+    const tools = createFinancialTools('user-1', toolSupabase as any);
+    const transactionId = '550e8400-e29b-41d4-a716-446655440000';
+
+    vi.spyOn(financialContextService, 'findTransactionsByQuery').mockResolvedValue([
+      {
+        transaction_id: transactionId,
+        id: transactionId,
+        description: 'Kopi sore',
+        category: 'Konsumsi & F&B',
+        sub_category: 'Jajanan & Kopi',
+        merchant: 'Kapal Api',
+        amount: 25000,
+        type: 'expense',
+        date: '2026-04-03T09:00:00.000Z',
+      },
+    ]);
+
+    const existingTransaction = {
+      id: transactionId,
+      user_id: 'user-1',
+      wallet_id: 'wallet-1',
+      amount: 25000,
+      category: 'Konsumsi & F&B',
+      sub_category: 'Jajanan & Kopi',
+      description: 'Kopi sore',
+      date: '2026-04-03T09:00:00.000Z',
+      type: 'expense',
+      location: null,
+      is_need: true,
+    };
+
+    toolSupabase.from.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: existingTransaction,
+              error: null,
+            }),
+          }),
+        }),
+      }),
+    });
+    toolSupabase.rpc.mockResolvedValue({ error: null });
+
+    const found = await (tools.find_transactions as any).execute({ query: 'kopi', limit: 1 });
+    const result = await (tools.update_transaction as any).execute({
+      transaction_id: found[0].transaction_id,
+      updates: { amount: 30000 },
+    });
+
+    expect(found[0].transaction_id).toBe(transactionId);
+    expect(result).toEqual({ success: true });
+    expect(toolSupabase.rpc).toHaveBeenCalledWith('update_transaction_v1', expect.objectContaining({
+      p_transaction_id: transactionId,
+      p_user_id: 'user-1',
+      p_new_amount: 30000,
+    }));
   });
 });

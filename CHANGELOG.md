@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **AI chat tool identifiers**
+  - Added `transaction_id` and `id` to Lemon Coach transaction search/recent tool results so update and delete tool calls can reuse the returned identifier directly without an extra lookup.
 - **Offline and relaunch responsiveness**
   - Restored last-known wallets, reminders, debts, and range-based transaction snapshots from local storage so previously fetched data stays visible offline and opens faster on repeat launches.
   - Moved React Query Devtools behind a development-only lazy import to reduce unnecessary production overhead.

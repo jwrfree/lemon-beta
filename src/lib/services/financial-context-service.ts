@@ -77,6 +77,8 @@ export interface UnifiedFinancialContext {
 }
 
 export interface TransactionSearchResult {
+    transaction_id: string;
+    id: string;
     description: string;
     category: string;
     sub_category?: string | null;
@@ -116,6 +118,7 @@ type SummaryRow = {
 };
 
 type TransactionRow = {
+    id?: string | null;
     amount: number | string | null;
     category: string | null;
     sub_category?: string | null;
@@ -365,7 +368,7 @@ class FinancialContextService {
 
         const { data, error } = await supabase
             .from('transactions')
-            .select('amount,category,sub_category,merchant,type,description,date,created_at')
+            .select('id,amount,category,sub_category,merchant,type,description,date,created_at')
             .eq('user_id', userId)
             .order('date', { ascending: false })
             .order('created_at', { ascending: false })
@@ -379,6 +382,8 @@ class FinancialContextService {
 
         const rows = ((data ?? []) as TransactionRow[]).sort(compareTransactionsByNewest);
         return rows.map((row) => ({
+            transaction_id: row.id?.trim() || '',
+            id: row.id?.trim() || '',
             description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
             category: row.category?.trim() || 'Lainnya',
             sub_category: row.sub_category?.trim() || null,
@@ -406,7 +411,7 @@ class FinancialContextService {
         const supabase = client ?? createClient();
         const { data, error } = await supabase
             .from('transactions')
-            .select('amount,category,sub_category,merchant,type,description,date,created_at')
+            .select('id,amount,category,sub_category,merchant,type,description,date,created_at')
             .eq('user_id', userId)
             .order('date', { ascending: false })
             .order('created_at', { ascending: false })
@@ -419,6 +424,8 @@ class FinancialContextService {
 
         const rows = ((data ?? []) as TransactionRow[]).sort(compareTransactionsByNewest);
         return rows.map((row) => ({
+            transaction_id: row.id?.trim() || '',
+            id: row.id?.trim() || '',
             description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
             category: row.category?.trim() || 'Lainnya',
             sub_category: row.sub_category?.trim() || null,

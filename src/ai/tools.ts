@@ -97,7 +97,7 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
     }),
 
     find_transactions: tool({
-      description: 'Mencari transaksi spesifik berdasarkan keyword merchant, deskripsi, sub-kategori, atau kategori. Gunakan ini untuk pertanyaan seperti "kapan terakhir beli kopi?" atau "ada transaksi Netflix?".',
+      description: 'Mencari transaksi spesifik berdasarkan keyword merchant, deskripsi, sub-kategori, atau kategori. Hasilnya selalu menyertakan `transaction_id`/`id` untuk dipakai langsung pada update_transaction atau delete_transaction. Gunakan ini untuk pertanyaan seperti "kapan terakhir beli kopi?" atau "ada transaksi Netflix?".',
       inputSchema: z.object({
         query: z.string().min(2),
         limit: z.number().int().min(1).max(5).optional(),
@@ -108,7 +108,7 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
     }),
 
     get_recent_transactions: tool({
-      description: 'Mengambil daftar mutasi atau transaksi terbaru user. Gunakan ini untuk pertanyaan seperti "apa mutasi terbaru saya?" atau "riwayat transaksi terakhir".',
+      description: 'Mengambil daftar mutasi atau transaksi terbaru user. Hasilnya selalu menyertakan `transaction_id`/`id` untuk dipakai langsung pada update_transaction atau delete_transaction. Gunakan ini untuk pertanyaan seperti "apa mutasi terbaru saya?" atau "riwayat transaksi terakhir".',
       inputSchema: z.object({
         limit: z.number().int().min(1).max(5).optional(),
       }),
