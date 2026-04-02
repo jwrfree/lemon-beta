@@ -24,6 +24,9 @@ Spacing, radius, and blur all follow a named scale. Picking a value means pickin
 ### P5 — Progressive Complexity
 Three card tiers exist (`flat`, `premium`, `glass`) because they serve distinct information hierarchies. A flat card is a list item. A premium card is a primary entity with identity. A glass panel is metadata inside a premium card. Do not mix tiers.
 
+### P6 — Separation of Concerns (Hook Architecture)
+Complex display logic, external data formatting, and conditional branding must be extracted from the UI component into a custom hook (e.g., `useMerchantIdentity`). UI components should ideally only handle layout, prop-drilling to atoms, and basic interaction states.
+
 ---
 
 ## 2. Typography System
@@ -737,16 +740,22 @@ Target: Abstract structural spacing into semantic tokens to reduce direct Tailwi
 
 Token coverage: container×1, section×4, cardFlat×3, cardPremium×3, gridGap×2, stack×3 = 16 replacements.
 
-### Phase 5 — FAB Consolidation (0.5 sprint)
-Target: Replace all 8 inline FAB patterns with `<FAB>`.
+### Phase 5 — FAB & Shadow Consolidation (0.5 sprint) ✅ IN PROGRESS
+Target: Replace all 8 inline FAB patterns with `<FAB>` and arbitrary shadows with DS tokens.
 
 Process:
-1. Remove the duplicate FAB from `app/(main)/goals/page.tsx` (dashboard owns it).
-2. Replace inline FABs in: `goals-dashboard.tsx`, `debts-dashboard.tsx`, `budgeting-dashboard.tsx`, `reminders-dashboard.tsx`, `wallets/page.tsx`.
-3. Standardise desktop offset: remove `md:bottom-10 md:right-10` from `budgeting/page.tsx`.
+1. [x] Remove duplicate FAB from `app/(main)/goals/page.tsx`.
+2. [ ] Replace inline FABs in: `goals-dashboard.tsx`, `debts-dashboard.tsx`, `budgeting-dashboard.tsx`, `reminders-dashboard.tsx`, `wallets/page.tsx`.
+3. [x] Migrate arbitrary shadows in `TransactionListItem` and `TransactionList` to `shadow-soft/premium`.
+4. [x] Update `DESIGN_SYSTEM.md` with new shadow scale definitions.
 
-### Phase 6 — Shadow & Blur Audit (0.5 sprint)
-Target: Replace all `shadow-sm` on `<Card>` with `shadow-card`. Replace `backdrop-blur-3xl` on bottom nav.
+### Phase 6 — Database Performance & Logic Cleanup ✅ IN PROGRESS
+Target: Implement SARGable queries and composite indexes across critical financial views.
+
+Process:
+1. [x] Optimize `vw_budget_performance` with range queries.
+2. [x] Create `idx_transactions_user_category_type_date` composite index.
+3. [x] Strengthen RLS policies with `(SELECT auth.uid())` pattern.
 
 ---
 
