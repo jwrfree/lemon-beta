@@ -45,8 +45,8 @@ const TOPIC_RULES: Array<{
         keywords: ['tabungan', 'saving', 'goal', 'target', 'dana darurat'],
         suggestions: [
             { label: 'Progress goal', value: 'Progress tabungan dan goal saya sekarang bagaimana?' },
-            { label: 'Nominal aman', value: 'Berapa nominal yang masih aman untuk saya tabung bulan ini?' },
-            { label: 'Prioritas cashflow', value: 'Lebih baik fokus dana darurat atau pengeluaran rutin dulu?' },
+            { label: 'Simulasi target', value: 'Berapa lama lagi target saya akan tercapai kalau saya nabung 1 juta tiap bulan?' },
+            { label: 'Saldo akhir tahun', value: 'Berapa proyeksi saldo saya di akhir tahun nanti?' },
         ],
     },
 ];
@@ -55,6 +55,13 @@ const ANSWER_RULES: Array<{
     keywords: string[];
     suggestions: FollowUpSuggestion[];
 }> = [
+    {
+        keywords: ['simulasi', 'proyeksi', 'tercapai', 'bulan'],
+        suggestions: [
+            { label: 'Naikin tabungan', value: 'Kalau saya tambah tabungan 500rb lagi sebulan, jadi kapan tercapainya?' },
+            { label: 'Proyeksi saldo', value: 'Berapa saldo saya 12 bulan lagi kalau gaya hidup tetap?' },
+        ],
+    },
     {
         keywords: ['budget', 'anggaran', 'overbudget', 'kritis'],
         suggestions: [

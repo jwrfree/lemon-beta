@@ -20,16 +20,19 @@ export const BudgetStatusCard = () => {
     const sortedBudgets = [...context.budgets].sort((a, b) => b.percent - a.percent).slice(0, 3);
 
     return (
-        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-2xl overflow-hidden motion-surface">
+        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Status Anggaran</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Budget Status</span>
                 </div>
                 
                 <div className="space-y-4">
                     {sortedBudgets.map((budget, idx) => {
                         const isOver = budget.percent >= 100;
                         const isWarning = (budget.percent > 80) && !isOver;
+                        const dayOfMonth = new Date().getDate();
+                        const dailySpend = budget.spent / Math.max(dayOfMonth, 1);
+                        const daysLeft = dailySpend > 0 ? Math.floor((budget.limit - budget.spent) / dailySpend) : 99;
 
                         return (
                             <div key={idx} className="space-y-1.5">
@@ -39,8 +42,8 @@ export const BudgetStatusCard = () => {
                                         {isOver && <WarningCircle size={12} weight="fill" className="text-destructive" />}
                                     </span>
                                     <span className={cn(
-                                        "text-label font-semibold",
-                                        isOver ? "text-destructive" : "text-muted-foreground/70"
+                                        "text-label font-semibold tracking-widest uppercase",
+                                        isOver ? "text-destructive" : "text-muted-foreground/40"
                                     )}>
                                         {Math.round(budget.percent)}%
                                     </span>
@@ -53,10 +56,16 @@ export const BudgetStatusCard = () => {
                                             isWarning ? "bg-warning" : "bg-success"
                                     )}
                                 />
-                                <div className="flex justify-between text-label text-muted-foreground/40 font-semibold uppercase tracking-tighter">
-                                    <span>{formatCurrency(budget.spent)} Terpakai</span>
+                                <div className="flex justify-between text-[10px] font-semibold text-muted-foreground/30 uppercase tracking-widest">
+                                    <span>{formatCurrency(budget.spent)} Pakai</span>
                                     <span>Sisa {formatCurrency(Math.max(0, budget.limit - budget.spent))}</span>
                                 </div>
+                                
+                                {!isOver && budget.percent > 30 && (
+                                    <p className="text-[9px] font-medium text-muted-foreground/25 italic leading-none">
+                                        Estimasi habis dalam {Math.max(1, daysLeft)} hari lagi
+                                    </p>
+                                )}
                             </div>
                         );
                     })}

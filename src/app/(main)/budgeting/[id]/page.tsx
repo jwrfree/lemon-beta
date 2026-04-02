@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
@@ -9,11 +9,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
-import { ArrowLeft, Fire, PencilSimple, Sparkle, Stack, Tag, Target, WarningCircle } from '@phosphor-icons/react';
+import { ArrowLeft, CaretRight, ChartBar, CheckCircle, Eye, EyeSlash, Fire, PencilSimple, Plus, Sparkle, Stack, Target, WarningCircle } from '@phosphor-icons/react';
 import { startOfMonth } from 'date-fns';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
@@ -21,7 +21,8 @@ export default function BudgetDetailPage() {
     const router = useRouter();
     const params = useParams();
     const { getCategoryVisuals } = useCategories();
-    const { openEditBudgetModal } = useUI();
+    const { openEditBudgetModal, openAddTransactionModal } = useUI();
+    const [isHidden, setIsHidden] = useState(false);
 
     const now = useMemo(() => new Date(), []);
     const start = useMemo(() => startOfMonth(now), [now]);
@@ -44,18 +45,10 @@ export default function BudgetDetailPage() {
         const spent = budgetTransactions.reduce((acc, t) => acc + t.amount, 0);
         const remaining = budget.targetAmount - spent;
         const progress = budget.targetAmount > 0 ? (spent / budget.targetAmount) * 100 : 0;
-
-        const daysInMonthValue = daysInMonth(now);
-        const daysLeft = daysInMonthValue - now.getDate() + 1;
-        const daysPassedPercentage = (now.getDate() / daysInMonthValue) * 100;
-
-        // Projection logic
-        const daysElapsed = now.getDate();
-        const dailyRate = spent / daysElapsed;
-        const daysToZero = dailyRate > 0 ? Math.floor(remaining / dailyRate) : Infinity;
+        const daysLeft = daysInMonth(now) - now.getDate() + 1;
         const safeDailyLimit = remaining > 0 && daysLeft > 0 ? remaining / daysLeft : 0;
 
-        return { budgetTransactions, spent, remaining, progress, daysLeft, daysPassedPercentage, daysToZero, safeDailyLimit };
+        return { budgetTransactions, spent, remaining, progress, safeDailyLimit };
     }, [budget, transactions, now]);
 
     if (isBudgetsLoading || isTransactionsLoading) {
@@ -71,16 +64,14 @@ export default function BudgetDetailPage() {
     if (!budget) {
         return (
             <AppPageShell className="bg-zinc-50 dark:bg-black">
-                <PageHeader title="Detail Anggaran" width="compact" />
+                <PageHeader title="Detail Anggaran" width="compact" showBack onBack={() => router.back()} />
                 <main className="flex justify-center text-center p-8 pt-20">
                     <div className="max-w-xs flex flex-col items-center">
                         <div className="p-5 bg-rose-500/10 rounded-card-premium mb-6">
                             <WarningCircle className="h-12 w-12 text-rose-500" weight="regular" />
                         </div>
                         <h2 className="text-2xl font-semibold tracking-tighter">Tidak Ditemukan</h2>
-                        <p className="text-sm font-medium text-muted-foreground mt-3">Anggaran ini mungkin sudah dihapus atau dipindahkan.</p>
-                        <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-md h-11 px-6">
-                            <ArrowLeft className="mr-2 h-4 w-4" weight="regular" />
+                        <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-full h-11 px-6 font-medium">
                             Kembali ke Anggaran
                         </Button>
                     </div>
@@ -89,14 +80,8 @@ export default function BudgetDetailPage() {
         );
     }
 
-    const { budgetTransactions, spent, remaining, progress, daysPassedPercentage, safeDailyLimit } = budgetDetails!;
-
-    // Visual Configuration
+    const { budgetTransactions, spent, remaining, progress, safeDailyLimit } = budgetDetails!;
     const isOver = remaining < 0;
-    const barColor = isOver ? 'bg-rose-600' : (progress > 80 ? 'bg-yellow-400' : 'bg-primary');
-    const glowColor = isOver ? '' : (progress > 80 ? '' : '');
-    const textColor = isOver ? 'text-rose-600' : (progress > 80 ? 'text-yellow-600' : 'text-primary');
-
     const firstCategory = budget.categories[0] || 'Lainnya';
     const visuals = getCategoryVisuals(firstCategory);
     const CategoryIcon = visuals.icon as React.ElementType;
@@ -104,136 +89,166 @@ export default function BudgetDetailPage() {
     return (
         <AppPageShell className="bg-zinc-50 dark:bg-black">
             <PageHeader
-                title="Detail Anggaran"
+                title="Anggaran"
                 width="compact"
-                actionButton={{
-                    icon: PencilSimple,
-                    label: "Ubah",
-                    onClick: () => { triggerHaptic('light'); openEditBudgetModal(budget); }
-                }}
+                showBack
+                onBack={() => { triggerHaptic('light'); router.back(); }}
             />
 
-            <AppPageBody width="compact" className="space-y-6 pt-4">
+            <AppPageBody width="compact" className="space-y-10 pt-6 pb-24">
 
-                {/* 1. Identity & Health Card */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
-                    <Card className="border border-zinc-200/60 dark:border-zinc-800/60 rounded-card-premium bg-white dark:bg-zinc-900 shadow-card overflow-hidden premium-shadow">
-                        <div className="p-7 space-y-6">
-                            {/* Title & Icon */}
-                            <div className="flex flex-col items-center text-center gap-4">
-                                <div className={cn("p-5 rounded-card-premium border border-black/5 dark:border-white/5 shadow-inner transition-colors", visuals.bgColor)}>
-                                    <CategoryIcon className={cn("h-10 w-10", visuals.color)} strokeWidth={1.5} />
-                                </div>
-                                <div className="space-y-1">
-                                    <h2 className="text-3xl font-medium tracking-tighter">{budget.name}</h2>
-                                    <div className="flex items-center justify-center gap-2">
-                                        <Badge variant="outline" className="text-xs font-normal uppercase tracking-widest px-2.5 py-0.5 rounded-lg border-zinc-100 dark:border-zinc-800">
-                                            {budget.subCategory ? `${budget.categories[0]} / ${budget.subCategory}` : `${budget.categories.length} Kategori`}
-                                        </Badge>
-                                        <span className={cn("text-xs font-medium uppercase tracking-widest", textColor)}>
-                                            {isOver ? 'Overbudget' : (progress > 80 ? 'Hampir Habis' : 'Sehat')}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Massive Progress Bar */}
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-end text-xs font-medium uppercase tracking-widest text-zinc-400">
-                                    <span>PENGGUNAAN</span>
-                                    <span>{progress.toFixed(1)}%</span>
-                                </div>
-                                <div className="relative h-4 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                                    <div
-                                        className="absolute top-0 bottom-0 w-1 bg-zinc-400/30 z-20"
-                                        style={{ left: `${Math.min(daysPassedPercentage, 100)}%` }}
-                                    />
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${Math.min(progress, 100)}%` }}
-                                        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-                                        className={cn("absolute inset-y-0 left-0 rounded-full transition-all duration-1000 z-10", barColor, glowColor)}
-                                    >
-                                        <div className="absolute inset-0 opacity-20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.2) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.2) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }} />
-                                    </motion.div>
-                                </div>
-                                <div className="flex justify-between text-xs font-medium text-zinc-400 uppercase tracking-widest px-1">
-                                    <span>Awal Bulan</span>
-                                    <span>Hari ke-{now.getDate()}</span>
-                                    <span>Akhir Bulan</span>
-                                </div>
-                            </div>
-
-                            {/* Multi-Stat Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                                        <Target className="h-3 w-3" weight="regular" /> Target
-                                    </p>
-                                    <p className="text-xl font-semibold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
-                                </div>
-                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                                        <Stack className="h-3 w-3" weight="regular" /> Terpakai
-                                    </p>
-                                    <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
-                                </div>
-                                <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
-                                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                                        <Fire className="h-3 w-3" weight="regular" /> {isOver ? 'Kekurangan' : 'Sisa'}
-                                    </p>
-                                    <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
-                                        {formatCurrency(Math.abs(remaining))}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Action Insight Bar */}
-                            {!isOver && remaining > 0 && (
-                                <div className="p-6 rounded-card-premium bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-12 w-12 rounded-card bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                                            <Sparkle className="h-6 w-6" weight="regular" />
-                                        </div>
-                                        <div className="text-center md:text-left space-y-0.5">
-                                            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
-                                            <p className="text-xs font-medium text-emerald-600/60 uppercase tracking-widest">Kontrol Budget Berjalan</p>
-                                        </div>
-                                    </div>
-                                    <div className="text-center md:text-right">
-                                        <p className="text-3xl font-semibold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tighter">{formatCurrency(safeDailyLimit)}</p>
-                                        <p className="text-xs font-semibold text-emerald-600/40 uppercase tracking-widest">per hari</p>
-                                    </div>
-                                </div>
-                            )}
+                {/* 1. Hero Balance Section (Sisa Anggaran) */}
+                <div className="px-1 space-y-6">
+                    <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 label-xs !text-muted-foreground/45">
+                            <span>Sisa anggaran</span>
+                            <button onClick={() => { triggerHaptic('light'); setIsHidden(!isHidden); }} className="hover:text-foreground transition-colors">
+                                {isHidden ? <EyeSlash size={14} weight="bold" /> : <Eye size={14} weight="bold" />}
+                            </button>
                         </div>
-                    </Card>
-                </motion.div>
-
-                {/* 2. List Transactions */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="space-y-6"
-                >
-                    <div className="flex items-center justify-between px-2">
-                        <div className="flex items-center gap-3 text-zinc-400">
-                            <Tag className="h-4 w-4" weight="regular" />
-                            <h2 className="text-lg font-medium tracking-tighter text-zinc-900 dark:text-zinc-100">Aktivitas Anggaran</h2>
+                        <div className="flex items-baseline gap-1">
+                            <h2 className="text-3xl font-medium tracking-tighter tabular-nums leading-none text-foreground">
+                                {isHidden ? '••••••••' : formatCurrency(Math.abs(remaining))}
+                            </h2>
                         </div>
-                        <Badge variant="outline" className="rounded-lg font-normal text-xs uppercase">{budgetTransactions.length} Transaksi</Badge>
                     </div>
 
-                    <TransactionList
-                        transactions={budgetTransactions}
-                        isLoading={isTransactionsLoading}
-                    />
-                </motion.div>
+                    <Button 
+                        onClick={() => { triggerHaptic('medium'); openAddTransactionModal(); }}
+                        className="w-full h-14 rounded-full bg-primary text-primary-foreground font-medium text-base shadow-button hover:opacity-90 active:scale-[0.98] transition-all"
+                    >
+                        Tambah transaksi
+                    </Button>
+                </div>
+
+                {/* 2. Status Analysis Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                        <h3 className="text-lg font-semibold tracking-tight text-foreground">Status</h3>
+                        <span className={cn(
+                            "text-label font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded-full border",
+                            isOver 
+                                ? "bg-destructive/5 text-destructive border-destructive/10" 
+                                : progress > 80 
+                                    ? "bg-warning/5 text-warning border-warning/10" 
+                                    : "bg-success/5 text-success border-success/10"
+                        )}>
+                            {isOver ? 'Berlebih' : progress > 80 ? 'Hampir Habis' : 'Sehat'}
+                        </span>
+                    </div>
+
+                    <Card className="border-none rounded-card-premium bg-card shadow-soft p-7 overflow-hidden">
+                        <div className="space-y-7">
+                            {/* Utilization Analysis */}
+                            <div className="flex items-start gap-4">
+                                <div className="p-3.5 rounded-card-icon bg-muted text-muted-foreground/60">
+                                    <ChartBar size={20} weight="regular" />
+                                </div>
+                                <div className="flex-1 space-y-3">
+                                    <div className="flex justify-between items-end">
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="label-xs !text-muted-foreground/45">Penggunaan</span>
+                                            <span className="text-xl font-medium tracking-tight text-foreground">{progress.toFixed(1)}%</span>
+                                        </div>
+                                        <span className="label-xs !text-muted-foreground/30 tabular-nums">
+                                            {formatCurrency(spent)} / {formatCurrency(budget.targetAmount)}
+                                        </span>
+                                    </div>
+                                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                                        <motion.div 
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${Math.min(progress, 100)}%` }}
+                                            className={cn("h-full rounded-full transition-colors", isOver ? "bg-destructive shadow-[0_0_12px_-2px_hsla(var(--rose-500)/0.4)]" : "bg-primary")}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Jatah Aman Harian Insight */}
+                            <div className="flex items-start gap-4">
+                                <div className="p-3.5 rounded-card-icon bg-muted text-muted-foreground/60">
+                                    <Sparkle size={20} weight="regular" />
+                                </div>
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="label-xs !text-muted-foreground/45">Jatah Aman Harian</span>
+                                    <span className={cn("text-xl font-medium tracking-tight", isOver ? "text-destructive" : "text-foreground")}>
+                                        {formatCurrency(safeDailyLimit)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+
+                {/* 3. Configuration & Info Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                        <h3 className="text-lg font-semibold tracking-tight text-foreground">Konfigurasi</h3>
+                        <button 
+                            onClick={() => { triggerHaptic('light'); openEditBudgetModal(budget); }}
+                            className="label-xs !text-muted-foreground/45 hover:text-foreground transition-colors"
+                        >
+                            Ubah anggaran
+                        </button>
+                    </div>
+
+                    <Card className="border-none rounded-card-premium bg-card shadow-soft p-7 space-y-7">
+                        {/* Budget Name Identity */}
+                        <div className="flex items-center gap-4">
+                            <div className={cn("p-3.5 rounded-card-icon", visuals.bgColor)}>
+                                <CategoryIcon className={visuals.color} size={20} weight="regular" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="label-xs !text-muted-foreground/45">Nama anggaran</span>
+                                <span className="text-base font-medium tracking-tight text-foreground">{budget.name}</span>
+                            </div>
+                        </div>
+
+                        {/* Category Mapping */}
+                        <div className="flex items-center gap-4">
+                            <div className="p-3.5 rounded-card-icon bg-muted text-muted-foreground/60">
+                                <Stack size={20} weight="regular" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="label-xs !text-muted-foreground/45">Kategori aktif</span>
+                                <span className="text-base font-medium tracking-tight text-foreground truncate max-w-[200px]">
+                                    {budget.subCategory ? budget.subCategory : `${budget.categories.length} Kategori`}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Financial Target */}
+                        <div className="flex items-center gap-4">
+                            <div className={cn("p-3.5 rounded-card-icon bg-muted text-muted-foreground/60")}>
+                                <Target size={20} weight="regular" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                                <span className="label-xs !text-muted-foreground/45">Target bulanan</span>
+                                <span className="text-base font-medium tracking-tight tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</span>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+
+                {/* 4. Activity Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                        <h3 className="text-lg font-semibold tracking-tight text-foreground">Transaksi</h3>
+                        <button className="flex items-center gap-0.5 label-xs !text-muted-foreground/35 hover:text-foreground transition-colors">
+                            Lihat semua
+                            <CaretRight size={10} weight="bold" />
+                        </button>
+                    </div>
+
+                    <div className="rounded-card-premium bg-card shadow-soft overflow-hidden min-h-[100px]">
+                        <TransactionList
+                            transactions={budgetTransactions}
+                            isLoading={isTransactionsLoading}
+                        />
+                    </div>
+                </div>
+
             </AppPageBody>
         </AppPageShell>
-    )
+    );
 }

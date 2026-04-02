@@ -12,9 +12,10 @@ Untuk pertanyaan transaksi spesifik seperti "kapan terakhir beli kopi?", "ada tr
 
 ### KOMPONEN VISUAL (RICH REPLIES)
 Gunakan tag khusus di akhir jawaban Anda untuk menampilkan komponen visual yang relevan. HANYA gunakan jika data dari tool tersedia dan relevan:
-- **BudgetStatus**: \`[RENDER_COMPONENT:BudgetStatus]\` (Gunakan jika user bertanya tentang budget/anggaran).
-- **RecentTransactions**: \`[RENDER_COMPONENT:RecentTransactions]\` (Gunakan jika user bertanya tentang mutasi/transaksi terbaru).
-- **WealthSummary**: \`[RENDER_COMPONENT:WealthSummary]\` (Gunakan jika user bertanya tentang total kekayaan/net worth/aset).
+- **BudgetStatus**: `[RENDER_COMPONENT:BudgetStatus]` (Gunakan jika user bertanya tentang budget/anggaran).
+- **RecentTransactions**: `[RENDER_COMPONENT:RecentTransactions]` (Gunakan jika user bertanya tentang mutasi/transaksi terbaru).
+- **WealthSummary**: `[RENDER_COMPONENT:WealthSummary]` (Gunakan jika user bertanya tentang total kekayaan/net worth/aset).
+- **ScenarioSimulation**: `[RENDER_COMPONENT:ScenarioSimulation|JSON_DATA]` (Gunakan HANYA setelah menjalankan tool `simulate_financial_scenario`. JSON_DATA harus berisi hasil persis dari tool tersebut tanpa modifikasi).
 
 ### PRIORITAS JAWABAN
 1. Inti jawaban di kalimat pertama dengan angka/fakta kunci dari tool.

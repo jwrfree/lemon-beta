@@ -7,51 +7,26 @@ import { FAB } from '@/components/ui/fab';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
-import { formatCurrency, cn } from '@/lib/utils';
+import { formatCurrency, cn, triggerHaptic } from '@/lib/utils';
 import { parseISO, differenceInCalendarDays } from 'date-fns';
-import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots, HandCoins } from '@phosphor-icons/react';
+import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots, HandCoins, Sparkle, Stack, Target, WarningCircle } from '@phosphor-icons/react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { spacing } from '@/lib/layout-tokens';
+import { layout } from '@/lib/layout-tokens';
 
-import { Progress } from '@/components/ui/progress';
 import { PageHeader } from '@/components/page-header';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { DebtAnalyticsCard } from '@/features/debts/components/debt-analytics-card';
 import { StatusBadge } from '@/components/status-badge';
 import { motion } from 'framer-motion';
 import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
+import { getVisualDNA } from '@/lib/visual-dna';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
-    owed: 'Saya Berhutang',
-    owing: 'Orang Lain Berhutang',
+    owed: 'Hutang',
+    owing: 'Piutang',
     settled: 'Lunas',
-};
-
-const getDebtStatusBadge = (debt: Debt) => {
-    if (debt.status === 'settled' || (debt.outstandingBalance ?? 0) <= 0) {
-        return (
-            <StatusBadge variant="success" tooltip="Hutang ini sudah lunas sepenuhnya.">
-                Lunas
-            </StatusBadge>
-        );
-    }
-    const dueDate = debt.dueDate ? parseISO(debt.dueDate) : null;
-    if (dueDate && dueDate.getTime() < Date.now()) {
-        return (
-            <StatusBadge variant="error" tooltip="Melewati tanggal jatuh tempo pembayaran.">
-                Terlambat
-            </StatusBadge>
-        );
-    }
-    return (
-        <StatusBadge variant="default" tooltip="Hutang masih aktif berjalan.">
-            Aktif
-        </StatusBadge>
-    );
 };
 
 const getDebtDueStatus = (debt: Debt) => {
@@ -61,43 +36,39 @@ const getDebtDueStatus = (debt: Debt) => {
     
     if (diff < 0) {
         return (
-            <span className="text-xs text-destructive font-medium flex items-center gap-1 bg-destructive/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="regular" /> 
+            <span className="text-[10px] uppercase tracking-widest text-destructive font-semibold flex items-center gap-1.5 bg-destructive/10 px-2 py-0.5 rounded-full w-fit mt-1">
+                <CalendarDots className="h-3 w-3" weight="bold" /> 
                 Telat {Math.abs(diff)} hari
             </span>
         );
     }
     if (diff === 0) {
         return (
-            <span className="text-xs text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="regular" /> 
+            <span className="text-[10px] uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
+                <CalendarDots className="h-3 w-3" weight="bold" /> 
                 Hari ini
             </span>
         );
     }
     if (diff <= 7) {
         return (
-            <span className="text-xs text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="regular" /> 
+            <span className="text-[10px] uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
+                <CalendarDots className="h-3 w-3" weight="bold" /> 
                 {diff} hari lagi
             </span>
         );
     }
     return (
-        <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded-md w-fit mt-1">
+        <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded-full w-fit mt-1">
             <CalendarDots className="h-3 w-3" weight="regular" /> 
             {diff} hari lagi
         </span>
     );
 };
 
-import { getVisualDNA } from '@/lib/visual-dna';
-
-// ... (existing helper components)
-
 export default function DebtsPage() {
     const router = useRouter();
-    const { debts } = useDebts();
+    const { debts, isLoading } = useDebts();
     const { setIsDebtModalOpen, setDebtToEdit } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
     const [sortBy, setSortBy] = useState('updated_desc');
@@ -145,144 +116,155 @@ export default function DebtsPage() {
     }, [debts, activeFilter, sortBy]);
 
     return (
-        <AppPageShell className="relative">
+        <AppPageShell className="bg-zinc-50 dark:bg-black">
             <PageHeader 
                 title="Hutang & Piutang" 
                 showBackButton={false}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-xs font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none">
-                            <ArrowsDownUp className="w-3 h-3 mr-2 text-primary" weight="regular" />
+                        <SelectTrigger className="w-[140px] h-9 text-[10px] font-semibold uppercase tracking-widest bg-white dark:bg-zinc-900 border-none shadow-sm rounded-full px-4">
+                            <ArrowsDownUp className="w-3 h-3 mr-2 text-muted-foreground/60" weight="regular" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-card border-none shadow-xl bg-popover/95 backdrop-blur-xl">
-                            <SelectItem value="updated_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
-                            <SelectItem value="due_soon" className="text-xs font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
-                            <SelectItem value="amount_desc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
-                            <SelectItem value="amount_asc" className="text-xs font-semibold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
+                        <SelectContent align="end" className="rounded-[24px] border-none shadow-xl bg-popover/95 backdrop-blur-xl">
+                            <SelectItem value="updated_desc" className="text-[10px] font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
+                            <SelectItem value="due_soon" className="text-[10px] font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
+                            <SelectItem value="amount_desc" className="text-[10px] font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
+                            <SelectItem value="amount_asc" className="text-[10px] font-semibold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
                         </SelectContent>
                     </Select>
                 }
             />
-            <AppPageBody className="space-y-6">
-                    {/* Summary Hero Card */}
-                    <Card className="border-none rounded-card-premium bg-teal-900 text-white shadow-card overflow-hidden relative">
-                        <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12">
-                            <HandCoins className="h-40 w-40" />
+            
+            <AppPageBody className={cn(layout.container, "pt-6")}>
+                
+                {/* 1. Hero Summary (High Contrast NeoBank Style) */}
+                <div className="px-1 space-y-6">
+                    <div className="space-y-1.5">
+                        <span className="label-xs !text-muted-foreground/45">Liabilitas Bersih</span>
+                        <h2 className="text-4xl font-medium tracking-tighter tabular-nums text-foreground leading-none">
+                            {formatCurrency(Math.abs(totals.totalOwing - totals.totalOwed))}
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-white dark:bg-zinc-900 p-5 rounded-[32px] shadow-soft border-none flex flex-col gap-1">
+                            <span className="label-xs !text-rose-500/70 flex items-center gap-1.5">
+                                <ArrowUpRight size={12} weight="bold" /> Hutang
+                            </span>
+                            <span className="text-lg font-medium tracking-tight text-foreground tabular-nums">
+                                {formatCurrency(totals.totalOwed)}
+                            </span>
                         </div>
-                        <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-emerald-400/10 blur-3xl"></div>
+                        <div className="bg-white dark:bg-zinc-900 p-5 rounded-[32px] shadow-soft border-none flex flex-col gap-1">
+                            <span className="label-xs !text-emerald-500/70 flex items-center gap-1.5">
+                                <ArrowDownRight size={12} weight="bold" /> Piutang
+                            </span>
+                            <span className="text-lg font-medium tracking-tight text-foreground tabular-nums">
+                                {formatCurrency(totals.totalOwing)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-                        <CardContent className={cn(spacing.cardPremium, "space-y-6 relative z-10")}>
-                            <div>
-                                <p className="label-xs text-white/50 mb-2">Debt Overview</p>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-semibold tracking-tighter text-white tabular-nums">
-                                        {formatCurrency(Math.abs(totals.totalOwing - totals.totalOwed))}
-                                    </span>
-                                    <span className="label-xs text-white/40">Net Liability</span>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner">
-                                    <p className="label-xs text-rose-300/60 mb-1.5 flex items-center gap-1.5">
-                                        <ArrowUpRight className="h-3 w-3" /> Owed
-                                    </p>
-                                    <p className="text-lg font-semibold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwed)}</p>
-                                </div>
-                                <div className="bg-white/5 backdrop-blur-md rounded-card-glass p-4 border border-white/10 shadow-inner">
-                                    <p className="label-xs text-emerald-300/60 mb-1.5 flex items-center gap-1.5">
-                                        <ArrowDownRight className="h-3 w-3" /> Owing
-                                    </p>
-                                    <p className="text-lg font-semibold tracking-tight text-white tabular-nums">{formatCurrency(totals.totalOwing)}</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <DebtAnalyticsCard debts={debts} />
-
+                {/* 2. Advanced Filtering */}
+                <div className="space-y-4 px-1">
                     <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                        <TabsList className="bg-muted/50 p-1 rounded-full h-12 w-full grid grid-cols-4">
+                        <TabsList className="bg-muted/50 p-1 rounded-full h-12 w-full grid grid-cols-4 border-none">
                             {Object.entries(filterLabels).map(([value, label]) => (
-                                <TabsTrigger key={value} value={value} className="h-full rounded-full font-semibold text-xs uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-primary">
-                                    {label === 'Semua' ? 'All' : label.split(' ')[0]}
+                                <TabsTrigger 
+                                    key={value} 
+                                    value={value} 
+                                    className="h-full rounded-full font-semibold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                                >
+                                    {label}
                                 </TabsTrigger>
                             ))}
                         </TabsList>
                     </Tabs>
+                </div>
 
-                    <div className="space-y-4">
-                        {visibleDebts.length === 0 ? (
-                            <DebtsEmptyState />
-                        ) : (
-                            visibleDebts.map((debt: Debt) => {
+                {/* 3. Debt List */}
+                <div className="space-y-4">
+                    {visibleDebts.length === 0 ? (
+                        <DebtsEmptyState />
+                    ) : (
+                        <div className="space-y-3">
+                            {visibleDebts.map((debt: Debt) => {
                                 const isOwed = debt.direction === 'owed';
                                 const dna = getVisualDNA(isOwed ? 'rose' : 'emerald');
                                 const progress = Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100));
 
                                 return (
-                                    <Card
+                                    <motion.div
                                         key={debt.id}
-                                        className="overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer border-none shadow-card rounded-card-premium relative"
-                                        style={{ 
-                                            background: dna.gradient,
-                                            boxShadow: `0 20px 40px -12px ${dna.ambient.replace('0.2', '0.4')}` 
-                                        }}
-                                        onClick={() => router.push(`/debts/${debt.id}`)}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => { triggerHaptic('light'); router.push(`/debts/${debt.id}`); }}
+                                        className="cursor-pointer"
                                     >
-                                        <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/10 blur-2xl"></div>
-                                        
-                                        <CardContent className={cn(spacing.cardPremium, "relative z-10 text-white")}>
-                                            <div className="flex items-start justify-between gap-4 mb-8">
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className="font-semibold text-lg tracking-tight truncate">{debt.title}</h3>
-                                                    <p className="label-xs text-white/50 mt-1">{isOwed ? 'To: ' : 'From: '} {debt.counterparty}</p>
-                                                    <div className="mt-2">{getDebtDueStatus(debt)}</div>
+                                        <Card className="border-none rounded-[32px] bg-white dark:bg-zinc-900 shadow-soft p-6 flex flex-col gap-6 overflow-hidden relative group">
+                                            {/* Decorative Background Glow */}
+                                            <div className={cn(
+                                                "absolute -right-8 -top-8 h-24 w-24 rounded-full blur-3xl opacity-10 transition-opacity group-hover:opacity-20",
+                                                isOwed ? "bg-rose-500" : "bg-emerald-500"
+                                            )} />
+
+                                            <div className="flex items-start justify-between relative z-10">
+                                                <div className="space-y-1">
+                                                    <h3 className="text-lg font-semibold tracking-tight text-foreground">{debt.title}</h3>
+                                                    <p className="label-xs !text-muted-foreground/35">
+                                                        {isOwed ? 'Kepada: ' : 'Dari: '} <span className="text-muted-foreground/60">{debt.counterparty}</span>
+                                                    </p>
                                                 </div>
-                                                <div className="bg-white/10 backdrop-blur-md rounded-full px-3 py-1 border border-white/10">
-                                                    <span className="label-xs text-white">
-                                                        {debt.status === 'settled' ? 'Settled' : 'Active'}
-                                                    </span>
-                                                </div>
+                                                <StatusBadge variant={debt.status === 'settled' ? 'success' : isOwed ? 'destructive' : 'default'}>
+                                                    {debt.status === 'settled' ? 'Lunas' : isOwed ? 'Hutang' : 'Piutang'}
+                                                </StatusBadge>
                                             </div>
 
-                                            <div className="flex items-end justify-between gap-6">
-                                                <div className="space-y-2 flex-1">
-                                                    <p className="label-xs text-white/40">
-                                                        {isOwed ? 'Principal Owed' : 'Receivable'}
-                                                    </p>
-                                                    <div className="bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-card-glass border border-white/5 w-fit">
-                                                        <p className="text-2xl font-semibold tracking-tighter tabular-nums text-white">
+                                            <div className="space-y-4 relative z-10">
+                                                <div className="flex items-end justify-between">
+                                                    <div className="space-y-1">
+                                                        <span className="label-xs !text-muted-foreground/45">
+                                                            {isOwed ? 'Sisa Hutang' : 'Sisa Piutang'}
+                                                        </span>
+                                                        <p className="text-2xl font-medium tracking-tighter tabular-nums text-foreground">
                                                             {formatCurrency(debt.outstandingBalance ?? debt.principal ?? 0)}
                                                         </p>
                                                     </div>
+                                                    <div className="text-right">
+                                                        {getDebtDueStatus(debt)}
+                                                    </div>
                                                 </div>
-                                                <div className="text-right space-y-2 min-w-[80px]">
-                                                    <p className="label-xs text-white/40">Recovery</p>
-                                                    <div className="flex items-center gap-3 justify-end">
-                                                        <div className="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
-                                                            <motion.div 
-                                                                initial={{ width: 0 }}
-                                                                animate={{ width: `${progress}%` }}
-                                                                className="h-full rounded-full bg-white"
-                                                            />
-                                                        </div>
-                                                        <span className="text-xs font-semibold tabular-nums text-white">{Math.round(progress)}%</span>
+
+                                                {/* Progress Bar (Recovery) */}
+                                                <div className="space-y-2">
+                                                    <div className="flex justify-between items-center label-xs !text-muted-foreground/30">
+                                                        <span>Progress Pelunasan</span>
+                                                        <span className="tabular-nums font-semibold">{Math.round(progress)}%</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-muted dark:bg-zinc-800 rounded-full overflow-hidden">
+                                                        <motion.div 
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${progress}%` }}
+                                                            className={cn("h-full rounded-full", isOwed ? "bg-rose-500" : "bg-emerald-500")}
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
-                                        </CardContent>
-                                    </Card>
+                                        </Card>
+                                    </motion.div>
                                 );
-                            })
-                        )}
-                    </div>
+                            })}
+                        </div>
+                    )}
+                </div>
             </AppPageBody>
 
-            {/* Floating Action Button */}
             <FAB
                 onClick={() => {
+                    triggerHaptic('medium');
                     setDebtToEdit(null);
                     setIsDebtModalOpen(true);
                 }}
@@ -292,4 +274,3 @@ export default function DebtsPage() {
         </AppPageShell>
     );
 }
-

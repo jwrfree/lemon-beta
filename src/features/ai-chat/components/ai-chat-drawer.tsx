@@ -22,18 +22,23 @@ import {
     Square,
     X,
     MessageSquarePlus,
+    Mic,
+    StopCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn, triggerHaptic } from '@/lib/utils';
 import { useAIChat } from '../hooks/use-ai-chat';
 import { ErrorAlert } from '@/components/ui/error-alert';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ReactMarkdown from 'react-markdown';
 import { useInsights } from '@/features/insights/hooks/use-insights';
 import { buildFollowUpSuggestions } from '../lib/follow-up-suggestions';
+import { useAudioRecorder } from '@/hooks/use-audio-recorder';
+import { useUI } from '@/components/ui-provider';
 import { BudgetStatusCard } from './rich-results/BudgetStatusCard';
 import { WealthSummaryCard } from './rich-results/WealthSummaryCard';
 import { RecentTransactionsList } from './rich-results/RecentTransactionsList';
+import { ScenarioSimulationCard } from './rich-results/ScenarioSimulationCard';
 
 interface AIChatDrawerProps {
     isOpen: boolean;
@@ -79,23 +84,33 @@ const getMessageText = (message: UIMessage) =>
 const RichMessageContent = ({ text }: { text: string }) => {
     if (!text) return null;
 
-    const components: Record<string, React.ReactNode> = {
-        'BudgetStatus': <BudgetStatusCard />,
-        'WealthSummary': <WealthSummaryCard />,
-        'RecentTransactions': <RecentTransactionsList />,
+    const components: Record<string, (data?: any) => React.ReactNode> = {
+        'BudgetStatus': () => <BudgetStatusCard />,
+        'WealthSummary': () => <WealthSummaryCard />,
+        'RecentTransactions': () => <RecentTransactionsList />,
+        'ScenarioSimulation': (data) => <ScenarioSimulationCard data={data} />,
     };
 
-    // Split text by component tags (e.g. [RENDER_COMPONENT:BudgetStatus])
-    const parts = text.split(/(\[RENDER_COMPONENT:[a-zA-Z]+\])/g);
+    // Split text by component tags (e.g. [RENDER_COMPONENT:BudgetStatus] or [RENDER_COMPONENT:ScenarioSimulation|{...}])
+    const parts = text.split(/(\[RENDER_COMPONENT:[a-zA-Z]+(?:\|[^\]]+)?\])/g);
 
     return (
         <>
             {parts.map((part, idx) => {
-                const match = part.match(/\[RENDER_COMPONENT:([a-zA-Z]+)\]/);
+                const match = part.match(/\[RENDER_COMPONENT:([a-zA-Z]+)(?:\|([^\]]+))?\]/);
                 const componentName = match ? match[1] : null;
+                const componentDataRaw = match ? match[2] : null;
 
                 if (componentName && components[componentName]) {
-                    return <div key={idx} className="my-3 first:mt-0 last:mb-0">{components[componentName]}</div>;
+                    let data = undefined;
+                    if (componentDataRaw) {
+                        try {
+                            data = JSON.parse(componentDataRaw);
+                        } catch (e) {
+                            console.error("Failed to parse component data:", e);
+                        }
+                    }
+                    return <div key={idx} className="my-3 first:mt-0 last:mb-0">{components[componentName](data)}</div>;
                 }
                 
                 if (!part.trim() || part.startsWith('[RENDER_COMPONENT:')) return null;
@@ -117,12 +132,14 @@ const RichMessageContent = ({ text }: { text: string }) => {
 
 export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
     const { briefing } = useInsights();
+    const { showToast } = useUI();
     const {
         messages,
         input,
         handleInputChange,
         handleSubmit,
         submitQuickAction,
+        setInput,
         isLoading,
         error,
         errorMessage,
@@ -130,6 +147,9 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
         stop,
         clearChat,
     } = useAIChat();
+
+    const { isRecording, startRecording, stopRecording } = useAudioRecorder();
+    const [isTranscribing, setIsTranscribing] = useState(false);
 
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
     const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
@@ -142,6 +162,43 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
     ];
 
     const bottomAnchorRef = useRef<HTMLDivElement>(null);
+
+    const handleVoiceRecord = async () => {
+        if (!isRecording) {
+            try {
+                triggerHaptic('light');
+                await startRecording();
+            } catch (err) {
+                showToast("Gagal mengakses mikrofon.", "error");
+            }
+        } else {
+            try {
+                triggerHaptic('medium');
+                setIsTranscribing(true);
+                const blob = await stopRecording();
+                if (!blob) return;
+
+                const formData = new FormData();
+                formData.append('audio', blob, 'voice.webm');
+
+                const res = await fetch('/api/transcribe', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await res.json();
+                if (data.text) {
+                    triggerHaptic('success');
+                    setInput(data.text);
+                }
+            } catch (err) {
+                console.error("Transcription failed:", err);
+                showToast("Gagal mengubah suara ke teks.", "error");
+            } finally {
+                setIsTranscribing(false);
+            }
+        }
+    };
 
     useEffect(() => {
         bottomAnchorRef.current?.scrollIntoView({
@@ -412,25 +469,47 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                             <Input
                                 value={input}
                                 onChange={handleInputChange}
-                                disabled={isLoading}
-                                className="pr-12 h-12 rounded-2xl bg-card text-foreground focus-visible:ring-primary/20 w-full"
+                                disabled={isLoading || isRecording || isTranscribing}
+                                className="pr-20 h-12 rounded-2xl bg-card text-foreground focus-visible:ring-primary/20 w-full"
                             />
-                            <Button
-                                type="submit"
-                                size="icon"
-                                disabled={isLoading || !input.trim()}
-                                className="absolute right-1.5 top-1.5 h-9 w-9 rounded-xl shadow-lg shadow-primary/20"
-                            >
-                                {isLoading ? (
-                                    <motion.div
-                                        animate={{ opacity: [0.4, 1, 0.4] }}
-                                        transition={{ duration: 1.5, repeat: Infinity }}
-                                        className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-                                    />
-                                ) : (
-                                    <Send className="h-4 w-4" />
-                                )}
-                            </Button>
+                            <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    onClick={handleVoiceRecord}
+                                    disabled={isLoading || isTranscribing}
+                                    className={cn(
+                                        "h-9 w-9 rounded-xl transition-all duration-300",
+                                        isRecording 
+                                            ? "bg-destructive text-destructive-foreground animate-pulse" 
+                                            : "bg-secondary text-muted-foreground hover:bg-muted"
+                                    )}
+                                >
+                                    {isTranscribing ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : isRecording ? (
+                                        <StopCircle className="h-4 w-4" />
+                                    ) : (
+                                        <Mic className="h-4 w-4" />
+                                    )}
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    size="icon"
+                                    disabled={isLoading || isRecording || isTranscribing || !input.trim()}
+                                    className="h-9 w-9 rounded-xl shadow-lg shadow-primary/20"
+                                >
+                                    {isLoading ? (
+                                        <motion.div
+                                            animate={{ opacity: [0.4, 1, 0.4] }}
+                                            transition={{ duration: 1.5, repeat: Infinity }}
+                                            className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                                        />
+                                    ) : (
+                                        <Send className="h-4 w-4" />
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                     </form>
                     <p className="text-label text-center mt-3 text-muted-foreground/70 mb-2">

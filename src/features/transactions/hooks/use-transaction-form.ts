@@ -24,6 +24,9 @@ import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useMemo } from 'react';
 import { getHours, getDate } from 'date-fns';
 import { getCurrentIsoTimestamp, normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
+import { useRecentTransactions } from './use-recent-transactions';
+import type { QuickStartSuggestion } from '../utils/quick-start-suggestions';
+import { buildQuickStartSuggestionGroups } from '../utils/quick-start-suggestions';
 
 interface UseTransactionFormProps {
     initialData?: Transaction | null;
@@ -51,6 +54,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
     const { showToast } = useUI();
     const { addTransaction, updateTransaction, deleteTransaction, addTransfer } = useActions();
     const { transactions } = useMonthTransactions();
+    const { transactions: recentTransactions } = useRecentTransactions(60);
     const { budgets } = useBudgets();
     const [isAiProcessing, setIsAiProcessing] = useState(false);
     const [aiExplanation, setAiExplanation] = useState<string | null>(null);
@@ -62,53 +66,13 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
 
     const router = useRouter();
 
-    // History suggestions logic
-    const historySuggestions = useMemo(() => {
-        const now = new Date();
-        const hour = getHours(now);
-        const day = getDate(now);
-        
-        const seen = new Set<string>();
-        
-        // 1. Contextual Base Suggestions
-        const timeContextSpecs = [
-            { check: () => hour >= 5 && hour < 10, keyword: 'Sarapan', fallback: 'Kopi Pagi' },
-            { check: () => hour >= 11 && hour < 14, keyword: 'Makan Siang', fallback: 'Gojek' },
-            { check: () => hour >= 17 && hour < 21, keyword: 'Makan Malam', fallback: 'GrabFood' },
-            { check: () => day >= 25 || day <= 2, keyword: 'Tabungan', fallback: 'Investasi' }
-        ];
-
-        const activeSpec = timeContextSpecs.find(s => s.check());
-        const contextualSuggestions: string[] = [];
-        if (activeSpec) {
-            contextualSuggestions.push(activeSpec.keyword, activeSpec.fallback);
-            seen.add(activeSpec.keyword.toLowerCase());
-            seen.add(activeSpec.fallback.toLowerCase());
-        }
-
-        // 2. Dynamic History Suggestions
-        const historical = transactions
-            .slice()
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            .map((tx) => {
-                const compactAmount = tx.amount >= 1000000
-                    ? `${Number((tx.amount / 1000000).toFixed(1)).toString().replace('.', ',')}jt`
-                    : tx.amount >= 1000
-                        ? `${Math.round(tx.amount / 1000)}rb`
-                        : `${tx.amount}`;
-
-                const baseText = tx.description?.trim() || tx.category;
-                return `${baseText} ${compactAmount}`.trim();
-            })
-            .filter((text) => {
-                const normalized = text.toLowerCase();
-                if (!normalized || seen.has(normalized)) return false;
-                seen.add(normalized);
-                return true;
-            });
-
-        return [...contextualSuggestions, ...historical].slice(0, 5);
-    }, [transactions]);
+    const quickStartSuggestions = useMemo(() => {
+        return buildQuickStartSuggestionGroups({
+            transactions: recentTransactions.length > 0 ? recentTransactions : transactions,
+            wallets: context?.wallets || [],
+            now: new Date(),
+        });
+    }, [context?.wallets, recentTransactions, transactions]);
 
     const isEditMode = !!initialData;
 
@@ -343,6 +307,32 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         }
     }, [user, context, form]);
 
+    const applyQuickStartSuggestion = useCallback((suggestion: QuickStartSuggestion) => {
+        if (!context) return;
+        if (suggestion.kind !== 'repeat') return;
+
+        const nextDate = new Date();
+        form.reset({
+            type: suggestion.type || type || 'expense',
+            amount: suggestion.amount ? suggestion.amount.toString() : '' as any,
+            description: suggestion.label,
+            date: nextDate,
+            walletId: suggestion.walletId || getPreferredCashWalletId(context.wallets),
+            category: suggestion.category || '',
+            subCategory: suggestion.subCategory || '',
+            location: suggestion.location || suggestion.merchant || '',
+            isNeed: suggestion.isNeed ?? true,
+            fromWalletId: '',
+            toWalletId: '',
+        } as any);
+
+        setClarificationQuestion(null);
+        setAiExplanation(suggestion.reason || null);
+        setMultiTransactions([]);
+        setCurrentTxIndex(0);
+        triggerHaptic('light');
+    }, [context, form, type]);
+
     const goToNext = useCallback(() => {
         if (currentTxIndex < multiTransactions.length - 1) {
             // Save current form values to multiTransactions array before switching
@@ -573,7 +563,8 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         goToPrev,
         removeCurrent,
         saveAll,
-        historySuggestions,
+        quickStartSuggestions,
+        applyQuickStartSuggestion,
 
         processMagicInput,
         applyLiquidPatch, // Legacy support if needed

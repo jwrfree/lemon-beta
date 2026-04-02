@@ -82,15 +82,15 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                 onClick={handleCardClick}
                 className="w-full h-full text-left focus:outline-none group"
             >
-                <Card 
+                <Card
                     className="h-full overflow-hidden border-none shadow-none rounded-card-premium transition-all duration-500 relative"
-                    style={{ 
+                    style={{
                         background: dna.gradient
                     }}
                 >
                     {/* Ambient Glows */}
                     <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-3xl"></div>
-                    
+
                     <div className="p-7 flex flex-col h-full space-y-6 relative z-10 text-white">
                         {/* Header: Identity & Status */}
                         <div className="flex items-start justify-between">
@@ -164,9 +164,9 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                 </div>
                             )}
                         </div>
-                                    </div>
-                                </Card>
-                            </button>
-                        </motion.div>
-                    );
-                    };
+                    </div>
+                </Card>
+            </button>
+        </motion.div>
+    );
+};

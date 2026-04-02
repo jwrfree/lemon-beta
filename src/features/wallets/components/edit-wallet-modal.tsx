@@ -194,7 +194,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                     <span>Hapus Dompet</span>
                   </Button>
                 </AlertDialogTrigger>
-                  <AlertDialogContent className="max-w-[90vw] rounded-card md:max-w-md">
+                <AlertDialogContent className="max-w-[90vw] rounded-card md:max-w-md">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Yakin mau menghapus dompet?</AlertDialogTitle>
                     <AlertDialogDescription>

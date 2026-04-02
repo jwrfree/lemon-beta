@@ -5,11 +5,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-    Sheet, 
-    SheetContent, 
-    SheetHeader, 
-    SheetTitle, 
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
     SheetDescription,
     SheetFooter
 } from '@/components/ui/sheet';
@@ -69,7 +69,7 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
 
     const onSubmit = async (values: ProfileFormValues) => {
         if (!user) return;
-        
+
         setIsSubmitting(true);
         triggerHaptic('medium');
 
@@ -97,8 +97,8 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <SheetContent 
-                side="bottom" 
+            <SheetContent
+                side="bottom"
                 className="rounded-t-[32px] bg-background p-0 sm:max-w-lg mx-auto border-none shadow-2xl overflow-hidden"
             >
                 {/* Handle Bar for Native Feel */}
@@ -115,27 +115,27 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                     {/* AVATAR EDITOR */}
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
-                            <motion.div 
+                            <motion.div
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="relative cursor-pointer"
                                 onClick={() => fileInputRef.current?.click()}
                             >
-                                <UserAvatar 
-                                    name={form.watch('displayName')} 
-                                    src={previewUrl} 
-                                    className="h-28 w-28 border-4 border-background shadow-xl" 
+                                <UserAvatar
+                                    name={form.watch('displayName')}
+                                    src={previewUrl}
+                                    className="h-28 w-28 border-4 border-background shadow-xl"
                                 />
                                 <div className="absolute bottom-0 right-0 h-9 w-9 rounded-full bg-foreground text-background flex items-center justify-center border-4 border-background shadow-lg">
                                     <Camera size={18} weight="bold" />
                                 </div>
                             </motion.div>
-                            <input 
-                                type="file" 
-                                ref={fileInputRef} 
-                                onChange={handleFileChange} 
-                                accept="image/*" 
-                                className="hidden" 
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                accept="image/*"
+                                className="hidden"
                             />
                         </div>
                         <p className="text-label font-semibold uppercase tracking-widest text-muted-foreground/30">Ketuk untuk ubah foto</p>
@@ -145,7 +145,7 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <Label htmlFor="displayName" className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60 ml-1">Nama Tampilan</Label>
-                            <Input 
+                            <Input
                                 id="displayName"
                                 {...form.register('displayName')}
                                 placeholder="Masukkan nama kamu"
@@ -165,16 +165,16 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                     </div>
 
                     <SheetFooter className="pt-4 pb-8 sm:pb-4 flex flex-col gap-3">
-                        <Button 
-                            type="submit" 
+                        <Button
+                            type="submit"
                             disabled={isSubmitting}
                             className="h-14 w-full rounded-2xl bg-foreground text-background font-semibold text-base tracking-tight hover:bg-foreground/90 transition-all active:scale-95 shadow-xl"
                         >
                             {isSubmitting ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : 'Simpan Perubahan'}
                         </Button>
-                        <Button 
-                            type="button" 
-                            variant="ghost" 
+                        <Button
+                            type="button"
+                            variant="ghost"
                             onClick={onClose}
                             className="h-12 w-full rounded-xl text-muted-foreground font-semibold text-xs uppercase tracking-widest"
                         >

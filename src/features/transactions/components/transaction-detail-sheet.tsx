@@ -19,7 +19,7 @@ import {
     ShieldCheck,
     Sparkle,
     Wallet as WalletIcon,
-    XCircle,
+    X,
 } from '@phosphor-icons/react';
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -104,7 +104,7 @@ export const TransactionDetailSheet = ({
                         onClick={onClose}
                         className="h-9 w-9 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
                     >
-                        <XCircle size={22} weight="bold" />
+                        <X size={32} weight="regular" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
@@ -129,7 +129,7 @@ export const TransactionDetailSheet = ({
                         >
                             <div className="flex items-start gap-4">
                                 <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-[22px] shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]", category.bg_color || 'bg-muted')}>
-                                {React.createElement(CategoryIcon, { className: cn("h-6 w-6", category.color) })}
+                                    {React.createElement(CategoryIcon, { className: cn("h-6 w-6", category.color) })}
                                 </div>
                                 <div className="min-w-0 flex-1 pr-10">
                                     <p className="text-label font-semibold uppercase tracking-widest text-muted-foreground/45">
@@ -195,39 +195,39 @@ export const TransactionDetailSheet = ({
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...contentTransition, delay: 0.2 }}
                         >
-                        <Accordion type="single" collapsible className="mt-5 rounded-[24px] bg-muted/60 px-4">
-                            <AccordionItem value="details" className="border-none">
-                                <AccordionTrigger className="py-4 text-sm font-semibold text-foreground hover:no-underline">
-                                    Detail Lainnya
-                                </AccordionTrigger>
-                                <AccordionContent className="space-y-3 pb-4">
-                                    {transaction.subCategory && (
-                                        <DetailRow
-                                            label="Subkategori"
-                                            icon={Sparkle}
-                                            value={transaction.subCategory}
-                                        />
-                                    )}
-                                    {isExpense && typeof transaction.isNeed === 'boolean' && (
-                                        <DetailRow
-                                            label="Tipe Pengeluaran"
-                                            icon={transaction.isNeed ? ShieldCheck : Sparkle}
-                                            value={transaction.isNeed ? 'Kebutuhan' : 'Keinginan'}
-                                        />
-                                    )}
-                                    {transaction.location && (
-                                        <DetailRow
-                                            label="Lokasi"
-                                            icon={MapPin}
-                                            value={transaction.location}
-                                        />
-                                    )}
-                                    <p className="pt-1 text-center text-xs font-medium text-muted-foreground/55">
-                                        Geser item ke kanan dari daftar transaksi untuk masuk ke mode edit.
-                                    </p>
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
+                            <Accordion type="single" collapsible className="mt-5 rounded-[24px] bg-muted/60 px-4">
+                                <AccordionItem value="details" className="border-none">
+                                    <AccordionTrigger className="py-4 text-sm font-semibold text-foreground hover:no-underline">
+                                        Detail Lainnya
+                                    </AccordionTrigger>
+                                    <AccordionContent className="space-y-3 pb-4">
+                                        {transaction.subCategory && (
+                                            <DetailRow
+                                                label="Subkategori"
+                                                icon={Sparkle}
+                                                value={transaction.subCategory}
+                                            />
+                                        )}
+                                        {isExpense && typeof transaction.isNeed === 'boolean' && (
+                                            <DetailRow
+                                                label="Tipe Pengeluaran"
+                                                icon={transaction.isNeed ? ShieldCheck : Sparkle}
+                                                value={transaction.isNeed ? 'Kebutuhan' : 'Keinginan'}
+                                            />
+                                        )}
+                                        {transaction.location && (
+                                            <DetailRow
+                                                label="Lokasi"
+                                                icon={MapPin}
+                                                value={transaction.location}
+                                            />
+                                        )}
+                                        <p className="pt-1 text-center text-xs font-medium text-muted-foreground/55">
+                                            Geser item ke kanan dari daftar transaksi untuk masuk ke mode edit.
+                                        </p>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
                         </motion.div>
                     </div>
                 </motion.div>

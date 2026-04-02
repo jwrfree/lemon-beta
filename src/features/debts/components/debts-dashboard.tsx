@@ -6,44 +6,21 @@ import { FAB } from '@/components/ui/fab';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
-import { formatCurrency, cn } from '@/lib/utils';
+import { formatCurrency, cn, triggerHaptic } from '@/lib/utils';
 import { parseISO, differenceInCalendarDays, format } from 'date-fns';
-import { ArrowsDownUp, CalendarDots, TrendDown, TrendUp } from '@phosphor-icons/react';
+import { ArrowsDownUp, CalendarDots, TrendDown, TrendUp, CaretRight } from '@phosphor-icons/react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
-import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
 import { StatusBadge } from '@/components/status-badge';
+import { motion } from 'framer-motion';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
-    owed: 'Saya Berhutang',
-    owing: 'Orang Lain Berhutang',
+    owed: 'Hutang',
+    owing: 'Piutang',
     settled: 'Lunas',
-};
-
-const getDebtStatusBadge = (debt: Debt) => {
-    if (debt.status === 'settled' || (debt.outstandingBalance ?? 0) <= 0) {
-        return (
-            <StatusBadge variant="success" tooltip="Hutang ini sudah lunas sepenuhnya.">
-                Lunas
-            </StatusBadge>
-        );
-    }
-    const dueDate = debt.dueDate ? parseISO(debt.dueDate) : null;
-    if (dueDate && dueDate.getTime() < Date.now()) {
-        return (
-            <StatusBadge variant="error" tooltip="Melewati tanggal jatuh tempo pembayaran.">
-                Terlambat
-            </StatusBadge>
-        );
-    }
-    return (
-        <StatusBadge variant="default" tooltip="Hutang masih aktif berjalan.">
-            Aktif
-        </StatusBadge>
-    );
 };
 
 const getDebtDueStatus = (debt: Debt) => {
@@ -53,30 +30,30 @@ const getDebtDueStatus = (debt: Debt) => {
 
     if (diff < 0) {
         return (
-            <span className="text-xs text-destructive font-medium flex items-center gap-1 bg-destructive/5 px-1.5 py-0.5 rounded w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="regular" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-destructive flex items-center gap-1.5 bg-destructive/10 px-2 py-0.5 rounded-full w-fit">
+                <CalendarDots className="h-3 w-3" weight="bold" />
                 Telat {Math.abs(diff)} hari
             </span>
         );
     }
     if (diff === 0) {
         return (
-            <span className="text-xs text-amber-600 font-medium flex items-center gap-1 bg-amber-500/10 px-1.5 py-0.5 rounded w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="regular" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-warning flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit">
+                <CalendarDots className="h-3 w-3" weight="bold" />
                 Hari ini
             </span>
         );
     }
     if (diff <= 7) {
         return (
-            <span className="text-xs text-amber-600 font-medium flex items-center gap-1 bg-amber-500/10 px-1.5 py-0.5 rounded w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="regular" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-warning flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit">
+                <CalendarDots className="h-3 w-3" weight="bold" />
                 {diff} hari lagi
             </span>
         );
     }
     return (
-        <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded w-fit mt-1">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/45 flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded-full w-fit">
             <CalendarDots className="h-3 w-3" weight="regular" />
             {diff} hari lagi
         </span>
@@ -85,7 +62,7 @@ const getDebtDueStatus = (debt: Debt) => {
 
 export const DebtsDashboard = () => {
     const router = useRouter();
-    const { debts, isLoading } = useDebts(); // Assuming isLoading exists or handle without
+    const { debts, isLoading } = useDebts();
     const { setIsDebtModalOpen, setDebtToEdit } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
     const [sortBy, setSortBy] = useState('updated_desc');
@@ -131,47 +108,53 @@ export const DebtsDashboard = () => {
         });
     }, [debts, activeFilter, sortBy]);
 
-    if (debts.length === 0 && isLoading) { // safe check
-        return <div className="p-6 text-center text-muted-foreground">Memuat data hutang...</div>;
+    if (debts.length === 0 && isLoading) {
+        return (
+            <div className="flex justify-center p-12">
+                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
+                    <CalendarDots size={24} className="text-muted-foreground/20" weight="regular" />
+                </motion.div>
+            </div>
+        );
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            {/* Header: Actions & Filter Integration */}
-            <div className="flex flex-col gap-4">
-                {/* Summary & Analytics Grid */}
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {/* 1. Hero Summary Integration */}
+            <div className="px-1 space-y-6">
                 <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-card-premium border border-destructive/20 bg-destructive/5 p-4 flex flex-col justify-between group hover:bg-destructive/10 transition-all">
-                        <div className="flex items-center gap-2 mb-2">
-                            <TrendDown className="h-3.5 w-3.5 text-destructive opacity-70" weight="regular" />
-                            <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.1em]">Saya Berhutang</p>
+                    <div className="bg-white dark:bg-zinc-900 p-5 rounded-[32px] shadow-soft border-none flex flex-col gap-1.5 group transition-all active:scale-[0.98]">
+                        <div className="flex items-center gap-1.5 label-xs !text-rose-500/70">
+                            <TrendDown size={14} weight="bold" />
+                            <span>Hutang</span>
                         </div>
-                        <div className="flex items-baseline gap-1">
-                            <p className="text-3xl font-semibold tracking-tighter text-destructive tabular-nums leading-none">{formatCurrency(totals.totalOwed)}</p>
-                        </div>
+                        <p className="text-2xl font-medium tracking-tighter tabular-nums text-foreground leading-tight">
+                            {formatCurrency(totals.totalOwed)}
+                        </p>
                     </div>
-                    <div className="rounded-card-premium border border-primary/20 bg-primary/5 p-4 flex flex-col justify-between group hover:bg-primary/10 transition-all">
-                        <div className="flex items-center gap-2 mb-2">
-                            <TrendUp className="h-3.5 w-3.5 text-primary opacity-70" weight="regular" />
-                            <p className="text-[10px] uppercase font-bold text-primary tracking-[0.1em]">Piutang Saya</p>
+                    <div className="bg-white dark:bg-zinc-900 p-5 rounded-[32px] shadow-soft border-none flex flex-col gap-1.5 group transition-all active:scale-[0.98]">
+                        <div className="flex items-center gap-1.5 label-xs !text-emerald-500/70">
+                            <TrendUp size={14} weight="bold" />
+                            <span>Piutang</span>
                         </div>
-                        <div className="flex items-baseline gap-1">
-                            <p className="text-3xl font-semibold tracking-tighter text-primary tabular-nums leading-none">{formatCurrency(totals.totalOwing)}</p>
-                        </div>
+                        <p className="text-2xl font-medium tracking-tighter tabular-nums text-foreground leading-tight">
+                            {formatCurrency(totals.totalOwing)}
+                        </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-1">
-                    <div className="flex-1 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+                {/* Filters & Sorting Row */}
+                <div className="flex items-center gap-2">
+                    <div className="flex-1 overflow-x-auto scrollbar-hide py-1">
                         <Tabs value={activeFilter} onValueChange={setActiveFilter} className="w-full">
-                            <TabsList className="bg-muted/50 h-10 p-1 gap-1 justify-start w-full rounded-full border border-border/20">
+                            <TabsList className="bg-muted/50 h-10 p-1 rounded-full border-none w-fit">
                                 {Object.entries(filterLabels).map(([value, label]) => (
                                     <TabsTrigger 
                                         key={value} 
                                         value={value} 
-                                        className="flex-1 rounded-full h-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm"
+                                        className="rounded-full h-full px-4 text-[10px] font-semibold uppercase tracking-widest transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                                     >
-                                        {label === 'Orang Lain Berhutang' ? 'Piutang' : label === 'Saya Berhutang' ? 'Hutang' : label}
+                                        {label}
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
@@ -179,92 +162,98 @@ export const DebtsDashboard = () => {
                     </div>
 
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[44px] h-10 p-0 flex items-center justify-center rounded-full bg-muted/30 border-none shadow-none hover:bg-muted/50 transition-colors">
-                            <ArrowsDownUp className="w-4 h-4 text-muted-foreground" weight="regular" />
+                        <SelectTrigger className="w-[44px] h-10 p-0 flex items-center justify-center rounded-full bg-muted/40 border-none shadow-none hover:bg-muted/60 transition-colors">
+                            <ArrowsDownUp className="w-4 h-4 text-muted-foreground/60" weight="regular" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-card-glass border-border/40 min-w-[160px]">
-                            <SelectItem value="updated_desc" className="text-xs font-medium">✨ Terbaru Update</SelectItem>
-                            <SelectItem value="due_soon" className="text-xs font-medium">⏰ Jatuh Tempo</SelectItem>
-                            <SelectItem value="amount_desc" className="text-xs font-medium">💰 Nominal Tertinggi</SelectItem>
-                            <SelectItem value="amount_asc" className="text-xs font-medium">💸 Nominal Terendah</SelectItem>
+                        <SelectContent align="end" className="rounded-[24px] border-none shadow-xl bg-popover/95 backdrop-blur-xl">
+                            <SelectItem value="updated_desc" className="text-[10px] font-semibold uppercase tracking-widest p-3">✨ Terbaru</SelectItem>
+                            <SelectItem value="due_soon" className="text-[10px] font-semibold uppercase tracking-widest p-3">⏰ Tempo</SelectItem>
+                            <SelectItem value="amount_desc" className="text-[10px] font-semibold uppercase tracking-widest p-3">💰 Nominal ↓</SelectItem>
+                            <SelectItem value="amount_asc" className="text-[10px] font-semibold uppercase tracking-widest p-3">💸 Nominal ↑</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             </div>
 
-            <div className="space-y-3 app-page-body-padding">
+            {/* 2. Debt Cards List */}
+            <div className="space-y-3 pb-20 px-1">
                 {visibleDebts.length === 0 ? (
                     <DebtsEmptyState />
                 ) : (
                     visibleDebts.map((debt: Debt) => {
                          const outstanding = debt.outstandingBalance ?? debt.principal ?? 0;
                          const progressValue = Math.max(0, Math.min(100, (1 - outstanding / (debt.principal ?? 1)) * 100));
+                         const isOwed = debt.direction === 'owed';
+                         
                          return (
-                            <Card
+                            <motion.div
                                 key={debt.id}
-                                className="overflow-hidden transition-all border border-border/40 bg-card group hover:border-primary/20 hover:bg-primary/[0.02]"
-                                onClick={() => router.push(`/debts/${debt.id}`)}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => { triggerHaptic('light'); router.push(`/debts/${debt.id}`); }}
+                                className="cursor-pointer"
                             >
-                                <CardContent className="p-4 space-y-4">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div className="flex-1 min-w-0 space-y-1">
-                                            <h3 className="font-semibold text-sm tracking-tight text-foreground group-hover:text-primary transition-colors truncate">{debt.title}</h3>
+                                <Card className="border-none rounded-[32px] bg-white dark:bg-zinc-900 shadow-soft p-6 flex flex-col gap-6 overflow-hidden transition-all hover:bg-zinc-50/50 dark:hover:bg-zinc-800/50 group">
+                                    <div className="flex items-start justify-between relative z-10">
+                                        <div className="space-y-1.5">
+                                            <h3 className="text-base font-semibold tracking-tight text-foreground line-clamp-1">{debt.title}</h3>
                                             <div className="flex items-center gap-2">
-                                                <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-muted/50 border border-border/10">
-                                                    {debt.direction === 'owed' ? 'Kepada: ' : 'Dari: '} 
-                                                    <span className="text-foreground/80">{debt.counterparty}</span>
-                                                </p>
-                                                {getDebtDueStatus(debt)}
+                                                <div className="flex items-center gap-1.5 label-xs !text-muted-foreground/35 lowercase">
+                                                    <span>{isOwed ? 'kepada' : 'dari'}</span>
+                                                    <span className="text-muted-foreground/60 font-semibold">{debt.counterparty}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        {getDebtStatusBadge(debt)}
+                                        <StatusBadge variant={debt.status === 'settled' ? 'success' : isOwed ? 'destructive' : 'default'}>
+                                            {debt.status === 'settled' ? 'Lunas' : isOwed ? 'Hutang' : 'Piutang'}
+                                        </StatusBadge>
                                     </div>
 
-                                    <div className="space-y-3 p-3 rounded-card-glass bg-muted/30 border border-border/20">
+                                    <div className="space-y-4 relative z-10">
                                         <div className="flex items-end justify-between">
-                                            <div>
-                                                <p className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider mb-0.5">
-                                                    {debt.direction === 'owed' ? 'Sisa Hutang' : 'Sisa Piutang'}
-                                                </p>
+                                            <div className="space-y-1">
+                                                <span className="label-xs !text-muted-foreground/45">Sisa Pelunasan</span>
                                                 <p className={cn(
-                                                    "text-xl font-bold tracking-tighter tabular-nums",
-                                                    debt.direction === 'owed' ? "text-destructive" : "text-emerald-600"
+                                                    "text-2xl font-medium tracking-tighter tabular-nums leading-tight",
+                                                    isOwed ? "text-rose-500" : "text-emerald-500"
                                                 )}>
                                                     {formatCurrency(outstanding)}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider mb-1">PROGRES</p>
-                                                <p className="text-sm font-bold tracking-tighter">{Math.round(progressValue)}%</p>
+                                                {getDebtDueStatus(debt)}
                                             </div>
                                         </div>
 
-                                        <div className="space-y-1.5">
-                                            <Progress
-                                                value={progressValue}
-                                                className={cn(
-                                                    "h-2 overflow-hidden bg-background/50",
-                                                    debt.direction === 'owed' ? "text-destructive" : "text-emerald-500"
-                                                )}
-                                            />
-                                            {debt.dueDate && (
-                                                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
-                                                    <span>Mulai: {debt.createdAt ? format(new Date(debt.createdAt), 'd MMM') : '-'}</span>
-                                                    <span>Tempo: {format(parseISO(debt.dueDate), 'd MMM')}</span>
-                                                </div>
-                                            )}
+                                        {/* Progress Tracking */}
+                                        <div className="space-y-2.5">
+                                            <div className="flex justify-between items-end">
+                                                <span className="label-xs !text-muted-foreground/30">Progres</span>
+                                                <span className="text-[10px] font-bold tabular-nums text-muted-foreground/45">{Math.round(progressValue)}%</span>
+                                            </div>
+                                            <div className="h-1.5 w-full bg-muted dark:bg-zinc-800 rounded-full overflow-hidden">
+                                                <motion.div 
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${progressValue}%` }}
+                                                    className={cn("h-full rounded-full transition-all", isOwed ? "bg-rose-500" : "bg-emerald-500")}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        );
+
+                                    {/* Action Indicator */}
+                                    <div className="absolute right-4 bottom-1/2 translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1">
+                                        <CaretRight size={16} className="text-muted-foreground/30" weight="bold" />
+                                    </div>
+                                </Card>
+                            </motion.div>
+                         );
                     })
                 )}
             </div>
 
-            {/* Contextual FAB */}
             <FAB
                 onClick={() => {
+                    triggerHaptic('medium');
                     setDebtToEdit(null);
                     setIsDebtModalOpen(true);
                 }}
@@ -273,5 +262,3 @@ export const DebtsDashboard = () => {
         </div>
     );
 };
-
-

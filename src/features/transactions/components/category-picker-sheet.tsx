@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, CaretRight, MagnifyingGlass, XCircle } from '@phosphor-icons/react';
+import { CheckCircle, CaretRight, MagnifyingGlass, X } from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,7 +119,7 @@ export const CategoryPickerSheet = ({
                             <p className="mt-1 text-sm text-muted-foreground">Pilih kategori utama, lalu lanjut ke subkategori bila ada.</p>
                         </div>
                         <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background">
-                            <XCircle size={22} weight="bold" />
+                            <X size={32} weight="regular" />
                             <span className="sr-only">Tutup</span>
                         </Button>
                     </div>

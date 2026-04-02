@@ -36,57 +36,57 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
         return groupTransactionsByDate(finalTransactions);
     }, [finalTransactions]);
 
-  if (finalTransactions.length === 0 && !isLoading) {
+    if (finalTransactions.length === 0 && !isLoading) {
+        return (
+            <EmptyState
+                title="Kosong Melompong"
+                description="Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini."
+                actionLabel="Mulai Catat"
+                onAction={() => openTransactionSheet()}
+                icon={Receipt}
+                className="pt-10"
+            />
+        );
+    }
+
     return (
-      <EmptyState
-        title="Kosong Melompong"
-        description="Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini."
-        actionLabel="Mulai Catat"
-        onAction={() => openTransactionSheet()}
-        icon={Receipt}
-        className="pt-10"
-      />
-    );
-  }
-    
-    return (
-    <div
-      className="space-y-6 motion-list-transition"
-      data-loading={isLoading ? 'true' : undefined}
-      style={isLoading ? { minHeight: '240px' } : undefined}
-    >
-      {/* Desktop Table View */}
-      <div className="hidden md:block">
-        <DesktopTransactionTable transactions={finalTransactions} wallets={wallets} />
-      </div>
+        <div
+            className="space-y-6 motion-list-transition"
+            data-loading={isLoading ? 'true' : undefined}
+            style={isLoading ? { minHeight: '240px' } : undefined}
+        >
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+                <DesktopTransactionTable transactions={finalTransactions} wallets={wallets} />
+            </div>
 
             {/* Mobile List View (Grouped) */}
-      <div className="md:hidden space-y-6">
-        {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
-          <div key={date} className="space-y-3">
+            <div className="md:hidden space-y-6">
+                {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
+                    <div key={date} className="space-y-3">
                         <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 px-5 mb-2">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
                         <div className="overflow-hidden rounded-3xl bg-card shadow-soft border border-border/40">
                             {transactionsForDay.map((transaction: Transaction, index: number) => (
-                                <TransactionListItem 
-                                    key={transaction.id} 
-                                    transaction={{ ...transaction, showDivider: index !== transactionsForDay.length - 1 } as any} 
+                                <TransactionListItem
+                                    key={transaction.id}
+                                    transaction={{ ...transaction, showDivider: index !== transactionsForDay.length - 1 } as any}
                                     wallets={wallets}
                                     getCategoryVisuals={getCategoryVisuals}
-                                    hideDate 
+                                    hideDate
                                 />
                             ))}
                         </div>
                     </div>
                 ))}
             </div>
-            
+
             {hasMore && loadMore && (
                 <div className="flex justify-center pt-2">
-                    <Button 
-                        variant="ghost" 
-                        onClick={loadMore} 
+                    <Button
+                        variant="ghost"
+                        onClick={loadMore}
                         disabled={isLoading}
                         className="w-full rounded-full bg-card/90 shadow-button md:w-auto md:px-6 text-muted-foreground hover:bg-card hover:text-primary transition-all"
                     >

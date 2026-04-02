@@ -1,45 +1,127 @@
 'use client';
 
-import { ArrowRight, Sparkle } from '@phosphor-icons/react';
+import type { ReactNode } from 'react';
+
+import {
+    ArrowClockwise,
+    Camera,
+    CaretRight,
+    PencilSimple,
+    Rows,
+    Sparkle,
+} from '@phosphor-icons/react';
+
 import { cn } from '@/lib/utils';
+import type {
+    QuickStartSuggestion,
+    QuickStartSuggestionGroups,
+} from '@/features/transactions/utils/quick-start-suggestions';
 
 interface DynamicSuggestionsProps {
-    // eslint-disable-next-line no-unused-vars
-    onSuggestionClick: (text: string) => void;
-    historySuggestions?: string[];
+    onSuggestionClick: (suggestion: QuickStartSuggestion) => void;
+    suggestions: QuickStartSuggestionGroups;
 }
 
-type TimeOfDay = 'pagi' | 'siang' | 'sore' | 'malam';
+interface SuggestionSectionProps {
+    title: string;
+    children: ReactNode;
+}
 
-const getTimeOfDay = (): TimeOfDay => {
-    const hour = new Date().getHours();
-    if (hour >= 4 && hour < 11) return 'pagi';
-    if (hour >= 11 && hour < 15) return 'siang';
-    if (hour >= 15 && hour < 19) return 'sore';
-    return 'malam';
+const SuggestionSection = ({ title, children }: SuggestionSectionProps) => (
+    <section className="space-y-2.5">
+        <div className="px-1">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                {title}
+            </span>
+        </div>
+        {children}
+    </section>
+);
+
+const RepeatSuggestionCard = ({
+    suggestion,
+    onClick,
+}: {
+    suggestion: QuickStartSuggestion;
+    onClick: (suggestion: QuickStartSuggestion) => void;
+}) => (
+    <button
+        type="button"
+        onClick={() => onClick(suggestion)}
+        className="group flex w-full items-center gap-3 rounded-[22px] bg-card/96 p-3 text-left shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)] transition-all active:scale-[0.98] hover:-translate-y-0.5 hover:bg-card"
+    >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <ArrowClockwise size={18} weight="regular" />
+        </span>
+        <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+                <p className="truncate text-sm font-semibold tracking-tight text-foreground">{suggestion.label}</p>
+                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-label font-semibold text-primary">
+                    {suggestion.reason}
+                </span>
+            </div>
+            <p className="truncate pt-0.5 text-xs font-medium text-muted-foreground/75">{suggestion.description}</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1 text-primary">
+            <span className="text-label font-semibold">{suggestion.amount ? `${Math.round(suggestion.amount / 1000)}rb` : ''}</span>
+            <CaretRight size={14} weight="regular" className="opacity-50 transition-transform group-hover:translate-x-0.5" />
+        </div>
+    </button>
+);
+
+const HabitSuggestionChip = ({
+    suggestion,
+    onClick,
+}: {
+    suggestion: QuickStartSuggestion;
+    onClick: (suggestion: QuickStartSuggestion) => void;
+}) => (
+    <button
+        type="button"
+        onClick={() => onClick(suggestion)}
+        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-[20px] bg-background px-3 py-3 text-left shadow-[0_12px_28px_-24px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98] hover:-translate-y-0.5 hover:bg-card"
+    >
+        <div className="flex w-full items-center justify-between gap-2">
+            <span className="truncate text-sm font-semibold tracking-tight text-foreground">{suggestion.label}</span>
+            <Rows size={14} weight="regular" className="shrink-0 text-muted-foreground/45" />
+        </div>
+        <p className="text-label font-medium text-muted-foreground/75">{suggestion.description}</p>
+    </button>
+);
+
+const ActionSuggestionCard = ({
+    suggestion,
+    onClick,
+}: {
+    suggestion: QuickStartSuggestion;
+    onClick: (suggestion: QuickStartSuggestion) => void;
+}) => {
+    const Icon = suggestion.action === 'scan-receipt' ? Camera : PencilSimple;
+
+    return (
+        <button
+            type="button"
+            onClick={() => onClick(suggestion)}
+            className={cn(
+                "flex min-h-[84px] flex-1 items-start gap-3 rounded-[22px] px-3 py-3 text-left transition-all active:scale-[0.98] hover:-translate-y-0.5",
+                suggestion.action === 'scan-receipt'
+                    ? "bg-primary/10 text-primary shadow-[0_16px_34px_-28px_rgba(13,148,136,0.35)]"
+                    : "bg-card/96 text-foreground shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)]"
+            )}
+        >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-background/80">
+                <Icon size={18} weight="regular" />
+            </span>
+            <span className="min-w-0 flex-1">
+                <span className="line-clamp-2 block text-sm font-semibold tracking-tight">{suggestion.label}</span>
+                <span className="mt-1 block text-label font-medium opacity-75">{suggestion.description}</span>
+            </span>
+        </button>
+    );
 };
 
-export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] }: DynamicSuggestionsProps) => {
-    const timeOfDay = getTimeOfDay();
-
-    const contextualSuggestions: Record<TimeOfDay, string[]> = {
-        pagi: ['Sarapan 15rb', 'Kopi 20rb', 'Ojek ke kantor 25rb', 'Commuter line 4rb'],
-        siang: ['Makan siang 25rb', 'Es teh 5rb', 'Parkir 2rb', 'Jajan kantin 15rb'],
-        sore: ['Gorengan 10rb', 'Belanja minimarket 50rb', 'Ojek pulang 20rb', 'Boba 35rb'],
-        malam: ['Makan malam 25rb', 'Martabak 35rb', 'Bayar listrik 200rb', 'Langganan Netflix 54rb'],
-    };
-
-    const onboardingPrompts = [
-        { text: 'Coba bilang "Beli bensin 20 ribu"', isSpecial: true },
-        { text: 'Scan struk minimarket', isSpecial: true },
-    ];
-
-    const currentSuggestions = [
-        ...(historySuggestions.length > 0 ? historySuggestions.slice(0, 2).map((suggestion) => ({ text: suggestion, isSpecial: false })) : []),
-        ...contextualSuggestions[timeOfDay].map((suggestion) => ({ text: suggestion, isSpecial: false })),
-    ].slice(0, 4);
-
-    const allOptions = [...onboardingPrompts, ...currentSuggestions];
+export const DynamicSuggestions = ({ onSuggestionClick, suggestions }: DynamicSuggestionsProps) => {
+    const { repeats, habits, actions } = suggestions;
 
     return (
         <div className="w-full animate-in fade-in duration-300 px-1">
@@ -58,23 +140,49 @@ export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] 
                     <Sparkle size={16} weight="regular" />
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-                {allOptions.map((item) => (
-                    <button
-                        key={item.text}
-                        type="button"
-                        onClick={() => onSuggestionClick(item.text)}
-                        className={cn(
-                            "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[13px] font-medium transition-all active:scale-95 hover:-translate-y-0.5",
-                            item.isSpecial
-                                ? "bg-primary/10 font-semibold text-primary shadow-[0_12px_30px_-24px_rgba(16,185,129,0.45)] hover:bg-primary/20"
-                                : "bg-card/96 text-foreground/70 shadow-[0_10px_22px_-20px_rgba(15,23,42,0.18)] hover:bg-secondary/60 hover:text-foreground"
-                        )}
-                    >
-                        <span>{item.text}</span>
-                        {!item.isSpecial && <ArrowRight size={12} weight="regular" className="ml-1 opacity-40" />}
-                    </button>
-                ))}
+
+            <div className="space-y-4">
+                {repeats.length > 0 && (
+                    <SuggestionSection title="Ulang Terakhir">
+                        <div className="space-y-2">
+                            {repeats.map((suggestion) => (
+                                <RepeatSuggestionCard
+                                    key={suggestion.id}
+                                    suggestion={suggestion}
+                                    onClick={onSuggestionClick}
+                                />
+                            ))}
+                        </div>
+                    </SuggestionSection>
+                )}
+
+                {habits.length > 0 && (
+                    <SuggestionSection title="Kebiasaanmu">
+                        <div className="flex flex-wrap gap-2">
+                            {habits.map((suggestion) => (
+                                <HabitSuggestionChip
+                                    key={suggestion.id}
+                                    suggestion={suggestion}
+                                    onClick={onSuggestionClick}
+                                />
+                            ))}
+                        </div>
+                    </SuggestionSection>
+                )}
+
+                {actions.length > 0 && (
+                    <SuggestionSection title="Aksi Cepat">
+                        <div className="flex flex-wrap gap-2">
+                            {actions.map((suggestion) => (
+                                <ActionSuggestionCard
+                                    key={suggestion.id}
+                                    suggestion={suggestion}
+                                    onClick={onSuggestionClick}
+                                />
+                            ))}
+                        </div>
+                    </SuggestionSection>
+                )}
             </div>
         </div>
     );

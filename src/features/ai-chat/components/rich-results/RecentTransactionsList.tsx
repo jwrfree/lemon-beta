@@ -19,11 +19,11 @@ export const RecentTransactionsList = () => {
     const transactions = context.last_transaction ? [context.last_transaction] : [];
 
     return (
-        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-2xl overflow-hidden motion-surface">
+        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Mutasi Terakhir</span>
-                    <Receipt size={12} weight="bold" className="text-muted-foreground/30" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Recent Transactions</span>
+                    <Receipt size={12} weight="regular" className="text-muted-foreground/30" />
                 </div>
                 
                 <div className="space-y-2">
@@ -31,7 +31,7 @@ export const RecentTransactionsList = () => {
                         <div key={idx} className="flex items-center justify-between group">
                             <div className="flex flex-col min-w-0">
                                 <span className="text-xs font-semibold truncate text-foreground/80">{tx.description}</span>
-                                <span className="text-label uppercase font-semibold tracking-tighter text-muted-foreground/40">{tx.category} • {new Date(tx.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">{tx.category} • {new Date(tx.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
                             </div>
                             <span className={cn(
                                 "text-xs font-semibold shrink-0 ml-2",
