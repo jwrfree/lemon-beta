@@ -21,7 +21,7 @@ Supabase
 └── Realtime  — used for optimistic balance updates
 
 AI pipeline
-├── DeepSeek V3 (DEEPSEEK_API_KEY)  — transaction text extraction (Smart Add)
+├── DeepSeek V3 (DEEPSEEK_API_KEY)  — Lemon Coach chat + transaction text extraction (Smart Add)
 └── Google Gemini (GEMINI_API_KEY)  — weekly insights, receipt scanning, debt/subscription audits
     └── orchestrated with Genkit flows (src/ai/flows)
 ```
@@ -68,7 +68,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key>   # server-side admin calls only
 
 # AI – at least one is needed to use AI features
-DEEPSEEK_API_KEY=<key>                         # Smart Add transaction extraction
+DEEPSEEK_API_KEY=<key>                         # Lemon Coach chat + Smart Add transaction extraction
 GEMINI_API_KEY=<key>                           # Insights, receipt scan, audits
 
 # WebAuthn / passkey (biometric auth)
@@ -80,7 +80,7 @@ NEXT_PUBLIC_RP_NAME=Lemon App
 NEXT_PUBLIC_LOGO_DEV_KEY=<key>
 ```
 
-The app builds and runs without AI keys; Smart Add and Insights will return errors until they are provided. Supabase variables are required for login to work.
+The app builds and runs without AI keys, but DeepSeek-backed Lemon Coach chat and Smart Add now fail explicitly when DEEPSEEK_API_KEY is missing. Gemini-backed insight features will also return errors until GEMINI_API_KEY is provided. Supabase variables are required for login to work.
 
 ### 3. Apply the database schema
 

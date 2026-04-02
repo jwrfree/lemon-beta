@@ -22,6 +22,12 @@ const deepseek = createOpenAI({
   baseURL: config.ai.deepseek.baseURL,
 });
 
+const assertDeepSeekApiKey = () => {
+  if (!config.ai.deepseek.apiKey) {
+    throw new Error('DeepSeek API key not found. Smart Add tidak tersedia.');
+  }
+};
+
 // Define flexible output schema with defaults to prevent validation crashes
 const SingleTransactionSchema = z.object({
   amount: z.union([z.number(), z.string()]).optional().transform((val) => {
@@ -312,6 +318,8 @@ export const parseSimpleTransactionInput = async (
 };
 
 export async function extractTransaction(text: string, context?: ExtractionContext): Promise<TransactionExtractionOutput> {
+  assertDeepSeekApiKey();
+
   const currentTimestamp = getCurrentIsoTimestamp();
   const currentDate = currentTimestamp.slice(0, 10);
   const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -409,6 +417,8 @@ export async function refineTransaction(
   userMessage: string,
   context?: ExtractionContext
 ): Promise<TransactionExtractionOutput> {
+  assertDeepSeekApiKey();
+
   const walletList = context?.wallets?.join(', ') || 'Tunai, BCA, Mandiri, GoPay, OVO';
   const categoryList = context?.categories?.join(', ') || 'Konsumsi & F&B, Belanja & Lifestyle, Transportasi, Tagihan & Utilitas, Langganan Digital, Hiburan & Wisata, Rumah & Properti, Kesehatan & Medis, Pendidikan, Bisnis & Produktivitas, Keluarga & Anak, Sosial & Donasi, Investasi & Aset, Cicilan & Pinjaman, Biaya Lain-lain';
 

@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **DeepSeek key validation**
+  - Added explicit DeepSeek API key guards to Lemon Coach chat and Smart Add extraction so missing configuration now fails with a clear error instead of falling through to ambiguous runtime behavior.
 - **Recent transactions chat card**
   - Replaced the single-item placeholder in Lemon Coach’s recent-transactions card with a real 3-item fetch, including loading and empty states, so the rich reply matches the intent it advertises.
 - **Lemon Coach prompt framing**

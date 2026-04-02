@@ -1,7 +1,16 @@
-import { describe, expect, it } from 'vitest';
-import { parseSimpleTransactionInput } from './extract-transaction-flow';
+import { afterEach, describe, expect, it } from 'vitest';
+
+import { config } from '@/lib/config';
+
+import { extractTransaction, parseSimpleTransactionInput } from './extract-transaction-flow';
+
+const originalDeepSeekApiKey = config.ai.deepseek.apiKey;
 
 describe('parseSimpleTransactionInput', () => {
+    afterEach(() => {
+        config.ai.deepseek.apiKey = originalDeepSeekApiKey;
+    });
+
     it('parses simple expense commands with rupiah shorthand', async () => {
         const result = await parseSimpleTransactionInput('catat kopi 18rb');
         expect(result?.transactions?.[0]).toMatchObject({
@@ -174,5 +183,14 @@ describe('parseSimpleTransactionInput', () => {
     it('asks for clarification when no amount is present', async () => {
         const result = await parseSimpleTransactionInput('catat makan');
         expect(result?.clarificationQuestion).toContain('Nominalnya belum kebaca');
+    });
+
+    it('throws a descriptive error when DeepSeek is unavailable for extraction', async () => {
+        config.ai.deepseek.apiKey = undefined;
+
+        await expect(extractTransaction('catat kopi 18rb', {
+            wallets: ['Tunai'],
+            categories: ['Konsumsi & F&B'],
+        })).rejects.toThrow('DeepSeek API key not found. Smart Add tidak tersedia.');
     });
 });

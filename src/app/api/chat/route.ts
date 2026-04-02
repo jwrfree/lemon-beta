@@ -132,6 +132,13 @@ export async function POST(req: Request) {
       );
     }
 
+    if (!config.ai.deepseek.apiKey) {
+      return Response.json(
+        { error: "DeepSeek API key not found. Lemon Coach tidak tersedia." },
+        { status: 500 }
+      );
+    }
+
     const lastUserMessage = getMessageText(
       [...messages].reverse().find((message) => message.role === "user")
     );
