@@ -306,10 +306,10 @@ export const UnifiedTransactionSheet = ({
                     {/* --- FOOTER: AI INPUT & ACTIONS --- */}
                     <div
                         className={cn(
-                            "flex shrink-0 flex-col gap-3 bg-card px-4 sm:px-5",
+                            "flex shrink-0 flex-col gap-2 bg-card px-4 sm:px-5",
                             useCompactSheetLayout
-                                ? "border-t border-border pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.12)] sm:pb-4"
-                                : "pb-[calc(0.875rem+env(safe-area-inset-bottom))] pt-3 sm:pb-4"
+                                ? "border-t border-border pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.12)] sm:pb-3"
+                                : "pb-[calc(0.625rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
                         )}
                     >
                         <AnimatePresence mode="wait">
@@ -338,7 +338,7 @@ export const UnifiedTransactionSheet = ({
 
                         <AnimatePresence mode="popLayout">
                             {shouldShowReview && (
-                                <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: 20, height: 0 }} className="mt-1 space-y-3 overflow-hidden">
+                                <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: 20, height: 0 }} className="space-y-3 overflow-hidden">
                                     <div className="flex w-full gap-3">
                                         {totalTxs > 1 ? (
                                             <Button

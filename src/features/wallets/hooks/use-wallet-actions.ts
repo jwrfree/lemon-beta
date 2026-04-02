@@ -53,7 +53,7 @@ export const useWalletActions = (user: User | null) => {
             console.error("[useWalletActions] Delete Error:", err);
             ui.showToast(`Gagal menghapus dompet: ${err.message}`, 'error');
         }
-    }, [user, ui]);
+    }, [user, ui, router]);
 
     const reconcileWallet = useCallback(async (walletId: string, currentBalance: number, targetBalance: number) => {
         if (!user) throw new Error("User not authenticated.");
@@ -67,7 +67,7 @@ export const useWalletActions = (user: User | null) => {
             console.error("[useWalletActions] Reconcile Error:", err);
             ui.showToast(`Gagal koreksi saldo: ${err.message}`, 'error');
         }
-    }, [user, ui]);
+    }, [user, ui, router]);
 
     return {
         addWallet,

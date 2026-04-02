@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { formatCurrency, cn } from '@/lib/utils';
-import { CalendarClock, ArrowRight } from '@phosphor-icons/react';
+import { formatCurrency } from '@/lib/utils';
+import { CalendarCheck } from '@phosphor-icons/react';
 
 interface SubscriptionAnalysisCardProps {
     data: {
@@ -30,7 +29,7 @@ export const SubscriptionAnalysisCard = ({ data }: SubscriptionAnalysisCardProps
             <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
                     <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Deteksi Langganan</span>
-                    <CalendarClock size={16} weight="regular" className="text-primary" />
+                    <CalendarCheck size={16} weight="regular" className="text-primary" />
                 </div>
 
                 <div className="space-y-3">
@@ -38,19 +37,19 @@ export const SubscriptionAnalysisCard = ({ data }: SubscriptionAnalysisCardProps
                         <div key={idx} className="flex items-center justify-between group">
                             <div className="flex flex-col min-w-0">
                                 <span className="text-xs font-semibold capitalize truncate text-foreground/80">{sub.name}</span>
-                                <span className="text-[9px] uppercase font-bold tracking-tighter text-muted-foreground/40">
+                                <span className="text-label uppercase font-bold tracking-tighter text-muted-foreground/40">
                                     Muncul {sub.count}x • Terakhir {new Date(sub.last_date).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })}
                                 </span>
                             </div>
                             <div className="text-right">
                                 <p className="text-xs font-bold text-foreground">{formatCurrency(sub.average_amount)}</p>
-                                <p className="text-[8px] uppercase text-muted-foreground/30 font-bold">Rata-rata</p>
+                                <p className="text-label uppercase text-muted-foreground/30 font-bold">Rata-rata</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <p className="text-[9px] text-muted-foreground/40 italic leading-tight pt-1">
+                <p className="text-label pt-1 italic leading-tight text-muted-foreground/40">
                     Tip: Periksa pengeluaran ini di mutasi bank untuk memastikan langganan masih aktif dan dibutuhkan.
                 </p>
             </CardContent>

@@ -104,7 +104,7 @@ export const SemanticTransactionReview = ({
             <div className="space-y-3">
                 <div className="rounded-[24px] bg-muted px-4 py-4">
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+                        <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                             Nominal
                         </span>
                     </div>
@@ -159,7 +159,7 @@ export const SemanticTransactionReview = ({
             <div className="space-y-3">
                 <div className={cn(sectionCardClass, "space-y-2")}>
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+                        <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                             Kategori
                         </span>
                     </div>
@@ -201,7 +201,7 @@ export const SemanticTransactionReview = ({
 
                 <div className={cn(sectionCardClass, "space-y-2")}>
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+                        <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                             Keterangan
                         </span>
                     </div>
@@ -249,7 +249,7 @@ export const SemanticTransactionReview = ({
 
                 <div className={cn(sectionCardClass, "space-y-2")}>
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+                        <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                             Detail
                         </span>
                     </div>

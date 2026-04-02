@@ -42,9 +42,6 @@ const ARBITRARY_SPACING_RE = /\b[pm][xytblr]?-\[\d+(\.\d+)?(px|rem)\]/;
 /** DS §6 — Inline box-shadow in style prop (should use shadow-* utility) */
 const INLINE_SHADOW_RE = /boxShadow\s*:|box-shadow\s*:/;
 
-/** DS §7 — motion: uses motion-* classes or transition-* utilities */
-const MOTION_CLASS_RE = /\b(motion-|transition-|animate-|duration-|ease-)\S+/;
-
 /** DS §8 State — Error state uses standard tokens */
 const ERROR_TOKEN_RE = /\b(text-error|text-destructive|bg-error|bg-destructive)\b/;
 const RAW_ERROR_RE = /\b(text-red-|bg-red-|text-rose-|border-red-)/;
@@ -143,7 +140,6 @@ function auditFile(filePath) {
   // A component is motion-compliant if it either has no interactive transitions
   // OR uses tokenized motion/transition utilities (not inline style transitions).
   const hasInlineTransition = /style=.*transition/i.test(source);
-  const hasMotionToken = MOTION_CLASS_RE.test(source);
   const motionCompliant = !hasInlineTransition;
   if (hasInlineTransition) {
     notes.push('Motion: inline style transition detected — use transition-* / duration-* / ease-* tokens');

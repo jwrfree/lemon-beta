@@ -66,7 +66,7 @@ describe('resolveSubCategory - Smart Matching Utility', () => {
     it('should handle undefined/null inputs gracefully', () => {
         expect(resolveSubCategory(undefined, 'Bensin', MOCK_CATEGORIES)).toBe('');
         expect(resolveSubCategory('Transportasi', undefined, MOCK_CATEGORIES)).toBe('');
-        // @ts-ignore
+        // @ts-expect-error - Testing null input for robustness
         expect(resolveSubCategory('Transportasi', null, MOCK_CATEGORIES)).toBe('');
     });
 

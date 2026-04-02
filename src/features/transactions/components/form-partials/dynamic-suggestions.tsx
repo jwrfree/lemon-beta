@@ -39,7 +39,7 @@ interface SuggestionCardProps {
 const SuggestionSection = ({ title, children }: SuggestionSectionProps) => (
     <section className="space-y-2.5">
         <div className="px-1">
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+            <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                 {title}
             </span>
         </div>
@@ -132,7 +132,7 @@ export const DynamicSuggestions = ({ onSuggestionClick, suggestions }: DynamicSu
             <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
                     <div className="mb-1 flex items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
+                        <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                             Mulai Cepat
                         </span>
                     </div>

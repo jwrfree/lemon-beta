@@ -125,10 +125,10 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative overflow-hidden rounded-[24px] border border-transparent bg-background/95 px-3 py-2.5 shadow-[0_20px_50px_-40px_rgba(15,23,42,0.32)] transition-all duration-500 sm:px-4 sm:py-3",
-                (isProcessing || isTranscribing) ? "bg-primary/[0.04] ring-2 ring-inset ring-primary/15" :
-                    isRecording ? "bg-violet-500/5 ring-2 ring-inset ring-violet-500/25" :
-                        isFocused ? "bg-primary/[0.03] ring-2 ring-inset ring-primary/15" : ""
+                "relative overflow-hidden rounded-[24px] bg-secondary/50 px-3 py-2.5 shadow-inner transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
+                (isProcessing || isTranscribing) ? "bg-primary/[0.08] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.05),inset_0_1px_0_rgba(255,255,255,0.4)]" :
+                    isRecording ? "bg-violet-500/10 shadow-[inset_0_0_0_1px_rgba(139,92,246,0.12),inset_0_1px_0_rgba(255,255,255,0.35)]" :
+                        isFocused ? "bg-card shadow-[inset_0_0_0_1px_rgba(15,23,42,0.06),0_14px_30px_-26px_rgba(15,23,42,0.18)]" : ""
             )}>
                 <div className="flex items-end gap-2">
                     <div className="flex min-w-0 flex-1 items-end gap-2">

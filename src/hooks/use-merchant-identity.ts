@@ -76,7 +76,7 @@ export function useMerchantIdentity({
             }
             return 'icon';
         });
-    }, [merchantVisuals?.domain]);
+    }, [merchantVisuals]);
 
     const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
     const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
