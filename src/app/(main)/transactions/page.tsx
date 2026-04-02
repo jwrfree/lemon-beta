@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, X, ListFilter } from 'lucide-react';
+import { Funnel, MagnifyingGlass, X } from '@phosphor-icons/react';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
@@ -121,7 +121,7 @@ function TransactionsPageContent() {
                         Transaksi
                     </h1>
                     <div className="relative flex-1 group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <MagnifyingGlass size={16} weight="regular" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder="Cari transaksi..."
                             className="pl-10 h-10 text-sm bg-muted/50 border-none focus-visible:ring-4 focus-visible:ring-primary/5 rounded-card transition-all"
@@ -140,7 +140,7 @@ function TransactionsPageContent() {
                                 )}
                             >
                                 <div className="relative">
-                                    <ListFilter className="h-4 w-4" />
+                                    <Funnel size={16} weight="regular" />
                                     {activeFilterCount > 0 && (
                                         <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">
                                             {activeFilterCount}
@@ -237,7 +237,7 @@ function TransactionsPageContent() {
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         {selectedCategories.map(category => (
-                            <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-[0_12px_24px_-20px_rgba(13,148,136,0.25)]">
+                                <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-[0_12px_24px_-20px_rgba(13,148,136,0.25)]">
                                 {category}
                                 <button
                                     type="button"
@@ -245,7 +245,7 @@ function TransactionsPageContent() {
                                     className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-primary/10 transition-colors"
                                     aria-label={`Hapus filter kategori ${category}`}
                                 >
-                                    <X className="h-3 w-3" />
+                                    <X size={12} weight="regular" />
                                 </button>
                             </Badge>
                         ))}
@@ -260,7 +260,7 @@ function TransactionsPageContent() {
                                         className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-primary/10 transition-colors"
                                         aria-label={`Hapus filter dompet ${wallet.name}`}
                                     >
-                                        <X className="h-3 w-3" />
+                                        <X size={12} weight="regular" />
                                     </button>
                                 </Badge>
                             )

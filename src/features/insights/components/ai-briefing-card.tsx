@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, MessageSquare, ArrowRight, Zap, Target, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Lightning, Sparkle, WarningCircle } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -21,19 +20,19 @@ export const AiBriefingCard = () => {
     const moods = {
         calm: {
             bg: 'bg-emerald-500/10',
-            icon: Sparkles,
+            icon: Sparkle,
             iconColor: 'text-emerald-500',
             textColor: 'text-emerald-50'
         },
         warning: {
             bg: 'bg-amber-500/10',
-            icon: AlertCircle,
+            icon: WarningCircle,
             iconColor: 'text-amber-500',
             textColor: 'text-amber-50'
         },
         celebration: {
             bg: 'bg-indigo-500/10',
-            icon: Zap,
+            icon: Lightning,
             iconColor: 'text-indigo-500',
             textColor: 'text-indigo-50'
         }
@@ -56,7 +55,7 @@ export const AiBriefingCard = () => {
                 
                 <div className="flex gap-4 relative z-10">
                     <div className={cn("shrink-0 h-10 w-10 rounded-xl flex items-center justify-center bg-white/8 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)]", mood.iconColor)}>
-                        <Icon className="h-6 w-6" />
+                        <Icon size={24} weight="regular" />
                     </div>
                     
                     <div className="space-y-3 flex-1">
@@ -81,7 +80,7 @@ export const AiBriefingCard = () => {
                                 <span className="text-xs font-semibold text-primary/80 group-hover:text-primary transition-colors">
                                     {briefing.suggestion}
                                 </span>
-                                <ArrowRight className="h-3.5 w-3.5 text-primary/40 group-hover:translate-x-0.5 transition-transform" />
+                                <ArrowRight size={14} weight="regular" className="text-primary/40 group-hover:translate-x-0.5 transition-transform" />
                             </motion.button>
                         )}
                     </div>

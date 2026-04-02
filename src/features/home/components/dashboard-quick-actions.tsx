@@ -1,20 +1,16 @@
 
 'use client';
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, ArrowRightLeft, HandCoins, Target, Sparkles } from 'lucide-react';
+import { ArrowsLeftRight, HandCoins, Plus, Sparkle, Target } from '@phosphor-icons/react';
 import { useUI } from '@/components/ui-provider';
 
 export const DashboardQuickActions = () => {
-    const router = useRouter();
     const { 
         setIsTransferModalOpen, 
         setIsDebtModalOpen, 
         setIsGoalModalOpen,
-        setTransactionToEdit,
         setDebtToEdit,
         setGoalToEdit,
         openTransactionSheet
@@ -30,7 +26,7 @@ export const DashboardQuickActions = () => {
                         onClick={() => openTransactionSheet()}
                         title="Smart Add (AI)"
                     >
-                        <Sparkles className="h-5 w-5" />
+                        <Sparkle size={20} weight="regular" />
                         <span className="text-xs font-medium">Smart</span>
                     </Button>
                     <Button 
@@ -39,7 +35,7 @@ export const DashboardQuickActions = () => {
                         onClick={() => openTransactionSheet()}
                         title="Transaksi Baru"
                     >
-                        <Plus className="h-5 w-5" />
+                        <Plus size={20} weight="regular" />
                         <span className="text-xs font-medium">Baru</span>
                     </Button>
                     <Button 
@@ -48,7 +44,7 @@ export const DashboardQuickActions = () => {
                         onClick={() => setIsTransferModalOpen(true)}
                         title="Transfer Antar Dompet"
                     >
-                        <ArrowRightLeft className="h-5 w-5 text-muted-foreground" />
+                        <ArrowsLeftRight size={20} weight="regular" className="text-muted-foreground" />
                         <span className="text-xs font-medium text-muted-foreground">Transfer</span>
                     </Button>
                     <Button 
@@ -60,7 +56,7 @@ export const DashboardQuickActions = () => {
                         }}
                         title="Catat Hutang/Piutang"
                     >
-                        <HandCoins className="h-5 w-5 text-muted-foreground" />
+                        <HandCoins size={20} weight="regular" className="text-muted-foreground" />
                         <span className="text-xs font-medium text-muted-foreground">Hutang</span>
                     </Button>
                     <Button 
@@ -72,7 +68,7 @@ export const DashboardQuickActions = () => {
                         }}
                         title="Target Baru"
                     >
-                        <Target className="h-5 w-5 text-muted-foreground" />
+                        <Target size={20} weight="regular" className="text-muted-foreground" />
                         <span className="text-xs font-medium text-muted-foreground">Target</span>
                     </Button>
                 </div>

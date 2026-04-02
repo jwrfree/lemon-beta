@@ -4,13 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { useUI } from '@/components/ui-provider';
-import { CornerDownRight, ArrowRight, MapPin } from 'lucide-react';
+import { ArrowElbowDownRight, ArrowRight, MapPin } from '@phosphor-icons/react';
 import type { Transaction, Wallet } from '@/types/models';
 import {
     getMerchantVisuals,
@@ -26,8 +25,14 @@ interface DashboardRecentTransactionsProps {
     wallets: Wallet[];
 }
 
+interface TransactionRowProps {
+    t: Transaction;
+    wallet?: Wallet;
+    handleRowClick: (..._args: [Transaction]) => void;
+}
+
 // Separate row component to manage local state for each logo fallback
-const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet: Wallet | undefined, handleRowClick: (t: Transaction) => void }) => {
+const TransactionRow = ({ t, wallet, handleRowClick }: TransactionRowProps) => {
     const categoryData = categoryDetails(t.category);
     const CategoryIcon = getCategoryIcon(categoryData.icon);
     const dateObj = parseISO(t.date);
@@ -113,17 +118,17 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                         </div>
                         <div className="text-xs font-medium text-muted-foreground mt-1 flex items-center gap-2">
                             <span>{format(dateObj, 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
-                            <span className="w-1 h-1 rounded-full bg-border" />
-                            <span>{format(dateObj, 'HH:mm')}</span>
-                            {t.location && (
-                                <>
                                     <span className="w-1 h-1 rounded-full bg-border" />
-                                    <span className="flex items-center gap-0.5 truncate max-w-[100px]">
-                                        <MapPin className="w-2.5 h-2.5" />
-                                        {t.location}
-                                    </span>
-                                </>
-                            )}
+                                    <span>{format(dateObj, 'HH:mm')}</span>
+                                    {t.location && (
+                                        <>
+                                            <span className="w-1 h-1 rounded-full bg-border" />
+                                            <span className="flex items-center gap-0.5 truncate max-w-[100px]">
+                                                <MapPin size={10} weight="regular" />
+                                                {t.location}
+                                            </span>
+                                        </>
+                                    )}
                         </div>
                     </div>
                 </div>
@@ -140,7 +145,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: { t: Transaction, wallet:
                     </span>
                     {t.subCategory ? (
                         <span className="text-xs font-medium text-muted-foreground flex items-center gap-1 ml-1">
-                            <CornerDownRight className="w-3 h-3 text-muted-foreground/50" />
+                            <ArrowElbowDownRight size={12} weight="regular" className="text-muted-foreground/50" />
                             {t.subCategory}
                         </span>
                     ) : (
@@ -217,7 +222,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                     className="text-xs font-medium text-label text-muted-foreground hover:text-primary transition-colors"
                 >
                     Lihat Riwayat Lengkap
-                    <ArrowRight className="w-3.5 h-3.5 ml-2" />
+                    <ArrowRight size={14} weight="regular" className="ml-2" />
                 </Button>
             </div>
         </div>

@@ -1,11 +1,10 @@
 
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { Bell, Calendar, AlertCircle } from 'lucide-react';
+import { Bell, CalendarBlank, WarningCircle } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
@@ -33,7 +32,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-medium flex items-center gap-2">
-                            <Bell className="h-4 w-4 text-primary" /> Pengingat
+                            <Bell size={16} weight="regular" className="text-primary" /> Pengingat
                         </CardTitle>
                         <CardDescription className="text-xs">7 hari ke depan</CardDescription>
                     </div>
@@ -54,7 +53,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                         <div className="rounded-md bg-muted/32 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                             <p className="text-sm font-medium">{reminderSummary.nextReminder.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Calendar className="h-3.5 w-3.5" />
+                                <CalendarBlank size={14} weight="regular" />
                                 Jatuh tempo {format(parseISO(reminderSummary.nextReminder.dueDate as string), 'd MMM yyyy', { locale: dateFnsLocaleId })}
                             </p>
                         </div>
@@ -76,7 +75,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-medium flex items-center gap-2">
-                            <AlertCircle className="h-4 w-4 text-destructive" /> Hutang & Piutang
+                            <WarningCircle size={16} weight="regular" className="text-destructive" /> Hutang & Piutang
                         </CardTitle>
                         <CardDescription className="text-xs">Prioritas terdekat</CardDescription>
                     </div>
@@ -90,7 +89,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                             <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Jatuh Tempo</p>
                             <p className="text-sm font-medium">{debtSummary.nextDueDebt.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Calendar className="h-3.5 w-3.5" />
+                                <CalendarBlank size={14} weight="regular" />
                                 {format(parseISO(debtSummary.nextDueDebt.dueDate as string), 'd MMM yyyy', { locale: dateFnsLocaleId })}
                             </p>
                         </div>
@@ -99,7 +98,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                             <EmptyState 
                                 title="Bebas Hutang"
                                 description="Tidak ada kewajiban mendesak saat ini."
-                                icon={AlertCircle}
+                                icon={WarningCircle}
                                 variant="filter"
                                 className="md:min-h-0 pt-0"
                             />

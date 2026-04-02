@@ -6,7 +6,7 @@ import { id as localeId } from 'date-fns/locale';
 import { Category } from '@/lib/categories';
 import { Wallet } from '@/types/models';
 import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkles, Pencil, Check } from 'lucide-react';
+import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkle, PencilSimple, Check } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -103,9 +103,11 @@ export const SemanticTransactionReview = ({
         <div className="space-y-4 px-1">
             <div className="space-y-3">
                 <div className="rounded-[24px] bg-background px-4 py-4">
-                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
-                        Nominal
-                    </p>
+                    <div className="flex items-center px-1">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                            Nominal
+                        </span>
+                    </div>
                     {activeEditor === 'amount' ? (
                         <div className="mt-2 flex items-center gap-2 rounded-[18px] bg-muted p-3">
                             <div className="min-w-0 flex-1">
@@ -124,7 +126,7 @@ export const SemanticTransactionReview = ({
                                 onClick={() => setActiveEditor(null)}
                                 aria-label="Selesai edit nominal"
                             >
-                                <Check className="h-5 w-5" />
+                                <Check size={20} weight="bold" />
                             </Button>
                         </div>
                     ) : (
@@ -147,7 +149,7 @@ export const SemanticTransactionReview = ({
                                 {amountNumber > 0 ? formatCurrency(amountNumber) : 'Isi nominal'}
                             </span>
                             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
-                                <Pencil className="h-4 w-4" />
+                                <PencilSimple size={16} weight="bold" />
                             </span>
                         </button>
                     )}
@@ -156,9 +158,11 @@ export const SemanticTransactionReview = ({
 
             <div className="space-y-3">
                 <div className={cn(sectionCardClass, "space-y-2")}>
-                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
-                        Kategori
-                    </p>
+                    <div className="flex items-center px-1">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                            Kategori
+                        </span>
+                    </div>
                     <button
                         type="button"
                         onClick={() => {
@@ -179,9 +183,9 @@ export const SemanticTransactionReview = ({
                                                 );
                                             })()}
                                             <div className="min-w-0">
-                                                <p className="line-clamp-1 text-sm font-medium text-foreground">{categoryObj.name}</p>
+                                                <p className="line-clamp-1 text-sm font-semibold text-foreground">{categoryObj.name}</p>
                                         {subCategoryName && (
-                                            <p className="line-clamp-1 text-sm text-muted-foreground">{subCategoryName}</p>
+                                            <p className="line-clamp-1 text-xs font-medium text-muted-foreground">{subCategoryName}</p>
                                         )}
                                     </div>
                                 </>
@@ -190,22 +194,25 @@ export const SemanticTransactionReview = ({
                             )}
                         </div>
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
-                            <Pencil className="h-3.5 w-3.5" />
+                            <PencilSimple size={14} weight="bold" />
                         </span>
                     </button>
                 </div>
 
                 <div className={cn(sectionCardClass, "space-y-2")}>
-                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
-                        Keterangan
-                    </p>
+                    <div className="flex items-center px-1">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                            Keterangan
+                        </span>
+                    </div>
                     {activeEditor === 'description' ? (
                         <div className="flex items-center gap-2 rounded-[18px] bg-muted p-3">
                             <Input
                                 value={description}
+                                variant="surface"
                                 onChange={(e) => form.setValue('description', e.target.value)}
                                 placeholder="Tambah keterangan transaksi"
-                                className="h-12 flex-1 rounded-2xl border-border bg-background text-base font-medium focus-visible:ring-primary"
+                                className="h-12 flex-1 rounded-2xl text-base font-medium"
                                 autoFocus
                                 onKeyDown={(e) => e.key === 'Enter' && setActiveEditor(null)}
                             />
@@ -215,7 +222,7 @@ export const SemanticTransactionReview = ({
                                 onClick={() => setActiveEditor(null)}
                                 aria-label="Selesai edit keterangan"
                             >
-                                <Check className="h-5 w-5" />
+                                <Check size={20} weight="bold" />
                             </Button>
                         </div>
                     ) : (
@@ -234,16 +241,18 @@ export const SemanticTransactionReview = ({
                                 {description || 'Tambah keterangan transaksi'}
                             </span>
                             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
-                                <Pencil className="h-3.5 w-3.5" />
+                                <PencilSimple size={14} weight="bold" />
                             </span>
                         </button>
                     )}
                 </div>
 
                 <div className={cn(sectionCardClass, "space-y-2")}>
-                    <p className="px-1 text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
-                        Detail
-                    </p>
+                    <div className="flex items-center px-1">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                            Detail
+                        </span>
+                    </div>
                     <div className="flex flex-wrap gap-2.5">
                         {type === 'expense' && (
                             <button
@@ -261,12 +270,12 @@ export const SemanticTransactionReview = ({
                             >
                                 {isNeed ? (
                                     <>
-                                        <ShieldCheck className="h-4 w-4 shrink-0" />
+                                        <ShieldCheck size={16} weight="fill" />
                                         <span>Kebutuhan</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Sparkles className="h-4 w-4 shrink-0 text-violet-700" />
+                                        <Sparkle size={16} weight="bold" className="text-violet-700" />
                                         <span>Keinginan</span>
                                     </>
                                 )}
@@ -285,7 +294,7 @@ export const SemanticTransactionReview = ({
                                 walletObj ? "bg-muted text-foreground" : missingFieldClass
                             )}
                         >
-                            <WalletIcon className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                            <WalletIcon size={16} weight="fill" className="text-muted-foreground/60" />
                             <span>{walletObj ? walletObj.name : 'Pilih dompet'}</span>
                         </button>
 
@@ -295,7 +304,7 @@ export const SemanticTransactionReview = ({
                                     type="button"
                                     className={cn(fieldButtonBase, "bg-muted text-foreground")}
                                 >
-                                    <CalendarIcon className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                                    <CalendarIcon size={16} weight="fill" className="text-muted-foreground/60" />
                                     <span>{format(dateValue, 'dd MMM, HH:mm', { locale: localeId })}</span>
                                 </button>
                             </PopoverTrigger>
@@ -318,9 +327,10 @@ export const SemanticTransactionReview = ({
                                         </p>
                                         <Input
                                             type="time"
+                                            variant="secondary"
                                             value={timeValue}
                                             onChange={(event) => handleTimeChange(event.target.value)}
-                                            className="h-11 rounded-2xl bg-background"
+                                            className="h-11 rounded-2xl"
                                         />
                                     </div>
                                 </div>

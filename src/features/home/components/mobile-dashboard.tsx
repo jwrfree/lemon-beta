@@ -1,24 +1,18 @@
 'use client';
-
-import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
+    type Icon as PhosphorIcon,
     Bell,
-    ArrowUpRight,
-    ArrowDownLeft,
-    Wallet as WalletIcon,
-    TrendingUp,
     Plus,
-    Sparkles,
-    ArrowRightLeft,
+    Sparkle,
+    ArrowsLeftRight,
     HandCoins,
-    Search,
-    ReceiptText
-} from 'lucide-react';
+    Receipt,
+} from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle';
 import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
@@ -56,7 +50,6 @@ export const MobileDashboard = ({
     totalBalance,
     monthlyIncome,
     monthlyExpense,
-    incomeDiff,
     expenseDiff,
     wallets,
     transactions,
@@ -81,7 +74,7 @@ export const MobileDashboard = ({
     const menuActions = [
         {
             label: 'Catat Cepat',
-            icon: Sparkles,
+            icon: Sparkle,
             color: 'text-warning',
             bg: 'bg-warning/10',
             onClick: () => openTransactionSheet()
@@ -95,7 +88,7 @@ export const MobileDashboard = ({
         },
         {
             label: 'Transfer',
-            icon: ArrowRightLeft,
+            icon: ArrowsLeftRight,
             color: 'text-info',
             bg: 'bg-info/10',
             onClick: () => setIsTransferModalOpen(true)
@@ -111,44 +104,47 @@ export const MobileDashboard = ({
             }
         }
     ];
+    const renderMenuActionIcon = (Icon: PhosphorIcon, className: string) => (
+        <Icon size={24} weight="regular" className={className} />
+    );
 
     if (isLoading) return null;
 
     return (
         <AppPageShell className="bg-background">
             <AppPageHeaderChrome width="full" className="z-20">
-                <div className="flex min-h-14 items-center justify-between gap-3 px-3 py-2.5 sm:px-4">
-                    <div className="min-w-0">
-                        <h1 className="truncate text-left text-base font-semibold tracking-tight text-foreground">
-                            Beranda
-                        </h1>
+                <div className="flex h-16 items-center justify-between gap-3 px-4 py-2">
+                    <div className="flex items-center gap-3">
+                        <Avatar className="h-9 w-9 border-2 border-background shadow-soft">
+                            <AvatarFallback className="bg-accent text-accent-foreground text-xs font-bold">
+                                {firstName[0]}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 leading-none mb-1">Beranda</p>
+                            <h1 className="truncate text-sm font-bold tracking-tight text-foreground">
+                                Halo, {firstName}
+                            </h1>
+                        </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-1.5">
+                    <div className="flex items-center justify-end gap-2">
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-9 w-9 rounded-full bg-white dark:bg-slate-900 text-muted-foreground shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] hover:bg-muted hover:text-foreground"
-                            onClick={() => router.push('/search')}
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="relative h-9 w-9 rounded-full bg-primary/10 text-primary shadow-[0_10px_22px_-18px_rgba(13,148,136,0.2)] hover:bg-primary/15"
+                            className="h-9 w-9 rounded-full bg-card text-muted-foreground shadow-soft hover:bg-muted hover:text-foreground border border-border/40"
                             onClick={() => setIsAIChatOpen(true)}
                         >
-                            <Sparkles className="h-4 w-4 fill-current" />
+                            <Sparkle size={16} weight="fill" className="text-accent" />
                         </Button>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="relative h-9 w-9 rounded-full bg-white dark:bg-slate-900 text-muted-foreground shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] hover:bg-muted hover:text-foreground"
+                            className="relative h-9 w-9 rounded-full bg-card text-muted-foreground shadow-soft hover:bg-muted hover:text-foreground border border-border/40"
                             onClick={() => router.push('/notifications')}
                         >
-                            <Bell className="h-4 w-4" />
-                            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive" />
+                            <Bell size={16} weight="regular" />
+                            <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
                         </Button>
                     </div>
                 </div>
@@ -169,52 +165,44 @@ export const MobileDashboard = ({
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                     >
-                        <div className="relative overflow-hidden rounded-card-premium bg-[#064e4b] text-white shadow-[0_24px_48px_-32px_rgba(13,148,136,0.42)]">
-                            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/10" />
+                        <div className="relative overflow-hidden rounded-[32px] bg-foreground text-background shadow-xl">
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
 
-                            <div className="relative space-y-5 p-5">
+                            <div className="relative space-y-6 p-6">
                                 <div>
-                                    <div className="mb-3 flex items-center justify-between">
-                                        <span className="text-white/50 text-label font-semibold uppercase tracking-widest">Total Kekayaan</span>
-                                        <div className="rounded-full bg-white/10 px-2 py-0.5 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.2)]">
-                                            <BalanceVisibilityToggle className="h-4 w-4 text-white/80 hover:text-white" variant="ghost" size="icon" />
+                                    <div className="mb-4 flex items-center justify-between">
+                                        <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">Total Kekayaan</span>
+                                        <div className="rounded-full bg-background/10 px-2.5 py-1.5 shadow-sm border border-white/5 backdrop-blur-md">
+                                            <BalanceVisibilityToggle className="h-4 w-4 text-background/80 hover:text-background" variant="ghost" size="icon" />
                                         </div>
                                     </div>
-                                    <div className="text-4xl font-semibold tracking-tighter tabular-nums">
+                                    <div className="text-4xl font-bold tracking-tighter tabular-nums text-background">
                                         <AnimatedCounter value={totalBalance} />
                                     </div>
-                                    <div className="mt-4">
-                                        <div className="w-fit max-w-[280px] rounded-full bg-white/6 px-3 py-1.5 text-xs font-semibold leading-relaxed text-white/70 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)] backdrop-blur-sm">
+                                    <div className="mt-5">
+                                        <div className="w-fit rounded-full bg-accent px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-lg">
                                             {expenseDiff > 0
-                                                ? `Pengeluaran naik ${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}% bulan ini.`
-                                                : 'Pengeluaran terkontrol. Kerja bagus!'}
+                                                ? `Limit: -${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}%`
+                                                : 'Keuangan Stabil'}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3">
-                                        <div className="flex h-20 flex-col justify-between rounded-card-glass bg-white/6 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md">
-                                            <div className="flex items-center gap-2 text-white/60">
-                                                <span className="text-label font-semibold uppercase tracking-widest">Pemasukan</span>
+                                <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex flex-col justify-between rounded-2xl bg-background/5 p-4 border border-white/5 backdrop-blur-md">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Pemasukan</span>
                                             </div>
-                                            <div>
-                                                <AnimatedCounter value={monthlyIncome} className="text-sm font-semibold tracking-tight text-white" />
-                                                <p className="mt-1 text-[10px] font-semibold text-white/40">
-                                                    {incomeDiff >= 0 ? '+' : ''}
-                                                    {new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(Math.abs(incomeDiff))} bulan ini
-                                                </p>
+                                            <div className="mt-2">
+                                                <AnimatedCounter value={monthlyIncome} className="text-base font-bold tracking-tight text-background" />
                                             </div>
                                         </div>
-                                        <div className="flex h-20 flex-col justify-between rounded-card-glass bg-white/6 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] backdrop-blur-md">
-                                            <div className="flex items-center gap-2 text-white/60">
-                                                <span className="text-label font-semibold uppercase tracking-widest">Pengeluaran</span>
+                                        <div className="flex flex-col justify-between rounded-2xl bg-background/5 p-4 border border-white/5 backdrop-blur-md">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Pengeluaran</span>
                                             </div>
-                                            <div>
-                                                <AnimatedCounter value={monthlyExpense} className="text-sm font-semibold tracking-tight text-white" />
-                                                <p className="mt-1 text-[10px] font-semibold text-white/40">
-                                                    {expenseDiff >= 0 ? '+' : ''}
-                                                    {new Intl.NumberFormat('id-ID', { notation: 'compact' }).format(Math.abs(expenseDiff))} bulan ini
-                                                </p>
+                                            <div className="mt-2">
+                                                <AnimatedCounter value={monthlyExpense} className="text-base font-bold tracking-tight text-background" />
                                             </div>
                                         </div>
                                     </div>
@@ -236,10 +224,10 @@ export const MobileDashboard = ({
                                 onClick={action.onClick}
                                 className="group flex flex-col items-center gap-3"
                             >
-                                <div className={cn("flex h-16 w-16 items-center justify-center rounded-full bg-card/96 transition-all shadow-[0_14px_28px_-22px_rgba(15,23,42,0.18)] group-active:shadow-inner", action.bg.replace('/10', '/5'))}>
-                                    <action.icon className={cn("h-7 w-7", action.color)} strokeWidth={1.5} />
+                                <div className={cn("flex h-16 w-16 items-center justify-center rounded-3xl bg-card transition-all shadow-soft border border-border/40 group-active:shadow-inner", action.bg.replace('/10', '/5'))}>
+                                    {renderMenuActionIcon(action.icon, action.color)}
                                 </div>
-                                <span className="text-center text-label leading-tight text-muted-foreground/60">
+                                <span className="text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
                                     {action.label}
                                 </span>
                             </motion.button>
@@ -248,11 +236,11 @@ export const MobileDashboard = ({
                 </section>
 
                 <section className="space-y-4">
-                    <div className="flex items-center justify-between px-4">
-                        <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
+                    <div className="flex items-center justify-between px-5">
+                        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
                             Daftar Dompet
                         </h2>
-                        <Button variant="ghost" size="sm" className="h-8 px-0 text-label text-primary hover:bg-transparent" onClick={() => router.push('/wallets')}>
+                        <Button variant="ghost" size="sm" className="h-8 px-0 text-[10px] font-bold uppercase tracking-wider text-primary hover:bg-transparent" onClick={() => router.push('/wallets')}>
                             Kelola
                         </Button>
                     </div>
@@ -273,7 +261,7 @@ export const MobileDashboard = ({
                                     onClick={() => router.push(`/wallets?id=${wallet.id}`)}
                                 >
                                     <div
-                                        className="group relative flex h-32 w-44 flex-col justify-between overflow-hidden rounded-card-premium p-4 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.22)] transition-all duration-500"
+                                        className="group relative flex h-36 w-48 flex-col justify-between overflow-hidden rounded-[32px] p-5 shadow-lg transition-all duration-500"
                                         style={{ background: dna.gradient }}
                                     >
                                         <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/20 opacity-40 blur-2xl" />
@@ -312,14 +300,14 @@ export const MobileDashboard = ({
                         <div className="snap-center shrink-0">
                             <button
                                 onClick={() => router.push('/wallets')}
-                                className="group relative flex h-32 w-44 flex-col items-center justify-center gap-3 overflow-hidden rounded-card-premium bg-card/60 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.18)] backdrop-blur-md transition-all hover:bg-muted/50 active:scale-95"
+                                className="group relative flex h-36 w-48 flex-col items-center justify-center gap-3 overflow-hidden rounded-[32px] bg-card shadow-soft border border-dashed border-border transition-all hover:bg-muted/50 active:scale-95"
                             >
-                                <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-primary/30 opacity-20 blur-2xl" />
-                                <div className="rounded-card-icon bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-                                    <Plus className="h-6 w-6 text-primary" strokeWidth={2.5} />
+                                <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-accent/20 opacity-20 blur-2xl" />
+                                <div className="rounded-2xl bg-accent/10 p-4 transition-colors group-hover:bg-accent/20">
+                                    <Plus size={24} weight="regular" className="text-accent" />
                                 </div>
-                                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                                    Tambah Dompet
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                    Tambah
                                 </span>
                             </button>
                         </div>
@@ -327,25 +315,27 @@ export const MobileDashboard = ({
                 </section>
 
                 <section className="px-4">
-                    <SpendingTrendChart transactions={transactions} days={14} />
+                    <div className="overflow-hidden rounded-[32px] bg-card p-1 shadow-soft border border-border/40">
+                        <SpendingTrendChart transactions={transactions} days={14} />
+                    </div>
                 </section>
 
-                <section className="space-y-4 px-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
-                            Transaksi Terbaru
+                <section className="space-y-4 pb-12">
+                    <div className="flex items-center justify-between px-5">
+                        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Mutasi Terakhir
                         </h2>
-                        <Button variant="ghost" size="sm" className="h-8 px-0 text-label text-primary" onClick={() => router.push('/transactions')}>
-                            Lihat semua
+                        <Button variant="ghost" size="sm" className="h-8 px-0 text-[10px] font-bold uppercase tracking-wider text-primary" onClick={() => router.push('/transactions')}>
+                            Semua
                         </Button>
                     </div>
 
-                    <div className="space-y-2 rounded-[30px] bg-muted/45 p-2.5 shadow-[0_20px_40px_-30px_rgba(15,23,42,0.16)]">
+                    <div className="space-y-2 rounded-[32px] bg-muted/20 p-2 shadow-soft border border-border/40 mx-4">
                         {recentTransactions.length > 0 ? (
                             recentTransactions.map((transaction) => (
                                 <div
                                     key={transaction.id}
-                                    className="overflow-hidden rounded-[24px] bg-card shadow-[0_18px_32px_-26px_rgba(15,23,42,0.2)]"
+                                    className="overflow-hidden rounded-3xl bg-card shadow-sm border border-border/20"
                                 >
                                     <TransactionListItem
                                         transaction={transaction}
@@ -362,7 +352,7 @@ export const MobileDashboard = ({
                                 className="flex w-full items-center gap-3 rounded-[24px] bg-card px-4 py-4 text-left shadow-[0_18px_32px_-26px_rgba(15,23,42,0.2)] transition-transform active:scale-[0.985]"
                             >
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-primary/10 text-primary shadow-[0_10px_24px_-20px_rgba(13,148,136,0.22)]">
-                                    <ReceiptText className="h-5 w-5" strokeWidth={2.1} />
+                                    <Receipt size={20} weight="regular" />
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <div className="text-sm font-semibold tracking-tight text-foreground">

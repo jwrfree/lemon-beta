@@ -1,10 +1,9 @@
 
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Wallet } from 'lucide-react';
+import { ArrowRight, Wallet } from '@phosphor-icons/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -79,7 +78,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
                             )
                         })}
                         <Button variant="ghost" className="w-full text-xs font-medium text-primary hover:bg-primary/5 mt-2 rounded-lg" onClick={() => router.push('/wallets')}>
-                            Lihat Semua Dompet <ArrowRight className="ml-2 h-3 w-3" />
+                            Lihat Semua Dompet <ArrowRight size={12} weight="regular" className="ml-2" />
                         </Button>
                     </div>
                 )}

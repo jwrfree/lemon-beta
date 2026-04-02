@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { AlertCircle, RefreshCw, WifiOff, ServerCrash } from 'lucide-react';
+import { ArrowClockwise, WarningCircle, WarningOctagon, WifiSlash } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -31,19 +31,19 @@ const variantConfig: Record<
   { Icon: React.ElementType; defaultMessage: string }
 > = {
   validation: {
-    Icon: AlertCircle,
+    Icon: WarningCircle,
     defaultMessage: 'Periksa kembali isian kamu.',
   },
   network: {
-    Icon: WifiOff,
+    Icon: WifiSlash,
     defaultMessage: 'Koneksi bermasalah. Coba lagi.',
   },
   server: {
-    Icon: ServerCrash,
+    Icon: WarningOctagon,
     defaultMessage: 'Terjadi kesalahan pada sistem.',
   },
   empty: {
-    Icon: AlertCircle,
+    Icon: WarningCircle,
     defaultMessage: 'Data belum tersedia.',
   },
 };
@@ -104,7 +104,7 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
               onClick={onRetry}
               className="mt-2 h-7 px-2 text-xs text-error hover:bg-error-muted hover:text-error border-none"
             >
-              <RefreshCw className="mr-1.5 h-3 w-3" aria-hidden="true" />
+              <ArrowClockwise className="mr-1.5 h-3 w-3" aria-hidden="true" />
               {retryLabel}
             </Button>
           )}

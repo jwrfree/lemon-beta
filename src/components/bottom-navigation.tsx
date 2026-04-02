@@ -3,14 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    GearSix,
-    House,
-    Notebook,
-    Plus,
-    Receipt,
-    type Icon as PhosphorIcon,
-} from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 import { cn, triggerHaptic } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
 import { MOBILE_NAV_ITEMS, isNavItemActive } from '@/lib/sidebar-config';
@@ -25,13 +18,6 @@ const slotBaseClassName =
 
 const navIconRowClassName = 'flex h-7 w-full flex-none items-center justify-center';
 const navLabelClassName = 'inline-flex h-4 w-full flex-none items-start justify-center truncate text-xs font-medium leading-none tracking-tight transition-colors';
-
-const mobileNavIconMap: Record<string, PhosphorIcon> = {
-    home: House,
-    transactions: Receipt,
-    plan: Notebook,
-    settings: GearSix,
-};
 
 interface NavSlotProps {
     label: string;
@@ -112,7 +98,6 @@ export const BottomNavigation = () => {
                     <div className="mx-auto grid h-16 w-full max-w-lg grid-cols-5 items-stretch px-1">
                         {MOBILE_NAV_ITEMS.slice(0, 2).map((item) => {
                             const isActive = isNavItemActive(pathname, item);
-                            const NavIcon = mobileNavIconMap[item.id];
 
                             return (
                                 <NavSlot
@@ -122,7 +107,7 @@ export const BottomNavigation = () => {
                                     label={item.shortName ?? item.name}
                                     isActive={isActive}
                                 >
-                                    <NavIcon
+                                    <item.icon
                                         size={20}
                                         weight={isActive ? 'fill' : 'regular'}
                                         className="shrink-0"
@@ -143,7 +128,6 @@ export const BottomNavigation = () => {
 
                         {MOBILE_NAV_ITEMS.slice(2).map((item) => {
                             const isActive = isNavItemActive(pathname, item);
-                            const NavIcon = mobileNavIconMap[item.id];
 
                             return (
                                 <NavSlot
@@ -153,7 +137,7 @@ export const BottomNavigation = () => {
                                     label={item.shortName ?? item.name}
                                     isActive={isActive}
                                 >
-                                    <NavIcon
+                                    <item.icon
                                         size={20}
                                         weight={isActive ? 'fill' : 'regular'}
                                         className="shrink-0"

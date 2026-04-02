@@ -77,17 +77,17 @@ export default function WelcomePage() {
 
     if (isLoading || user) {
         return (
-            <div className="flex min-h-dvh items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,#f7fbf8_0%,#eef4ef_100%)] p-4">
+            <div className="flex min-h-dvh items-center justify-center bg-background p-4">
                 <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
 
     return (
-        <main className="relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.16),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(245,158,11,0.14),transparent_22%),linear-gradient(180deg,#f7fbf8_0%,#eef4ef_100%)] text-foreground">
+        <main className="relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top_left,hsla(var(--volt-500)/0.08),transparent_25%),radial-gradient(circle_at_82%_18%,hsla(var(--volt-500)/0.05),transparent_20%),linear-gradient(180deg,hsl(var(--background))_0%,hsl(var(--muted)/0.3)_100%)] text-foreground">
             <div className="pointer-events-none fixed inset-0">
-                <div className="absolute left-[-6rem] top-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-                <div className="absolute bottom-[-4rem] right-[-2rem] h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
+                <div className="absolute left-[-6rem] top-16 h-64 w-64 rounded-full bg-primary/5 blur-3xl opacity-50" />
+                <div className="absolute bottom-[-4rem] right-[-2rem] h-72 w-72 rounded-full bg-primary/5 blur-3xl opacity-30" />
                 <motion.div
                     aria-hidden
                     className="absolute right-[12%] top-[14%] h-24 w-24 rounded-full border border-white/40 bg-white/25 backdrop-blur-xl"
@@ -131,26 +131,26 @@ export default function WelcomePage() {
                             </div>
 
                             <div className="space-y-3 sm:space-y-4">
-                                <h1 className="text-3xl font-semibold leading-tight tracking-tight text-slate-950 xs:text-4xl sm:text-5xl lg:text-6xl lg:leading-none lg:max-w-[12ch]">
+                                <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground xs:text-4xl sm:text-5xl lg:text-6xl lg:leading-none lg:max-w-[12ch]">
                                     Keuangan pribadi yang terasa ringan, bukan ribet.
                                 </h1>
-                                <p className="max-w-[52ch] text-sm leading-7 text-slate-600 sm:text-base">
+                                <p className="max-w-[52ch] text-sm leading-7 text-muted-foreground sm:text-base">
                                     Catat transaksi lebih cepat, pantau cashflow tanpa noise, dan gunakan Lemon Coach untuk memahami angka yang paling penting hari ini.
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 border-y border-slate-200/80 py-5 sm:grid-cols-3 sm:gap-4">
+                            <div className="grid grid-cols-2 gap-3 border-y border-border/50 py-5 sm:grid-cols-3 sm:gap-4">
                                 <div className="space-y-0.5">
-                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-slate-500">Fokus utama</p>
-                                    <p className="text-xs sm:text-sm font-medium text-slate-900">Saldo, budget, cashflow</p>
+                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Fokus utama</p>
+                                    <p className="text-xs sm:text-sm font-medium text-foreground">Saldo, budget, cashflow</p>
                                 </div>
                                 <div className="space-y-0.5">
-                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-slate-500">Input cepat</p>
-                                    <p className="text-xs sm:text-sm font-medium text-slate-900">Ketik, suara, scan</p>
+                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Input cepat</p>
+                                    <p className="text-xs sm:text-sm font-medium text-foreground">Ketik, suara, scan</p>
                                 </div>
                                 <div className="col-span-2 sm:col-span-1 space-y-0.5">
-                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-slate-500">AI context</p>
-                                    <p className="text-xs sm:text-sm font-medium text-slate-900">Jawaban berbasis data pribadi</p>
+                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">AI context</p>
+                                    <p className="text-xs sm:text-sm font-medium text-foreground">Jawaban berbasis data pribadi</p>
                                 </div>
                             </div>
 
@@ -166,14 +166,14 @@ export default function WelcomePage() {
                                             transition={{ delay: 0.08 * index, duration: 0.35, ease: 'easeOut' }}
                                             className="grid grid-cols-[auto_1fr] gap-3 border-b border-slate-200/70 pb-4 last:border-b-0 last:pb-0 sm:grid-cols-[auto_1fr_auto] sm:items-start"
                                         >
-                                            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-white/80 text-primary shadow-sm ring-1 ring-black/5">
+                                            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-muted/30 text-primary shadow-sm ring-1 ring-border/50">
                                                 <Icon className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                                             </div>
                                             <div className="space-y-1">
-                                                <p className="text-sm font-semibold text-slate-900">{feature.title}</p>
-                                                <p className="text-xs sm:text-sm leading-5 sm:leading-6 text-slate-600">{feature.description}</p>
+                                                <p className="text-sm font-semibold text-foreground">{feature.title}</p>
+                                                <p className="text-xs sm:text-sm leading-5 sm:leading-6 text-muted-foreground">{feature.description}</p>
                                             </div>
-                                            <ArrowUpRight className="mt-1 hidden h-4 w-4 text-slate-400 sm:block" />
+                                            <ArrowUpRight className="mt-1 hidden h-4 w-4 text-muted-foreground/40 sm:block" />
                                         </motion.div>
                                     );
                                 })}
@@ -188,17 +188,17 @@ export default function WelcomePage() {
                         className="relative w-full"
                     >
                         <div className="absolute inset-4 sm:inset-6 rounded-[2rem] bg-white/40 blur-2xl" />
-                        <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-white/70 bg-white/78 p-2 sm:p-3 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-4">
-                            <div className="rounded-[1.2rem] sm:rounded-[1.6rem] border border-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(250,252,250,0.92)_100%)] p-3 sm:p-4 md:p-5">
-                                <div className="space-y-4 border-b border-slate-200/80 pb-5">
-                                    <div className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[10px] sm:text-label font-semibold uppercase tracking-widest text-slate-500">
+                        <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-border/40 bg-card/60 p-2 sm:p-3 shadow-[0_30px_80px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:p-4">
+                            <div className="rounded-[1.2rem] sm:rounded-[1.6rem] border border-border/40 bg-card/80 p-3 sm:p-4 md:p-5">
+                                <div className="space-y-4 border-b border-border/40 pb-5">
+                                    <div className="inline-flex w-fit rounded-full border border-border bg-muted/50 px-3 py-1 text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground">
                                         {authMeta.eyebrow}
                                     </div>
                                     <div className="space-y-2">
-                                        <h2 className="text-xl xs:text-2xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-[2rem]">
+                                        <h2 className="text-xl xs:text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-[2rem]">
                                             {authMeta.title}
                                         </h2>
-                                        <p className="text-xs sm:text-sm leading-5 sm:leading-6 text-slate-600">
+                                        <p className="text-xs sm:text-sm leading-5 sm:leading-6 text-muted-foreground">
                                             {authMeta.description}
                                         </p>
                                     </div>
@@ -212,8 +212,8 @@ export default function WelcomePage() {
                                                 className={cn(
                                                     'h-8 sm:h-9 rounded-full px-3 sm:px-4 text-xs sm:text-sm',
                                                     authView === view
-                                                        ? 'bg-primary text-primary-foreground hover:bg-primary/95'
-                                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                                        ? 'bg-primary text-black hover:bg-primary/95 font-bold shadow-soft'
+                                                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
                                                 )}
                                                 onClick={() => setAuthView(view)}
                                             >

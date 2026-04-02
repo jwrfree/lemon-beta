@@ -140,8 +140,8 @@ These are the **only** colours that should appear in component code for UI state
 
 | Token | CSS Var | Light | Dark | Use |
 |---|---|---|---|---|
-| `primary` | `--primary` | teal-600 | teal-400 | Brand CTA, nav active, FAB |
-| `primary-foreground` | `--primary-foreground` | white | teal-950 | Text on primary |
+| `primary` | `--primary` | gray-900 | volt-500 | Main CTA. Dark text on light, Volt on black. |
+| `primary-foreground` | `--primary-foreground` | white | gray-950 | Text on primary button. |
 | `destructive` | `--destructive` | rose-600 | rose-600 | Delete, danger, irreversible |
 | `destructive-foreground` | `--destructive-foreground` | white | white | Text on destructive |
 | `success` | `--success` | emerald-600 | emerald-500 | Completion, positive balance |

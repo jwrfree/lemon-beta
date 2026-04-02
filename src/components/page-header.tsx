@@ -1,22 +1,24 @@
 
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { CaretLeft } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, type LucideIcon } from 'lucide-react';
 import { AppPageHeaderChrome } from '@/components/app-page-shell';
 import type { PageWidth } from '@/lib/layout-tokens';
 import { cn } from '@/lib/utils';
+
+type HeaderIcon = ComponentType<{ className?: string }>;
 
 interface PageHeaderProps {
   title: string;
   description?: string;
   showBackButton?: boolean;
-  backIcon?: LucideIcon;
+  backIcon?: HeaderIcon;
   onBackClick?: () => void;
   actionButton?: {
-    icon: LucideIcon;
+    icon: HeaderIcon;
     label: string;
     onClick: () => void;
   };
@@ -29,7 +31,7 @@ export const PageHeader = ({
   title,
   description,
   showBackButton = true,
-  backIcon: BackIcon = ChevronLeft,
+  backIcon: BackIcon = CaretLeft,
   onBackClick,
   actionButton,
   extraActions,
@@ -58,7 +60,7 @@ export const PageHeader = ({
               onClick={handleBack}
               aria-label="Kembali"
             >
-              <BackIcon className="h-4 w-4 text-current" strokeWidth={2.4} />
+              <BackIcon className="h-4 w-4 text-current" />
             </Button>
           )}
         </div>
@@ -86,7 +88,7 @@ export const PageHeader = ({
               onClick={actionButton.onClick}
               aria-label={actionButton.label}
             >
-              <actionButton.icon className="h-4 w-4" strokeWidth={2} />
+              <actionButton.icon className="h-4 w-4" />
             </Button>
           )}
         </div>

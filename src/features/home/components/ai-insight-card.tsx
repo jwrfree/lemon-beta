@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Sparkles, RefreshCw, Lightbulb } from 'lucide-react';
+import { ArrowClockwise, Lightbulb, Sparkle } from '@phosphor-icons/react';
 import { generateFinancialInsight } from '@/ai/flows/generate-insight-flow';
 import { Transaction, Wallet, Debt } from '@/types/models';
 import { isSameMonth, parseISO, subMonths, isAfter } from 'date-fns';
@@ -107,12 +107,12 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
         <Card className="border-none shadow-none border border-border/40 bg-card">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium flex items-center gap-2 text-violet-700 dark:text-violet-400">
-                    <Lightbulb className="h-4 w-4" />
+                    <Lightbulb size={16} weight="regular" />
                     Lemon Insight
                 </CardTitle>
                 {insight && !isLoading && (
                     <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleGenerateInsight}>
-                        <RefreshCw className="h-3 w-3" />
+                        <ArrowClockwise size={12} weight="regular" />
                     </Button>
                 )}
             </CardHeader>
@@ -133,7 +133,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                                 onClick={handleGenerateInsight} 
                                 className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8"
                             >
-                                <Sparkles className="mr-1.5 h-3 w-3" />
+                                <Sparkle size={12} weight="regular" className="mr-1.5" />
                                 Cek Insight
                             </Button>
                         </motion.div>
@@ -144,7 +144,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                             exit={{ opacity: 0 }}
                             className="flex items-center justify-center py-4 gap-2 text-sm text-muted-foreground"
                         >
-                            <Sparkles className="h-4 w-4 animate-spin text-violet-600" />
+                            <Sparkle size={16} weight="regular" className="animate-spin text-violet-600" />
                             Sedang menganalisis...
                         </motion.div>
                     ) : (

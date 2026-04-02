@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useGoals } from '@/features/goals/hooks/use-goals';
@@ -14,16 +14,14 @@ import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-    RefreshCw,
-    LayoutDashboard,
-    PieChart as PieIcon,
+    ArrowClockwise,
     ArrowUpRight,
-    CalendarRange,
-    Activity,
-    ListTodo,
-    TrendingUp,
-    Sparkles
-} from 'lucide-react';
+    ChartPieSlice,
+    ListChecks,
+    Pulse,
+    Sparkle,
+    TrendUp
+} from '@phosphor-icons/react';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays, endOfMonth, subDays, eachDayOfInterval, format, isSameDay } from 'date-fns';
 
 import { DashboardAlerts } from './dashboard-alerts';
@@ -33,7 +31,6 @@ import { DashboardGoals } from './dashboard-goals';
 import { DashboardSkeleton } from './dashboard-skeleton';
 import { DashboardRecentTransactionsEmpty } from './dashboard-recent-transactions-empty';
 import { EmptyState } from '@/components/empty-state';
-import { ErrorBoundary } from '@/components/error-boundary';
 import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
@@ -42,11 +39,9 @@ import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app
 
 // Import Analyst Charts Components
 import { FinancialPulse } from '@/features/charts/components/financial-pulse';
-import { TrendAnalytics } from '@/features/charts/components/trend-analytics';
 import { CategoryPie } from '@/features/charts/components/category-pie';
 import { CategoryPilla } from '@/features/charts/components/chart-lists';
 import { CashflowComposedChart } from '@/features/charts/components/cashflow-composed-chart';
-import { ExpenseHeatmap } from '@/features/charts/components/expense-heatmap';
 import { ProphetChart } from '@/features/charts/components/prophet-chart';
 import type { DailyMetric } from '@/features/charts/types';
 
@@ -217,12 +212,6 @@ export const DesktopDashboard = () => {
 
     const recentTransactions = useMemo(() => filteredTransactions.slice(0, 10), [filteredTransactions]);
 
-    const heatmapTransactions = useMemo(() => {
-        return filteredTransactions
-            .filter(t => t.type === 'expense' && isSameMonth(parseISO(t.date), now))
-            .map(t => ({ date: t.date, amount: t.amount, type: t.type as 'expense' | 'income' }));
-    }, [filteredTransactions, now]);
-
     if (!mounted || isTxLoading) return <DashboardSkeleton />;
 
     const colorPalette = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4', 'bg-chart-5'];
@@ -255,7 +244,7 @@ export const DesktopDashboard = () => {
                                 className={cn("h-10 w-10 rounded-full bg-card/96 shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)]", isPending && "animate-spin")}
                                 onClick={handleRefresh}
                             >
-                                <RefreshCw className="h-4 w-4" />
+                                <ArrowClockwise size={16} weight="regular" />
                             </Button>
 
                             <Button
@@ -265,7 +254,7 @@ export const DesktopDashboard = () => {
                                 onClick={() => setIsAIChatOpen(true)}
                                 title="Tanya Lemon AI"
                             >
-                                <Sparkles className="h-4 w-4 fill-current" />
+                                <Sparkle size={16} weight="fill" />
                             </Button>
 
                             <UserProfileDropdown />
@@ -301,7 +290,7 @@ export const DesktopDashboard = () => {
                                         )}
                                         onClick={() => setIsAnalystView(!isAnalystView)}
                                     >
-                                        <Activity className="w-3 h-3 mr-2" />
+                                        <Pulse size={12} weight="regular" className="mr-2" />
                                         {isAnalystView ? 'Standard View' : 'Analyst View'}
                                     </Button>
                                 </div>
@@ -330,7 +319,7 @@ export const DesktopDashboard = () => {
                                         <div className="rounded-2xl bg-card/98 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center gap-2">
-                                                    <PieIcon className="w-5 h-5 text-primary" />
+                                                    <ChartPieSlice size={20} weight="regular" className="text-primary" />
                                                     <h3 className="font-medium text-sm">Allocation Radar</h3>
                                                 </div>
                                             </div>
@@ -344,7 +333,7 @@ export const DesktopDashboard = () => {
                                         {/* List Breakdown */}
                                         <div className="rounded-2xl bg-card/98 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                             <div className="flex items-center gap-2 mb-6">
-                                                <ArrowUpRight className="w-5 h-5 text-destructive" />
+                                                <ArrowUpRight size={20} weight="regular" className="text-destructive" />
                                                 <h3 className="font-medium text-sm">Top Spenders</h3>
                                             </div>
                                             <div className="space-y-4 overflow-y-auto max-h-[300px] pr-2 scrollbar-thin scrollbar-thumb-muted dark:scrollbar-thumb-muted-foreground/20">
@@ -365,7 +354,7 @@ export const DesktopDashboard = () => {
                                                     <EmptyState 
                                                         title="Data Tidak Cukup"
                                                         description="Belum ada transaksi pengeluaran bulan ini untuk dianalisis."
-                                                        icon={PieIcon}
+                                                        icon={ChartPieSlice}
                                                         variant="filter"
                                                         className="md:min-h-0 pt-0 py-12"
                                                     />
@@ -378,7 +367,7 @@ export const DesktopDashboard = () => {
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
-                                            <PieIcon className="w-8 h-8" />
+                                            <ChartPieSlice size={32} weight="regular" />
                                         </div>
                                         <div className="space-y-1">
                                             <h4 className="font-medium">Analysis Ready</h4>
@@ -388,7 +377,7 @@ export const DesktopDashboard = () => {
                                     </div>
                                     <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
-                                            <TrendingUp className="w-8 h-8" />
+                                            <TrendUp size={32} weight="regular" />
                                         </div>
                                         <div className="space-y-1">
                                             <h4 className="font-medium">Predictive Insights</h4>
@@ -409,7 +398,7 @@ export const DesktopDashboard = () => {
                             <div className="rounded-2xl bg-card/98 p-5 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-sm font-medium flex items-center gap-2">
-                                        <ListTodo className="w-4 h-4 text-primary" />
+                                        <ListChecks size={16} weight="regular" className="text-primary" />
                                         Transaksi Terbaru
                                     </h3>
                                     <Button

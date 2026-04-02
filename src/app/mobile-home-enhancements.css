@@ -1,6 +1,4 @@
-/* Mobile Homepage Enhancements */
-
-/* Hide scrollbar for horizontal wallet scroll */
+/* Mobile Homepage Enhancements — Volt Edition */
 .wallet-scroll-container {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -12,110 +10,60 @@
 
 /* Glassmorphism effects */
 .glass-card {
-  backdrop-filter: blur(20px);
-  background: rgb(255 255 255 / 25%);
-  border: 1px solid rgb(255 255 255 / 18%);
-  box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%);
+  backdrop-filter: blur(24px) saturate(160%);
+  background: hsla(0 0% 100% / 0.1);
+  border: 1px solid hsla(0 0% 100% / 0.15);
+  box-shadow: 0 8px 32px 0 hsla(0 0% 0% / 0.2);
 }
 
 .dark .glass-card {
-  background: rgb(31 41 55 / 25%);
-  border: 1px solid rgb(255 255 255 / 10%);
+  background: hsla(var(--gray-900) / 0.4);
+  border: 1px solid hsla(0 0% 100% / 0.08);
 }
 
-/* Gradient text animation */
+/* Volt Gradient Animation */
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, hsl(var(--volt-500)) 0%, hsl(var(--volt-300)) 100%);
   background-clip: text;
-  background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
+  animation: gradient-shift 4s ease infinite;
 }
 
 @keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Smooth transitions for interactive elements */
-.interactive-element {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.interactive-element:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgb(0 0 0 / 15%);
-}
-
-/* Pull to refresh styles */
-.refresh-indicator {
-  background: rgb(255 255 255 / 90%);
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-}
-
-.dark .refresh-indicator {
-  background: rgb(31 41 55 / 90%);
-}
-
-/* Card hover effects */
-.card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgb(0 0 0 / 12%);
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .premium-shadow {
   box-shadow: 
-    0 2px 4px rgba(0,0,0,0.02),
-    0 10px 20px rgba(0,0,0,0.04),
-    0 20px 40px rgba(0,0,0,0.04);
-}
-
-.premium-border {
-  border: 1px solid rgba(228, 228, 231, 0.6);
-}
-
-.dark .premium-border {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    0 4px 6px -1px hsla(0 0% 0% / 0.1), 
+    0 2px 4px -2px hsla(0 0% 0% / 0.1),
+    0 0 0 1px hsla(0 0% 100% / 0.05) inset;
 }
 
 .hover-glow {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(13, 148, 136, 0.08);
-  border-color: rgba(13, 148, 136, 0.3);
+  box-shadow: 0 0 30px hsla(var(--volt-500) / 0.1);
+  border-color: hsla(var(--volt-500) / 0.3);
 }
 
-/* Loading shimmer effect */
 .shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, transparent 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, 
+    hsla(var(--gray-200) / 0.1) 25%, 
+    hsla(var(--gray-200) / 0.3) 50%, 
+    hsla(var(--gray-200) / 0.1) 75%
+  );
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 2s infinite ease-in-out;
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

@@ -134,7 +134,13 @@ export function AmountInput<T extends FieldValues>({
 
   return (
     <div className="space-y-2">
-      {!hideLabel && <p className="text-label tracking-wider text-muted-foreground">{label}</p>}
+      {!hideLabel && (
+        <div className="flex items-center px-1 mb-2">
+          <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+            {label}
+          </span>
+        </div>
+      )}
       <Controller
         control={control}
         name={name}

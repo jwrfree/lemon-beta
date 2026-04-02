@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, AlertTriangle, ShieldCheck, Zap } from 'lucide-react';
+import { Lightning, ShieldCheck, Sparkle, Warning } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 
@@ -23,14 +22,14 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
             label: 'Safe Pattern'
         },
         Moderate: {
-            icon: Zap,
+            icon: Lightning,
             color: 'text-amber-500',
             bg: 'bg-amber-500/10',
             border: 'border-amber-500/20',
             label: 'Velocity Rising'
         },
         Critical: {
-            icon: AlertTriangle,
+            icon: Warning,
             color: 'text-rose-500',
             bg: 'bg-rose-500/10',
             border: 'border-rose-500/20',
@@ -56,7 +55,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
                         <div className={cn("p-1.5 rounded-md bg-card/50", config.color)}>
-                            <Sparkles className="h-4 w-4" />
+                            <Sparkle size={16} weight="regular" />
                         </div>
                         <div>
                             <p className="text-label opacity-60">Pocket Co-Pilot</p>
@@ -74,7 +73,7 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
                 </div>
 
                 <div className="flex gap-2 items-start">
-                    <Icon className={cn("h-4 w-4 shrink-0 mt-0.5", config.color)} />
+                    <Icon size={16} weight="regular" className={cn("shrink-0 mt-0.5", config.color)} />
                     <p className="text-xs leading-relaxed font-medium opacity-80">
                         {risk.insight}
                     </p>

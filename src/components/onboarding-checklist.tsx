@@ -23,24 +23,24 @@ const ONBOARDING_TASKS = [
     title: 'Buat Dompet Pertama',
     description: 'Simpan uangmu di tempat yang tepat.',
     icon: Wallet,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10'
+    color: 'text-foreground',
+    bgColor: 'bg-muted'
   },
   {
     id: 'transaction' as const,
     title: 'Catat Transaksi Hari Ini',
     description: 'Mulai lacak kemana uangmu pergi.',
     icon: PlusCircle,
-    color: 'text-emerald-500',
-    bgColor: 'bg-emerald-500/10'
+    color: 'text-primary',
+    bgColor: 'bg-primary/10'
   },
   {
     id: 'goal' as const,
     title: 'Pasang Target Tabungan',
     description: 'Wujudkan impianmu lebih cepat.',
     icon: Target,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10'
+    color: 'text-foreground',
+    bgColor: 'bg-muted'
   }
 ];
 
@@ -112,7 +112,7 @@ export const OnboardingChecklist = () => {
               <div>
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   Memulai dengan Lemon
-                  {isAllCompleted && <Sparkles className="h-4 w-4 text-amber-500" />}
+                  {isAllCompleted && <Sparkles className="h-4 w-4 text-primary" />}
                 </h3>
                 <p className="text-[11px] text-muted-foreground">
                   {isAllCompleted 
@@ -155,7 +155,7 @@ export const OnboardingChecklist = () => {
                     className={cn(
                       "flex w-full items-center gap-3 rounded-xl border p-2.5 transition-all",
                       isDone 
-                        ? "border-emerald-200/70 bg-emerald-500/5" 
+                        ? "border-primary/50 bg-primary/5 shadow-[0_0_15px_hsla(var(--volt-500)/0.05)]" 
                         : "border-border/50 bg-background hover:border-border"
                     )}
                   >
@@ -170,7 +170,7 @@ export const OnboardingChecklist = () => {
                     <div className="flex-1 text-left">
                       <div className={cn(
                         "text-xs font-semibold",
-                        isDone ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"
+                        isDone ? "text-primary" : "text-foreground"
                       )}>
                         {task.title}
                       </div>
@@ -181,7 +181,7 @@ export const OnboardingChecklist = () => {
 
                     <div className="shrink-0 ml-2">
                       {isDone ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
                       ) : (
                         <Circle className="h-5 w-5 text-muted-foreground/30" />
                       )}
@@ -196,7 +196,7 @@ export const OnboardingChecklist = () => {
                   animate={{ opacity: 1, scale: 1 }}
                 >
                   <Button 
-                    className="mt-2 h-10 w-full border-none bg-emerald-500 text-white shadow-none hover:bg-emerald-600"
+                    className="mt-2 h-10 w-full border-none bg-primary text-black font-bold shadow-soft hover:bg-primary/90"
                     onClick={() => updateOnboardingStatus({ isDismissed: true })}
                   >
                     Selesaikan Onboarding

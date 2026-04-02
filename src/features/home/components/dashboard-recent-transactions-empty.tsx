@@ -1,6 +1,6 @@
 'use client';
 
-import { Receipt } from 'lucide-react';
+import { Receipt } from '@phosphor-icons/react';
 import { useUI } from '@/components/ui-provider';
 import { EmptyState } from '@/components/empty-state';
 

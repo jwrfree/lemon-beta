@@ -1,13 +1,12 @@
 
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, cn } from '@/lib/utils';
-import { ChevronRight, AlertCircle, Target } from 'lucide-react';
+import { CaretRight, Target, WarningCircle } from '@phosphor-icons/react';
 import type { Budget } from '@/types/models';
 import { useRouter } from 'next/navigation';
 import { EmptyState } from '@/components/empty-state';
@@ -34,7 +33,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                 </div>
                 <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
                     <Link href="/budgeting">
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        <CaretRight size={16} weight="regular" className="text-muted-foreground" />
                     </Link>
                 </Button>
             </CardHeader>
@@ -60,7 +59,7 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
                                 <div className="flex justify-between text-xs">
                                     <span className="font-medium flex items-center gap-1.5">
                                         {budget.name}
-                                        {isOver && <AlertCircle className="h-3 w-3 text-destructive" />}
+                                        {isOver && <WarningCircle size={12} weight="regular" className="text-destructive" />}
                                     </span>
                                     <span className={cn(
                                         "text-xs",

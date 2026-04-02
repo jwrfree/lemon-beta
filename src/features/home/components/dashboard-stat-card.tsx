@@ -1,10 +1,8 @@
-
-import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { cn } from '@/lib/utils';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendDown, TrendUp } from '@phosphor-icons/react';
 
 export interface StatCardProps {
     title: string;
@@ -44,8 +42,8 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
                             trend === 'down' ? "bg-pink-50 text-destructive" :
                             "bg-muted text-foreground/70"
                         )}>
-                            {trend === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
-                            {trend === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
+                            {trend === 'up' && <TrendUp size={12} weight="regular" className="mr-1" />}
+                            {trend === 'down' && <TrendDown size={12} weight="regular" className="mr-1" />}
                             {trendValue}
                         </div>
                         <span className="text-xs text-muted-foreground font-medium tracking-tight">vs bulan lalu</span>

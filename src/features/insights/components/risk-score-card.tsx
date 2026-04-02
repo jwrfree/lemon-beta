@@ -1,7 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { Sparkles, TrendingUp, AlertCircle, RefreshCw, Clock } from 'lucide-react';
+import { ArrowClockwise, Sparkle } from '@phosphor-icons/react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ export const RiskScoreCard = () => {
         if (isLoading) {
         return (
             <Card className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
-                <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+                <ArrowClockwise size={24} weight="regular" className="animate-spin text-muted-foreground" />
             </Card>
         );
     }
@@ -22,7 +21,7 @@ export const RiskScoreCard = () => {
         return (
             <Card className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
-                    <Sparkles className="h-6 w-6 opacity-30" />
+                    <Sparkle size={24} weight="regular" className="opacity-30" />
                 </div>
                 <div className="space-y-1">
                     <p className="text-label opacity-40">Lemon Coach lagi belajar nih</p>
@@ -69,7 +68,7 @@ export const RiskScoreCard = () => {
             )}
         >
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 translate-x-4 -translate-y-4">
-                <Sparkles className="h-40 w-40" />
+                <Sparkle size={160} weight="regular" />
             </div>
             <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-white/5 blur-3xl"></div>
 
@@ -86,7 +85,7 @@ export const RiskScoreCard = () => {
                         onClick={refreshInsights}
                         className="h-10 w-10 rounded-full backdrop-blur-sm hover:bg-white/10"
                     >
-                        <RefreshCw className="h-4 w-4 text-white/40" />
+                        <ArrowClockwise size={16} weight="regular" className="text-white/40" />
                     </Button>
                 </div>
 

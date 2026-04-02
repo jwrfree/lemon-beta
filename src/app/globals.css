@@ -2,20 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Selection & Scrollbar Styling */
+::selection {
+  background-color: hsla(var(--volt-500) / 0.3);
+  color: inherit;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--gray-200)) transparent;
+}
+
+.dark * {
+  scrollbar-color: hsl(var(--gray-800)) transparent;
+}
+
+/* Webkit Scrollbars (Chrome/Safari) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--gray-200));
+  border-radius: 10px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--gray-800));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--gray-300));
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--gray-700));
+}
+
 @layer base {
   :root {
-    /* Primitive Grays (Slate) */
-    --gray-50: 210 40% 98%;
-    --gray-100: 210 40% 96.1%;
-    --gray-200: 214 32% 91%;
-    --gray-300: 213 27% 84%;
-    --gray-400: 215 20.2% 65.1%;
-    --gray-500: 215 16.3% 46.9%;
-    --gray-600: 215 19.3% 34.5%;
-    --gray-700: 215 25% 26.7%;
-    --gray-800: 217 33% 17.5%;
-    --gray-900: 222 47.4% 11.2%;
-    --gray-950: 222 47.4% 11.2%;
+    /* Primitive Grays (Standard - Optimized for Volt) */
+    --gray-50: 210 15% 96%;
+    --gray-100: 210 15% 94%;
+    --gray-200: 210 15% 90%;
+    --gray-300: 210 10% 80%;
+    --gray-400: 210 10% 60%;
+    --gray-500: 210 5% 45%;
+    --gray-600: 0 0% 30%;
+    --gray-700: 0 0% 20%;
+    --gray-800: 0 0% 15%;
+    --gray-900: 0 0% 13%;
+    --gray-950: 0 0% 8%;
+
+    /* Volt Accent Palette — Premium Fintech Edition */
+    --volt-50: 76 100% 97%;
+    --volt-100: 76 100% 92%;
+    --volt-200: 76 100% 85%;
+    --volt-300: 76 100% 78%;
+    --volt-400: 76 100% 70%;
+    --volt-500: 76 100% 64%; /* Primary brand glow */
+    --volt-600: 76 85% 55%;
+    --volt-700: 76 75% 45%;
+    --volt-800: 76 70% 30%;
+    --volt-900: 76 80% 15%;
 
     /* Color Palette (Unified) */
     --red-100: 0 84% 91%;
@@ -102,26 +151,27 @@
     --rose-900: 341 82% 15%;
     --rose-950: 346 87% 14%;
 
-    /* Semantic Tokens (Light Mode) */
+    /* Semantic Tokens (Light Mode - Volt Refresh) */
     --background: hsl(var(--gray-50));
-    --foreground: hsl(var(--gray-950));
+    --foreground: hsl(var(--gray-900));
     
     --card: hsl(0 0% 100%);
-    --card-foreground: hsl(var(--gray-950));
+    --card-foreground: hsl(var(--gray-900));
     
     --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(var(--gray-950));
+    --popover-foreground: hsl(var(--gray-900));
     
-    --primary: hsl(var(--teal-600));
+    /* Primary in Light Mode should be High-Contrast (Black) for maximum accessibility */
+    --primary: hsl(var(--gray-900));
     --primary-foreground: hsl(0 0% 100%);
     
-    --secondary: hsl(var(--gray-100));
-    --secondary-foreground: hsl(var(--gray-900));
+    --secondary: hsl(var(--volt-500));
+    --secondary-foreground: hsl(var(--gray-950));
     
     --muted: hsl(var(--gray-100));
     --muted-foreground: hsl(var(--gray-500));
     
-    --accent: hsl(var(--gray-100));
+    --accent: hsl(var(--volt-500));
     --accent-foreground: hsl(var(--gray-900));
     
     --destructive: hsl(var(--rose-600));
@@ -145,7 +195,7 @@
     
     --border: hsl(var(--gray-200));
     --input: hsl(var(--gray-200));
-    --ring: hsl(var(--gray-950));
+    --ring: hsl(var(--gray-900));
     
     --radius: 0.875rem; /* 14px — legacy base, kept for any residual uses */
 
@@ -154,11 +204,11 @@
     --radius-md: 0.5rem;    /* 8px  — inputs, buttons, secondary cards */
     --radius-lg: 0.75rem;   /* 12px — standard cards, panels */
 
-    /* Design-system named tiers */
-    --radius-card:         0.75rem;                  /* 12px — hero cards, modals, bottom sheets */
-    --radius-card-premium: 1rem;                     /* 16px — DNA-gradient premium cards */
-    --radius-card-glass:   0.75rem;                  /* 12px — glass inset panels */
-    --radius-card-icon:    0.625rem;                 /* 10px — icon containers inside premium cards */
+    /* Design-system named tiers - Bento Optimized */
+    --radius-card:         1.25rem;                  /* 20px — standard bento boxes */
+    --radius-card-premium: 2rem;                     /* 32px — DNA-gradient premium cards */
+    --radius-card-glass:   1.5rem;                   /* 24px — glass inset panels */
+    --radius-card-icon:    0.875rem;                 /* 14px — icon containers */
 
     @media (min-width: 768px) {
       :root {
@@ -189,8 +239,8 @@
   }
 
   .dark {
-    /* Semantic Tokens (Dark Mode) */
-    --background: hsl(var(--gray-950));
+    /* Semantic Tokens (Dark Mode - Volt Refresh) */
+    --background: hsl(0 0% 0%); /* True Black as seen in references */
     --foreground: hsl(var(--gray-50));
     
     --card: hsl(var(--gray-900));
@@ -199,18 +249,19 @@
     --popover: hsl(var(--gray-900));
     --popover-foreground: hsl(var(--gray-50));
 
-    /* High Contrast Primary for Dark Mode */
-    --primary: hsl(var(--teal-400));
-    --primary-foreground: hsl(var(--teal-950));
+    /* Volt Accent becomes Primary in Dark Mode for that high-tech look */
+    /* WCAG: Volt (500) on Black background is ~13:1 (PASSES AAA) */
+    --primary: hsl(var(--volt-500));
+    --primary-foreground: hsl(var(--gray-950));
     
-    --secondary: hsl(var(--gray-800));
-    --secondary-foreground: hsl(var(--teal-50));
+    --secondary: hsl(var(--gray-900));
+    --secondary-foreground: hsl(var(--volt-500));
     
-    --muted: hsl(var(--gray-800));
+    --muted: hsl(var(--gray-900));
     --muted-foreground: hsl(var(--gray-400));
     
-    --accent: hsl(var(--gray-800));
-    --accent-foreground: hsl(var(--teal-50));
+    --accent: hsl(var(--volt-500));
+    --accent-foreground: hsl(var(--gray-950));
 
     --destructive: hsl(var(--rose-600));
     --destructive-foreground: hsl(0 0% 100%);
@@ -233,18 +284,18 @@
     
     --border: hsl(var(--gray-800));
     --input: hsl(var(--gray-800));
-    --ring: hsl(var(--teal-400));
+    --ring: hsl(var(--volt-500));
 
     /* Chart Colors (Brighter for Dark Mode) */
-    --chart-1: hsl(var(--teal-400));
+    --chart-1: hsl(var(--volt-500));
     --chart-2: hsl(var(--blue-400));
     --chart-3: hsl(var(--orange-400));
     --chart-4: hsl(var(--rose-400));
     --chart-5: hsl(var(--purple-400));
 
     /* DS §8 — Interaction Tokens (Dark Mode) */
-    --state-hover: hsl(var(--gray-800));
-    --state-active: hsl(var(--gray-700));
+    --state-hover: hsl(var(--gray-900));
+    --state-active: hsl(var(--gray-800));
   }
 }
 
@@ -430,7 +481,7 @@
   }
 
   .app-page-body-padding {
-    /* Mobile default padding to clear bottom nav */
+    /* Mobile default padding to clear the compact bottom nav */
     padding-bottom: calc(var(--bottom-nav-height, 64px) + 1rem + env(safe-area-inset-bottom, 0px));
   }
 

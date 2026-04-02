@@ -1,21 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BrainCircuit, TrendingUp } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Brain, CircleNotch } from '@phosphor-icons/react';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { startOfMonth, subDays, endOfDay, startOfDay } from 'date-fns';
 import { DashboardCashflow } from '@/features/home/components/dashboard-cashflow';
 import { DashboardExpensePie } from '@/features/home/components/dashboard-expense-pie';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { LoaderCircle } from 'lucide-react';
 
 export const InsightsPage = () => {
     const [chartRange, setChartRange] = useState<'30' | '90' | 'month'>('month');
     
-    const { startDate, endDate } = React.useMemo(() => {
+    const { startDate, endDate } = useMemo(() => {
         const now = new Date();
         const end = endOfDay(now);
         let start = startOfDay(startOfMonth(now));
@@ -42,7 +41,7 @@ export const InsightsPage = () => {
             <div className="flex-1 p-6 space-y-6 overflow-y-auto">
                 {isLoading ? (
                     <div className="flex h-64 w-full items-center justify-center">
-                        <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                        <CircleNotch size={32} weight="regular" className="animate-spin text-primary" />
                     </div>
                 ) : (
                     <>
@@ -50,7 +49,7 @@ export const InsightsPage = () => {
                         <Card className="bg-primary/5 border-primary/20">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-lg flex items-center gap-2 text-primary">
-                                    <BrainCircuit className="h-5 w-5" />
+                                    <Brain size={20} weight="regular" />
                                     Analisis Mingguan AI
                                 </CardTitle>
                             </CardHeader>

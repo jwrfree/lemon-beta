@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ChevronDown, Loader2, Sparkles } from 'lucide-react';
+import { CaretDown, CircleNotch, Sparkle } from '@phosphor-icons/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { Category } from '@/lib/categories';
@@ -83,7 +83,7 @@ export function CategorySelector<T extends FieldValues>({
                                         exit={{ opacity: 0 }}
                                         className="flex items-center gap-1 rounded-md bg-primary/5 px-2 py-0.5 text-xs font-medium text-primary"
                                     >
-                                        <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                                        <CircleNotch size={10} weight="regular" className="animate-spin" />
                                         AI berpikir...
                                     </motion.div>
                                 )}
@@ -94,7 +94,7 @@ export function CategorySelector<T extends FieldValues>({
                                         exit={{ opacity: 0 }}
                                         className="flex items-center gap-1 rounded-md bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning shadow-[0_10px_18px_-16px_rgba(245,158,11,0.45)]"
                                     >
-                                        <Sparkles className="h-2.5 w-2.5 fill-warning" />
+                                        <Sparkle size={10} weight="fill" className="text-warning" />
                                         Disarankan AI
                                     </motion.div>
                                 )}
@@ -138,7 +138,7 @@ export function CategorySelector<T extends FieldValues>({
                                     ) : (
                                         <>
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
-                                                <Sparkles className="h-5 w-5 text-muted-foreground/40" />
+                                                <Sparkle size={20} weight="regular" className="text-muted-foreground/40" />
                                             </div>
                                             <span className="text-sm font-medium text-muted-foreground">Pilih Kategori</span>
                                         </>
@@ -148,7 +148,7 @@ export function CategorySelector<T extends FieldValues>({
                                     animate={{ rotate: isExpanded ? 180 : 0 }}
                                     className="flex h-8 w-8 items-center justify-center rounded-full bg-background/82 text-muted-foreground shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]"
                                 >
-                                    <ChevronDown className="h-4 w-4" />
+                                    <CaretDown size={16} weight="regular" />
                                 </motion.div>
                             </Button>
 

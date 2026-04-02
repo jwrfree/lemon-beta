@@ -1,13 +1,12 @@
 
 'use client';
 
-import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency } from '@/lib/utils';
-import { Target, Plus } from 'lucide-react';
+import { Plus, Target } from '@phosphor-icons/react';
 import type { Goal } from '@/types/models';
 import { useUI } from '@/components/ui-provider';
 
@@ -33,13 +32,13 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        <Target className="h-4 w-4 text-primary" /> Target
+                        <Target size={16} weight="regular" className="text-primary" /> Target
                     </CardTitle>
                     <CardDescription className="text-xs">Tabungan prioritas</CardDescription>
                 </div>
                 <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
                     <Link href="/goals">
-                        <Plus className="h-4 w-4 text-muted-foreground" />
+                        <Plus size={16} weight="regular" className="text-muted-foreground" />
                     </Link>
                 </Button>
             </CardHeader>

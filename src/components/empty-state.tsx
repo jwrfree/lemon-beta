@@ -1,8 +1,8 @@
 'use client';
 
+import type { ComponentType } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -30,7 +30,7 @@ export interface EmptyStateProps {
     /**
      * Icon to display - defaults based on variant if not provided
      */
-    icon?: LucideIcon;
+    icon?: ComponentType<{ className?: string }>;
     
     /**
      * Variant affects styling and default icon
@@ -142,7 +142,7 @@ export const EmptyState = ({
                             "h-[60px] w-[60px]",
                             styles.iconBg
                         )}>
-                            <Icon className={cn("h-10 w-10", styles.iconColor)} strokeWidth={1.5} />
+                            <Icon className={cn("h-10 w-10", styles.iconColor)} />
                         </div>
                     )}
 

@@ -132,12 +132,29 @@ export default {
           '900': 'hsl(var(--teal-900))',
           '950': 'hsl(var(--teal-950))',
         },
+        volt: {
+          '50': 'hsl(var(--volt-50))',
+          '100': 'hsl(var(--volt-100))',
+          '200': 'hsl(var(--volt-200))',
+          '300': 'hsl(var(--volt-300))',
+          '400': 'hsl(var(--volt-400))',
+          '500': 'hsl(var(--volt-500))',
+          '600': 'hsl(var(--volt-600))',
+          '700': 'hsl(var(--volt-700))',
+          '800': 'hsl(var(--volt-800))',
+          '900': 'hsl(var(--volt-900))',
+        },
+        'dark-gray': 'hsl(var(--gray-900))',
       },
       borderRadius: {
         DEFAULT: 'var(--radius)',         // Responsive: 14px mobile / 8px desktop
         sm: 'var(--radius-sm)',           // 6px — chips, badges, small elements
         md: 'var(--radius-md)',           // 8px — inputs, buttons, secondary cards
         lg: 'var(--radius-lg)',           // 12px — standard cards, panels
+        'xl': '0.75rem',                  // 12px
+        '2xl': '1rem',                    // 16px
+        '3xl': '1.5rem',                  // 24px
+        '4xl': '2rem',                    // 32px
         // Design-system named tiers — use these instead of arbitrary values
         'card':         'var(--radius-card)',          // 24px — hero cards, modals, bottom sheets
         'card-premium': 'var(--radius-card-premium)',  // 32px — DNA-gradient premium cards

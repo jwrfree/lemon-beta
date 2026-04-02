@@ -1,13 +1,10 @@
 'use client';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { TransactionListItem } from './transaction-list-item';
-import { cn, formatCurrency, formatRelativeDate } from '@/lib/utils';
-import { format, parseISO } from 'date-fns';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
+import { formatRelativeDate } from '@/lib/utils';
+import { parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ReceiptText, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { CircleNotch, Receipt } from '@phosphor-icons/react';
 import type { Transaction } from '@/types/models';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useUI } from '@/components/ui-provider';
@@ -29,7 +26,6 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
     const { wallets } = useWallets();
     const { getCategoryVisuals } = useCategories();
     const { openTransactionSheet } = useUI();
-    const router = useRouter();
 
     const finalTransactions = useMemo(() => {
         if (!transactions) return [];
@@ -47,7 +43,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
         description="Semua catatan pengeluaran dan pemasukan kamu akan muncul secara cerdas di sini."
         actionLabel="Mulai Catat"
         onAction={() => openTransactionSheet()}
-        icon={ReceiptText}
+        icon={Receipt}
         className="pt-10"
       />
     );
@@ -68,14 +64,14 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
       <div className="md:hidden space-y-6">
         {groupedTransactions.map(([date, transactionsForDay]: [string, Transaction[]]) => (
           <div key={date} className="space-y-3">
-                        <h3 className="text-label text-muted-foreground/60 px-4">
+                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 px-5 mb-2">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="overflow-hidden rounded-card-premium bg-card/92 shadow-premium">
-                            {transactionsForDay.map((transaction: Transaction) => (
+                        <div className="overflow-hidden rounded-3xl bg-card shadow-soft border border-border/40">
+                            {transactionsForDay.map((transaction: Transaction, index: number) => (
                                 <TransactionListItem 
                                     key={transaction.id} 
-                                    transaction={transaction} 
+                                    transaction={{ ...transaction, showDivider: index !== transactionsForDay.length - 1 } as any} 
                                     wallets={wallets}
                                     getCategoryVisuals={getCategoryVisuals}
                                     hideDate 
@@ -96,7 +92,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                     >
                         {isLoading ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <CircleNotch size={16} weight="regular" className="mr-2 animate-spin" />
                                 Memuat...
                             </>
                         ) : (

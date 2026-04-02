@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { Label } from '@/components/ui/label';
+import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { Control, Controller, FieldValues, Path, UseFormSetValue } from 'react-hook-form';
+import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { Wallet } from '@/types/models';
-import { Plus } from 'lucide-react';
+import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 
 interface WalletSelectorProps<T extends FieldValues> {
@@ -23,7 +22,7 @@ export function WalletSelector<T extends FieldValues>({
     control,
     name,
     wallets,
-    label,
+    label: _label,
     error,
     placeholder = "Pilih dompet",
     disabled = false,
@@ -71,7 +70,7 @@ export function WalletSelector<T extends FieldValues>({
                                             onCreateNew();
                                         }}
                                     >
-                                        <Plus className="mr-2 h-3 w-3" />
+                                        <Plus size={12} weight="regular" className="mr-2" />
                                         Buat Dompet Baru
                                     </Button>
                                 </div>

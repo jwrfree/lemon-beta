@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { AreaChart, Area, XAxis, CartesianGrid } from 'recharts';
 import { format, subDays, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { TrendUp } from '@phosphor-icons/react';
 import { Transaction } from '@/types/models';
 import { formatCurrency, triggerHaptic } from '@/lib/utils';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -56,7 +56,7 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
                 <h2 className="text-label font-semibold uppercase tracking-widest text-muted-foreground/50">
                     Tren Pengeluaran
                 </h2>
-                <span className="text-[10px] bg-destructive/10 text-destructive px-2 py-1 rounded-full font-semibold uppercase tracking-widest">
+                <span className="text-label bg-destructive/10 text-destructive px-2 py-1 rounded-full font-semibold uppercase tracking-widest">
                     {days} Hari Terakhir
                 </span>
             </CardHeader>
@@ -66,7 +66,7 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
                         <EmptyState 
                             title="Belum Ada Tren"
                             description="Catat pengeluaran untuk melihat grafik pertumbuhan."
-                            icon={TrendingUp}
+                            icon={TrendUp}
                             variant="filter"
                             className="md:min-h-0 pt-0"
                         />

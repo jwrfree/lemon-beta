@@ -4,16 +4,15 @@ import React, { useState, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Save, Trash2, Sparkles, Loader2, ChevronLeft, ChevronRight, CheckCheck, HelpCircle, Plus, X } from 'lucide-react';
+import { MagicBar } from './liquid-composer/MagicBar';
+import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
+import { SemanticTransactionReview } from './form-partials/semantic-review';
+import { CaretLeft, CaretRight, CheckCircle, Trash, XCircle, FloppyDisk, PlusCircle, Sparkle, Question, ListChecks, CircleNotch } from '@phosphor-icons/react';
 import { useTransactionForm } from '../hooks/use-transaction-form';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useCategories } from '../hooks/use-transactions';
 import { Transaction } from '@/types/models';
 import { cn } from '@/lib/utils';
-
-import { MagicBar } from './liquid-composer/MagicBar';
-import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
-import { SemanticTransactionReview } from './form-partials/semantic-review';
 import { 
     AlertDialog, 
     AlertDialogAction, 
@@ -120,10 +119,7 @@ export const UnifiedTransactionSheet = ({
                 side="bottom" 
                 hideCloseButton={true}
                 className={cn(
-                    "overflow-hidden rounded-t-[2.25rem] bg-muted p-0 sm:max-w-2xl sm:rounded-t-[2.5rem]",
-                    useCompactSheetLayout
-                        ? "flex max-h-[88dvh] flex-col sm:max-h-[92dvh]"
-                        : "grid h-[100dvh] max-h-[100dvh] grid-rows-[auto,minmax(0,1fr),auto] sm:h-auto sm:max-h-[92dvh]"
+                    "overflow-hidden rounded-t-[2.25rem] bg-muted p-0 sm:max-w-2xl sm:rounded-t-[2.5rem] flex flex-col max-h-[94dvh]",
                 )}
             >
                 <div className="pointer-events-none absolute inset-x-0 top-3 z-40 flex justify-center">
@@ -137,7 +133,7 @@ export const UnifiedTransactionSheet = ({
                         onClick={() => handleCloseAttempt(false)} 
                         className="h-9 w-9 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
                     >
-                        <X className="h-5 w-5" />
+                        <XCircle size={22} weight="bold" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
@@ -168,12 +164,12 @@ export const UnifiedTransactionSheet = ({
                                 onClick={goToPrev}
                                 disabled={currentTxIndex === 0}
                                 aria-label="Transaksi sebelumnya"
-                                className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary"
+                                className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary transition-all"
                             >
-                                <ChevronLeft className="h-4 w-4" />
+                                <CaretLeft size={18} weight="bold" />
                             </Button>
                             <div className="flex flex-col items-center text-center">
-                                <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground/55">
+                                <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
                                     Batch Review
                                 </span>
                                 <div className="text-label font-bold text-primary">
@@ -186,9 +182,9 @@ export const UnifiedTransactionSheet = ({
                                     size="icon"
                                     onClick={() => setShowRemoveDraftConfirm(true)}
                                     aria-label="Hapus draft transaksi ini"
-                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-destructive"
+                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-destructive transition-all"
                                 >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash size={18} weight="bold" />
                                 </Button>
                                 <Button
                                     variant="ghost"
@@ -196,9 +192,9 @@ export const UnifiedTransactionSheet = ({
                                     onClick={goToNext}
                                     disabled={currentTxIndex === totalTxs - 1}
                                     aria-label="Transaksi berikutnya"
-                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary"
+                                    className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary transition-all"
                                 >
-                                    <ChevronRight className="h-4 w-4" />
+                                    <CaretRight size={18} weight="bold" />
                                 </Button>
                             </div>
                         </div>
@@ -211,8 +207,8 @@ export const UnifiedTransactionSheet = ({
                     className={cn(
                         "flex flex-col overflow-y-auto overscroll-y-contain px-4 sm:px-6",
                         useCompactSheetLayout
-                            ? "min-h-0 flex-1 space-y-3 py-3 pb-4 sm:py-4"
-                            : "min-h-0 space-y-4 py-4 pb-4 sm:space-y-5 sm:py-6 sm:pb-0"
+                            ? "min-h-0 space-y-3 py-3 pb-4 sm:py-4"
+                            : "min-h-0 flex-1 space-y-4 py-4 pb-4 sm:space-y-5 sm:py-6 sm:pb-2"
                     )}
                 >
                     {/* Suggestions (Only when idle or typing before submit) */}
@@ -246,7 +242,7 @@ export const UnifiedTransactionSheet = ({
                                     <div className="rounded-[24px] bg-yellow-100 p-4 dark:bg-yellow-900">
                                         <div className="flex items-start gap-3">
                                             <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yellow-500">
-                                                <HelpCircle className="h-3 w-3 text-white" />
+                                                <Question size={12} weight="bold" className="text-white" />
                                             </div>
                                             <p className="text-sm leading-relaxed text-warning-foreground">
                                                 {clarificationQuestion}
@@ -258,8 +254,8 @@ export const UnifiedTransactionSheet = ({
                                 {socraticInsight && (
                                     <div className="rounded-[24px] bg-teal-50 p-4 dark:bg-teal-950">
                                         <div className="flex items-start gap-3">
-                                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary">
-                                                <Sparkles className="h-3 w-3 text-primary-foreground" />
+                                            <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20">
+                                                <Sparkle size={12} weight="bold" className="text-primary" />
                                             </div>
                                             <p className="text-sm leading-relaxed text-foreground">
                                                 {socraticInsight}
@@ -296,8 +292,8 @@ export const UnifiedTransactionSheet = ({
                     className={cn(
                         "flex shrink-0 flex-col gap-3 bg-muted px-4 sm:px-5",
                         useCompactSheetLayout
-                            ? "border-t border-border pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.18)] sm:pb-4"
-                            : "pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 sm:pb-4"
+                            ? "border-t border-border pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.18)] sm:pb-4"
+                            : "pb-[calc(0.875rem+env(safe-area-inset-bottom))] pt-3 sm:pb-4"
                     )}
                 >
                     <AnimatePresence mode="wait">
@@ -334,7 +330,7 @@ export const UnifiedTransactionSheet = ({
                                             aria-label="Hapus transaksi"
                                             className="h-14 w-14 shrink-0 rounded-[22px] bg-error-surface text-error hover:bg-error-muted"
                                         >
-                                            <Trash2 className="h-5 w-5" />
+                                            <Trash size={20} weight="bold" />
                                         </Button>
                                     )}
                                     {totalTxs > 1 ? (
@@ -343,9 +339,9 @@ export const UnifiedTransactionSheet = ({
                                             disabled={isAiProcessing}
                                             className="h-14 flex-1 rounded-[22px] bg-success text-base font-bold text-success-foreground shadow-[0_18px_34px_-24px_rgba(5,150,105,0.45)] transition-all hover:opacity-90"
                                         >
-                                            {isAiProcessing ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+                                            {isAiProcessing ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : (
                                                 <span className="flex items-center gap-2">
-                                                    <CheckCheck className="h-5 w-5" />
+                                                    <ListChecks size={20} weight="bold" />
                                                     Simpan Semua ({totalTxs})
                                                 </span>
                                             )}
@@ -357,9 +353,9 @@ export const UnifiedTransactionSheet = ({
                                                 disabled={isSubmitting} 
                                                 className="h-14 w-full rounded-[22px] bg-primary text-base font-bold text-primary-foreground shadow-[0_18px_34px_-24px_rgba(13,148,136,0.45)] transition-all hover:scale-[1.01] active:scale-[0.98]"
                                             >
-                                                {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : (
+                                                {isSubmitting ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : (
                                                     <span className="flex items-center gap-2">
-                                                        <Save className="h-5 w-5" />
+                                                    <FloppyDisk size={20} weight="bold" />
                                                         {isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}
                                                     </span>
                                                 )}
@@ -371,7 +367,7 @@ export const UnifiedTransactionSheet = ({
                                                     disabled={isSubmitting} 
                                                     className="h-11 w-full rounded-[18px] bg-secondary text-label text-primary transition-all hover:bg-secondary"
                                                 >
-                                                    <Plus className="mr-2 h-4 w-4" />
+                                                    <PlusCircle size={18} weight="bold" className="mr-2" />
                                                     Simpan & tambah lagi
                                                 </Button>
                                             )}
@@ -387,50 +383,74 @@ export const UnifiedTransactionSheet = ({
 
         {/* Discard Confirmation Dialog */}
         <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
-            <AlertDialogContent className="max-w-[90%] sm:max-w-md rounded-card overflow-hidden p-7">
-                <AlertDialogHeader className="space-y-3">
-                    <AlertDialogTitle className="text-xl font-bold tracking-tight">Batalkan Transaksi?</AlertDialogTitle>
-                    <AlertDialogDescription className="text-label leading-relaxed text-muted-foreground">
+            <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-border/40 bg-background/95 p-7 backdrop-blur-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                <AlertDialogHeader className="space-y-4 text-center sm:text-left">
+                    <AlertDialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
+                        Batalkan Transaksi?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-sm leading-relaxed text-muted-foreground/80">
                         Anda memiliki perubahan yang belum disimpan. Yakin ingin keluar? Semua draf transaksi akan hilang secara permanen.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="mt-8 flex flex-col gap-3 sm:flex-col sm:space-x-0">
-                    <AlertDialogAction 
-                        onClick={() => {
-                            setShowDiscardConfirm(false);
-                            onClose();
-                        }}
-                        className="w-full h-14 rounded-card bg-error font-bold text-error-foreground shadow-[0_18px_34px_-24px_rgba(225,29,72,0.38)] transition-all hover:opacity-90"
-                    >
-                        Ya, Batalkan
+                    <AlertDialogAction asChild>
+                        <Button 
+                            variant="destructive"
+                            size="lg"
+                            className="w-full rounded-[22px] font-bold shadow-lg shadow-destructive/20"
+                            onClick={() => {
+                                setShowDiscardConfirm(false);
+                                onClose();
+                            }}
+                        >
+                            Ya, Batalkan
+                        </Button>
                     </AlertDialogAction>
-                    <AlertDialogCancel className="w-full h-12 rounded-lg border-0 bg-secondary font-bold text-label text-primary transition-all hover:bg-secondary">
-                        Lanjutkan Mengisi
+                    <AlertDialogCancel asChild>
+                        <Button 
+                            variant="volt"
+                            size="lg"
+                            className="w-full rounded-[22px] font-bold"
+                        >
+                            Lanjutkan Mengisi
+                        </Button>
                     </AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
 
         <AlertDialog open={showRemoveDraftConfirm} onOpenChange={setShowRemoveDraftConfirm}>
-            <AlertDialogContent className="max-w-[90%] sm:max-w-md rounded-card overflow-hidden p-7">
-                <AlertDialogHeader className="space-y-3">
-                    <AlertDialogTitle className="text-xl font-bold tracking-tight">Hapus draft ini?</AlertDialogTitle>
-                    <AlertDialogDescription className="text-label leading-relaxed text-muted-foreground">
+            <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-border/40 bg-background/95 p-7 backdrop-blur-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                <AlertDialogHeader className="space-y-4 text-center sm:text-left">
+                    <AlertDialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
+                        Hapus draft ini?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-sm leading-relaxed text-muted-foreground/80">
                         Draft transaksi aktif akan dihapus dari batch. Draft lain tetap aman dan Anda bisa lanjut review setelah ini.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="mt-8 flex flex-col gap-3 sm:flex-col sm:space-x-0">
-                    <AlertDialogAction 
-                        onClick={() => {
-                            setShowRemoveDraftConfirm(false);
-                            removeCurrent();
-                        }}
-                        className="w-full h-14 rounded-card bg-error font-bold text-error-foreground shadow-[0_18px_34px_-24px_rgba(225,29,72,0.38)] transition-all hover:opacity-90"
-                    >
-                        Ya, hapus draft
+                    <AlertDialogAction asChild>
+                        <Button 
+                            variant="destructive"
+                            size="lg"
+                            className="w-full rounded-[22px] font-bold shadow-lg shadow-destructive/20"
+                            onClick={() => {
+                                setShowRemoveDraftConfirm(false);
+                                removeCurrent();
+                            }}
+                        >
+                            Ya, hapus draft
+                        </Button>
                     </AlertDialogAction>
-                    <AlertDialogCancel className="w-full h-12 rounded-lg border-0 bg-secondary font-bold text-label text-primary transition-all hover:bg-secondary">
-                        Kembali review
+                    <AlertDialogCancel asChild>
+                        <Button 
+                            variant="volt"
+                            size="lg"
+                            className="w-full rounded-[22px] font-bold"
+                        >
+                            Kembali review
+                        </Button>
                     </AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>

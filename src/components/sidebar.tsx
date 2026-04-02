@@ -5,15 +5,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
-  Bot,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsUpDown,
-  Download,
-  LogOut,
-  Settings,
-  Sparkles,
-} from 'lucide-react';
+  CaretLeft,
+  CaretRight,
+  CaretUpDown,
+  DownloadSimple,
+  GearSix,
+  Robot,
+  SignOut,
+  Sparkle,
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
@@ -77,7 +77,7 @@ export const Sidebar = () => {
     <>
       <DropdownMenuItem asChild>
         <Link href="/settings" prefetch={false} className="font-medium">
-          <Settings className="h-4 w-4" />
+          <GearSix size={16} weight="regular" />
           <span>Pengaturan</span>
         </Link>
       </DropdownMenuItem>
@@ -86,7 +86,7 @@ export const Sidebar = () => {
         onClick={handleSignOut}
         className="font-medium text-destructive focus:bg-destructive/10 focus:text-destructive"
       >
-        <LogOut className="h-4 w-4" />
+        <SignOut size={16} weight="regular" />
         <span>Keluar</span>
       </DropdownMenuItem>
     </>
@@ -135,14 +135,14 @@ export const Sidebar = () => {
             className="h-10 w-10 rounded-2xl text-muted-foreground hover:bg-white/70 hover:text-foreground"
             aria-label={isSidebarCollapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
           >
-            {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {isSidebarCollapsed ? <CaretRight size={18} weight="bold" /> : <CaretLeft size={18} weight="bold" />}
           </Button>
         </SidebarAction>
       </div>
 
       <div className="space-y-2 rounded-[24px] bg-black/[0.02] p-2.5 pb-2.5 dark:bg-white/[0.03]">
         {!isSidebarCollapsed && (
-          <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+          <p className="px-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
             Quick Actions
           </p>
         )}
@@ -157,7 +157,7 @@ export const Sidebar = () => {
             )}
             aria-label="Smart Add"
           >
-            <Sparkles className="h-5 w-5 shrink-0" />
+            <Sparkle size={20} weight="fill" className="shrink-0" />
             {!isSidebarCollapsed && <span className="text-sm font-semibold">Smart Add</span>}
           </Button>
         </SidebarAction>
@@ -173,7 +173,7 @@ export const Sidebar = () => {
             )}
             aria-label="Tanya Lemon AI"
           >
-            <Bot className="h-5 w-5 shrink-0" />
+            <Robot size={20} weight="fill" className="shrink-0" />
             {!isSidebarCollapsed && <span className="text-sm font-semibold">Tanya Lemon AI</span>}
           </Button>
         </SidebarAction>
@@ -184,7 +184,7 @@ export const Sidebar = () => {
           {SIDEBAR_NAV_SECTIONS.map((section) => (
             <div key={section.id} className="space-y-2">
               {!isSidebarCollapsed && (
-                <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+                <p className="px-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
                   {section.label}
                 </p>
               )}
@@ -192,6 +192,7 @@ export const Sidebar = () => {
               <div className="space-y-1">
                 {section.items.map((item) => {
                   const isActive = isNavItemActive(pathname, item);
+                  const NavIcon = item.icon;
 
                   return (
                     <SidebarAction key={item.id} collapsed={isSidebarCollapsed} label={item.name}>
@@ -225,7 +226,11 @@ export const Sidebar = () => {
                               : 'text-muted-foreground group-hover:bg-[#f3ede1] group-hover:text-foreground dark:group-hover:bg-background'
                           )}
                         >
-                          <item.icon className="h-4.5 w-4.5" strokeWidth={isActive ? 2.4 : 2} />
+                          <NavIcon
+                            size={18}
+                            weight={isActive ? 'fill' : 'regular'}
+                            className="shrink-0"
+                          />
                         </div>
                         {!isSidebarCollapsed && (
                           <>
@@ -254,7 +259,7 @@ export const Sidebar = () => {
             )}
           >
             {!isSidebarCollapsed && (
-              <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+              <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
                 Utilities
               </p>
             )}
@@ -270,7 +275,7 @@ export const Sidebar = () => {
                 )}
                 aria-label="Install App"
               >
-                <Download className="h-4.5 w-4.5 shrink-0" />
+                <DownloadSimple size={18} weight="regular" className="shrink-0" />
                 {!isSidebarCollapsed && <span className="text-sm font-medium">Install App</span>}
               </Button>
             </SidebarAction>
@@ -317,7 +322,7 @@ export const Sidebar = () => {
                       </div>
                     )}
                     {!isSidebarCollapsed && (
-                      <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <CaretUpDown size={16} weight="regular" className="shrink-0 text-muted-foreground" />
                     )}
                   </div>
                 </button>

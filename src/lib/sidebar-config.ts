@@ -1,22 +1,23 @@
 import {
-  BellRing,
+  Bank,
+  Bell,
+  ChartPieSlice,
+  GearSix,
   HandCoins,
-  Home,
-  Landmark,
-  NotebookPen,
-  PieChart,
+  House,
+  Notebook,
   PiggyBank,
-  ReceiptText,
-  Settings,
+  Receipt,
   Target,
+  User,
   Wallet,
-  type LucideIcon,
-} from 'lucide-react';
+  type Icon as PhosphorIcon,
+} from '@phosphor-icons/react';
 
 export interface NavItem {
   id: string;
   href: string;
-  icon: LucideIcon;
+  icon: PhosphorIcon;
   name: string;
   shortName?: string;
   exact?: boolean;
@@ -29,22 +30,22 @@ export interface NavSection {
 }
 
 const overviewItems: NavItem[] = [
-  { id: 'home', href: '/home', icon: Home, name: 'Beranda', shortName: 'Home', exact: true },
-  { id: 'transactions', href: '/transactions', icon: ReceiptText, name: 'Transaksi', shortName: 'Transaksi' },
-  { id: 'charts', href: '/charts', icon: PieChart, name: 'Analitik', shortName: 'Analitik' },
+  { id: 'home', href: '/home', icon: House, name: 'Beranda', shortName: 'Home', exact: true },
+  { id: 'transactions', href: '/transactions', icon: Receipt, name: 'Transaksi', shortName: 'Transaksi' },
+  { id: 'charts', href: '/charts', icon: ChartPieSlice, name: 'Analitik', shortName: 'Analitik' },
 ];
 
 const planningItems: NavItem[] = [
   { id: 'budgeting', href: '/budgeting', icon: PiggyBank, name: 'Budget', shortName: 'Budget' },
-  { id: 'plan', href: '/plan', icon: NotebookPen, name: 'Rencana', shortName: 'Rencana' },
+  { id: 'plan', href: '/plan', icon: Notebook, name: 'Rencana', shortName: 'Rencana' },
   { id: 'goals', href: '/goals', icon: Target, name: 'Target', shortName: 'Target' },
 ];
 
 const financeItems: NavItem[] = [
   { id: 'wallets', href: '/wallets', icon: Wallet, name: 'Dompet', shortName: 'Dompet' },
   { id: 'debts', href: '/debts', icon: HandCoins, name: 'Hutang', shortName: 'Hutang' },
-  { id: 'assets-liabilities', href: '/assets-liabilities', icon: Landmark, name: 'Aset & Liabilitas', shortName: 'Aset' },
-  { id: 'reminders', href: '/reminders', icon: BellRing, name: 'Pengingat', shortName: 'Pengingat' },
+  { id: 'assets-liabilities', href: '/assets-liabilities', icon: Bank, name: 'Aset & Liabilitas', shortName: 'Aset' },
+  { id: 'reminders', href: '/reminders', icon: Bell, name: 'Pengingat', shortName: 'Pengingat' },
 ];
 
 export const SIDEBAR_NAV_SECTIONS: NavSection[] = [
@@ -59,7 +60,7 @@ export const MOBILE_NAV_ITEMS: NavItem[] = [
   overviewItems[0],
   overviewItems[1],
   planningItems[1],
-  { id: 'settings', href: '/settings', icon: Settings, name: 'Pengaturan', shortName: 'Settings' },
+  { id: 'profile', href: '/profile', icon: User, name: 'Profil & Akun', shortName: 'Profil' },
 ];
 
 export const MOBILE_TOP_LEVEL_PATHS = new Set([
@@ -73,7 +74,7 @@ export const MOBILE_TOP_LEVEL_PATHS = new Set([
   '/debts',
   '/assets-liabilities',
   '/reminders',
-  '/settings',
+  '/profile',
   '/notifications',
 ]);
 

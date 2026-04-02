@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { ArrowRight, Clock, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkle } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface DynamicSuggestionsProps {
@@ -47,17 +46,16 @@ export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] 
             <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
                     <div className="mb-1 flex items-center gap-1.5">
-                        <Clock className="h-3 w-3 text-muted-foreground/50" />
-                        <p className="text-label text-muted-foreground/50">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
                             Mulai Cepat
-                        </p>
+                        </span>
                     </div>
                     <p className="text-sm leading-relaxed text-muted-foreground/75">
                         Pilih contoh di bawah atau mulai dari histori terakhirmu.
                     </p>
                 </div>
                 <div className="rounded-full bg-primary/10 p-2 text-primary shadow-[0_12px_24px_-20px_rgba(13,148,136,0.35)]">
-                    <Sparkles className="h-4 w-4" />
+                    <Sparkle size={16} weight="regular" />
                 </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -74,7 +72,7 @@ export const DynamicSuggestions = ({ onSuggestionClick, historySuggestions = [] 
                         )}
                     >
                         <span>{item.text}</span>
-                        {!item.isSpecial && <ArrowRight className="ml-1 h-3 w-3 opacity-40" />}
+                        {!item.isSpecial && <ArrowRight size={12} weight="regular" className="ml-1 opacity-40" />}
                     </button>
                 ))}
             </div>

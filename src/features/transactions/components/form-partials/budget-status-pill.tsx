@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { useInsights } from '@/features/insights/hooks/use-insights';
-import { AlertCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { CheckCircle, TrendUp, WarningCircle } from '@phosphor-icons/react';
 
 interface BudgetStatusPillProps {
     category: string;
@@ -39,7 +39,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                 )}
                 >
                     <div className="flex items-center gap-2">
-                        {isOverBudget ? <AlertCircle className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+                        {isOverBudget ? <WarningCircle size={14} weight="regular" /> : <CheckCircle size={14} weight="regular" />}
                         <span className="text-label">Sisa {category}:</span>
                     </div>
                     <span className="tabular-nums text-sm font-medium">
@@ -53,7 +53,7 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-2 px-1 text-xs font-semibold text-amber-600"
                     >
-                        <TrendingUp className="h-3 w-3" />
+                        <TrendUp size={12} weight="regular" />
                         <span className="text-label">Velocity Tinggi: Kamu belanja lebih cepat dari biasanya!</span>
                     </motion.div>
                 )}

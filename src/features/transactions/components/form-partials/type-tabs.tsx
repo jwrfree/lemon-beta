@@ -1,7 +1,6 @@
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowRightLeft, TrendingDown, TrendingUp } from 'lucide-react';
+import { ArrowsLeftRight, TrendDown, TrendUp } from '@phosphor-icons/react';
 
 export type TransactionType = 'expense' | 'income' | 'transfer';
 
@@ -24,7 +23,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
                 )}
             >
-                <TrendingDown className="mr-2 h-4 w-4" />
+                <TrendDown size={16} weight="regular" className="mr-2" />
                 Pengeluaran
             </Button>
             <Button
@@ -38,7 +37,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
                 )}
             >
-                <TrendingUp className="mr-2 h-4 w-4" />
+                <TrendUp size={16} weight="regular" className="mr-2" />
                 Pemasukan
             </Button>
             <Button
@@ -52,7 +51,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
                 )}
             >
-                <ArrowRightLeft className="mr-2 h-4 w-4" />
+                <ArrowsLeftRight size={16} weight="regular" className="mr-2" />
                 <span className="truncate">Transfer</span>
             </Button>
         </div>

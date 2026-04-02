@@ -1,7 +1,7 @@
 'use client';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
-import { Trash2, Pencil, Sparkles, ShieldCheck } from 'lucide-react';
+import { PencilSimple, Trash } from '@phosphor-icons/react';
 import type { Wallet, Transaction } from '@/types/models';
 import type { CategoryVisuals } from '@/types/visuals';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -12,7 +12,7 @@ import { useUI } from '@/components/ui-provider';
 import { useMerchantIdentity } from '@/hooks/use-merchant-identity';
 
 interface TransactionListItemProps {
-    transaction: Transaction;
+    transaction: Transaction & { showDivider?: boolean };
     wallets: Wallet[];
     getCategoryVisuals: (name: string) => CategoryVisuals;
     hideDate?: boolean;
@@ -47,7 +47,7 @@ const TransactionListItemContent = ({
     });
 
     const isExpense = transaction.type === 'expense';
-    const amountColor = isExpense ? 'text-foreground' : 'text-emerald-600 dark:text-emerald-400';
+    const amountColor = isExpense ? 'text-foreground' : 'text-success font-semibold';
     const timeLabel = hideDate
         ? isToday(transactionDate)
             ? format(transactionDate, 'HH:mm')
@@ -58,9 +58,10 @@ const TransactionListItemContent = ({
 
     return (
         <div className={cn(
-            "flex items-center gap-4 p-4 transition-colors relative overflow-hidden",
-            isExpense && transaction.amount >= 1000000 && "bg-foreground/[0.03]"
+            "flex items-center gap-4 p-4 transition-colors relative group/item",
+            isExpense && transaction.amount >= 1000000 && "bg-accent/5"
         )}>
+
 
             <div className={cn(
                 "flex-shrink-0 h-11 w-11 rounded-squircle flex items-center justify-center transition-all duration-500 overflow-hidden",
@@ -101,14 +102,12 @@ const TransactionListItemContent = ({
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {/* Need / Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === true && (
-                        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-label font-medium text-emerald-600 shadow-soft">
-                            <ShieldCheck className="h-2 w-2" />
+                        <span className="flex items-center gap-1 rounded-full bg-foreground text-[9px] font-bold uppercase tracking-wider text-background px-1.5 py-0.5 shadow-sm">
                             Need
                         </span>
                     )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-label font-medium text-indigo-600 shadow-soft">
-                            <Sparkles className="h-2 w-2" />
+                        <span className="flex items-center gap-1 rounded-full bg-accent text-[9px] font-bold uppercase tracking-wider text-accent-foreground px-1.5 py-0.5 shadow-sm">
                             Want
                         </span>
                     )}
@@ -147,7 +146,7 @@ const TransactionListItemContent = ({
                     {timeLabel}
                 </span>
                 {isExpense && transaction.amount >= 1000000 && (
-                    <span className="text-label bg-rose-500/10 text-rose-500 px-1.5 py-0.5 rounded-full">Besar</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full">High</span>
                 )}
             </div>
         </div>
@@ -272,7 +271,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                     initial={{ scale: 0, opacity: 0 }}
                 />
                 <motion.div animate={deleteIconControls} className="relative z-10">
-                    <Trash2 className="h-6 w-6" />
+                    <Trash size={24} weight="regular" />
                 </motion.div>
             </motion.div>
             {/* Edit Action BG */}
@@ -286,7 +285,7 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                     initial={{ scale: 0, opacity: 0 }}
                 />
                 <motion.div animate={editIconControls} className="relative z-10">
-                    <Pencil className="h-6 w-6" />
+                    <PencilSimple size={24} weight="regular" />
                 </motion.div>
             </motion.div>
 
@@ -305,6 +304,9 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
                 }}
             >
                 <TransactionListItemContent {...props} />
+                {transaction.showDivider && (
+                    <div className="absolute bottom-0 right-0 left-[76px] h-px bg-border z-50" />
+                )}
             </motion.div>
         </div>
     );

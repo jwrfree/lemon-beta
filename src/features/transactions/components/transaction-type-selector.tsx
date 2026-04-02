@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowRightLeft } from 'lucide-react';
+import { ArrowsLeftRight } from '@phosphor-icons/react';
 
 interface TransactionTypeSelectorProps {
     type: 'expense' | 'income';
@@ -38,7 +37,7 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
                 onClick={() => onTypeChange('transfer')}
                 className="rounded-full bg-transparent text-muted-foreground hover:bg-background/50 flex items-center gap-1"
             >
-                <ArrowRightLeft className="h-4 w-4" /> Transfer
+                <ArrowsLeftRight size={16} weight="regular" /> Transfer
             </Button>
         </div>
     );

@@ -275,7 +275,7 @@ export function buildStaticChatReply(intent: ChatIntent): string | null {
         case 'gibberish':
             return "Ups, saya kurang mengerti pesan itu. Bisa diulangi dengan bahasa yang lebih santai? Saya siap bantu cek keuangan kamu kok.";
         case 'destructive-action':
-            return 'Maaf, demi keamanan data kamu, saya tidak punya akses untuk menghapus transaksi secara massal. Kamu bisa mengelola data melalui menu **Settings** atau menghapus transaksi satu per satu di tab **Riwayat**.';
+            return 'Maaf, demi keamanan data kamu, saya tidak punya akses untuk menghapus transaksi secara massal. Kamu bisa mengelola data melalui menu **Profil & Akun** atau menghapus transaksi satu per satu di tab **Riwayat**.';
         default:
             return null;
     }
