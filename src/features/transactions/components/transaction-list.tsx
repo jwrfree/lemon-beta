@@ -71,7 +71,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                         <h3 className="text-label text-muted-foreground/60 px-4">
                             {formatRelativeDate(parseISO(date))}
                         </h3>
-                        <div className="overflow-hidden rounded-card-premium bg-card/92 shadow-[0_22px_40px_-30px_rgba(15,23,42,0.18)]">
+                        <div className="overflow-hidden rounded-card-premium bg-card/92 shadow-premium">
                             {transactionsForDay.map((transaction: Transaction) => (
                                 <TransactionListItem 
                                     key={transaction.id} 
@@ -92,7 +92,7 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
                         variant="ghost" 
                         onClick={loadMore} 
                         disabled={isLoading}
-                        className="w-full rounded-full bg-card/90 shadow-[0_16px_30px_-24px_rgba(15,23,42,0.16)] md:w-auto md:px-6 text-muted-foreground hover:bg-card hover:text-primary transition-all"
+                        className="w-full rounded-full bg-card/90 shadow-button md:w-auto md:px-6 text-muted-foreground hover:bg-card hover:text-primary transition-all"
                     >
                         {isLoading ? (
                             <>

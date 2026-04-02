@@ -456,6 +456,9 @@ All radius values come from these named tokens:
 | `shadow-lg` | Modal | Modals, sheets, dropdowns |
 | `shadow-xl` | Hero | Hero surfaces (desktop stat panels) |
 | `shadow-2xl` | Premium | Premium cards, FAB |
+| `shadow-soft` | Design System | Subtly elevated shadow for list cards and tags |
+| `shadow-premium` | Design System | Deeper, dynamic shadow for grouped mobile list containers |
+| `shadow-button` | Design System | Specific shadow for "Load More" and primary action pill buttons |
 | `shadow-inner` | Inset | Glass panels, pressed states |
 
 `shadow-card` and `shadow-sm` are **not interchangeable**. `shadow-card` is the correct default for `<Card>`. Use `shadow-sm` only for non-card elevated containers.

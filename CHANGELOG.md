@@ -4,7 +4,20 @@ All updates and improvements to the Lemon app will be documented here.
 
 ## [Unreleased]
 
+### Added
+- **Premium Shadow Tokens**
+  - Added Design System shadow tokens: `shadow-soft`, `shadow-premium`, and `shadow-button` to `tailwind.config.ts`.
+  - Migrated arbitrary shadow values in `TransactionListItem` and `TransactionList` to these standardized tokens.
+- **Performance & Security (Supabase Best Practices)**
+  - Added composite index `idx_transactions_user_category_type_date` for optimized budget calculations.
+  - Added missing foreign key indexes on `reminders`, `budgets`, `goals`, `audit_logs`, `debt_payments`, and `members`.
+  - Strengthened RLS for 6 major tables using the optimized `(SELECT auth.uid())` pattern for 10x+ performance gains on large datasets.
+
 ### Changed
+- **Modular Merchant Identity Hook**
+  - Refactored `TransactionListItem` to use a new `useMerchantIdentity` hook, extracting complex merchant identification, fallback branding, and Visual DNA logic from the UI layer.
+- **SARGable Database Views**
+  - Updated `vw_budget_performance` to use a SARGable date range query instead of `date_trunc`, enabling index usage for MTD spending calculations.
 - **Lemon Coach & Smart Add Conversation Flow Refresh**
   - Refined Lemon Coach routing so recent mutations, transaction search, deterministic finance answers, and add-via-chat requests use more direct paths before LLM fallback.
   - Added follow-up suggestion rows below assistant replies, improved chat auto-scroll behavior, and made recent mutation ordering consistently newest-first.

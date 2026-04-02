@@ -179,6 +179,10 @@ export default {
         card: '0 2px 8px -2px rgba(0, 0, 0, 0.1), 0 1px 4px -2px rgba(0, 0, 0, 0.06)',
         lg:   '0 8px 24px -4px rgba(0, 0, 0, 0.12), 0 4px 12px -4px rgba(0, 0, 0, 0.08)',
         xl:   '0 20px 40px -8px rgba(0, 0, 0, 0.16), 0 8px 16px -4px rgba(0, 0, 0, 0.10)',
+        // Design-system premium shadows
+        'soft': '0 4px 12px -6px rgba(0, 0, 0, 0.08), 0 2px 6px -4px rgba(0, 0, 0, 0.04)',
+        'premium': '0 22px 40px -30px rgba(15, 23, 42, 0.18), 0 4px 12px -8px rgba(15, 23, 42, 0.12)',
+        'button': '0 16px 30px -24px rgba(15, 23, 42, 0.16)',
       },
     },
   },

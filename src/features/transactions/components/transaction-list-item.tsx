@@ -9,9 +9,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
-import { getMerchantVisuals, getMerchantLogoUrl, getBackupLogoUrl, getGoogleFaviconUrl, markLogoAsFailed, isLogoFailed } from '@/lib/merchant-utils';
-
-import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
+import { useMerchantIdentity } from '@/hooks/use-merchant-identity';
 
 interface TransactionListItemProps {
     transaction: Transaction;
@@ -30,45 +28,23 @@ const TransactionListItemContent = ({
     const wallet = wallets.find(w => w.id === transaction.walletId);
     const transactionDate = parseISO(transaction.date);
 
-    // Merchant Intelligence Logic
-    const merchantVisuals = getMerchantVisuals(transaction.merchant || transaction.description);
-    const categoryVisuals = getCategoryVisuals(transaction.category);
-    const dna = getVisualDNA(extractBaseColor(categoryVisuals.color));
-
-    // Multi-tier Fallback State: logodev -> clearbit -> favicon -> icon
-    const [logoSource, setLogoSource] = React.useState<'primary' | 'secondary' | 'tertiary' | 'icon'>(() => {
-        if (!merchantVisuals?.domain) return 'icon';
-        if (isLogoFailed(merchantVisuals.domain)) return 'icon';
-        return 'primary';
+    const {
+        logoSource,
+        handleLogoError,
+        primaryLogo,
+        backupLogo,
+        googleLogo,
+        DefaultIcon,
+        iconColor,
+        iconBg,
+        merchantVisuals,
+        categoryVisuals,
+    } = useMerchantIdentity({
+        merchant: transaction.merchant,
+        description: transaction.description,
+        category: transaction.category,
+        getCategoryVisuals,
     });
-
-    // Reset state ONLY when the actual merchant identity/domain changes
-    // This prevents flickering on minor data updates or re-renders
-    const domainRef = React.useRef(merchantVisuals?.domain);
-    React.useEffect(() => {
-        if (merchantVisuals?.domain !== domainRef.current) {
-            setLogoSource(merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain) ? 'primary' : 'icon');
-            domainRef.current = merchantVisuals?.domain;
-        }
-    }, [merchantVisuals?.domain]);
-
-    const handleLogoError = () => {
-        if (logoSource === 'primary') setLogoSource('secondary');
-        else if (logoSource === 'secondary') setLogoSource('tertiary');
-        else {
-            setLogoSource('icon');
-            if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
-        }
-    };
-
-    const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
-    const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
-    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
-
-    // Hierarchy: Merchant Icon (e.g., TV for Netflix) > Category Icon (e.g., Game for Entertainment)
-    const DefaultIcon = merchantVisuals?.icon || categoryVisuals.icon;
-    const iconColor = merchantVisuals?.color || categoryVisuals.color;
-    const iconBg = merchantVisuals?.bgColor || categoryVisuals.bgColor;
 
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-foreground' : 'text-emerald-600 dark:text-emerald-400';
@@ -125,13 +101,13 @@ const TransactionListItemContent = ({
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {/* Need / Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === true && (
-                        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-label font-medium text-emerald-600 shadow-[0_4px_12px_-6px_rgba(16,185,129,0.2)]">
+                        <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-label font-medium text-emerald-600 shadow-soft">
                             <ShieldCheck className="h-2 w-2" />
                             Need
                         </span>
                     )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-label font-medium text-indigo-600 shadow-[0_4px_12px_-6px_rgba(99,102,241,0.2)]">
+                        <span className="flex items-center gap-1 rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-label font-medium text-indigo-600 shadow-soft">
                             <Sparkles className="h-2 w-2" />
                             Want
                         </span>
