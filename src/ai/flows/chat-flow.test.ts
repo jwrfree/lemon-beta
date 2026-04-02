@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+    buildChatSystemPrompt,
     buildStaticChatReply,
     classifyChatIntent,
     extractTransactionSearchQuery,
@@ -55,5 +56,14 @@ describe('buildStaticChatReply', () => {
     it('returns a direct reply for static non-data intents only', () => {
         expect(buildStaticChatReply({ kind: 'destructive-action' })).toContain('tidak punya akses');
         expect(buildStaticChatReply({ kind: 'add-transaction' })).toBeNull();
+    });
+});
+
+describe('buildChatSystemPrompt', () => {
+    it('includes the financial framework exactly once for Lemon Coach chat', () => {
+        const prompt = buildChatSystemPrompt();
+        const occurrences = prompt.match(/50\/30\/20 Rule/g) ?? [];
+
+        expect(occurrences).toHaveLength(1);
     });
 });

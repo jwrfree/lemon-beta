@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **Lemon Coach prompt framing**
+  - Added the shared financial framework to the chat-only system prompt so Lemon Coach uses the same budgeting heuristics without changing other AI flows.
 - **AI chat tool identifiers**
   - Added `transaction_id` and `id` to Lemon Coach transaction search/recent tool results so update and delete tool calls can reuse the returned identifier directly without an extra lookup.
 - **Offline and relaunch responsiveness**

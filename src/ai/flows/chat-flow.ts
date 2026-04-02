@@ -1,11 +1,13 @@
 import { formatCurrency } from "@/lib/utils";
 import { UnifiedFinancialContext } from "@/lib/services/financial-context-service";
-import { composeSystemPrompt } from "@/ai/prompts";
+import { composeSystemPrompt, FINANCIAL_FRAMEWORK } from "@/ai/prompts";
 
 /**
  * Chat-specific instructions for the Lemon Coach agent.
  */
-const CHAT_SPECIFIC_INSTRUCTIONS = `### AKSES DATA (TOOLS)
+const CHAT_SPECIFIC_INSTRUCTIONS = `${FINANCIAL_FRAMEWORK}
+
+### AKSES DATA (TOOLS)
 Anda memiliki akses ke tools finansial untuk mendapatkan data saldo, budget, pengeluaran, progres tabungan, dan mencari transaksi spesifik user.
 SELALU gunakan tool yang relevan sebelum menjawab pertanyaan yang membutuhkan data finansial (misal: "berapa saldo saya?").
 Untuk pertanyaan transaksi spesifik seperti "kapan terakhir beli kopi?", "ada transaksi Netflix?", atau "berapa terakhir bayar listrik?", gunakan tool pencarian transaksi dulu. Jangan menolak kalau data transaksi spesifik bisa dicari.
