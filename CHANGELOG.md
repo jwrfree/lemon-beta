@@ -4,93 +4,79 @@ All updates and improvements to the Lemon app will be documented here.
 
 ## [Unreleased]
 
+### Changed
+- **Lemon Coach AI Chat Enhancements**
+  - **Robust UI Component Parsing**: Replaced regex-based UI component parsing with a balanced bracket parser in `ai-chat-drawer.tsx` to handle nested arrays/objects securely and prevent UI rendering breakage.
+  - **Instant Visual Deterministic Replies**: Injected UI Component tags (e.g., `[RENDER_COMPONENT:WealthSummary]`) directly into deterministic responses in `chat-flow.ts` to provide instant rich visual feedback without LLM latency.
+  - **Smart Subscription Detection**: Upgraded the `analyze_subscriptions` tool to evaluate transaction time intervals (e.g., weekly, monthly) and limit amount variance (max 30%), significantly reducing false positives compared to the previous simple occurrence count.
+  - **Robust Intent Classification**: Refactored the `classifyChatIntent` function to utilize synonym arrays, accommodating common Indonesian typos and slang (e.g., "bujet", "bajet", "boncos", "duit"), improving deterministic hit rates.
+  - **Compound Intent Handling**: Added logic in `chat-flow.ts` to fallback to LLM processing when a user provides compound sentences (containing multiple topics and conjunctions like "dan", "terus") to ensure comprehensive multi-tool answers.
+  - **Dynamic Follow-up Suggestions**: Updated `CHAT_SPECIFIC_INSTRUCTIONS` prompt to instruct the LLM to output contextual follow-up questions using `[SUGGESTION:...]` tags, and modified `follow-up-suggestions.ts` and `ai-chat-drawer.tsx` to extract and render these dynamic suggestions interactively.
+
+---
+
+## [Version 2.5.9] - 2 April 2026
+
 ### Added
-- **Runtime Date Helper**
-  - Added `src/lib/utils/current-date.ts` as a shared helper for production date calculations to remove hardcoded fixture dates from runtime flows.
-- **Architecture Remediation Tests**
+- **Runtime correctness foundations**
+  - Added `src/lib/utils/current-date.ts` as a shared helper so production flows no longer depend on hardcoded fixture dates.
   - Added focused tests for atomic transaction helpers and unified financial context resolution to lock in the new correctness paths.
-- **Premium Shadow Tokens**
-  - Added Design System shadow tokens: `shadow-soft`, `shadow-premium`, and `shadow-button` to `tailwind.config.ts`.
-  - Migrated arbitrary shadow values in `TransactionListItem` and `TransactionList` to these standardized tokens.
-- **Performance & Security (Supabase Best Practices)**
-  - Added composite index `idx_transactions_user_category_type_date` for optimized budget calculations.
-  - Added missing foreign key indexes on `reminders`, `budgets`, `goals`, `audit_logs`, `debt_payments`, and `members`.
-  - Strengthened RLS for 6 major tables using the optimized `(SELECT auth.uid())` pattern for 10x+ performance gains on large datasets.
+- **Lemon Coach chat surfaces**
+  - Added richer in-chat finance components, dynamic follow-up suggestions, and voice-to-text support to make assistant responses more actionable.
+  - Added stronger budget projection and health-audit support in Lemon Coach flows.
+- **UI system expansion**
+  - Added standardized empty states across chart and analysis surfaces.
+  - Added centralized error primitives and error design tokens for inline, banner, and retry states.
+  - Added premium shadow tokens to the design system and migrated key transaction surfaces to use them.
+- **Database performance and safety**
+  - Added composite and foreign-key indexes to support faster transaction, budget, reminder, goal, debt, audit-log, and membership queries.
+  - Added stronger RLS policy patterns aligned with Supabase best practices.
+- **Planning and reminders UI**
+  - Added the redesigned `Rencana Keuangan` experience for bills and debts, including higher-contrast summary cards and metadata-rich reminder views.
+- **Profile lifecycle**
+  - Added account deletion support as part of the profile management refresh.
 
 ### Changed
-- **Production Correctness Hardening**
-  - Replaced hardcoded dashboard reference dates with runtime date resolution so home summaries, reminder windows, and debt notifications now follow the actual current date.
-  - Switched Lemon Coach chat rate limiting from per-instance in-memory state to the existing database-backed `consume_rate_limit` RPC for deployment-safe enforcement.
-  - Consolidated transaction mutations behind shared atomic helpers so UI and chat now use the same RPC-backed create, update, and delete paths.
-- **Unified Financial Context Source of Truth**
-  - Updated `financialContextService` to prefer the `get_unified_context` RPC first and fall back to direct query aggregation only when RPC resolution fails.
-  - Added light observability around context resolution to record whether `rpc` or `fallback` was used and how long it took.
-- **Biometric Sign-In Hardening**
-  - Hardened passkey sign-in lookup to prefer `userId`, keep email as a compatibility fallback, and avoid leaking account existence details through distinct error messages.
-  - Preserved the current magic-link session bridge after successful WebAuthn verification for minimal-risk rollout while tightening identity resolution.
-- **Modular Merchant Identity Hook**
-  - Refactored `TransactionListItem` to use a new `useMerchantIdentity` hook, extracting complex merchant identification, fallback branding, and Visual DNA logic from the UI layer.
-- **SARGable Database Views**
-  - Updated `vw_budget_performance` to use a SARGable date range query instead of `date_trunc`, enabling index usage for MTD spending calculations.
-- **Lemon Coach & Smart Add Conversation Flow Refresh**
-  - Refined Lemon Coach routing so recent mutations, transaction search, deterministic finance answers, and add-via-chat requests use more direct paths before LLM fallback.
-  - Added follow-up suggestion rows below assistant replies, improved chat auto-scroll behavior, and made recent mutation ordering consistently newest-first.
-  - Standardized transaction timestamps so chat capture, Smart Add, and quick add now preserve full date-time values instead of truncating to date only.
-- **Transaction Parsing Expansion**
-  - Strengthened parser heuristics to infer valid subcategories, normalize AI extraction outputs, and better detect Indonesian daily-spend merchants.
-  - Added mapping coverage for coffee brands, minimarkets, fuel stations, utilities, marketplaces, game top-ups, and selected digital services.
-- **Lower-Noise Expense Amount Styling**
-  - Changed expense amount presentation in key transaction surfaces from strong destructive coloring to neutral foreground styling while keeping income visually distinct.
+- **Production correctness hardening**
+  - Replaced hardcoded dashboard reference dates with runtime date resolution so home summaries, reminder windows, and debt notifications always follow the actual current date.
+  - Switched Lemon Coach rate limiting from per-instance memory to the database-backed `consume_rate_limit` RPC for deployment-safe enforcement.
+  - Consolidated chat and UI transaction mutations behind the same RPC-backed create, update, and delete paths.
+- **Unified financial context**
+  - Updated `financialContextService` to prefer `get_unified_context` first and fall back to direct-query aggregation only when RPC resolution fails.
+  - Added lightweight observability to record whether `rpc` or `fallback` was used and how long context assembly took.
+- **AI assistant and Smart Add flow**
+  - Refined Lemon Coach routing so recent mutations, transaction search, deterministic finance answers, and add-via-chat requests take direct paths before LLM fallback.
+  - Standardized transaction timestamps so chat capture, Smart Add, and quick add preserve full date-time values instead of truncating to date only.
+  - Expanded parser heuristics and merchant coverage for Indonesian daily-spend scenarios, utilities, marketplaces, fuel, coffee brands, top-ups, and subscriptions.
+- **Profile and navigation UX**
+  - Refined mobile bottom navigation and overhauled profile-related mobile flows for better reachability and smaller-screen ergonomics.
+  - Added database resilience improvements to profile-facing paths.
+- **Auth hardening**
+  - Hardened biometric sign-in to prefer `userId`, retain email only as a compatibility fallback, and avoid leaking account existence through distinct failure messages.
+  - Preserved the current magic-link session bridge after successful WebAuthn verification for a minimal-risk rollout.
+- **Design system and frontend structure**
+  - Refactored merchant identity logic into a dedicated `useMerchantIdentity` hook.
+  - Updated budget-performance views to use more index-friendly date filters.
+  - Reduced visual noise in expense amount styling while keeping income states distinct.
+  - Standardized error messaging tone in Bahasa Indonesia across toast and inline feedback surfaces.
 
 ### Fixed
-- **Chat/Data Integrity Drift**
-  - Fixed Lemon Coach transaction update/delete paths so they no longer bypass the atomic RPCs used by the main app, preventing wallet balance and derived-data drift.
-- **Runtime Debug Noise**
-  - Removed noisy middleware and Supabase client debug logging from sensitive runtime paths to keep operational logs cleaner.
-- **Lemon Coach Chat Reliability**
-  - Fixed direct transaction capture regressions introduced during routing redesign, including better wallet fallback handling and safer timestamp normalization when models return date-only values.
-  - Fixed recent transaction ordering edge cases by sorting with both `date` and `created_at`, ensuring the newest mutation appears at the top.
-
-### Added
-- **Standardized Empty States (Phase 2 Component Migration)**
-  - Migrated 7+ chart and list views to the new `@/components/empty-state` component.
-  - Applied to: `CategoryAnalysis`, `NetCashflowChart`, `MonthlyTrendChart`, `MonthlySummary`, `ExpenseShortTermTrend`, `HistoryChart`, `ProphetChart`, and `SubscriptionAudit`.
-  - Added support for dynamic iconography and context-aware messaging (e.g., search-specific empty states).
-- **Rencana Keuangan (Plan) Dashboard Redesign**
-  - **Contextual Clarity**: Moved `SubscriptionAuditCard` from the global page header to a dedicated placement within the "Tagihan" (Bills) tab for better mobile ergonomics.
-  - **Modern Fluidity**: Completely redesigned the **Tagihan** (Reminders) and **Hutang** (Debts) dashboards with a glassmorphic aesthetic.
-  - **Hutang Dashboard**: Added high-contrast summary cards for "Saya Berhutang" (Destructive) and "Piutang Saya" (Emerald) with `font-bold tracking-tighter tabular-nums`.
-  - **Tagihan Dashboard**: Integrated a new pill-style segmented control for reminder filtering and added detailed "Metadata Panels" for individual items.
-
-### Changed
-- **UX Logic Refinement — Fixed Monthly Expenses**
-  - Updated `SubscriptionAudit` logic to hide efficiency tips when `totalMonthly` is 0, preventing useless "IDR 0 savings" messages.
-  - Upgraded the audit card to use the standardized `EmptyState` with a "Clean Audit" (`CheckCircle2`) variant.
-- **Mobile Ergonomics Polish**
-  - Reduced global `EmptyState` top padding from `pt-12` to `pt-8` across all views to improve content density on small screens.
+- **Transaction and chat integrity**
+  - Fixed Lemon Coach update and delete actions so they no longer bypass the atomic RPCs used by the main app, preventing wallet-balance and derived-data drift.
+  - Fixed direct transaction capture regressions introduced during routing redesign, including safer wallet fallback handling and date-only normalization.
+  - Fixed recent transaction ordering edge cases by sorting with both `date` and `created_at`.
+- **Mobile and UI polish**
+  - Fixed the sub-category sheet close-icon import issue and polished sheet presentation across AI and transaction surfaces.
+  - Reduced global empty-state top padding to improve content density on small screens.
+  - Updated subscription audit behavior so efficiency tips are hidden when monthly spend is zero, and upgraded the empty state to a clearer clean-audit treatment.
+  - Fixed missing feedback paths so wallet-fetch and wallet-reconcile failures surface visible user-facing errors instead of staying console-only.
+- **Operational noise**
+  - Removed noisy middleware and Supabase client debug logging from sensitive runtime paths.
 
 ### Documentation
-- Added `docs/EDIT_TRANSACTION_SHEET_GUIDE.md` covering:
-  - Information hierarchy and progressive disclosure in the edit drawer.
-  - Amount input state model (raw expression → tokenization → evaluated formatted amount).
-  - Custom keyboard behavior, limitations, and recommended QA checklist.
-
-### Added
-- **Centralized Error System** (`feat(ui): introduce centralized error system and tone standardization`)
-  - Error design tokens: `--error`, `--error-foreground`, `--error-surface`, `--error-muted`, `--error-border` added to `globals.css` (light + dark modes) and registered in `tailwind.config.ts` as `bg-error-*`, `text-error`, `border-error-border`
-  - `src/components/ui/error-message.tsx` — `ErrorMessage` / `InlineError` component for inline field-level validation errors with `role="alert"` and `aria-live="polite"`
-  - `src/components/ui/error-alert.tsx` — `ErrorAlert` / `ErrorBanner` component for block-level inline errors (network / server / validation / empty) with `role="alert"` and `aria-live="assertive"`, optional retry button
-  - `src/components/ui/retry-section.tsx` — `RetrySection` component for self-contained retry prompts with `role="status"` and `aria-live="polite"`
-  - `Alert` component extended with `error` variant (`border-error-border bg-error-surface text-error`)
-  - `docs/standards/DESIGN_SYSTEM.md §10 Error State Guidelines` — tone categories, component reference, visual hierarchy, accessibility requirements, Do/Don't examples
-
-### Changed
-- **Standardized error messaging tone** across `showToast` call sites — messages are human, actionable, and in Bahasa Indonesia
-- `CustomToast` — error toasts now render with `bg-destructive` background, visually distinct from info/success toasts; added `role="status"` and `aria-live="polite"` to the container
-
-### Fixed
-- **Silent error swallowing in `WalletProvider`** — network failure during wallet fetch now surfaces a toast (`'Gagal memuat dompet. Periksa koneksi kamu.'`) instead of being console-only
-- **Missing UI feedback in `EditWalletModal` reconcile** — balance correction failure now shows a toast (`'Gagal mengoreksi saldo. Coba lagi.'`) instead of being console-only
+- Added `docs/EDIT_TRANSACTION_SHEET_GUIDE.md` covering information hierarchy, amount-input state handling, keyboard behavior, and QA guidance for the edit drawer.
+- Standardized documentation layout and hook documentation patterns to align internal docs with the current engineering conventions.
+- Audited and refined design system principles and the maintenance roadmap documentation.
 
 ---
 
@@ -917,3 +903,4 @@ This is our first major feature release focused on improving tracking details an
 - **Cleaner Layout**: Long category names in the transaction form will now be truncated with an ellipsis (...) to keep the layout clean.
 - **Homepage Background**: The homepage now uses a light gray background (`bg-muted`) to be uniform with other pages.
 - **Simplified Header**: The duplicate "Settings" button in the homepage header has been removed to simplify navigation.
+
