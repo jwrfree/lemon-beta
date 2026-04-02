@@ -16,7 +16,8 @@ export default function OfflinePage() {
 
       <p className="text-muted-foreground mb-10 max-w-sm">
         Lemon memerlukan koneksi internet untuk sinkronisasi data keuanganmu.
-        Beberapa fitur tidak tersedia saat kamu tidak terhubung.
+        Halaman yang pernah dibuka dan snapshot data terakhir masih bisa tampil,
+        tetapi perubahan baru belum bisa dikirim sampai koneksi kembali normal.
       </p>
 
       <div className="space-y-3 w-full max-w-xs">

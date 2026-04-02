@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import { transactionEvents } from '@/lib/transaction-events';
+import { getOfflineCacheKey, readOfflineSnapshot, writeOfflineSnapshot } from '@/lib/offline-cache';
 import type { Transaction, Wallet } from '@/types/models';
 import { walletService } from '@/lib/services/wallet-service';
 
@@ -29,15 +30,22 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
+    const cacheKey = user ? getOfflineCacheKey('wallets', user.id) : null;
 
     const fetchWallets = useCallback(async () => {
         if (!user) return;
         try {
             const data = await walletService.getWallets(user.id);
             setWallets(data);
+            writeOfflineSnapshot(getOfflineCacheKey('wallets', user.id), data);
         } catch (err) {
             console.error("[WalletProvider] Fetch Error:", err);
-            showToast('Gagal memuat dompet. Periksa koneksi kamu.', 'error');
+            const cachedWallets = readOfflineSnapshot<Wallet[]>(getOfflineCacheKey('wallets', user.id));
+            if (cachedWallets !== undefined) {
+                setWallets(cachedWallets);
+            } else {
+                showToast('Gagal memuat dompet. Periksa koneksi kamu.', 'error');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -59,6 +67,15 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
             setWallets([]);
             setIsLoading(false);
             return;
+        }
+
+        setIsLoading(true);
+        if (cacheKey) {
+            const cachedWallets = readOfflineSnapshot<Wallet[]>(cacheKey);
+            if (cachedWallets !== undefined) {
+                setWallets(cachedWallets);
+                setIsLoading(false);
+            }
         }
 
         fetchWallets();
@@ -102,7 +119,7 @@ export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
             transactionEvents.off('transaction.updated', handleTxUpdated);
             transactionEvents.off('transaction.deleted', handleTxDeleted);
         };
-    }, [user, supabase, fetchWallets, updateWalletOptimistically]);
+    }, [user, supabase, fetchWallets, updateWalletOptimistically, cacheKey]);
 
     return (
         <WalletContext.Provider value={{

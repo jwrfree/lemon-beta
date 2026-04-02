@@ -5,6 +5,7 @@ import { useRouter as useNextRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
+import { getOfflineCacheKey, readOfflineSnapshot, writeOfflineSnapshot } from '@/lib/offline-cache';
 import type { Debt, DebtInput, DebtPayment, DebtPaymentInput, Transaction } from '@/types/models';
 import { debtService } from '@/lib/services/debt-service';
 import { transactionEvents } from '@/lib/transaction-events';
@@ -16,14 +17,20 @@ export const useDebts = () => {
     const [debts, setDebts] = useState<Debt[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
+    const cacheKey = user ? getOfflineCacheKey('debts', user.id) : null;
 
     const fetchDebts = useCallback(async () => {
         if (!user) return;
         try {
             const data = await debtService.getDebts(user.id);
             setDebts(data);
+            writeOfflineSnapshot(getOfflineCacheKey('debts', user.id), data);
         } catch (err) {
             console.error("Error fetching debts:", err);
+            const cachedDebts = readOfflineSnapshot<Debt[]>(getOfflineCacheKey('debts', user.id));
+            if (cachedDebts !== undefined) {
+                setDebts(cachedDebts);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -34,6 +41,14 @@ export const useDebts = () => {
             setDebts([]);
             setIsLoading(false);
             return;
+        }
+        setIsLoading(true);
+        if (cacheKey) {
+            const cachedDebts = readOfflineSnapshot<Debt[]>(cacheKey);
+            if (cachedDebts !== undefined) {
+                setDebts(cachedDebts);
+                setIsLoading(false);
+            }
         }
         fetchDebts();
 
@@ -54,7 +69,7 @@ export const useDebts = () => {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user, fetchDebts, supabase]);
+    }, [user, fetchDebts, supabase, cacheKey]);
 
     const addDebt = useCallback(async (debtData: DebtInput) => {
         if (!user) throw new Error("User not authenticated.");

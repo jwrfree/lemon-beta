@@ -5,6 +5,9 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **Offline and relaunch responsiveness**
+  - Restored last-known wallets, reminders, debts, and range-based transaction snapshots from local storage so previously fetched data stays visible offline and opens faster on repeat launches.
+  - Moved React Query Devtools behind a development-only lazy import to reduce unnecessary production overhead.
 - **Lemon Coach AI Chat Enhancements**
   - **Robust UI Component Parsing**: Replaced regex-based UI component parsing with a balanced bracket parser in `ai-chat-drawer.tsx` to handle nested arrays/objects securely and prevent UI rendering breakage.
   - **Instant Visual Deterministic Replies**: Injected UI Component tags (e.g., `[RENDER_COMPONENT:WealthSummary]`) directly into deterministic responses in `chat-flow.ts` to provide instant rich visual feedback without LLM latency.

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
+import { getOfflineCacheKey, readOfflineSnapshot, writeOfflineSnapshot } from '@/lib/offline-cache';
 import type { Reminder, ReminderInput } from '@/types/models';
 import { reminderService } from '../services/reminder.service';
 
@@ -13,15 +14,22 @@ export const useReminders = () => {
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const supabase = createClient();
+    const cacheKey = user ? getOfflineCacheKey('reminders', user.id) : null;
 
     const fetchReminders = useCallback(async () => {
         if (!user) return;
         try {
             const data = await reminderService.getReminders(user.id);
             setReminders(data);
+            writeOfflineSnapshot(getOfflineCacheKey('reminders', user.id), data);
         } catch (err) {
             console.error("Error fetching reminders:", err);
-            ui.showToast("Gagal memuat pengingat.", 'error');
+            const cachedReminders = readOfflineSnapshot<Reminder[]>(getOfflineCacheKey('reminders', user.id));
+            if (cachedReminders !== undefined) {
+                setReminders(cachedReminders);
+            } else {
+                ui.showToast("Gagal memuat pengingat.", 'error');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -32,6 +40,14 @@ export const useReminders = () => {
             setReminders([]);
             setIsLoading(false);
             return;
+        }
+        setIsLoading(true);
+        if (cacheKey) {
+            const cachedReminders = readOfflineSnapshot<Reminder[]>(cacheKey);
+            if (cachedReminders !== undefined) {
+                setReminders(cachedReminders);
+                setIsLoading(false);
+            }
         }
         fetchReminders();
 
@@ -52,7 +68,7 @@ export const useReminders = () => {
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [user, fetchReminders, supabase]);
+    }, [user, fetchReminders, supabase, cacheKey]);
 
     const addReminder = useCallback(async (reminderData: ReminderInput) => {
         if (!user) throw new Error("User not authenticated.");

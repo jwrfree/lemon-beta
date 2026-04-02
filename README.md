@@ -28,7 +28,7 @@ AI pipeline
 
 **Optimistic updates:** balance totals are written to local state immediately on transaction save; Supabase confirms in the background. No Realtime subscription is needed for the happy path.
 
-**Offline support:** a service worker caches the shell so previously visited pages load without a network. Write operations are not queued offline.
+**Offline support:** a service worker caches the shell so previously visited pages load without a network. The app also restores the last successful snapshots for wallets, reminders, debts, and range-based transaction lists from local storage to make relaunches faster and keep recent data visible while offline. Write operations are not queued offline.
 
 ---
 

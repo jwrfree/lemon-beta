@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
+import { getOfflineCacheKey, readOfflineSnapshot, writeOfflineSnapshot } from '@/lib/offline-cache';
 import type { Transaction, TransactionRow } from '@/types/models';
 import { format, endOfDay } from 'date-fns';
 import { transactionEvents } from '@/lib/transaction-events';
@@ -13,14 +14,19 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
 
     const startStr = format(startDate, 'yyyy-MM-dd');
     const endStr = format(endOfDay(endDate), 'yyyy-MM-dd HH:mm:ss');
+    const cacheKey = user ? getOfflineCacheKey('transactions-range', user.id, startStr, endStr) : null;
+    const cachedTransactions = cacheKey
+        ? readOfflineSnapshot<Transaction[]>(cacheKey)
+        : undefined;
+    const queryKey = ['transactions', 'range', user?.id, startStr, endStr] as const;
 
     const {
         data: transactions = [],
         isLoading: isTxLoading,
         refetch
-    } = useQuery({
-        queryKey: ['transactions', 'range', user?.id, startStr, endStr],
-        queryFn: async () => {
+    } = useQuery<Transaction[]>({
+        queryKey,
+        queryFn: async (): Promise<Transaction[]> => {
             const { data, error } = await supabase
                 .from('transactions')
                 .select('*')
@@ -32,7 +38,7 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
 
             if (error) throw error;
 
-            return (data as TransactionRow[]).map((t) => ({
+            const mappedTransactions = (data as TransactionRow[]).map((t) => ({
                 id: t.id,
                 amount: t.amount,
                 category: t.category,
@@ -48,9 +54,16 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
                 merchant: (t as any).merchant || undefined,
                 linkedDebtId: (t as any).linked_debt_id || undefined,
             }));
+
+            if (cacheKey) {
+                writeOfflineSnapshot(cacheKey, mappedTransactions);
+            }
+
+            return mappedTransactions;
         },
         enabled: !!user && !isNaN(startDate.getTime()) && !isNaN(endDate.getTime()),
         staleTime: 1 * 60 * 1000,
+        ...(cachedTransactions ? { initialData: cachedTransactions } : {}),
     });
 
     useEffect(() => {
