@@ -1,0 +1,32 @@
+import {
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  type UIMessage,
+} from "ai";
+
+export const createTextMessageResponse = (messages: UIMessage[], text: string) => {
+  const textId = crypto.randomUUID();
+
+  return createUIMessageStreamResponse({
+    stream: createUIMessageStream({
+      originalMessages: messages,
+      execute: ({ writer }) => {
+        writer.write({ type: "text-start", id: textId });
+        writer.write({ type: "text-delta", id: textId, delta: text });
+        writer.write({ type: "text-end", id: textId });
+      },
+    }),
+  });
+};
+
+export const getMessageText = (message?: UIMessage) =>
+  message?.parts
+    .filter((part): part is Extract<UIMessage["parts"][number], { type: "text" }> => part.type === "text")
+    .map((part) => part.text)
+    .join(" ")
+    .trim() ?? "";
+
+export const getLastUserMessageText = (messages: UIMessage[]) =>
+  getMessageText(
+    [...messages].reverse().find((message) => message.role === "user")
+  );

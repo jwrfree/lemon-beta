@@ -26,6 +26,8 @@ AI pipeline
     └── orchestrated with Genkit flows (src/ai/flows)
 ```
 
+Lemon Coach chat orchestration now runs through a thin `/api/chat` route into `src/ai/router.ts`, `src/ai/planner.ts`, and action handlers in `src/ai/actions/`, so auth/rate limiting stay at the edge while routing and execution logic live in dedicated modules.
+
 **Optimistic updates:** balance totals are written to local state immediately on transaction save; Supabase confirms in the background. No Realtime subscription is needed for the happy path.
 
 **Offline support:** a service worker caches the shell so previously visited pages load without a network. The app also restores the last successful snapshots for wallets, reminders, debts, and range-based transaction lists from local storage to make relaunches faster and keep recent data visible while offline. Write operations are not queued offline.

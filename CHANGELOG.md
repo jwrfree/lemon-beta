@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **AI chat orchestration boundaries**
+  - Split Lemon Coach chat routing out of the monolithic `/api/chat` handler into dedicated router, planner, and action modules so the route stays thin while preserving the existing response behavior.
 - **AI chat test coverage**
   - Added route-level coverage for Lemon Coach auth, rate limiting, and deterministic replies, plus parser coverage for rich render tags so the current hybrid renderer is locked in before Phase 2 refactors.
 - **DeepSeek key validation**
