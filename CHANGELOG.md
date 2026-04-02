@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **AI chat test coverage**
+  - Added route-level coverage for Lemon Coach auth, rate limiting, and deterministic replies, plus parser coverage for rich render tags so the current hybrid renderer is locked in before Phase 2 refactors.
 - **DeepSeek key validation**
   - Added explicit DeepSeek API key guards to Lemon Coach chat and Smart Add extraction so missing configuration now fails with a clear error instead of falling through to ambiguous runtime behavior.
 - **Recent transactions chat card**

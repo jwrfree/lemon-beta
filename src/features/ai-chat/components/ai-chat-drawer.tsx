@@ -80,20 +80,12 @@ const getMessageText = (message: UIMessage) =>
         .map((part) => part.text)
         .join('');
 
-const RichMessageContent = ({ text }: { text: string }) => {
-    if (!text) return null;
-
-    const components: Record<string, (data?: any) => React.ReactNode> = {
-        'BudgetStatus': () => <BudgetStatusCard />,
-        'WealthSummary': () => <WealthSummaryCard />,
-        'RecentTransactions': () => <RecentTransactionsList />,
-        'ScenarioSimulation': (data) => <ScenarioSimulationCard data={data} />,
-        'SubscriptionAnalysis': (data) => <SubscriptionAnalysisCard data={data} />,
-        'FinancialHealth': (data) => <FinancialHealthCard data={data} />,
-    };
+export const parseRichMessageParts = (text: string): string[] => {
+    if (!text) return [];
 
     const parts: string[] = [];
     let remaining = text;
+
     while (remaining.length > 0) {
         const matchIndex = remaining.indexOf('[RENDER_COMPONENT:');
         if (matchIndex === -1) {
@@ -116,16 +108,32 @@ const RichMessageContent = ({ text }: { text: string }) => {
                 }
             }
         }
-        
+
         if (tagEnd !== -1) {
             parts.push(remaining.substring(tagStart, tagEnd + 1));
             remaining = remaining.substring(tagEnd + 1);
         } else {
-            // Unclosed tag fallback
             parts.push(remaining.substring(tagStart));
             break;
         }
     }
+
+    return parts;
+};
+
+export const RichMessageContent = ({ text }: { text: string }) => {
+    if (!text) return null;
+
+    const components: Record<string, (data?: any) => React.ReactNode> = {
+        'BudgetStatus': () => <BudgetStatusCard />,
+        'WealthSummary': () => <WealthSummaryCard />,
+        'RecentTransactions': () => <RecentTransactionsList />,
+        'ScenarioSimulation': (data) => <ScenarioSimulationCard data={data} />,
+        'SubscriptionAnalysis': (data) => <SubscriptionAnalysisCard data={data} />,
+        'FinancialHealth': (data) => <FinancialHealthCard data={data} />,
+    };
+
+    const parts = parseRichMessageParts(text);
 
     return (
         <>
