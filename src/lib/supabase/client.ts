@@ -32,7 +32,6 @@ export const createClient = () => {
 
   try {
     supabase = createBrowserClient(url, key)
-    console.log('Supabase client created successfully')
     return supabase
   } catch (error) {
     console.error('Failed to create Supabase client:', error)

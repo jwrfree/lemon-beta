@@ -22,6 +22,7 @@ import { financialContextService } from "@/lib/services/financial-context-servic
 import { normalizeTransactionTimestamp } from "@/lib/utils/transaction-timestamp";
 import { formatCurrency } from "@/lib/utils";
 import { categories } from "@/lib/categories";
+import { createTransactionWithClient } from "@/features/transactions/services/transaction.service";
 
 const deepseek = createDeepSeek({
   apiKey: config.ai.deepseek.apiKey,
@@ -32,25 +33,31 @@ export const maxDuration = 30;
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
-const consumeRateLimit = (userId: string) => {
-  const now = Date.now();
-  const existing = rateLimitStore.get(userId);
+const consumeRateLimit = async (
+  userId: string,
+  supabase: Awaited<ReturnType<typeof createClient>>,
+) => {
+  const { data, error } = await supabase.rpc("consume_rate_limit", {
+    p_user_id: userId,
+    p_max_requests: RATE_LIMIT_MAX_REQUESTS,
+    p_window_ms: RATE_LIMIT_WINDOW_MS,
+  });
 
-  if (!existing || existing.resetAt <= now) {
-    const next = { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS };
-    rateLimitStore.set(userId, next);
-    return { allowed: true as const };
+  if (error) {
+    console.error("[AI Chat] Rate limit RPC failed:", error);
+    return { allowed: true as const, degraded: true as const };
   }
 
-  if (existing.count >= RATE_LIMIT_MAX_REQUESTS) {
-    return { allowed: false as const, resetAt: existing.resetAt };
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) {
+    return { allowed: true as const, degraded: true as const };
   }
 
-  existing.count += 1;
-  rateLimitStore.set(userId, existing);
-  return { allowed: true as const };
+  return {
+    allowed: Boolean(row.allowed) as boolean,
+    resetAt: row.reset_at ? new Date(row.reset_at).getTime() : undefined,
+  };
 };
 
 const getMessageText = (message?: UIMessage) =>
@@ -106,7 +113,6 @@ const resolveWalletId = (wallets: WalletOption[], requestedWallet?: string | nul
 export async function POST(req: Request) {
   try {
     const { messages }: { messages: UIMessage[] } = await req.json();
-    console.log('[AI Chat] Received request:', messages?.length || 0, 'messages');
     if (!messages || !Array.isArray(messages)) {
       return Response.json({ error: "Payload chat tidak valid." }, { status: 400 });
     }
@@ -118,7 +124,7 @@ export async function POST(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const rateLimit = consumeRateLimit(user.id);
+    const rateLimit = await consumeRateLimit(user.id, supabase);
     if (!rateLimit.allowed) {
       return Response.json(
         { error: "Terlalu banyak permintaan. Tunggu sebentar." },
@@ -135,12 +141,10 @@ export async function POST(req: Request) {
       const staticReply = buildStaticChatReply(intent);
 
       if (staticReply) {
-        console.log('[AI Chat] Returning static reply directly for intent:', intent.kind);
         return createTextMessageResponse(messages, staticReply);
       }
 
       if (intent.kind === "transaction-search") {
-        console.log('[AI Chat] Checking specific transaction query for:', intent.query);
         const matchedTransaction = await financialContextService.findLatestTransactionByQuery(
           user.id,
           intent.query,
@@ -151,13 +155,10 @@ export async function POST(req: Request) {
           ? `Terakhir ada transaksi yang cocok dengan **${intent.query}** pada **${new Date(matchedTransaction.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}**, yaitu **${matchedTransaction.description}** sebesar **${formatCurrency(matchedTransaction.amount)}**.${matchedTransaction.merchant ? ` Merchant-nya **${matchedTransaction.merchant}**.` : ''}`
           : `Saya belum menemukan transaksi yang cocok dengan **${intent.query}** di data kamu. Kalau nama merchant atau deskripsinya sedikit beda, coba sebut kata kunci lain ya.`;
 
-        console.log('[AI Chat] Returning specific transaction reply directly.');
         return createTextMessageResponse(messages, specificReply);
       }
 
       if (intent.kind === "add-transaction") {
-        console.log('[AI Chat] Parsing transaction capture request.');
-
         const [{ data: wallets, error: walletsError }, recentTransactions] = await Promise.all([
           supabase
             .from('wallets')
@@ -217,20 +218,19 @@ export async function POST(req: Request) {
             return createTextMessageResponse(messages, 'Saya belum bisa menentukan dompet untuk transaksi ini. Coba sebut dompetnya, misalnya `pakai BCA` atau `pakai GoPay`.');
           }
 
-          const { error: createError } = await supabase.rpc('create_transaction_v1', {
-            p_user_id: user.id,
-            p_wallet_id: walletId,
-            p_amount: transaction.amount,
-            p_category: transaction.category || 'Biaya Lain-lain',
-            p_sub_category: transaction.subCategory || null,
-            p_date: normalizeTransactionTimestamp(transaction.date),
-            p_description: transaction.description || 'Transaksi Baru',
-            p_type: transaction.type || 'expense',
-            p_is_need: transaction.isNeed ?? true,
+          const result = await createTransactionWithClient(supabase, user.id, {
+            type: transaction.type || 'expense',
+            amount: transaction.amount,
+            category: transaction.category || 'Biaya Lain-lain',
+            subCategory: transaction.subCategory || '',
+            date: new Date(normalizeTransactionTimestamp(transaction.date)),
+            description: transaction.description || 'Transaksi Baru',
+            walletId,
+            location: '',
+            isNeed: transaction.isNeed ?? true,
           });
 
-          if (createError) {
-            console.error('[AI Chat] Failed to create transaction from chat:', createError);
+          if (result.error) {
             return createTextMessageResponse(messages, 'Saya paham detail transaksinya, tapi gagal menyimpannya. Coba lagi sebentar ya.');
           }
 
@@ -246,7 +246,6 @@ export async function POST(req: Request) {
       }
 
       if (intent.kind === "recent-transactions") {
-        console.log('[AI Chat] Fetching recent transactions directly.');
         const recentTransactions = await financialContextService.getRecentTransactions(user.id, supabase, 3);
 
         if (recentTransactions.length > 0) {
@@ -263,25 +262,17 @@ export async function POST(req: Request) {
           ].join('\n');
           return createTextMessageResponse(messages, recentReply);
         }
-        
-        console.log('[AI Chat] No recent transactions found directly, falling back to LLM for smarter response.');
       }
 
       if (intentNeedsUnifiedContext(intent)) {
-        console.log('[AI Chat] Fetching unified context for deterministic intent:', intent.kind);
-        const startContext = Date.now();
         const context = await financialContextService.getUnifiedContext(user.id, supabase);
-        console.log('[AI Chat] Context fetched in', Date.now() - startContext, 'ms');
 
         const deterministicReply = tryBuildDeterministicChatReply(lastUserMessage, context, intent);
         if (deterministicReply) {
-          console.log('[AI Chat] Returning deterministic reply directly.');
           return createTextMessageResponse(messages, deterministicReply);
         }
       }
     }
-
-    console.log('[AI Chat] Proceeding to standard streamText...');
 
     const result = streamText({
       model: deepseek("deepseek-chat"),
@@ -289,9 +280,6 @@ export async function POST(req: Request) {
       messages: await convertToModelMessages(messages),
       tools: createFinancialTools(user.id, supabase),
       stopWhen: stepCountIs(5),
-      onFinish: ({ usage }) => {
-        console.log('[AI Chat] Token Usage:', usage);
-      }
     });
 
     return result.toUIMessageStreamResponse();

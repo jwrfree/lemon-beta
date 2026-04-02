@@ -11,11 +11,50 @@ import type {
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/types';
-import { useRouter } from 'next/navigation';
+
+type BiometricIdentity = {
+  userId?: string | null;
+  email?: string | null;
+};
+
+const BIOMETRIC_STORAGE_KEY = 'lemon_biometric_user';
+
+const getStoredBiometricIdentity = (): BiometricIdentity | null => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const raw = window.localStorage.getItem(BIOMETRIC_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as BiometricIdentity;
+    if (!parsed?.userId && !parsed?.email) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const storeBiometricIdentity = (identity: BiometricIdentity) => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(BIOMETRIC_STORAGE_KEY, JSON.stringify(identity));
+};
+
+const clearStoredBiometricIdentity = (userId?: string) => {
+  if (typeof window === 'undefined') return;
+
+  if (!userId) {
+    window.localStorage.removeItem(BIOMETRIC_STORAGE_KEY);
+    return;
+  }
+
+  const stored = getStoredBiometricIdentity();
+  if (stored?.userId === userId) {
+    window.localStorage.removeItem(BIOMETRIC_STORAGE_KEY);
+  }
+};
 
 export const useBiometric = () => {
   const [isBiometricSupported, setIsBiometricSupported] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const checkSupport = async () => {
@@ -66,6 +105,8 @@ export const useBiometric = () => {
           );
         }
 
+        storeBiometricIdentity({ userId, email: userEmail });
+
         return true;
       } catch (error) {
         console.error('Biometric registration failed:', error);
@@ -75,13 +116,30 @@ export const useBiometric = () => {
     [],
   );
 
-  const signInWithBiometric = useCallback(async (userEmail: string) => {
+  const signInWithBiometric = useCallback(async (identity: string | BiometricIdentity) => {
     try {
+      const storedIdentity = getStoredBiometricIdentity();
+      const nextIdentity: BiometricIdentity =
+        typeof identity === 'string'
+          ? {
+              email: identity,
+              userId:
+                storedIdentity?.email === identity ? storedIdentity.userId : undefined,
+            }
+          : {
+              userId: identity.userId ?? storedIdentity?.userId,
+              email: identity.email ?? storedIdentity?.email,
+            };
+
+      if (!nextIdentity.userId && !nextIdentity.email) {
+        throw new Error('Biometric sign-in is not configured on this device.');
+      }
+
       // 1. Get challenge from server
       const challengeRes = await fetch('/api/biometric/login-challenge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: userEmail }),
+        body: JSON.stringify(nextIdentity),
       });
       if (!challengeRes.ok) throw new Error('Could not get login challenge.');
 
@@ -96,7 +154,7 @@ export const useBiometric = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: userEmail,
+          ...nextIdentity,
           assertion,
         }),
       });
@@ -130,6 +188,7 @@ export const useBiometric = () => {
       if (!response.ok) {
         throw new Error('Failed to unregister biometric on server.');
       }
+      clearStoredBiometricIdentity(userId);
       return true;
     } catch (error) {
       console.error('Biometric unregistration failed:', error);

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
+import { getCurrentDate, getPreviousMonthStartDate, getStartOfMonthDate } from '@/lib/utils/current-date';
 
 export interface UnifiedFinancialContext {
     wealth: {
@@ -168,10 +169,7 @@ const normalizeSearchText = (value: string) =>
         .trim();
 
 const monthRange = () => {
-    const start = new Date();
-    start.setDate(1);
-    start.setHours(0, 0, 0, 0);
-
+    const start = getStartOfMonthDate();
     const end = new Date(start);
     end.setMonth(end.getMonth() + 1);
 
@@ -183,11 +181,7 @@ const monthRange = () => {
 };
 
 const previousMonthRange = () => {
-    const start = new Date();
-    start.setMonth(start.getMonth() - 1);
-    start.setDate(1);
-    start.setHours(0, 0, 0, 0);
-
+    const start = getPreviousMonthStartDate();
     const end = new Date(start);
     end.setMonth(end.getMonth() + 1);
 
@@ -305,6 +299,28 @@ class FinancialContextService {
             code: error.code,
             hint: error.hint,
             details: error.details,
+        });
+    }
+
+    private logContextResolution(
+        path: 'rpc' | 'fallback',
+        startedAt: number,
+        error?: RpcErrorLike | Error | null,
+    ) {
+        const durationMs = Date.now() - startedAt;
+        if (error) {
+            console.warn('[FinancialContextService] Unified context resolution:', {
+                path,
+                durationMs,
+                errorClass: error.constructor?.name || 'UnknownError',
+                errorMessage: 'message' in error ? error.message : undefined,
+            });
+            return;
+        }
+
+        console.info('[FinancialContextService] Unified context resolution:', {
+            path,
+            durationMs,
         });
     }
 
@@ -437,7 +453,7 @@ class FinancialContextService {
     }
 
     private buildFallbackRisk(monthly: UnifiedFinancialContext['monthly'], cashBalance: number): UnifiedFinancialContext['risk'] {
-        const burnRate = monthly.expense > 0 ? monthly.expense / Math.max(new Date().getDate(), 1) : 0;
+        const burnRate = monthly.expense > 0 ? monthly.expense / Math.max(getCurrentDate().getDate(), 1) : 0;
         const survivalDays = burnRate > 0 ? Math.round(cashBalance / Math.max(burnRate, 1)) : 999;
 
         let score = 0;
@@ -607,7 +623,7 @@ class FinancialContextService {
             .sort((left, right) => toNumber(right.amount) - toNumber(left.amount))[0];
 
         // Weekly expense (last 7 days)
-        const sevenDaysAgo = new Date();
+        const sevenDaysAgo = getCurrentDate();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
         const weeklyExpense = expenseTransactions
             .filter(t => new Date(t.date) >= sevenDaysAgo)
@@ -670,7 +686,7 @@ class FinancialContextService {
             },
             spending_pattern: {
                 busiest_day: busiestDay,
-                average_daily_spend: monthlyExpense / Math.max(new Date().getDate(), 1),
+                average_daily_spend: monthlyExpense / Math.max(getCurrentDate().getDate(), 1),
                 weekly_expense: weeklyExpense,
                 last_expense_date: lastExpense?.date || null,
             },
@@ -691,17 +707,14 @@ class FinancialContextService {
         client?: ContextClient
     ): Promise<UnifiedFinancialContext | null> {
         const supabase = client ?? createClient();
-        const directContext = await this.getFallbackContext(userId, supabase);
-
-        if (directContext) {
-            return directContext;
-        }
+        const startedAt = Date.now();
 
         const { data, error } = await supabase.rpc('get_unified_context', {
             p_user_id: userId,
         });
 
         if (!error && data) {
+            this.logContextResolution('rpc', startedAt);
             return normalizeContext(data as Partial<UnifiedFinancialContext>);
         }
 
@@ -709,7 +722,9 @@ class FinancialContextService {
             this.logRpcError(error);
         }
 
-        return this.getFallbackContext(userId, supabase);
+        const fallbackContext = await this.getFallbackContext(userId, supabase);
+        this.logContextResolution('fallback', startedAt, error ?? null);
+        return fallbackContext;
     }
 }
 

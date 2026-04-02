@@ -5,6 +5,10 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Added
+- **Runtime Date Helper**
+  - Added `src/lib/utils/current-date.ts` as a shared helper for production date calculations to remove hardcoded fixture dates from runtime flows.
+- **Architecture Remediation Tests**
+  - Added focused tests for atomic transaction helpers and unified financial context resolution to lock in the new correctness paths.
 - **Premium Shadow Tokens**
   - Added Design System shadow tokens: `shadow-soft`, `shadow-premium`, and `shadow-button` to `tailwind.config.ts`.
   - Migrated arbitrary shadow values in `TransactionListItem` and `TransactionList` to these standardized tokens.
@@ -14,6 +18,16 @@ All updates and improvements to the Lemon app will be documented here.
   - Strengthened RLS for 6 major tables using the optimized `(SELECT auth.uid())` pattern for 10x+ performance gains on large datasets.
 
 ### Changed
+- **Production Correctness Hardening**
+  - Replaced hardcoded dashboard reference dates with runtime date resolution so home summaries, reminder windows, and debt notifications now follow the actual current date.
+  - Switched Lemon Coach chat rate limiting from per-instance in-memory state to the existing database-backed `consume_rate_limit` RPC for deployment-safe enforcement.
+  - Consolidated transaction mutations behind shared atomic helpers so UI and chat now use the same RPC-backed create, update, and delete paths.
+- **Unified Financial Context Source of Truth**
+  - Updated `financialContextService` to prefer the `get_unified_context` RPC first and fall back to direct query aggregation only when RPC resolution fails.
+  - Added light observability around context resolution to record whether `rpc` or `fallback` was used and how long it took.
+- **Biometric Sign-In Hardening**
+  - Hardened passkey sign-in lookup to prefer `userId`, keep email as a compatibility fallback, and avoid leaking account existence details through distinct error messages.
+  - Preserved the current magic-link session bridge after successful WebAuthn verification for minimal-risk rollout while tightening identity resolution.
 - **Modular Merchant Identity Hook**
   - Refactored `TransactionListItem` to use a new `useMerchantIdentity` hook, extracting complex merchant identification, fallback branding, and Visual DNA logic from the UI layer.
 - **SARGable Database Views**
@@ -29,6 +43,10 @@ All updates and improvements to the Lemon app will be documented here.
   - Changed expense amount presentation in key transaction surfaces from strong destructive coloring to neutral foreground styling while keeping income visually distinct.
 
 ### Fixed
+- **Chat/Data Integrity Drift**
+  - Fixed Lemon Coach transaction update/delete paths so they no longer bypass the atomic RPCs used by the main app, preventing wallet balance and derived-data drift.
+- **Runtime Debug Noise**
+  - Removed noisy middleware and Supabase client debug logging from sensitive runtime paths to keep operational logs cleaner.
 - **Lemon Coach Chat Reliability**
   - Fixed direct transaction capture regressions introduced during routing redesign, including better wallet fallback handling and safer timestamp normalization when models return date-only values.
   - Fixed recent transaction ordering edge cases by sorting with both `date` and `created_at`, ensuring the newest mutation appears at the top.

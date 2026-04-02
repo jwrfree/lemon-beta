@@ -37,6 +37,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PullToRefresh } from '@/components/pull-to-refresh';
 import { config } from '@/lib/config';
 import { PageHeader } from '@/components/page-header';
+import { getCurrentDate } from '@/lib/utils/current-date';
 
 export default function HomePage() {
     const homeUi = config.ui?.home;
@@ -47,8 +48,7 @@ export default function HomePage() {
 
     const { wallets, isLoading: isWalletsLoading } = useWallets();
 
-    // Fix: Global stable reference date for Q1 2026 data
-    const now = useMemo(() => new Date('2026-03-31'), []);
+    const now = getCurrentDate();
     const oneYearAgo = useMemo(() => subMonths(now, 12), [now]);
     const { transactions, isLoading: isTransactionsLoading } = useRangeTransactions(oneYearAgo, now);
 
@@ -65,7 +65,7 @@ export default function HomePage() {
     const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.balance, 0);
 
     const upcomingReminders = useMemo(() => {
-        const nowDate = new Date('2026-03-31');
+        const nowDate = getCurrentDate();
         return reminders
             .filter((reminder: Reminder) => {
                 if (reminder.status === 'completed' || !reminder.dueDate) return false;
@@ -127,7 +127,7 @@ export default function HomePage() {
             if (!('Notification' in window)) return;
 
             if (Notification.permission === 'granted') {
-                const today = new Date('2026-03-31');
+                const today = getCurrentDate();
                 const dueDebts = debts.filter(d => {
                     if (!d.dueDate || d.status === 'settled') return false;
                     const diff = differenceInCalendarDays(parseISO(d.dueDate), today);

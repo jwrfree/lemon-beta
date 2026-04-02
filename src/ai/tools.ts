@@ -3,6 +3,13 @@ import { z } from 'zod';
 import { financialContextService } from '@/lib/services/financial-context-service';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { UnifiedFinancialContext } from '@/lib/services/financial-context-service';
+import {
+  deleteTransactionWithClient,
+  getTransactionRowById,
+  mapTransactionRowToUnifiedValues,
+  updateTransactionWithClient,
+} from '@/features/transactions/services/transaction.service';
+import { getCurrentDate } from '@/lib/utils/current-date';
 
 type FinancialToolClient = Pick<SupabaseClient, 'from' | 'rpc'>;
 
@@ -34,8 +41,9 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         const context = await getContext();
         if (!context) return [];
 
-        const dayOfMonth = new Date().getDate();
-        const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+        const now = getCurrentDate();
+        const dayOfMonth = now.getDate();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
         return context.budgets.map(b => {
           const dailySpend = b.spent / Math.max(dayOfMonth, 1);
@@ -168,16 +176,41 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         }),
       }),
       execute: async ({ transaction_id, updates }) => {
-        const { data, error } = await supabase
-          .from('transactions')
-          .update(updates)
-          .eq('id', transaction_id)
-          .eq('user_id', userId)
-          .select()
-          .single();
+        const existingTransaction = await getTransactionRowById(
+          supabase,
+          userId,
+          transaction_id,
+        );
 
-        if (error) return { success: false, error: error.message };
-        return { success: true, transaction: data };
+        if (!existingTransaction.data) {
+          return {
+            success: false,
+            error: existingTransaction.error || 'Transaksi tidak ditemukan.',
+          };
+        }
+
+        const nextValues = mapTransactionRowToUnifiedValues(existingTransaction.data);
+
+        if (typeof updates.amount === 'number') nextValues.amount = updates.amount;
+        if (typeof updates.category === 'string') nextValues.category = updates.category;
+        if (typeof updates.description === 'string') nextValues.description = updates.description;
+        if (typeof updates.date === 'string') {
+          const parsedDate = new Date(updates.date);
+          if (Number.isNaN(parsedDate.getTime())) {
+            return { success: false, error: 'Tanggal transaksi tidak valid.' };
+          }
+          nextValues.date = parsedDate;
+        }
+
+        const result = await updateTransactionWithClient(
+          supabase,
+          userId,
+          transaction_id,
+          nextValues,
+        );
+
+        if (result.error) return { success: false, error: result.error };
+        return { success: true };
       },
     }),
 
@@ -187,13 +220,13 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         transaction_id: z.string().uuid(),
       }),
       execute: async ({ transaction_id }) => {
-        const { error } = await supabase
-          .from('transactions')
-          .delete()
-          .eq('id', transaction_id)
-          .eq('user_id', userId);
+        const result = await deleteTransactionWithClient(
+          supabase,
+          userId,
+          transaction_id,
+        );
 
-        if (error) return { success: false, error: error.message };
+        if (result.error) return { success: false, error: result.error };
         return { success: true };
       },
     }),
@@ -221,12 +254,39 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         });
 
         const subscriptions = Object.entries(groups)
-          .filter(([_, txs]) => txs.length >= 2) // Appears at least twice
+          .filter(([_, txs]) => {
+            if (txs.length < 2) return false;
+            
+            // Sort ascending by date to calculate intervals
+            const sortedTxs = [...txs].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            
+            // Check amount consistency (max 30% variance from minimum)
+            const amounts = sortedTxs.map(t => t.amount);
+            const maxAmt = Math.max(...amounts);
+            const minAmt = Math.min(...amounts);
+            if (minAmt > 0 && maxAmt > minAmt * 1.3) return false;
+
+            // Check time interval consistency
+            const intervalsDays = [];
+            for (let i = 1; i < sortedTxs.length; i++) {
+              const diffMs = new Date(sortedTxs[i].date).getTime() - new Date(sortedTxs[i-1].date).getTime();
+              intervalsDays.push(diffMs / (1000 * 60 * 60 * 24));
+            }
+            
+            const avgInterval = intervalsDays.reduce((a, b) => a + b, 0) / intervalsDays.length;
+            
+            // Allow weekly (~7), monthly (~30), or yearly (~365) with some margin
+            const isWeekly = avgInterval >= 5 && avgInterval <= 9;
+            const isMonthly = avgInterval >= 25 && avgInterval <= 35;
+            const isYearly = avgInterval >= 350 && avgInterval <= 380;
+            
+            return isWeekly || isMonthly || isYearly;
+          })
           .map(([name, txs]) => ({
             name,
             count: txs.length,
             average_amount: txs.reduce((s, t) => s + t.amount, 0) / txs.length,
-            last_date: txs[0].date
+            last_date: txs[0].date // The original txs array was already sorted descending
           }))
           .sort((a, b) => b.average_amount - a.average_amount);
 

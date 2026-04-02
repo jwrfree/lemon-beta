@@ -8,6 +8,7 @@ import { config } from '@/lib/config';
 
 const RP_ID = config.auth.rpId;
 const ORIGIN = config.auth.origin;
+const BIOMETRIC_SIGN_IN_UNAVAILABLE = 'Biometric sign-in unavailable.';
 
 function base64UrlToBuffer(base64urlString: string): Buffer {
   const base64 = base64urlString.replace(/-/g, '+').replace(/_/g, '/');
@@ -16,43 +17,56 @@ function base64UrlToBuffer(base64urlString: string): Buffer {
   return Buffer.from(padded, 'base64');
 }
 
+const getProfileForBiometricVerification = async (
+  supabase: ReturnType<typeof createAdminClient>,
+  identity: { userId?: string | null; email?: string | null },
+) => {
+  if (identity.userId) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', identity.userId)
+      .maybeSingle();
+
+    if (data) return data;
+  }
+
+  if (identity.email) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('email', identity.email)
+      .maybeSingle();
+
+    if (data) return data;
+  }
+
+  return null;
+};
+
 export async function POST(req: NextRequest) {
   try {
-    const { email, assertion } = await req.json();
+    const { userId, email, assertion } = await req.json();
 
-    if (!email || !assertion) {
+    if ((!userId && !email) || !assertion) {
       return NextResponse.json(
-        { message: 'Missing email or assertion.' },
+        { message: 'Biometric sign-in request is invalid.' },
         { status: 400 },
       );
     }
 
     const supabase = createAdminClient();
-
-    // Fetch user profile from Supabase
-    // We assume email is unique in profiles or we match auth.users
-    // Better to query profiles table. 
-    // BUT profiles might not have email indexed unique if not careful? 
-    // Let's assume we maintain email in profiles.
-    
-    const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('email', email)
-        .single();
-
-    if (profileError || !profile) {
-      return NextResponse.json({ message: 'User not found.' }, { status: 404 });
-    }
+    const profile = await getProfileForBiometricVerification(supabase, { userId, email });
 
     if (
+      !profile ||
       !profile.biometric_credential_id ||
       !profile.biometric_credential_public_key ||
       !profile.login_challenge
     ) {
       return NextResponse.json(
-        { message: 'Biometric login not set up or no challenge found.' },
-        { status: 400 },
+        { message: BIOMETRIC_SIGN_IN_UNAVAILABLE },
+        { status: 401 },
       );
     }
 
@@ -74,7 +88,7 @@ export async function POST(req: NextRequest) {
 
     if (!verification.verified || !verification.authenticationInfo) {
       return NextResponse.json(
-        { message: 'Biometric authentication failed.' },
+        { message: BIOMETRIC_SIGN_IN_UNAVAILABLE },
         { status: 401 },
       );
     }
@@ -88,11 +102,18 @@ export async function POST(req: NextRequest) {
         is_biometric_enabled: true
     }).eq('id', profile.id);
 
-    // Generate Session via Magic Link
-    // We generate a link and send it back to the client to "auto-click" or redirect
+    if (!profile.email) {
+      return NextResponse.json(
+        { message: BIOMETRIC_SIGN_IN_UNAVAILABLE },
+        { status: 401 },
+      );
+    }
+
+    // Keep the existing post-verification bridge to a Supabase session.
+    // The session is still granted only after a successful WebAuthn verification above.
     const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
         type: 'magiclink',
-        email: email,
+        email: profile.email,
     });
 
     if (linkError || !linkData.properties?.action_link) {
@@ -103,7 +124,7 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error('Biometric verification error:', error);
     return NextResponse.json(
-      { message: error instanceof Error ? error.message : 'Failed to verify biometric login.' },
+      { message: BIOMETRIC_SIGN_IN_UNAVAILABLE },
       { status: 500 },
     );
   }

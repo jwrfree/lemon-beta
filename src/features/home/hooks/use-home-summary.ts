@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
 import { isSameMonth, parseISO, subMonths } from 'date-fns';
 import type { Transaction } from '@/types/models';
+import { getCurrentDate } from '@/lib/utils/current-date';
 
 export const useHomeSummary = (transactions: Transaction[]) => {
     return useMemo(() => {
-        // Fix: Use a stable reference date for the current "now" in the app context
-        // Since the actual project data (based on DB dump) is concentrated in Q1 2026
-        const now = new Date('2026-03-31');
+        const now = getCurrentDate();
         const lastMonth = subMonths(now, 1);
 
         const currentMonthTransactions = transactions.filter(t => isSameMonth(parseISO(t.date), now) && t.category !== 'Transfer');
