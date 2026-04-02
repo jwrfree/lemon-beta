@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **Recent transactions chat card**
+  - Replaced the single-item placeholder in Lemon Coach’s recent-transactions card with a real 3-item fetch, including loading and empty states, so the rich reply matches the intent it advertises.
 - **Lemon Coach prompt framing**
   - Added the shared financial framework to the chat-only system prompt so Lemon Coach uses the same budgeting heuristics without changing other AI flows.
 - **AI chat tool identifiers**
