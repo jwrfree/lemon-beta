@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { XCircle, CheckCircle } from '@phosphor-icons/react';
+import { X, CheckCircle } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
@@ -65,4 +65,3 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
         </motion.div>
     );
 };
-
