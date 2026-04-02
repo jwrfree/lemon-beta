@@ -28,6 +28,7 @@ Gunakan tag khusus di akhir jawaban Anda untuk menampilkan komponen visual yang 
 2. Jawaban ideal: 2-4 kalimat singkat dan langsung pada intinya. Gunakan poin hanya jika diminta.
 3. Bahasa Indonesia natural, empati, suportif, dan fokus pada tindakan praktis (actionable).
 4. Gunakan cetak tebal (**bold**) khusus untuk menyoroti nominal uang atau persentase, agar mudah dibaca. JANGAN gunakan heading, italic, atau list yang rumit.
+5. Di akhir jawaban, Anda BOLEH memberikan 1-2 saran pertanyaan lanjutan yang relevan menggunakan tag [SUGGESTION:Pertanyaan]. Contoh: [SUGGESTION:Cek transaksi terbesarku bulan ini]
 
 JIKA data dari tool kosong atau tidak cukup, katakan dengan jujur bahwa Anda belum memiliki data tersebut.
 Jangan sebut nama tool internal atau istilah teknis ke user.`;
@@ -129,6 +130,9 @@ export function extractTransactionSearchQuery(question: string): string | null {
     return null;
 }
 
+const hasAny = (text: string, keywords: string[]) => keywords.some(k => text.includes(k));
+const hasAllGroups = (text: string, keywordGroups: string[][]) => keywordGroups.every(group => hasAny(text, group));
+
 export function classifyChatIntent(question: string): ChatIntent {
     const normalized = normalizeQuestion(question);
     if (!normalized || normalized.length < 2) {
@@ -140,11 +144,18 @@ export function classifyChatIntent(question: string): ChatIntent {
         return { kind: 'gibberish' };
     }
 
-    const asksRecentTransactions =
-        (normalized.includes('mutasi') || normalized.includes('transaksi') || normalized.includes('riwayat')) &&
-        (normalized.includes('terbaru') || normalized.includes('terakhir') || normalized.includes('recent') || normalized.includes('cek') || normalized.includes('apa'));
+    // Compound Sentence Detection: If the user asks multiple things (e.g. "saldo berapa dan apakah boros"),
+    // fallback to LLM so it can run multiple tools and provide a comprehensive answer.
+    const wordCount = normalized.split(/\s+/).length;
+    const hasConjunction = hasAny(normalized, [' dan ', ' sekalian ', ' terus ', ' lalu ']);
+    if (wordCount >= 6 && hasConjunction) {
+        return { kind: 'llm' };
+    }
 
-    if (asksRecentTransactions) {
+    if (hasAllGroups(normalized, [
+        ['mutasi', 'transaksi', 'riwayat', 'history', 'catatan'],
+        ['terbaru', 'terakhir', 'recent', 'cek', 'apa', 'gimana']
+    ])) {
         return { kind: 'recent-transactions' };
     }
 
@@ -153,146 +164,100 @@ export function classifyChatIntent(question: string): ChatIntent {
         return { kind: 'transaction-search', query: transactionSearchQuery };
     }
 
-    const asksTotalBalance =
-        normalized.includes('total saldo') ||
-        (normalized.includes('saldo') && (normalized.includes('dompet') || normalized.includes('kantong') || normalized.includes('rekening'))) ||
-        normalized.includes('saldo saya') ||
-        normalized.includes('uang saya berapa') ||
-        normalized.includes('saldo kas');
-
-    if (asksTotalBalance) {
+    if (hasAny(normalized, ['total saldo', 'saldo saya', 'uang saya berapa', 'sisa uang', 'duit saya']) || 
+        hasAllGroups(normalized, [['saldo', 'uang', 'duit'], ['dompet', 'kantong', 'rekening', 'kas']])) {
         return { kind: 'total-balance' };
     }
 
-    const asksTotalExpense =
-        (normalized.includes('total pengeluaran') || normalized.includes('total belanja') || normalized.includes('habis berapa') || normalized.includes('total outflow') || normalized.includes('sudah keluar berapa')) &&
-        (normalized.includes('bulan ini') || normalized.includes('saat ini') || normalized.includes('sekarang'));
-
-    if (asksTotalExpense) {
+    if (hasAllGroups(normalized, [
+        ['total pengeluaran', 'total belanja', 'habis berapa', 'total outflow', 'sudah keluar berapa', 'pengeluaran saya'],
+        ['bulan ini', 'saat ini', 'sekarang']
+    ])) {
         return { kind: 'total-expense' };
     }
 
-    const asksLargestExpense =
-        (normalized.includes('pengeluaran terbesar') || normalized.includes('expense terbesar') || normalized.includes('kategori terbesar') || normalized.includes('paling banyak menghabiskan')) &&
-        (normalized.includes('bulan ini') || normalized.includes('saat ini'));
-
-    if (asksLargestExpense) {
+    if (hasAllGroups(normalized, [
+        ['pengeluaran terbesar', 'expense terbesar', 'kategori terbesar', 'paling banyak', 'paling boros', 'paling gede'],
+        ['bulan ini', 'saat ini', 'sekarang']
+    ])) {
         return { kind: 'largest-expense' };
     }
 
-    const asksAboutBudgetRisks =
-        (normalized.includes('budget') || normalized.includes('anggaran') || normalized.includes('kebocoran') || normalized.includes('sisa')) &&
-        (normalized.includes('aman') || normalized.includes('bahaya') || normalized.includes('boncos') || normalized.includes('boros') || normalized.includes('kritis') || normalized.includes('hampir habis'));
-
-    if (asksAboutBudgetRisks) {
+    if (hasAllGroups(normalized, [
+        ['budget', 'bujet', 'bajet', 'anggaran', 'kebocoran', 'bocor', 'sisa'],
+        ['aman', 'bahaya', 'boncos', 'boros', 'kritis', 'hampir habis', 'limit', 'batas']
+    ])) {
         return { kind: 'budget-risk' };
     }
 
-    const asksComparison =
-        normalized.includes('lebih besar dari bulan lalu') ||
-        normalized.includes('dibandingkan bulan lalu') ||
-        normalized.includes('perbandingan bulan lalu');
-
-    if (asksComparison) {
+    if (hasAny(normalized, ['lebih besar dari bulan lalu', 'dibandingkan bulan lalu', 'perbandingan bulan lalu', 'banding bulan lalu'])) {
         return { kind: 'comparison' };
     }
 
-    const asksBusiestDay =
-        normalized.includes('hari apa') &&
-        (normalized.includes('boros') || normalized.includes('paling banyak belanja') || normalized.includes('sering belanja'));
-
-    if (asksBusiestDay) {
+    if (hasAllGroups(normalized, [
+        ['hari apa'],
+        ['boros', 'paling banyak', 'sering belanja', 'paling sering']
+    ])) {
         return { kind: 'busiest-day' };
     }
 
-    const asksWeeklyExpense =
-        (normalized.includes('pengeluaran') || normalized.includes('belanja')) &&
-        (normalized.includes('minggu ini') || normalized.includes('7 hari terakhir'));
-
-    if (asksWeeklyExpense) {
+    if (hasAllGroups(normalized, [
+        ['pengeluaran', 'belanja', 'habis'],
+        ['minggu ini', '7 hari terakhir', 'seminggu ini']
+    ])) {
         return { kind: 'weekly-expense' };
     }
 
-    const asksLastTransaction =
-        normalized.includes('transaksi terakhir') ||
-        normalized.includes('apa belanjaan terakhir');
-
-    if (asksLastTransaction) {
+    if (hasAny(normalized, ['transaksi terakhir', 'belanjaan terakhir', 'apa belanjaan terakhir', 'terakhir beli apa'])) {
         return { kind: 'last-transaction' };
     }
 
-    const asksTimeSinceLastExpense =
-        normalized.includes('terakhir belanja') &&
-        (normalized.includes('berapa hari') || normalized.includes('kapan'));
-
-    if (asksTimeSinceLastExpense) {
+    if (hasAllGroups(normalized, [
+        ['terakhir belanja', 'terakhir transaksi'],
+        ['berapa hari', 'kapan', 'sudah berapa lama']
+    ])) {
         return { kind: 'time-since-last-expense' };
     }
 
-    const asksCategoricalTopIncrease =
-        (normalized.includes('naik paling banyak') || normalized.includes('peningkatan terbesar')) &&
-        normalized.includes('kategori');
-
-    if (asksCategoricalTopIncrease) {
+    if (hasAllGroups(normalized, [
+        ['naik paling banyak', 'peningkatan terbesar', 'paling melonjak'],
+        ['kategori']
+    ])) {
         return { kind: 'categorical-top-increase' };
     }
 
-    const asksSubscriptionAnalysis = 
-        (normalized.includes('langganan') || normalized.includes('netflix') || normalized.includes('spotify') || normalized.includes('youtube premium') || normalized.includes('rutin')) &&
-        (normalized.includes('cek') || normalized.includes('apa') || normalized.includes('daftar') || normalized.includes('deteksi') || normalized.includes('ada'));
-    
-    if (asksSubscriptionAnalysis) {
+    if (hasAllGroups(normalized, [
+        ['langganan', 'netflix', 'spotify', 'youtube premium', 'rutin', 'subscription'],
+        ['cek', 'apa', 'daftar', 'deteksi', 'ada']
+    ])) {
         return { kind: 'subscription-analysis' };
     }
 
-    const asksFinancialHealth = 
-        (normalized.includes('sehat') || normalized.includes('health') || normalized.includes('kondisi') || normalized.includes('audit')) &&
-        (normalized.includes('keuangan') || normalized.includes('finansial') || normalized.includes('saya'));
-
-    if (asksFinancialHealth) {
+    if (hasAllGroups(normalized, [
+        ['sehat', 'health', 'kondisi', 'audit', 'cek'],
+        ['keuangan', 'finansial', 'saya', 'dompet']
+    ])) {
         return { kind: 'financial-health' };
     }
 
-    const asksDestructiveAction =
-        (normalized.includes('hapus') || normalized.includes('delete') || normalized.includes('bersihkan')) &&
-        (normalized.includes('semua') || normalized.includes('seluruh') || normalized.includes('transaksi'));
-
-    if (asksDestructiveAction) {
+    if (hasAllGroups(normalized, [
+        ['hapus', 'delete', 'bersihkan', 'ilangin'],
+        ['semua', 'seluruh', 'transaksi', 'riwayat']
+    ])) {
         return { kind: 'destructive-action' };
     }
 
-    const asksAboutDataEntry =
-        (normalized.includes('catat') || normalized.includes('tambah') || normalized.includes('input') || normalized.includes('masukkan')) &&
-        (
-            /\d/.test(normalized) ||
-            normalized.includes('rb') ||
-            normalized.includes('ribu') ||
-            normalized.includes('jt') ||
-            normalized.includes('pengeluaran') ||
-            normalized.includes('pemasukan') ||
-            normalized.includes('belanja') ||
-            normalized.includes('transaksi') ||
-            normalized.includes('makan') ||
-            normalized.includes('minum') ||
-            normalized.includes('kopi') ||
-            normalized.includes('gaji') ||
-            normalized.includes('bensin') ||
-            normalized.includes('bayar') ||
-            normalized.includes('beli') ||
-            normalized.includes('transfer') ||
-            normalized.includes('top up')
-        );
+    const isDataEntryKw = hasAny(normalized, [
+        'rb', 'ribu', 'jt', 'juta', 'pengeluaran', 'pemasukan', 'belanja', 
+        'transaksi', 'makan', 'minum', 'kopi', 'gaji', 'bensin', 'bayar', 
+        'beli', 'transfer', 'top up'
+    ]) || /\d/.test(normalized);
 
-    if (asksAboutDataEntry) {
+    if (hasAny(normalized, ['catat', 'tambah', 'input', 'masukkan', 'tulis']) && isDataEntryKw) {
         return { kind: 'add-transaction' };
     }
 
-    const asksAboutPastMemory =
-        normalized.includes('tadi kamu bilang apa') ||
-        normalized.includes('ingat pesan sebelumnya') ||
-        normalized.includes('apa yang baru kita bahas');
-
-    if (asksAboutPastMemory) {
+    if (hasAny(normalized, ['tadi kamu bilang apa', 'ingat pesan sebelumnya', 'apa yang baru kita bahas', 'diatas tadi'])) {
         return { kind: 'memory' };
     }
 
@@ -353,9 +318,10 @@ export function tryBuildDeterministicChatReply(
                 context.monthly.cashflow >= 0
                     ? `Cashflow bulan ini masih positif **${formatCurrency(context.monthly.cashflow)}**.`
                     : `Cashflow bulan ini masih negatif **${formatCurrency(Math.abs(context.monthly.cashflow))}**.`,
+                `[RENDER_COMPONENT:WealthSummary]`
             ].join(' ');
         case 'total-expense':
-            return `Total pengeluaran kamu bulan ini adalah **${formatCurrency(context.monthly.expense)}** dari **${context.expense_transaction_count}** transaksi.`;
+            return `Total pengeluaran kamu bulan ini adalah **${formatCurrency(context.monthly.expense)}** dari **${context.expense_transaction_count}** transaksi.\n[RENDER_COMPONENT:RecentTransactions]`;
         case 'largest-expense': {
             if (!topCategory || topCategory.amount <= 0) {
                 return context.monthly.expense > 0
@@ -375,18 +341,18 @@ export function tryBuildDeterministicChatReply(
         }
         case 'budget-risk':
             if (!riskiestBudget || riskiestBudget.percent < 50) {
-                return 'Semua anggaran kamu masih aman terkendali di bawah 50%. Teruskan manajemen budget yang baik ya!';
+                return 'Semua anggaran kamu masih aman terkendali di bawah 50%. Teruskan manajemen budget yang baik ya!\n[RENDER_COMPONENT:BudgetStatus]';
             }
 
             if (riskiestBudget.percent >= 100) {
-                return `Anggaran **${riskiestBudget.name}** kamu sudah habis terpakai (**${riskiestBudget.percent}%**). Sebaiknya tunda pengeluaran non-esensial di kategori ini.`;
+                return `Anggaran **${riskiestBudget.name}** kamu sudah habis terpakai (**${riskiestBudget.percent}%**). Sebaiknya tunda pengeluaran non-esensial di kategori ini.\n[RENDER_COMPONENT:BudgetStatus]`;
             }
 
             if (riskiestBudget.percent >= 80) {
-                return `Hati-hati, anggaran **${riskiestBudget.name}** kamu sudah sangat kritis, terpakai **${riskiestBudget.percent}%**. Tinggal sedikit lagi sebelum overbudget.`;
+                return `Hati-hati, anggaran **${riskiestBudget.name}** kamu sudah sangat kritis, terpakai **${riskiestBudget.percent}%**. Tinggal sedikit lagi sebelum overbudget.\n[RENDER_COMPONENT:BudgetStatus]`;
             }
 
-            return `Anggaran **${riskiestBudget.name}** kamu sudah terpakai **${riskiestBudget.percent}%**. Masih aman tapi tetap pantau ya.`;
+            return `Anggaran **${riskiestBudget.name}** kamu sudah terpakai **${riskiestBudget.percent}%**. Masih aman tapi tetap pantau ya.\n[RENDER_COMPONENT:BudgetStatus]`;
         case 'comparison': {
             const diff = context.monthly.expense - context.previous_month.expense;
             const trend = diff > 0 ? 'meningkat' : 'menurun';

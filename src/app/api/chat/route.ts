@@ -274,10 +274,17 @@ export async function POST(req: Request) {
       }
     }
 
+    // Sliding Window: Prevent token explosion by only sending the last 10 messages to the LLM
+    // We don't slice the client messages array to preserve UI state, only what is sent to the model.
+    const MAX_HISTORY_MESSAGES = 10;
+    const windowedMessages = messages.length > MAX_HISTORY_MESSAGES 
+      ? messages.slice(-MAX_HISTORY_MESSAGES) 
+      : messages;
+
     const result = streamText({
       model: deepseek("deepseek-chat"),
       system: buildChatSystemPrompt(),
-      messages: await convertToModelMessages(messages),
+      messages: await convertToModelMessages(windowedMessages),
       tools: createFinancialTools(user.id, supabase),
       stopWhen: stepCountIs(5),
     });

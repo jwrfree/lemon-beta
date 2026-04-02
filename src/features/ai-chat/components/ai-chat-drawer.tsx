@@ -92,29 +92,72 @@ const RichMessageContent = ({ text }: { text: string }) => {
         'FinancialHealth': (data) => <FinancialHealthCard data={data} />,
     };
 
-    // Split text by component tags (e.g. [RENDER_COMPONENT:BudgetStatus] or [RENDER_COMPONENT:ScenarioSimulation|{...}])
-    const parts = text.split(/(\[RENDER_COMPONENT:[a-zA-Z]+(?:\|[^\]]+)?\])/g);
+    const parts: string[] = [];
+    let remaining = text;
+    while (remaining.length > 0) {
+        const matchIndex = remaining.indexOf('[RENDER_COMPONENT:');
+        if (matchIndex === -1) {
+            parts.push(remaining);
+            break;
+        }
+        if (matchIndex > 0) {
+            parts.push(remaining.substring(0, matchIndex));
+        }
+        const tagStart = matchIndex;
+        let tagEnd = -1;
+        let bracketCount = 0;
+        for (let i = tagStart; i < remaining.length; i++) {
+            if (remaining[i] === '[') bracketCount++;
+            else if (remaining[i] === ']') {
+                bracketCount--;
+                if (bracketCount === 0) {
+                    tagEnd = i;
+                    break;
+                }
+            }
+        }
+        
+        if (tagEnd !== -1) {
+            parts.push(remaining.substring(tagStart, tagEnd + 1));
+            remaining = remaining.substring(tagEnd + 1);
+        } else {
+            // Unclosed tag fallback
+            parts.push(remaining.substring(tagStart));
+            break;
+        }
+    }
 
     return (
         <>
             {parts.map((part, idx) => {
-                const match = part.match(/\[RENDER_COMPONENT:([a-zA-Z]+)(?:\|([^\]]+))?\]/);
-                const componentName = match ? match[1] : null;
-                const componentDataRaw = match ? match[2] : null;
+                if (part.startsWith('[RENDER_COMPONENT:') && part.endsWith(']')) {
+                    // Extract name and data
+                    const content = part.substring(18, part.length - 1); // remove [RENDER_COMPONENT: and ]
+                    const separatorIdx = content.indexOf('|');
+                    const componentName = separatorIdx !== -1 ? content.substring(0, separatorIdx) : content;
+                    const componentDataRaw = separatorIdx !== -1 ? content.substring(separatorIdx + 1) : null;
 
-                if (componentName && components[componentName]) {
-                    let data = undefined;
-                    if (componentDataRaw) {
-                        try {
-                            data = JSON.parse(componentDataRaw);
-                        } catch (e) {
-                            console.error("Failed to parse component data:", e);
+                    if (components[componentName]) {
+                        let data = undefined;
+                        if (componentDataRaw) {
+                            try {
+                                data = JSON.parse(componentDataRaw);
+                            } catch (e) {
+                                console.error("Failed to parse component data:", e);
+                            }
                         }
+                        return <div key={idx} className="my-3 first:mt-0 last:mb-0">{components[componentName](data)}</div>;
                     }
-                    return <div key={idx} className="my-3 first:mt-0 last:mb-0">{components[componentName](data)}</div>;
+                    return null;
                 }
                 
-                if (!part.trim() || part.startsWith('[RENDER_COMPONENT:')) return null;
+                if (!part.trim()) return null;
+
+                // Hide suggestion tags from UI
+                if (part.startsWith('[SUGGESTION:') && part.endsWith(']')) return null;
+
+                const cleanPart = part.replace(/\[SUGGESTION:[^\]]+\]/g, '');
+                if (!cleanPart.trim()) return null;
 
                 return (
                     <ReactMarkdown
@@ -123,7 +166,7 @@ const RichMessageContent = ({ text }: { text: string }) => {
                             p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
                         }}
                     >
-                        {part}
+                        {cleanPart}
                     </ReactMarkdown>
                 );
             })}
@@ -168,8 +211,8 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
             try {
                 triggerHaptic('light');
                 await startRecording();
-            } catch (err) {
-                showToast("Gagal mengakses mikrofon.", "error");
+            } catch (err: any) {
+                showToast(err.message || "Gagal mengakses mikrofon.", "error");
             }
         } else {
             try {
@@ -190,10 +233,12 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                 if (data.text) {
                     triggerHaptic('success');
                     setInput(data.text);
+                } else if (data.error) {
+                    showToast("Gagal mengubah suara ke teks.", "error");
                 }
             } catch (err) {
                 console.error("Transcription failed:", err);
-                showToast("Gagal mengubah suara ke teks.", "error");
+                showToast("Gagal memproses suara. Periksa koneksi Anda.", "error");
             } finally {
                 setIsTranscribing(false);
             }

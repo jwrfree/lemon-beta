@@ -143,9 +143,19 @@ export const buildFollowUpSuggestions = (messages: UIMessage[], max = 3): Follow
     const latestTurn = findLatestAssistantTurn(messages);
     if (!latestTurn) return [];
 
+    const rawAnswerText = getMessageText(latestTurn.assistantMessage);
     const normalizedQuestion = normalizeText(getMessageText(latestTurn.userMessage));
-    const normalizedAnswer = normalizeText(getMessageText(latestTurn.assistantMessage));
+    const normalizedAnswer = normalizeText(rawAnswerText);
     const suggestions: FollowUpSuggestion[] = [];
+
+    // Parse dynamic suggestions from LLM
+    const dynamicRegex = /\[SUGGESTION:([^\]]+)\]/g;
+    let match;
+    while ((match = dynamicRegex.exec(rawAnswerText)) !== null) {
+        if (match[1].trim()) {
+            suggestions.push({ label: match[1].trim(), value: match[1].trim() });
+        }
+    }
 
     if (!normalizedQuestion || !normalizedAnswer) {
         return [];
