@@ -9,21 +9,39 @@ import {
     isLogoFailed 
 } from '@/lib/merchant-utils';
 
-type LogoSource = 'primary' | 'secondary' | 'tertiary' | 'icon';
+/**
+ * Logo source states for hierarchical fallback mechanism
+ */
+type LogoSource = "primary" | "secondary" | "tertiary" | "icon";
 
-interface MerchantIdentityOptions {
+interface UseMerchantIdentityProps {
+    /** The actual merchant name (if identified) */
     merchant?: string | null;
+    /** Raw transaction description for fallback parsing */
     description: string;
+    /** Primary category for visual fallback */
     category: string;
+    /** Fn to lookup category visuals (icon, colors) */
     getCategoryVisuals: (name: string) => CategoryVisuals;
 }
 
+/**
+ * Custom hook to manage the visual identity of a merchant/transaction.
+ * Implements a hierarchical fallback mechanism:
+ * 1. Primary Merchant Logo (Custom bucket)
+ * 2. Secondary Merchant Logo (Backup bucket)
+ * 3. Tertiary Merchant Logo (Google Favicon)
+ * 4. Category/Merchant Default Icon
+ *
+ * @param props {@link UseMerchantIdentityProps}
+ * @returns Object containing logo sources, fallback handler, and visual DNA
+ */
 export function useMerchantIdentity({
     merchant,
     description,
     category,
     getCategoryVisuals,
-}: MerchantIdentityOptions) {
+}: UseMerchantIdentityProps) {
     const merchantVisuals = getMerchantVisuals(merchant || description);
     const categoryVisuals = getCategoryVisuals(category);
 

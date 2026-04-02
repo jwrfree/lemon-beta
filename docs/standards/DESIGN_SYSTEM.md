@@ -1,9 +1,24 @@
-# Lemon Beta — Design System
+# 🍋 Lemon Beta — Design System
 
-> **Version:** 1.4  
+> [!IMPORTANT]
+> **Version:** 1.5  
 > **Status:** Active — all new code must comply.  
 > **Source of truth:** This document + `tailwind.config.ts` + `globals.css`.  
-> **Enforcement:** ESLint (`eslint.config.mjs`) + code review checklist below.
+> **Enforcement:** ESLint + CI Check.
+
+## 📋 Table of Contents
+1. [Design Principles](#1-design-principles)
+2. [Typography System](#2-typography-system)
+3. [Color & Semantic Tokens](#3-color--semantic-token-system)
+4. [Component Standards](#4-component-standards)
+5. [Layout & Spacing](#5-layout--spacing-rules)
+6. [Radius & Elevation](#6-border-radius--elevation-shadow-rules)
+7. [Anti-Patterns](#7-anti-patterns-forbidden)
+8. [Interaction Tokens](#8-interaction-state-tokens-ds-8)
+9. [Motion Guidelines](#9-motion-guidelines-phase-6)
+10. [Automation & Governance](#10-automation--enforcement-strategy)
+11. [Error State Guidelines](#11-error-state-guidelines)
+12. [Empty State Governance](#12-empty-state-governance)
 
 ---
 
@@ -46,9 +61,10 @@ Use only the following classes. No `text-[Xpx]`, no `text-[X.Xrem]`.
 | Body S | `text-xs` | 12px | `font-medium` | Secondary metadata |
 | **Label** | `text-label` | 12px | **`font-semibold` + `tracking-widest`** | Section group headers (all-caps) |
 
-`text-label` is a custom token in `tailwind.config.ts` that includes `letterSpacing: '0.1em'` and `fontWeight: '600'` baked in. It is the **only** replacement for `text-[9px]`, `text-[10px]`, `text-[11px]`, `text-[8px]`.
-
 ### 2.2 Font Weight Rules
+
+> [!TIP]
+> `font-bold` is reserved for marketing/landing use only. Internal app surfaces should prioritize `font-semibold` or `font-medium` for a premium feel.
 
 | Context | Weight |
 |---|---|
@@ -147,6 +163,9 @@ The full named palette (`teal`, `blue`, `rose`, `purple`, etc.) exists **only** 
 - DNA gradient cards (`visual-dna.ts` output)
 
 Using palette colours directly for UI state (e.g., `bg-blue-600` on a FAB) is **forbidden**. Use semantic tokens instead.
+
+> [!CAUTION]
+> Hardcoded hex colors (e.g., `#064e4b`) are strictly prohibited in components. 
 
 ### 3.3 Status Badge Colour Mapping
 
