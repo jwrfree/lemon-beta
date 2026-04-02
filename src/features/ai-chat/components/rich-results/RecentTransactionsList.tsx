@@ -19,10 +19,10 @@ export const RecentTransactionsList = () => {
     const transactions = context.last_transaction ? [context.last_transaction] : [];
 
     return (
-        <Card className="mt-4 border-none bg-muted/40 shadow-none rounded-2xl overflow-hidden">
+        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-2xl overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between mb-1">
-                    <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Mutasi Terakhir</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Mutasi Terakhir</span>
                     <Receipt size={12} weight="bold" className="text-muted-foreground/30" />
                 </div>
                 

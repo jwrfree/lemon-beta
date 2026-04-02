@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { MagicBar } from './liquid-composer/MagicBar';
 import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
 import { SemanticTransactionReview } from './form-partials/semantic-review';
-import { CaretLeft, CaretRight, CheckCircle, Trash, XCircle, FloppyDisk, PlusCircle, Sparkle, Question, ListChecks, CircleNotch } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight, CheckCircle, Trash, X, FloppyDisk, PlusCircle, Sparkle, Question, ListChecks, CircleNotch } from '@phosphor-icons/react';
 import { useTransactionForm } from '../hooks/use-transaction-form';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useCategories } from '../hooks/use-transactions';
@@ -132,9 +132,9 @@ export const UnifiedTransactionSheet = ({
                         variant="ghost" 
                         size="icon" 
                         onClick={() => handleCloseAttempt(false)} 
-                        className="h-9 w-9 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
+                        className="h-10 w-10 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
                     >
-                        <XCircle size={22} weight="bold" />
+                        <X size={32} weight="bold" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>

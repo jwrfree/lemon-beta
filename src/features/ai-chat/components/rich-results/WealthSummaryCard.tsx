@@ -19,44 +19,44 @@ export const WealthSummaryCard = () => {
     const { cash, assets, liabilities, net_worth } = context.wealth;
 
     return (
-        <Card className="mt-4 border-none bg-muted/40 shadow-none rounded-2xl overflow-hidden">
+        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between mb-1">
                     <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Ringkasan Kekayaan</span>
-                    <TrendUp size={12} weight="bold" className="text-success opacity-50" />
+                    <TrendUp size={12} weight="regular" className="text-success opacity-50" />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-muted-foreground/50">
-                            <Wallet size={12} weight="bold" />
-                            <span className="text-label font-semibold uppercase tracking-tighter">Kas</span>
+                            <Wallet size={12} weight="regular" />
+                            <span className="text-[9px] font-semibold uppercase tracking-tighter">Kas</span>
                         </div>
-                        <p className="text-sm font-semibold tracking-tight">{formatCurrency(cash)}</p>
+                        <p className="text-sm font-medium tracking-tight">{formatCurrency(cash)}</p>
                     </div>
                     
                     <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-muted-foreground/50">
-                            <Bank size={12} weight="bold" />
-                            <span className="text-label font-semibold uppercase tracking-tighter">Aset</span>
+                            <Bank size={12} weight="regular" />
+                            <span className="text-[9px] font-semibold uppercase tracking-tighter">Aset</span>
                         </div>
-                        <p className="text-sm font-semibold tracking-tight">{formatCurrency(assets)}</p>
+                        <p className="text-sm font-medium tracking-tight">{formatCurrency(assets)}</p>
                     </div>
 
                     <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-muted-foreground/50">
-                            <CreditCard size={12} weight="bold" />
-                            <span className="text-label font-semibold uppercase tracking-tighter">Hutang</span>
+                            <CreditCard size={12} weight="regular" />
+                            <span className="text-[9px] font-semibold uppercase tracking-tighter">Hutang</span>
                         </div>
-                        <p className="text-sm font-semibold tracking-tight text-destructive/80">{formatCurrency(liabilities)}</p>
+                        <p className="text-sm font-medium tracking-tight text-destructive/80">{formatCurrency(liabilities)}</p>
                     </div>
 
                     <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-accent/70">
-                            <TrendUp size={12} weight="bold" />
-                            <span className="text-label font-semibold uppercase tracking-tighter">Net Worth</span>
+                            <TrendUp size={12} weight="regular" />
+                            <span className="text-[9px] font-semibold uppercase tracking-tighter">Net Worth</span>
                         </div>
-                        <p className="text-sm font-semibold tracking-tight text-accent">{formatCurrency(net_worth)}</p>
+                        <p className="text-sm font-medium tracking-tight text-accent">{formatCurrency(net_worth)}</p>
                     </div>
                 </div>
             </CardContent>

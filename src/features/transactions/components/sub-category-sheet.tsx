@@ -36,8 +36,8 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
             >
                 <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <h2 className="text-xl font-medium tracking-tight">Pilih Sub-kategori {category.name}</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
-                        <XCircle size={22} weight="bold" />
+                    <Button variant="ghost" size="icon" onClick={onClose} className="h-10 w-10 text-muted-foreground rounded-full">
+                        <X size={32} weight="bold" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>

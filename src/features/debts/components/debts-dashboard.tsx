@@ -12,6 +12,7 @@ import { ArrowsDownUp, CalendarDots, TrendDown, TrendUp } from '@phosphor-icons/
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
 import { StatusBadge } from '@/components/status-badge';
 

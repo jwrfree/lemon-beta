@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/providers/auth-provider';
 import { UserAvatar } from '@/components/user-avatar';
-import { Camera, Loader2, Save, X } from 'lucide-react';
+import { Camera, CircleNotch, FloppyDisk, X } from '@phosphor-icons/react';
 import { triggerHaptic } from '@/lib/utils';
 import { uploadAvatar } from '@/lib/supabase/storage';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -107,8 +107,8 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                 </div>
 
                 <SheetHeader className="px-6 pt-4 pb-0 text-left">
-                    <SheetTitle className="text-2xl font-bold tracking-tighter">Edit Profil</SheetTitle>
-                    <SheetDescription className="text-xs font-bold uppercase tracking-widest text-muted-foreground/40">Sesuaikan identitas digital kamu</SheetDescription>
+                    <SheetTitle className="text-2xl font-semibold tracking-tighter">Edit Profil</SheetTitle>
+                    <SheetDescription className="text-label font-semibold uppercase tracking-widest text-muted-foreground/40">Sesuaikan identitas digital kamu</SheetDescription>
                 </SheetHeader>
 
                 <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 py-8 space-y-8">
@@ -127,7 +127,7 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                                     className="h-28 w-28 border-4 border-background shadow-xl" 
                                 />
                                 <div className="absolute bottom-0 right-0 h-9 w-9 rounded-full bg-foreground text-background flex items-center justify-center border-4 border-background shadow-lg">
-                                    <Camera className="h-4 w-4" />
+                                    <Camera size={18} weight="bold" />
                                 </div>
                             </motion.div>
                             <input 
@@ -138,27 +138,27 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                                 className="hidden" 
                             />
                         </div>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30">Ketuk untuk ubah foto</p>
+                        <p className="text-label font-semibold uppercase tracking-widest text-muted-foreground/30">Ketuk untuk ubah foto</p>
                     </div>
 
                     {/* FORM FIELDS */}
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="displayName" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 ml-1">Nama Tampilan</Label>
+                            <Label htmlFor="displayName" className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60 ml-1">Nama Tampilan</Label>
                             <Input 
                                 id="displayName"
                                 {...form.register('displayName')}
                                 placeholder="Masukkan nama kamu"
-                                className="h-14 rounded-2xl bg-muted/30 border-border/40 px-5 text-base font-bold tracking-tight focus:ring-accent"
+                                className="h-14 rounded-2xl bg-muted/40 border-none px-5 text-base font-semibold tracking-tight focus:ring-accent"
                             />
                             {form.formState.errors.displayName && (
-                                <p className="text-[10px] font-bold text-destructive ml-1 uppercase tracking-wider">{form.formState.errors.displayName.message}</p>
+                                <p className="text-label font-semibold text-destructive ml-1 uppercase tracking-wider">{form.formState.errors.displayName.message}</p>
                             )}
                         </div>
 
                         <div className="space-y-2 opacity-50 select-none">
-                            <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 ml-1">E-mail (Teridentifikasi)</Label>
-                            <div className="h-14 rounded-2xl bg-muted/10 border border-dashed border-border/40 px-5 flex items-center text-sm font-medium text-muted-foreground">
+                            <Label className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60 ml-1">E-mail (Teridentifikasi)</Label>
+                            <div className="h-14 rounded-2xl bg-muted/20 border border-dashed border-border/40 px-5 flex items-center text-sm font-semibold text-muted-foreground">
                                 {user?.email}
                             </div>
                         </div>
@@ -168,20 +168,15 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                         <Button 
                             type="submit" 
                             disabled={isSubmitting}
-                            className="h-14 w-full rounded-2xl bg-foreground text-background font-bold text-base tracking-tight hover:bg-foreground/90 transition-all active:scale-95 shadow-xl"
+                            className="h-14 w-full rounded-2xl bg-foreground text-background font-semibold text-base tracking-tight hover:bg-foreground/90 transition-all active:scale-95 shadow-xl"
                         >
-                            {isSubmitting ? <Loader2 className="h-6 w-6 animate-spin" /> : (
-                                <span className="flex items-center gap-2">
-                                    <Save className="h-5 w-5" />
-                                    Simpan Perubahan
-                                </span>
-                            )}
+                            {isSubmitting ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : 'Simpan Perubahan'}
                         </Button>
                         <Button 
                             type="button" 
                             variant="ghost" 
                             onClick={onClose}
-                            className="h-12 w-full rounded-xl text-muted-foreground font-bold text-xs uppercase tracking-widest"
+                            className="h-12 w-full rounded-xl text-muted-foreground font-semibold text-xs uppercase tracking-widest"
                         >
                             Batalkan
                         </Button>

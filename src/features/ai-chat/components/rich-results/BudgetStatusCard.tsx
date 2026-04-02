@@ -20,10 +20,10 @@ export const BudgetStatusCard = () => {
     const sortedBudgets = [...context.budgets].sort((a, b) => b.percent - a.percent).slice(0, 3);
 
     return (
-        <Card className="mt-4 border-none bg-muted/40 shadow-none rounded-2xl overflow-hidden">
+        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-2xl overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                    <span className="text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Status Anggaran</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Status Anggaran</span>
                 </div>
                 
                 <div className="space-y-4">
