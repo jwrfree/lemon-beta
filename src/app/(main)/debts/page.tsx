@@ -2,14 +2,13 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn, triggerHaptic } from '@/lib/utils';
 import { parseISO, differenceInCalendarDays } from 'date-fns';
-import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots, HandCoins, Sparkle, Stack, Target, WarningCircle } from '@phosphor-icons/react';
+import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots } from '@phosphor-icons/react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -20,7 +19,6 @@ import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
 import { StatusBadge } from '@/components/status-badge';
 import { motion } from 'framer-motion';
 import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
-import { getVisualDNA } from '@/lib/visual-dna';
 
 const filterLabels: Record<string, string> = {
     all: 'Semua',
@@ -36,7 +34,7 @@ const getDebtDueStatus = (debt: Debt) => {
     
     if (diff < 0) {
         return (
-            <span className="text-[10px] uppercase tracking-widest text-destructive font-semibold flex items-center gap-1.5 bg-destructive/10 px-2 py-0.5 rounded-full w-fit mt-1">
+            <span className="text-label uppercase tracking-widest text-destructive font-semibold flex items-center gap-1.5 bg-destructive/10 px-2 py-0.5 rounded-full w-fit mt-1">
                 <CalendarDots className="h-3 w-3" weight="bold" /> 
                 Telat {Math.abs(diff)} hari
             </span>
@@ -44,7 +42,7 @@ const getDebtDueStatus = (debt: Debt) => {
     }
     if (diff === 0) {
         return (
-            <span className="text-[10px] uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
+            <span className="text-label uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
                 <CalendarDots className="h-3 w-3" weight="bold" /> 
                 Hari ini
             </span>
@@ -52,14 +50,14 @@ const getDebtDueStatus = (debt: Debt) => {
     }
     if (diff <= 7) {
         return (
-            <span className="text-[10px] uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
+            <span className="text-label uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
                 <CalendarDots className="h-3 w-3" weight="bold" /> 
                 {diff} hari lagi
             </span>
         );
     }
     return (
-        <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 font-semibold flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded-full w-fit mt-1">
+        <span className="text-label uppercase tracking-widest text-muted-foreground/60 font-semibold flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded-full w-fit mt-1">
             <CalendarDots className="h-3 w-3" weight="regular" /> 
             {diff} hari lagi
         </span>
@@ -68,7 +66,7 @@ const getDebtDueStatus = (debt: Debt) => {
 
 export default function DebtsPage() {
     const router = useRouter();
-    const { debts, isLoading } = useDebts();
+    const { debts } = useDebts();
     const { setIsDebtModalOpen, setDebtToEdit } = useUI();
     const [activeFilter, setActiveFilter] = useState('all');
     const [sortBy, setSortBy] = useState('updated_desc');
@@ -122,15 +120,15 @@ export default function DebtsPage() {
                 showBackButton={false}
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-[140px] h-9 text-[10px] font-semibold uppercase tracking-widest bg-white dark:bg-zinc-900 border-none shadow-sm rounded-full px-4">
+                        <SelectTrigger className="w-[140px] h-9 text-label font-semibold uppercase tracking-widest bg-white dark:bg-zinc-900 border-none shadow-sm rounded-full px-4">
                             <ArrowsDownUp className="w-3 h-3 mr-2 text-muted-foreground/60" weight="regular" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
                         <SelectContent align="end" className="rounded-[24px] border-none shadow-xl bg-popover/95 backdrop-blur-xl">
-                            <SelectItem value="updated_desc" className="text-[10px] font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
-                            <SelectItem value="due_soon" className="text-[10px] font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
-                            <SelectItem value="amount_desc" className="text-[10px] font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
-                            <SelectItem value="amount_asc" className="text-[10px] font-semibold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
+                            <SelectItem value="updated_desc" className="text-label font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
+                            <SelectItem value="due_soon" className="text-label font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
+                            <SelectItem value="amount_desc" className="text-label font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
+                            <SelectItem value="amount_asc" className="text-label font-semibold uppercase tracking-widest p-3">Nominal Terendah</SelectItem>
                         </SelectContent>
                     </Select>
                 }
@@ -175,7 +173,7 @@ export default function DebtsPage() {
                                 <TabsTrigger 
                                     key={value} 
                                     value={value} 
-                                    className="h-full rounded-full font-semibold text-[10px] uppercase tracking-widest transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                                    className="h-full rounded-full font-semibold text-label uppercase tracking-widest transition-all data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-800 data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                                 >
                                     {label}
                                 </TabsTrigger>
@@ -192,7 +190,6 @@ export default function DebtsPage() {
                         <div className="space-y-3">
                             {visibleDebts.map((debt: Debt) => {
                                 const isOwed = debt.direction === 'owed';
-                                const dna = getVisualDNA(isOwed ? 'rose' : 'emerald');
                                 const progress = Math.max(0, Math.min(100, (1 - (debt.outstandingBalance ?? 0) / (debt.principal ?? 1)) * 100));
 
                                 return (
@@ -218,7 +215,7 @@ export default function DebtsPage() {
                                                         {isOwed ? 'Kepada: ' : 'Dari: '} <span className="text-muted-foreground/60">{debt.counterparty}</span>
                                                     </p>
                                                 </div>
-                                                <StatusBadge variant={debt.status === 'settled' ? 'success' : isOwed ? 'destructive' : 'default'}>
+                                                <StatusBadge variant={debt.status === 'settled' ? 'success' : isOwed ? 'error' : 'default'}>
                                                     {debt.status === 'settled' ? 'Lunas' : isOwed ? 'Hutang' : 'Piutang'}
                                                 </StatusBadge>
                                             </div>

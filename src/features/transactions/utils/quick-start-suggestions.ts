@@ -75,7 +75,7 @@ const getBucketLabel = (bucket: QuickStartTimeBucket) => {
     }
 };
 
-const formatCompactAmount = (amount: number) => {
+export const formatCompactAmount = (amount: number) => {
     if (amount >= 1_000_000) {
         const formatted = Number((amount / 1_000_000).toFixed(1)).toString().replace('.', ',');
         return `${formatted}jt`;
@@ -212,7 +212,7 @@ export const buildQuickStartSuggestionGroups = ({
                 id: `repeat-${buildRepeatSignature(entry.transaction)}`,
                 kind: 'repeat' as const,
                 label: entry.transaction.description || entry.transaction.category,
-                description: `${walletName} • ${entry.transaction.category}${entry.transaction.subCategory ? ` • ${entry.transaction.subCategory}` : ''}`,
+                description: `${walletName} / ${entry.transaction.category}${entry.transaction.subCategory ? ` / ${entry.transaction.subCategory}` : ''}`,
                 reason: entry.matchingBucketCount > 0
                     ? `Sering dicatat ${getBucketLabel(currentBucket)}`
                     : `Baru dipakai ${entry.count}x`,
@@ -285,7 +285,7 @@ export const buildQuickStartSuggestionGroups = ({
                 id: `habit-${buildHabitSignature(entry.transaction)}`,
                 kind: 'habit' as const,
                 label: toTitleCase(entry.transaction.description || entry.transaction.category),
-                description: `Biasanya ${formatCompactAmount(entry.transaction.amount)} • ${walletName}`,
+                description: `Biasanya ${formatCompactAmount(entry.transaction.amount)} / ${walletName}`,
                 reason: entry.matchingBucketCount > 0 ? `Cocok untuk ${getBucketLabel(currentBucket)}` : 'Sering kamu catat',
                 inputText: `${entry.transaction.description} ${formatCompactAmount(entry.transaction.amount)}`,
                 amount: entry.transaction.amount,

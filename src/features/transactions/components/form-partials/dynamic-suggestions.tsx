@@ -13,12 +13,15 @@ import {
 
 import { cn } from '@/lib/utils';
 import type {
+    QuickStartAction,
     QuickStartSuggestion,
     QuickStartSuggestionGroups,
 } from '@/features/transactions/utils/quick-start-suggestions';
+import { formatCompactAmount } from '@/features/transactions/utils/quick-start-suggestions';
 
 interface DynamicSuggestionsProps {
-    onSuggestionClick: (suggestion: QuickStartSuggestion) => void;
+    // eslint-disable-next-line no-unused-vars
+    onSuggestionClick: (...args: [QuickStartSuggestion]) => void;
     suggestions: QuickStartSuggestionGroups;
 }
 
@@ -27,10 +30,16 @@ interface SuggestionSectionProps {
     children: ReactNode;
 }
 
+interface SuggestionCardProps {
+    suggestion: QuickStartSuggestion;
+    // eslint-disable-next-line no-unused-vars
+    onClick: (...args: [QuickStartSuggestion]) => void;
+}
+
 const SuggestionSection = ({ title, children }: SuggestionSectionProps) => (
     <section className="space-y-2.5">
         <div className="px-1">
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                 {title}
             </span>
         </div>
@@ -41,14 +50,11 @@ const SuggestionSection = ({ title, children }: SuggestionSectionProps) => (
 const RepeatSuggestionCard = ({
     suggestion,
     onClick,
-}: {
-    suggestion: QuickStartSuggestion;
-    onClick: (suggestion: QuickStartSuggestion) => void;
-}) => (
+}: SuggestionCardProps) => (
     <button
         type="button"
         onClick={() => onClick(suggestion)}
-        className="group flex w-full items-center gap-3 rounded-[22px] bg-card/96 p-3 text-left shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)] transition-all active:scale-[0.98] hover:-translate-y-0.5 hover:bg-card"
+        className="group flex w-full items-center gap-3 rounded-[22px] bg-card p-3 text-left shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)] transition-all active:scale-[0.98] hover:-translate-y-0.5"
     >
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <ArrowClockwise size={18} weight="regular" />
@@ -63,7 +69,7 @@ const RepeatSuggestionCard = ({
             <p className="truncate pt-0.5 text-xs font-medium text-muted-foreground/75">{suggestion.description}</p>
         </div>
         <div className="flex shrink-0 items-center gap-1 text-primary">
-            <span className="text-label font-semibold">{suggestion.amount ? `${Math.round(suggestion.amount / 1000)}rb` : ''}</span>
+            <span className="text-label font-semibold">{suggestion.amount ? formatCompactAmount(suggestion.amount) : ''}</span>
             <CaretRight size={14} weight="regular" className="opacity-50 transition-transform group-hover:translate-x-0.5" />
         </div>
     </button>
@@ -72,14 +78,11 @@ const RepeatSuggestionCard = ({
 const HabitSuggestionChip = ({
     suggestion,
     onClick,
-}: {
-    suggestion: QuickStartSuggestion;
-    onClick: (suggestion: QuickStartSuggestion) => void;
-}) => (
+}: SuggestionCardProps) => (
     <button
         type="button"
         onClick={() => onClick(suggestion)}
-        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-[20px] bg-background px-3 py-3 text-left shadow-[0_12px_28px_-24px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98] hover:-translate-y-0.5 hover:bg-card"
+        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-[20px] bg-card px-3 py-3 text-left shadow-[0_12px_28px_-24px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98] hover:-translate-y-0.5"
     >
         <div className="flex w-full items-center justify-between gap-2">
             <span className="truncate text-sm font-semibold tracking-tight text-foreground">{suggestion.label}</span>
@@ -92,11 +95,12 @@ const HabitSuggestionChip = ({
 const ActionSuggestionCard = ({
     suggestion,
     onClick,
-}: {
-    suggestion: QuickStartSuggestion;
-    onClick: (suggestion: QuickStartSuggestion) => void;
-}) => {
-    const Icon = suggestion.action === 'scan-receipt' ? Camera : PencilSimple;
+}: SuggestionCardProps) => {
+    const iconByAction: Record<QuickStartAction, typeof Camera> = {
+        'scan-receipt': Camera,
+        'manual-assist': PencilSimple,
+    };
+    const Icon = iconByAction[suggestion.action || 'manual-assist'];
 
     return (
         <button
@@ -106,7 +110,7 @@ const ActionSuggestionCard = ({
                 "flex min-h-[84px] flex-1 items-start gap-3 rounded-[22px] px-3 py-3 text-left transition-all active:scale-[0.98] hover:-translate-y-0.5",
                 suggestion.action === 'scan-receipt'
                     ? "bg-primary/10 text-primary shadow-[0_16px_34px_-28px_rgba(13,148,136,0.35)]"
-                    : "bg-card/96 text-foreground shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)]"
+                    : "bg-card text-foreground shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)]"
             )}
         >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-background/80">
@@ -128,7 +132,7 @@ export const DynamicSuggestions = ({ onSuggestionClick, suggestions }: DynamicSu
             <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
                     <div className="mb-1 flex items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                             Mulai Cepat
                         </span>
                     </div>

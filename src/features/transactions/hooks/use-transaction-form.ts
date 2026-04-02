@@ -1,28 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { parseISO } from 'date-fns';
 
-import { unifiedTransactionSchema, UnifiedTransactionFormValues, UnifiedTransactionInputValues } from '../schemas/transaction-schema';
+import { unifiedTransactionSchema, UnifiedTransactionInputValues } from '../schemas/transaction-schema';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { triggerHaptic } from '@/lib/utils';
-import { Transaction, Wallet } from '@/types/models';
+import { Transaction } from '@/types/models';
 import { patchTransactionLiquid } from '@/ai/flows/liquid-patch-flow';
 import {
     extractTransaction,
     parseSimpleTransactionInput,
     refineTransaction,
     TransactionExtractionOutput,
-    SingleTransactionOutput,
 } from '@/ai/flows/extract-transaction-flow';
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { useActions } from '@/providers/action-provider';
 import { useMonthTransactions } from './use-month-transactions';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
-import { useMemo } from 'react';
-import { getHours, getDate } from 'date-fns';
 import { getCurrentIsoTimestamp, normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 import { useRecentTransactions } from './use-recent-transactions';
 import type { QuickStartSuggestion } from '../utils/quick-start-suggestions';
@@ -52,7 +49,7 @@ const getPreferredCashWalletId = (wallets: { id: string; name: string }[]) => {
 export const useTransactionForm = ({ initialData, onSuccess, type, context }: UseTransactionFormProps = {}) => {
     const { user } = useAuth();
     const { showToast } = useUI();
-    const { addTransaction, updateTransaction, deleteTransaction, addTransfer } = useActions();
+    const { addTransaction, updateTransaction, deleteTransaction } = useActions();
     const { transactions } = useMonthTransactions();
     const { transactions: recentTransactions } = useRecentTransactions(60);
     const { budgets } = useBudgets();
@@ -122,7 +119,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
                 showToast(`Validasi gagal: ${firstError}`, 'error');
             }
         }
-    }, [form.formState.submitCount]);
+    }, [form.formState.errors, form.formState.submitCount, showToast]);
 
     // 4. Power AI Processing (Multi + OCR)
     const processMagicInput = useCallback(async (
@@ -279,7 +276,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
         } finally {
             setIsAiProcessing(false);
         }
-    }, [user, context, form, multiTransactions, showToast]);
+    }, [budgets, context, form, multiTransactions, showToast, transactions, user]);
 
     // 5. AI Patch Logic (Legacy Support)
     const applyLiquidPatch = useCallback(async (text: string) => {
@@ -518,7 +515,7 @@ export const useTransactionForm = ({ initialData, onSuccess, type, context }: Us
             } else {
                 showToast("Belum ada transaksi yang berhasil disimpan. Cek data lalu coba lagi.", "error");
             }
-        } catch (err) {
+        } catch {
             showToast("Beberapa transaksi gagal disimpan.", "error");
         } finally {
             setIsAiProcessing(false);

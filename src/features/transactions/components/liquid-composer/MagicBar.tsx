@@ -134,13 +134,13 @@ export const MagicBar = ({
                     <div className="flex min-w-0 flex-1 items-end gap-2">
                         <div className="shrink-0">
                             {(isProcessing || isTranscribing) ? (
-                                <CircleNotch size={20} weight="bold" className="animate-spin text-primary" />
+                                <CircleNotch size={20} weight="regular" className="animate-spin text-primary" />
                             ) : isRecording ? (
                                 <motion.div
                                     animate={{ scale: [1, 1.2, 1] }}
                                     transition={{ repeat: Infinity, duration: 1.5 }}
                                 >
-                                    <Waveform size={20} weight="bold" className="text-violet-500" />
+                                    <Waveform size={20} weight="regular" className="text-violet-500" />
                                 </motion.div>
                             ) : null}
                         </div>
@@ -194,7 +194,7 @@ export const MagicBar = ({
                                     aria-label="Unggah foto struk"
                                     className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                                 >
-                                    <Camera size={20} weight="bold" />
+                                    <Camera size={20} weight="regular" />
                                 </motion.button>
                             )}
 
@@ -236,9 +236,9 @@ export const MagicBar = ({
                                     )}
                                 >
                                     {isProcessing ? (
-                                        <CircleNotch size={18} weight="bold" className="animate-spin" />
+                                        <CircleNotch size={18} weight="regular" className="animate-spin" />
                                     ) : (
-                                        <PaperPlaneRight size={18} weight="bold" />
+                                        <PaperPlaneRight size={18} weight="regular" />
                                     )}
                                 </motion.button>
                             ) : (
@@ -258,7 +258,7 @@ export const MagicBar = ({
                                             : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105"
                                     )}
                                 >
-                                    {isRecording ? <MicrophoneSlash size={20} weight="bold" /> : <Microphone size={20} weight="bold" />}
+                                    {isRecording ? <MicrophoneSlash size={20} weight="regular" /> : <Microphone size={20} weight="regular" />}
                                 </motion.button>
                             )}
                         </AnimatePresence>

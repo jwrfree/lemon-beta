@@ -155,5 +155,126 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         };
       },
     }),
+
+    update_transaction: tool({
+      description: 'Mengubah detail transaksi yang sudah ada (misal: ganti nominal, kategori, atau deskripsi). Gunakan find_transactions dulu untuk mendapatkan ID transaksi.',
+      inputSchema: z.object({
+        transaction_id: z.string().uuid(),
+        updates: z.object({
+          amount: z.number().optional(),
+          category: z.string().optional(),
+          description: z.string().optional(),
+          date: z.string().optional(),
+        }),
+      }),
+      execute: async ({ transaction_id, updates }) => {
+        const { data, error } = await supabase
+          .from('transactions')
+          .update(updates)
+          .eq('id', transaction_id)
+          .eq('user_id', userId)
+          .select()
+          .single();
+
+        if (error) return { success: false, error: error.message };
+        return { success: true, transaction: data };
+      },
+    }),
+
+    delete_transaction: tool({
+      description: 'Menghapus transaksi tertentu. HANYA gunakan jika user secara eksplisit meminta menghapus transaksi spesifik. Gunakan find_transactions dulu untuk mendapatkan ID.',
+      inputSchema: z.object({
+        transaction_id: z.string().uuid(),
+      }),
+      execute: async ({ transaction_id }) => {
+        const { error } = await supabase
+          .from('transactions')
+          .delete()
+          .eq('id', transaction_id)
+          .eq('user_id', userId);
+
+        if (error) return { success: false, error: error.message };
+        return { success: true };
+      },
+    }),
+
+    analyze_subscriptions: tool({
+      description: 'Menganalisis pengeluaran untuk mendeteksi langganan (Netflix, Spotify, internet, dll) atau pengeluaran berulang.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('type', 'expense')
+          .order('date', { ascending: false })
+          .limit(100);
+
+        if (error || !data) return { error: 'Gagal mengambil data transaksi.' };
+
+        // Simple frequency detection for chat purposes
+        const groups: Record<string, any[]> = {};
+        data.forEach(tx => {
+          const key = (tx.merchant || tx.description || 'unknown').toLowerCase();
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(tx);
+        });
+
+        const subscriptions = Object.entries(groups)
+          .filter(([_, txs]) => txs.length >= 2) // Appears at least twice
+          .map(([name, txs]) => ({
+            name,
+            count: txs.length,
+            average_amount: txs.reduce((s, t) => s + t.amount, 0) / txs.length,
+            last_date: txs[0].date
+          }))
+          .sort((a, b) => b.average_amount - a.average_amount);
+
+        return { subscriptions };
+      },
+    }),
+
+    get_financial_health: tool({
+      description: 'Melakukan "Health Check" atau audit kesehatan finansial user secara menyeluruh.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        const context = await getContext();
+        if (!context) return { error: 'Gagal mendapatkan konteks finansial.' };
+
+        const { wealth, monthly, risk } = context;
+        const income = Math.max(monthly.income, 1);
+        const expense = monthly.expense;
+        const savingsRate = ((income - expense) / income) * 100;
+        const survivalDays = risk.survival_days;
+        const debtRatio = (wealth.liabilities / Math.max(wealth.assets + wealth.cash, 1)) * 100;
+
+        let score = 70; // Base score
+        const recs: string[] = [];
+
+        // Evaluate Savings Rate
+        if (savingsRate > 20) { score += 10; }
+        else if (savingsRate < 5) { score -= 15; recs.push('Tabungan kamu di bawah 5%, coba tekan pengeluaran non-esensial.'); }
+
+        // Evaluate Emergency Fund (Survival Days)
+        if (survivalDays > 90) { score += 10; }
+        else if (survivalDays < 30) { score -= 20; recs.push('Dana cadangan kamu cukup kritis (kurang dari 30 hari).'); }
+
+        // Evaluate Debt
+        if (debtRatio < 10) { score += 5; }
+        else if (debtRatio > 40) { score -= 15; recs.push('Rasio hutang terhadap aset cukup tinggi, prioritaskan pelunasan.'); }
+
+        if (recs.length === 0) recs.push('Kondisi kamu sangat baik! Pertahankan pola ini dan mulai investasi lebih agresif.');
+
+        return {
+          score: Math.min(Math.max(score, 0), 100),
+          labels: {
+            savings_rate: savingsRate > 0 ? `${Math.round(savingsRate)}%` : '0%',
+            emergency_fund: survivalDays > 365 ? '>1 Tahun' : `${survivalDays} Hari`,
+            debt_ratio: `${Math.round(debtRatio)}%`
+          },
+          recommendations: recs.slice(0, 3)
+        };
+      },
+    }),
   };
 };

@@ -39,6 +39,8 @@ import { BudgetStatusCard } from './rich-results/BudgetStatusCard';
 import { WealthSummaryCard } from './rich-results/WealthSummaryCard';
 import { RecentTransactionsList } from './rich-results/RecentTransactionsList';
 import { ScenarioSimulationCard } from './rich-results/ScenarioSimulationCard';
+import { SubscriptionAnalysisCard } from './rich-results/SubscriptionAnalysisCard';
+import { FinancialHealthCard } from './rich-results/FinancialHealthCard';
 
 interface AIChatDrawerProps {
     isOpen: boolean;
@@ -89,6 +91,8 @@ const RichMessageContent = ({ text }: { text: string }) => {
         'WealthSummary': () => <WealthSummaryCard />,
         'RecentTransactions': () => <RecentTransactionsList />,
         'ScenarioSimulation': (data) => <ScenarioSimulationCard data={data} />,
+        'SubscriptionAnalysis': (data) => <SubscriptionAnalysisCard data={data} />,
+        'FinancialHealth': (data) => <FinancialHealthCard data={data} />,
     };
 
     // Split text by component tags (e.g. [RENDER_COMPONENT:BudgetStatus] or [RENDER_COMPONENT:ScenarioSimulation|{...}])

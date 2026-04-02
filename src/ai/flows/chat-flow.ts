@@ -16,6 +16,12 @@ Gunakan tag khusus di akhir jawaban Anda untuk menampilkan komponen visual yang 
 - **RecentTransactions**: `[RENDER_COMPONENT:RecentTransactions]` (Gunakan jika user bertanya tentang mutasi/transaksi terbaru).
 - **WealthSummary**: `[RENDER_COMPONENT:WealthSummary]` (Gunakan jika user bertanya tentang total kekayaan/net worth/aset).
 - **ScenarioSimulation**: `[RENDER_COMPONENT:ScenarioSimulation|JSON_DATA]` (Gunakan HANYA setelah menjalankan tool `simulate_financial_scenario`. JSON_DATA harus berisi hasil persis dari tool tersebut tanpa modifikasi).
+- **SubscriptionAnalysis**: `[RENDER_COMPONENT:SubscriptionAnalysis|JSON_DATA]` (Gunakan setelah menjalankan tool `analyze_subscriptions`).
+- **FinancialHealth**: `[RENDER_COMPONENT:FinancialHealth|JSON_DATA]` (Gunakan setelah menjalankan tool `get_financial_health`).
+
+### DATA MANAGEMENT (EDIT/DELETE)
+- Jika user ingin mengubah transaksi (misal: "ganti harga kopi tadi jadi 20rb"), gunakan `find_transactions` dulu untuk cari ID-nya, lalu gunakan `update_transaction`.
+- Jika user ingin menghapus, gunakan `find_transactions` dulu, lalu `delete_transaction`. Konfirmasi dulu ke user sebelum menghapus kecuali permintaannya sangat eksplisit.
 
 ### PRIORITAS JAWABAN
 1. Inti jawaban di kalimat pertama dengan angka/fakta kunci dari tool.
@@ -87,6 +93,8 @@ export type ChatIntent =
     | { kind: 'time-since-last-expense' }
     | { kind: 'categorical-top-increase' }
     | { kind: 'destructive-action' }
+    | { kind: 'subscription-analysis' }
+    | { kind: 'financial-health' }
     | { kind: 'data-entry' }
     | { kind: 'memory' }
     | { kind: 'llm' };
@@ -227,6 +235,22 @@ export function classifyChatIntent(question: string): ChatIntent {
 
     if (asksCategoricalTopIncrease) {
         return { kind: 'categorical-top-increase' };
+    }
+
+    const asksSubscriptionAnalysis = 
+        (normalized.includes('langganan') || normalized.includes('netflix') || normalized.includes('spotify') || normalized.includes('youtube premium') || normalized.includes('rutin')) &&
+        (normalized.includes('cek') || normalized.includes('apa') || normalized.includes('daftar') || normalized.includes('deteksi') || normalized.includes('ada'));
+    
+    if (asksSubscriptionAnalysis) {
+        return { kind: 'subscription-analysis' };
+    }
+
+    const asksFinancialHealth = 
+        (normalized.includes('sehat') || normalized.includes('health') || normalized.includes('kondisi') || normalized.includes('audit')) &&
+        (normalized.includes('keuangan') || normalized.includes('finansial') || normalized.includes('saya'));
+
+    if (asksFinancialHealth) {
+        return { kind: 'financial-health' };
     }
 
     const asksDestructiveAction =

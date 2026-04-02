@@ -59,7 +59,6 @@ export const UnifiedTransactionSheet = ({
         form,
         isSubmitting,
         handleSubmit,
-        handleDelete,
         isAiProcessing,
         socraticInsight,
         clarificationQuestion,
@@ -136,7 +135,7 @@ export const UnifiedTransactionSheet = ({
                     side="bottom"
                     hideCloseButton={true}
                     className={cn(
-                        "overflow-hidden rounded-t-[2.25rem] bg-muted p-0 sm:max-w-2xl sm:rounded-t-[2.5rem] flex flex-col max-h-[94dvh]",
+                        "overflow-hidden rounded-t-[2.25rem] bg-card p-0 sm:max-w-2xl sm:rounded-t-[2.5rem] flex flex-col max-h-[94dvh]",
                     )}
                 >
                     <div className="pointer-events-none absolute inset-x-0 top-3 z-40 flex justify-center">
@@ -162,7 +161,7 @@ export const UnifiedTransactionSheet = ({
                     {/* --- STAGE 1: HEADER --- */}
                     <div
                         className={cn(
-                            "shrink-0 bg-muted shadow-[0_10px_30px_-28px_rgba(15,23,42,0.12)]",
+                            "shrink-0 bg-card/60 backdrop-blur-xl shadow-[0_1px_0_0_hsl(var(--border)),0_10px_30px_-28px_rgba(15,23,42,0.08)]",
                             useCompactSheetLayout ? "px-4 pb-2 pt-7 sm:px-5 sm:pb-3 sm:pt-8" : "px-4 pb-3 pt-7 sm:px-5 sm:pb-4 sm:pt-8"
                         )}
                     >
@@ -236,7 +235,7 @@ export const UnifiedTransactionSheet = ({
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className="rounded-[32px] bg-background p-4 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.2)]"
+                                    className="rounded-[32px] bg-muted p-4"
                                 >
                                     <DynamicSuggestions
                                         suggestions={quickStartSuggestions}
@@ -307,9 +306,9 @@ export const UnifiedTransactionSheet = ({
                     {/* --- FOOTER: AI INPUT & ACTIONS --- */}
                     <div
                         className={cn(
-                            "flex shrink-0 flex-col gap-3 bg-muted px-4 sm:px-5",
+                            "flex shrink-0 flex-col gap-3 bg-card px-4 sm:px-5",
                             useCompactSheetLayout
-                                ? "border-t border-border pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.18)] sm:pb-4"
+                                ? "border-t border-border pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.12)] sm:pb-4"
                                 : "pb-[calc(0.875rem+env(safe-area-inset-bottom))] pt-3 sm:pb-4"
                         )}
                     >

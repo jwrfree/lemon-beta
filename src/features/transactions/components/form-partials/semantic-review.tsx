@@ -55,7 +55,7 @@ export const SemanticTransactionReview = ({
     const fieldButtonBase =
         "inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-transparent px-4 py-3 text-left text-[15px] font-medium transition-all active:scale-[0.98]";
 
-    const sectionCardClass = "rounded-[22px] bg-background px-4 py-4";
+    const sectionCardClass = "rounded-[22px] bg-muted px-4 py-4";
     const missingFieldClass = "bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100";
 
     const recentCategories = activeCategories.filter((category) =>
@@ -102,9 +102,9 @@ export const SemanticTransactionReview = ({
     return (
         <div className="space-y-4 px-1">
             <div className="space-y-3">
-                <div className="rounded-[24px] bg-background px-4 py-4">
+                <div className="rounded-[24px] bg-muted px-4 py-4">
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                             Nominal
                         </span>
                     </div>
@@ -137,11 +137,11 @@ export const SemanticTransactionReview = ({
                                 setActiveEditor('amount');
                             }}
                             className={cn(
-                                "mt-2 flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98]",
+                                "mt-2 flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft",
                                 amountNumber > 0
                                     ? type === 'income'
                                         ? "bg-secondary text-primary"
-                                        : "bg-muted text-foreground"
+                                        : "bg-card text-foreground"
                                     : "animate-pulse bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100"
                             )}
                         >
@@ -159,7 +159,7 @@ export const SemanticTransactionReview = ({
             <div className="space-y-3">
                 <div className={cn(sectionCardClass, "space-y-2")}>
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                             Kategori
                         </span>
                     </div>
@@ -169,7 +169,7 @@ export const SemanticTransactionReview = ({
                             triggerHaptic('light');
                             setCategorySheetOpen(true);
                         }}
-                        className="flex w-full items-center gap-3 rounded-[18px] bg-muted px-4 py-3 text-left transition-all active:scale-[0.98]"
+                        className="flex w-full items-center gap-3 rounded-[18px] bg-card px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft"
                     >
                         <div className="flex min-w-0 flex-1 items-center gap-2.5">
                                     {categoryObj ? (
@@ -201,7 +201,7 @@ export const SemanticTransactionReview = ({
 
                 <div className={cn(sectionCardClass, "space-y-2")}>
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                             Keterangan
                         </span>
                     </div>
@@ -233,8 +233,8 @@ export const SemanticTransactionReview = ({
                                 setActiveEditor('description');
                             }}
                             className={cn(
-                                "flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98]",
-                                description ? "bg-muted text-foreground" : missingFieldClass
+                                "flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft",
+                                description ? "bg-card text-foreground" : missingFieldClass
                             )}
                         >
                             <span className="line-clamp-1 min-w-0 flex-1 text-sm font-medium">
@@ -249,7 +249,7 @@ export const SemanticTransactionReview = ({
 
                 <div className={cn(sectionCardClass, "space-y-2")}>
                     <div className="flex items-center px-1">
-                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-muted/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground/60 shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-card/50 px-2 py-0.5 text-label font-bold uppercase tracking-widest text-muted-foreground shadow-sm">
                             Detail
                         </span>
                     </div>
@@ -291,7 +291,7 @@ export const SemanticTransactionReview = ({
                             className={cn(
                                 fieldButtonBase,
                                 activeEditor === 'wallet' && "ring-2 ring-primary/20 ring-offset-2 ring-offset-muted",
-                                walletObj ? "bg-muted text-foreground" : missingFieldClass
+                                walletObj ? "bg-card text-foreground shadow-soft" : missingFieldClass
                             )}
                         >
                             <WalletIcon size={16} weight="fill" className="text-muted-foreground/60" />
@@ -302,7 +302,7 @@ export const SemanticTransactionReview = ({
                             <PopoverTrigger asChild>
                                 <button
                                     type="button"
-                                    className={cn(fieldButtonBase, "bg-muted text-foreground")}
+                                    className={cn(fieldButtonBase, "bg-card text-foreground shadow-soft")}
                                 >
                                     <CalendarIcon size={16} weight="fill" className="text-muted-foreground/60" />
                                     <span>{format(dateValue, 'dd MMM, HH:mm', { locale: localeId })}</span>
