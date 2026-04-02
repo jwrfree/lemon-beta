@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { PlusCircle, HandCoins, Plus, LoaderCircle } from 'lucide-react';
+import { CircleNotch, HandCoins, Plus } from '@phosphor-icons/react';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { formatCurrency } from '@/lib/utils';
 import { ChartContainer } from "@/components/ui/chart"
@@ -40,7 +40,7 @@ export const BudgetingDashboard = () => {
     if (isLoading || isTransactionsLoading) {
         return (
             <div className="flex flex-col h-full items-center justify-center py-12">
-                <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                <CircleNotch className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -105,7 +105,7 @@ export const BudgetingDashboard = () => {
                     <div className="flex items-center justify-between px-2">
                         <h2 className="text-label text-muted-foreground/60">Pos Anggaran</h2>
                         <Button onClick={() => setIsBudgetModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-label hover:bg-primary/10 hover:text-primary">
-                            <Plus className="h-3.5 w-3.5 mr-1" />
+                            <Plus className="h-3.5 w-3.5 mr-1" weight="regular" />
                             Tambah
                         </Button>
                     </div>

@@ -1,10 +1,9 @@
 'use client';
 
-import React from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import { MoreVertical, ShieldCheck, Sparkles } from 'lucide-react';
+import { DotsThreeVertical, ShieldCheck, Sparkle } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
@@ -127,7 +126,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                         </div>
                         {wallet.isDefault && (
                           <div className="flex items-center gap-1 mt-0.5">
-                            <ShieldCheck className="h-3 w-3 text-white/60" />
+                            <ShieldCheck size={12} weight="regular" className="text-white/60" />
                             <span className="text-label text-white/60">Dompet Utama</span>
                           </div>
                         )}
@@ -139,13 +138,13 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
                       className="text-white hover:bg-white/20 h-10 w-10 rounded-full relative z-10 backdrop-blur-sm border border-white/10"
                       onClick={(e) => { e.stopPropagation(); triggerHaptic('medium'); openEditWalletModal(wallet); }}
                     >
-                      <MoreVertical className="h-5 w-5" />
+                      <DotsThreeVertical size={20} weight="regular" />
                     </Button>
                   </div>
 
                   <div className="flex-1 flex flex-col justify-end">
                     <div className="flex items-center gap-2 mb-1 opacity-60">
-                      <Sparkles className="h-3 w-3" />
+                      <Sparkle size={12} weight="regular" />
                       <span className="text-label">Saldo Tersedia</span>
                     </div>
                     <p className={cn("text-4xl font-semibold tracking-tighter tabular-nums", !isBalanceVisible && 'blur-md transition-all duration-500')}>

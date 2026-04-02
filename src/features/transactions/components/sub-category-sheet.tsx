@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { XCircle, CheckCircle } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/55"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/80"
             onClick={onClose}
         >
             <motion.div
@@ -37,7 +37,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                 <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
                     <h2 className="text-xl font-medium tracking-tight">Pilih Sub-kategori {category.name}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
-                        <X className="h-5 w-5" />
+                        <XCircle size={22} weight="bold" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
@@ -56,7 +56,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                                 <span className={cn(selectedValue === subCat && "font-medium text-primary")}>
                                     {subCat}
                                 </span>
-                                {selectedValue === subCat && <Check className="h-5 w-5 text-primary" />}
+                                {selectedValue === subCat && <CheckCircle size={20} weight="bold" className="text-primary" />}
                             </button>
                         ))}
                     </div>

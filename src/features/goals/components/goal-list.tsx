@@ -1,10 +1,10 @@
 'use client';
 
+import type { ComponentType } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { cn, formatCurrency } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, LucideIcon, CalendarClock } from 'lucide-react';
+import { Airplane, Briefcase, CalendarDots, Car, Desktop, Gift, GraduationCap, House, Rocket } from '@phosphor-icons/react';
 import { formatDistanceToNowStrict, parseISO, isPast } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
@@ -12,8 +12,15 @@ import type { Goal } from '@/types/models';
 
 import { getVisualDNA } from '@/lib/visual-dna';
 
-const goalIcons: { [key: string]: LucideIcon } = {
-    Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer
+const goalIcons: Record<string, ComponentType<{ className?: string; weight?: 'regular' | 'fill' | 'duotone' | 'thin' | 'light' | 'bold' }>> = {
+    Rocket,
+    Car,
+    Home: House,
+    Gift,
+    Briefcase,
+    GraduationCap,
+    Plane: Airplane,
+    Computer: Desktop,
 };
 
 const getGoalColor = (iconName: string): string => {
@@ -73,13 +80,13 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
 
                             <CardHeader className="flex-row items-center gap-4 space-y-0 pb-2 p-7 relative z-10 text-white">
                                 <div className="p-3.5 bg-white/10 backdrop-blur-xl rounded-card-icon border border-white/10">
-                                    <Icon className="h-6 w-6 text-white" strokeWidth={2.5} />
+                                    <Icon className="h-6 w-6 text-white" weight="regular" />
                                 </div>
                                 <div className='flex-1 min-w-0'>
                                     <CardTitle className="text-lg font-semibold tracking-tight truncate">{goal.name}</CardTitle>
                                     {timeLeftText && (
                                         <div className={cn("flex items-center gap-1.5 label-xs mt-1.5", isOverdue ? "text-rose-300" : "text-white/50")}>
-                                            <CalendarClock className="h-3.5 w-3.5" />
+                                            <CalendarDots className="h-3.5 w-3.5" weight="regular" />
                                             <span>{timeLeftText}</span>
                                         </div>
                                     )}

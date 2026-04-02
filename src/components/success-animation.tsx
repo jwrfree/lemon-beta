@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check } from '@phosphor-icons/react';
 import { motionTokens } from '@/lib/motion-tokens';
 
 const PREFERS_REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
@@ -23,7 +23,7 @@ export const SuccessAnimation = () => {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
                 <div className="h-24 w-24 rounded-full bg-success text-success-foreground flex items-center justify-center shadow-card">
-                    <Check className="h-12 w-12" strokeWidth={3} />
+                    <Check className="h-12 w-12" weight="bold" />
                 </div>
             </div>
         );
@@ -50,7 +50,7 @@ export const SuccessAnimation = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: motionTokens.durationFast, ease: motionTokens.easingStandard }}
                     >
-                        <Check className="h-12 w-12 text-success-foreground stroke-[3px]" />
+                        <Check className="h-12 w-12 text-success-foreground" weight="bold" />
                     </motion.div>
                 </motion.div>
             </div>

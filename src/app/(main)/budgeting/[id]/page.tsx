@@ -5,15 +5,15 @@ import { useParams, useRouter } from 'next/navigation';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
-import { AlertCircle, Pencil, ArrowLeft, Target, Flame, Sparkles, Tag, Layers } from 'lucide-react';
-import { startOfMonth, differenceInDays } from 'date-fns';
+import { ArrowLeft, Fire, PencilSimple, Sparkle, Stack, Tag, Target, WarningCircle } from '@phosphor-icons/react';
+import { startOfMonth } from 'date-fns';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
@@ -62,7 +62,7 @@ export default function BudgetDetailPage() {
         return (
             <div className="flex h-screen items-center justify-center bg-zinc-50 dark:bg-black">
                 <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-                    <Sparkles className="h-8 w-8 text-primary/40" />
+                    <Sparkle className="h-8 w-8 text-primary/40" weight="regular" />
                 </motion.div>
             </div>
         );
@@ -75,12 +75,12 @@ export default function BudgetDetailPage() {
                 <main className="flex justify-center text-center p-8 pt-20">
                     <div className="max-w-xs flex flex-col items-center">
                         <div className="p-5 bg-rose-500/10 rounded-card-premium mb-6">
-                            <AlertCircle className="h-12 w-12 text-rose-500" strokeWidth={1.5} />
+                            <WarningCircle className="h-12 w-12 text-rose-500" weight="regular" />
                         </div>
                         <h2 className="text-2xl font-semibold tracking-tighter">Tidak Ditemukan</h2>
                         <p className="text-sm font-medium text-muted-foreground mt-3">Anggaran ini mungkin sudah dihapus atau dipindahkan.</p>
                         <Button onClick={() => router.push('/budgeting')} variant="outline" className="mt-8 rounded-md h-11 px-6">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            <ArrowLeft className="mr-2 h-4 w-4" weight="regular" />
                             Kembali ke Anggaran
                         </Button>
                     </div>
@@ -89,7 +89,7 @@ export default function BudgetDetailPage() {
         );
     }
 
-    const { budgetTransactions, spent, remaining, progress, daysLeft, daysPassedPercentage, daysToZero, safeDailyLimit } = budgetDetails!;
+    const { budgetTransactions, spent, remaining, progress, daysPassedPercentage, safeDailyLimit } = budgetDetails!;
 
     // Visual Configuration
     const isOver = remaining < 0;
@@ -107,7 +107,7 @@ export default function BudgetDetailPage() {
                 title="Detail Anggaran"
                 width="compact"
                 actionButton={{
-                    icon: Pencil,
+                    icon: PencilSimple,
                     label: "Ubah",
                     onClick: () => { triggerHaptic('light'); openEditBudgetModal(budget); }
                 }}
@@ -171,19 +171,19 @@ export default function BudgetDetailPage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                                 <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                                        <Target className="h-3 w-3" /> Target
+                                        <Target className="h-3 w-3" weight="regular" /> Target
                                     </p>
                                     <p className="text-xl font-semibold tracking-tighter tabular-nums text-foreground">{formatCurrency(budget.targetAmount)}</p>
                                 </div>
                                 <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                                        <Layers className="h-3 w-3" /> Terpakai
+                                        <Stack className="h-3 w-3" weight="regular" /> Terpakai
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-foreground')}>{formatCurrency(spent)}</p>
                                 </div>
                                 <div className="p-6 rounded-card-premium bg-muted/30 shadow-inner space-y-1">
                                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-2">
-                                        <Flame className="h-3 w-3" /> {isOver ? 'Kekurangan' : 'Sisa'}
+                                        <Fire className="h-3 w-3" weight="regular" /> {isOver ? 'Kekurangan' : 'Sisa'}
                                     </p>
                                     <p className={cn("text-xl font-semibold tracking-tighter tabular-nums", isOver ? 'text-rose-600' : 'text-emerald-600 dark:text-emerald-400')}>
                                         {formatCurrency(Math.abs(remaining))}
@@ -196,7 +196,7 @@ export default function BudgetDetailPage() {
                                 <div className="p-6 rounded-card-premium bg-emerald-500/5 border border-emerald-500/10 flex flex-col md:flex-row justify-between items-center gap-4 transition-all">
                                     <div className="flex items-center gap-4">
                                         <div className="h-12 w-12 rounded-card bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-                                            <Sparkles className="h-6 w-6" />
+                                            <Sparkle className="h-6 w-6" weight="regular" />
                                         </div>
                                         <div className="text-center md:text-left space-y-0.5">
                                             <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 tracking-tight uppercase">Jatah Aman Harian</p>
@@ -222,7 +222,7 @@ export default function BudgetDetailPage() {
                 >
                     <div className="flex items-center justify-between px-2">
                         <div className="flex items-center gap-3 text-zinc-400">
-                            <Tag className="h-4 w-4" />
+                            <Tag className="h-4 w-4" weight="regular" />
                             <h2 className="text-lg font-medium tracking-tighter text-zinc-900 dark:text-zinc-100">Aktivitas Anggaran</h2>
                         </div>
                         <Badge variant="outline" className="rounded-lg font-normal text-xs uppercase">{budgetTransactions.length} Transaksi</Badge>

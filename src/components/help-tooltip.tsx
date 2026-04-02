@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Info } from 'lucide-react';
+import { Info } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -28,7 +28,7 @@ export const HelpTooltip = ({
                         tabIndex={0}
                         aria-label="Info"
                     >
-                        <Info className={cn("h-3.5 w-3.5 text-muted-foreground/70 hover:text-foreground transition-colors", iconClassName)} />
+                        <Info className={cn("h-3.5 w-3.5 text-muted-foreground/70 hover:text-foreground transition-colors", iconClassName)} weight="regular" />
                     </div>
                 </TooltipTrigger>
                 <TooltipContent side={side} className="max-w-[260px] text-xs font-normal">

@@ -12,15 +12,15 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import {
-    CalendarDays,
-    ChevronDown,
-    Clock3,
+    Calendar,
+    CaretDown,
+    Clock,
     MapPin,
     ShieldCheck,
-    Sparkles,
+    Sparkle,
     Wallet as WalletIcon,
-    X,
-} from 'lucide-react';
+    XCircle,
+} from '@phosphor-icons/react';
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,7 @@ const DetailRow = ({
     value: React.ReactNode;
     icon: React.ComponentType<{ className?: string }>;
 }) => (
-    <div className="flex items-start gap-3 rounded-2xl bg-secondary px-4 py-3">
+    <div className="flex items-start gap-3 rounded-2xl bg-muted/40 px-4 py-3">
         <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground shadow-[0_10px_20px_-16px_rgba(15,23,42,0.2)]">
             <Icon className="h-3.5 w-3.5" />
         </div>
@@ -93,7 +93,7 @@ export const TransactionDetailSheet = ({
                 >
                     <div className="h-1.5 w-12 rounded-full bg-border/80 transition-colors duration-200" />
                     <div className="inline-flex items-center gap-1 rounded-full bg-muted/70 px-2.5 py-1 text-label font-medium text-muted-foreground/80 transition-colors duration-200">
-                        <ChevronDown className="h-3 w-3" />
+                        <CaretDown size={14} weight="bold" />
                         Tarik ke bawah untuk tutup
                     </div>
                 </motion.div>
@@ -104,7 +104,7 @@ export const TransactionDetailSheet = ({
                         onClick={onClose}
                         className="h-9 w-9 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
                     >
-                        <X className="h-5 w-5" />
+                        <XCircle size={22} weight="bold" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>
@@ -172,12 +172,12 @@ export const TransactionDetailSheet = ({
                         >
                             <DetailRow
                                 label="Tanggal & Jam"
-                                icon={CalendarDays}
+                                icon={Calendar}
                                 value={
                                     <div className="flex flex-col gap-0.5">
                                         <span>{format(parsedDate, 'EEEE, d MMMM yyyy', { locale: localeId })}</span>
                                         <span className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground">
-                                            <Clock3 className="h-3.5 w-3.5" />
+                                            <Clock size={14} weight="bold" />
                                             {format(parsedDate, 'HH:mm', { locale: localeId })}
                                         </span>
                                     </div>
@@ -204,14 +204,14 @@ export const TransactionDetailSheet = ({
                                     {transaction.subCategory && (
                                         <DetailRow
                                             label="Subkategori"
-                                            icon={Sparkles}
+                                            icon={Sparkle}
                                             value={transaction.subCategory}
                                         />
                                     )}
                                     {isExpense && typeof transaction.isNeed === 'boolean' && (
                                         <DetailRow
                                             label="Tipe Pengeluaran"
-                                            icon={transaction.isNeed ? ShieldCheck : Sparkles}
+                                            icon={transaction.isNeed ? ShieldCheck : Sparkle}
                                             value={transaction.isNeed ? 'Kebutuhan' : 'Keinginan'}
                                         />
                                     )}

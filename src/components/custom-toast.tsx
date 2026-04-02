@@ -4,12 +4,12 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUI } from './ui-provider';
-import { CheckCircle2, XCircle, Info, LucideIcon } from 'lucide-react';
+import { CheckCircle, Info, XCircle } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-const toastIcons: { [key: string]: LucideIcon } = {
-  success: CheckCircle2,
+const toastIcons: Record<string, React.ElementType> = {
+  success: CheckCircle,
   error: XCircle,
   info: Info,
 };

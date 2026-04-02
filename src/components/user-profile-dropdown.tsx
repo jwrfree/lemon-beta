@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserAvatar } from '@/components/user-avatar';
 import { useAuth } from '@/providers/auth-provider';
-import { LogOut, Settings, User } from 'lucide-react';
+import { SignOut, UserCircle } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 
 export const UserProfileDropdown = () => {
@@ -61,13 +61,13 @@ export const UserProfileDropdown = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem onClick={() => router.push('/profile')}>
-                        <User className="mr-2 h-4 w-4" />
+                        <UserCircle className="mr-2 h-4 w-4" weight="regular" />
                         <span>Profil & Akun</span>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive focus:bg-destructive/10">
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <SignOut className="mr-2 h-4 w-4" weight="regular" />
                     <span>Keluar</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

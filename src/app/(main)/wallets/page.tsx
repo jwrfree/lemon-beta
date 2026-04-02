@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { Plus, Wallet, PlusCircle } from 'lucide-react';
+import { Plus, Wallet } from '@phosphor-icons/react';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { WalletCardStack } from '@/features/wallets/components/wallet-card-stack';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
@@ -120,7 +120,7 @@ export default function WalletsPage() {
             <div className="flex items-center gap-2">
               <BalanceVisibilityToggle variant="ghost" size="icon" />
               <Button onClick={() => setIsWalletModalOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus size={16} weight="regular" className="mr-2" />
                 Tambah Dompet
               </Button>
             </div>

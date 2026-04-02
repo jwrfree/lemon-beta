@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeSlash } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 
@@ -30,9 +30,9 @@ export const BalanceVisibilityToggle: React.FC<BalanceVisibilityToggleProps> = (
       aria-label={isBalanceVisible ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
     >
       {isBalanceVisible ? (
-        <Eye className="h-6 w-6" />
+        <Eye className="h-6 w-6" weight="regular" />
       ) : (
-        <EyeOff className="h-6 w-6" />
+        <EyeSlash className="h-6 w-6" weight="regular" />
       )}
       {showLabel && (
         <span className="text-sm">

@@ -2,24 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn } from '@/lib/utils';
 import { parseISO, differenceInCalendarDays, format } from 'date-fns';
-import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarClock, ArrowUpRight, ArrowDownRight, ArrowUpDown, Plus } from 'lucide-react';
+import { ArrowsDownUp, CalendarDots, TrendDown, TrendUp } from '@phosphor-icons/react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { spacing } from '@/lib/layout-tokens';
-import { BellRing, HandCoins, AlertCircle, Sparkles, TrendingDown, TrendingUp } from 'lucide-react';
-
-import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { DebtsEmptyState } from '@/features/debts/components/debts-empty-state';
-import { DebtAnalyticsCard } from '@/features/debts/components/debt-analytics-card';
 import { StatusBadge } from '@/components/status-badge';
 
 const filterLabels: Record<string, string> = {
@@ -60,7 +53,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff < 0) {
         return (
             <span className="text-xs text-destructive font-medium flex items-center gap-1 bg-destructive/5 px-1.5 py-0.5 rounded w-fit mt-1">
-                <CalendarClock className="h-3 w-3" />
+                <CalendarDots className="h-3 w-3" weight="regular" />
                 Telat {Math.abs(diff)} hari
             </span>
         );
@@ -68,7 +61,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff === 0) {
         return (
             <span className="text-xs text-amber-600 font-medium flex items-center gap-1 bg-amber-500/10 px-1.5 py-0.5 rounded w-fit mt-1">
-                <CalendarClock className="h-3 w-3" />
+                <CalendarDots className="h-3 w-3" weight="regular" />
                 Hari ini
             </span>
         );
@@ -76,14 +69,14 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff <= 7) {
         return (
             <span className="text-xs text-amber-600 font-medium flex items-center gap-1 bg-amber-500/10 px-1.5 py-0.5 rounded w-fit mt-1">
-                <CalendarClock className="h-3 w-3" />
+                <CalendarDots className="h-3 w-3" weight="regular" />
                 {diff} hari lagi
             </span>
         );
     }
     return (
         <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded w-fit mt-1">
-            <CalendarClock className="h-3 w-3" />
+            <CalendarDots className="h-3 w-3" weight="regular" />
             {diff} hari lagi
         </span>
     );
@@ -149,7 +142,7 @@ export const DebtsDashboard = () => {
                 <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-card-premium border border-destructive/20 bg-destructive/5 p-4 flex flex-col justify-between group hover:bg-destructive/10 transition-all">
                         <div className="flex items-center gap-2 mb-2">
-                            <TrendingDown className="h-3.5 w-3.5 text-destructive opacity-70" />
+                            <TrendDown className="h-3.5 w-3.5 text-destructive opacity-70" weight="regular" />
                             <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.1em]">Saya Berhutang</p>
                         </div>
                         <div className="flex items-baseline gap-1">
@@ -158,7 +151,7 @@ export const DebtsDashboard = () => {
                     </div>
                     <div className="rounded-card-premium border border-primary/20 bg-primary/5 p-4 flex flex-col justify-between group hover:bg-primary/10 transition-all">
                         <div className="flex items-center gap-2 mb-2">
-                            <TrendingUp className="h-3.5 w-3.5 text-primary opacity-70" />
+                            <TrendUp className="h-3.5 w-3.5 text-primary opacity-70" weight="regular" />
                             <p className="text-[10px] uppercase font-bold text-primary tracking-[0.1em]">Piutang Saya</p>
                         </div>
                         <div className="flex items-baseline gap-1">
@@ -186,7 +179,7 @@ export const DebtsDashboard = () => {
 
                     <Select value={sortBy} onValueChange={setSortBy}>
                         <SelectTrigger className="w-[44px] h-10 p-0 flex items-center justify-center rounded-full bg-muted/30 border-none shadow-none hover:bg-muted/50 transition-colors">
-                            <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+                            <ArrowsDownUp className="w-4 h-4 text-muted-foreground" weight="regular" />
                         </SelectTrigger>
                         <SelectContent align="end" className="rounded-card-glass border-border/40 min-w-[160px]">
                             <SelectItem value="updated_desc" className="text-xs font-medium">✨ Terbaru Update</SelectItem>

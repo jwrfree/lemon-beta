@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { X } from 'lucide-react';
+import { XCircle } from '@phosphor-icons/react';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 
@@ -30,7 +30,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/55 backdrop-blur-[2px]"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/80"
             onClick={onClose}
         >
             <motion.div
@@ -46,7 +46,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: { transa
                 <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-2 pt-5">
                     <h2 className="text-xl font-bold text-destructive tracking-tight">Hapus Transaksi?</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="h-10 w-10 rounded-full bg-muted">
-                        <X className="h-5 w-5" />
+                        <XCircle size={22} weight="bold" />
                         <span className="sr-only">Tutup</span>
                     </Button>
                 </div>

@@ -31,6 +31,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import ReactMarkdown from 'react-markdown';
 import { useInsights } from '@/features/insights/hooks/use-insights';
 import { buildFollowUpSuggestions } from '../lib/follow-up-suggestions';
+import { BudgetStatusCard } from './rich-results/BudgetStatusCard';
+import { WealthSummaryCard } from './rich-results/WealthSummaryCard';
+import { RecentTransactionsList } from './rich-results/RecentTransactionsList';
 
 interface AIChatDrawerProps {
     isOpen: boolean;
@@ -72,6 +75,45 @@ const getMessageText = (message: UIMessage) =>
         .filter((part): part is Extract<UIMessage['parts'][number], { type: 'text' }> => part.type === 'text')
         .map((part) => part.text)
         .join('');
+
+const RichMessageContent = ({ text }: { text: string }) => {
+    if (!text) return null;
+
+    const components: Record<string, React.ReactNode> = {
+        'BudgetStatus': <BudgetStatusCard />,
+        'WealthSummary': <WealthSummaryCard />,
+        'RecentTransactions': <RecentTransactionsList />,
+    };
+
+    // Split text by component tags (e.g. [RENDER_COMPONENT:BudgetStatus])
+    const parts = text.split(/(\[RENDER_COMPONENT:[a-zA-Z]+\])/g);
+
+    return (
+        <>
+            {parts.map((part, idx) => {
+                const match = part.match(/\[RENDER_COMPONENT:([a-zA-Z]+)\]/);
+                const componentName = match ? match[1] : null;
+
+                if (componentName && components[componentName]) {
+                    return <div key={idx} className="my-3 first:mt-0 last:mb-0">{components[componentName]}</div>;
+                }
+                
+                if (!part.trim() || part.startsWith('[RENDER_COMPONENT:')) return null;
+
+                return (
+                    <ReactMarkdown
+                        key={idx}
+                        components={{
+                            p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                        }}
+                    >
+                        {part}
+                    </ReactMarkdown>
+                );
+            })}
+        </>
+    );
+};
 
 export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
     const { briefing } = useInsights();
@@ -235,13 +277,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                     ) : (
                                                         <>
                                                             {getMessageText(message) ? (
-                                                                <ReactMarkdown
-                                                                    components={{
-                                                                        p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                                                                    }}
-                                                                >
-                                                                    {getMessageText(message)}
-                                                                </ReactMarkdown>
+                                                                <RichMessageContent text={getMessageText(message)} />
                                                             ) : (
                                                                 isLoading && <ShinyText text="Lemon Coach sedang berpikir..." />
                                                             )}

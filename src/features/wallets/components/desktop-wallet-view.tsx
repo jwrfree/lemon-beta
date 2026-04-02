@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wallet as WalletIcon, ArrowUpDown, ArrowUp, ArrowDown, TrendingUp, TrendingDown, Target, Search, Sparkles } from 'lucide-react';
+import { ArrowsDownUp, ArrowDown, ArrowUp, CircleNotch, DotsThreeVertical, MagnifyingGlass, Sparkle, Target, TrendDown, TrendUp, Trash, Wallet as WalletIcon } from '@phosphor-icons/react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
@@ -29,7 +29,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import { Loader2, Trash2 } from 'lucide-react';
 
 interface DesktopWalletViewProps {
     wallets: Wallet[];
@@ -164,7 +163,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     onClick={toggleBalanceVisibility}
                                     className="p-1.5 hover:bg-white/5 rounded-full transition-colors"
                                 >
-                                    <Sparkles className="h-3.5 w-3.5 text-white/30" />
+                                    <Sparkle size={14} weight="regular" className="text-white/30" />
                                 </button>
                             </div>
                         </div>
@@ -194,14 +193,14 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     <Card className="rounded-card bg-card/98 p-5 group flex flex-col justify-center shadow-[0_18px_34px_-28px_rgba(15,23,42,0.2)]">
                         <div className="flex items-start justify-between mb-2">
                             <p className="text-label text-muted-foreground">Inflow</p>
-                            <TrendingUp className="h-3.5 w-3.5 text-success" />
+                            <TrendUp size={14} weight="regular" className="text-success" />
                         </div>
                         <p className="text-xl font-medium tracking-tight text-foreground">{formatCurrency(income30)}</p>
                     </Card>
                     <Card className="rounded-card bg-card/98 p-5 group flex flex-col justify-center shadow-[0_18px_34px_-28px_rgba(15,23,42,0.2)]">
                         <div className="flex items-start justify-between mb-2">
                             <p className="text-label text-muted-foreground">Outflow</p>
-                            <TrendingDown className="h-3.5 w-3.5 text-destructive" />
+                            <TrendDown size={14} weight="regular" className="text-destructive" />
                         </div>
                         <p className="text-xl font-medium tracking-tight text-foreground">{formatCurrency(expense30)}</p>
                     </Card>
@@ -209,7 +208,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                 <div className="lg:col-span-3 rounded-card bg-secondary/75 p-5 flex items-center gap-4 shadow-[0_18px_34px_-30px_rgba(15,23,42,0.18)]">
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0 opacity-80">
-                        <Target className="h-6 w-6" />
+                        <Target size={24} weight="regular" />
                     </div>
                     <div className="flex-1 min-w-0">
                         <h4 className="text-label text-primary mb-0.5">Wealth Goal</h4>
@@ -230,12 +229,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                         <div className="flex items-center justify-between">
                             <h2 className="text-label text-muted-foreground opacity-60">Portfolio Accounts</h2>
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-secondary" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
-                                <ArrowUpDown className="h-3 w-3 opacity-40" />
+                                <ArrowsDownUp size={12} weight="regular" className="opacity-40" />
                             </Button>
                         </div>
 
                         <div className="relative group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+                            <MagnifyingGlass size={12} weight="regular" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search..."
                                 value={search}
@@ -353,11 +352,11 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <div className="flex items-center gap-1.5">
-                                                    <ArrowUp className="h-2.5 w-2.5 text-success" />
+                                                    <ArrowUp size={10} weight="regular" className="text-success" />
                                                     <span className="text-xs font-medium tabular-nums text-foreground/60">{formatCurrency(activeAnalytics.income30)}</span>
                                                 </div>
                                                 <div className="flex items-center gap-1.5">
-                                                    <ArrowDown className="h-2.5 w-2.5 text-destructive" />
+                                                    <ArrowDown size={10} weight="regular" className="text-destructive" />
                                                     <span className="text-xs font-medium tabular-nums text-foreground/60">{formatCurrency(activeAnalytics.expense30)}</span>
                                                 </div>
                                             </div>
@@ -431,7 +430,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                             <Card className="rounded-card bg-card/98 p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.22)]">
                                                 <div className="h-10 w-10 bg-primary/5 rounded-full flex items-center justify-center text-primary border-none">
-                                                    <Sparkles className="h-5 w-5" />
+                                                    <Sparkle size={20} weight="regular" />
                                                 </div>
                                                 <div className="space-y-1">
                                                     <h4 className="text-label">Forecast</h4>
@@ -471,7 +470,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
                                                                     <Button variant="destructive" size="sm" className="rounded-lg text-label" disabled={isDeleting}>
-                                                                        {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Terminate'}
+                                                                        {isDeleting ? <CircleNotch size={16} weight="regular" className="animate-spin" /> : 'Terminate'}
                                                                     </Button>
                                                                 </AlertDialogTrigger>
                                                                 <AlertDialogContent className="rounded-card">

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Sparkle, TrendUp, X } from '@phosphor-icons/react';
 import { useAuth } from '@/providers/auth-provider';
 import { transactionService } from '@/features/transactions/services/transaction.service';
 
@@ -13,7 +13,6 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Slider } from '@/components/ui/slider';
 import { useUI } from '@/components/ui-provider';
 import { getCategoryIcon } from '@/lib/category-utils';
 
@@ -156,14 +155,14 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           <div className="w-11">
             {step > 1 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5" weight="regular" />
                 <span className="sr-only">Kembali</span>
               </Button>
             )}
           </div>
           <h2 className="text-xl font-semibold tracking-tighter text-center">{stepTitles[step - 1]}</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" weight="regular" />
             <span className="sr-only">Tutup</span>
           </Button>
         </div>
@@ -244,7 +243,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                   ) : recommendation && recommendation.avg > 0 ? (
                     <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-none border border-border/40">
                       <div className="bg-emerald-500/10 p-2.5 rounded-card">
-                        <Sparkles className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                        <Sparkle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" weight="regular" />
                       </div>
                       <div className="flex-1">
                         <h4 className="text-xs font-semibold text-label text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
@@ -263,7 +262,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                     </div>
                   ) : (
                     <div className="bg-muted/30 p-5 rounded-card-premium flex items-center gap-4 text-muted-foreground/60 shadow-inner">
-                      <TrendingUp className="h-5 w-5 opacity-40" />
+                      <TrendUp className="h-5 w-5 opacity-40" weight="regular" />
                       <p className="text-xs font-semibold text-label">No historical data for insights yet.</p>
                     </div>
                   )}

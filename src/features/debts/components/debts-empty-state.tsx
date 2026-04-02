@@ -1,6 +1,6 @@
 'use client';
 
-import { HandCoins, Plus } from 'lucide-react';
+import { HandCoins } from '@phosphor-icons/react';
 import { useUI } from '@/components/ui-provider';
 import { EmptyState } from '@/components/empty-state';
 

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, RefreshCw, Zap, TrendingUp, DollarSign } from 'lucide-react';
+import { ArrowClockwise, Lightning } from '@phosphor-icons/react';
 import { formatCurrency } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -63,7 +63,7 @@ export const DeepSeekUsageCard = () => {
 
             <CardHeader className="flex flex-row items-center justify-between pb-4 relative z-10">
                 <CardTitle className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2">
-                    <Zap className="h-3.5 w-3.5 text-accent" fill="currentColor" />
+                    <Lightning className="h-3.5 w-3.5 text-accent" weight="fill" />
                     DeepSeek AI Balance
                 </CardTitle>
                 <Button
@@ -73,7 +73,7 @@ export const DeepSeekUsageCard = () => {
                     disabled={isLoading}
                     className="h-8 w-8 text-muted-foreground hover:text-accent hover:bg-accent/10 rounded-full"
                 >
-                    <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    <ArrowClockwise className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} weight="regular" />
                 </Button>
             </CardHeader>
             <CardContent className="relative z-10 pt-0">

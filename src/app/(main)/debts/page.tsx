@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn } from '@/lib/utils';
 import { parseISO, differenceInCalendarDays } from 'date-fns';
-import { HandCoins, ArrowUpRight, ArrowDownRight, Plus, CalendarClock, ArrowUpDown } from 'lucide-react';
+import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots, HandCoins } from '@phosphor-icons/react';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -62,7 +62,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff < 0) {
         return (
             <span className="text-xs text-destructive font-medium flex items-center gap-1 bg-destructive/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
-                <CalendarClock className="h-3 w-3" /> 
+                <CalendarDots className="h-3 w-3" weight="regular" /> 
                 Telat {Math.abs(diff)} hari
             </span>
         );
@@ -70,7 +70,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff === 0) {
         return (
             <span className="text-xs text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
-                <CalendarClock className="h-3 w-3" /> 
+                <CalendarDots className="h-3 w-3" weight="regular" /> 
                 Hari ini
             </span>
         );
@@ -78,14 +78,14 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff <= 7) {
         return (
             <span className="text-xs text-warning font-medium flex items-center gap-1 bg-warning/10 px-1.5 py-0.5 rounded-md w-fit mt-1">
-                <CalendarClock className="h-3 w-3" /> 
+                <CalendarDots className="h-3 w-3" weight="regular" /> 
                 {diff} hari lagi
             </span>
         );
     }
     return (
         <span className="text-xs text-muted-foreground flex items-center gap-1 bg-muted px-1.5 py-0.5 rounded-md w-fit mt-1">
-            <CalendarClock className="h-3 w-3" /> 
+            <CalendarDots className="h-3 w-3" weight="regular" /> 
             {diff} hari lagi
         </span>
     );
@@ -152,7 +152,7 @@ export default function DebtsPage() {
                 extraActions={
                     <Select value={sortBy} onValueChange={setSortBy}>
                         <SelectTrigger className="w-[140px] h-9 text-xs font-semibold uppercase tracking-widest bg-background/50 backdrop-blur-md border-none">
-                            <ArrowUpDown className="w-3 h-3 mr-2 text-primary" />
+                            <ArrowsDownUp className="w-3 h-3 mr-2 text-primary" weight="regular" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
                         <SelectContent align="end" className="rounded-card border-none shadow-xl bg-popover/95 backdrop-blur-xl">

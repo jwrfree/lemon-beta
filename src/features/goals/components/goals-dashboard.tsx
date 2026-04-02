@@ -4,7 +4,7 @@ import { useGoals } from '@/features/goals/hooks/use-goals';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { Plus, Target, LoaderCircle } from 'lucide-react';
+import { CircleNotch, Plus, Target } from '@phosphor-icons/react';
 import { GoalList } from './goal-list';
 import { EmptyState } from '@/components/empty-state';
 
@@ -15,7 +15,7 @@ export const GoalsDashboard = () => {
     if (isLoading) {
         return (
             <div className="flex flex-col h-full items-center justify-center py-12">
-                <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                <CircleNotch className="h-8 w-8 animate-spin text-primary" />
             </div>
         );
     }
@@ -44,7 +44,7 @@ export const GoalsDashboard = () => {
                 <div className="flex items-center justify-between mb-4 px-2">
                     <h2 className="label-xs">Daftar Impian</h2>
                     <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-label uppercase hover:bg-primary/10 hover:text-primary">
-                        <Plus className="h-3.5 w-3.5 mr-1" />
+                        <Plus className="h-3.5 w-3.5 mr-1" weight="regular" />
                         Tambah
                     </Button>
                 </div>

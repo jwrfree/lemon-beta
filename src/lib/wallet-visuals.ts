@@ -1,5 +1,5 @@
 'use client';
-import { Wallet, Landmark, Smartphone, CircleDollarSign, TrendingUp, Home, Building } from 'lucide-react';
+import { Bank, Building, CurrencyCircleDollar, DeviceMobile, House, TrendUp, Wallet } from '@phosphor-icons/react';
 
 interface Gradient {
     from: string;
@@ -16,24 +16,24 @@ interface WalletVisuals {
 
 const itemCategories: Record<string, Omit<WalletVisuals, 'gradient' | 'textColor' | 'logo'>> = {
     // Wallets
-    'e-wallet': { name: 'E-Wallet', Icon: Smartphone },
-    'bank': { name: 'Bank', Icon: Landmark },
+    'e-wallet': { name: 'E-Wallet', Icon: DeviceMobile },
+    'bank': { name: 'Bank', Icon: Bank },
     'cash': { name: 'Tunai', Icon: Wallet },
     // Assets
-    'investment': { name: 'Investasi', Icon: TrendingUp },
-    'investasi': { name: 'Investasi', Icon: TrendingUp },
-    'property': { name: 'Properti', Icon: Home },
+    'investment': { name: 'Investasi', Icon: TrendUp },
+    'investasi': { name: 'Investasi', Icon: TrendUp },
+    'property': { name: 'Properti', Icon: House },
     // Liabilities & Paylater
     'loan': { name: 'Pinjaman', Icon: Building },
-    'credit-card': { name: 'Kartu Kredit', Icon: Smartphone },
-    'paylater': { name: 'Paylater', Icon: Smartphone },
+    'credit-card': { name: 'Kartu Kredit', Icon: DeviceMobile },
+    'paylater': { name: 'Paylater', Icon: DeviceMobile },
     // Default / Other
-    'other': { name: 'Lainnya', Icon: CircleDollarSign },
+    'other': { name: 'Lainnya', Icon: CurrencyCircleDollar },
 };
 
 const defaultVisuals: WalletVisuals = {
     name: 'Lainnya',
-    Icon: CircleDollarSign,
+    Icon: CurrencyCircleDollar,
     gradient: { from: '#4338ca', to: '#312e81' }, // indigo-700 to indigo-900
     textColor: 'text-white'
 };

@@ -1,19 +1,18 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {
-    TrendingUp,
-    TrendingDown,
-    CalendarClock,
-    AlertTriangle,
+    Brain,
+    CalendarDots,
+    CircleNotch,
+    Sparkle,
+    TrendDown,
+    TrendUp,
+    Warning,
     Target,
     Wallet,
-    Sparkles,
-    Loader2,
-    BrainCircuit
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { formatCurrency, cn } from '@/lib/utils';
 import {
     subMonths,
@@ -169,14 +168,14 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
 
                     <div className="bg-primary/10 p-1.5 rounded-lg shrink-0 z-10">
                         {isAiLoading ? (
-                            <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                            <CircleNotch className="h-4 w-4 text-primary animate-spin" weight="regular" />
                         ) : (
-                            <BrainCircuit className="h-4 w-4 text-primary" />
+                            <Brain className="h-4 w-4 text-primary" weight="regular" />
                         )}
                     </div>
                     <div className="flex-1 z-10">
                         <p className="text-label text-primary mb-0.5 flex items-center gap-1">
-                            <Sparkles className="h-3 w-3" />
+                            <Sparkle className="h-3 w-3" weight="regular" />
                             AI Debt Strategist
                         </p>
                         {isAiLoading ? (
@@ -213,7 +212,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                     ? "bg-destructive/10 text-destructive"
                                     : "bg-success/10 text-success"
                             )}>
-                                {analytics.isGrowing ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                                {analytics.isGrowing ? <TrendUp className="h-3 w-3" weight="regular" /> : <TrendDown className="h-3 w-3" weight="regular" />}
                                 {analytics.monthDiff > 0 ? '+' : ''}{formatCurrency(Math.abs(analytics.monthDiff))} vs bulan lalu
                             </span>
                         </div>
@@ -250,7 +249,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                         <div className="bg-secondary/50 rounded-lg p-3 border border-border/50">
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="p-2 bg-info/10 rounded-lg">
-                                    <CalendarClock className="h-4 w-4 text-info" />
+                                    <CalendarDots className="h-4 w-4 text-info" weight="regular" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-muted-foreground">Estimasi Lunas</p>
@@ -272,7 +271,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                         {analytics.highInterestDebts.length > 0 ? (
                             <div className="bg-warning/10 rounded-lg p-3 border border-warning/20">
                                 <div className="flex items-start gap-2">
-                                    <AlertTriangle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+                                    <Warning className="h-4 w-4 text-warning mt-0.5 shrink-0" weight="regular" />
                                     <div>
                                         <p className="text-xs font-medium text-warning">Peringatan Bunga</p>
                                         <p className="text-xs text-warning/90 mt-1">

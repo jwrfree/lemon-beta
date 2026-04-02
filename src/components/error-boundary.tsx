@@ -3,7 +3,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { ArrowClockwise, Warning } from '@phosphor-icons/react';
 
 interface Props {
     children: ReactNode;
@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <Card className="h-full min-h-[150px] border-destructive/30 bg-destructive/5 shadow-none">
                     <CardContent className="flex flex-col items-center justify-center h-full p-6 text-center space-y-3">
                         <div className="p-2 bg-destructive/10 rounded-full">
-                            <AlertTriangle className="h-5 w-5 text-destructive" />
+                            <Warning className="h-5 w-5 text-destructive" weight="regular" />
                         </div>
                         <div className="space-y-1">
                             <h3 className="text-sm font-medium text-destructive">Gagal memuat widget</h3>
@@ -57,7 +57,7 @@ export class ErrorBoundary extends Component<Props, State> {
                             onClick={this.handleRetry}
                             className="h-7 text-xs border-destructive/20 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
                         >
-                            <RefreshCw className="mr-2 h-3 w-3" />
+                            <ArrowClockwise className="mr-2 h-3 w-3" weight="regular" />
                             Coba Lagi
                         </Button>
                     </CardContent>

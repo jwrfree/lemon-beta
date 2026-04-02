@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { User } from 'lucide-react';
+import { UserCircle } from '@phosphor-icons/react';
 
 interface UserAvatarProps {
     name?: string | null;
@@ -49,7 +49,7 @@ export const UserAvatar = ({ name, src, className, fallbackClassName }: UserAvat
         <Avatar className={cn("h-10 w-10 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.28)]", className)}>
             <AvatarImage src={src || ''} alt={name || 'User'} className="object-cover" />
             <AvatarFallback className={cn("font-medium text-sm", colorClass, fallbackClassName)}>
-                {initials || <User className="h-4 w-4" />}
+                {initials || <UserCircle className="h-4 w-4" weight="regular" />}
             </AvatarFallback>
         </Avatar>
     );

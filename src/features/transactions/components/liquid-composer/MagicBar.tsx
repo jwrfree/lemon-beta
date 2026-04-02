@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, MicOff, Loader2, Camera, Waves, X, Send } from 'lucide-react';
+import { Microphone, MicrophoneSlash, CircleNotch, Camera, Waveform, XCircle, PaperPlaneRight } from '@phosphor-icons/react';
 import { cn, triggerHaptic } from '@/lib/utils';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useAudioRecorder } from '@/hooks/use-audio-recorder';
@@ -120,13 +120,13 @@ export const MagicBar = ({
                 <div className="flex min-w-0 flex-1 items-end gap-2">
                     <div className="shrink-0">
                         {(isProcessing || isTranscribing) ? (
-                            <Loader2 className="h-5 w-5 animate-spin text-primary" strokeWidth={1.5} />
+                            <CircleNotch size={20} weight="bold" className="animate-spin text-primary" />
                         ) : isRecording ? (
                             <motion.div 
                                 animate={{ scale: [1, 1.2, 1] }} 
                                 transition={{ repeat: Infinity, duration: 1.5 }}
                             >
-                                <Waves className="h-5 w-5 text-violet-500" />
+                                <Waveform size={20} weight="bold" className="text-violet-500" />
                             </motion.div>
                         ) : null}
                     </div>
@@ -180,7 +180,7 @@ export const MagicBar = ({
                                 aria-label="Unggah foto struk"
                                 className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                             >
-                                <Camera className="h-5 w-5" />
+                                <Camera size={20} weight="bold" />
                             </motion.button>
                         )}
 
@@ -196,7 +196,7 @@ export const MagicBar = ({
                                 aria-label="Kosongkan input"
                                 className="rounded-full p-2 text-muted-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                             >
-                                <X className="h-4 w-4" />
+                                <XCircle size={18} weight="bold" />
                             </motion.button>
                         )}
 
@@ -222,9 +222,9 @@ export const MagicBar = ({
                                 )}
                             >
                                 {isProcessing ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <CircleNotch size={18} weight="bold" className="animate-spin" />
                                 ) : (
-                                    <Send className="h-4 w-4" />
+                                    <PaperPlaneRight size={18} weight="bold" />
                                 )}
                             </motion.button>
                         ) : (
@@ -244,7 +244,7 @@ export const MagicBar = ({
                                         : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105"
                                 )}
                             >
-                                {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                                {isRecording ? <MicrophoneSlash size={20} weight="bold" /> : <Microphone size={20} weight="bold" />}
                             </motion.button>
                         )}
                     </AnimatePresence>

@@ -21,7 +21,8 @@ import {
     AlertDialogDescription, 
     AlertDialogFooter, 
     AlertDialogHeader, 
-    AlertDialogTitle 
+    AlertDialogTitle,
+    AlertDialogOverlay
 } from '@/components/ui/alert-dialog';
 
 
@@ -322,17 +323,6 @@ export const UnifiedTransactionSheet = ({
                         {shouldShowReview && (
                             <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: 20, height: 0 }} className="mt-1 space-y-3 overflow-hidden">
                                 <div className="flex w-full gap-3">
-                                    {isEditMode && (
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            onClick={handleDelete}
-                                            aria-label="Hapus transaksi"
-                                            className="h-14 w-14 shrink-0 rounded-[22px] bg-error-surface text-error hover:bg-error-muted"
-                                        >
-                                            <Trash size={20} weight="bold" />
-                                        </Button>
-                                    )}
                                     {totalTxs > 1 ? (
                                         <Button 
                                             onClick={saveAll} 
@@ -340,10 +330,7 @@ export const UnifiedTransactionSheet = ({
                                             className="h-14 flex-1 rounded-[22px] bg-success text-base font-bold text-success-foreground shadow-[0_18px_34px_-24px_rgba(5,150,105,0.45)] transition-all hover:opacity-90"
                                         >
                                             {isAiProcessing ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : (
-                                                <span className="flex items-center gap-2">
-                                                    <ListChecks size={20} weight="bold" />
-                                                    Simpan Semua ({totalTxs})
-                                                </span>
+                                                    <span>Simpan Semua ({totalTxs})</span>
                                             )}
                                         </Button>
                                     ) : (
@@ -354,10 +341,7 @@ export const UnifiedTransactionSheet = ({
                                                 className="h-14 w-full rounded-[22px] bg-primary text-base font-bold text-primary-foreground shadow-[0_18px_34px_-24px_rgba(13,148,136,0.45)] transition-all hover:scale-[1.01] active:scale-[0.98]"
                                             >
                                                 {isSubmitting ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : (
-                                                    <span className="flex items-center gap-2">
-                                                    <FloppyDisk size={20} weight="bold" />
-                                                        {isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}
-                                                    </span>
+                                                    <span>{isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}</span>
                                                 )}
                                             </Button>
                                             {!isEditMode && amountNumber > 0 && (
@@ -367,7 +351,6 @@ export const UnifiedTransactionSheet = ({
                                                     disabled={isSubmitting} 
                                                     className="h-11 w-full rounded-[18px] bg-secondary text-label text-primary transition-all hover:bg-secondary"
                                                 >
-                                                    <PlusCircle size={18} weight="bold" className="mr-2" />
                                                     Simpan & tambah lagi
                                                 </Button>
                                             )}
@@ -383,7 +366,8 @@ export const UnifiedTransactionSheet = ({
 
         {/* Discard Confirmation Dialog */}
         <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
-            <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-border/40 bg-background/95 p-7 backdrop-blur-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <AlertDialogOverlay className="bg-black/60" />
+            <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <AlertDialogHeader className="space-y-4 text-center sm:text-left">
                     <AlertDialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
                         Batalkan Transaksi?
@@ -420,7 +404,8 @@ export const UnifiedTransactionSheet = ({
         </AlertDialog>
 
         <AlertDialog open={showRemoveDraftConfirm} onOpenChange={setShowRemoveDraftConfirm}>
-            <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-border/40 bg-background/95 p-7 backdrop-blur-xl shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <AlertDialogOverlay className="bg-black/60" />
+            <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <AlertDialogHeader className="space-y-4 text-center sm:text-left">
                     <AlertDialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
                         Hapus draft ini?

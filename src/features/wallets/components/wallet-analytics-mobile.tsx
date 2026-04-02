@@ -1,9 +1,9 @@
 
 'use client';
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, PieChart as PieChartIcon } from 'lucide-react';
+import { ChartPieSlice, TrendDown, TrendUp } from '@phosphor-icons/react';
 import { formatCurrency, cn } from '@/lib/utils';
 import { CategoryPie } from '@/features/charts/components/category-pie';
 import type { Transaction } from '@/types/models';
@@ -46,7 +46,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                     className="p-4 rounded-card bg-success/5 border border-success/10"
                 >
                     <div className="flex items-center gap-2 text-success mb-1">
-                        <TrendingUp className="h-3 w-3" />
+                        <TrendUp size={12} weight="regular" />
                         <span className="text-label">Pemasukan</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
@@ -61,7 +61,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
                     className="p-4 rounded-card bg-destructive/5 border border-destructive/10"
                 >
                     <div className="flex items-center gap-2 text-destructive mb-1">
-                        <TrendingDown className="h-3 w-3" />
+                        <TrendDown size={12} weight="regular" />
                         <span className="text-label">Pengeluaran</span>
                     </div>
                     <p className="text-lg font-medium tracking-tight text-foreground">
@@ -73,7 +73,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
             {/* Category Analysis */}
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                    <PieChartIcon className="h-4 w-4 text-primary opacity-70" />
+                    <ChartPieSlice size={16} weight="regular" className="text-primary opacity-70" />
                     <h2 className="text-sm font-medium tracking-tight">Alokasi Pengeluaran</h2>
                 </div>
 

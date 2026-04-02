@@ -11,7 +11,7 @@ import { formatCurrency } from '@/lib/utils';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { ChevronLeft, CalendarClock, Trash2 } from 'lucide-react';
+import { CalendarDots, Trash } from '@phosphor-icons/react';
 import type { Debt, DebtPayment } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 
@@ -26,7 +26,7 @@ const PaymentItem = ({ payment, direction }: { payment: DebtPayment; direction: 
                 <p className="text-sm font-medium">{formatCurrency(payment.amount)}</p>
                 {paymentDate && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <CalendarClock className="h-3 w-3" />
+                        <CalendarDots className="h-3 w-3" weight="regular" />
                         {format(paymentDate, 'd MMM yyyy', { locale: dateFnsLocaleId })}
                         <span>&bull;</span>
                         {formatDistanceToNow(paymentDate, { addSuffix: true, locale: dateFnsLocaleId })}
@@ -165,7 +165,7 @@ export default function DebtDetailPage() {
                                                     }
                                                 }}
                                             >
-                                                <Trash2 className="h-4 w-4" />
+                                                <Trash className="h-4 w-4" weight="regular" />
                                             </Button>
                                         </div>
                                     </div>

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, CalendarClock, Loader2 } from 'lucide-react';
+import { CalendarBlank, CircleNotch, Trash, X } from '@phosphor-icons/react';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { cn, normalizeDateInput } from '@/lib/utils';
-import type { Debt, DebtInput, PaymentFrequency } from '@/types/models';
+import type { Debt, DebtInput } from '@/types/models';
 import { useDebts } from '../hooks/use-debts';
 
 interface DebtFormProps {
@@ -161,7 +161,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                         </p>
                     </div>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
-                        <X className="h-5 w-5" />
+                        <X className="h-5 w-5" weight="regular" />
                     </Button>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -366,7 +366,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                                 variant="outline"
                                                 className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
                                             >
-                                                <CalendarClock className="mr-2 h-4 w-4" />
+                                                <CalendarBlank className="mr-2 h-4 w-4" weight="regular" />
                                                 {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Pilih tanggal'}
                                             </Button>
                                         </PopoverTrigger>
@@ -396,7 +396,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                                 variant="outline"
                                                 className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
                                             >
-                                                <CalendarClock className="mr-2 h-4 w-4" />
+                                                <CalendarBlank className="mr-2 h-4 w-4" weight="regular" />
                                                 {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Tidak ditentukan'}
                                             </Button>
                                         </PopoverTrigger>
@@ -439,7 +439,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                     <Button type="submit" onClick={handleSubmit(onSubmit)} className="w-full" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <CircleNotch className="mr-2 h-4 w-4 animate-spin" weight="regular" />
                                 Menyimpan...
                             </>
                         ) : (
@@ -450,7 +450,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button variant="ghost" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10" disabled={isDeleting}>
-                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    <Trash className="mr-2 h-4 w-4" weight="regular" />
                                     Hapus Catatan
                                 </Button>
                             </AlertDialogTrigger>

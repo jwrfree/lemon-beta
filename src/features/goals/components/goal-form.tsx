@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, Rocket, Car, Home, Gift, Briefcase, GraduationCap, Plane, Computer, CalendarIcon } from 'lucide-react';
+import { Airplane, Briefcase, CalendarBlank, Car, Desktop, Gift, GraduationCap, House, Rocket, Trash, X } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,12 +20,12 @@ import type { Goal } from '@/types/models';
 const goalIcons = [
     { name: 'Rocket', Icon: Rocket },
     { name: 'Car', Icon: Car },
-    { name: 'Home', Icon: Home },
+    { name: 'Home', Icon: House },
     { name: 'Gift', Icon: Gift },
     { name: 'Briefcase', Icon: Briefcase },
     { name: 'GraduationCap', Icon: GraduationCap },
-    { name: 'Plane', Icon: Plane },
-    { name: 'Computer', Icon: Computer },
+    { name: 'Plane', Icon: Airplane },
+    { name: 'Computer', Icon: Desktop },
 ];
 
 interface GoalFormProps {
@@ -116,7 +116,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <h2 className="text-xl font-medium">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
-                        <X className="h-5 w-5" />
+                        <X className="h-5 w-5" weight="regular" />
                     </Button>
                 </div>
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -164,7 +164,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                                             !targetDate && "text-muted-foreground"
                                         )}
                                     >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        <CalendarBlank className="mr-2 h-4 w-4" weight="regular" />
                                         {targetDate ? format(targetDate, "d MMM yyyy", { locale: dateFnsLocaleId }) : <span>Pilih tanggal</span>}
                                     </Button>
                                 </PopoverTrigger>
@@ -191,7 +191,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
-                                    <Trash2 className="h-5 w-5" />
+                                    <Trash className="h-5 w-5" weight="regular" />
                                 </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>

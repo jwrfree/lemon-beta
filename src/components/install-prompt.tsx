@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, X } from 'lucide-react';
+import { DownloadSimple, X } from '@phosphor-icons/react';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 export function InstallPrompt() {
   const { deferredPrompt, setDeferredPrompt } = useUI();
@@ -50,7 +49,7 @@ export function InstallPrompt() {
           <div className="bg-popover/90 backdrop-blur-md border border-border rounded-md shadow-xl p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Download className="h-5 w-5 text-primary" />
+                <DownloadSimple className="h-5 w-5 text-primary" weight="regular" />
               </div>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm">Install Lemon App</span>
@@ -71,7 +70,7 @@ export function InstallPrompt() {
                 size="icon"
                 className="h-8 w-8 rounded-full hover:bg-muted"
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4" weight="regular" />
                 <span className="sr-only">Tutup</span>
               </Button>
             </div>

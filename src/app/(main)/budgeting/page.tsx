@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { PlusCircle, HandCoins, Plus, Sparkles, TrendingUp, Target } from 'lucide-react';
+import { HandCoins, Plus, Sparkle, Target, TrendUp } from '@phosphor-icons/react';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { formatCurrency, triggerHaptic, cn } from '@/lib/utils';
 import { Pie, PieChart, Cell } from "recharts"
@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ChartContainer } from '@/components/ui/chart';
 import { spacing } from '@/lib/layout-tokens';
 import { EmptyState } from '@/components/empty-state';
-import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
+import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 
 function BudgetingPageSkeleton() {
     return (
@@ -105,7 +105,7 @@ export default function BudgetingPage() {
                                 >
                                     <Card className="border-none rounded-card-premium bg-[#064e4b] text-white shadow-xl shadow-primary/10 overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-6 opacity-[0.05] -rotate-12">
-                                            <TrendingUp className="h-40 w-40" />
+                                            <TrendUp className="h-40 w-40" weight="regular" />
                                         </div>
 
                                         <CardContent className={cn(spacing.cardPremium, "space-y-6 relative z-10")}>
@@ -150,7 +150,7 @@ export default function BudgetingPage() {
                                                 <div className="p-4 rounded-card-glass bg-white/10 backdrop-blur-md flex justify-between items-center">
                                                     <div className="flex items-center gap-3">
                                                         <div className="h-10 w-10 rounded-card-icon bg-white p-2 flex items-center justify-center shrink-0">
-                                                            <Sparkles className="h-5 w-5 text-primary" />
+                                                            <Sparkle className="h-5 w-5 text-primary" weight="regular" />
                                                         </div>
                                                         <div className="min-w-0">
                                                             <p className="label-xs text-white/60 mb-0.5">Sisa Dana Aman</p>
@@ -174,7 +174,7 @@ export default function BudgetingPage() {
                                     <div className="flex items-center justify-between px-2">
                                         <div className="flex items-center gap-3">
                                             <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                                                <Target className="h-4 w-4" />
+                                                <Target className="h-4 w-4" weight="regular" />
                                             </div>
                                             <h2 className="text-xl font-medium tracking-tighter">Pos Anggaran</h2>
                                         </div>
@@ -184,7 +184,7 @@ export default function BudgetingPage() {
                                             size="sm"
                                             className="rounded-lg h-9 text-label text-muted-foreground hover:text-primary transition-colors"
                                         >
-                                            <Plus className="h-4 w-4 mr-2" />
+                                            <Plus className="h-4 w-4 mr-2" weight="regular" />
                                             Tambah Baru
                                         </Button>
                                     </div>

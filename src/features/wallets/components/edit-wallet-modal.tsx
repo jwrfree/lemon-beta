@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, Loader2 } from 'lucide-react';
+import { CircleNotch, Trash, X } from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,7 +83,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
+      className="fixed inset-0 z-50 bg-black/80 flex items-end justify-center"
       onClick={onClose}
     >
       <motion.div
@@ -91,12 +91,12 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="flex w-full max-w-md flex-col rounded-t-card bg-background/98 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
+        className="flex w-full max-w-md flex-col rounded-t-card bg-background shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 flex items-center justify-between rounded-t-card bg-background/96 p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+        <div className="sticky top-0 flex items-center justify-between rounded-t-card bg-background p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
           <h2 className="text-xl font-medium">Edit Dompet</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X className="h-5 w-5" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X size={20} weight="regular" /></Button>
         </div>
         <div className="p-4 space-y-6 overflow-y-auto max-h-[80vh]">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -142,7 +142,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
             <Button type="submit" className="w-full" disabled={isSubmitting || !hasChanges}>
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <CircleNotch size={16} weight="regular" className="mr-2 animate-spin" />
                   Menyimpan...
                 </>
               ) : (
@@ -190,12 +190,8 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button type="button" variant="ghost" className="w-full text-destructive hover:bg-destructive/10" disabled={isDeleting}>
-                    {isDeleting ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="mr-2 h-4 w-4" />
-                    )}
-                    Hapus Dompet
+                    {isDeleting && <CircleNotch size={16} weight="regular" className="mr-2 animate-spin" />}
+                    <span>Hapus Dompet</span>
                   </Button>
                 </AlertDialogTrigger>
                   <AlertDialogContent className="max-w-[90vw] rounded-card md:max-w-md">

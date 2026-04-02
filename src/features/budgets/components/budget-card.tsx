@@ -4,11 +4,9 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
-import { differenceInDays, startOfMonth } from 'date-fns';
-import { Flame, AlertCircle, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
+import { CaretRight, Fire } from '@phosphor-icons/react';
 import type { Budget, Transaction } from '@/types/models';
 
 import { calculateBudgetStats } from '@/features/budgets/logic';
@@ -21,7 +19,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
 
     // 1. Core Logic (Centralized)
     const stats = useMemo(() => calculateBudgetStats(budget, transactions), [budget, transactions]);
-    const { spent, remaining, progress, daysToZero, safeDailyLimit, healthStatus } = stats;
+    const { remaining, progress, daysToZero, safeDailyLimit, healthStatus } = stats;
 
     const now = new Date();
     const daysInMonthValue = daysInMonth(now);
@@ -110,7 +108,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10">
-                                <ChevronRight className="h-5 w-5 text-white/60" />
+                                <CaretRight className="h-5 w-5 text-white/60" weight="regular" />
                             </div>
                         </div>
 
@@ -151,7 +149,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                         <span className={cn("text-label text-white")}>
                                             {daysToZero === Infinity ? '∞ Days' : `${daysToZero} Days`}
                                         </span>
-                                        <Flame className={cn("h-3.5 w-3.5", daysToZero <= 5 ? "text-yellow-300 animate-pulse" : "text-white/20")} />
+                                        <Fire className={cn("h-3.5 w-3.5", daysToZero <= 5 ? "text-yellow-300 animate-pulse" : "text-white/20")} weight="regular" />
                                     </div>
                                 </div>
                             </div>

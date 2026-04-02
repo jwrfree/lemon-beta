@@ -92,7 +92,7 @@ const TransactionListItemContent = ({
                     />
                 )}
                 {(logoSource === 'icon' || !merchantVisuals?.domain) && (
-                    <DefaultIcon className={cn("h-5 w-5", iconColor)} strokeWidth={2.5} />
+                    <DefaultIcon size={20} weight="bold" className={iconColor} />
                 )}
             </div>
             <div className="flex-1 overflow-hidden min-w-0">
@@ -102,12 +102,12 @@ const TransactionListItemContent = ({
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {/* Need / Want Tag */}
                     {transaction.type === 'expense' && transaction.isNeed === true && (
-                        <span className="flex items-center gap-1 rounded-full bg-foreground text-[9px] font-bold uppercase tracking-wider text-background px-1.5 py-0.5 shadow-sm">
+                        <span className="flex items-center gap-1 rounded-full bg-foreground text-label font-semibold uppercase tracking-widest text-background px-1.5 py-0.5 shadow-sm">
                             Need
                         </span>
                     )}
                     {transaction.type === 'expense' && transaction.isNeed === false && (
-                        <span className="flex items-center gap-1 rounded-full bg-accent text-[9px] font-bold uppercase tracking-wider text-accent-foreground px-1.5 py-0.5 shadow-sm">
+                        <span className="flex items-center gap-1 rounded-full bg-muted text-label font-semibold uppercase tracking-widest text-muted-foreground px-1.5 py-0.5 shadow-sm border border-border/10">
                             Want
                         </span>
                     )}
@@ -146,7 +146,7 @@ const TransactionListItemContent = ({
                     {timeLabel}
                 </span>
                 {isExpense && transaction.amount >= 1000000 && (
-                    <span className="text-[9px] font-bold uppercase tracking-widest bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full">High</span>
+                    <span className="text-label font-semibold uppercase tracking-widest bg-destructive/10 text-destructive px-1.5 py-0.5 rounded-full">High</span>
                 )}
             </div>
         </div>

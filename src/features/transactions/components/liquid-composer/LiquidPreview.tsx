@@ -5,7 +5,7 @@ import { HeroAmount } from './HeroAmount';
 import { MagicBar } from './MagicBar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, triggerHaptic } from '@/lib/utils';
-import { Coffee, Car, Utensils, ShoppingBag, MapPin, CornerDownRight, Tag } from 'lucide-react';
+import { Tag, ArrowBendDownRight, MapPin } from '@phosphor-icons/react';
 
 export const LiquidPreview = () => {
     const [amount, setAmount] = useState(25000);
@@ -64,8 +64,8 @@ export const LiquidPreview = () => {
                         >
                             {/* Main Category Chip */}
                             <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg">
-                                <Tag className="h-3 w-3 fill-primary-foreground/20" />
-                                <span className="text-label text-white/90">{metadata.category}</span>
+                                <Tag size={12} weight="bold" className="opacity-20" />
+                                <span className="text-label font-semibold text-white/90">{metadata.category}</span>
                             </div>
 
                             {/* Sub-Category Chip (Staggered) */}
@@ -76,8 +76,8 @@ export const LiquidPreview = () => {
                                     transition={{ delay: 0.2 }}
                                     className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10"
                                 >
-                                    <CornerDownRight className="h-3 w-3 opacity-50" />
-                                    <span className="text-label">{metadata.subCategory}</span>
+                                    <ArrowBendDownRight size={12} weight="bold" className="opacity-50" />
+                                    <span className="text-label font-semibold">{metadata.subCategory}</span>
                                 </motion.div>
                             )}
                         </motion.div>
@@ -90,8 +90,8 @@ export const LiquidPreview = () => {
                             transition={{ type: 'spring', delay: 0.4 }}
                             className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border"
                         >
-                            <MapPin className="h-3 w-3 text-destructive" />
-                            <span className="text-label">{metadata.location}</span>
+                            <MapPin size={12} weight="bold" className="text-destructive" />
+                            <span className="text-label font-semibold">{metadata.location}</span>
                         </motion.div>
                     )}
 

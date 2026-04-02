@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2 } from 'lucide-react';
+import { Trash, X } from '@phosphor-icons/react';
 import { useCategories } from '@/features/transactions/hooks/use-categories';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { Button } from '@/components/ui/button';
@@ -97,7 +97,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
         <div className="p-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/10">
           <h2 className="text-xl font-semibold tracking-tighter">Adjust Budget</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" weight="regular" />
           </Button>
         </div>
 
@@ -194,7 +194,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button type="button" variant="ghost" className="h-14 w-14 rounded-full bg-rose-500/10 text-rose-600 hover:bg-rose-500/20" disabled={isDeleting}>
-                <Trash2 className="h-6 w-6" />
+                <Trash className="h-6 w-6" weight="regular" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="rounded-card-premium border-none shadow-xl bg-popover/95 backdrop-blur-xl">

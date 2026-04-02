@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wallet, Landmark, Smartphone, ArrowLeft, CircleDollarSign, Loader2, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Bank, CircleNotch, CurrencyCircleDollar, DeviceMobile, TrendUp, Wallet, X } from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,12 +21,12 @@ const popularWallets: Record<string, string[]> = {
 };
 
 const walletCategories = [
-  { key: 'e-wallet', name: 'E-Wallet', Icon: Smartphone },
-  { key: 'bank', name: 'Bank', Icon: Landmark },
-  { key: 'paylater', name: 'Paylater', Icon: Smartphone },
-  { key: 'investasi', name: 'Investasi', Icon: TrendingUp },
+  { key: 'e-wallet', name: 'E-Wallet', Icon: DeviceMobile },
+  { key: 'bank', name: 'Bank', Icon: Bank },
+  { key: 'paylater', name: 'Paylater', Icon: DeviceMobile },
+  { key: 'investasi', name: 'Investasi', Icon: TrendUp },
   { key: 'cash', name: 'Tunai', Icon: Wallet },
-  { key: 'other', name: 'Lainnya', Icon: CircleDollarSign },
+  { key: 'other', name: 'Lainnya', Icon: CurrencyCircleDollar },
 ];
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
@@ -100,7 +100,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm"
+      className="fixed inset-0 z-50 bg-black/80 flex items-end justify-center"
       onClick={onClose}
     >
       <motion.div
@@ -108,14 +108,14 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="flex h-fit w-full max-w-md flex-col rounded-t-card-premium bg-background/97 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] backdrop-blur-xl md:h-auto"
+        className="flex h-fit w-full max-w-md flex-col rounded-t-card-premium bg-background shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] md:h-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-background/94 p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-background p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
           <div className="w-11">
             {step === 2 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft size={20} weight="regular" />
                 <span className="sr-only">Kembali</span>
               </Button>
             )}
@@ -124,7 +124,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
             {step === 1 ? 'Pilih Jenis' : `Detail ${selectedCategory?.name}`}
           </h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
-            <X className="h-5 w-5" />
+            <X size={20} weight="regular" />
             <span className="sr-only">Tutup</span>
           </Button>
         </div>
@@ -232,7 +232,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   <Button type="submit" className="w-full h-14 rounded-full font-semibold transition-all active:scale-[0.98]" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <CircleNotch size={20} weight="regular" className="mr-2 animate-spin" />
                         Memproses...
                       </>
                     ) : (

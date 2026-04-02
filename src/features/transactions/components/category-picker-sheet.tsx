@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ChevronRight, Search, X } from 'lucide-react';
+import { CheckCircle, CaretRight, MagnifyingGlass, XCircle } from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,10 +51,10 @@ const CategoryRow = ({
             </div>
             {isSelected ? (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <Check className="h-4 w-4" />
+                    <CheckCircle size={18} weight="bold" />
                 </div>
             ) : (
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <CaretRight size={18} weight="bold" className="text-muted-foreground" />
             )}
         </button>
     );
@@ -100,7 +100,7 @@ export const CategoryPickerSheet = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/55"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/80"
             onClick={onClose}
         >
             <motion.div
@@ -119,13 +119,13 @@ export const CategoryPickerSheet = ({
                             <p className="mt-1 text-sm text-muted-foreground">Pilih kategori utama, lalu lanjut ke subkategori bila ada.</p>
                         </div>
                         <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-background">
-                            <X className="h-4 w-4" />
+                            <XCircle size={22} weight="bold" />
                             <span className="sr-only">Tutup</span>
                         </Button>
                     </div>
 
                     <div className="relative">
-                        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                        <MagnifyingGlass size={18} weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}

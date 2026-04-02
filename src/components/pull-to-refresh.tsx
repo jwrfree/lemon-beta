@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform, useAnimation, animate } from 'framer-motion';
-import { RefreshCw, ArrowDown } from 'lucide-react';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { ArrowClockwise, ArrowDown } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface PullToRefreshProps {
@@ -135,9 +135,9 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
             transition={isRefreshing ? { repeat: Infinity, duration: 1, ease: "linear" } : {}}
           >
             {isRefreshing ? (
-              <RefreshCw className="h-5 w-5" />
+              <ArrowClockwise className="h-5 w-5" weight="regular" />
             ) : (
-              <ArrowDown className="h-5 w-5" />
+              <ArrowDown className="h-5 w-5" weight="regular" />
             )}
           </motion.div>
         </div>
