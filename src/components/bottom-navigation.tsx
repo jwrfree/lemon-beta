@@ -1,12 +1,92 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import {
+    GearSix,
+    House,
+    Notebook,
+    Plus,
+    Receipt,
+    type Icon as PhosphorIcon,
+} from '@phosphor-icons/react';
 import { cn, triggerHaptic } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
-import Link from 'next/link';
 import { MOBILE_NAV_ITEMS, isNavItemActive } from '@/lib/sidebar-config';
+
+const navRevealTransition = {
+    duration: 0.18,
+    ease: [0.22, 0.61, 0.36, 1] as const,
+};
+
+const slotBaseClassName =
+    'group flex h-full w-full min-w-0 flex-col items-center px-1 pb-2 pt-3 text-xs motion-pressable active:scale-95';
+
+const navIconRowClassName = 'flex h-7 w-full flex-none items-center justify-center';
+const navLabelClassName = 'inline-flex h-4 w-full flex-none items-start justify-center truncate text-xs font-medium leading-none tracking-tight transition-colors';
+
+const mobileNavIconMap: Record<string, PhosphorIcon> = {
+    home: House,
+    transactions: Receipt,
+    plan: Notebook,
+    settings: GearSix,
+};
+
+interface NavSlotProps {
+    label: string;
+    children: React.ReactNode;
+    isActive?: boolean;
+    href?: string;
+    onClick?: () => void;
+}
+
+const NavSlot = ({ label, children, isActive = false, href, onClick }: NavSlotProps) => {
+    const className = cn(
+        slotBaseClassName,
+        isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+    );
+
+    const content = (
+        <>
+            <span className={navIconRowClassName}>{children}</span>
+            <span
+                className={cn(
+                    navLabelClassName,
+                    isActive ? 'text-foreground' : 'text-muted-foreground'
+                )}
+            >
+                {label}
+            </span>
+        </>
+    );
+
+    if (href) {
+        return (
+            <Link
+                href={href}
+                prefetch={false}
+                onClick={onClick}
+                className={className}
+                aria-label={label}
+                aria-current={isActive ? 'page' : undefined}
+            >
+                {content}
+            </Link>
+        );
+    }
+
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className={className}
+            aria-label={label}
+        >
+            {content}
+        </button>
+    );
+};
 
 export const BottomNavigation = () => {
     const pathname = usePathname();
@@ -20,97 +100,69 @@ export const BottomNavigation = () => {
     return (
         <AnimatePresence>
             {isVisible && (
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
+                <motion.nav
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 50 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="fixed bottom-3 left-3 right-3 z-40 rounded-[28px] bg-white/88 shadow-[0_24px_50px_-36px_rgba(15,23,42,0.32)] backdrop-blur-[24px] pb-safe dark:bg-background/88"
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={navRevealTransition}
+                    className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-white shadow-[0_-10px_24px_-24px_rgba(15,23,42,0.32)] dark:bg-background dark:shadow-[0_-10px_24px_-24px_rgba(0,0,0,0.72)]"
+                    style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+                    aria-label="Navigasi utama"
                 >
-                    <div className="mx-auto grid h-16 w-full max-w-lg grid-cols-5 items-center px-2">
+                    <div className="mx-auto grid h-16 w-full max-w-lg grid-cols-5 items-stretch px-1">
                         {MOBILE_NAV_ITEMS.slice(0, 2).map((item) => {
                             const isActive = isNavItemActive(pathname, item);
+                            const NavIcon = mobileNavIconMap[item.id];
 
                             return (
-                                <Link
+                                <NavSlot
                                     key={item.id}
                                     href={item.href}
-                                    prefetch={false}
                                     onClick={() => triggerHaptic('light')}
-                                    className={cn(
-                                        'group relative flex h-full flex-col items-center justify-center transition-all active:scale-95',
-                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                                    )}
-                                    aria-label={item.name}
+                                    label={item.shortName ?? item.name}
+                                    isActive={isActive}
                                 >
-                                    <div className="relative flex flex-col items-center gap-1">
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="nav-pill"
-                                                className="absolute -inset-x-3 -inset-y-1 -z-10 rounded-xl bg-primary/10 dark:bg-primary/20"
-                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                            />
-                                        )}
-                                        <item.icon className={cn("z-10 h-5 w-5 transition-transform", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
-                                        <span className={cn("text-xs font-semibold leading-none transition-opacity", isActive ? "opacity-100" : "opacity-90")}>
-                                            {item.shortName ?? item.name}
-                                        </span>
-                                    </div>
-                                </Link>
+                                    <NavIcon
+                                        size={20}
+                                        weight={isActive ? 'fill' : 'regular'}
+                                        className="shrink-0"
+                                    />
+                                </NavSlot>
                             );
                         })}
 
-                        <div className="flex justify-center items-center relative h-full">
-                            <div className="absolute -top-6 h-14 w-14 rounded-full bg-[#f7f3ea] p-1 shadow-[0_18px_34px_-20px_rgba(15,23,42,0.32)] dark:bg-background">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        triggerHaptic('medium');
-                                        openTransactionSheet();
-                                    }}
-                                    className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-2xl shadow-primary/40 transition-all duration-300 hover:scale-110 hover:bg-primary/90 active:scale-95"
-                                    aria-label="Smart Add"
-                                >
-                                    <Sparkles className="relative z-10 h-6 w-6" />
-                                    <span className="sr-only">Smart Add</span>
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                                </button>
-                            </div>
-                        </div>
+                        <NavSlot
+                            onClick={() => {
+                                triggerHaptic('medium');
+                                openTransactionSheet();
+                            }}
+                            label="Tambah"
+                        >
+                            <Plus size={20} weight="regular" className="shrink-0" />
+                        </NavSlot>
 
                         {MOBILE_NAV_ITEMS.slice(2).map((item) => {
                             const isActive = isNavItemActive(pathname, item);
+                            const NavIcon = mobileNavIconMap[item.id];
 
                             return (
-                                <Link
+                                <NavSlot
                                     key={item.id}
                                     href={item.href}
-                                    prefetch={false}
                                     onClick={() => triggerHaptic('light')}
-                                    className={cn(
-                                        'group relative flex h-full flex-col items-center justify-center transition-all active:scale-95',
-                                        isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                                    )}
-                                    aria-label={item.name}
+                                    label={item.shortName ?? item.name}
+                                    isActive={isActive}
                                 >
-                                    <div className="relative flex flex-col items-center gap-1">
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="nav-pill"
-                                                className="absolute -inset-x-3 -inset-y-1 -z-10 rounded-xl bg-primary/10 dark:bg-primary/20"
-                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                            />
-                                        )}
-                                        <item.icon className={cn("z-10 h-5 w-5 transition-transform", isActive && "scale-110")} strokeWidth={isActive ? 2.5 : 2} />
-                                        <span className={cn("text-xs font-semibold leading-none transition-opacity", isActive ? "opacity-100" : "opacity-90")}>
-                                            {item.shortName ?? item.name}
-                                        </span>
-                                    </div>
-                                </Link>
+                                    <NavIcon
+                                        size={20}
+                                        weight={isActive ? 'fill' : 'regular'}
+                                        className="shrink-0"
+                                    />
+                                </NavSlot>
                             );
                         })}
                     </div>
-                </motion.div>
+                </motion.nav>
             )}
         </AnimatePresence>
     );

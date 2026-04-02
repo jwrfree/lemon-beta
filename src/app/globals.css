@@ -183,7 +183,7 @@
     --chart-5: hsl(var(--purple-600));
 
     /* Layout Tokens */
-    --bottom-nav-height: 120px;
+    --bottom-nav-height: 64px;
     --header-height: 64px;
     --safe-observer-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -431,7 +431,7 @@
 
   .app-page-body-padding {
     /* Mobile default padding to clear bottom nav */
-    padding-bottom: calc(var(--bottom-nav-height, 120px) + 2.5rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(var(--bottom-nav-height, 64px) + 1rem + env(safe-area-inset-bottom, 0px));
   }
 
   @media (min-width: 768px) {
@@ -444,7 +444,7 @@
   @media (max-width: 767px) {
     /* Offset sticky footers when the bottom nav is present */
     .main-content-scroll[data-nav="true"] .sticky.bottom-0 {
-      bottom: calc(var(--bottom-nav-height) - 1.5rem);
+      bottom: calc(var(--bottom-nav-height, 64px) + 0.5rem + env(safe-area-inset-bottom, 0px));
     }
   }
 }

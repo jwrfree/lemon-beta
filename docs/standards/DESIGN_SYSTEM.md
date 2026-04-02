@@ -417,7 +417,7 @@ Icon containers inside Tier 2 cards always use `rounded-card-icon` (1.25rem / 20
 Every scrollable page container:
 
 ```tsx
-<main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-24">
+<main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 app-page-body-padding">
 ```
 
 | Rule | Value | Reason |
@@ -425,9 +425,23 @@ Every scrollable page container:
 | Mobile padding | `p-4` | 16px — matches bottom nav width |
 | Desktop padding | `md:p-6` | 24px |
 | Section spacing | `space-y-6` | Consistent vertical rhythm |
-| Nav clearance | `pb-24` | 96px — clears 64px nav + 24px offset |
+| Nav clearance | `app-page-body-padding` | Uses `--bottom-nav-height` plus safe-area inset; current mobile nav height is 64px |
 
-**`pb-20`, `pb-28`, `pb-32`, `pb-safe` are forbidden.** Use `pb-24` exclusively.
+**Do not hardcode nav clearance in page bodies.** Use `app-page-body-padding` exclusively.
+
+### 5.1.1 Mobile Bottom Nav Spec
+
+The mobile bottom navigation uses a deterministic layout so icon and label alignment remains stable across all 5 slots:
+
+| Rule | Value | Notes |
+|---|---|---|
+| Nav height | `h-16` | 64px total bar height |
+| Icon row | `h-7` | 28px fixed icon box |
+| Label row | `h-4` | 16px fixed label box |
+| Vertical padding | `pt-3 pb-2` | 12px top + 8px bottom = 20px remaining space |
+| Surface | `bg-white dark:bg-background` | Solid surface, not translucent glass |
+| Motion | `duration-fast` + standard easing | No spring / bounce entrance |
+| Icon family | `@phosphor-icons/react` | Mobile bottom nav only; the rest of the app may still use Lucide |
 
 ### 5.2 Spacing Scale
 
@@ -506,7 +520,7 @@ The following patterns are actively detected by ESLint (`eslint.config.mjs`, `no
 | `text-[8px]` / `text-[9px]` / `text-[10px]` / `text-[11px]` / `text-[15px]` | `[DS §2]` | `text-label` or `text-xs` |
 | `tracking-[0.2em]` / `tracking-[0.3em]` (any `tracking-[X]`) | `[DS §2]` | `tracking-widest` |
 | `leading-[Xpx]` / `leading-[X.X]` (any arbitrary leading) | `[DS §2.6]` | `leading-tight`, `leading-relaxed`, `leading-snug`, or `leading-none` |
-| `pb-20`, `pb-28`, `pb-32`, `pb-safe` in JSX | `[DS §5]` | `pb-24` |
+| `pb-20`, `pb-24`, `pb-28`, `pb-32`, `pb-safe` in page bodies | `[DS §5]` | `app-page-body-padding` |
 | `bg-purple-600`, `bg-blue-600`, `bg-green-600` (literal colours on interactive elements) | `[DS §4]` | `bg-primary`, `bg-destructive`, `bg-success` |
 
 The following are forbidden but not yet auto-detected (Phase 3 enforcement):
@@ -742,7 +756,7 @@ Target: Abstract structural spacing into semantic tokens to reduce direct Tailwi
 
 - [x] Create `src/lib/layout-tokens.ts` — central semantic spacing token registry
 - [x] Define 6 tokens mapped to the approved spacing scale:
-  - `spacing.container` → `flex-1 p-4 md:p-6 space-y-6 pb-24` (DS §5.1 page container)
+  - `spacing.container` → `flex-1 p-4 md:p-6 space-y-6 app-page-body-padding` (DS §5.1 page container)
   - `spacing.section` → `space-y-6` (DS §5.2 section gap)
   - `spacing.cardPremium` → `p-7` (DS §4.2 Tier 2 premium card)
   - `spacing.cardFlat` → `p-4` (DS §4.2 Tier 1 flat card)
@@ -824,7 +838,7 @@ Add to PR template (`.github/pull_request_template.md`):
 - [ ] Uppercase micro-labels use `tracking-widest` (not `tracking-wider` or `tracking-tighter`)
 - [ ] Status badges use `<StatusBadge variant="...">` — no raw colour classes
 - [ ] FABs use `<FAB>` component — no inline pattern
-- [ ] Nav clearance uses `pb-24` — not pb-20/28/32/safe
+- [ ] Page body nav clearance uses `app-page-body-padding` — not hardcoded `pb-*`
 - [ ] New cards use the correct tier (flat / premium / glass)
 - [ ] New semantic states use `bg-primary/destructive/success/warning` — no literal colours
 ```
