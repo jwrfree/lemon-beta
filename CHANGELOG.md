@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **Unified chat transaction mutations**
+  - Moved Lemon Coach transaction creation onto the same shared tool/action layer as update and delete so chat mutations now reuse one RPC-backed execution path instead of a route-only special case.
 - **AI chat orchestration boundaries**
   - Split Lemon Coach chat routing out of the monolithic `/api/chat` handler into dedicated router, planner, and action modules so the route stays thin while preserving the existing response behavior.
 - **AI chat test coverage**

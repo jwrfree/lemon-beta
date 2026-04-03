@@ -3,18 +3,226 @@ import { z } from 'zod';
 import { financialContextService } from '@/lib/services/financial-context-service';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { UnifiedFinancialContext } from '@/lib/services/financial-context-service';
+import { extractTransaction, parseSimpleTransactionInput } from '@/ai/flows/extract-transaction-flow';
+import { categories } from '@/lib/categories';
 import {
+  createTransactionWithClient,
   deleteTransactionWithClient,
   getTransactionRowById,
   mapTransactionRowToUnifiedValues,
   updateTransactionWithClient,
 } from '@/features/transactions/services/transaction.service';
 import { getCurrentDate } from '@/lib/utils/current-date';
+import { formatCurrency } from '@/lib/utils';
+import { normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 
 type FinancialToolClient = Pick<SupabaseClient, 'from' | 'rpc'>;
+type WalletOption = {
+  id: string;
+  name: string;
+  is_default: boolean | null;
+};
+
+const findPreferredCashWallet = (wallets: WalletOption[]) =>
+  wallets.find((wallet) => ['tunai', 'dompet', 'cash', 'kas'].includes(wallet.name.trim().toLowerCase())) ||
+  wallets.find((wallet) => ['tunai', 'dompet', 'cash', 'kas'].some((alias) => wallet.name.trim().toLowerCase().includes(alias))) ||
+  null;
+
+const resolveWalletId = (wallets: WalletOption[], requestedWallet?: string | null) => {
+  const normalizedRequested = requestedWallet?.trim().toLowerCase();
+
+  if (normalizedRequested) {
+    const exactMatch = wallets.find((wallet) => wallet.name.trim().toLowerCase() === normalizedRequested);
+    if (exactMatch) return exactMatch.id;
+
+    const partialMatch = wallets.find((wallet) => {
+      const normalizedName = wallet.name.trim().toLowerCase();
+      return normalizedName.includes(normalizedRequested) || normalizedRequested.includes(normalizedName);
+    });
+    if (partialMatch) return partialMatch.id;
+  }
+
+  return findPreferredCashWallet(wallets)?.id ?? wallets.find((wallet) => wallet.is_default)?.id ?? wallets[0]?.id ?? null;
+};
+
+export const createTransactionMutationActions = (userId: string, supabase: FinancialToolClient) => {
+  const addTransaction = async (rawText: string) => {
+    const [{ data: wallets, error: walletsError }, recentTransactions] = await Promise.all([
+      supabase
+        .from('wallets')
+        .select('id,name,is_default')
+        .eq('user_id', userId)
+        .order('is_default', { ascending: false })
+        .order('created_at', { ascending: true }),
+      financialContextService.getRecentTransactions(userId, supabase, 5),
+    ]);
+
+    if (walletsError) {
+      console.error('[AI Chat] Failed to load wallets for transaction capture:', walletsError);
+      return {
+        success: false,
+        reply: 'Saya belum bisa mencatat transaksi sekarang karena daftar dompet kamu gagal dimuat. Coba lagi sebentar.',
+      };
+    }
+
+    const availableWallets = (wallets ?? []) as WalletOption[];
+    if (availableWallets.length === 0) {
+      return {
+        success: false,
+        reply: 'Sebelum mencatat transaksi via chat, kamu perlu punya minimal satu dompet dulu di Lemon.',
+      };
+    }
+
+    const availableCategories = [
+      ...categories.expense.map((category) => category.name),
+      ...categories.income.map((category) => category.name),
+    ];
+
+    const extraction = await parseSimpleTransactionInput(rawText, {
+      wallets: availableWallets.map((wallet) => wallet.name),
+    }) ?? await extractTransaction(rawText, {
+      wallets: availableWallets.map((wallet) => wallet.name),
+      categories: availableCategories,
+      recentTransactions: recentTransactions.map((transaction) => ({
+        description: transaction.description,
+        amount: transaction.amount,
+        category: transaction.category,
+        wallet: availableWallets[0].name,
+        date: transaction.date,
+      })),
+    });
+
+    if (extraction.clarificationQuestion) {
+      return {
+        success: false,
+        reply: extraction.clarificationQuestion,
+      };
+    }
+
+    if (!extraction.transactions?.length) {
+      return {
+        success: false,
+        reply: 'Saya belum berhasil menangkap detail transaksinya. Coba tulis seperti: `catat makan 25rb pakai BCA`.',
+      };
+    }
+
+    const savedTransactions: string[] = [];
+
+    for (const transaction of extraction.transactions) {
+      if (!transaction.amount || transaction.amount <= 0) {
+        return {
+          success: false,
+          reply: 'Nominal transaksinya belum jelas. Coba sebut nominalnya, misalnya `catat makan 25rb`.',
+        };
+      }
+
+      const walletId = resolveWalletId(availableWallets, transaction.wallet);
+      if (!walletId) {
+        return {
+          success: false,
+          reply: 'Saya belum bisa menentukan dompet untuk transaksi ini. Coba sebut dompetnya, misalnya `pakai BCA` atau `pakai GoPay`.',
+        };
+      }
+
+      const result = await createTransactionWithClient(supabase, userId, {
+        type: transaction.type || 'expense',
+        amount: transaction.amount,
+        category: transaction.category || 'Biaya Lain-lain',
+        subCategory: transaction.subCategory || '',
+        date: new Date(normalizeTransactionTimestamp(transaction.date)),
+        description: transaction.description || 'Transaksi Baru',
+        walletId,
+        location: '',
+        isNeed: transaction.isNeed ?? true,
+      });
+
+      if (result.error) {
+        return {
+          success: false,
+          reply: 'Saya paham detail transaksinya, tapi gagal menyimpannya. Coba lagi sebentar ya.',
+        };
+      }
+
+      const walletName = availableWallets.find((wallet) => wallet.id === walletId)?.name ?? 'dompet utama';
+      savedTransactions.push(`**${transaction.description || transaction.category || 'Transaksi'}** sebesar **${formatCurrency(transaction.amount)}** ke **${walletName}**`);
+    }
+
+    return {
+      success: true,
+      saved_transactions: savedTransactions,
+      reply: savedTransactions.length === 1
+        ? `Siap, transaksi berhasil dicatat: ${savedTransactions[0]}.`
+        : `Siap, saya sudah mencatat ${savedTransactions.length} transaksi:\n${savedTransactions.map((item, index) => `${index + 1}. ${item}`).join('\n')}`,
+    };
+  };
+
+  const updateTransaction = async ({ transaction_id, updates }: {
+    transaction_id: string;
+    updates: {
+      amount?: number;
+      category?: string;
+      description?: string;
+      date?: string;
+    };
+  }) => {
+    const existingTransaction = await getTransactionRowById(
+      supabase,
+      userId,
+      transaction_id,
+    );
+
+    if (!existingTransaction.data) {
+      return {
+        success: false,
+        error: existingTransaction.error || 'Transaksi tidak ditemukan.',
+      };
+    }
+
+    const nextValues = mapTransactionRowToUnifiedValues(existingTransaction.data);
+
+    if (typeof updates.amount === 'number') nextValues.amount = updates.amount;
+    if (typeof updates.category === 'string') nextValues.category = updates.category;
+    if (typeof updates.description === 'string') nextValues.description = updates.description;
+    if (typeof updates.date === 'string') {
+      const parsedDate = new Date(updates.date);
+      if (Number.isNaN(parsedDate.getTime())) {
+        return { success: false, error: 'Tanggal transaksi tidak valid.' };
+      }
+      nextValues.date = parsedDate;
+    }
+
+    const result = await updateTransactionWithClient(
+      supabase,
+      userId,
+      transaction_id,
+      nextValues,
+    );
+
+    if (result.error) return { success: false, error: result.error };
+    return { success: true };
+  };
+
+  const deleteTransaction = async ({ transaction_id }: { transaction_id: string }) => {
+    const result = await deleteTransactionWithClient(
+      supabase,
+      userId,
+      transaction_id,
+    );
+
+    if (result.error) return { success: false, error: result.error };
+    return { success: true };
+  };
+
+  return {
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+  };
+};
 
 export const createFinancialTools = (userId: string, supabase: FinancialToolClient) => {
   let contextPromise: Promise<UnifiedFinancialContext | null> | null = null;
+  const transactionMutations = createTransactionMutationActions(userId, supabase);
 
   const getContext = () => {
     if (!contextPromise) {
@@ -164,6 +372,16 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
       },
     }),
 
+    add_transaction: tool({
+      description: 'Mencatat transaksi baru dari input natural-language user. Gunakan raw text user apa adanya agar parsing wallet, nominal, dan kategori tetap konsisten dengan jalur chat deterministik.',
+      inputSchema: z.object({
+        raw_text: z.string().min(2),
+      }),
+      execute: async ({ raw_text }) => {
+        return transactionMutations.addTransaction(raw_text);
+      },
+    }),
+
     update_transaction: tool({
       description: 'Mengubah detail transaksi yang sudah ada (misal: ganti nominal, kategori, atau deskripsi). Gunakan find_transactions dulu untuk mendapatkan ID transaksi.',
       inputSchema: z.object({
@@ -176,41 +394,7 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         }),
       }),
       execute: async ({ transaction_id, updates }) => {
-        const existingTransaction = await getTransactionRowById(
-          supabase,
-          userId,
-          transaction_id,
-        );
-
-        if (!existingTransaction.data) {
-          return {
-            success: false,
-            error: existingTransaction.error || 'Transaksi tidak ditemukan.',
-          };
-        }
-
-        const nextValues = mapTransactionRowToUnifiedValues(existingTransaction.data);
-
-        if (typeof updates.amount === 'number') nextValues.amount = updates.amount;
-        if (typeof updates.category === 'string') nextValues.category = updates.category;
-        if (typeof updates.description === 'string') nextValues.description = updates.description;
-        if (typeof updates.date === 'string') {
-          const parsedDate = new Date(updates.date);
-          if (Number.isNaN(parsedDate.getTime())) {
-            return { success: false, error: 'Tanggal transaksi tidak valid.' };
-          }
-          nextValues.date = parsedDate;
-        }
-
-        const result = await updateTransactionWithClient(
-          supabase,
-          userId,
-          transaction_id,
-          nextValues,
-        );
-
-        if (result.error) return { success: false, error: result.error };
-        return { success: true };
+        return transactionMutations.updateTransaction({ transaction_id, updates });
       },
     }),
 
@@ -220,14 +404,7 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         transaction_id: z.string().uuid(),
       }),
       execute: async ({ transaction_id }) => {
-        const result = await deleteTransactionWithClient(
-          supabase,
-          userId,
-          transaction_id,
-        );
-
-        if (result.error) return { success: false, error: result.error };
-        return { success: true };
+        return transactionMutations.deleteTransaction({ transaction_id });
       },
     }),
 
