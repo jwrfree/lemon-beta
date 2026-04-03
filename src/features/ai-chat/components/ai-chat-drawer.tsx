@@ -207,12 +207,14 @@ type AppActionBridge = {
     setIsDebtModalOpen: (isOpen: boolean) => void;
     setIsTransferModalOpen: (isOpen: boolean) => void;
     showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+    onClose?: () => void;
 };
 
 export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => {
     const targetKey = action.target as AppTargetKey;
     if (APP_TARGETS[targetKey]) {
         executeCoreAppAction(targetKey, action.params, bridge as any, bridge.router);
+        bridge.onClose?.();
         return;
     }
 
@@ -223,31 +225,39 @@ export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => 
             let path = action.target;
             if (!path.startsWith('/')) path = '/' + path;
             bridge.router.push(path);
+            bridge.onClose?.();
             return;
         }
         case 'open_form':
             switch (action.target) {
                 case 'transaction':
                     bridge.openTransactionSheet(null, action.params?.mode === 'manual' ? 'manual' : 'smart');
+                    bridge.onClose?.();
                     return;
                 case 'budget':
                     bridge.setIsBudgetModalOpen(true);
+                    bridge.onClose?.();
                     return;
                 case 'wallet':
                     bridge.setIsWalletModalOpen(true);
+                    bridge.onClose?.();
                     return;
                 case 'goal':
                     bridge.setIsGoalModalOpen(true);
+                    bridge.onClose?.();
                     return;
                 case 'reminder':
                     bridge.setIsReminderModalOpen(true);
+                    bridge.onClose?.();
                     return;
                 case 'debt':
                 case 'ADD_LIABILITY':
                     bridge.setIsDebtModalOpen(true);
+                    bridge.onClose?.();
                     return;
                 case 'transfer':
                     bridge.setIsTransferModalOpen(true);
+                    bridge.onClose?.();
                     return;
                 default:
                     bridge.showToast(`Form untuk "${action.target}" belum didukung.`, 'info');
@@ -549,7 +559,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                         ) : rawMessageText ? (
                                                             <RichMessageContent
                                                                 text={rawMessageText}
-                                                                bridge={{ router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast }}
+                                                                bridge={{ router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast, onClose }}
                                                             />
                                                         ) : (
                                                             isLoading && <ShinyText text="Lemon Coach sedang berpikir..." />
@@ -561,7 +571,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                                 <button
                                                                     key={`${action.type}:${action.target}:${JSON.stringify(action.params ?? {})}`}
                                                                     type="button"
-                                                                    onClick={() => executeAppAction(action, { router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast })}
+                                                                    onClick={() => executeAppAction(action, { router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast, onClose })}
                                                                     className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-label-md font-semibold uppercase tracking-wide text-primary transition-colors hover:border-primary/35 hover:bg-primary/5"
                                                                 >
                                                                     {getAppActionLabel(action)}
