@@ -39,7 +39,7 @@ DECLARE
     v_allowed BOOLEAN := FALSE;
 BEGIN
     -- Select the existing rate limit for the user
-    SELECT reset_at, count INTO v_reset_at, v_count
+    SELECT public.api_rate_limits.reset_at, public.api_rate_limits.count INTO v_reset_at, v_count
     FROM public.api_rate_limits
     WHERE user_id = p_user_id;
 
