@@ -46,6 +46,7 @@ import {
     parseChatResponseText,
     parseRichMessageParts,
 } from '@/ai/chat-contract';
+import { APP_TARGETS, AppTargetKey, executeAppAction as executeCoreAppAction } from '@/lib/app-actions';
 import { BudgetStatusCard } from './rich-results/BudgetStatusCard';
 import { WealthSummaryCard } from './rich-results/WealthSummaryCard';
 import { RecentTransactionsList } from './rich-results/RecentTransactionsList';
@@ -209,6 +210,14 @@ type AppActionBridge = {
 };
 
 export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => {
+    const targetKey = action.target as AppTargetKey;
+    if (APP_TARGETS[targetKey]) {
+        executeCoreAppAction(targetKey, action.params, bridge as any, bridge.router);
+        return;
+    }
+
+    console.warn(`[AIChatDrawer] Target not found in APP_TARGETS: "${action.target}". Falling back to legacy dispatch.`);
+
     switch (action.type) {
         case 'navigate':
             bridge.router.push(action.target);
@@ -231,6 +240,7 @@ export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => 
                     bridge.setIsReminderModalOpen(true);
                     return;
                 case 'debt':
+                case 'ADD_LIABILITY':
                     bridge.setIsDebtModalOpen(true);
                     return;
                 case 'transfer':

@@ -122,6 +122,16 @@ export const APP_TARGETS = {
         fn: 'setIsDebtModalOpen',
     } satisfies UIActionTarget,
 
+    'action/open-add-liability': {
+        type: 'ui-action',
+        fn: 'setIsDebtModalOpen',
+    } satisfies UIActionTarget,
+
+    'ADD_LIABILITY': {
+        type: 'ui-action',
+        fn: 'setIsDebtModalOpen',
+    } satisfies UIActionTarget,
+
     // ─── Page navigation ───────────────────────────────────────────────
     'page/budgeting': {
         type: 'navigate',
