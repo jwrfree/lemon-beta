@@ -5,7 +5,7 @@ import { extractChatDisplayText } from "@/ai/chat-contract";
 type ChatSessionClient = Pick<SupabaseClient, "from">;
 
 export type ChatSessionRecord = {
-  session_id: string;
+  id: string;
   user_id: string;
   messages: UIMessage[];
   memory_summary: string | null;
@@ -69,8 +69,8 @@ export const getChatSession = async (
 ): Promise<ChatSessionRecord | null> => {
   const { data, error } = await client
     .from("chat_sessions")
-    .select("session_id,user_id,messages,memory_summary,created_at,updated_at")
-    .eq("session_id", sessionId)
+    .select("id,user_id,messages,memory_summary,created_at,updated_at")
+    .eq("id", sessionId)
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -111,7 +111,7 @@ export const persistChatSession = async (
   const { error } = await client
     .from("chat_sessions")
     .upsert({
-      session_id: sessionId,
+      id: sessionId,
       user_id: userId,
       messages: sanitizedMessages,
       memory_summary: memorySummary,
@@ -130,7 +130,7 @@ export const clearChatSession = async (
   const { error } = await client
     .from("chat_sessions")
     .delete()
-    .eq("session_id", sessionId)
+    .eq("id", sessionId)
     .eq("user_id", userId);
 
   if (error) {

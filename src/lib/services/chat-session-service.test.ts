@@ -31,7 +31,7 @@ describe('chatSessionService', () => {
 
   it('loads a persisted chat session for the current user', async () => {
     const client = createSelectClient({
-      session_id: 'session-1',
+      id: 'session-1',
       user_id: 'user-1',
       messages: [textMessage('m1', 'assistant', 'Halo')],
       memory_summary: 'Ringkasan lama',
@@ -42,7 +42,7 @@ describe('chatSessionService', () => {
     const session = await getChatSession(client as never, 'user-1', 'session-1');
 
     expect(session).toEqual(expect.objectContaining({
-      session_id: 'session-1',
+      id: 'session-1',
       memory_summary: 'Ringkasan lama',
     }));
     expect(session?.messages).toHaveLength(1);
@@ -51,7 +51,7 @@ describe('chatSessionService', () => {
   it('summarizes older turns and keeps only recent turns when the history grows', async () => {
     const maybeSingle = vi.fn().mockResolvedValue({
       data: {
-        session_id: 'session-1',
+        id: 'session-1',
         user_id: 'user-1',
         messages: [],
         memory_summary: 'Ringkasan sebelumnya',
@@ -81,7 +81,7 @@ describe('chatSessionService', () => {
     await persistChatSession(client as never, 'user-1', 'session-1', longConversation);
 
     expect(upsert).toHaveBeenCalledWith(expect.objectContaining({
-      session_id: 'session-1',
+      id: 'session-1',
       user_id: 'user-1',
       messages: longConversation.slice(-8),
       memory_summary: expect.stringContaining('Ringkasan sebelumnya'),
