@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
 const exchangeCodeForSession = vi.fn()
+const logActivity = vi.fn()
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(async () => ({
@@ -11,9 +12,14 @@ vi.mock('@/lib/supabase/server', () => ({
   })),
 }))
 
+vi.mock('@/lib/audit', () => ({
+  logActivity,
+}))
+
 describe('GET /auth/callback', () => {
   beforeEach(() => {
     exchangeCodeForSession.mockReset()
+    logActivity.mockReset()
   })
 
   it('redirects to /home when exchange succeeds', async () => {
@@ -25,6 +31,7 @@ describe('GET /auth/callback', () => {
     expect(response.status).toBe(307)
     expect(response.headers.get('location')).toBe('http://localhost:3000/home')
     expect(exchangeCodeForSession).toHaveBeenCalledWith('abc')
+    expect(logActivity).toHaveBeenCalledWith({ action: 'LOGIN', entity: 'USER' })
   })
 
   it('redirects to provided next path when safe', async () => {

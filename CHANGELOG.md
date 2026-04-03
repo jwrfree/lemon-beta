@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **Dead chat intent cleanup**
+  - Removed the unused `data-entry` Lemon Coach intent after the orchestration refactor confirmed it had no reachable routing path, leaving the remaining intent branches as live planner states only.
 - **Server-enforced chat delete confirmation**
   - Added a staged confirmation state for Lemon Coach deletes so a transaction cannot be removed until a second confirmed delete call is made for the same transaction on the server.
 - **Unified chat transaction mutations**

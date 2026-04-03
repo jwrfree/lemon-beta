@@ -98,7 +98,6 @@ export type ChatIntent =
     | { kind: 'destructive-action' }
     | { kind: 'subscription-analysis' }
     | { kind: 'financial-health' }
-    | { kind: 'data-entry' }
     | { kind: 'memory' }
     | { kind: 'llm' };
 

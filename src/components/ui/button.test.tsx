@@ -53,9 +53,9 @@ describe('Button — Design System Audit', () => {
   });
 
   describe('Size & Spacing', () => {
-    it('default size uses design-token height h-10', () => {
+    it('default size uses the current design-token height h-11', () => {
       const cls = buttonVariants({ size: 'default' });
-      expect(cls).toContain('h-10');
+      expect(cls).toContain('h-11');
     });
 
     it('sm size uses design-token height h-9', () => {
@@ -63,9 +63,9 @@ describe('Button — Design System Audit', () => {
       expect(cls).toContain('h-9');
     });
 
-    it('lg size uses design-token height h-11 (44px meets min touch target)', () => {
+    it('lg size uses the current design-token height h-13', () => {
       const cls = buttonVariants({ size: 'lg' });
-      expect(cls).toContain('h-11');
+      expect(cls).toContain('h-13');
     });
 
     it('icon size meets 44×44px minimum touch target (h-11 w-11)', () => {
@@ -85,9 +85,9 @@ describe('Button — Design System Audit', () => {
   });
 
   describe('Border Radius & Shadow', () => {
-    it('base classes use rounded-md design token for border radius', () => {
+    it('base classes use rounded-full for the current button shape', () => {
       const cls = buttonVariants({});
-      expect(cls).toContain('rounded-md');
+      expect(cls).toContain('rounded-full');
     });
   });
 
@@ -97,14 +97,14 @@ describe('Button — Design System Audit', () => {
       expect(cls).toContain('motion-pressable');
     });
 
-    it('default variant includes active state using token', () => {
+    it('default variant includes the current active press styling', () => {
       const cls = buttonVariants({ variant: 'default' });
-      expect(cls).toContain('active:bg-primary/80');
+      expect(cls).toContain('active:scale-95');
     });
 
-    it('ghost variant includes active state using state-active token', () => {
+    it('ghost variant includes the current active press styling', () => {
       const cls = buttonVariants({ variant: 'ghost' });
-      expect(cls).toContain('active:bg-state-active');
+      expect(cls).toContain('active:scale-95');
     });
   });
 

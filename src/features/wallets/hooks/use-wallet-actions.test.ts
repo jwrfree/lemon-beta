@@ -6,12 +6,19 @@ import { useWalletActions } from './use-wallet-actions';
 const mockShowToast = vi.fn();
 const mockSetIsWalletModalOpen = vi.fn();
 const mockSetIsEditWalletModalOpen = vi.fn();
+const mockRouterRefresh = vi.fn();
 
 vi.mock('@/components/ui-provider', () => ({
   useUI: () => ({
     showToast: mockShowToast,
     setIsWalletModalOpen: mockSetIsWalletModalOpen,
     setIsEditWalletModalOpen: mockSetIsEditWalletModalOpen,
+  }),
+}));
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    refresh: mockRouterRefresh,
   }),
 }));
 
@@ -36,6 +43,7 @@ describe('useWalletActions', () => {
     vi.mocked(walletService.updateWallet).mockResolvedValue(undefined);
     vi.mocked(walletService.deleteWallet).mockResolvedValue({ blocked: null });
     vi.mocked(walletService.reconcileWallet).mockResolvedValue(undefined);
+    mockRouterRefresh.mockReset();
   });
 
   describe('addWallet', () => {

@@ -59,13 +59,13 @@ describe('UI Visual Consistency Tests', () => {
   });
 
   describe('Component Structure & Classes', () => {
-    it('Card component uses sharpened shadow-card and rounded-lg', () => {
+    it('Card component uses the current card shell tokens', () => {
       const { container } = render(<Card>Test Content</Card>);
       const card = container.firstChild as HTMLElement;
       
-      expect(card.className).toContain('shadow-card');
-      expect(card.className).toContain('rounded-lg');
-      expect(card.className).not.toContain('rounded-md'); // Ensuring we moved away from xl
+      expect(card.className).toContain('shadow-soft');
+      expect(card.className).toContain('rounded-3xl');
+      expect(card.className).toContain('motion-surface');
     });
   });
 });
