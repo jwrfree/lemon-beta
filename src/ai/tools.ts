@@ -1,5 +1,6 @@
 import { tool } from 'ai';
 import { z } from 'zod';
+import { AppActionSchema } from '@/ai/chat-contract';
 import { financialContextService } from '@/lib/services/financial-context-service';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { UnifiedFinancialContext } from '@/lib/services/financial-context-service';
@@ -423,6 +424,12 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
       execute: async ({ raw_text }) => {
         return transactionMutations.addTransaction(raw_text);
       },
+    }),
+
+    app_action: tool({
+      description: 'Mendefinisikan tindakan aplikasi yang bisa ditampilkan sebagai chip tindak lanjut di UI chat. Gunakan ini untuk navigasi ke halaman, membuka form/modal, atau menyorot section tertentu di layar.',
+      inputSchema: AppActionSchema,
+      execute: async (action) => action,
     }),
 
     update_transaction: tool({

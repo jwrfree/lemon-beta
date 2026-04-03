@@ -35,6 +35,10 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **Typed Lemon Coach response contract**
+  - Normalized assistant text into a structured `<response>{...}</response>` envelope with typed text, rich components, actions, and suggestions, while keeping a legacy fallback parser so existing rich cards continue to render during the transition.
+- **Lemon Coach app action bridge**
+  - Added the `app_action` chat tool plus client-side action chips so assistant replies can navigate to pages, open forms, and highlight relevant dashboard sections directly from chat.
 - **Durable Lemon Coach memory**
   - Added Supabase-backed `chat_sessions` persistence, server-side memory summaries, and synced clear-chat deletion so Lemon Coach can reload the latest conversation context across app restarts without sending the full raw history back to the model.
 - **Dead chat intent cleanup**

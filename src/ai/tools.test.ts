@@ -136,6 +136,23 @@ describe('createTransactionMutationActions', () => {
     expect(createTransactionWithClient).toHaveBeenCalledTimes(1);
   });
 
+  it('returns typed app actions from the app_action tool', async () => {
+    const supabase = createWalletQueryClient();
+    const tools = createFinancialTools('user-1', supabase as never);
+
+    const result = await tools.app_action.execute({
+      type: 'navigate',
+      target: '/budgeting',
+      params: { label: 'Go to Budgets ->' },
+    });
+
+    expect(result).toEqual({
+      type: 'navigate',
+      target: '/budgeting',
+      params: { label: 'Go to Budgets ->' },
+    });
+  });
+
   it('requires a staged confirmation before delete executes', async () => {
     const supabase = createWalletQueryClient();
     const actions = createTransactionMutationActions('user-1', supabase as never);

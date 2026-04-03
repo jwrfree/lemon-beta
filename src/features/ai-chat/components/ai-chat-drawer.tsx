@@ -1,7 +1,9 @@
+
 'use client';
 
 import { type UIMessage } from 'ai';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Sheet,
     SheetContent,
@@ -32,6 +34,17 @@ import { useInsights } from '@/features/insights/hooks/use-insights';
 import { buildFollowUpSuggestions } from '../lib/follow-up-suggestions';
 import { useAudioRecorder } from '@/hooks/use-audio-recorder';
 import { useUI } from '@/components/ui-provider';
+import {
+    type AppAction,
+    type ChatResponse,
+    type RichComponent,
+    extractChatDisplayText,
+    extractLegacyRichComponents,
+    extractLegacySuggestions,
+    hasPartialChatResponseBlock,
+    parseChatResponseText,
+    parseRichMessageParts,
+} from '@/ai/chat-contract';
 import { BudgetStatusCard } from './rich-results/BudgetStatusCard';
 import { WealthSummaryCard } from './rich-results/WealthSummaryCard';
 import { RecentTransactionsList } from './rich-results/RecentTransactionsList';
@@ -48,20 +61,14 @@ const PLACEHOLDERS = [
     "Coba tanya: 'Berapa sisa uangku?'",
     "Coba tanya: 'Bulan ini paling boros buat apa?'",
     "Coba tanya: 'Budget makan masih aman?'",
-    "Ketik pertanyaanmu di sini...",
+    'Ketik pertanyaanmu di sini...',
 ];
 
 const ShinyText = ({ text }: { text: string }) => (
     <div className="flex items-center gap-2">
         <motion.span
-            animate={{
-                backgroundPosition: ["200% 0", "-200% 0"],
-            }}
-            transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "linear",
-            }}
+            animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
             className="font-semibold bg-[linear-gradient(110deg,rgba(156,163,175,0.5),45%,#fff,55%,rgba(156,163,175,0.5))] bg-[length:200%_100%] bg-clip-text text-transparent dark:bg-[linear-gradient(110deg,#4b5563,45%,#fff,55%,#4b5563)]"
         >
             {text}
@@ -74,117 +81,231 @@ const ShinyText = ({ text }: { text: string }) => (
     </div>
 );
 
-const getMessageText = (message: UIMessage) =>
+const getRawMessageText = (message: UIMessage) =>
     message.parts
         .filter((part): part is Extract<UIMessage['parts'][number], { type: 'text' }> => part.type === 'text')
         .map((part) => part.text)
         .join('');
 
-export const parseRichMessageParts = (text: string): string[] => {
-    if (!text) return [];
+const dedupeAppActions = (actions: AppAction[]) => {
+    const seen = new Set<string>();
+    return actions.filter((action) => {
+        const key = JSON.stringify(action);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+};
 
-    const parts: string[] = [];
-    let remaining = text;
+const dedupeSuggestions = (suggestions: string[]) => {
+    const seen = new Set<string>();
+    return suggestions.filter((suggestion) => {
+        const normalized = suggestion.trim().toLowerCase();
+        if (!normalized || seen.has(normalized)) return false;
+        seen.add(normalized);
+        return true;
+    });
+};
 
-    while (remaining.length > 0) {
-        const matchIndex = remaining.indexOf('[RENDER_COMPONENT:');
-        if (matchIndex === -1) {
-            parts.push(remaining);
-            break;
-        }
-        if (matchIndex > 0) {
-            parts.push(remaining.substring(0, matchIndex));
-        }
-        const tagStart = matchIndex;
-        let tagEnd = -1;
-        let bracketCount = 0;
-        for (let i = tagStart; i < remaining.length; i++) {
-            if (remaining[i] === '[') bracketCount++;
-            else if (remaining[i] === ']') {
-                bracketCount--;
-                if (bracketCount === 0) {
-                    tagEnd = i;
-                    break;
-                }
-            }
-        }
+const deriveFallbackAppActions = (components: RichComponent[]): AppAction[] => {
+    const actions: AppAction[] = [];
 
-        if (tagEnd !== -1) {
-            parts.push(remaining.substring(tagStart, tagEnd + 1));
-            remaining = remaining.substring(tagEnd + 1);
-        } else {
-            parts.push(remaining.substring(tagStart));
-            break;
-        }
+    if (components.some((component) => component.type === 'BudgetStatus')) {
+        actions.push({ type: 'navigate', target: '/budgeting', params: { label: 'Go to Budgets ->' } });
     }
 
-    return parts;
+    if (components.some((component) => component.type === 'RecentTransactions')) {
+        actions.push({ type: 'navigate', target: '/transactions', params: { label: 'Go to Transactions ->' } });
+        actions.push({ type: 'open_form', target: 'transaction', params: { label: 'Add transaction ->', mode: 'smart' } });
+    }
+
+    if (components.some((component) => component.type === 'WealthSummary')) {
+        actions.push({ type: 'navigate', target: '/wallets', params: { label: 'Go to Wallets ->' } });
+    }
+
+    return actions;
+};
+
+export const resolveChatResponse = (rawText: string, isStreaming = false) => {
+    const parsedResponse = parseChatResponseText(rawText);
+    if (parsedResponse) {
+        return { response: parsedResponse, isPending: false };
+    }
+
+    if (isStreaming && hasPartialChatResponseBlock(rawText)) {
+        return { response: null, isPending: true };
+    }
+
+    return {
+        response: {
+            text: extractChatDisplayText(rawText),
+            components: extractLegacyRichComponents(rawText),
+            suggestions: extractLegacySuggestions(rawText),
+        } satisfies ChatResponse,
+        isPending: false,
+    };
+};
+
+export const extractAppActionsFromMessage = (message: UIMessage, response?: ChatResponse | null): AppAction[] => {
+    const toolActions = message.parts.flatMap((part) => {
+        if (part.type === 'tool-app_action' && part.state === 'output-available') {
+            return [part.output as AppAction];
+        }
+
+        return [];
+    });
+
+    return dedupeAppActions([
+        ...(response?.actions ?? []),
+        ...toolActions,
+        ...deriveFallbackAppActions(response?.components ?? []),
+    ]);
+};
+
+export const getAppActionLabel = (action: AppAction) => {
+    if (typeof action.params?.label === 'string' && action.params.label.trim()) {
+        return action.params.label;
+    }
+
+    if (action.type === 'navigate') {
+        const targetLabel = action.target.replace(/^\//, '').replace(/-/g, ' ') || 'page';
+        return `Open ${targetLabel} ->`;
+    }
+
+    if (action.type === 'open_form') {
+        return `Open ${action.target} form ->`;
+    }
+
+    return `Highlight ${action.target} ->`;
+};
+type AppActionBridge = {
+    router: ReturnType<typeof useRouter>;
+    openTransactionSheet: (transaction?: unknown, mode?: 'smart' | 'manual') => void;
+    setIsBudgetModalOpen: (isOpen: boolean) => void;
+    setIsWalletModalOpen: (isOpen: boolean) => void;
+    setIsGoalModalOpen: (isOpen: boolean) => void;
+    setIsReminderModalOpen: (isOpen: boolean) => void;
+    setIsDebtModalOpen: (isOpen: boolean) => void;
+    setIsTransferModalOpen: (isOpen: boolean) => void;
+    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+};
+
+export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => {
+    switch (action.type) {
+        case 'navigate':
+            bridge.router.push(action.target);
+            return;
+        case 'open_form':
+            switch (action.target) {
+                case 'transaction':
+                    bridge.openTransactionSheet(null, action.params?.mode === 'manual' ? 'manual' : 'smart');
+                    return;
+                case 'budget':
+                    bridge.setIsBudgetModalOpen(true);
+                    return;
+                case 'wallet':
+                    bridge.setIsWalletModalOpen(true);
+                    return;
+                case 'goal':
+                    bridge.setIsGoalModalOpen(true);
+                    return;
+                case 'reminder':
+                    bridge.setIsReminderModalOpen(true);
+                    return;
+                case 'debt':
+                    bridge.setIsDebtModalOpen(true);
+                    return;
+                case 'transfer':
+                    bridge.setIsTransferModalOpen(true);
+                    return;
+                default:
+                    bridge.showToast(`Form untuk "${action.target}" belum didukung.`, 'info');
+                    return;
+            }
+        case 'highlight': {
+            const selectorTarget = action.target.replace(/^#/, '');
+            const targetElement = document.querySelector(
+                `[data-highlight-target="${selectorTarget}"], [data-app-target="${selectorTarget}"], #${selectorTarget}`
+            ) as HTMLElement | null;
+
+            if (!targetElement) {
+                bridge.showToast(`Bagian "${action.target}" belum ditemukan di halaman ini.`, 'info');
+                return;
+            }
+
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetElement.classList.add('ring-2', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
+            window.setTimeout(() => {
+                targetElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-4', 'ring-offset-background');
+            }, 2400);
+            return;
+        }
+        default:
+            return;
+    }
+};
+
+const renderRichComponent = (component: RichComponent, idx: number) => {
+    switch (component.type) {
+        case 'BudgetStatus':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><BudgetStatusCard /></div>;
+        case 'WealthSummary':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><WealthSummaryCard /></div>;
+        case 'RecentTransactions':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><RecentTransactionsList /></div>;
+        case 'ScenarioSimulation':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><ScenarioSimulationCard data={component.data as never} /></div>;
+        case 'SubscriptionAnalysis':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><SubscriptionAnalysisCard data={component.data as never} /></div>;
+        case 'FinancialHealth':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><FinancialHealthCard data={component.data as never} /></div>;
+        default:
+            return null;
+    }
 };
 
 export const RichMessageContent = ({ text }: { text: string }) => {
-    if (!text) return null;
+    const { response, isPending } = resolveChatResponse(text);
 
-    const components: Record<string, (data?: any) => React.ReactNode> = {
-        'BudgetStatus': () => <BudgetStatusCard />,
-        'WealthSummary': () => <WealthSummaryCard />,
-        'RecentTransactions': () => <RecentTransactionsList />,
-        'ScenarioSimulation': (data) => <ScenarioSimulationCard data={data} />,
-        'SubscriptionAnalysis': (data) => <SubscriptionAnalysisCard data={data} />,
-        'FinancialHealth': (data) => <FinancialHealthCard data={data} />,
-    };
+    if (isPending) {
+        return <ShinyText text="Lemon Coach sedang berpikir..." />;
+    }
 
-    const parts = parseRichMessageParts(text);
+    if (!response) {
+        return null;
+    }
 
     return (
         <>
-            {parts.map((part, idx) => {
-                if (part.startsWith('[RENDER_COMPONENT:') && part.endsWith(']')) {
-                    // Extract name and data
-                    const content = part.substring(18, part.length - 1); // remove [RENDER_COMPONENT: and ]
-                    const separatorIdx = content.indexOf('|');
-                    const componentName = separatorIdx !== -1 ? content.substring(0, separatorIdx) : content;
-                    const componentDataRaw = separatorIdx !== -1 ? content.substring(separatorIdx + 1) : null;
-
-                    if (components[componentName]) {
-                        let data = undefined;
-                        if (componentDataRaw) {
-                            try {
-                                data = JSON.parse(componentDataRaw);
-                            } catch (e) {
-                                console.error("Failed to parse component data:", e);
-                            }
-                        }
-                        return <div key={idx} className="my-3 first:mt-0 last:mb-0">{components[componentName](data)}</div>;
-                    }
-                    return null;
-                }
-                
-                if (!part.trim()) return null;
-
-                // Hide suggestion tags from UI
-                if (part.startsWith('[SUGGESTION:') && part.endsWith(']')) return null;
-
-                const cleanPart = part.replace(/\[SUGGESTION:[^\]]+\]/g, '');
-                if (!cleanPart.trim()) return null;
-
-                return (
-                    <ReactMarkdown
-                        key={idx}
-                        components={{
-                            p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                        }}
-                    >
-                        {cleanPart}
-                    </ReactMarkdown>
-                );
-            })}
+            {response.text && (
+                <ReactMarkdown
+                    components={{
+                        p: ({ ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                    }}
+                >
+                    {response.text}
+                </ReactMarkdown>
+            )}
+            {response.components?.map(renderRichComponent)}
         </>
     );
 };
 
+export { parseRichMessageParts };
+
 export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
+    const router = useRouter();
     const { briefing } = useInsights();
-    const { showToast } = useUI();
+    const {
+        showToast,
+        openTransactionSheet,
+        setIsBudgetModalOpen,
+        setIsWalletModalOpen,
+        setIsGoalModalOpen,
+        setIsReminderModalOpen,
+        setIsDebtModalOpen,
+        setIsTransferModalOpen,
+    } = useUI();
     const {
         messages,
         input,
@@ -202,7 +323,6 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
 
     const { isRecording, startRecording, stopRecording } = useAudioRecorder();
     const [isTranscribing, setIsTranscribing] = useState(false);
-
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
     const quickActions = [
@@ -213,43 +333,43 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
     ];
 
     const bottomAnchorRef = useRef<HTMLDivElement>(null);
-
     const handleVoiceRecord = async () => {
         if (!isRecording) {
             try {
                 triggerHaptic('light');
                 await startRecording();
             } catch (err: any) {
-                showToast(err.message || "Gagal mengakses mikrofon.", "error");
+                showToast(err.message || 'Gagal mengakses mikrofon.', 'error');
             }
-        } else {
-            try {
-                triggerHaptic('medium');
-                setIsTranscribing(true);
-                const blob = await stopRecording();
-                if (!blob) return;
+            return;
+        }
 
-                const formData = new FormData();
-                formData.append('audio', blob, 'voice.webm');
+        try {
+            triggerHaptic('medium');
+            setIsTranscribing(true);
+            const blob = await stopRecording();
+            if (!blob) return;
 
-                const res = await fetch('/api/transcribe', {
-                    method: 'POST',
-                    body: formData,
-                });
+            const formData = new FormData();
+            formData.append('audio', blob, 'voice.webm');
 
-                const data = await res.json();
-                if (data.text) {
-                    triggerHaptic('success');
-                    setInput(data.text);
-                } else if (data.error) {
-                    showToast("Gagal mengubah suara ke teks.", "error");
-                }
-            } catch (err) {
-                console.error("Transcription failed:", err);
-                showToast("Gagal memproses suara. Periksa koneksi Anda.", "error");
-            } finally {
-                setIsTranscribing(false);
+            const res = await fetch('/api/transcribe', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (data.text) {
+                triggerHaptic('success');
+                setInput(data.text);
+            } else if (data.error) {
+                showToast('Gagal mengubah suara ke teks.', 'error');
             }
+        } catch (err) {
+            console.error('Transcription failed:', err);
+            showToast('Gagal memproses suara. Periksa koneksi Anda.', 'error');
+        } finally {
+            setIsTranscribing(false);
         }
     };
 
@@ -334,73 +454,61 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                 />
                             )}
                             <AnimatePresence initial={false}>
-                                {messages.map((message: UIMessage) => (
-                                    <motion.div
-                                        key={message.id}
-                                        initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        transition={{ duration: 0.2 }}
-                                        className={cn(
-                                            'flex w-full mb-4',
-                                            message.role === 'user' ? 'justify-end' : 'justify-start'
-                                        )}
-                                    >
-                                        <div
-                                            className={cn(
-                                                'flex gap-3 max-w-[85%]',
-                                                message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-                                            )}
+                                {messages.map((message: UIMessage) => {
+                                    const rawMessageText = getRawMessageText(message);
+                                    const isStreamingAssistantMessage = isLoading && lastMessage?.id === message.id && message.role === 'assistant';
+                                    const { response, isPending } = resolveChatResponse(rawMessageText, isStreamingAssistantMessage);
+                                    const displayText = response?.text ?? extractChatDisplayText(rawMessageText);
+                                    const appActions = message.role === 'assistant'
+                                        ? extractAppActionsFromMessage(message, response)
+                                        : [];
+                                    const messageSuggestions = message.role === 'assistant' && response?.suggestions?.length
+                                        ? dedupeSuggestions(response.suggestions)
+                                            .slice(0, 2)
+                                            .map((suggestion) => ({ label: suggestion, value: suggestion }))
+                                        : followUpSuggestions;
+
+                                    return (
+                                        <motion.div
+                                            key={message.id}
+                                            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            transition={{ duration: 0.2 }}
+                                            className={cn('flex w-full mb-4', message.role === 'user' ? 'justify-end' : 'justify-start')}
                                         >
-                                            <div
-                                                className={cn(
-                                                    'h-8 w-8 rounded-full shrink-0 flex items-center justify-center',
-                                                    message.role === 'user'
-                                                        ? 'bg-primary text-primary-foreground'
-                                                        : 'bg-card text-primary'
-                                                )}
-                                            >
-                                                {message.role === 'user' ? (
-                                                    <User className="h-4 w-4" />
-                                                ) : (
-                                                    <Bot className="h-4 w-4" />
-                                                )}
-                                            </div>
-                                            <div
-                                                className={cn(
-                                                    'flex flex-col',
-                                                    message.role === 'user' ? 'items-end' : 'items-start'
-                                                )}
-                                            >
-                                                <div
-                                                    className={cn(
-                                                        'p-3 rounded-2xl text-sm leading-relaxed',
-                                                        message.role === 'user'
-                                                            ? 'bg-primary text-primary-foreground rounded-tr-none'
-                                                            : 'bg-card text-foreground rounded-tl-none prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:font-bold prose-strong:text-foreground prose-a:text-primary dark:prose-invert'
-                                                    )}
-                                                >
-                                                    {message.role === 'user' ? (
-                                                        getMessageText(message)
-                                                    ) : (
-                                                        <>
-                                                            {getMessageText(message) ? (
-                                                                <RichMessageContent text={getMessageText(message)} />
-                                                            ) : (
-                                                                isLoading && <ShinyText text="Lemon Coach sedang berpikir..." />
-                                                            )}
-                                                        </>
-                                                    )}
+                                            <div className={cn('flex gap-3 max-w-[85%]', message.role === 'user' ? 'flex-row-reverse' : 'flex-row')}>
+                                                <div className={cn('h-8 w-8 rounded-full shrink-0 flex items-center justify-center', message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card text-primary')}>
+                                                    {message.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                                                 </div>
-                                                {message.role === 'assistant' &&
-                                                    latestAssistantMessageId === message.id &&
-                                                    followUpSuggestions.length > 0 && (
-                                                        <motion.div
-                                                            initial={{ opacity: 0, y: 6 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            transition={{ delay: 0.08, duration: 0.2 }}
-                                                            className="flex w-full max-w-[320px] flex-col gap-2 pt-1.5"
-                                                        >
-                                                            {followUpSuggestions.map((suggestion) => (
+                                                <div className={cn('flex flex-col', message.role === 'user' ? 'items-end' : 'items-start')}>
+                                                    <div className={cn('p-3 rounded-2xl text-sm leading-relaxed', message.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-none' : 'bg-card text-foreground rounded-tl-none prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:font-bold prose-strong:text-foreground prose-a:text-primary dark:prose-invert')}>
+                                                        {message.role === 'user' ? (
+                                                            displayText
+                                                        ) : isPending ? (
+                                                            <ShinyText text="Lemon Coach sedang berpikir..." />
+                                                        ) : rawMessageText ? (
+                                                            <RichMessageContent text={rawMessageText} />
+                                                        ) : (
+                                                            isLoading && <ShinyText text="Lemon Coach sedang berpikir..." />
+                                                        )}
+                                                    </div>
+                                                    {message.role === 'assistant' && appActions.length > 0 && (
+                                                        <div className="flex max-w-[320px] flex-wrap gap-2 pt-2">
+                                                            {appActions.map((action) => (
+                                                                <button
+                                                                    key={`${action.type}:${action.target}:${JSON.stringify(action.params ?? {})}`}
+                                                                    type="button"
+                                                                    onClick={() => executeAppAction(action, { router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast })}
+                                                                    className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-primary transition-colors hover:border-primary/35 hover:bg-primary/5"
+                                                                >
+                                                                    {getAppActionLabel(action)}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                    {message.role === 'assistant' && latestAssistantMessageId === message.id && messageSuggestions.length > 0 && (
+                                                        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.2 }} className="flex w-full max-w-[320px] flex-col gap-2 pt-1.5">
+                                                            {messageSuggestions.map((suggestion) => (
                                                                 <motion.button
                                                                     key={suggestion.value}
                                                                     type="button"
@@ -413,12 +521,12 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                             ))}
                                                         </motion.div>
                                                     )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
+                                        </motion.div>
+                                    );
+                                })}
                             </AnimatePresence>
-
                             {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
                                 <div className="flex justify-start">
                                     <div className="flex gap-3 max-w-[85%]">
@@ -455,10 +563,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                         </div>
                     </ScrollArea>
 
-                    <div
-                        className="shrink-0 px-4 pt-2"
-                        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}
-                    >
+                    <div className="shrink-0 px-4 pt-2" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1rem)' }}>
                         <form onSubmit={handleSubmit} className="relative flex items-center">
                             <div className="relative flex-1">
                                 <AnimatePresence mode="wait">
@@ -487,12 +592,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                         size="icon"
                                         onClick={handleVoiceRecord}
                                         disabled={isLoading || isTranscribing}
-                                        className={cn(
-                                            "h-9 w-9 rounded-2xl transition-all duration-300",
-                                            isRecording
-                                                ? "bg-destructive text-destructive-foreground animate-pulse"
-                                                : "bg-secondary text-muted-foreground hover:bg-muted"
-                                        )}
+                                        className={cn('h-9 w-9 rounded-2xl transition-all duration-300', isRecording ? 'bg-destructive text-destructive-foreground animate-pulse' : 'bg-secondary text-muted-foreground hover:bg-muted')}
                                     >
                                         {isTranscribing ? (
                                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -509,11 +609,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                         className="h-9 w-9 rounded-2xl shadow-lg shadow-primary/20"
                                     >
                                         {isLoading ? (
-                                            <motion.div
-                                                animate={{ opacity: [0.4, 1, 0.4] }}
-                                                transition={{ duration: 1.5, repeat: Infinity }}
-                                                className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-                                            />
+                                            <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
                                         ) : (
                                             <Send className="h-4 w-4" />
                                         )}
