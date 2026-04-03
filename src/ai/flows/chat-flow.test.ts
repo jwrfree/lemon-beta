@@ -50,6 +50,11 @@ describe('classifyChatIntent', () => {
         expect(intent).toEqual({ kind: 'memory' });
         expect(intentNeedsUnifiedContext(intent)).toBe(false);
     });
+
+    it('routes general financial check-in prompts to anomaly-review before health-check intents', () => {
+        expect(classifyChatIntent('cek keuanganku')).toEqual({ kind: 'anomaly-review' });
+        expect(classifyChatIntent('ada yang perlu aku perhatikan?')).toEqual({ kind: 'anomaly-review' });
+    });
 });
 
 describe('buildStaticChatReply', () => {
@@ -81,5 +86,13 @@ describe('buildChatSystemPrompt', () => {
         expect(prompt).toContain('"components"');
         expect(prompt).toContain('"suggestions"');
         expect(prompt).toContain('Untuk jawaban plain text biasa, balas normal tanpa wrapper');
+    });
+
+    it('includes anomaly review guidance when server-prepared anomaly context is present', () => {
+        const prompt = buildChatSystemPrompt();
+
+        expect(prompt).toContain('REVIEW ANOMALI');
+        expect(prompt).toContain('high = perlu tindakan sekarang');
+        expect(prompt).toContain('target_action');
     });
 });

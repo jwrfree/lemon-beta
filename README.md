@@ -32,6 +32,7 @@ Delete requests now require a staged server-side confirmation before the RPC-bac
 Lemon Coach sessions now persist in `public.chat_sessions` with `session_id`, `user_id`, `messages`, `memory_summary`, `created_at`, and `updated_at`. The client reloads the latest stored turns when chat opens, older turns are compacted into `memory_summary`, and the clear-chat button deletes the persisted session before starting a fresh one.
 Lemon Coach also exposes a typed app-action bridge through the `app_action` tool so assistant replies can attach clickable chips for navigation, opening forms, or highlighting relevant UI sections without changing the `/api/chat` transport contract.
 Assistant replies can now stay plain text when no structured UI is needed, while richer answers use a typed `<response>{...}</response>` envelope with `text`, `components`, `actions`, and `suggestions`. The client still keeps a backward-compatible fallback for older plain-text and legacy tag-based replies, and logs a deprecation warning when the old tag parser is used.
+Lemon Coach anomaly review now also uses the `detect_spending_anomalies` RPC through the `get_spending_anomalies` tool, so general financial check-in questions can be answered with server-prepared anomaly context before the LLM writes the final coaching response.
 
 Typed response shape:
 ```json

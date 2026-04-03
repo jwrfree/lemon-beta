@@ -67,6 +67,8 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **AI anomaly review groundwork**
+  - Added the `detect_spending_anomalies` RPC plus `get_spending_anomalies` Lemon Coach tool, and routed broad "cek keuangan saya" style prompts into a server-prepared anomaly review path with severity/action guidance instead of treating them like generic health-check or transaction-search queries.
 - **Typed response wrapper policy**
   - Updated Lemon Coach so plain-text replies can stream normally, while rich replies use the typed `<response>{...}</response>` envelope and legacy render tags remain as a deprecated fallback with console warnings.
 - **Wallet data source stabilization**

@@ -10,6 +10,7 @@ export type ChatRouteDecision =
   | { kind: "transaction-search"; intent: Extract<ChatIntent, { kind: "transaction-search" }> }
   | { kind: "transaction-add"; intent: Extract<ChatIntent, { kind: "add-transaction" }> }
   | { kind: "recent-transactions"; intent: Extract<ChatIntent, { kind: "recent-transactions" }> }
+  | { kind: "llm-anomaly"; intent: Extract<ChatIntent, { kind: "anomaly-review" }> }
   | { kind: "deterministic-context"; intent: ChatIntent }
   | { kind: "llm"; intent: ChatIntent };
 
@@ -32,6 +33,8 @@ export const routeChatIntent = (question: string): ChatRouteDecision => {
       return { kind: "transaction-add", intent };
     case "recent-transactions":
       return { kind: "recent-transactions", intent };
+    case "anomaly-review":
+      return { kind: "llm-anomaly", intent };
     default:
       break;
   }

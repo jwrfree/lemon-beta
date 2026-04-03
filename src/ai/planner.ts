@@ -10,6 +10,8 @@ import {
   handleRecentTransactionsAction,
   handleTransactionSearchAction,
 } from "@/ai/actions/transaction-actions";
+import type { ChatUserFinancialProfile } from "@/ai/flows/chat-flow";
+import { financialContextService } from "@/lib/services/financial-context-service";
 import { routeChatIntent } from "@/ai/router";
 
 type ChatPlannerClient = Pick<SupabaseClient, "from" | "rpc">;
@@ -19,6 +21,7 @@ type ExecuteChatPlannerParams = {
   supabase: ChatPlannerClient;
   messages: UIMessage[];
   memorySummary?: string | null;
+  userProfile?: ChatUserFinancialProfile | null;
   sessionId?: string | null;
 };
 
@@ -27,12 +30,13 @@ export const executeChatPlanner = async ({
   supabase,
   messages,
   memorySummary,
+  userProfile,
   sessionId,
 }: ExecuteChatPlannerParams) => {
   const lastUserMessage = getLastUserMessageText(messages);
 
   if (typeof lastUserMessage !== "string") {
-    return handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
+    return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
   }
 
   const decision = routeChatIntent(lastUserMessage);
@@ -46,7 +50,24 @@ export const executeChatPlanner = async ({
       return handleAddTransactionAction({ userId, supabase, messages, rawText: lastUserMessage, sessionId });
     case "recent-transactions": {
       const response = await handleRecentTransactionsAction({ userId, supabase, messages, sessionId });
-      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
+      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
+    }
+    case "llm-anomaly": {
+      const anomalies = await financialContextService.getSpendingAnomalies(userId, supabase);
+      return handleLlmChatAction({
+        userId,
+        supabase,
+        messages,
+        memorySummary,
+        userProfile,
+        supplementalContext: {
+          anomaly_review: {
+            anomalies,
+            instruction: "Fokuskan jawaban pada anomali, level severity, angka referensi, dan tindak lanjut yang bisa dilakukan hari ini.",
+          },
+        },
+        sessionId,
+      });
     }
     case "deterministic-context": {
       const response = await handleDeterministicContextAction({
@@ -57,10 +78,10 @@ export const executeChatPlanner = async ({
         intent: decision.intent,
         sessionId,
       });
-      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
+      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
     }
     case "llm":
     default:
-      return handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
+      return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
   }
 };

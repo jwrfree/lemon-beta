@@ -191,3 +191,78 @@ describe('financialContextService transaction helpers', () => {
     }));
   });
 });
+
+describe('financialContextService anomaly helpers', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('maps anomaly RPC rows into normalized anomaly objects', async () => {
+    const client = {
+      rpc: vi.fn().mockResolvedValue({
+        data: [
+          {
+            anomaly_type: 'spike',
+            category: 'Makanan',
+            description: 'Pengeluaran makan naik tajam.',
+            severity: 'high',
+            current_value: 450000,
+            reference_value: 250000,
+            metadata: {
+              ratio: 1.8,
+              target_action: { type: 'highlight', target: 'widget-financial-pulse' },
+            },
+          },
+        ],
+        error: null,
+      }),
+    };
+
+    const anomalies = await financialContextService.getSpendingAnomalies('user-1', client as any);
+
+    expect(client.rpc).toHaveBeenCalledWith('detect_spending_anomalies', { p_user_id: 'user-1' });
+    expect(anomalies).toEqual([
+      {
+        anomaly_type: 'spike',
+        category: 'Makanan',
+        description: 'Pengeluaran makan naik tajam.',
+        severity: 'high',
+        current_value: 450000,
+        reference_value: 250000,
+        metadata: {
+          ratio: 1.8,
+          target_action: { type: 'highlight', target: 'widget-financial-pulse' },
+        },
+      },
+    ]);
+  });
+
+  it('lets the anomalies tool return the RPC-backed anomaly payload', async () => {
+    const toolSupabase = {
+      from: vi.fn(),
+      rpc: vi.fn(),
+    };
+    const tools = createFinancialTools('user-1', toolSupabase as any);
+    const anomalies = [
+      {
+        anomaly_type: 'budget_trajectory' as const,
+        category: 'Transportasi',
+        description: 'Laju pengeluaran transportasi berpotensi menembus budget.',
+        severity: 'medium' as const,
+        current_value: 320000,
+        reference_value: 250000,
+        metadata: {
+          projected_total: 480000,
+          target_action: { type: 'highlight', target: 'widget-budget-status' },
+        },
+      },
+    ];
+
+    vi.spyOn(financialContextService, 'getSpendingAnomalies').mockResolvedValue(anomalies);
+
+    const result = await (tools.get_spending_anomalies as any).execute({});
+
+    expect(result).toEqual(anomalies);
+    expect(financialContextService.getSpendingAnomalies).toHaveBeenCalledWith('user-1', toolSupabase);
+  });
+});

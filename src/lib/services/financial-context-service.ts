@@ -88,6 +88,21 @@ export interface TransactionSearchResult {
     date: string;
 }
 
+export interface SpendingAnomaly {
+    anomaly_type: 'spike' | 'missing_recurring' | 'budget_trajectory';
+    category: string;
+    description: string;
+    severity: 'low' | 'medium' | 'high';
+    current_value: number;
+    reference_value: number;
+    metadata: Record<string, unknown>;
+}
+
+export interface CategoryTrendPoint {
+    month: string;
+    amount: number;
+}
+
 type ContextClient = Pick<SupabaseClient, 'rpc' | 'from'>;
 
 type RpcErrorLike = {
@@ -433,6 +448,81 @@ class FinancialContextService {
             amount: toNumber(row.amount),
             type: row.type || 'expense',
             date: row.date || new Date().toISOString(),
+        }));
+    }
+
+    async getSpendingAnomalies(
+        userId: string,
+        client?: ContextClient,
+    ): Promise<SpendingAnomaly[]> {
+        const supabase = client ?? createClient();
+        const { data, error } = await supabase.rpc('detect_spending_anomalies', {
+            p_user_id: userId,
+        });
+
+        if (error) {
+            console.error('[FinancialContextService] Spending anomalies error:', error);
+            return [];
+        }
+
+        return ((data ?? []) as Array<Record<string, unknown>>).map((row) => ({
+            anomaly_type: (row.anomaly_type as SpendingAnomaly['anomaly_type']) || 'spike',
+            category: String(row.category ?? 'Lainnya'),
+            description: String(row.description ?? ''),
+            severity: (row.severity as SpendingAnomaly['severity']) || 'low',
+            current_value: toNumber(row.current_value),
+            reference_value: toNumber(row.reference_value),
+            metadata: typeof row.metadata === 'object' && row.metadata !== null
+                ? row.metadata as Record<string, unknown>
+                : {},
+        }));
+    }
+
+    async getCategoryTrend(
+        userId: string,
+        category: string,
+        client?: ContextClient,
+        months = 6,
+    ): Promise<CategoryTrendPoint[]> {
+        const supabase = client ?? createClient();
+        const startDate = new Date(getCurrentDate());
+        startDate.setDate(1);
+        startDate.setMonth(startDate.getMonth() - (months - 1));
+
+        const { data, error } = await supabase
+            .from('transactions')
+            .select('amount,date,category,type')
+            .eq('user_id', userId)
+            .eq('type', 'expense')
+            .eq('category', category)
+            .gte('date', startDate.toISOString())
+            .order('date', { ascending: true });
+
+        if (error) {
+            console.error('[FinancialContextService] Category trend error:', error);
+            return [];
+        }
+
+        const totalsByMonth = new Map<string, number>();
+        for (let offset = 0; offset < months; offset += 1) {
+            const month = new Date(startDate);
+            month.setMonth(startDate.getMonth() + offset);
+            const key = month.toISOString().slice(0, 7);
+            totalsByMonth.set(key, 0);
+        }
+
+        ((data ?? []) as TransactionRow[]).forEach((transaction) => {
+            const key = (transaction.date || '').slice(0, 7);
+            if (!totalsByMonth.has(key)) {
+                return;
+            }
+
+            totalsByMonth.set(key, (totalsByMonth.get(key) ?? 0) + toNumber(transaction.amount));
+        });
+
+        return Array.from(totalsByMonth.entries()).map(([month, amount]) => ({
+            month,
+            amount,
         }));
     }
 

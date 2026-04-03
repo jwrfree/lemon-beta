@@ -564,5 +564,13 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         };
       },
     }),
+
+    get_spending_anomalies: tool({
+      description: 'Detect unusual spending patterns, missing recurring transactions, and budget breach trajectories for the current user.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        return financialContextService.getSpendingAnomalies(userId, supabase);
+      },
+    }),
   };
 };

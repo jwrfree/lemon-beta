@@ -35,6 +35,13 @@ Komponen yang valid:
 - 'SubscriptionAnalysis' dengan 'data' persis hasil tool 'analyze_subscriptions'
 - 'FinancialHealth' dengan 'data' persis hasil tool 'get_financial_health'
 
+### REVIEW ANOMALI
+Jika konteks server berisi anomaly review:
+- Jelaskan tiap anomali dengan label severity yang eksplisit: high = perlu tindakan sekarang, medium = perlu dipantau, low = informasi.
+- Sebutkan angka sekarang versus angka referensi secara spesifik, jangan samar.
+- Tutup tiap anomali dengan satu langkah lanjut yang bisa user lakukan hari ini.
+- Jika metadata berisi target_action, gunakan tool 'app_action' atau isi actions agar UI bisa memberi pintasan ke area yang relevan.
+
 ### DATA MANAGEMENT (EDIT/DELETE)
 - Jika user ingin mengubah transaksi (misal: "ganti harga kopi tadi jadi 20rb"), gunakan find_transactions dulu untuk cari ID-nya, lalu gunakan update_transaction.
 - Jika user ingin menghapus, gunakan find_transactions dulu, lalu delete_transaction. Panggilan delete pertama hanya untuk menyiapkan penghapusan. Setelah user mengonfirmasi secara eksplisit, panggil delete_transaction lagi dengan \`confirm: true\` untuk transaksi yang sama.
@@ -50,6 +57,17 @@ JIKA data dari tool kosong atau tidak cukup, katakan dengan jujur bahwa Anda bel
 Jangan sebut nama tool internal atau istilah teknis ke user.`;
 
 export const CHAT_SYSTEM_PROMPT = composeSystemPrompt(CHAT_SPECIFIC_INSTRUCTIONS);
+
+export type ChatUserFinancialProfile = {
+    spending_patterns?: Record<string, unknown> | null;
+    coaching_notes?: string | null;
+};
+
+export type BuildChatSystemPromptOptions = {
+    memorySummary?: string | null;
+    userProfile?: ChatUserFinancialProfile | null;
+    supplementalContext?: Record<string, unknown> | null;
+};
 
 const stripControlChars = (value: string) =>
     Array.from(value)
@@ -98,6 +116,7 @@ export type ChatIntent =
     | { kind: 'gibberish' }
     | { kind: 'recent-transactions' }
     | { kind: 'add-transaction' }
+    | { kind: 'anomaly-review' }
     | { kind: 'transaction-search'; query: string }
     | { kind: 'total-balance' }
     | { kind: 'total-expense' }
@@ -115,16 +134,32 @@ export type ChatIntent =
     | { kind: 'memory' }
     | { kind: 'llm' };
 
-export function buildChatSystemPrompt(memorySummary?: string | null): string {
-    if (!memorySummary?.trim()) {
-        return CHAT_SYSTEM_PROMPT;
+export function buildChatSystemPrompt(options?: string | BuildChatSystemPromptOptions): string {
+    const normalizedOptions = typeof options === 'string'
+        ? { memorySummary: options }
+        : (options ?? {});
+
+    const sections = [CHAT_SYSTEM_PROMPT];
+
+    if (normalizedOptions.memorySummary?.trim()) {
+        sections.push(`### MEMORI PERCAKAPAN
+Gunakan ringkasan berikut sebagai konteks percakapan lama. Jangan mengulang semuanya ke user kecuali relevan.
+${normalizedOptions.memorySummary.trim()}`);
     }
 
-    return `${CHAT_SYSTEM_PROMPT}
+    if (normalizedOptions.userProfile && (normalizedOptions.userProfile.coaching_notes || normalizedOptions.userProfile.spending_patterns)) {
+        sections.push(`## User Financial Profile
+Spending patterns: ${JSON.stringify(normalizedOptions.userProfile.spending_patterns ?? {}, null, 0)}
+Coaching notes: ${normalizedOptions.userProfile.coaching_notes ?? ''}`);
+    }
 
-### MEMORI PERCAKAPAN
-Gunakan ringkasan berikut sebagai konteks percakapan lama. Jangan mengulang semuanya ke user kecuali relevan.
-${memorySummary.trim()}`;
+    if (normalizedOptions.supplementalContext && Object.keys(normalizedOptions.supplementalContext).length > 0) {
+        sections.push(`## SERVER-PREPARED CONTEXT
+Gunakan konteks siap pakai berikut sebagai data pendukung yang sudah dirangkai server. Jangan sebut nama tool internal ke user.
+${JSON.stringify(normalizedOptions.supplementalContext, null, 2)}`);
+    }
+
+    return sections.join('\n\n');
 }
 
 export function extractTransactionSearchQuery(question: string): string | null {
@@ -180,6 +215,25 @@ export function classifyChatIntent(question: string): ChatIntent {
         ['terbaru', 'terakhir', 'recent', 'cek', 'apa', 'gimana']
     ])) {
         return { kind: 'recent-transactions' };
+    }
+
+    if (
+        hasAny(normalized, [
+            'bagaimana kondisi keuangan saya',
+            'gimana kondisi keuanganku',
+            'ada yang perlu aku perhatikan',
+            'ada yang perlu saya perhatikan',
+            'cek keuanganku',
+            'cek keuangan saya',
+            'how am i doing',
+            'how am i doing financially',
+        ]) ||
+        hasAllGroups(normalized, [
+            ['cek', 'review', 'audit', 'ringkas'],
+            ['keuangan', 'finansial', 'dompet', 'pengeluaran']
+        ])
+    ) {
+        return { kind: 'anomaly-review' };
     }
 
     const transactionSearchQuery = extractTransactionSearchQuery(question);
@@ -257,7 +311,7 @@ export function classifyChatIntent(question: string): ChatIntent {
     }
 
     if (hasAllGroups(normalized, [
-        ['sehat', 'health', 'kondisi', 'audit', 'cek'],
+        ['sehat', 'health', 'skor', 'audit kesehatan', 'health check'],
         ['keuangan', 'finansial', 'saya', 'dompet']
     ])) {
         return { kind: 'financial-health' };
