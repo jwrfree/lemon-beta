@@ -55,7 +55,7 @@
     "framer-motion": "^11.2.10",
     "geist": "^1.5.1",
     "gpt-tokenizer": "^3.4.0",
-    "next": "^16.1.6",
+    "next": "^16.2.2",
     "next-themes": "^0.3.0",
     "openai": "^6.16.0",
     "react": "^18.3.1",
