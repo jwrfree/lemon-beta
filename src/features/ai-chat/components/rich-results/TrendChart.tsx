@@ -1,5 +1,6 @@
 'use client';
 
+import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { TrendingDown, TrendingUp, Minus } from '@/lib/icons';
 
@@ -71,54 +72,58 @@ export const TrendChart = ({ data }: TrendChartProps) => {
 
     if (points.length === 0) {
         return (
-            <div className="rounded-3xl border border-border/60 bg-card p-4">
-                <div className="text-sm font-semibold text-foreground">Trend pengeluaran</div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                    Belum ada data tren kategori yang cukup untuk ditampilkan.
-                </p>
-            </div>
+            <Card variant="ai">
+                <CardContent className="p-4">
+                    <div className="text-sm font-semibold text-foreground">Trend pengeluaran</div>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                        Belum ada data tren kategori yang cukup untuk ditampilkan.
+                    </p>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <div className="rounded-3xl border border-border/60 bg-card p-4">
-            <div className="flex items-start justify-between gap-3">
-                <div>
-                    <div className="text-sm font-semibold text-foreground">
-                        Tren {data?.category ?? 'kategori'}
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                        6 bulan terakhir
-                    </p>
-                </div>
-                <div className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-label-md font-semibold text-muted-foreground">
-                    <TrendIcon className="h-3.5 w-3.5" />
-                    {trend.label}
-                </div>
-            </div>
-
-            <div className="mt-4 rounded-2xl bg-muted/40 p-3">
-                <svg viewBox="0 0 240 72" className="h-[72px] w-full overflow-visible">
-                    <path
-                        d={path}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        className="text-primary"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-label-md text-muted-foreground sm:grid-cols-6">
-                    {points.map((point) => (
-                        <div key={point.month} className="rounded-xl bg-background/80 px-2 py-1.5">
-                            <div className="font-semibold text-foreground">{monthLabel(point.month)}</div>
-                            <div>{formatCurrency(point.amount)}</div>
+        <Card variant="ai">
+            <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                    <div>
+                        <div className="text-sm font-semibold text-foreground">
+                            Tren {data?.category ?? 'kategori'}
                         </div>
-                    ))}
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            6 bulan terakhir
+                        </p>
+                    </div>
+                    <div className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-label-md font-semibold text-muted-foreground">
+                        <TrendIcon className="h-3.5 w-3.5" />
+                        {trend.label}
+                    </div>
                 </div>
-            </div>
-        </div>
+
+                <div className="mt-4 rounded-2xl bg-muted/40 p-3">
+                    <svg viewBox="0 0 240 72" className="h-[72px] w-full overflow-visible">
+                        <path
+                            d={path}
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            className="text-primary"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-label-md text-muted-foreground sm:grid-cols-6">
+                        {points.map((point) => (
+                            <div key={point.month} className="rounded-xl bg-background/80 px-2 py-1.5">
+                                <div className="font-semibold text-foreground">{monthLabel(point.month)}</div>
+                                <div>{formatCurrency(point.amount)}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     );
 };
 

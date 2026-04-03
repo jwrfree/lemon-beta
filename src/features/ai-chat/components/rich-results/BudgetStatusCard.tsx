@@ -13,7 +13,7 @@ export const BudgetStatusCard = () => {
     const { context, isLoading } = useFinancialContext();
     
     if (isLoading) {
-        return <Skeleton className="h-32 w-full rounded-2xl" />;
+        return <Skeleton className="h-32 w-full rounded-card" />;
     }
 
     if (!context?.budgets || context.budgets.length === 0) {
@@ -31,7 +31,7 @@ export const BudgetStatusCard = () => {
     const sortedBudgets = [...context.budgets].sort((a, b) => b.percent - a.percent).slice(0, 3);
 
     return (
-        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
+        <Card variant="ai" className="mt-4">
             <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
                     <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50">Budget Status</span>

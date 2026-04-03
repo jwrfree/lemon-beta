@@ -12,7 +12,7 @@ export const WealthSummaryCard = () => {
     const { context, isLoading } = useFinancialContext();
     
     if (isLoading) {
-        return <Skeleton className="h-32 w-full rounded-2xl" />;
+        return <Skeleton className="h-32 w-full rounded-card" />;
     }
 
     if (!context?.wealth) {
@@ -30,7 +30,7 @@ export const WealthSummaryCard = () => {
     const { cash, assets, liabilities, net_worth } = context.wealth;
 
     return (
-        <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
+        <Card variant="ai" className="mt-4">
             <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between mb-1">
                     <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50">Wealth Summary</span>

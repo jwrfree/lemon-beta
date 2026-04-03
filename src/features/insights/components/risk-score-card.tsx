@@ -11,7 +11,7 @@ export const RiskScoreCard = () => {
 
     if (isLoading) {
         return (
-            <Card className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md shadow-elevation-3">
+            <Card variant="elevated" className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md">
                 <ArrowClockwise size={24} weight="regular" className="animate-spin text-muted-foreground" />
             </Card>
         );
@@ -19,7 +19,7 @@ export const RiskScoreCard = () => {
 
     if (!risk) {
         return (
-            <Card className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-inner">
+            <Card variant="elevated" className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-inner">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
                     <Sparkle size={24} weight="regular" className="opacity-30" />
                 </div>
@@ -60,8 +60,9 @@ export const RiskScoreCard = () => {
     return (
         <Card
             id="widget-risk-score"
+            variant="elevated"
             className={cn(
-                "relative overflow-hidden rounded-card-premium text-white shadow-elevation-3 transition-all duration-500",
+                "relative overflow-hidden text-white transition-all duration-500",
                 config.bg
             )}
         >

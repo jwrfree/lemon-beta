@@ -28,7 +28,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
 
     return (
         <div id="widget-alerts" className="grid gap-4">
-            <Card className="rounded-card bg-card/98 shadow-elevation-3">
+            <Card variant="default" className="bg-card/98">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -71,7 +71,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                 </CardContent>
             </Card>
 
-            <Card className="rounded-card bg-card/98 shadow-elevation-3">
+            <Card variant="default" className="bg-card/98">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>
                         <CardTitle className="text-sm font-medium flex items-center gap-2">

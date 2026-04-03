@@ -79,6 +79,7 @@ DS-2 also standardizes elevation with `shadow-elevation-1` through `shadow-eleva
 DS-2 also normalizes radius usage around Tailwind tokens (`rounded-sm` through `rounded-3xl`, plus semantic `rounded-card*` helpers) so app surfaces no longer depend on bespoke `rounded-[...]` values.
 DS-2 also seals raw color literals in app surfaces by mapping them to semantic Tailwind/CSS-variable tokens, including chart palettes, brand SVG fills, and shared utility color helpers.
 DS-2 also formalizes loading feedback in `src/components/ui/loading-states.md`: page skeletons for route-level initial loads, card skeletons for in-place widget loading, button spinners for async actions, and shared empty/error states instead of `animate-pulse` placeholder divs or `return null` gaps.
+DS-3 introduces named `Card` surface variants in `src/components/ui/card.tsx` (`default`, `elevated`, `flat`, `ai`) so dashboard widgets and Lemon Coach rich cards can share the same shell geometry instead of redefining radius, shadow, and overflow per component.
 
 ---
 
