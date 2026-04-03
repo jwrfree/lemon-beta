@@ -3,12 +3,12 @@
 import { useMemo, useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
-import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
+import { useWallets } from '@/features/wallets';
+import { useRangeTransactions } from '@/features/transactions';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { cn } from '@/lib/utils';
 import { useDebts } from '@/features/debts/hooks/use-debts';
-import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useBudgets } from '@/features/budgets';
 import { useGoals } from '@/features/goals/hooks/use-goals';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,7 @@ import { EmptyState } from '@/components/empty-state';
 import { NetWorthCard } from './net-worth-card';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { UserProfileDropdown } from '@/components/user-profile-dropdown';
-import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
+import { RiskScoreCard } from '@/features/insights';
 import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 
 // Import Analyst Charts Components

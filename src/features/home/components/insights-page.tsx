@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Brain, CircleNotch } from '@phosphor-icons/react';
-import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
+import { useRangeTransactions } from '@/features/transactions';
 import { startOfMonth, subDays, endOfDay, startOfDay } from 'date-fns';
 import { DashboardCashflow } from '@/features/home/components/dashboard-cashflow';
 import { DashboardExpensePie } from '@/features/home/components/dashboard-expense-pie';

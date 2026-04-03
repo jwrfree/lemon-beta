@@ -4,14 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkle, TrendUp, X } from '@phosphor-icons/react';
 import { useAuth } from '@/providers/auth-provider';
-import { transactionService } from '@/features/transactions/services/transaction.service';
+import { transactionService, useCategories } from '@/features/transactions';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
-import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useBudgets } from '@/features/budgets';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useUI } from '@/components/ui-provider';
 import { getCategoryIcon } from '@/lib/category-utils';

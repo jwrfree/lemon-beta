@@ -73,6 +73,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Moved asset and liability reads plus mutations onto `useAssets` with a feature service, leaving `AssetProvider` as a compatibility wrapper so asset data also has one React Query-backed source of truth.
 - **Scoped service-layer enforcement**
   - Replaced direct `supabase.from(...)` usage in the Phase 4-facing hooks/providers with budget, category, transaction, and asset service functions, and marked each migrated hook call site to keep future RPC work inside the service layer.
+- **Feature public API boundaries**
+  - Added `index.ts` barrels for `transactions`, `budgets`, `wallets`, and `insights`, then switched the scoped cross-feature imports in finance surfaces to those public exports instead of deep internal paths.
 - **Typed Lemon Coach response contract**
   - Normalized assistant text into a structured `<response>{...}</response>` envelope with typed text, rich components, actions, and suggestions, while keeping a legacy fallback parser so existing rich cards continue to render during the transition.
   - Reused the same typed envelope for persisted chat history and follow-up generation so memory summaries and suggestion builders read clean text instead of raw render tags or JSON payloads.

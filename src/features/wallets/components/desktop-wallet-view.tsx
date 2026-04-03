@@ -8,15 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowsDownUp, ArrowDown, ArrowUp, CircleNotch, DotsThreeVertical, MagnifyingGlass, Sparkle, Target, TrendDown, TrendUp, Trash, Wallet as WalletIcon } from '@phosphor-icons/react';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import { TransactionList } from '@/features/transactions/components/transaction-list';
+import { TransactionList, usePaginatedTransactions, useRangeTransactions } from '@/features/transactions';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import type { Wallet } from '@/types/models';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
-import { usePaginatedTransactions } from '@/features/transactions/hooks/use-paginated-transactions';
 import { parseISO, subDays, isAfter, startOfDay, endOfDay } from 'date-fns';
 import {
     AlertDialog,

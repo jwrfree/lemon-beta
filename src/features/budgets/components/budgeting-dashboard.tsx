@@ -5,13 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
 import { CircleNotch, HandCoins, Plus } from '@phosphor-icons/react';
-import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useBudgets } from '@/features/budgets';
 import { formatCurrency } from '@/lib/utils';
 import { ChartContainer } from "@/components/ui/chart"
 import { Pie, PieChart } from "recharts"
 import { useUI } from '@/components/ui-provider';
 import { startOfMonth, endOfMonth } from 'date-fns';
-import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
+import { useRangeTransactions } from '@/features/transactions';
 import { BudgetCard } from './budget-card';
 import { calculateGlobalBudgetOverview } from '../logic';
 import { EmptyState } from '@/components/empty-state';

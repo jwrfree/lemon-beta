@@ -10,7 +10,7 @@ import {
     type SingleTransactionOutput,
 } from '@/ai/flows/extract-transaction-flow';
 import { useActions } from '@/providers/action-provider';
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useWallets } from '@/features/wallets';
 import { normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 import { formatCurrency, cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';

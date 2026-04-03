@@ -150,6 +150,10 @@ Open [http://localhost:3000](http://localhost:3000). Register an account — ema
 
 ---
 
+Phase 4-facing domains now expose public `index.ts` barrels in `transactions`, `budgets`, `wallets`, and `insights`, and cross-feature imports inside the finance UI use those barrels instead of deep internal paths.
+
+---
+
 ## Documentation
 
 - [Docs Index](./docs/README.md) – overview of standards, audits, and feature-specific docs

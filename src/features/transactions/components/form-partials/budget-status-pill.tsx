@@ -1,8 +1,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useBudgets } from '@/features/budgets/hooks/use-budgets';
-import { useInsights } from '@/features/insights/hooks/use-insights';
+import { useBudgets } from '@/features/budgets';
+import { useInsights } from '@/features/insights';
 import { CheckCircle, TrendUp, WarningCircle } from '@phosphor-icons/react';
 
 interface BudgetStatusPillProps {

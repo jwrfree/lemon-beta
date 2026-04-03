@@ -21,11 +21,10 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import type { Wallet, Transaction, Reminder, Debt } from '@/types/models';
 import { SpendingTrendChart } from './spending-trend-chart';
-import { RiskScoreCard } from '@/features/insights/components/risk-score-card';
+import { RiskScoreCard } from '@/features/insights';
 import { OnboardingChecklist } from '@/components/onboarding-checklist';
-import { AiBriefingCard } from '@/features/insights/components/ai-briefing-card';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
-import { TransactionListItem } from '@/features/transactions/components/transaction-list-item';
+import { AiBriefingCard } from '@/features/insights';
+import { TransactionListItem, useCategories } from '@/features/transactions';
 
 interface MobileDashboardProps {
     userData: any;

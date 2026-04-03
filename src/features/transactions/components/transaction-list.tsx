@@ -6,11 +6,10 @@ import { parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { CircleNotch, Receipt } from '@phosphor-icons/react';
 import type { Transaction } from '@/types/models';
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useWallets } from '@/features/wallets';
 import { useUI } from '@/components/ui-provider';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { useCategories, groupTransactionsByDate } from '@/features/transactions';
 import { DesktopTransactionTable } from './desktop-transaction-table';
-import { groupTransactionsByDate } from '@/features/transactions/utils';
 import { EmptyState } from '@/components/empty-state';
 
 interface TransactionListProps {

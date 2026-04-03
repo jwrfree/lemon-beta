@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { cn, formatCurrency } from '@/lib/utils';
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useWallets } from '@/features/wallets';
 import type { Transaction } from '@/types/models';
 
 interface TransactionDetailSheetProps {

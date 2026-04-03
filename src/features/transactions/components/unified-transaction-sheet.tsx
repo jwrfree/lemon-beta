@@ -9,7 +9,7 @@ import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
 import { SemanticTransactionReview } from './form-partials/semantic-review';
 import { CaretLeft, CaretRight, Trash, X, Sparkle, Question, CircleNotch } from '@phosphor-icons/react';
 import { useTransactionForm } from '../hooks/use-transaction-form';
-import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useWallets } from '@/features/wallets';
 import { useCategories } from '../hooks/use-transactions';
 import { Transaction } from '@/types/models';
 import { cn } from '@/lib/utils';

@@ -19,7 +19,7 @@ import {
 import { scanReceipt } from '@/ai/flows/scan-receipt-flow';
 import { useActions } from '@/providers/action-provider';
 import { useMonthTransactions } from './use-month-transactions';
-import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useBudgets } from '@/features/budgets';
 import { getCurrentIsoTimestamp, normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 import { useRecentTransactions } from './use-recent-transactions';
 import type { QuickStartSuggestion } from '../utils/quick-start-suggestions';

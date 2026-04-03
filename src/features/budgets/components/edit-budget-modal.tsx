@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trash, X } from '@phosphor-icons/react';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
-import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useCategories } from '@/features/transactions';
+import { useBudgets } from '@/features/budgets';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

@@ -4,12 +4,12 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { useCategories } from '@/features/transactions/hooks/use-categories';
+import { useCategories } from '@/features/transactions';
 import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
 import { CaretRight, Fire } from '@phosphor-icons/react';
 import type { Budget, Transaction } from '@/types/models';
 
-import { calculateBudgetStats } from '@/features/budgets/logic';
+import { calculateBudgetStats } from '@/features/budgets';
 
 import { getVisualDNA, extractBaseColor } from '@/lib/visual-dna';
 
