@@ -7,6 +7,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { EmptyState } from '@/components/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { MonthlyMetric } from '../types';
 
 const chartConfig = {
@@ -40,7 +41,7 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
     }
 
     if (!mounted) {
-        return <div className="h-64 bg-zinc-100 dark:bg-zinc-900 rounded-card-glass animate-pulse" />;
+        return <Skeleton className="h-64 rounded-card-glass bg-zinc-100 dark:bg-zinc-900" />;
     }
 
     return (

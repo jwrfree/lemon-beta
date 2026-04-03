@@ -50,6 +50,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Aligned Tailwind radius tokens to a fixed semantic scale, added `rounded-inherit` for shared primitives, and replaced arbitrary `rounded-[...]` values across app surfaces with token-backed classes.
 - **DS-2 raw color sealing**
   - Replaced remaining raw hex and rgba color literals in feature and component code with semantic tokens or CSS variables, including charts, auth brand SVGs, category color helpers, and sidebar surface styling.
+- **DS-2 loading state standardization**
+  - Added `src/components/ui/loading-states.md` as the approved loading-state standard and migrated remaining widget/page placeholders from raw `animate-pulse` divs or blank returns to shared `Skeleton` and `EmptyState` patterns in home, insights, budgets, debts, charts, and AI rich-result cards.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

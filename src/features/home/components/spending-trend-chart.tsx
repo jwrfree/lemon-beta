@@ -10,6 +10,7 @@ import { Transaction } from '@/types/models';
 import { formatCurrency, triggerHaptic } from '@/lib/utils';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { EmptyState } from '@/components/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SpendingTrendChartProps {
     transactions: Transaction[];
@@ -48,7 +49,9 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
     }, [transactions, days]);
 
     // Safety check: if no transactions at all, we still show the empty grid
-    if (!transactions) return null;
+    if (!transactions) {
+        return <Skeleton className="h-[240px] w-full rounded-card" />;
+    }
 
     return (
         <Card className="border-none shadow-none bg-transparent">

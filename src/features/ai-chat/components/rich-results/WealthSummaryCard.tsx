@@ -6,6 +6,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { Wallet, Bank, CreditCard, TrendUp } from '@/lib/icons';
 import { useFinancialContext } from '@/hooks/use-financial-context';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/empty-state';
 
 export const WealthSummaryCard = () => {
     const { context, isLoading } = useFinancialContext();
@@ -14,7 +15,17 @@ export const WealthSummaryCard = () => {
         return <Skeleton className="h-32 w-full rounded-2xl" />;
     }
 
-    if (!context?.wealth) return null;
+    if (!context?.wealth) {
+        return (
+            <EmptyState
+                title="Ringkasan belum siap"
+                description="Tambahkan dompet atau aset supaya ringkasan kekayaan bisa ditampilkan."
+                icon={Wallet}
+                variant="filter"
+                className="px-0 pt-0 md:min-h-0"
+            />
+        );
+    }
 
     const { cash, assets, liabilities, net_worth } = context.wealth;
 

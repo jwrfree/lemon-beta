@@ -7,13 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { formatCurrency } from '@/lib/utils';
 import { getMonthlyTrendData } from '../lib/chart-utils';
 import { EmptyState } from '@/components/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import dynamic from 'next/dynamic';
 
 import type { Transaction } from '@/types/models';
 
 const MonthlyBarChart = dynamic(() => import('./lazy-charts').then(mod => mod.MonthlyBarChart), {
     ssr: false,
-    loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
+    loading: () => <Skeleton className="h-60 w-full rounded-md bg-muted" />
 });
 
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -43,7 +44,7 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
     const hasActivity = data.some((item) => item.total > 0);
 
     if (isLoading) {
-        return <div className="h-80 w-full animate-pulse rounded-card-glass bg-muted" />;
+        return <Skeleton className="h-80 w-full rounded-card-glass bg-muted" />;
     }
 
     if (!hasActivity) {

@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lightning, ShieldCheck, Sparkle, Warning } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/empty-state';
 
 interface PocketCoPilotProps {
     className?: string;
@@ -11,7 +13,21 @@ interface PocketCoPilotProps {
 export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilotProps) => {
     const { risk, isLoading } = useInsights();
 
-    if (isLoading || !risk) return null;
+    if (isLoading) {
+        return <Skeleton className={cn("h-28 w-full rounded-card", className)} />;
+    }
+
+    if (!risk) {
+        return (
+            <EmptyState
+                title="Copilot belum aktif"
+                description="Tambahkan lebih banyak transaksi agar ringkasan risiko mini bisa muncul di sini."
+                icon={Sparkle}
+                variant="filter"
+                className={cn("px-0 pt-0 md:min-h-0", className)}
+            />
+        );
+    }
 
     const riskConfigs = {
         Low: {

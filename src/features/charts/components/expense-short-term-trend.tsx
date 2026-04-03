@@ -7,13 +7,14 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getDailyTrendData } from '../lib/chart-utils';
 import { EmptyState } from '@/components/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import dynamic from 'next/dynamic';
 
 import type { Transaction } from '@/types/models';
 
 const ExpenseTrendChart = dynamic(() => import('./lazy-charts').then(mod => mod.ExpenseTrendChart), {
     ssr: false,
-    loading: () => <div className="h-60 w-full animate-pulse rounded-md bg-muted" />
+    loading: () => <Skeleton className="h-60 w-full rounded-md bg-muted" />
 });
 
 export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transactions: Transaction[], isLoading?: boolean }) => {
@@ -45,7 +46,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
     }, null);
 
     if (isLoading) {
-        return <div className="h-96 w-full animate-pulse rounded-card-glass bg-muted" />;
+        return <Skeleton className="h-96 w-full rounded-card-glass bg-muted" />;
     }
 
     if (!hasActivity) {

@@ -78,6 +78,7 @@ DS-2 adds a named typography scale in `tailwind.config.ts` (`display-*`, `title-
 DS-2 also standardizes elevation with `shadow-elevation-1` through `shadow-elevation-4`, and app surfaces now map former arbitrary shadow values onto those four tiers instead of bespoke `shadow-[...]` classes.
 DS-2 also normalizes radius usage around Tailwind tokens (`rounded-sm` through `rounded-3xl`, plus semantic `rounded-card*` helpers) so app surfaces no longer depend on bespoke `rounded-[...]` values.
 DS-2 also seals raw color literals in app surfaces by mapping them to semantic Tailwind/CSS-variable tokens, including chart palettes, brand SVG fills, and shared utility color helpers.
+DS-2 also formalizes loading feedback in `src/components/ui/loading-states.md`: page skeletons for route-level initial loads, card skeletons for in-place widget loading, button spinners for async actions, and shared empty/error states instead of `animate-pulse` placeholder divs or `return null` gaps.
 
 ---
 

@@ -8,6 +8,7 @@ import { Area, ComposedChart, XAxis, YAxis, CartesianGrid, Bar } from 'recharts'
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { DailyMetric } from '../types';
 
 const chartConfig = {
@@ -29,7 +30,7 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
     }, []);
 
     if (!mounted || data.length === 0) {
-        return <div className="h-72 bg-zinc-100 dark:bg-zinc-900 rounded-card-glass animate-pulse" />;
+        return <Skeleton className="h-72 rounded-card-glass bg-zinc-100 dark:bg-zinc-900" />;
     }
 
     return (

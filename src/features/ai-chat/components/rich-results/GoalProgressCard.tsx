@@ -1,6 +1,8 @@
 'use client';
 
 import { formatCurrency } from '@/lib/utils';
+import { EmptyState } from '@/components/empty-state';
+import { Target } from '@/lib/icons';
 
 type GoalProgressCardProps = {
     data?: {
@@ -36,12 +38,13 @@ const formatDate = (value?: string | null) => {
 export const GoalProgressCard = ({ data }: GoalProgressCardProps) => {
     if (!data?.name || !data.target) {
         return (
-            <div className="rounded-3xl border border-border/60 bg-card p-4">
-                <div className="text-sm font-semibold text-foreground">Progress goal</div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                    Detail goal belum cukup lengkap untuk divisualisasikan.
-                </p>
-            </div>
+            <EmptyState
+                title="Goal belum lengkap"
+                description="Lengkapi target dan nilai saat ini supaya progres goal bisa divisualisasikan."
+                icon={Target}
+                variant="filter"
+                className="px-0 pt-0 md:min-h-0"
+            />
         );
     }
 

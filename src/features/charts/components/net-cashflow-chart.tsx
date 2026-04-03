@@ -6,6 +6,7 @@ import { Calendar, Scale } from '@/lib/icons';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getNetCashflowData } from '../lib/chart-utils';
 import { spacing } from '@/lib/layout-tokens';
@@ -14,7 +15,7 @@ import dynamic from 'next/dynamic';
 
 const NetCashflowComposedChart = dynamic(() => import('./lazy-charts').then(mod => mod.NetCashflowComposedChart), {
     ssr: false,
-    loading: () => <div className="h-72 w-full animate-pulse rounded-md bg-muted" />,
+    loading: () => <Skeleton className="h-72 w-full rounded-md bg-muted" />,
 });
 
 import type { Transaction } from '@/types/models';
@@ -92,7 +93,7 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
     }, [filteredData, selectedMonthKey]);
 
     if (isLoading) {
-        return <div className="h-96 w-full animate-pulse rounded-card-glass bg-muted" />;
+        return <Skeleton className="h-96 w-full rounded-card-glass bg-muted" />;
     }
 
     if (!hasActivity) {

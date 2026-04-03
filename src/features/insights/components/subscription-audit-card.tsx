@@ -13,6 +13,7 @@ import { formatCurrency } from '@/lib/utils';
 import { analyzeSubscriptions } from '@/lib/subscription-analysis';
 import type { Transaction } from '@/types/models';
 import { auditSubscriptionsFlow } from '@/ai/flows/audit-subscriptions-flow';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SubscriptionAuditCardProps {
     transactions: Transaction[];
@@ -68,7 +69,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                             AI Subscription Auditor
                         </p>
                         {isAiLoading ? (
-                            <div className="h-3 w-3/4 bg-primary/10 animate-pulse rounded-full mt-1" />
+                            <Skeleton className="mt-1 h-3 w-3/4 bg-primary/10" />
                         ) : (
                             <p className="text-xs text-foreground/80 leading-relaxed font-semibold">
                                 {aiInsight}

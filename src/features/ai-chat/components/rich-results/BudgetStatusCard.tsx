@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { useFinancialContext } from '@/hooks/use-financial-context';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WarningCircle } from '@/lib/icons';
+import { EmptyState } from '@/components/empty-state';
 
 export const BudgetStatusCard = () => {
     const { context, isLoading } = useFinancialContext();
@@ -15,7 +16,17 @@ export const BudgetStatusCard = () => {
         return <Skeleton className="h-32 w-full rounded-2xl" />;
     }
 
-    if (!context?.budgets || context.budgets.length === 0) return null;
+    if (!context?.budgets || context.budgets.length === 0) {
+        return (
+            <EmptyState
+                title="Belum ada budget"
+                description="Buat budget dulu supaya Lemon Coach bisa menampilkan status pemakaianmu."
+                icon={WarningCircle}
+                variant="filter"
+                className="px-0 pt-0 md:min-h-0"
+            />
+        );
+    }
 
     const sortedBudgets = [...context.budgets].sort((a, b) => b.percent - a.percent).slice(0, 3);
 

@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress as UIProgress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { generateFinancialInsight } from '@/ai/flows/generate-insight-flow';
 import { subMonths, isAfter, differenceInMonths } from 'date-fns';
 
@@ -230,7 +231,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
     };
 
     if (isLoading) {
-        return <div className="h-40 w-full animate-pulse rounded-card-glass bg-muted" />;
+        return <Skeleton className="h-40 w-full rounded-card-glass bg-muted" />;
     }
 
     if (type !== 'net' && summary.value === 0) {

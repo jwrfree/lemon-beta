@@ -12,13 +12,14 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { groupTransactionsByCategory, groupTransactionsBySubCategory } from '../lib/chart-utils';
 import { EmptyState } from '@/components/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import dynamic from 'next/dynamic';
 
 import type { Transaction } from '@/types/models';
 
 const CategoryPieChart = dynamic(() => import('./lazy-charts').then(mod => mod.CategoryPieChart), {
     ssr: false,
-    loading: () => <div className="mx-auto h-56 w-full max-w-[260px] animate-pulse rounded-full bg-muted" />
+    loading: () => <Skeleton className="mx-auto h-56 w-full max-w-[260px] rounded-full bg-muted" />
 });
 
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -86,7 +87,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     }, [transactions, type, selectedCategory]);
 
     if (isLoading) {
-        return <div className="h-96 w-full animate-pulse rounded-card-glass bg-muted" />;
+        return <Skeleton className="h-96 w-full rounded-card-glass bg-muted" />;
     }
 
     if (chartData.length === 0 && !selectedCategory) {

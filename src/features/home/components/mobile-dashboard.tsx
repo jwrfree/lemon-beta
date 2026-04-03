@@ -25,6 +25,7 @@ import { RiskScoreCard } from '@/features/insights';
 import { OnboardingChecklist } from '@/components/onboarding-checklist';
 import { AiBriefingCard } from '@/features/insights';
 import { TransactionListItem, useCategories } from '@/features/transactions';
+import { HomeSkeleton } from './home-skeleton';
 
 interface MobileDashboardProps {
     userData: any;
@@ -107,7 +108,7 @@ export const MobileDashboard = ({
         <Icon size={24} weight="regular" className={className} />
     );
 
-    if (isLoading) return null;
+    if (isLoading) return <HomeSkeleton />;
 
     return (
         <AppPageShell className="bg-background">

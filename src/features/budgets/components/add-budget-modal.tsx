@@ -10,6 +10,7 @@ import { transactionService, useCategories } from '@/features/transactions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useBudgets } from '@/features/budgets';
@@ -280,7 +281,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                 <div className="space-y-6 pt-2">
                   {/* Recommendation Card */}
                   {loadingRec ? (
-                    <div className="h-24 w-full animate-pulse bg-muted/50 rounded-card-glass" />
+                    <Skeleton className="h-24 w-full rounded-card-glass bg-muted/50" />
                   ) : recommendation && recommendation.avg > 0 ? (
                     <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-none border border-border/40">
                       <div className="bg-emerald-500/10 p-2.5 rounded-card">

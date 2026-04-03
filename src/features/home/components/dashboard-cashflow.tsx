@@ -8,12 +8,13 @@ import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Transaction } from '@/types/models';
 
 // Dynamically import DashboardChart to reduce initial bundle size
 const DashboardChart = dynamic(() => import('./dashboard-chart'), { 
     ssr: false,
-    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse rounded-card" />
+    loading: () => <Skeleton className="h-[300px] w-full rounded-card" />
 });
 
 interface DashboardCashflowProps {

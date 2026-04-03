@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
     Brain,
     CalendarDots,
@@ -179,9 +180,9 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                             AI Debt Strategist
                         </p>
                         {isAiLoading ? (
-                            <div className="space-y-1.5 mt-1.5">
-                                <div className="h-3 w-3/4 bg-primary/20 animate-pulse rounded" />
-                                <div className="h-3 w-1/2 bg-primary/20 animate-pulse rounded" />
+                            <div className="mt-1.5 space-y-1.5">
+                                <Skeleton className="h-3 w-3/4 rounded bg-primary/20" />
+                                <Skeleton className="h-3 w-1/2 rounded bg-primary/20" />
                             </div>
                         ) : (
                             <p className="text-xs text-foreground leading-relaxed font-medium">

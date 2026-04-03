@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUI } from '@/components/ui-provider';
+import { EmptyState } from '@/components/empty-state';
 
 export const AiBriefingCard = () => {
     const { briefing, isLoading } = useInsights();
@@ -15,7 +16,17 @@ export const AiBriefingCard = () => {
         return <Skeleton className="h-[120px] w-full rounded-card-premium bg-card/50" />;
     }
 
-    if (!briefing) return null;
+    if (!briefing) {
+        return (
+            <EmptyState
+                title="Briefing belum siap"
+                description="Lemon Coach butuh sedikit data tambahan untuk menyusun ringkasan harianmu."
+                icon={Sparkle}
+                variant="filter"
+                className="px-0 pt-0 md:min-h-0"
+            />
+        );
+    }
 
     const moods = {
         calm: {
@@ -62,7 +73,7 @@ export const AiBriefingCard = () => {
                         <div className="flex items-center justify-between">
                             <span className="text-label-sm font-semibold uppercase tracking-widest opacity-50">Lemon Coach</span>
                             <div className="flex items-center gap-1.5">
-                                <span className={cn("h-1 w-1 rounded-full animate-pulse", mood.iconColor.replace('text-', 'bg-'))}></span>
+                                <span className={cn("h-1 w-1 rounded-full", mood.iconColor.replace('text-', 'bg-'))}></span>
                                 <span className="text-label-sm font-semibold uppercase tracking-widest opacity-40">Analisis Langsung</span>
                             </div>
                         </div>

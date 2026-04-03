@@ -50,7 +50,7 @@ describe('advanced AI chat rich components', () => {
         expect(screen.getByText('Perlu dorongan')).toBeDefined();
 
         rerender(<GoalProgressCard data={null} />);
-        expect(screen.getByText('Detail goal belum cukup lengkap untuk divisualisasikan.')).toBeDefined();
+        expect(screen.getByText('Lengkapi target dan nilai saat ini supaya progres goal bisa divisualisasikan.')).toBeDefined();
     });
 
     it('renders AnomalyAlertCard with valid data, action callback, and empty state', () => {
