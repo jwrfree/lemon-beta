@@ -3,6 +3,10 @@ import {
   createUIMessageStreamResponse,
   type UIMessage,
 } from "ai";
+import {
+  ensureChatResponseText,
+  extractChatDisplayText,
+} from "@/ai/chat-contract";
 
 export const createAssistantTextMessage = (
   text: string,
@@ -13,7 +17,7 @@ export const createAssistantTextMessage = (
   parts: [
     {
       type: "text",
-      text,
+      text: ensureChatResponseText(text),
     },
   ],
 });
@@ -23,13 +27,14 @@ export const createTextMessageResponse = (
   text: string,
   textId = crypto.randomUUID(),
 ) => {
+  const serializedText = ensureChatResponseText(text);
 
   return createUIMessageStreamResponse({
     stream: createUIMessageStream({
       originalMessages: messages,
       execute: ({ writer }) => {
         writer.write({ type: "text-start", id: textId });
-        writer.write({ type: "text-delta", id: textId, delta: text });
+        writer.write({ type: "text-delta", id: textId, delta: serializedText });
         writer.write({ type: "text-end", id: textId });
       },
     }),
@@ -37,11 +42,13 @@ export const createTextMessageResponse = (
 };
 
 export const getMessageText = (message?: UIMessage) =>
-  message?.parts
-    .filter((part): part is Extract<UIMessage["parts"][number], { type: "text" }> => part.type === "text")
-    .map((part) => part.text)
-    .join(" ")
-    .trim() ?? "";
+  extractChatDisplayText(
+    message?.parts
+      .filter((part): part is Extract<UIMessage["parts"][number], { type: "text" }> => part.type === "text")
+      .map((part) => part.text)
+      .join(" ")
+      .trim() ?? "",
+  );
 
 export const getLastUserMessageText = (messages: UIMessage[]) =>
   getMessageText(

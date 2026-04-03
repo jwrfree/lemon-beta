@@ -33,6 +33,16 @@ Lemon Coach sessions now persist in `public.chat_sessions` with `session_id`, `u
 Lemon Coach also exposes a typed app-action bridge through the `app_action` tool so assistant replies can attach clickable chips for navigation, opening forms, or highlighting relevant UI sections without changing the `/api/chat` transport contract.
 Assistant text responses are now normalized into a typed `<response>{...}</response>` envelope with `text`, `components`, `actions`, and `suggestions`, while the client still keeps a backward-compatible fallback for older plain-text and legacy tag-based replies.
 
+Typed response shape:
+```json
+{
+  "text": "Ringkasan utama untuk user",
+  "components": [{ "type": "BudgetStatus" }],
+  "actions": [{ "type": "navigate", "target": "/budgeting" }],
+  "suggestions": ["Cek budget lain"]
+}
+```
+
 **Optimistic updates:** balance totals are written to local state immediately on transaction save; Supabase confirms in the background. No Realtime subscription is needed for the happy path.
 
 **Offline support:** a service worker caches the shell so previously visited pages load without a network. The app also restores the last successful snapshots for wallets, reminders, debts, and range-based transaction lists from local storage to make relaunches faster and keep recent data visible while offline. Write operations are not queued offline.

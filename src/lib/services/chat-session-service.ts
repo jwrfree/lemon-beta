@@ -1,5 +1,6 @@
 import type { UIMessage } from "ai";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { extractChatDisplayText } from "@/ai/chat-contract";
 
 type ChatSessionClient = Pick<SupabaseClient, "from">;
 
@@ -24,11 +25,13 @@ const truncate = (value: string, maxLength: number) =>
   value.length > maxLength ? `${value.slice(0, maxLength - 1)}…` : value;
 
 const getMessageText = (message?: UIMessage) =>
-  message?.parts
-    .filter((part): part is Extract<UIMessage["parts"][number], { type: "text" }> => part.type === "text")
-    .map((part) => part.text)
-    .join(" ")
-    .trim() ?? "";
+  extractChatDisplayText(
+    message?.parts
+      .filter((part): part is Extract<UIMessage["parts"][number], { type: "text" }> => part.type === "text")
+      .map((part) => part.text)
+      .join(" ")
+      .trim() ?? "",
+  );
 
 const summarizeOlderMessages = (previousSummary: string | null, messages: UIMessage[]) => {
   const summarizedTurns = messages

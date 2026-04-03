@@ -73,4 +73,12 @@ describe('buildChatSystemPrompt', () => {
         expect(prompt).toContain('MEMORI PERCAKAPAN');
         expect(prompt).toContain('User sering menanyakan budget makan.');
     });
+
+    it('instructs the chat model to emit the typed response envelope', () => {
+        const prompt = buildChatSystemPrompt();
+
+        expect(prompt).toContain('<response>');
+        expect(prompt).toContain('"components"');
+        expect(prompt).toContain('"suggestions"');
+    });
 });

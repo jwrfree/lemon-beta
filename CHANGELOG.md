@@ -37,6 +37,7 @@ All updates and improvements to the Lemon app will be documented here.
 ### Changed
 - **Typed Lemon Coach response contract**
   - Normalized assistant text into a structured `<response>{...}</response>` envelope with typed text, rich components, actions, and suggestions, while keeping a legacy fallback parser so existing rich cards continue to render during the transition.
+  - Reused the same typed envelope for persisted chat history and follow-up generation so memory summaries and suggestion builders read clean text instead of raw render tags or JSON payloads.
 - **Lemon Coach app action bridge**
   - Added the `app_action` chat tool plus client-side action chips so assistant replies can navigate to pages, open forms, and highlight relevant dashboard sections directly from chat.
 - **Durable Lemon Coach memory**

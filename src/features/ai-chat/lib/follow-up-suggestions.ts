@@ -1,4 +1,9 @@
 import { type UIMessage } from 'ai';
+import {
+    extractChatDisplayText,
+    extractLegacySuggestions,
+    parseChatResponseText,
+} from '@/ai/chat-contract';
 
 export interface FollowUpSuggestion {
     label: string;
@@ -100,12 +105,14 @@ const normalizeText = (value: string) =>
         .replace(/\s+/g, ' ')
         .trim();
 
-const getMessageText = (message?: UIMessage) =>
+const getRawMessageText = (message?: UIMessage) =>
     message?.parts
         .filter((part): part is Extract<UIMessage['parts'][number], { type: 'text' }> => part.type === 'text')
         .map((part) => part.text)
         .join(' ')
         .trim() ?? '';
+
+const getMessageText = (message?: UIMessage) => extractChatDisplayText(getRawMessageText(message));
 
 const includesAnyKeyword = (text: string, keywords: string[]) =>
     keywords.some((keyword) => text.includes(keyword));
@@ -143,19 +150,14 @@ export const buildFollowUpSuggestions = (messages: UIMessage[], max = 3): Follow
     const latestTurn = findLatestAssistantTurn(messages);
     if (!latestTurn) return [];
 
-    const rawAnswerText = getMessageText(latestTurn.assistantMessage);
+    const rawAnswerText = getRawMessageText(latestTurn.assistantMessage);
+    const parsedResponse = parseChatResponseText(rawAnswerText);
     const normalizedQuestion = normalizeText(getMessageText(latestTurn.userMessage));
-    const normalizedAnswer = normalizeText(rawAnswerText);
+    const normalizedAnswer = normalizeText(parsedResponse?.text ?? getMessageText(latestTurn.assistantMessage));
     const suggestions: FollowUpSuggestion[] = [];
 
-    // Parse dynamic suggestions from LLM
-    const dynamicRegex = /\[SUGGESTION:([^\]]+)\]/g;
-    let match;
-    while ((match = dynamicRegex.exec(rawAnswerText)) !== null) {
-        if (match[1].trim()) {
-            suggestions.push({ label: match[1].trim(), value: match[1].trim() });
-        }
-    }
+    const dynamicSuggestions = parsedResponse?.suggestions ?? extractLegacySuggestions(rawAnswerText);
+    suggestions.push(...dynamicSuggestions.map((suggestion) => ({ label: suggestion, value: suggestion })));
 
     if (!normalizedQuestion || !normalizedAnswer) {
         return [];
