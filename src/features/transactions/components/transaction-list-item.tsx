@@ -92,7 +92,7 @@ const TransactionListItemContent = ({
                     />
                 )}
                 {(logoSource === 'icon' || !merchantVisuals?.domain) && (
-                    <DefaultIcon size={20} weight="bold" className={iconColor} />
+                    <DefaultIcon size={20} weight="regular" className={iconColor} />
                 )}
             </div>
             <div className="flex-1 overflow-hidden min-w-0">
