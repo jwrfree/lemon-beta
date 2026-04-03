@@ -69,6 +69,8 @@ All updates and improvements to the Lemon app will be documented here.
 ### Changed
 - **Wallet data source stabilization**
   - Moved wallet reads onto the `useWallets` React Query cache so wallet data now has one reactive source of truth, while `WalletProvider` only handles optimistic sync and cache refresh.
+- **Asset data source stabilization**
+  - Moved asset and liability reads plus mutations onto `useAssets` with a feature service, leaving `AssetProvider` as a compatibility wrapper so asset data also has one React Query-backed source of truth.
 - **Typed Lemon Coach response contract**
   - Normalized assistant text into a structured `<response>{...}</response>` envelope with typed text, rich components, actions, and suggestions, while keeping a legacy fallback parser so existing rich cards continue to render during the transition.
   - Reused the same typed envelope for persisted chat history and follow-up generation so memory summaries and suggestion builders read clean text instead of raw render tags or JSON payloads.
