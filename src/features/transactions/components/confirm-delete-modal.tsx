@@ -70,7 +70,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: ConfirmD
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...transition, delay: 0.08 }}
-                            className="rounded-[28px] bg-card p-5 shadow-elevation-3"
+                            className="rounded-3xl bg-card p-5 shadow-elevation-3"
                         >
                             <div className="space-y-3">
                                 <span className="text-label font-semibold uppercase tracking-widest text-destructive/70">
@@ -89,7 +89,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: ConfirmD
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...transition, delay: 0.12 }}
-                            className="rounded-[24px] bg-muted/35 p-4 shadow-inner dark:bg-card/80"
+                            className="rounded-3xl bg-muted/35 p-4 shadow-inner dark:bg-card/80"
                         >
                             <div className="flex items-center gap-4 overflow-hidden">
                                 <div className={cn('flex h-12 w-12 shrink-0 items-center justify-center rounded-xl', details.bg_color || 'bg-muted')}>

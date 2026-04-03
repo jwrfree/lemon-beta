@@ -36,7 +36,7 @@ const formatDate = (value?: string | null) => {
 export const GoalProgressCard = ({ data }: GoalProgressCardProps) => {
     if (!data?.name || !data.target) {
         return (
-            <div className="rounded-[24px] border border-border/60 bg-card p-4">
+            <div className="rounded-3xl border border-border/60 bg-card p-4">
                 <div className="text-sm font-semibold text-foreground">Progress goal</div>
                 <p className="mt-2 text-sm text-muted-foreground">
                     Detail goal belum cukup lengkap untuk divisualisasikan.
@@ -49,7 +49,7 @@ export const GoalProgressCard = ({ data }: GoalProgressCardProps) => {
     const status = data.status ?? 'on_track';
 
     return (
-        <div className="rounded-[24px] border border-border/60 bg-card p-4">
+        <div className="rounded-3xl border border-border/60 bg-card p-4">
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <div className="text-sm font-semibold text-foreground">{data.name}</div>

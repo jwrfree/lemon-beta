@@ -644,7 +644,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                     value={input}
                                     onChange={handleInputChange}
                                     disabled={isLoading || isRecording || isTranscribing}
-                                    className="h-12 w-full rounded-[24px] bg-card pr-20 text-foreground focus-visible:ring-primary/20"
+                                    className="h-12 w-full rounded-3xl bg-card pr-20 text-foreground focus-visible:ring-primary/20"
                                 />
                                 <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
                                     <Button

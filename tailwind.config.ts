@@ -147,20 +147,23 @@ export default {
         'dark-gray': 'hsl(var(--gray-900))',
       },
       borderRadius: {
-        DEFAULT: 'var(--radius)',         // Responsive: 14px mobile / 8px desktop
-        sm: 'var(--radius-sm)',           // 6px — chips, badges, small elements
-        md: 'var(--radius-md)',           // 8px — inputs, buttons, secondary cards
-        lg: 'var(--radius-lg)',           // 12px — standard cards, panels
-        'xl': '0.75rem',                  // 12px
-        '2xl': '1rem',                    // 16px
-        '3xl': '1.5rem',                  // 24px
-        '4xl': '2rem',                    // 32px
-        // Design-system named tiers — use these instead of arbitrary values
-        'card':         'var(--radius-card)',          // 24px — hero cards, modals, bottom sheets
-        'card-premium': 'var(--radius-card-premium)',  // 32px — DNA-gradient premium cards
-        'card-glass':   'var(--radius-card-glass)',    // 24px — glass inset panels inside premium cards
-        'card-icon':    'var(--radius-card-icon)',     // 20px — icon containers inside premium cards
-        'squircle':     '38%',                         // Samsung OneUI-style squircle icon shape
+      borderRadius: {
+        none: '0',
+        DEFAULT: 'var(--radius)',
+        inherit: 'inherit',
+        sm: '4px',
+        md: '8px',
+        lg: '12px',
+        xl: '16px',
+        '2xl': '20px',
+        '3xl': '24px',
+        '4xl': '32px',
+        full: '9999px',
+        'card': 'var(--radius-card)',
+        'card-premium': 'var(--radius-card-premium)',
+        'card-glass': 'var(--radius-card-glass)',
+        'card-icon': 'var(--radius-card-icon)',
+        squircle: '38%',
       },
       fontSize: {
         'display-lg': ['2rem', { lineHeight: '2.5rem', fontWeight: '700' }],

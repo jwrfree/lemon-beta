@@ -34,11 +34,11 @@ const CategoryRow = ({
             type="button"
             onClick={onClick}
             className={cn(
-                'flex w-full items-center gap-3 rounded-[20px] bg-background px-4 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.99]',
+                'flex w-full items-center gap-3 rounded-2xl bg-background px-4 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.99]',
                 isSelected && 'ring-2 ring-primary/20'
             )}
         >
-            <div className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px]', category.bg_color, category.color)}>
+            <div className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-xl', category.bg_color, category.color)}>
                 {React.createElement(getCategoryIcon(category.icon), { className: 'h-5 w-5' })}
             </div>
             <div className="min-w-0 flex-1">
@@ -130,7 +130,7 @@ export const CategoryPickerSheet = ({
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
                             placeholder="Cari kategori atau subkategori"
-                            className="h-11 rounded-[18px] bg-background pl-10"
+                            className="h-11 rounded-xl bg-background pl-10"
                         />
                     </div>
                 </div>

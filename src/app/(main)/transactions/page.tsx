@@ -180,7 +180,7 @@ function TransactionsPageContent() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="bg-muted/35 rounded-[24px] p-4">
+                                <div className="bg-muted/35 rounded-3xl p-4">
                                     <div className="flex items-center justify-between mb-3">
                                         <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Pilih Dompet</Label>
                                         {selectedWallets.length > 0 && (

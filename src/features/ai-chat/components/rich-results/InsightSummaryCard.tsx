@@ -24,7 +24,7 @@ export const InsightSummaryCard = ({ data, onAction }: InsightSummaryCardProps) 
 
     if (insights.length === 0) {
         return (
-            <div className="rounded-[24px] border border-border/60 bg-card p-4">
+            <div className="rounded-3xl border border-border/60 bg-card p-4">
                 <div className="text-sm font-semibold text-foreground">Ringkasan insight</div>
                 <p className="mt-2 text-sm text-muted-foreground">
                     Belum ada insight bulanan yang cukup untuk diringkas.
@@ -34,7 +34,7 @@ export const InsightSummaryCard = ({ data, onAction }: InsightSummaryCardProps) 
     }
 
     return (
-        <div className="rounded-[24px] border border-border/60 bg-card p-4">
+        <div className="rounded-3xl border border-border/60 bg-card p-4">
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <div className="text-sm font-semibold text-foreground">Ringkasan insight</div>

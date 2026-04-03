@@ -187,9 +187,9 @@ export default function WelcomePage() {
                         transition={{ duration: 0.45, delay: 0.08, ease: 'easeOut' }}
                         className="relative w-full"
                     >
-                        <div className="absolute inset-4 sm:inset-6 rounded-[2rem] bg-white/40 blur-2xl" />
-                        <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-border/40 bg-card/60 p-2 sm:p-3 shadow-elevation-4 backdrop-blur-xl sm:p-4">
-                            <div className="rounded-[1.2rem] sm:rounded-[1.6rem] border border-border/40 bg-card/80 p-3 sm:p-4 md:p-5">
+                        <div className="absolute inset-4 sm:inset-6 rounded-card-premium bg-white/40 blur-2xl" />
+                        <div className="relative overflow-hidden rounded-3xl sm:rounded-card-premium border border-border/40 bg-card/60 p-2 sm:p-3 shadow-elevation-4 backdrop-blur-xl sm:p-4">
+                            <div className="rounded-2xl sm:rounded-3xl border border-border/40 bg-card/80 p-3 sm:p-4 md:p-5">
                                 <div className="space-y-4 border-b border-border/40 pb-5">
                                     <div className="inline-flex w-fit rounded-full border border-border bg-muted/50 px-3 py-1 text-label-sm sm:text-label font-semibold uppercase tracking-widest text-muted-foreground">
                                         {authMeta.eyebrow}

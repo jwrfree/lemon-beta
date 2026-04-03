@@ -55,7 +55,7 @@ export const SemanticTransactionReview = ({
     const fieldButtonBase =
         "inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-transparent px-4 py-3 text-left text-body-lg font-medium transition-all active:scale-[0.98]";
 
-    const sectionCardClass = "rounded-[22px] bg-muted px-4 py-4";
+    const sectionCardClass = "rounded-2xl bg-muted px-4 py-4";
     const missingFieldClass = "bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100";
 
     const recentCategories = activeCategories.filter((category) =>
@@ -102,14 +102,14 @@ export const SemanticTransactionReview = ({
     return (
         <div className="space-y-4 px-1">
             <div className="space-y-3">
-                <div className="rounded-[24px] bg-muted px-4 py-4">
+                <div className="rounded-3xl bg-muted px-4 py-4">
                     <div className="flex items-center px-1">
                         <span className="text-label font-bold uppercase tracking-widest text-muted-foreground/50">
                             Nominal
                         </span>
                     </div>
                     {activeEditor === 'amount' ? (
-                        <div className="mt-2 flex items-center gap-2 rounded-[18px] bg-muted p-3">
+                        <div className="mt-2 flex items-center gap-2 rounded-xl bg-muted p-3">
                             <div className="min-w-0 flex-1">
                                 <AmountInput
                                     control={form.control}
@@ -137,7 +137,7 @@ export const SemanticTransactionReview = ({
                                 setActiveEditor('amount');
                             }}
                             className={cn(
-                                "mt-2 flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft",
+                                "mt-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft",
                                 amountNumber > 0
                                     ? type === 'income'
                                         ? "bg-secondary text-primary"
@@ -169,7 +169,7 @@ export const SemanticTransactionReview = ({
                             triggerHaptic('light');
                             setCategorySheetOpen(true);
                         }}
-                        className="flex w-full items-center gap-3 rounded-[18px] bg-card px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft"
+                        className="flex w-full items-center gap-3 rounded-xl bg-card px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft"
                     >
                         <div className="flex min-w-0 flex-1 items-center gap-2.5">
                                     {categoryObj ? (
@@ -206,7 +206,7 @@ export const SemanticTransactionReview = ({
                         </span>
                     </div>
                     {activeEditor === 'description' ? (
-                        <div className="flex items-center gap-2 rounded-[18px] bg-muted p-3">
+                        <div className="flex items-center gap-2 rounded-xl bg-muted p-3">
                             <Input
                                 value={description}
                                 variant="surface"
@@ -233,7 +233,7 @@ export const SemanticTransactionReview = ({
                                 setActiveEditor('description');
                             }}
                             className={cn(
-                                "flex w-full items-center gap-3 rounded-[18px] px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft",
+                                "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-all active:scale-[0.98] shadow-soft",
                                 description ? "bg-card text-foreground" : missingFieldClass
                             )}
                         >
@@ -308,7 +308,7 @@ export const SemanticTransactionReview = ({
                                     <span>{format(dateValue, 'dd MMM, HH:mm', { locale: localeId })}</span>
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto rounded-[24px] p-3" align="start">
+                            <PopoverContent className="w-auto rounded-3xl p-3" align="start">
                                 <div className="space-y-3">
                                     <Calendar
                                         mode="single"
@@ -321,7 +321,7 @@ export const SemanticTransactionReview = ({
                                         }}
                                         initialFocus
                                     />
-                                    <div className="space-y-2 rounded-[18px] bg-muted p-3">
+                                    <div className="space-y-2 rounded-xl bg-muted p-3">
                                         <p className="text-label font-semibold uppercase tracking-widest text-muted-foreground/55">
                                             Waktu
                                         </p>
@@ -348,7 +348,7 @@ export const SemanticTransactionReview = ({
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden px-1"
                     >
-                        <div className="mb-4 rounded-[24px] bg-background p-4 pb-5">
+                        <div className="mb-4 rounded-3xl bg-background p-4 pb-5">
                             {activeEditor === 'wallet' && (
                                 <div className="space-y-3">
                                     <p className="ml-2 text-label text-muted-foreground/40">Pilih dompet</p>
@@ -361,7 +361,7 @@ export const SemanticTransactionReview = ({
                                                     setActiveEditor(null);
                                                 }}
                                                 className={cn(
-                                                        "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-[18px] p-3 transition-all active:scale-[0.98]",
+                                                        "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-xl p-3 transition-all active:scale-[0.98]",
                                                         walletId === wallet.id
                                                             ? "bg-secondary ring-2 ring-primary/25"
                                                             : "bg-muted"

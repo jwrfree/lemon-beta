@@ -95,7 +95,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-[30px] bg-[#f7f3ea]/96 shadow-elevation-4 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
+        'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-card-premium bg-[#f7f3ea]/96 shadow-elevation-4 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
         isSidebarCollapsed
           ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-3 py-4')
           : cn(SIDEBAR_CONFIG.expandedWidth, 'px-4 py-4')
@@ -106,7 +106,7 @@ export const Sidebar = () => {
           href="/home"
           prefetch={false}
           className={cn(
-            'flex min-w-0 items-center gap-3 rounded-[22px]',
+            'flex min-w-0 items-center gap-3 rounded-2xl',
             isSidebarCollapsed ? 'w-full justify-center' : 'flex-1 bg-white/58 px-3 py-2 shadow-inner'
           )}
           aria-label={SIDEBAR_CONFIG.appName}
@@ -140,7 +140,7 @@ export const Sidebar = () => {
         </SidebarAction>
       </div>
 
-      <div className="space-y-2 rounded-[24px] bg-black/[0.02] p-2.5 pb-2.5 dark:bg-white/[0.03]">
+      <div className="space-y-2 rounded-3xl bg-black/[0.02] p-2.5 pb-2.5 dark:bg-white/[0.03]">
         {!isSidebarCollapsed && (
           <p className="px-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
             Quick Actions
@@ -202,8 +202,8 @@ export const Sidebar = () => {
                         className={cn(
                           'group relative flex items-center text-sm transition-all duration-200',
                           isSidebarCollapsed
-                            ? 'mx-auto h-12 w-12 justify-center rounded-[20px]'
-                            : 'h-11 gap-3 rounded-[20px] px-3.5',
+                            ? 'mx-auto h-12 w-12 justify-center rounded-2xl'
+                            : 'h-11 gap-3 rounded-2xl px-3.5',
                           isActive
                             ? 'text-slate-900'
                             : 'text-muted-foreground hover:bg-white/72 hover:text-foreground'
@@ -213,7 +213,7 @@ export const Sidebar = () => {
                         {isActive && (
                           <motion.div
                             layoutId="sidebar-active-pill"
-                            className="absolute inset-0 rounded-[20px] bg-white shadow-elevation-2"
+                            className="absolute inset-0 rounded-2xl bg-white shadow-elevation-2"
                             transition={{ type: 'spring', stiffness: 320, damping: 30 }}
                           />
                         )}
@@ -254,7 +254,7 @@ export const Sidebar = () => {
         {deferredPrompt && (
           <div
             className={cn(
-              'rounded-[24px] bg-white/96 p-2.5 shadow-elevation-3 dark:bg-card/92',
+              'rounded-3xl bg-white/96 p-2.5 shadow-elevation-3 dark:bg-card/92',
               isSidebarCollapsed ? '' : 'mx-1'
             )}
           >
@@ -284,7 +284,7 @@ export const Sidebar = () => {
 
         <div
           className={cn(
-            'space-y-2 rounded-[24px] bg-white/96 p-2.5 shadow-elevation-3 dark:bg-card/92',
+            'space-y-2 rounded-3xl bg-white/96 p-2.5 shadow-elevation-3 dark:bg-card/92',
             deferredPrompt ? 'mt-3' : '',
             isSidebarCollapsed ? '' : 'mx-1'
           )}
@@ -295,7 +295,7 @@ export const Sidebar = () => {
                 <button
                   type="button"
                   className={cn(
-                    'w-full rounded-[20px] bg-[#f6f0e4] text-left transition-colors hover:bg-[#f2eadb] dark:bg-background/40 dark:hover:bg-background/60',
+                    'w-full rounded-2xl bg-[#f6f0e4] text-left transition-colors hover:bg-[#f2eadb] dark:bg-background/40 dark:hover:bg-background/60',
                     isSidebarCollapsed ? 'flex justify-center p-2' : 'p-3'
                   )}
                   aria-label="Menu akun pengguna"

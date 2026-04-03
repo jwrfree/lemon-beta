@@ -89,7 +89,7 @@ export const TransactionDetailSheet = ({
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...contentTransition, delay: 0.08 }}
-                            className="rounded-[28px] bg-card px-5 py-5 shadow-elevation-3"
+                            className="rounded-3xl bg-card px-5 py-5 shadow-elevation-3"
                         >
                             <div className="flex flex-col items-start text-left">
                                 <div className="mb-4 flex items-center gap-3">
@@ -119,7 +119,7 @@ export const TransactionDetailSheet = ({
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...contentTransition, delay: 0.12 }}
-                            className="rounded-[24px] bg-card px-4 py-2 shadow-elevation-2"
+                            className="rounded-3xl bg-card px-4 py-2 shadow-elevation-2"
                         >
                             <div className="mb-1 px-1 pt-2">
                                 <span className="text-label text-muted-foreground/40">Rincian Pembayaran</span>
@@ -138,7 +138,7 @@ export const TransactionDetailSheet = ({
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ ...contentTransition, delay: 0.16 }}
-                            className="overflow-hidden rounded-[24px] bg-card px-1 shadow-elevation-2"
+                            className="overflow-hidden rounded-3xl bg-card px-1 shadow-elevation-2"
                         >
                             <Accordion type="single" collapsible className="w-full">
                                 <AccordionItem value="details" className="border-none">

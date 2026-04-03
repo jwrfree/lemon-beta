@@ -118,14 +118,14 @@ export const MagicBar = ({
         <div className="group relative w-full">
             {/* Ambient Glow Effect - The Liquid */}
             <div className={cn(
-                "absolute inset-0 rounded-[28px] bg-primary/20 blur-2xl transition-all duration-1000",
+                "absolute inset-0 rounded-3xl bg-primary/20 blur-2xl transition-all duration-1000",
                 (isProcessing || isTranscribing) ? "opacity-100 animate-pulse bg-primary/30" :
                     isRecording ? "opacity-100 animate-pulse scale-110 bg-violet-500/40" :
                         isFocused ? "opacity-50" : "opacity-0"
             )} />
 
             <div className={cn(
-                "relative overflow-hidden rounded-[24px] bg-secondary/50 px-3 py-2.5 shadow-inner transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
+                "relative overflow-hidden rounded-3xl bg-secondary/50 px-3 py-2.5 shadow-inner transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
                 (isProcessing || isTranscribing) ? "bg-primary/[0.08] shadow-inner" :
                     isRecording ? "bg-violet-500/10 shadow-inner" :
                         isFocused ? "bg-card shadow-inner" : ""

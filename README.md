@@ -76,6 +76,7 @@ UI icon imports now go through `src/lib/icons.ts`, which re-exports Phosphor as 
 DS-1 also defines `src/components/ui/MODAL_STANDARD.md` as the current modal hierarchy: `Sheet` for mobile create/edit flows, `AlertDialog` for destructive confirmation, and `Dialog` for desktop-centered informational flows.
 DS-2 adds a named typography scale in `tailwind.config.ts` (`display-*`, `title-*`, `body-*`, `label-*`) and replaces ad-hoc arbitrary text sizes in app surfaces, so new UI work should prefer those semantic classes over `text-[...]`.
 DS-2 also standardizes elevation with `shadow-elevation-1` through `shadow-elevation-4`, and app surfaces now map former arbitrary shadow values onto those four tiers instead of bespoke `shadow-[...]` classes.
+DS-2 also normalizes radius usage around Tailwind tokens (`rounded-sm` through `rounded-3xl`, plus semantic `rounded-card*` helpers) so app surfaces no longer depend on bespoke `rounded-[...]` values.
 
 ---
 

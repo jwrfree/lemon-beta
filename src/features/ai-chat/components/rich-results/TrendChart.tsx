@@ -71,7 +71,7 @@ export const TrendChart = ({ data }: TrendChartProps) => {
 
     if (points.length === 0) {
         return (
-            <div className="rounded-[24px] border border-border/60 bg-card p-4">
+            <div className="rounded-3xl border border-border/60 bg-card p-4">
                 <div className="text-sm font-semibold text-foreground">Trend pengeluaran</div>
                 <p className="mt-2 text-sm text-muted-foreground">
                     Belum ada data tren kategori yang cukup untuk ditampilkan.
@@ -81,7 +81,7 @@ export const TrendChart = ({ data }: TrendChartProps) => {
     }
 
     return (
-        <div className="rounded-[24px] border border-border/60 bg-card p-4">
+        <div className="rounded-3xl border border-border/60 bg-card p-4">
             <div className="flex items-start justify-between gap-3">
                 <div>
                     <div className="text-sm font-semibold text-foreground">
@@ -97,7 +97,7 @@ export const TrendChart = ({ data }: TrendChartProps) => {
                 </div>
             </div>
 
-            <div className="mt-4 rounded-[20px] bg-muted/40 p-3">
+            <div className="mt-4 rounded-2xl bg-muted/40 p-3">
                 <svg viewBox="0 0 240 72" className="h-[72px] w-full overflow-visible">
                     <path
                         d={path}

@@ -164,7 +164,7 @@ export const MobileDashboard = ({
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                     >
-                        <div className="relative overflow-hidden rounded-[32px] bg-foreground text-background shadow-xl">
+                        <div className="relative overflow-hidden rounded-card-premium bg-foreground text-background shadow-xl">
                             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
 
                             <div className="relative space-y-6 p-6">
@@ -260,7 +260,7 @@ export const MobileDashboard = ({
                                     onClick={() => router.push(`/wallets?id=${wallet.id}`)}
                                 >
                                     <div
-                                        className="group relative flex h-36 w-48 flex-col justify-between overflow-hidden rounded-[32px] p-5 shadow-lg transition-all duration-500"
+                                        className="group relative flex h-36 w-48 flex-col justify-between overflow-hidden rounded-card-premium p-5 shadow-lg transition-all duration-500"
                                         style={{ background: dna.gradient }}
                                     >
                                         <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/20 opacity-40 blur-2xl" />
@@ -299,7 +299,7 @@ export const MobileDashboard = ({
                         <div className="snap-center shrink-0">
                             <button
                                 onClick={() => router.push('/wallets')}
-                                className="group relative flex h-36 w-48 flex-col items-center justify-center gap-3 overflow-hidden rounded-[32px] bg-card shadow-soft border border-dashed border-border transition-all hover:bg-muted/50 active:scale-95"
+                                className="group relative flex h-36 w-48 flex-col items-center justify-center gap-3 overflow-hidden rounded-card-premium bg-card shadow-soft border border-dashed border-border transition-all hover:bg-muted/50 active:scale-95"
                             >
                                 <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-accent/20 opacity-20 blur-2xl" />
                                 <div className="rounded-2xl bg-accent/10 p-4 transition-colors group-hover:bg-accent/20">
@@ -314,7 +314,7 @@ export const MobileDashboard = ({
                 </section>
 
                 <section className="px-4">
-                    <div className="overflow-hidden rounded-[32px] bg-card p-1 shadow-soft border border-border/40">
+                    <div className="overflow-hidden rounded-card-premium bg-card p-1 shadow-soft border border-border/40">
                         <SpendingTrendChart transactions={transactions} days={14} />
                     </div>
                 </section>
@@ -329,7 +329,7 @@ export const MobileDashboard = ({
                         </Button>
                     </div>
 
-                    <div className="space-y-2 rounded-[32px] bg-muted/20 p-2 shadow-soft border border-border/40 mx-4">
+                    <div className="space-y-2 rounded-card-premium bg-muted/20 p-2 shadow-soft border border-border/40 mx-4">
                         {recentTransactions.length > 0 ? (
                             recentTransactions.map((transaction) => (
                                 <div
@@ -348,9 +348,9 @@ export const MobileDashboard = ({
                             <button
                                 type="button"
                                 onClick={() => openTransactionSheet()}
-                                className="flex w-full items-center gap-3 rounded-[24px] bg-card px-4 py-4 text-left shadow-elevation-3 transition-transform active:scale-[0.985]"
+                                className="flex w-full items-center gap-3 rounded-3xl bg-card px-4 py-4 text-left shadow-elevation-3 transition-transform active:scale-[0.985]"
                             >
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-primary/10 text-primary shadow-elevation-2">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary shadow-elevation-2">
                                     <Receipt size={20} weight="regular" />
                                 </div>
                                 <div className="min-w-0 flex-1">

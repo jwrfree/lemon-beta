@@ -173,7 +173,7 @@ export const UnifiedTransactionSheet = ({
 
                         {/* Batch Navigation */}
                         {totalTxs > 1 && (
-                            <div className="relative mt-5 flex items-center justify-between rounded-[24px] bg-card px-3 py-3 shadow-elevation-4 animate-in fade-in slide-in-from-top-2">
+                            <div className="relative mt-5 flex items-center justify-between rounded-3xl bg-card px-3 py-3 shadow-elevation-4 animate-in fade-in slide-in-from-top-2">
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -235,7 +235,7 @@ export const UnifiedTransactionSheet = ({
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className="rounded-[32px] bg-muted p-4"
+                                    className="rounded-card-premium bg-muted p-4"
                                 >
                                     <DynamicSuggestions
                                         suggestions={quickStartSuggestions}
@@ -255,7 +255,7 @@ export const UnifiedTransactionSheet = ({
                                     className="space-y-3"
                                 >
                                     {clarificationQuestion && (
-                                        <div className="rounded-[24px] bg-yellow-100 p-4 dark:bg-yellow-900">
+                                        <div className="rounded-3xl bg-yellow-100 p-4 dark:bg-yellow-900">
                                             <div className="flex items-start gap-3">
                                                 <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yellow-500">
                                                     <Question size={12} weight="regular" className="text-white" />
@@ -268,7 +268,7 @@ export const UnifiedTransactionSheet = ({
                                     )}
 
                                     {socraticInsight && (
-                                        <div className="rounded-[24px] bg-teal-50 p-4 dark:bg-teal-950">
+                                        <div className="rounded-3xl bg-teal-50 p-4 dark:bg-teal-950">
                                             <div className="flex items-start gap-3">
                                                 <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/20">
                                                     <Sparkle size={12} weight="regular" className="text-primary" />
@@ -344,7 +344,7 @@ export const UnifiedTransactionSheet = ({
                                             <Button
                                                 onClick={saveAll}
                                                 disabled={isAiProcessing}
-                                                className="h-14 flex-1 rounded-[22px] bg-success text-base font-bold text-success-foreground shadow-elevation-3 transition-all hover:opacity-90"
+                                                className="h-14 flex-1 rounded-2xl bg-success text-base font-bold text-success-foreground shadow-elevation-3 transition-all hover:opacity-90"
                                             >
                                                 {isAiProcessing ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : (
                                                     <span>Simpan Semua ({totalTxs})</span>
@@ -355,7 +355,7 @@ export const UnifiedTransactionSheet = ({
                                                 <Button
                                                     onClick={handleSubmit}
                                                     disabled={isSubmitting}
-                                                    className="h-14 w-full rounded-[22px] bg-primary text-base font-bold text-primary-foreground shadow-elevation-3 transition-all hover:scale-[1.01] active:scale-[0.98]"
+                                                    className="h-14 w-full rounded-2xl bg-primary text-base font-bold text-primary-foreground shadow-elevation-3 transition-all hover:scale-[1.01] active:scale-[0.98]"
                                                 >
                                                     {isSubmitting ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : (
                                                         <span>{isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}</span>
@@ -366,7 +366,7 @@ export const UnifiedTransactionSheet = ({
                                                         variant="outline"
                                                         onClick={handleSubmitAndAddAnother}
                                                         disabled={isSubmitting}
-                                                        className="h-11 w-full rounded-[18px] bg-secondary text-label text-primary transition-all hover:bg-secondary"
+                                                        className="h-11 w-full rounded-xl bg-secondary text-label text-primary transition-all hover:bg-secondary"
                                                     >
                                                         Simpan & tambah lagi
                                                     </Button>
@@ -398,7 +398,7 @@ export const UnifiedTransactionSheet = ({
                             <Button
                                 variant="destructive"
                                 size="lg"
-                                className="w-full rounded-[22px] font-bold shadow-lg shadow-destructive/20"
+                                className="w-full rounded-2xl font-bold shadow-lg shadow-destructive/20"
                                 onClick={() => {
                                     setShowDiscardConfirm(false);
                                     onClose();
@@ -411,7 +411,7 @@ export const UnifiedTransactionSheet = ({
                             <Button
                                 variant="volt"
                                 size="lg"
-                                className="w-full rounded-[22px] font-bold"
+                                className="w-full rounded-2xl font-bold"
                             >
                                 Lanjutkan Mengisi
                             </Button>
@@ -436,7 +436,7 @@ export const UnifiedTransactionSheet = ({
                             <Button
                                 variant="destructive"
                                 size="lg"
-                                className="w-full rounded-[22px] font-bold shadow-lg shadow-destructive/20"
+                                className="w-full rounded-2xl font-bold shadow-lg shadow-destructive/20"
                                 onClick={() => {
                                     setShowRemoveDraftConfirm(false);
                                     removeCurrent();
@@ -449,7 +449,7 @@ export const UnifiedTransactionSheet = ({
                             <Button
                                 variant="volt"
                                 size="lg"
-                                className="w-full rounded-[22px] font-bold"
+                                className="w-full rounded-2xl font-bold"
                             >
                                 Kembali review
                             </Button>

@@ -58,7 +58,7 @@ export const DeepSeekUsageCard = () => {
     };
 
     return (
-        <Card className="border border-border/40 shadow-soft bg-card text-foreground overflow-hidden relative group rounded-[32px]">
+        <Card className="border border-border/40 shadow-soft bg-card text-foreground overflow-hidden relative group rounded-card-premium">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] dark:opacity-10 pointer-events-none" />
 
             <CardHeader className="flex flex-row items-center justify-between pb-4 relative z-10">

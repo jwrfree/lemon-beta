@@ -54,7 +54,7 @@ const RepeatSuggestionCard = ({
     <button
         type="button"
         onClick={() => onClick(suggestion)}
-        className="group flex w-full items-center gap-3 rounded-[22px] bg-card p-3 text-left shadow-elevation-2 transition-all active:scale-[0.98] hover:-translate-y-0.5"
+        className="group flex w-full items-center gap-3 rounded-2xl bg-card p-3 text-left shadow-elevation-2 transition-all active:scale-[0.98] hover:-translate-y-0.5"
     >
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <ArrowClockwise size={18} weight="regular" />
@@ -82,7 +82,7 @@ const HabitSuggestionChip = ({
     <button
         type="button"
         onClick={() => onClick(suggestion)}
-        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-[20px] bg-card px-3 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.98] hover:-translate-y-0.5"
+        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-2xl bg-card px-3 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.98] hover:-translate-y-0.5"
     >
         <div className="flex w-full items-center justify-between gap-2">
             <span className="truncate text-sm font-semibold tracking-tight text-foreground">{suggestion.label}</span>
@@ -107,7 +107,7 @@ const ActionSuggestionCard = ({
             type="button"
             onClick={() => onClick(suggestion)}
             className={cn(
-                "flex min-h-[84px] flex-1 items-start gap-3 rounded-[22px] px-3 py-3 text-left transition-all active:scale-[0.98] hover:-translate-y-0.5",
+                "flex min-h-[84px] flex-1 items-start gap-3 rounded-2xl px-3 py-3 text-left transition-all active:scale-[0.98] hover:-translate-y-0.5",
                 suggestion.action === 'scan-receipt'
                     ? "bg-primary/10 text-primary shadow-elevation-2"
                     : "bg-card text-foreground shadow-elevation-2"

@@ -33,7 +33,7 @@ const typeMeta = {
 export const AnomalyAlertCard = ({ data, onAction }: AnomalyAlertCardProps) => {
     if (!data?.anomaly_type || !data.description) {
         return (
-            <div className="rounded-[24px] border border-border/60 bg-card p-4">
+            <div className="rounded-3xl border border-border/60 bg-card p-4">
                 <div className="text-sm font-semibold text-foreground">Alert anomali</div>
                 <p className="mt-2 text-sm text-muted-foreground">
                     Belum ada detail anomali yang cukup untuk ditampilkan.
@@ -47,7 +47,7 @@ export const AnomalyAlertCard = ({ data, onAction }: AnomalyAlertCardProps) => {
     const severity = data.severity ?? 'low';
 
     return (
-        <div className="rounded-[24px] border border-border/60 bg-card p-4">
+        <div className="rounded-3xl border border-border/60 bg-card p-4">
             <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                     <div className="mt-0.5 rounded-2xl bg-muted p-2 text-primary">

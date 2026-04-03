@@ -154,7 +154,7 @@ const SwipeableDebtItem = ({ debt, onSettle, onEdit }: SwipeableDebtItemProps) =
     const isOwed = debt.direction === 'owed';
 
     return (
-        <div ref={itemRef} className="relative overflow-hidden rounded-[32px]">
+        <div ref={itemRef} className="relative overflow-hidden rounded-card-premium">
             <motion.div
                 style={{ opacity: settleOpacity }}
                 className="absolute inset-0 flex items-center justify-start bg-emerald-500 pl-8 text-white"
@@ -191,7 +191,7 @@ const SwipeableDebtItem = ({ debt, onSettle, onEdit }: SwipeableDebtItemProps) =
                 }}
                 className="relative z-10"
             >
-                <Card className="group overflow-hidden rounded-[32px] border-none bg-white p-6 shadow-soft dark:bg-zinc-900">
+                <Card className="group overflow-hidden rounded-card-premium border-none bg-white p-6 shadow-soft dark:bg-zinc-900">
                     <div className="relative z-10 flex flex-col gap-6">
                         <div className="flex items-start justify-between">
                             <div className="space-y-1.5">
@@ -326,7 +326,7 @@ export const DebtsDashboard = () => {
             <div className="space-y-6 px-1">
                 <div className="grid grid-cols-2 gap-3">
                     <div
-                        className="flex flex-col gap-1.5 rounded-[32px] border-none bg-white p-5 shadow-soft transition-all active:scale-[0.98] dark:bg-zinc-900"
+                        className="flex flex-col gap-1.5 rounded-card-premium border-none bg-white p-5 shadow-soft transition-all active:scale-[0.98] dark:bg-zinc-900"
                         onClick={() => setActiveFilter('owed')}
                     >
                         <div className="label-xs flex items-center gap-1.5 !text-rose-500/70">
@@ -338,7 +338,7 @@ export const DebtsDashboard = () => {
                         </p>
                     </div>
                     <div
-                        className="flex flex-col gap-1.5 rounded-[32px] border-none bg-white p-5 shadow-soft transition-all active:scale-[0.98] dark:bg-zinc-900"
+                        className="flex flex-col gap-1.5 rounded-card-premium border-none bg-white p-5 shadow-soft transition-all active:scale-[0.98] dark:bg-zinc-900"
                         onClick={() => setActiveFilter('owing')}
                     >
                         <div className="label-xs flex items-center gap-1.5 !text-emerald-500/70">
@@ -372,7 +372,7 @@ export const DebtsDashboard = () => {
                         <SelectTrigger className="flex h-10 w-[44px] items-center justify-center rounded-full border-none bg-muted/40 p-0 shadow-none transition-colors hover:bg-muted/60">
                             <ArrowsDownUp className="h-4 w-4 text-muted-foreground/60" weight="regular" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-[24px] border-none bg-popover/95 shadow-xl backdrop-blur-xl">
+                        <SelectContent align="end" className="rounded-3xl border-none bg-popover/95 shadow-xl backdrop-blur-xl">
                             <SelectItem value="updated_desc" className="p-3 text-label font-semibold uppercase tracking-widest">
                                 Terbaru
                             </SelectItem>

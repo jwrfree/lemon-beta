@@ -56,7 +56,7 @@ function BentoItem({
             whileTap={{ scale: 0.96 }}
             onClick={onClick}
             className={cn(
-                "relative overflow-hidden rounded-[32px] bg-card shadow-soft transition-all cursor-pointer group select-none border border-border/40",
+                "relative overflow-hidden rounded-card-premium bg-card shadow-soft transition-all cursor-pointer group select-none border border-border/40",
                 className
             )}
         >
@@ -339,7 +339,7 @@ function ProfileContent() {
                         <AlertDialogTrigger asChild>
                             <Button 
                                 variant="ghost" 
-                                className="w-full h-16 bg-destructive/5 text-destructive hover:bg-destructive/10 border border-destructive/20 rounded-[32px] font-bold tracking-widest uppercase text-xs gap-3 justify-center transition-all active:scale-95 group"
+                                className="w-full h-16 bg-destructive/5 text-destructive hover:bg-destructive/10 border border-destructive/20 rounded-card-premium font-bold tracking-widest uppercase text-xs gap-3 justify-center transition-all active:scale-95 group"
                                 onClick={() => triggerHaptic('medium')}
                             >
                                 <LogOut className="w-4 h-4" />
