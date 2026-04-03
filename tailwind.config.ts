@@ -12,7 +12,7 @@ const colorSafelist = [
 ]);
 
 
-export default {
+const config = {
   darkMode: ['class'],
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
@@ -147,7 +147,6 @@ export default {
         'dark-gray': 'hsl(var(--gray-900))',
       },
       borderRadius: {
-      borderRadius: {
         none: '0',
         DEFAULT: 'var(--radius)',
         inherit: 'inherit',
@@ -208,7 +207,6 @@ export default {
         'toast-exit': 'toast-exit 0.4s ease-in',
       },
       boxShadow: {
-      boxShadow: {
         'elevation-1': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
         'elevation-2': '0 2px 8px 0 rgb(0 0 0 / 0.08)',
         'elevation-3': '0 4px 16px 0 rgb(0 0 0 / 0.12)',
@@ -228,4 +226,6 @@ export default {
   },
   plugins: [animate, typography],
 } satisfies Config;
+
+export default config;
 

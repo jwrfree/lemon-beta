@@ -52,6 +52,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Replaced remaining raw hex and rgba color literals in feature and component code with semantic tokens or CSS variables, including charts, auth brand SVGs, category color helpers, and sidebar surface styling.
 - **DS-2 loading state standardization**
   - Added `src/components/ui/loading-states.md` as the approved loading-state standard and migrated remaining widget/page placeholders from raw `animate-pulse` divs or blank returns to shared `Skeleton` and `EmptyState` patterns in home, insights, budgets, debts, charts, and AI rich-result cards.
+- **Build stability after DS-2**
+  - Fixed a broken `tailwind.config.ts` object shape that was crashing Turbopack CSS evaluation, and replaced server-side loading/offline icon usage with build-safe markup so `/offline` and `/charts` can prerender again.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)
