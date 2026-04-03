@@ -4,6 +4,11 @@ import { financialContextService } from '@/lib/services/financial-context-servic
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { UnifiedFinancialContext } from '@/lib/services/financial-context-service';
 import { extractTransaction, parseSimpleTransactionInput } from '@/ai/flows/extract-transaction-flow';
+import {
+  clearPendingDeleteConfirmation,
+  getPendingDeleteConfirmation,
+  stagePendingDeleteConfirmation,
+} from '@/ai/actions/delete-confirmation-state';
 import { categories } from '@/lib/categories';
 import {
   createTransactionWithClient,
@@ -202,7 +207,44 @@ export const createTransactionMutationActions = (userId: string, supabase: Finan
     return { success: true };
   };
 
-  const deleteTransaction = async ({ transaction_id }: { transaction_id: string }) => {
+  const deleteTransaction = async ({
+    transaction_id,
+    confirm = false,
+  }: {
+    transaction_id: string;
+    confirm?: boolean;
+  }) => {
+    const existingTransaction = await getTransactionRowById(
+      supabase,
+      userId,
+      transaction_id,
+    );
+
+    if (!existingTransaction.data) {
+      return {
+        success: false,
+        error: existingTransaction.error || 'Transaksi tidak ditemukan.',
+      };
+    }
+
+    if (!confirm) {
+      stagePendingDeleteConfirmation(userId, transaction_id);
+      return {
+        success: false,
+        requires_confirmation: true,
+        transaction_id,
+        message: `Penghapusan **${existingTransaction.data.description}** belum dijalankan. Minta konfirmasi user dulu, lalu panggil delete_transaction lagi dengan \`confirm: true\` untuk transaksi yang sama.`,
+      };
+    }
+
+    const pendingDelete = getPendingDeleteConfirmation(userId);
+    if (!pendingDelete || pendingDelete.transactionId !== transaction_id) {
+      return {
+        success: false,
+        error: 'Penghapusan ini belum dikonfirmasi di server. Minta konfirmasi user dulu, lalu panggil delete_transaction lagi dengan `confirm: true` untuk transaksi yang sama.',
+      };
+    }
+
     const result = await deleteTransactionWithClient(
       supabase,
       userId,
@@ -210,6 +252,7 @@ export const createTransactionMutationActions = (userId: string, supabase: Finan
     );
 
     if (result.error) return { success: false, error: result.error };
+    clearPendingDeleteConfirmation(userId);
     return { success: true };
   };
 
@@ -399,12 +442,13 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
     }),
 
     delete_transaction: tool({
-      description: 'Menghapus transaksi tertentu. HANYA gunakan jika user secara eksplisit meminta menghapus transaksi spesifik. Gunakan find_transactions dulu untuk mendapatkan ID.',
+      description: 'Menghapus transaksi tertentu dengan konfirmasi dua langkah. HANYA gunakan jika user secara eksplisit meminta menghapus transaksi spesifik. Gunakan find_transactions dulu untuk mendapatkan ID. Panggilan pertama tanpa `confirm: true` hanya akan menyiapkan penghapusan dan meminta konfirmasi. Setelah user mengonfirmasi, panggil lagi tool ini dengan `confirm: true` untuk transaksi yang sama.',
       inputSchema: z.object({
         transaction_id: z.string().uuid(),
+        confirm: z.boolean().optional().default(false),
       }),
-      execute: async ({ transaction_id }) => {
-        return transactionMutations.deleteTransaction({ transaction_id });
+      execute: async ({ transaction_id, confirm }) => {
+        return transactionMutations.deleteTransaction({ transaction_id, confirm });
       },
     }),
 

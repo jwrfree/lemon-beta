@@ -5,6 +5,8 @@ All updates and improvements to the Lemon app will be documented here.
 ## [Unreleased]
 
 ### Changed
+- **Server-enforced chat delete confirmation**
+  - Added a staged confirmation state for Lemon Coach deletes so a transaction cannot be removed until a second confirmed delete call is made for the same transaction on the server.
 - **Unified chat transaction mutations**
   - Moved Lemon Coach transaction creation onto the same shared tool/action layer as update and delete so chat mutations now reuse one RPC-backed execution path instead of a route-only special case.
 - **AI chat orchestration boundaries**

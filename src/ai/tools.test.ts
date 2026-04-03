@@ -1,15 +1,21 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { resetPendingDeleteConfirmationsForTest } from '@/ai/actions/delete-confirmation-state';
 
 const {
   getRecentTransactions,
   parseSimpleTransactionInput,
   extractTransaction,
   createTransactionWithClient,
+  deleteTransactionWithClient,
+  getTransactionRowById,
 } = vi.hoisted(() => ({
   getRecentTransactions: vi.fn(),
   parseSimpleTransactionInput: vi.fn(),
   extractTransaction: vi.fn(),
   createTransactionWithClient: vi.fn(),
+  deleteTransactionWithClient: vi.fn(),
+  getTransactionRowById: vi.fn(),
 }));
 
 vi.mock('@/lib/services/financial-context-service', () => ({
@@ -27,8 +33,8 @@ vi.mock('@/ai/flows/extract-transaction-flow', () => ({
 
 vi.mock('@/features/transactions/services/transaction.service', () => ({
   createTransactionWithClient,
-  deleteTransactionWithClient: vi.fn(),
-  getTransactionRowById: vi.fn(),
+  deleteTransactionWithClient,
+  getTransactionRowById,
   mapTransactionRowToUnifiedValues: vi.fn(),
   updateTransactionWithClient: vi.fn(),
 }));
@@ -59,6 +65,10 @@ const createWalletQueryClient = () => {
 };
 
 describe('createTransactionMutationActions', () => {
+  afterEach(() => {
+    resetPendingDeleteConfirmationsForTest();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     getRecentTransactions.mockResolvedValue([]);
@@ -79,6 +89,17 @@ describe('createTransactionMutationActions', () => {
     });
     createTransactionWithClient.mockResolvedValue({
       data: 'tx-1',
+      error: null,
+    });
+    deleteTransactionWithClient.mockResolvedValue({
+      data: true,
+      error: null,
+    });
+    getTransactionRowById.mockResolvedValue({
+      data: {
+        id: 'tx-1',
+        description: 'Makan siang',
+      },
       error: null,
     });
   });
@@ -113,5 +134,39 @@ describe('createTransactionMutationActions', () => {
       reply: expect.stringContaining('berhasil dicatat'),
     }));
     expect(createTransactionWithClient).toHaveBeenCalledTimes(1);
+  });
+
+  it('requires a staged confirmation before delete executes', async () => {
+    const supabase = createWalletQueryClient();
+    const actions = createTransactionMutationActions('user-1', supabase as never);
+
+    const staged = await actions.deleteTransaction({ transaction_id: '550e8400-e29b-41d4-a716-446655440000' });
+    const deleted = await actions.deleteTransaction({
+      transaction_id: '550e8400-e29b-41d4-a716-446655440000',
+      confirm: true,
+    });
+
+    expect(staged).toEqual(expect.objectContaining({
+      success: false,
+      requires_confirmation: true,
+    }));
+    expect(deleteTransactionWithClient).toHaveBeenCalledTimes(1);
+    expect(deleted).toEqual({ success: true });
+  });
+
+  it('rejects confirmed deletes that were not staged first', async () => {
+    const supabase = createWalletQueryClient();
+    const actions = createTransactionMutationActions('user-1', supabase as never);
+
+    const result = await actions.deleteTransaction({
+      transaction_id: '550e8400-e29b-41d4-a716-446655440000',
+      confirm: true,
+    });
+
+    expect(result).toEqual(expect.objectContaining({
+      success: false,
+      error: expect.stringContaining('belum dikonfirmasi di server'),
+    }));
+    expect(deleteTransactionWithClient).not.toHaveBeenCalled();
   });
 });
