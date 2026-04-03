@@ -91,6 +91,8 @@ All updates and improvements to the Lemon app will be documented here.
 ### Changed
 - **DS-3 dashboard surface variants**
   - Added named `Card` shell variants (`default`, `elevated`, `flat`, `ai`) with `cva` in the shared UI primitive and migrated the main dashboard widgets plus Lemon Coach rich cards onto those variants so radius, shadow, and overflow styling now come from one consistent surface system.
+- **DS-3 app page transitions**
+  - Wrapped the main App Router content shell in a lightweight `PageTransition` component so route changes now use a subtle 150ms fade-and-rise animation driven only by `opacity` and `transform`, keeping the motion mobile-friendly and isolated from sheets and drawers.
 - **Phase 4 verification coverage**
   - Added release-readiness coverage for anomaly mapping across all three anomaly types, `/api/chat` anomaly review routing, and the new typed rich cards with valid/empty payloads, then re-ran the full suite successfully before tagging the AI upgrade release.
 - **Persistent coaching profile memory**

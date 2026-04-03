@@ -18,6 +18,7 @@ import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { UnifiedTransactionSheet } from '@/features/transactions/components/unified-transaction-sheet';
 import { TransactionDetailSheet } from '@/features/transactions/components/transaction-detail-sheet';
 import { AIChatDrawer } from '@/features/ai-chat/components/ai-chat-drawer';
+import { PageTransition } from '@/components/layout/page-transition';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
@@ -133,9 +134,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     className="main-content-scroll"
                     data-nav={showBottomNav ? "true" : "false"}
                 >
-                    <div className="relative flex min-h-full w-full flex-1 flex-col">
+                    <PageTransition className="relative flex min-h-full w-full flex-1 flex-col">
                         {children}
-                    </div>
+                    </PageTransition>
                 </div>
 
                 <CustomToast />

@@ -428,6 +428,11 @@
     animation-fill-mode: both;
   }
 
+  .motion-page-enter {
+    animation: motion-fade-slide-in 150ms ease-out both;
+    will-change: opacity, transform;
+  }
+
   .motion-panel {
     animation-duration: var(--motion-duration-normal);
     animation-timing-function: var(--motion-easing-standard);
