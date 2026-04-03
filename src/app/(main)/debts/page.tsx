@@ -124,7 +124,7 @@ export default function DebtsPage() {
                             <ArrowsDownUp className="w-3 h-3 mr-2 text-muted-foreground/60" weight="regular" />
                             <SelectValue placeholder="Urutkan" />
                         </SelectTrigger>
-                        <SelectContent align="end" className="rounded-[24px] border-none shadow-xl bg-popover/95 backdrop-blur-xl">
+                        <SelectContent align="end" className="rounded-card-glass border-none shadow-xl bg-popover/95 backdrop-blur-xl">
                             <SelectItem value="updated_desc" className="text-label font-semibold uppercase tracking-widest p-3">Terbaru Update</SelectItem>
                             <SelectItem value="due_soon" className="text-label font-semibold uppercase tracking-widest p-3">Jatuh Tempo</SelectItem>
                             <SelectItem value="amount_desc" className="text-label font-semibold uppercase tracking-widest p-3">Nominal Tertinggi</SelectItem>
@@ -146,16 +146,16 @@ export default function DebtsPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-white dark:bg-zinc-900 p-5 rounded-[32px] shadow-soft border-none flex flex-col gap-1">
-                            <span className="label-xs !text-rose-500/70 flex items-center gap-1.5">
+                        <div className="bg-white dark:bg-zinc-900 p-5 rounded-card-premium shadow-soft border-none flex flex-col gap-1">
+                            <span className="label-xs !text-destructive/70 flex items-center gap-1.5">
                                 <ArrowUpRight size={12} weight="bold" /> Hutang
                             </span>
                             <span className="text-lg font-medium tracking-tight text-foreground tabular-nums">
                                 {formatCurrency(totals.totalOwed)}
                             </span>
                         </div>
-                        <div className="bg-white dark:bg-zinc-900 p-5 rounded-[32px] shadow-soft border-none flex flex-col gap-1">
-                            <span className="label-xs !text-emerald-500/70 flex items-center gap-1.5">
+                        <div className="bg-white dark:bg-zinc-900 p-5 rounded-card-premium shadow-soft border-none flex flex-col gap-1">
+                            <span className="label-xs !text-success/70 flex items-center gap-1.5">
                                 <ArrowDownRight size={12} weight="bold" /> Piutang
                             </span>
                             <span className="text-lg font-medium tracking-tight text-foreground tabular-nums">
@@ -201,11 +201,11 @@ export default function DebtsPage() {
                                         onClick={() => { triggerHaptic('light'); router.push(`/debts/${debt.id}`); }}
                                         className="cursor-pointer"
                                     >
-                                        <Card className="border-none rounded-[32px] bg-white dark:bg-zinc-900 shadow-soft p-6 flex flex-col gap-6 overflow-hidden relative group">
+                                        <Card className="border-none rounded-card-premium bg-white dark:bg-zinc-900 shadow-soft p-6 flex flex-col gap-6 overflow-hidden relative group">
                                             {/* Decorative Background Glow */}
                                             <div className={cn(
                                                 "absolute -right-8 -top-8 h-24 w-24 rounded-full blur-3xl opacity-10 transition-opacity group-hover:opacity-20",
-                                                isOwed ? "bg-rose-500" : "bg-emerald-500"
+                                                isOwed ? "bg-destructive" : "bg-success"
                                             )} />
 
                                             <div className="flex items-start justify-between relative z-10">
@@ -245,7 +245,7 @@ export default function DebtsPage() {
                                                         <motion.div 
                                                             initial={{ width: 0 }}
                                                             animate={{ width: `${progress}%` }}
-                                                            className={cn("h-full rounded-full", isOwed ? "bg-rose-500" : "bg-emerald-500")}
+                                                            className={cn("h-full rounded-full", isOwed ? "bg-destructive" : "bg-success")}
                                                         />
                                                     </div>
                                                 </div>

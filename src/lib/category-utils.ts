@@ -1,18 +1,18 @@
 import React from 'react';
 import {
-    Utensils, ShoppingCart, Car, Phone,
-    Gamepad2, Home, GraduationCap, HeartPulse,
-    Briefcase, Gift, PiggyBank, Wrench, ReceiptText,
-    ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake,
-    Heart, Baby, RefreshCw, BadgeDollarSign, Wallet, TrendingUp, Code,
-    Zap, Tv
-} from 'lucide-react';
+    ForkKnife, ShoppingCart, Car, DeviceMobile,
+    GameController, House, GraduationCap, Heartbeat,
+    Briefcase, Gift, PiggyBank, Wrench, Receipt,
+    ShieldCheck, Sparkle, Coins, ArrowsLeftRight, Handshake,
+    Heart, Baby, ArrowsClockwise, CurrencyDollar, Wallet, TrendUp, Code,
+    Lightning, Television
+} from '@phosphor-icons/react';
 
 export const iconMap: Record<string, React.ElementType> = {
-    Utensils, ShoppingCart, Car, Phone, Gamepad2, Home, GraduationCap, HeartPulse,
-    Briefcase, Gift, PiggyBank, ReceiptText, ShieldCheck, Sparkles, HandCoins,
-    ArrowRightLeft, Handshake, Wrench, Heart, Baby, RefreshCw, BadgeDollarSign, Wallet, TrendingUp, Code,
-    Zap, Tv
+    Utensils: ForkKnife, ShoppingCart, Car, Phone: DeviceMobile, Gamepad2: GameController, Home: House, GraduationCap, HeartPulse: Heartbeat,
+    Briefcase, Gift, PiggyBank, ReceiptText: Receipt, ShieldCheck, Sparkles: Sparkle, HandCoins: Coins,
+    ArrowRightLeft: ArrowsLeftRight, Handshake, Wrench, Heart, Baby, RefreshCw: ArrowsClockwise, BadgeDollarSign: CurrencyDollar, Wallet, TrendingUp: TrendUp, Code,
+    Zap: Lightning, Tv: Television
 };
 
 export const getCategoryIcon = (iconName: string | null | undefined) => {

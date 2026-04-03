@@ -27,7 +27,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   const [budgetName, setBudgetName] = useState('');
   const [targetAmount, setTargetAmount] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [recommendation, setRecommendation] = useState<{ avg: number; max: number } | null>(null);
@@ -45,8 +45,8 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
       setLoadingRec(true);
       setRecommendation(null);
       
-      // Get stats for category (and sub-category if selected)
-      transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0], selectedSubCategory || undefined)
+      // Get stats for category (and sub-category if exactly one selected)
+      transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0], selectedSubCategories.length === 1 ? selectedSubCategories[0] : undefined)
         .then((res) => {
           if (res.data) {
             setRecommendation(res.data);
@@ -54,11 +54,22 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
         })
         .finally(() => setLoadingRec(false));
     }
-  }, [step, selectedCategories, selectedSubCategory, user, hasSubCategories]);
+  }, [step, selectedCategories, selectedSubCategories, user, hasSubCategories]);
+
+  const toggleSubCategory = (sub: string | null) => {
+    if (sub === null) {
+      // null means "Semua" — deselect all subs
+      setSelectedSubCategories([]);
+    } else {
+      setSelectedSubCategories(prev =>
+        prev.includes(sub) ? prev.filter(s => s !== sub) : [...prev, sub]
+      );
+    }
+  };
 
   const handleCategorySelect = (categoryName: string) => {
     setSelectedCategories([categoryName]);
-    setSelectedSubCategory(null); // Reset sub when main changes
+    setSelectedSubCategories([]); // Reset sub when main changes
   };
 
   const handleNext = () => {
@@ -100,13 +111,28 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     }
     setIsSubmitting(true);
     try {
-      await addBudget({
-        name: budgetName,
-        targetAmount: targetAmount,
-        period: 'monthly',
-        categories: [selectedCategories[0]],
-        subCategory: selectedSubCategory || undefined,
-      });
+      if (selectedSubCategories.length > 1) {
+        // Batch Creation: one budget card per sub-category
+        await Promise.all(
+          selectedSubCategories.map(sub =>
+            addBudget({
+              name: `${budgetName} – ${sub}`,
+              targetAmount: targetAmount,
+              period: 'monthly',
+              categories: [selectedCategories[0]],
+              subCategory: sub,
+            })
+          )
+        );
+      } else {
+        await addBudget({
+          name: budgetName,
+          targetAmount: targetAmount,
+          period: 'monthly',
+          categories: [selectedCategories[0]],
+          subCategory: selectedSubCategories[0] || undefined,
+        });
+      }
       onClose();
     } catch {
       // error handled by provider
@@ -210,13 +236,13 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
 
               {step === 3 && hasSubCategories && (
                 <div className="space-y-4 pt-2">
-                  <p className="text-xs font-medium text-muted-foreground ml-1">Ingin mempersempit ke sub-kategori tertentu?</p>
+                  <p className="text-xs font-medium text-muted-foreground ml-1">Pilih sub-kategori (bisa lebih dari satu, atau pilih "Semua" untuk tidak memfilter).</p>
                   <div className="flex flex-wrap gap-2 pt-2">
                     <Button 
                         type="button" 
-                        variant={selectedSubCategory === null ? 'default' : 'outline'}
-                        onClick={() => setSelectedSubCategory(null)}
-                        className="rounded-full h-10 px-5 text-xs font-semibold text-label"
+                        variant={selectedSubCategories.length === 0 ? 'default' : 'outline'}
+                        onClick={() => toggleSubCategory(null)}
+                        className={cn("rounded-full h-10 px-5 text-xs", selectedSubCategories.length === 0 ? "font-semibold text-primary-foreground" : "font-medium text-foreground/70")}
                     >
                         Semua {selectedCategories[0]}
                     </Button>
@@ -224,14 +250,17 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                         <Button 
                             key={sub}
                             type="button" 
-                            variant={selectedSubCategory === sub ? 'default' : 'outline'}
-                            onClick={() => setSelectedSubCategory(sub)}
-                            className="rounded-full h-10 px-5 text-xs font-semibold text-label"
+                            variant={selectedSubCategories.includes(sub) ? 'default' : 'outline'}
+                            onClick={() => toggleSubCategory(sub)}
+                            className={cn("rounded-full h-10 px-5 text-xs", selectedSubCategories.includes(sub) ? "font-semibold text-primary-foreground" : "font-medium text-foreground/70")}
                         >
                             {sub}
                         </Button>
                     ))}
                   </div>
+                  {selectedSubCategories.length > 1 && (
+                    <p className="text-xs text-primary font-medium ml-1">✓ {selectedSubCategories.length} sub-kategori dipilih — akan dibuat {selectedSubCategories.length} anggaran terpisah.</p>
+                  )}
                 </div>
               )}
 
@@ -248,7 +277,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
                       <div className="flex-1">
                         <h4 className="text-xs font-semibold text-label text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
                         <p className="text-xs text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed font-medium">
-                          Rata-rata pengeluaranmu di <span className="font-semibold text-emerald-700">{selectedSubCategory || selectedCategories[0]}</span> adalah <span className="font-semibold text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
+                          Rata-rata pengeluaranmu di <span className="font-semibold text-emerald-700">{selectedSubCategories.length === 1 ? selectedSubCategories[0] : selectedCategories[0]}</span> adalah <span className="font-semibold text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
                         </p>
                         <Button
                           size="sm"

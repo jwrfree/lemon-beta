@@ -346,7 +346,7 @@ function ProfileContent() {
                                 <span>Keluar dari Akun</span>
                             </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)]">
+                        <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)]">
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="text-2xl font-bold tracking-tight">Konfirmasi Logout</AlertDialogTitle>
                                 <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
@@ -387,7 +387,7 @@ function ProfileContent() {
                                 <span>Hapus Semua Data</span>
                             </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="rounded-[32px] border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)] border-t-4 border-t-destructive">
+                        <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)] border-t-4 border-t-destructive">
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="text-2xl font-bold tracking-tight text-destructive">Hapus Semua Data?</AlertDialogTitle>
                                 <AlertDialogDescription className="text-sm text-muted-foreground/80 leading-relaxed">

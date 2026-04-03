@@ -384,7 +384,7 @@ export const UnifiedTransactionSheet = ({
             {/* Discard Confirmation Dialog */}
             <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
                 <AlertDialogOverlay className="bg-black/60" />
-                <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                     <AlertDialogHeader className="space-y-4 text-center sm:text-left">
                         <AlertDialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
                             Batalkan Transaksi?
@@ -422,7 +422,7 @@ export const UnifiedTransactionSheet = ({
 
             <AlertDialog open={showRemoveDraftConfirm} onOpenChange={setShowRemoveDraftConfirm}>
                 <AlertDialogOverlay className="bg-black/60" />
-                <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-[32px] border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                     <AlertDialogHeader className="space-y-4 text-center sm:text-left">
                         <AlertDialogTitle className="text-2xl font-semibold tracking-tight text-foreground">
                             Hapus draft ini?
