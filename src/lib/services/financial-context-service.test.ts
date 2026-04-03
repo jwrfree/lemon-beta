@@ -213,6 +213,30 @@ describe('financialContextService anomaly helpers', () => {
               target_action: { type: 'highlight', target: 'widget-financial-pulse' },
             },
           },
+          {
+            anomaly_type: 'missing_recurring',
+            category: 'Tagihan & Utilitas',
+            description: 'Tagihan internet rutin belum muncul bulan ini.',
+            severity: 'medium',
+            current_value: 0,
+            reference_value: 350000,
+            metadata: {
+              recurring_label: 'Biznet',
+              target_action: { type: 'navigate', target: '/transactions' },
+            },
+          },
+          {
+            anomaly_type: 'budget_trajectory',
+            category: 'Transportasi',
+            description: 'Budget transportasi berisiko jebol.',
+            severity: 'high',
+            current_value: 540000,
+            reference_value: 450000,
+            metadata: {
+              projected_total: 540000,
+              target_action: { type: 'highlight', target: 'widget-budget-status' },
+            },
+          },
         ],
         error: null,
       }),
@@ -232,6 +256,30 @@ describe('financialContextService anomaly helpers', () => {
         metadata: {
           ratio: 1.8,
           target_action: { type: 'highlight', target: 'widget-financial-pulse' },
+        },
+      },
+      {
+        anomaly_type: 'missing_recurring',
+        category: 'Tagihan & Utilitas',
+        description: 'Tagihan internet rutin belum muncul bulan ini.',
+        severity: 'medium',
+        current_value: 0,
+        reference_value: 350000,
+        metadata: {
+          recurring_label: 'Biznet',
+          target_action: { type: 'navigate', target: '/transactions' },
+        },
+      },
+      {
+        anomaly_type: 'budget_trajectory',
+        category: 'Transportasi',
+        description: 'Budget transportasi berisiko jebol.',
+        severity: 'high',
+        current_value: 540000,
+        reference_value: 450000,
+        metadata: {
+          projected_total: 540000,
+          target_action: { type: 'highlight', target: 'widget-budget-status' },
         },
       },
     ]);

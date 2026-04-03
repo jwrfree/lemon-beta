@@ -67,6 +67,8 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **Phase 4 verification coverage**
+  - Added release-readiness coverage for anomaly mapping across all three anomaly types, `/api/chat` anomaly review routing, and the new typed rich cards with valid/empty payloads, then re-ran the full suite successfully before tagging the AI upgrade release.
 - **Persistent coaching profile memory**
   - Added the `user_financial_profile` table, background `/api/chat/update-profile` summarization route, and profile injection back into Lemon Coach prompts so long-term spending patterns and coaching notes survive beyond a single session without blocking the live chat stream.
 - **Typed Phase 4 rich insight cards**
