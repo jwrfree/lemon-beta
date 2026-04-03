@@ -253,8 +253,18 @@ export function classifyChatIntent(question: string): ChatIntent {
         return { kind: 'anomaly-review' };
     }
 
+    const isDataEntryKw = hasAny(normalized, [
+        'rb', 'ribu', 'jt', 'juta', 'pengeluaran', 'pemasukan', 'belanja', 
+        'transaksi', 'makan', 'minum', 'kopi', 'gaji', 'bensin', 'bayar', 
+        'beli', 'transfer', 'top up'
+    ]) || /\d/.test(normalized);
+
+    if (hasAny(normalized, ['catat', 'tambah', 'input', 'masukkan', 'tulis']) && isDataEntryKw) {
+        return { kind: 'add-transaction' };
+    }
+
     const transactionSearchQuery = extractTransactionSearchQuery(question);
-    if (transactionSearchQuery) {
+    if (transactionSearchQuery && !hasAny(normalized, ['catat', 'tambah', 'input', 'masukkan', 'tulis'])) {
         return { kind: 'transaction-search', query: transactionSearchQuery };
     }
 
@@ -341,15 +351,6 @@ export function classifyChatIntent(question: string): ChatIntent {
         return { kind: 'destructive-action' };
     }
 
-    const isDataEntryKw = hasAny(normalized, [
-        'rb', 'ribu', 'jt', 'juta', 'pengeluaran', 'pemasukan', 'belanja', 
-        'transaksi', 'makan', 'minum', 'kopi', 'gaji', 'bensin', 'bayar', 
-        'beli', 'transfer', 'top up'
-    ]) || /\d/.test(normalized);
-
-    if (hasAny(normalized, ['catat', 'tambah', 'input', 'masukkan', 'tulis']) && isDataEntryKw) {
-        return { kind: 'add-transaction' };
-    }
 
     if (hasAny(normalized, ['tadi kamu bilang apa', 'ingat pesan sebelumnya', 'apa yang baru kita bahas', 'diatas tadi'])) {
         return { kind: 'memory' };
