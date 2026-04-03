@@ -1,10 +1,11 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowClockwise, Lightning } from '@/lib/icons';
-import { formatCurrency } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { ArrowClockwise, Lightning } from '@/lib/icons';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn, formatCurrency } from '@/lib/utils';
 
 interface BalanceInfo {
     currency: string;
@@ -16,6 +17,23 @@ interface BalanceInfo {
 interface DeepSeekBalance {
     isAvailable: boolean;
     balanceInfos: BalanceInfo[];
+}
+
+function MetricBlock({
+    label,
+    value,
+}: {
+    label: string;
+    value: string;
+}) {
+    return (
+        <div className="rounded-2xl bg-muted/45 px-3 py-3">
+            <p className="text-label-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                {label}
+            </p>
+            <p className="pt-1 text-title-md font-semibold tracking-tight text-foreground">{value}</p>
+        </div>
+    );
 }
 
 export const DeepSeekUsageCard = () => {
@@ -44,95 +62,88 @@ export const DeepSeekUsageCard = () => {
         fetchBalance();
     }, []);
 
-    const userBalance = balance?.balanceInfos.find(b => b.currency === 'CNY' || b.currency === 'USD');
+    const userBalance = balance?.balanceInfos.find((item) => item.currency === 'CNY' || item.currency === 'USD');
     const totalBalance = userBalance ? parseFloat(userBalance.total_balance) : 0;
     const currency = userBalance?.currency || 'USD';
-
-    // DeepSeek V3 is roughly $0.20 per 1M tokens (mixed input/output)
+    const localEstimate = totalBalance * (currency === 'CNY' ? 2250 : 16100);
     const estimatedTokens = Math.floor(totalBalance / 0.0000002);
+    const estimatedDays = Math.max(0, Math.floor(estimatedTokens / (5 * 800)));
+    const progressWidth = Math.min((totalBalance / 10) * 100, 100);
 
-    const getStatusColor = (amount: number) => {
-        if (amount <= 0.5) return 'text-destructive';
-        if (amount <= 2.0) return 'text-warning';
-        return 'text-accent';
+    const getProgressColor = (amount: number) => {
+        if (amount <= 0.5) return 'bg-destructive';
+        if (amount <= 2.0) return 'bg-warning';
+        return 'bg-accent';
     };
 
     return (
-        <Card className="border border-border/40 shadow-soft bg-card text-foreground overflow-hidden relative group rounded-card-premium">
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] dark:opacity-10 pointer-events-none" />
+        <Card
+            variant="default"
+            className="overflow-hidden rounded-3xl border-border/50 bg-card shadow-elevation-2"
+        >
+            <CardContent className="p-5">
+                <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1.5">
+                        <div className="inline-flex items-center gap-2 text-label-md font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            <Lightning className="h-3.5 w-3.5 text-accent" weight="regular" />
+                            DeepSeek Balance
+                        </div>
+                        <div className="flex items-end gap-2">
+                            <p className="text-display-md font-bold tracking-tight text-foreground tabular-nums">
+                                {currency === 'CNY' ? `CNY ${totalBalance.toFixed(2)}` : `$${totalBalance.toFixed(2)}`}
+                            </p>
+                            <span className="pb-1 text-label-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                Tersisa
+                            </span>
+                        </div>
+                        <p className="text-body-sm text-muted-foreground">
+                            Perkiraan lokal {formatCurrency(localEstimate)}
+                        </p>
+                    </div>
 
-            <CardHeader className="flex flex-row items-center justify-between pb-4 relative z-10">
-                <CardTitle className="text-label-sm font-bold text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2">
-                    <Lightning className="h-3.5 w-3.5 text-accent" weight="regular" />
-                    DeepSeek AI Balance
-                </CardTitle>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={fetchBalance}
-                    disabled={isLoading}
-                    className="h-8 w-8 text-muted-foreground hover:text-accent hover:bg-accent/10 rounded-full"
-                >
-                    <ArrowClockwise className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} weight="regular" />
-                </Button>
-            </CardHeader>
-            <CardContent className="relative z-10 pt-0">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={fetchBalance}
+                        disabled={isLoading}
+                        className="h-10 w-10 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+                        aria-label="Muat ulang saldo DeepSeek"
+                    >
+                        <ArrowClockwise
+                            className={isLoading ? 'h-4 w-4 animate-spin' : 'h-4 w-4'}
+                            weight="regular"
+                        />
+                    </Button>
+                </div>
+
                 {error ? (
-                    <div className="text-destructive text-xs text-center py-4 bg-destructive/10 rounded-2xl border border-destructive/20">
+                    <div className="mt-5 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-body-sm text-destructive">
                         {error}
-                        <Button variant="link" size="sm" onClick={fetchBalance} className="text-destructive text-xs h-auto p-0 ml-1 font-bold">Coba Lagi</Button>
                     </div>
                 ) : (
-                    <div className="space-y-6">
-                        <div className="flex flex-col gap-1">
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-3xl md:text-4xl font-bold tracking-tighter tabular-nums">
-                                    {currency === 'CNY' ? '¥' : '$'}
-                                    {balance ? totalBalance.toFixed(2) : '...'}
-                                </span>
-                                <span className="text-label-sm text-muted-foreground/60 font-bold uppercase tracking-wider">Tersisa</span>
+                    <div className="mt-5 space-y-4">
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-label-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                <span>Estimasi token tersisa</span>
+                                <span className="text-foreground">{estimatedTokens.toLocaleString()}</span>
                             </div>
-                            {balance && (
-                                <span className="text-xs font-bold text-muted-foreground/40 tracking-tight">
-                                    ≈ {formatCurrency(totalBalance * (currency === 'CNY' ? 2250 : 16100))}
-                                </span>
-                            )}
+                            <div className="h-2.5 overflow-hidden rounded-full bg-muted/60">
+                                <motion.div
+                                    className={cn('h-full rounded-full', getProgressColor(totalBalance))}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${progressWidth}%` }}
+                                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                                />
+                            </div>
                         </div>
 
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-label-sm font-bold uppercase tracking-wider text-muted-foreground/60">
-                                    <span>Estimasi Token</span>
-                                    <span className="text-foreground tracking-normal">{balance ? estimatedTokens.toLocaleString() : '...'}</span>
-                                </div>
-                                <div className="h-2 w-full bg-muted/50 rounded-full overflow-hidden border border-border/20">
-                                    <motion.div
-                                        className={`h-full ${getStatusColor(totalBalance).replace('text-', 'bg-')}`}
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${Math.min((totalBalance / 10) * 100, 100)}%` }}
-                                        transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between pt-1">
-                                <div className="flex flex-col">
-                                    <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/30">Penggunaan Rata-rata</span>
-                                    <span className="text-label-sm font-bold text-muted-foreground/70 tracking-tight">~4,000 Token / Hari</span>
-                                </div>
-                                <p className="text-label-sm font-bold text-primary uppercase tracking-wider bg-accent/10 px-2.5 py-1 rounded-full border border-accent/20">
-                                    Habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari
-                                </p>
-                            </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <MetricBlock label="Rata-rata pemakaian" value="~4.000 token / hari" />
+                            <MetricBlock label="Perkiraan habis" value={`~${estimatedDays} hari`} />
                         </div>
                     </div>
                 )}
             </CardContent>
-
-            {/* Neon Decor */}
-            <div className="absolute -right-12 -bottom-12 h-32 w-32 bg-accent/5 blur-3xl rounded-full group-hover:bg-accent/10 transition-all duration-700" />
         </Card>
     );
 };
-
-

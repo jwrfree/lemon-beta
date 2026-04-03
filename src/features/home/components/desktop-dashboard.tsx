@@ -209,7 +209,11 @@ export const DesktopDashboard = () => {
         return wallets.find(w => w.id === selectedWalletId)?.balance || 0;
     }, [wallets, selectedWalletId]);
 
-    const totalDebt = useMemo(() => debts.filter(d => d.status !== 'settled').reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0), [debts]);
+    const { totalDebt, totalReceivable } = useMemo(() => {
+        const owed = debts.filter(d => d.direction === 'owed' && d.status !== 'settled').reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0);
+        const owing = debts.filter(d => d.direction === 'owing' && d.status !== 'settled').reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0);
+        return { totalDebt: owed, totalReceivable: owing };
+    }, [debts]);
 
     const activeBudgets = useMemo(() => {
         return budgets.map(b => {
@@ -244,9 +248,20 @@ export const DesktopDashboard = () => {
         const nextDueDebt = active
             .filter(d => d.dueDate)
             .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime())[0];
+            
+        const owedTotal = active.filter(d => d.direction === 'owed').reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0);
+        const owingTotal = active.filter(d => d.direction === 'owing').reduce((acc, d) => acc + (d.outstandingBalance ?? d.principal ?? 0), 0);
+        
         const largestDebt = active
             .sort((a, b) => (b.outstandingBalance ?? b.principal ?? 0) - (a.outstandingBalance ?? a.principal ?? 0))[0];
-        return { nextDueDebt, largestDebt };
+            
+        return { 
+            nextDueDebt, 
+            largestDebt,
+            owedTotal,
+            owingTotal,
+            activeCount: active.length
+        };
     }, [debts]);
 
     const recentTransactions = useMemo(() => filteredTransactions.slice(0, 10), [filteredTransactions]);

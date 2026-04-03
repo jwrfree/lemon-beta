@@ -20,6 +20,9 @@ interface DashboardAlertsProps {
     debtSummary: {
         nextDueDebt?: Debt;
         largestDebt?: Debt;
+        owedTotal: number;
+        owingTotal: number;
+        activeCount: number;
     };
 }
 
@@ -84,10 +87,21 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                     </Button>
                 </CardHeader>
                 <CardContent className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                        <div className="rounded-md bg-destructive/10 text-destructive px-2 py-1.5 text-[11px] font-semibold text-center">
+                            Hutang: {formatCurrency(debtSummary.owedTotal)}
+                        </div>
+                        <div className="rounded-md bg-success/10 text-success px-2 py-1.5 text-[11px] font-semibold text-center">
+                            Piutang: {formatCurrency(debtSummary.owingTotal)}
+                        </div>
+                    </div>
+                    
                     {debtSummary.nextDueDebt ? (
                         <div className="rounded-md bg-muted/32 p-3 shadow-inner">
-                            <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Jatuh Tempo</p>
-                            <p className="text-sm font-medium">{debtSummary.nextDueDebt.title}</p>
+                            <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">
+                                {debtSummary.nextDueDebt.direction === 'owed' ? 'Jatuh Tempo Pembayaran' : 'Perlu Ditagih'}
+                            </p>
+                            <p className="text-sm font-medium truncate">{debtSummary.nextDueDebt.title}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <CalendarBlank size={14} weight="regular" />
                                 {format(parseISO(debtSummary.nextDueDebt.dueDate as string), 'd MMM yyyy', { locale: dateFnsLocaleId })}
@@ -104,19 +118,8 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
                             />
                         </div>
                     )}
-                    {debtSummary.largestDebt && (
-                        <div className="rounded-md bg-muted/32 p-3 shadow-inner">
-                            <p className="text-xs font-medium tracking-tight text-muted-foreground mb-1">Outstanding Terbesar</p>
-                            <p className="text-sm font-medium">{debtSummary.largestDebt.title}</p>
-                            <p className="text-xs text-muted-foreground">{debtSummary.largestDebt.counterparty}</p>
-                            <p className="text-sm font-medium mt-1">{formatCurrency(debtSummary.largestDebt.outstandingBalance ?? debtSummary.largestDebt.principal ?? 0)}</p>
-                        </div>
-                    )}
                 </CardContent>
             </Card>
         </div>
     );
 };
-
-
-

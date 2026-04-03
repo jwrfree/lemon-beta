@@ -94,7 +94,15 @@ class InsightService {
             // 4. Fetch Reminders
             const { data: reminders } = await supabase.from('reminders').select('*').eq('user_id', userId).eq('status', 'upcoming').order('due_date', { ascending: true }).limit(3);
 
+            // 5. Fetch Debts
+            const { data: debts } = await supabase.from('debts').select('*').eq('user_id', userId).not('status', 'eq', 'settled');
+
             if (!wallets || !summary) return null;
+
+            const activeDebts = debts || [];
+            const nextDueDebt = activeDebts
+                .filter(d => d.due_date)
+                .sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime())[0];
 
             return await generateDailyBriefing({
                 userName,
@@ -112,7 +120,17 @@ class InsightService {
                     title: r.title,
                     amount: Number(r.amount),
                     dueDate: r.due_date || 'N/A'
-                }))
+                })),
+                debts: {
+                    totalOwed: activeDebts.filter(d => d.direction === 'owed').reduce((acc, d) => acc + Number(d.outstanding_balance), 0),
+                    totalOwing: activeDebts.filter(d => d.direction === 'owing').reduce((acc, d) => acc + Number(d.outstanding_balance), 0),
+                    nextDue: nextDueDebt ? {
+                        title: nextDueDebt.title,
+                        amount: Number(nextDueDebt.outstanding_balance),
+                        dueDate: nextDueDebt.due_date,
+                        direction: nextDueDebt.direction
+                    } : undefined
+                }
             });
         } catch (error) {
             console.error('[InsightService] Briefing Error:', error);

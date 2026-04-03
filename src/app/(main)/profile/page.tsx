@@ -1,22 +1,28 @@
-
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Wallet, Wrench, Target, Landmark, LogOut,
-    BellRing, Calculator, Moon, Sun, User as UserIcon,
-    ShieldCheck, Smartphone, Monitor, ChevronRight,
-    Download, Sparkles, Camera, Mail, Phone, MapPin,
-    CreditCard, Bell, Lock, Palette, Eye, EyeOff, Trash2
+    Camera,
+    ChevronRight,
+    CreditCard,
+    Download,
+    Eye,
+    EyeOff,
+    Landmark,
+    LogOut,
+    Mail,
+    Moon,
+    Sparkles,
+    Sun,
+    Trash2,
+    User as UserIcon,
 } from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { cn, triggerHaptic } from '@/lib/utils';
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 import {
@@ -34,34 +40,103 @@ import { DeepSeekUsageCard } from '@/features/settings/components/deepseek-usage
 import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
 import { UserAvatar } from '@/components/user-avatar';
 import { EditProfileSheet } from '@/features/profile/components/edit-profile-sheet';
+import { Card, CardContent } from '@/components/ui/card';
 
-// --- BENTO GRID COMPONENT ---
-function BentoItem({
-    className,
+function SectionHeading({ children }: { children: React.ReactNode }) {
+    return (
+        <h2 className="px-1 text-label-md font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+            {children}
+        </h2>
+    );
+}
+
+function SurfaceSection({
     children,
-    onClick,
-    delay = 0
+    className,
 }: {
-    className?: string;
     children: React.ReactNode;
-    onClick?: () => void;
-    delay?: number;
+    className?: string;
 }) {
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.98, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: delay, ease: [0.23, 1, 0.32, 1] }}
-            whileHover={{ scale: 0.995 }}
-            whileTap={{ scale: 0.96 }}
+        <Card
+            variant="default"
+            className={cn('overflow-hidden rounded-3xl border-border/50 bg-card shadow-elevation-2', className)}
+        >
+            <CardContent className="p-0">{children}</CardContent>
+        </Card>
+    );
+}
+
+function Row({
+    icon: Icon,
+    title,
+    description,
+    trailing,
+    onClick,
+    destructive = false,
+}: {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    description: string;
+    trailing?: React.ReactNode;
+    onClick?: () => void;
+    destructive?: boolean;
+}) {
+    const interactive = Boolean(onClick);
+
+    return (
+        <button
+            type="button"
             onClick={onClick}
             className={cn(
-                "relative overflow-hidden rounded-card-premium bg-card shadow-soft transition-all cursor-pointer group select-none border border-border/40",
-                className
+                'group flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors',
+                interactive ? 'hover:bg-muted/30 active:scale-[0.99]' : 'cursor-default',
+                destructive && 'hover:bg-destructive/5'
             )}
         >
+            <div className="flex min-w-0 items-center gap-4">
+                <div
+                    className={cn(
+                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-muted/60 text-muted-foreground transition-colors',
+                        interactive && !destructive && 'group-hover:bg-accent/10 group-hover:text-accent',
+                        destructive && 'group-hover:bg-destructive/10 group-hover:text-destructive'
+                    )}
+                >
+                    <Icon className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                    <p
+                        className={cn(
+                            'truncate text-title-md font-semibold tracking-tight text-foreground',
+                            destructive && 'group-hover:text-destructive'
+                        )}
+                    >
+                        {title}
+                    </p>
+                    <p className="pt-1 text-body-sm text-muted-foreground">{description}</p>
+                </div>
+            </div>
+
+            {trailing ?? (
+                interactive ? (
+                    <ChevronRight
+                        className={cn(
+                            'h-4 w-4 shrink-0 text-muted-foreground/70 transition-transform',
+                            !destructive && 'group-hover:translate-x-0.5 group-hover:text-foreground',
+                            destructive && 'group-hover:translate-x-0.5 group-hover:text-destructive'
+                        )}
+                    />
+                ) : null
+            )}
+        </button>
+    );
+}
+
+function StatusPill({ children }: { children: React.ReactNode }) {
+    return (
+        <span className="rounded-full border border-border/70 bg-muted/40 px-3 py-1 text-label-sm font-semibold text-muted-foreground">
             {children}
-        </motion.div>
+        </span>
     );
 }
 
@@ -80,7 +155,7 @@ function ProfileContent() {
         setMounted(true);
         setIsStandalone(
             window.matchMedia('(display-mode: standalone)').matches ||
-            (window.navigator as any).standalone === true
+                (window.navigator as Navigator & { standalone?: boolean }).standalone === true
         );
     }, []);
 
@@ -93,7 +168,7 @@ function ProfileContent() {
         if (!deferredPrompt) return;
         triggerHaptic('medium');
         deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        await deferredPrompt.userChoice;
         setDeferredPrompt(null);
     };
 
@@ -107,9 +182,9 @@ function ProfileContent() {
             setIsDeleting(true);
             triggerHaptic('heavy');
             await deleteUserData();
-            showToast("Semua data Anda telah dihapus.", "success");
-        } catch (error) {
-            showToast("Gagal menghapus data.", "error");
+            showToast('Semua data Anda telah dihapus.', 'success');
+        } catch {
+            showToast('Gagal menghapus data.', 'error');
         } finally {
             setIsDeleting(false);
         }
@@ -117,317 +192,271 @@ function ProfileContent() {
 
     return (
         <AppPageShell className="bg-background">
-            <PageHeader
-                title="Profil & Akun"
-                showBackButton={false}
-                width="compact"
-            />
+            <PageHeader title="Profil & Akun" showBackButton={false} width="compact" />
 
-            <AppPageBody width="compact" className="space-y-8 pb-24 md:pb-12">
-                
-                {/* HERO SECTION: Centered Avatar & Identity */}
-                <section className="flex flex-col items-center justify-center pt-4 pb-2">
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="relative group"
-                    >
-                        <div className="h-32 w-32 rounded-full p-1.5 bg-gradient-to-tr from-accent via-accent/20 to-transparent shadow-2xl relative">
-                             <UserAvatar 
-                                name={userData?.displayName} 
-                                src={userData?.photoURL} 
-                                className="h-full w-full border-4 border-background shadow-inner" 
-                                fallbackClassName="text-3xl"
-                            />
-                            <button 
-                                onClick={openEditSheet}
-                                className="absolute bottom-1 right-1 h-9 w-9 rounded-full bg-foreground text-background flex items-center justify-center border-4 border-background shadow-lg hover:scale-110 active:scale-95 transition-all"
-                            >
+            <AppPageBody width="compact" className="space-y-5 pb-[calc(7rem+env(safe-area-inset-bottom))] md:pb-12">
+                <section className="relative overflow-hidden rounded-3xl border border-border/50 bg-card px-6 pb-6 pt-7 shadow-elevation-2">
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-accent/8 via-accent/4 to-transparent" />
+                    <div className="pointer-events-none absolute -right-8 top-6 h-24 w-24 rounded-full bg-accent/10 blur-2xl" />
+
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                        <button type="button" onClick={openEditSheet} className="relative">
+                            <div className="absolute inset-0 rounded-full bg-accent/15 blur-xl" />
+                            <div className="relative rounded-full border border-accent/20 bg-background p-1.5 shadow-elevation-3">
+                                <UserAvatar
+                                    name={userData?.displayName}
+                                    src={userData?.photoURL}
+                                    className="h-28 w-28 border-[4px] border-accent/15 shadow-none"
+                                    fallbackClassName="text-3xl font-semibold"
+                                />
+                            </div>
+                            <span className="absolute bottom-1 right-1 flex h-10 w-10 items-center justify-center rounded-full border-4 border-card bg-foreground text-background shadow-elevation-3">
                                 <Camera className="h-4 w-4" />
-                            </button>
+                            </span>
+                        </button>
+
+                        <div className="mt-5 space-y-1.5">
+                            <p className="text-label-md font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                                Profil utama
+                            </p>
+                            <h1 className="text-display-md font-bold tracking-tight text-foreground">
+                                {userData?.displayName || 'Setia Lemon'}
+                            </h1>
+                            <p className="break-all text-body-md text-muted-foreground">{user?.email}</p>
                         </div>
-                    </motion.div>
-                    
-                    <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-center mt-6 space-y-1"
-                        onClick={openEditSheet}
-                    >
-                        <h1 className="text-3xl font-bold tracking-tighter text-foreground cursor-pointer hover:text-accent transition-colors">
-                            {userData?.displayName || 'Setia Lemon'}
-                        </h1>
-                        <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40 tabular-nums">
-                            {user?.email}
-                        </p>
-                    </motion.div>
-                </section>
 
-                {/* PERSONAL INFO GROUP: Bento List */}
-                <section className="space-y-3">
-                    <h2 className="px-6 text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">Informasi Personal</h2>
-                    <BentoItem className="p-2 space-y-1 bg-card/40 border-none shadow-none">
-                        {[
-                            { label: 'Nama Lengkap', value: userData?.displayName || '-', icon: UserIcon, editable: true },
-                            { label: 'E-mail Aktif', value: user?.email || '-', icon: Mail, editable: false },
-                        ].map((item, idx) => (
-                            <div 
-                                key={idx} 
-                                onClick={item.editable ? openEditSheet : undefined}
-                                className={cn(
-                                    "flex items-center justify-between p-4 rounded-2xl transition-colors group",
-                                    item.editable ? "hover:bg-muted/30 cursor-pointer active:scale-[0.98]" : "opacity-90"
-                                )}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className={cn(
-                                        "h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground transition-all",
-                                        item.editable && "group-hover:bg-accent/10 group-hover:text-accent"
-                                    )}>
-                                        <item.icon className="h-5 w-5" strokeWidth={1.5} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/30 leading-none mb-1">{item.label}</span>
-                                        <span className="text-sm font-bold tracking-tight text-foreground/80">{item.value}</span>
-                                    </div>
-                                </div>
-                                {item.editable && (
-                                    <span className="text-label-sm font-bold uppercase tracking-wider text-muted-foreground/50 group-hover:text-accent transition-colors">
-                                        Edit
-                                    </span>
-                                )}
-                            </div>
-                        ))}
-                    </BentoItem>
-                </section>
-
-                {/* CORE FEATURES GROUP */}
-                <section className="space-y-3">
-                    <h2 className="px-6 text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">Aktivitas & Modul</h2>
-                    <BentoItem className="p-2 space-y-1 bg-card/40 border-none shadow-none">
-                        {[
-                            { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts', desc: 'Kelola kewajiban finansial' },
-                            { name: 'Aset & Liabilitas', icon: Landmark, path: '/assets-liabilities', desc: 'Pantau kekayaan bersih' },
-                        ].map((item, idx) => (
-                            <div
-                                key={idx}
-                                onClick={() => router.push(item.path)}
-                                className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted/30 transition-colors cursor-pointer group active:scale-[0.98]"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:bg-accent/10 group-hover:text-accent transition-all">
-                                        <item.icon className="h-5 w-5" strokeWidth={1.5} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-sm tracking-tight">{item.name}</span>
-                                        <span className="text-label-sm font-bold uppercase tracking-wider text-muted-foreground/30">{item.desc}</span>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-muted-foreground transition-colors" />
-                            </div>
-                        ))}
-                    </BentoItem>
-                </section>
-
-                {/* APP SETTINGS GROUP: Bento Grid */}
-                <section className="space-y-4">
-                    <h2 className="px-6 text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">Pengaturan Aplikasi</h2>
-                    <div className="grid grid-cols-2 gap-4">
-                        <BentoItem onClick={toggleTheme} className="p-6 flex flex-col gap-4 aspect-square justify-between group">
-                            <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:bg-accent/10 group-hover:text-accent transition-all">
-                                {mounted && theme === 'dark' ? <Moon className="h-6 w-6" /> : <Sun className="h-6 w-6" />}
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60 leading-none">Tampilan</p>
-                                <p className="text-base font-bold tracking-tighter text-foreground">{mounted && theme === 'dark' ? 'Mode Gelap' : 'Mode Terang'}</p>
-                            </div>
-                        </BentoItem>
-
-                        <BentoItem onClick={toggleBalanceVisibility} className="p-6 flex flex-col gap-4 aspect-square justify-between group">
-                            <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:bg-accent/10 group-hover:text-accent transition-all">
-                                {isBalanceVisible ? <Eye className="h-6 w-6" /> : <EyeOff className="h-6 w-6" />}
-                            </div>
-                            <div className="space-y-1">
-                                <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60 leading-none">Privasi</p>
-                                <p className="text-base font-bold tracking-tighter text-foreground">{isBalanceVisible ? 'Saldo Terlihat' : 'Saldo Tersembunyi'}</p>
-                            </div>
-                        </BentoItem>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={openEditSheet}
+                            className="mt-5 h-11 rounded-full px-5 text-label-md font-semibold"
+                        >
+                            Edit profil
+                        </Button>
                     </div>
-
-                    <BentoItem className="p-2 space-y-1">
-                        {[
-                            { 
-                                name: 'Atur Ulang Onboarding', 
-                                icon: Sparkles, 
-                                onClick: () => {
-                                    triggerHaptic('medium');
-                                    updateOnboardingStatus({ 
-                                        steps: { wallet: false, transaction: false, goal: false },
-                                        isDismissed: false
-                                    });
-                                    showToast("Onboarding telah diatur ulang.", "success");
-                                },
-                                desc: 'Tampilkan kembali panduan awal'
-                            },
-                        ].map((item, idx) => (
-                            <div
-                                key={idx}
-                                onClick={item.onClick}
-                                className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted/50 transition-colors cursor-pointer group active:scale-[0.98]"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="p-2.5 rounded-xl bg-secondary/80 group-hover:bg-accent/10 group-hover:text-accent transition-all">
-                                        <item.icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-sm tracking-tight">{item.name}</span>
-                                        <span className="text-label-sm font-bold uppercase tracking-wider text-muted-foreground/30">{item.desc}</span>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-muted/20 group-hover:text-muted-foreground" />
-                            </div>
-                        ))}
-                    </BentoItem>
                 </section>
 
-                {/* AI USAGE TRACKER */}
+                <section className="space-y-3">
+                    <SectionHeading>Informasi Personal</SectionHeading>
+                    <SurfaceSection>
+                        <div className="divide-y divide-border/50">
+                            <Row
+                                icon={UserIcon}
+                                title={userData?.displayName || '-'}
+                                description="Nama lengkap"
+                                onClick={openEditSheet}
+                                trailing={<StatusPill>Edit</StatusPill>}
+                            />
+                            <Row
+                                icon={Mail}
+                                title={user?.email || '-'}
+                                description="E-mail aktif"
+                            />
+                        </div>
+                    </SurfaceSection>
+                </section>
+
+                <section className="space-y-3">
+                    <SectionHeading>Aktivitas & Modul</SectionHeading>
+                    <SurfaceSection>
+                        <div className="divide-y divide-border/50">
+                            <Row
+                                icon={CreditCard}
+                                title="Hutang & Piutang"
+                                description="Kelola kewajiban finansial"
+                                onClick={() => router.push('/debts')}
+                            />
+                            <Row
+                                icon={Landmark}
+                                title="Aset & Liabilitas"
+                                description="Pantau kekayaan bersih"
+                                onClick={() => router.push('/assets-liabilities')}
+                            />
+                        </div>
+                    </SurfaceSection>
+                </section>
+
+                <section className="space-y-3">
+                    <SectionHeading>Pengaturan Aplikasi</SectionHeading>
+                    <SurfaceSection>
+                        <div className="divide-y divide-border/50">
+                            <Row
+                                icon={mounted && theme === 'dark' ? Moon : Sun}
+                                title="Tampilan"
+                                description={mounted && theme === 'dark' ? 'Mode gelap aktif' : 'Mode terang aktif'}
+                                onClick={toggleTheme}
+                                trailing={
+                                    <StatusPill>
+                                        {mounted && theme === 'dark' ? 'Gelap' : 'Terang'}
+                                    </StatusPill>
+                                }
+                            />
+                            <Row
+                                icon={isBalanceVisible ? Eye : EyeOff}
+                                title="Privasi"
+                                description={isBalanceVisible ? 'Saldo sedang terlihat' : 'Saldo sedang disembunyikan'}
+                                onClick={toggleBalanceVisibility}
+                                trailing={
+                                    <StatusPill>
+                                        {isBalanceVisible ? 'Terlihat' : 'Tersembunyi'}
+                                    </StatusPill>
+                                }
+                            />
+                            <Row
+                                icon={Sparkles}
+                                title="Atur Ulang Onboarding"
+                                description="Tampilkan kembali panduan awal"
+                                onClick={() => {
+                                    triggerHaptic('medium');
+                                    updateOnboardingStatus({
+                                        steps: { wallet: false, transaction: false, goal: false },
+                                        isDismissed: false,
+                                    });
+                                    showToast('Onboarding telah diatur ulang.', 'success');
+                                }}
+                            />
+                        </div>
+                    </SurfaceSection>
+                </section>
+
                 <DeepSeekUsageCard />
 
-                {/* APP INSTALLATION */}
-                {mounted && (
-                    <BentoItem
-                        onClick={deferredPrompt ? handleInstallClick : undefined}
-                        className={cn(
-                            "text-accent-foreground shadow-xl p-6 flex items-center justify-between group overflow-hidden relative border-none",
-                            isStandalone
-                                ? "bg-success select-none shadow-success/20"
-                                : deferredPrompt
-                                    ? "bg-accent shadow-accent/20"
-                                    : "bg-muted text-foreground border border-border/40"
-                        )}
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/10 opacity-30" />
-                        <div className="relative z-10 flex items-center gap-5">
-                            <div className={cn(
-                                "h-14 w-14 rounded-2xl flex items-center justify-center border transition-all duration-500",
-                                (isStandalone || deferredPrompt) ? "bg-white/10 backdrop-blur-md border-white/20" : "bg-card border-border/40"
-                            )}>
-                                <Download className={cn("h-7 w-7", (isStandalone || deferredPrompt) ? "text-accent-foreground" : "text-muted-foreground")} />
+                {mounted ? (
+                    <SurfaceSection>
+                        <div className="flex items-center justify-between gap-4 px-5 py-5">
+                            <div className="flex min-w-0 items-center gap-4">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted/60 text-muted-foreground">
+                                    <Download className="h-6 w-6" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-title-lg font-semibold tracking-tight text-foreground">
+                                        {isStandalone ? 'Mode PWA Native' : 'Pasang Lemon'}
+                                    </p>
+                                    <p className="pt-1 text-body-sm text-muted-foreground">
+                                        {isStandalone
+                                            ? 'Aplikasi berjalan mandiri di perangkat ini'
+                                            : 'Akses lebih cepat dan terasa seperti aplikasi native'}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className={cn("text-xl font-bold tracking-tighter flex items-center gap-2 leading-none", (isStandalone || deferredPrompt) ? "text-accent-foreground" : "text-foreground")}>
-                                    {isStandalone ? 'Mode PWA Native' : 'Pasang Lemon'}
-                                    <Sparkles className="h-4 w-4 text-warning animate-pulse" />
-                                </h3>
-                                <p className={cn("text-label-sm font-bold uppercase tracking-widest mt-2", (isStandalone || deferredPrompt) ? "text-accent-foreground/60" : "text-muted-foreground/60")}>
-                                    {isStandalone ? 'Aplikasi Berjalan Mandiri' : 'Akses Lebih Cepat & Ringan'}
-                                </p>
-                            </div>
+
+                            {!isStandalone && deferredPrompt ? (
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={handleInstallClick}
+                                    className="h-10 rounded-full px-4 text-label-md font-semibold"
+                                >
+                                    Pasang
+                                </Button>
+                            ) : (
+                                <StatusPill>{isStandalone ? 'Terpasang' : 'Siap'}</StatusPill>
+                            )}
                         </div>
-                        {!isStandalone && deferredPrompt && (
-                            <div className="relative z-10 font-bold text-label-sm tracking-widest bg-foreground text-background px-5 py-2.5 rounded-full shadow-lg group-hover:scale-105 transition-all active:scale-95">
-                                PASANG
-                            </div>
-                        )}
-                    </BentoItem>
-                )}
+                    </SurfaceSection>
+                ) : null}
 
-                {/* LOGOUT ACTION */}
-                <div className="pt-4 pb-8 space-y-4">
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button 
-                                variant="ghost" 
-                                className="w-full h-16 bg-destructive/5 text-destructive hover:bg-destructive/10 border border-destructive/20 rounded-card-premium font-bold tracking-widest uppercase text-xs gap-3 justify-center transition-all active:scale-95 group"
-                                onClick={() => triggerHaptic('medium')}
-                            >
-                                <LogOut className="w-4 h-4" />
-                                <span>Keluar dari Akun</span>
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)]">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-2xl font-bold tracking-tight">Konfirmasi Logout</AlertDialogTitle>
-                                <AlertDialogDescription className="text-label text-muted-foreground/60 leading-relaxed">
-                                    Apakah Anda yakin ingin keluar? Sesi aktif Anda akan segera diakhiri.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="mt-10 flex flex-col gap-3">
-                                <AlertDialogAction asChild>
-                                    <Button 
-                                        onClick={handleSignOut} 
-                                        variant="destructive" 
-                                        className="w-full h-14 rounded-2xl font-bold active:scale-95 transition-all bg-destructive text-destructive-foreground"
-                                    >
-                                        Ya, Keluar Sekarang
-                                    </Button>
-                                </AlertDialogAction>
-                                <AlertDialogCancel asChild>
-                                    <Button 
-                                        variant="ghost" 
-                                        className="w-full h-12 rounded-xl border-none font-bold text-label text-muted-foreground hover:bg-muted/50 transition-colors"
-                                    >
-                                        Batal
-                                    </Button>
-                                </AlertDialogCancel>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                <section className="space-y-3">
+                    <SectionHeading>Akun</SectionHeading>
+                    <SurfaceSection>
+                        <div className="divide-y divide-border/50">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <div>
+                                        <Row
+                                            icon={LogOut}
+                                            title="Keluar dari Akun"
+                                            description="Akhiri sesi pada perangkat ini"
+                                            destructive={true}
+                                            onClick={() => triggerHaptic('medium')}
+                                        />
+                                    </div>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="max-w-[calc(100%-2rem)] rounded-card-premium border-none bg-popover/95 shadow-2xl backdrop-blur-xl">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle className="text-display-sm font-bold tracking-tight">
+                                            Konfirmasi Logout
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="text-body-md leading-relaxed text-muted-foreground">
+                                            Apakah Anda yakin ingin keluar? Sesi aktif Anda akan segera diakhiri.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="mt-8 flex flex-col gap-3">
+                                        <AlertDialogAction asChild>
+                                            <Button
+                                                onClick={handleSignOut}
+                                                variant="destructive"
+                                                className="h-14 w-full rounded-2xl text-body-lg font-semibold"
+                                            >
+                                                Ya, Keluar Sekarang
+                                            </Button>
+                                        </AlertDialogAction>
+                                        <AlertDialogCancel asChild>
+                                            <Button
+                                                variant="ghost"
+                                                className="h-12 w-full rounded-xl text-label-md font-semibold uppercase tracking-widest text-muted-foreground"
+                                            >
+                                                Batal
+                                            </Button>
+                                        </AlertDialogCancel>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
 
-                    {/* DANGER ZONE: Account Deletion */}
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button 
-                                variant="ghost" 
-                                className="w-full h-12 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/5 rounded-2xl font-bold tracking-widest uppercase text-label-sm gap-2 justify-center transition-all opacity-50 hover:opacity-100"
-                                onClick={() => triggerHaptic('light')}
-                            >
-                                <Trash2 className="w-3.5 h-3.5" />
-                                <span>Hapus Semua Data</span>
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="rounded-card-premium border-none shadow-2xl bg-popover/95 backdrop-blur-xl max-w-[calc(100%-2rem)] border-t-4 border-t-destructive">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-2xl font-bold tracking-tight text-destructive">Hapus Semua Data?</AlertDialogTitle>
-                                <AlertDialogDescription className="text-sm text-muted-foreground/80 leading-relaxed">
-                                    Tindakan ini **tidak dapat dibatalkan**. Semua riwayat transaksi, dompet, hutang, dan pengaturan Anda akan dihapus permanen dari server kami.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="mt-10 flex flex-col gap-3">
-                                <AlertDialogAction asChild>
-                                    <Button 
-                                        onClick={handleDeleteAccount} 
-                                        disabled={isDeleting}
-                                        variant="destructive" 
-                                        className="w-full h-14 rounded-2xl font-bold active:scale-95 transition-all bg-destructive text-destructive-foreground"
-                                    >
-                                        {isDeleting ? 'Menghapus...' : 'Ya, Hapus Permanen'}
-                                    </Button>
-                                </AlertDialogAction>
-                                <AlertDialogCancel asChild>
-                                    <Button 
-                                        variant="ghost" 
-                                        className="w-full h-12 rounded-xl border-none font-bold text-label text-muted-foreground hover:bg-muted/50 transition-colors"
-                                    >
-                                        Batal
-                                    </Button>
-                                </AlertDialogCancel>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <div>
+                                        <Row
+                                            icon={Trash2}
+                                            title="Hapus Semua Data"
+                                            description="Hapus seluruh data dan pengaturan secara permanen"
+                                            destructive={true}
+                                            onClick={() => triggerHaptic('light')}
+                                        />
+                                    </div>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="max-w-[calc(100%-2rem)] rounded-card-premium border-t-4 border-t-destructive bg-popover/95 shadow-2xl backdrop-blur-xl">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle className="text-display-sm font-bold tracking-tight text-destructive">
+                                            Hapus Semua Data?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="text-body-md leading-relaxed text-muted-foreground">
+                                            Tindakan ini tidak dapat dibatalkan. Semua riwayat transaksi, dompet, hutang, dan pengaturan Anda akan dihapus permanen dari server kami.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="mt-8 flex flex-col gap-3">
+                                        <AlertDialogAction asChild>
+                                            <Button
+                                                onClick={handleDeleteAccount}
+                                                disabled={isDeleting}
+                                                variant="destructive"
+                                                className="h-14 w-full rounded-2xl text-body-lg font-semibold"
+                                            >
+                                                {isDeleting ? 'Menghapus...' : 'Ya, Hapus Permanen'}
+                                            </Button>
+                                        </AlertDialogAction>
+                                        <AlertDialogCancel asChild>
+                                            <Button
+                                                variant="ghost"
+                                                className="h-12 w-full rounded-xl text-label-md font-semibold uppercase tracking-widest text-muted-foreground"
+                                            >
+                                                Batal
+                                            </Button>
+                                        </AlertDialogCancel>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                    </SurfaceSection>
+                </section>
 
-                    <div className="mt-8 text-center">
-                        <p className="text-label-sm font-bold tracking-widest opacity-10 uppercase">Lemon Finance OS • v2.0</p>
-                    </div>
+                <div className="pb-6 pt-1 text-center">
+                    <p className="text-label-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground/50">
+                        Lemon Finance OS • v2.0
+                    </p>
                 </div>
 
-                {/* EDIT PROFILE DRAWER */}
-                <EditProfileSheet 
-                    isOpen={isEditSheetOpen} 
-                    onClose={() => setIsEditSheetOpen(false)} 
-                />
-
+                <EditProfileSheet isOpen={isEditSheetOpen} onClose={() => setIsEditSheetOpen(false)} />
             </AppPageBody>
         </AppPageShell>
     );
@@ -435,10 +464,8 @@ function ProfileContent() {
 
 export default function ProfilePage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-black" />}>
+        <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <ProfileContent />
         </Suspense>
     );
 }
-
-

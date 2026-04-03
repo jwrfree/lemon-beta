@@ -49,6 +49,8 @@ export const handleLlmChatAction = async ({
     messages: await convertToModelMessages(windowedMessages),
     tools: createFinancialTools(userId, supabase),
     stopWhen: stepCountIs(5),
+    temperature: 0.4,
+    maxOutputTokens: 800, // Balanced for text + JSON components
   });
 
   return result.toUIMessageStreamResponse({
