@@ -54,7 +54,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
             <EmptyState
                 variant="filter"
                 title="Tren Pengeluaran Harian"
-                description="Belum ada data pengeluaran dalam 30 hari terakhir. Catat transaksi untuk melihat grafik ini."
+                description="Pengeluaran 30 hari terakhir belum tercatat. Catat transaksi untuk melihat grafik ini."
                 icon={ChartAreaIcon}
                 className="pt-10 md:min-h-[460px]"
             />

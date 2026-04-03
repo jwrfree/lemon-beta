@@ -63,8 +63,9 @@ describe('UI Visual Consistency Tests', () => {
       const { container } = render(<Card>Test Content</Card>);
       const card = container.firstChild as HTMLElement;
       
-      expect(card.className).toContain('shadow-soft');
-      expect(card.className).toContain('rounded-3xl');
+      expect(card.className).toContain('shadow-elevation-2');
+      expect(card.className).toContain('rounded-lg');
+      expect(card.className).toContain('border');
       expect(card.className).toContain('motion-surface');
     });
   });

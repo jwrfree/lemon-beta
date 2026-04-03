@@ -45,7 +45,7 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
     if (data.length === 0) {
         return (
             <div className="h-[350px] flex items-center justify-center text-zinc-400 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-card-glass">
-                Belum ada data transaksi
+                Transaksi belum cukup untuk membentuk grafik cashflow
             </div>
         );
     }

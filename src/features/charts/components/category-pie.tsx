@@ -114,7 +114,7 @@ export function CategoryPie({ data, total, type }: CategoryPieProps) {
     if (total === 0) {
         return (
             <div className="h-[250px] flex items-center justify-center text-muted-foreground text-sm border-2 border-dashed border-border rounded-lg bg-muted/20">
-                Belum ada data visual
+                Visual kategori akan muncul setelah ada transaksi
             </div>
         );
     }

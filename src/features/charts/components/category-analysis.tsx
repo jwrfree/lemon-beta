@@ -95,7 +95,7 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
             <EmptyState
                 variant="filter"
                 title={`Visualisasi ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
-                description={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini untuk dianalisis.`}
+                description={`${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'} bulan ini belum cukup untuk dianalisis.`}
                 icon={type === 'expense' ? TrendingDown : TrendingUp}
                 className="pt-10 md:min-h-[460px]"
             />

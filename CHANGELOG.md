@@ -54,6 +54,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Added `src/components/ui/loading-states.md` as the approved loading-state standard and migrated remaining widget/page placeholders from raw `animate-pulse` divs or blank returns to shared `Skeleton` and `EmptyState` patterns in home, insights, budgets, debts, charts, and AI rich-result cards.
 - **Build stability after DS-2**
   - Fixed a broken `tailwind.config.ts` object shape that was crashing Turbopack CSS evaluation, and replaced server-side loading/offline icon usage with build-safe markup so `/offline` and `/charts` can prerender again.
+- **DS-3 empty-state polish**
+  - Replaced remaining raw `Belum ada data` placeholders in dashboard, charts, assets, and Lemon Coach trend surfaces with more descriptive empty-state copy, and updated the visual regression coverage to assert the new shared card shell defaults.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

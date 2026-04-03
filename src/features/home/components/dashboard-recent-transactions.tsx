@@ -200,7 +200,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                     {transactions.length === 0 && (
                         <tr>
                             <td colSpan={4} className="p-6 text-center text-sm text-muted-foreground italic">
-                                Belum ada data transaksi yang ditemukan.
+                                Belum ada transaksi yang ditemukan.
                             </td>
                         </tr>
                     )}

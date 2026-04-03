@@ -64,7 +64,7 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
             <CardContent className="flex-1 min-h-[250px] relative pb-0">
                 {data.length === 0 ? (
                      <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
-                        Belum ada data pengeluaran.
+                        Belum ada pengeluaran yang bisa divisualisasikan.
                     </div>
                 ) : (
                     <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">

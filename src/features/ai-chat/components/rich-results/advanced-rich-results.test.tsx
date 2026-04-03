@@ -28,7 +28,7 @@ describe('advanced AI chat rich components', () => {
         expect(screen.getByText('6 bulan terakhir')).toBeDefined();
 
         rerender(<TrendChart data={{ category: 'Makanan', points: [] }} />);
-        expect(screen.getByText('Belum ada data tren kategori yang cukup untuk ditampilkan.')).toBeDefined();
+        expect(screen.getByText('Data tren kategori belum cukup untuk ditampilkan.')).toBeDefined();
     });
 
     it('renders GoalProgressCard with valid data and empty state', () => {

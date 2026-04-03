@@ -76,7 +76,7 @@ export const TrendChart = ({ data }: TrendChartProps) => {
                 <CardContent className="p-4">
                     <div className="text-sm font-semibold text-foreground">Trend pengeluaran</div>
                     <p className="mt-2 text-sm text-muted-foreground">
-                        Belum ada data tren kategori yang cukup untuk ditampilkan.
+                        Data tren kategori belum cukup untuk ditampilkan.
                     </p>
                 </CardContent>
             </Card>

@@ -170,7 +170,7 @@ export default function AssetsLiabilitiesPage() {
                                     </ChartContainer>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs italic">
-                                        Belum ada data
+                                        Tambahkan aset atau utang untuk melihat distribusi
                                     </div>
                                 )}
                             </div>

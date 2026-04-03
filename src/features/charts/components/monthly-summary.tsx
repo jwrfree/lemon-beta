@@ -239,7 +239,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             <EmptyState
                 variant="filter"
                 title={`Ringkasan ${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'}`}
-                description={`Belum ada data ${type === 'expense' ? 'pengeluaran' : 'pemasukan'} bulan ini.`}
+                description={`${type === 'expense' ? 'Pengeluaran' : 'Pemasukan'} bulan ini belum tercatat.`}
                 icon={type === 'expense' ? ArrowDownLeft : ArrowUpRight}
                 className="pt-10 md:min-h-[460px]"
             />
