@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react';
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useUI } from '@/components/ui-provider';
 import { useAuth as useUser } from '@/providers/auth-provider';
@@ -51,6 +51,8 @@ export const useAIChat = () => {
     const [input, setInput] = useState('');
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [isHydratingSession, setIsHydratingSession] = useState(true);
+    const wasOpenRef = useRef(isOpen);
+    const lastProfileSyncKeyRef = useRef<string | null>(null);
 
     const getStorageKey = useCallback((userId: string) => `lemon-coach-session-id:${userId}`, []);
 
@@ -85,6 +87,37 @@ export const useAIChat = () => {
 
     const isLoading = status === 'streaming' || status === 'submitted';
     const errorMessage = error ? formatChatErrorMessage(error) : undefined;
+    const substantiveAssistantMessages = useMemo(
+        () => messages.filter((message) => message.role === 'assistant' && message.id !== 'welcome'),
+        [messages]
+    );
+
+    const syncCoachingProfile = useCallback((reason: 'close' | 'clear') => {
+        if (!user || !sessionId || substantiveAssistantMessages.length < 3) {
+            return;
+        }
+
+        const lastAssistantMessageId = substantiveAssistantMessages[substantiveAssistantMessages.length - 1]?.id ?? 'none';
+        const syncKey = `${sessionId}:${substantiveAssistantMessages.length}:${lastAssistantMessageId}:${reason}`;
+        if (lastProfileSyncKeyRef.current === syncKey) {
+            return;
+        }
+
+        lastProfileSyncKeyRef.current = syncKey;
+
+        void fetch('/api/chat/update-profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sessionId,
+                messages,
+            }),
+        }).catch((profileError) => {
+            console.error('Failed to sync coaching profile:', profileError);
+        });
+    }, [messages, sessionId, substantiveAssistantMessages, user]);
 
     useEffect(() => {
         let isCancelled = false;
@@ -137,6 +170,14 @@ export const useAIChat = () => {
         };
     }, [createSessionId, getStorageKey, setMessages, user, welcomeMessage]);
 
+    useEffect(() => {
+        if (wasOpenRef.current && !isOpen) {
+            syncCoachingProfile('close');
+        }
+
+        wasOpenRef.current = isOpen;
+    }, [isOpen, syncCoachingProfile]);
+
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
     }, []);
@@ -162,6 +203,7 @@ export const useAIChat = () => {
 
     const clearChat = useCallback(() => {
         const resetChat = async () => {
+            syncCoachingProfile('clear');
             stop();
             clearError();
             setInput('');
@@ -184,7 +226,7 @@ export const useAIChat = () => {
         };
 
         void resetChat();
-    }, [clearError, createSessionId, getStorageKey, sessionId, setMessages, stop, user, welcomeMessage]);
+    }, [clearError, createSessionId, getStorageKey, sessionId, setMessages, stop, syncCoachingProfile, user, welcomeMessage]);
 
     const submitQuickAction = useCallback(async (value: string) => {
         if (isLoading || isHydratingSession) return;

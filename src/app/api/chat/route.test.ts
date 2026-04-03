@@ -2,9 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { config } from '@/lib/config';
 
-const { authGetUser, rpc } = vi.hoisted(() => ({
+const { authGetUser, rpc, from } = vi.hoisted(() => ({
     authGetUser: vi.fn(),
     rpc: vi.fn(),
+    from: vi.fn(),
 }));
 
 vi.mock('@ai-sdk/deepseek', () => ({
@@ -17,6 +18,7 @@ vi.mock('@/lib/supabase/server', () => ({
             getUser: authGetUser,
         },
         rpc,
+        from,
     })),
 }));
 
@@ -45,6 +47,13 @@ describe('POST /api/chat', () => {
         config.ai.deepseek.apiKey = 'test-deepseek-key';
         authGetUser.mockResolvedValue({ data: { user: { id: 'user-1' } } });
         rpc.mockResolvedValue({ data: { allowed: true }, error: null });
+        from.mockReturnValue({
+            select: vi.fn().mockReturnValue({
+                eq: vi.fn().mockReturnValue({
+                    maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+                }),
+            }),
+        });
     });
 
     it('returns a deterministic static reply for a happy-path prompt', async () => {

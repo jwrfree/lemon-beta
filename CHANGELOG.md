@@ -67,6 +67,8 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **Persistent coaching profile memory**
+  - Added the `user_financial_profile` table, background `/api/chat/update-profile` summarization route, and profile injection back into Lemon Coach prompts so long-term spending patterns and coaching notes survive beyond a single session without blocking the live chat stream.
 - **Typed Phase 4 rich insight cards**
   - Added typed `TrendChart`, `GoalProgress`, `AnomalyAlert`, and `InsightSummary` Lemon Coach components plus the `get_category_trend` tool, so richer coaching replies can render deeper insight cards through the structured response contract instead of legacy tag strings.
 - **Planner-side coaching context chaining**

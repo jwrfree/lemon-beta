@@ -3,6 +3,7 @@ import { type UIMessage } from "ai";
 import { config } from "@/lib/config";
 import { executeChatPlanner } from "@/ai/planner";
 import { getChatSession } from "@/lib/services/chat-session-service";
+import { getUserFinancialProfile } from "@/lib/services/user-financial-profile-service";
 
 export const maxDuration = 30;
 
@@ -70,15 +71,24 @@ export async function POST(req: Request) {
       );
     }
 
-    const chatSession = sessionId
-      ? await getChatSession(supabase, user.id, sessionId)
-      : null;
+    const [chatSession, userProfile] = await Promise.all([
+      sessionId
+        ? getChatSession(supabase, user.id, sessionId)
+        : Promise.resolve(null),
+      getUserFinancialProfile(supabase, user.id),
+    ]);
 
     return executeChatPlanner({
       userId: user.id,
       supabase,
       messages,
       memorySummary: chatSession?.memory_summary ?? null,
+      userProfile: userProfile
+        ? {
+          spending_patterns: userProfile.spending_patterns,
+          coaching_notes: userProfile.coaching_notes,
+        }
+        : null,
       sessionId: sessionId ?? null,
     });
   } catch (error: unknown) {
