@@ -232,7 +232,7 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
                         {/* Anomaly Points */}
                         <Scatter
                             data={anomalies}
-                            fill="#ef4444"
+                            fill="hsl(var(--destructive))"
                             shape="star"
                             r={6}
                             name="Anomaly"

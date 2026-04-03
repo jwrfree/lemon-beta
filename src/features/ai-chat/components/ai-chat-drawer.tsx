@@ -75,7 +75,7 @@ const ShinyText = ({ text }: { text: string }) => (
         <motion.span
             animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-            className="font-semibold bg-[linear-gradient(110deg,rgba(156,163,175,0.5),45%,#fff,55%,rgba(156,163,175,0.5))] bg-[length:200%_100%] bg-clip-text text-transparent dark:bg-[linear-gradient(110deg,#4b5563,45%,#fff,55%,#4b5563)]"
+            className="font-semibold bg-[linear-gradient(110deg,hsl(var(--gray-400)/0.5),45%,hsl(var(--gray-50)),55%,hsl(var(--gray-400)/0.5))] bg-[length:200%_100%] bg-clip-text text-transparent dark:bg-[linear-gradient(110deg,hsl(var(--gray-600)),45%,hsl(var(--gray-50)),55%,hsl(var(--gray-600)))]"
         >
             {text}
         </motion.span>

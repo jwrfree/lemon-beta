@@ -54,7 +54,7 @@ export function WalletSelector<T extends FieldValues>({
                                     <span className="flex items-center gap-2">
                                         <span
                                             className="w-2 h-2 rounded-full"
-                                            style={{ backgroundColor: wallet.color || '#3b82f6' }}
+                                            style={{ backgroundColor: wallet.color || 'hsl(var(--blue-600))' }}
                                         />
                                         {wallet.name}
                                     </span>

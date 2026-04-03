@@ -94,7 +94,7 @@ export const ExpenseTrendChart = ({
     const isMobile = useIsMobile();
     return (
         <ChartContainer
-            config={{ total: { label: 'Pengeluaran', color: '#2563eb' } }}
+            config={{ total: { label: 'Pengeluaran', color: 'hsl(var(--blue-600))' } }}
             className="h-full w-full"
         >
             {chartType === 'area' ? (

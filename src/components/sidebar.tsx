@@ -95,7 +95,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-card-premium bg-[#f7f3ea]/96 shadow-elevation-4 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
+        'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-card-premium bg-card/96 shadow-elevation-4 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
         isSidebarCollapsed
           ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-3 py-4')
           : cn(SIDEBAR_CONFIG.expandedWidth, 'px-4 py-4')
@@ -223,7 +223,7 @@ export const Sidebar = () => {
                             isSidebarCollapsed ? 'h-10 w-10' : 'h-9 w-9',
                             isActive
                               ? 'bg-primary/12 text-primary'
-                              : 'text-muted-foreground group-hover:bg-[#f3ede1] group-hover:text-foreground dark:group-hover:bg-background'
+                              : 'text-muted-foreground group-hover:bg-muted group-hover:text-foreground dark:group-hover:bg-background'
                           )}
                         >
                           <NavIcon
@@ -295,7 +295,7 @@ export const Sidebar = () => {
                 <button
                   type="button"
                   className={cn(
-                    'w-full rounded-2xl bg-[#f6f0e4] text-left transition-colors hover:bg-[#f2eadb] dark:bg-background/40 dark:hover:bg-background/60',
+                    'w-full rounded-2xl bg-card text-left transition-colors hover:bg-muted dark:bg-background/40 dark:hover:bg-background/60',
                     isSidebarCollapsed ? 'flex justify-center p-2' : 'p-3'
                   )}
                   aria-label="Menu akun pengguna"

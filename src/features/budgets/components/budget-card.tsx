@@ -129,7 +129,7 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
                                     transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
                                     className={cn("absolute inset-y-0 left-0 rounded-full transition-all duration-1000 z-10", currentHealth.bar, currentHealth.glow)}
                                 >
-                                    <div className="absolute inset-0 opacity-20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.3) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.3) 50%,rgba(255,255,255,.3) 75%,transparent 75%,transparent)', backgroundSize: '0.8rem 0.8rem' }} />
+                                    <div className="absolute inset-0 opacity-20 w-full h-full" style={{ backgroundImage: 'linear-gradient(45deg,hsl(var(--card) / 0.3) 25%,transparent 25%,transparent 50%,hsl(var(--card) / 0.3) 50%,hsl(var(--card) / 0.3) 75%,transparent 75%,transparent)', backgroundSize: '0.8rem 0.8rem' }} />
                                 </motion.div>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const HomeSkeleton = () => (
-    <div className="bg-[#021f1e] min-h-screen animate-pulse p-4 space-y-6">
+    <div className="bg-teal-950 min-h-screen animate-pulse p-4 space-y-6">
         <header className="px-1 flex items-center justify-between">
             <div className="flex items-center gap-3">
                 <div className="h-10 w-10 bg-white/5 rounded-full"></div>

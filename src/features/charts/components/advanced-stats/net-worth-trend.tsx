@@ -27,7 +27,7 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
     const growth = previousNetWorth !== 0 ? ((currentNetWorth - previousNetWorth) / Math.abs(previousNetWorth)) * 100 : 0;
 
     return (
-        <Card className="p-7 border-none rounded-card-premium bg-[#064e4b] text-white shadow-none border border-border/40 overflow-hidden relative">
+        <Card className="p-7 border-none rounded-card-premium bg-teal-900 text-white shadow-none border border-border/40 overflow-hidden relative">
             {/* Ambient Background Ornaments */}
             <div className="absolute top-0 right-0 p-8 opacity-[0.05] -rotate-12 pointer-events-none">
                 <Landmark className="h-40 w-40" />
@@ -77,11 +77,11 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
                             axisLine={false}
                             tickLine={false}
                             tickMargin={10}
-                            tick={{ fontSize: 10, fontWeight: 700, fill: 'rgba(255,255,255,0.4)' }}
+                            tick={{ fontSize: 10, fontWeight: 700, fill: 'hsl(var(--gray-50) / 0.4)' }}
                         />
                         <YAxis hide />
                         <ChartTooltip
-                            cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                            cursor={{ stroke: 'hsl(var(--gray-50) / 0.2)', strokeWidth: 2, strokeDasharray: '4 4' }}
                             content={<ChartTooltipContent indicator="line" className="bg-popover/90 backdrop-blur-xl border-none shadow-xl rounded-card" formatter={(value) => formatCurrency(Number(value))} />}
                         />
                         <Area

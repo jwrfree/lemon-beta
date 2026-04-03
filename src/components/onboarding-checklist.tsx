@@ -71,7 +71,7 @@ export const OnboardingChecklist = () => {
         particleCount: 150,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b']
+        colors: ['hsl(var(--emerald-500))', 'hsl(var(--blue-600))', 'hsl(var(--violet-500))', 'hsl(var(--yellow-500))']
       });
       setShowCelebration(true);
     }

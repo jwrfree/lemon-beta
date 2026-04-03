@@ -150,6 +150,10 @@
     --rose-800: 344 82% 34%;
     --rose-900: 341 82% 15%;
     --rose-950: 346 87% 14%;
+    --google-yellow: 43 100% 50%;
+    --google-red: 14 100% 50%;
+    --google-green: 122 39% 49%;
+    --google-blue: 214 82% 46%;
 
     /* Semantic Tokens (Light Mode - Volt Refresh) */
     --background: hsl(var(--gray-50));

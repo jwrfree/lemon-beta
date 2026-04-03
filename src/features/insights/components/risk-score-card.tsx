@@ -34,25 +34,22 @@ export const RiskScoreCard = () => {
     const levels = {
         Low: {
             color: 'text-emerald-400',
-            bg: 'bg-[#064e3b]',
+            bg: 'bg-emerald-900',
             accent: 'bg-emerald-500/20',
-            glow: 'rgba(16, 185, 129, 0.3)',
             desc: 'Flux Stabil',
             label: 'Aman'
         },
         Moderate: {
             color: 'text-amber-400',
-            bg: 'bg-[#451a03]',
+            bg: 'bg-orange-900',
             accent: 'bg-amber-500/20',
-            glow: 'rgba(245, 158, 11, 0.3)',
             desc: 'Drift Moderat',
             label: 'Waspada'
         },
         Critical: {
             color: 'text-rose-400',
-            bg: 'bg-[#450a0a]',
+            bg: 'bg-rose-950',
             accent: 'bg-rose-500/20',
-            glow: 'rgba(244, 63, 94, 0.3)',
             desc: 'Risiko Burn Tinggi',
             label: 'Bahaya'
         }

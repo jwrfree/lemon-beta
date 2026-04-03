@@ -48,6 +48,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Added `shadow-elevation-1` through `shadow-elevation-4` in Tailwind, replaced arbitrary shadow values across app surfaces, and moved the global highlight animation onto named shadow variables.
 - **DS-2 radius token standardization**
   - Aligned Tailwind radius tokens to a fixed semantic scale, added `rounded-inherit` for shared primitives, and replaced arbitrary `rounded-[...]` values across app surfaces with token-backed classes.
+- **DS-2 raw color sealing**
+  - Replaced remaining raw hex and rgba color literals in feature and component code with semantic tokens or CSS variables, including charts, auth brand SVGs, category color helpers, and sidebar surface styling.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)
