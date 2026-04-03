@@ -104,7 +104,7 @@ export default function WelcomePage() {
                         </div>
                         <div>
                             <p className="text-sm sm:text-base font-semibold tracking-tight">Lemon</p>
-                            <p className="hidden xs:block text-[10px] sm:text-xs text-muted-foreground">Personal finance tracker yang lebih tenang dipakai.</p>
+                            <p className="hidden xs:block text-label-sm sm:text-xs text-muted-foreground">Personal finance tracker yang lebih tenang dipakai.</p>
                         </div>
                     </div>
 
@@ -125,7 +125,7 @@ export default function WelcomePage() {
                         className="flex flex-col justify-center"
                     >
                         <div className="max-w-[620px] space-y-6 sm:space-y-7">
-                            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/15 bg-white/75 px-3 py-1.5 text-[10px] sm:text-label font-semibold uppercase tracking-widest text-primary shadow-sm backdrop-blur">
+                            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/15 bg-white/75 px-3 py-1.5 text-label-sm sm:text-label font-semibold uppercase tracking-widest text-primary shadow-sm backdrop-blur">
                                 <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                                 Lemon Beta
                             </div>
@@ -141,15 +141,15 @@ export default function WelcomePage() {
 
                             <div className="grid grid-cols-2 gap-3 border-y border-border/50 py-5 sm:grid-cols-3 sm:gap-4">
                                 <div className="space-y-0.5">
-                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Fokus utama</p>
+                                    <p className="text-label-sm sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Fokus utama</p>
                                     <p className="text-xs sm:text-sm font-medium text-foreground">Saldo, budget, cashflow</p>
                                 </div>
                                 <div className="space-y-0.5">
-                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Input cepat</p>
+                                    <p className="text-label-sm sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">Input cepat</p>
                                     <p className="text-xs sm:text-sm font-medium text-foreground">Ketik, suara, scan</p>
                                 </div>
                                 <div className="col-span-2 sm:col-span-1 space-y-0.5">
-                                    <p className="text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">AI context</p>
+                                    <p className="text-label-sm sm:text-label font-semibold uppercase tracking-widest text-muted-foreground/60">AI context</p>
                                     <p className="text-xs sm:text-sm font-medium text-foreground">Jawaban berbasis data pribadi</p>
                                 </div>
                             </div>
@@ -191,11 +191,11 @@ export default function WelcomePage() {
                         <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-border/40 bg-card/60 p-2 sm:p-3 shadow-[0_30px_80px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:p-4">
                             <div className="rounded-[1.2rem] sm:rounded-[1.6rem] border border-border/40 bg-card/80 p-3 sm:p-4 md:p-5">
                                 <div className="space-y-4 border-b border-border/40 pb-5">
-                                    <div className="inline-flex w-fit rounded-full border border-border bg-muted/50 px-3 py-1 text-[10px] sm:text-label font-semibold uppercase tracking-widest text-muted-foreground">
+                                    <div className="inline-flex w-fit rounded-full border border-border bg-muted/50 px-3 py-1 text-label-sm sm:text-label font-semibold uppercase tracking-widest text-muted-foreground">
                                         {authMeta.eyebrow}
                                     </div>
                                     <div className="space-y-2">
-                                        <h2 className="text-xl xs:text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-[2rem]">
+                                        <h2 className="text-xl xs:text-2xl font-semibold leading-tight tracking-tight text-foreground sm:text-display-lg">
                                             {authMeta.title}
                                         </h2>
                                         <p className="text-xs sm:text-sm leading-5 sm:leading-6 text-muted-foreground">
@@ -244,4 +244,5 @@ export default function WelcomePage() {
         </main>
     );
 }
+
 

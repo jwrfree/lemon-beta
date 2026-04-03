@@ -53,7 +53,7 @@ export const SemanticTransactionReview = ({
     const timeValue = format(dateValue, 'HH:mm');
 
     const fieldButtonBase =
-        "inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-transparent px-4 py-3 text-left text-[15px] font-medium transition-all active:scale-[0.98]";
+        "inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-transparent px-4 py-3 text-left text-body-lg font-medium transition-all active:scale-[0.98]";
 
     const sectionCardClass = "rounded-[22px] bg-muted px-4 py-4";
     const missingFieldClass = "bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100";
@@ -410,4 +410,5 @@ export const SemanticTransactionReview = ({
         </div>
     );
 };
+
 

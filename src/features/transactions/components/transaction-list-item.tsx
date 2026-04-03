@@ -111,19 +111,19 @@ const TransactionListItemContent = ({
                             Want
                         </span>
                     )}
-                    <span className="text-[10px] font-medium text-muted-foreground/50 truncate max-w-[110px]">
+                    <span className="text-label-sm font-medium text-muted-foreground/50 truncate max-w-[110px]">
                         {transaction.category}
                     </span>
                     {transaction.subCategory && (
                         <>
-                            <span className="text-muted-foreground/30 text-[10px]">·</span>
-                            <span className="text-[10px] font-medium text-muted-foreground/40 truncate max-w-[80px]">{transaction.subCategory}</span>
+                            <span className="text-muted-foreground/30 text-label-sm">·</span>
+                            <span className="text-label-sm font-medium text-muted-foreground/40 truncate max-w-[80px]">{transaction.subCategory}</span>
                         </>
                     )}
                     {wallet && (
                         <>
-                            <span className="text-muted-foreground/30 text-[10px]">·</span>
-                            <span className="text-[10px] font-medium text-muted-foreground/50 truncate max-w-[100px]">{wallet.name}</span>
+                            <span className="text-muted-foreground/30 text-label-sm">·</span>
+                            <span className="text-label-sm font-medium text-muted-foreground/50 truncate max-w-[100px]">{wallet.name}</span>
                         </>
                     )}
                 </div>
@@ -142,7 +142,7 @@ const TransactionListItemContent = ({
                         {isExpense ? '−' : '+'}{isBalanceVisible ? formatCurrency(transaction.amount) : '••••'}
                     </span>
                 </div>
-                <span className="text-[10px] font-medium text-muted-foreground/30 tabular-nums">
+                <span className="text-label-sm font-medium text-muted-foreground/30 tabular-nums">
                     {timeLabel}
                 </span>
                 {isExpense && transaction.amount >= 1000000 && (
@@ -311,4 +311,5 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
         </div>
     );
 };
+
 

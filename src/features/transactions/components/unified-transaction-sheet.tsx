@@ -166,7 +166,7 @@ export const UnifiedTransactionSheet = ({
                         )}
                     >
                         <div className="pr-14">
-                            <h2 className="max-w-[28rem] text-2xl font-semibold tracking-tight text-foreground sm:text-[2rem]">
+                            <h2 className="max-w-[28rem] text-2xl font-semibold tracking-tight text-foreground sm:text-display-lg">
                                 {sheetTitle}
                             </h2>
                         </div>
@@ -460,4 +460,5 @@ export const UnifiedTransactionSheet = ({
         </>
     );
 };
+
 

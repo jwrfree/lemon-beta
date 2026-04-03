@@ -158,7 +158,7 @@ function ProfileContent() {
                         <h1 className="text-3xl font-bold tracking-tighter text-foreground cursor-pointer hover:text-accent transition-colors">
                             {userData?.displayName || 'Setia Lemon'}
                         </h1>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 tabular-nums">
+                        <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40 tabular-nums">
                             {user?.email}
                         </p>
                     </motion.div>
@@ -166,7 +166,7 @@ function ProfileContent() {
 
                 {/* PERSONAL INFO GROUP: Bento List */}
                 <section className="space-y-3">
-                    <h2 className="px-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Informasi Personal</h2>
+                    <h2 className="px-6 text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">Informasi Personal</h2>
                     <BentoItem className="p-2 space-y-1 bg-card/40 border-none shadow-none">
                         {[
                             { label: 'Nama Lengkap', value: userData?.displayName || '-', icon: UserIcon, editable: true },
@@ -188,12 +188,12 @@ function ProfileContent() {
                                         <item.icon className="h-5 w-5" strokeWidth={1.5} />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30 leading-none mb-1">{item.label}</span>
+                                        <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/30 leading-none mb-1">{item.label}</span>
                                         <span className="text-sm font-bold tracking-tight text-foreground/80">{item.value}</span>
                                     </div>
                                 </div>
                                 {item.editable && (
-                                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 group-hover:text-accent transition-colors">
+                                    <span className="text-label-sm font-bold uppercase tracking-wider text-muted-foreground/50 group-hover:text-accent transition-colors">
                                         Edit
                                     </span>
                                 )}
@@ -204,7 +204,7 @@ function ProfileContent() {
 
                 {/* CORE FEATURES GROUP */}
                 <section className="space-y-3">
-                    <h2 className="px-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Aktivitas & Modul</h2>
+                    <h2 className="px-6 text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">Aktivitas & Modul</h2>
                     <BentoItem className="p-2 space-y-1 bg-card/40 border-none shadow-none">
                         {[
                             { name: 'Hutang & Piutang', icon: Smartphone, path: '/debts', desc: 'Kelola kewajiban finansial' },
@@ -221,7 +221,7 @@ function ProfileContent() {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="font-bold text-sm tracking-tight">{item.name}</span>
-                                        <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/30">{item.desc}</span>
+                                        <span className="text-label-sm font-bold uppercase tracking-wider text-muted-foreground/30">{item.desc}</span>
                                     </div>
                                 </div>
                                 <ChevronRight className="w-4 h-4 text-muted/30 group-hover:text-muted-foreground transition-colors" />
@@ -232,14 +232,14 @@ function ProfileContent() {
 
                 {/* APP SETTINGS GROUP: Bento Grid */}
                 <section className="space-y-4">
-                    <h2 className="px-6 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">Pengaturan Aplikasi</h2>
+                    <h2 className="px-6 text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">Pengaturan Aplikasi</h2>
                     <div className="grid grid-cols-2 gap-4">
                         <BentoItem onClick={toggleTheme} className="p-6 flex flex-col gap-4 aspect-square justify-between group">
                             <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:bg-accent/10 group-hover:text-accent transition-all">
                                 {mounted && theme === 'dark' ? <Moon className="h-6 w-6" /> : <Sun className="h-6 w-6" />}
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 leading-none">Tampilan</p>
+                                <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60 leading-none">Tampilan</p>
                                 <p className="text-base font-bold tracking-tighter text-foreground">{mounted && theme === 'dark' ? 'Mode Gelap' : 'Mode Terang'}</p>
                             </div>
                         </BentoItem>
@@ -249,7 +249,7 @@ function ProfileContent() {
                                 {isBalanceVisible ? <Eye className="h-6 w-6" /> : <EyeOff className="h-6 w-6" />}
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 leading-none">Privasi</p>
+                                <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60 leading-none">Privasi</p>
                                 <p className="text-base font-bold tracking-tighter text-foreground">{isBalanceVisible ? 'Saldo Terlihat' : 'Saldo Tersembunyi'}</p>
                             </div>
                         </BentoItem>
@@ -282,7 +282,7 @@ function ProfileContent() {
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="font-bold text-sm tracking-tight">{item.name}</span>
-                                        <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/30">{item.desc}</span>
+                                        <span className="text-label-sm font-bold uppercase tracking-wider text-muted-foreground/30">{item.desc}</span>
                                     </div>
                                 </div>
                                 <ChevronRight className="w-4 h-4 text-muted/20 group-hover:text-muted-foreground" />
@@ -320,13 +320,13 @@ function ProfileContent() {
                                     {isStandalone ? 'Mode PWA Native' : 'Pasang Lemon'}
                                     <Sparkles className="h-4 w-4 text-warning animate-pulse" />
                                 </h3>
-                                <p className={cn("text-[10px] font-bold uppercase tracking-widest mt-2", (isStandalone || deferredPrompt) ? "text-accent-foreground/60" : "text-muted-foreground/60")}>
+                                <p className={cn("text-label-sm font-bold uppercase tracking-widest mt-2", (isStandalone || deferredPrompt) ? "text-accent-foreground/60" : "text-muted-foreground/60")}>
                                     {isStandalone ? 'Aplikasi Berjalan Mandiri' : 'Akses Lebih Cepat & Ringan'}
                                 </p>
                             </div>
                         </div>
                         {!isStandalone && deferredPrompt && (
-                            <div className="relative z-10 font-bold text-[10px] tracking-widest bg-foreground text-background px-5 py-2.5 rounded-full shadow-lg group-hover:scale-105 transition-all active:scale-95">
+                            <div className="relative z-10 font-bold text-label-sm tracking-widest bg-foreground text-background px-5 py-2.5 rounded-full shadow-lg group-hover:scale-105 transition-all active:scale-95">
                                 PASANG
                             </div>
                         )}
@@ -380,7 +380,7 @@ function ProfileContent() {
                         <AlertDialogTrigger asChild>
                             <Button 
                                 variant="ghost" 
-                                className="w-full h-12 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/5 rounded-2xl font-bold tracking-widest uppercase text-[10px] gap-2 justify-center transition-all opacity-50 hover:opacity-100"
+                                className="w-full h-12 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/5 rounded-2xl font-bold tracking-widest uppercase text-label-sm gap-2 justify-center transition-all opacity-50 hover:opacity-100"
                                 onClick={() => triggerHaptic('light')}
                             >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -418,7 +418,7 @@ function ProfileContent() {
                     </AlertDialog>
 
                     <div className="mt-8 text-center">
-                        <p className="text-[10px] font-bold tracking-widest opacity-10 uppercase">Lemon Finance OS • v2.0</p>
+                        <p className="text-label-sm font-bold tracking-widest opacity-10 uppercase">Lemon Finance OS • v2.0</p>
                     </div>
                 </div>
 
@@ -440,4 +440,5 @@ export default function ProfilePage() {
         </Suspense>
     );
 }
+
 

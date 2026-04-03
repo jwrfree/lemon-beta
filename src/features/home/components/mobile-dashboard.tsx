@@ -120,7 +120,7 @@ export const MobileDashboard = ({
                             </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 leading-none mb-1">Beranda</p>
+                            <p className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50 leading-none mb-1">Beranda</p>
                             <h1 className="truncate text-sm font-bold tracking-tight text-foreground">
                                 Halo, {firstName}
                             </h1>
@@ -170,7 +170,7 @@ export const MobileDashboard = ({
                             <div className="relative space-y-6 p-6">
                                 <div>
                                     <div className="mb-4 flex items-center justify-between">
-                                        <span className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest">Total Kekayaan</span>
+                                        <span className="text-muted-foreground text-label-sm font-bold uppercase tracking-widest">Total Kekayaan</span>
                                         <div className="rounded-full bg-background/10 px-2.5 py-1.5 shadow-sm border border-white/5 backdrop-blur-md">
                                             <BalanceVisibilityToggle className="h-4 w-4 text-background/80 hover:text-background" variant="ghost" size="icon" />
                                         </div>
@@ -179,7 +179,7 @@ export const MobileDashboard = ({
                                         <AnimatedCounter value={totalBalance} />
                                     </div>
                                     <div className="mt-5">
-                                        <div className="w-fit rounded-full bg-accent px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-lg">
+                                        <div className="w-fit rounded-full bg-accent px-4 py-1.5 text-label-sm font-bold uppercase tracking-wider text-accent-foreground shadow-lg">
                                             {expenseDiff > 0
                                                 ? `Limit: -${Math.abs(expenseDiff / (monthlyExpense - expenseDiff) * 100).toFixed(0)}%`
                                                 : 'Keuangan Stabil'}
@@ -190,7 +190,7 @@ export const MobileDashboard = ({
                                 <div className="grid grid-cols-2 gap-4">
                                         <div className="flex flex-col justify-between rounded-2xl bg-background/5 p-4 border border-white/5 backdrop-blur-md">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Pemasukan</span>
+                                                <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60">Pemasukan</span>
                                             </div>
                                             <div className="mt-2">
                                                 <AnimatedCounter value={monthlyIncome} className="text-base font-bold tracking-tight text-background" />
@@ -198,7 +198,7 @@ export const MobileDashboard = ({
                                         </div>
                                         <div className="flex flex-col justify-between rounded-2xl bg-background/5 p-4 border border-white/5 backdrop-blur-md">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Pengeluaran</span>
+                                                <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60">Pengeluaran</span>
                                             </div>
                                             <div className="mt-2">
                                                 <AnimatedCounter value={monthlyExpense} className="text-base font-bold tracking-tight text-background" />
@@ -226,7 +226,7 @@ export const MobileDashboard = ({
                                 <div className={cn("flex h-16 w-16 items-center justify-center rounded-3xl bg-card transition-all shadow-soft border border-border/40 group-active:shadow-inner", action.bg.replace('/10', '/5'))}>
                                     {renderMenuActionIcon(action.icon, action.color)}
                                 </div>
-                                <span className="text-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+                                <span className="text-center text-label-sm font-bold uppercase tracking-wider text-muted-foreground/60">
                                     {action.label}
                                 </span>
                             </motion.button>
@@ -236,10 +236,10 @@ export const MobileDashboard = ({
 
                 <section className="space-y-4">
                     <div className="flex items-center justify-between px-5">
-                        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                        <h2 className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50">
                             Daftar Dompet
                         </h2>
-                        <Button variant="ghost" size="sm" className="h-8 px-0 text-[10px] font-bold uppercase tracking-wider text-primary hover:bg-transparent" onClick={() => router.push('/wallets')}>
+                        <Button variant="ghost" size="sm" className="h-8 px-0 text-label-sm font-bold uppercase tracking-wider text-primary hover:bg-transparent" onClick={() => router.push('/wallets')}>
                             Kelola
                         </Button>
                     </div>
@@ -305,7 +305,7 @@ export const MobileDashboard = ({
                                 <div className="rounded-2xl bg-accent/10 p-4 transition-colors group-hover:bg-accent/20">
                                     <Plus size={24} weight="regular" className="text-accent" />
                                 </div>
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/60">
                                     Tambah
                                 </span>
                             </button>
@@ -321,10 +321,10 @@ export const MobileDashboard = ({
 
                 <section className="space-y-4 pb-12">
                     <div className="flex items-center justify-between px-5">
-                        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                        <h2 className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50">
                             Mutasi Terakhir
                         </h2>
-                        <Button variant="ghost" size="sm" className="h-8 px-0 text-[10px] font-bold uppercase tracking-wider text-primary" onClick={() => router.push('/transactions')}>
+                        <Button variant="ghost" size="sm" className="h-8 px-0 text-label-sm font-bold uppercase tracking-wider text-primary" onClick={() => router.push('/transactions')}>
                             Semua
                         </Button>
                     </div>
@@ -357,7 +357,7 @@ export const MobileDashboard = ({
                                     <div className="text-sm font-semibold tracking-tight text-foreground">
                                         Belum ada mutasi
                                     </div>
-                                    <div className="mt-1 text-[11px] font-medium text-muted-foreground/55">
+                                    <div className="mt-1 text-label-md font-medium text-muted-foreground/55">
                                         Catat transaksi pertama supaya arus uang mulai terbaca.
                                     </div>
                                 </div>
@@ -369,4 +369,5 @@ export const MobileDashboard = ({
         </AppPageShell>
     );
 };
+
 

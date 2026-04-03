@@ -90,7 +90,7 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
             {totalMonthly > 0 && (
                 <div className="mt-8 p-5 rounded-card-glass bg-success/5 border border-success/10 flex items-center gap-4 group/tip hover:bg-success/10 transition-colors cursor-default animate-in fade-in slide-in-from-top-4 duration-500">
                     <TrendingUp className="h-5 w-5 text-success group-hover/tip:scale-110 transition-transform" />
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-success/60 leading-relaxed">
+                    <p className="text-label-md font-bold uppercase tracking-wider text-success/60 leading-relaxed">
                         Tips efisiensi: Batalkan satu langganan tak terpakai untuk berhemat <span className="text-success">{formatCurrency(totalMonthly * 12)}</span> per tahun.
                     </p>
                 </div>
@@ -98,6 +98,7 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
         </Card>
     );
 }
+
 
 
 

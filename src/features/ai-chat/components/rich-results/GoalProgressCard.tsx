@@ -57,7 +57,7 @@ export const GoalProgressCard = ({ data }: GoalProgressCardProps) => {
                         {formatCurrency(data.current ?? 0)} dari {formatCurrency(data.target)}
                     </p>
                 </div>
-                <div className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusStyles[status]}`}>
+                <div className={`inline-flex items-center rounded-full px-2.5 py-1 text-label-md font-semibold ${statusStyles[status]}`}>
                     {statusCopy[status]}
                 </div>
             </div>
@@ -86,3 +86,4 @@ export const GoalProgressCard = ({ data }: GoalProgressCardProps) => {
         </div>
     );
 };
+

@@ -74,6 +74,7 @@ Within the Phase 4 finance features (`transactions`, `budgets`, `wallets`, `insi
 
 UI icon imports now go through `src/lib/icons.ts`, which re-exports Phosphor as the single runtime icon library and keeps a small compatibility shim for legacy Lucide-style names during the migration.
 DS-1 also defines `src/components/ui/MODAL_STANDARD.md` as the current modal hierarchy: `Sheet` for mobile create/edit flows, `AlertDialog` for destructive confirmation, and `Dialog` for desktop-centered informational flows.
+DS-2 adds a named typography scale in `tailwind.config.ts` (`display-*`, `title-*`, `body-*`, `label-*`) and replaces ad-hoc arbitrary text sizes in app surfaces, so new UI work should prefer those semantic classes over `text-[...]`.
 
 ---
 

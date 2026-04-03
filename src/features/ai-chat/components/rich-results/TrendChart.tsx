@@ -91,7 +91,7 @@ export const TrendChart = ({ data }: TrendChartProps) => {
                         6 bulan terakhir
                     </p>
                 </div>
-                <div className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
+                <div className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-label-md font-semibold text-muted-foreground">
                     <TrendIcon className="h-3.5 w-3.5" />
                     {trend.label}
                 </div>
@@ -109,7 +109,7 @@ export const TrendChart = ({ data }: TrendChartProps) => {
                         strokeLinejoin="round"
                     />
                 </svg>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-[11px] text-muted-foreground sm:grid-cols-6">
+                <div className="mt-2 grid grid-cols-3 gap-2 text-label-md text-muted-foreground sm:grid-cols-6">
                     {points.map((point) => (
                         <div key={point.month} className="rounded-xl bg-background/80 px-2 py-1.5">
                             <div className="font-semibold text-foreground">{monthLabel(point.month)}</div>
@@ -121,4 +121,5 @@ export const TrendChart = ({ data }: TrendChartProps) => {
         </div>
     );
 };
+
 

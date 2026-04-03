@@ -107,14 +107,14 @@ export const OnboardingChecklist = () => {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <span className="text-[10px] font-bold">{Math.round(progress)}%</span>
+                <span className="text-label-sm font-bold">{Math.round(progress)}%</span>
               </div>
               <div>
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   Memulai dengan Lemon
                   {isAllCompleted && <Sparkles className="h-4 w-4 text-primary" />}
                 </h3>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-label-md text-muted-foreground">
                   {isAllCompleted 
                     ? 'Hebat! Kamu sudah siap mengelola keuangan.' 
                     : `${ONBOARDING_TASKS.length - completedCount} langkah lagi untuk selesai.`}
@@ -174,7 +174,7 @@ export const OnboardingChecklist = () => {
                       )}>
                         {task.title}
                       </div>
-                      <div className="text-[10px] leading-tight text-muted-foreground">
+                      <div className="text-label-sm leading-tight text-muted-foreground">
                         {task.description}
                       </div>
                     </div>
@@ -210,4 +210,5 @@ export const OnboardingChecklist = () => {
     </AnimatePresence>
   );
 };
+
 

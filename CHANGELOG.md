@@ -42,6 +42,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Migrated add/edit budget and add/edit wallet flows onto the shared bottom `Sheet` pattern with backdrop dismissal and local swipe-to-close behavior, and documented the current modal hierarchy in `src/components/ui/MODAL_STANDARD.md`.
 - **DS-1 home table overflow**
   - Moved the dashboard recent-transactions widget onto the shared table overflow wrapper so the card stays usable on 375px mobile viewports without forcing page-level horizontal overflow.
+- **DS-2 typography scale standardization**
+  - Added named `display-*`, `title-*`, `body-*`, and `label-*` font tokens in Tailwind and replaced arbitrary `text-[...]` sizes across app surfaces so typography now maps to a shared semantic scale.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

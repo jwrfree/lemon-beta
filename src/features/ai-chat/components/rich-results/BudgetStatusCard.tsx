@@ -23,7 +23,7 @@ export const BudgetStatusCard = () => {
         <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Budget Status</span>
+                    <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50">Budget Status</span>
                 </div>
                 
                 <div className="space-y-4">
@@ -56,13 +56,13 @@ export const BudgetStatusCard = () => {
                                             isWarning ? "bg-warning" : "bg-success"
                                     )}
                                 />
-                                <div className="flex justify-between text-[10px] font-semibold text-muted-foreground/30 uppercase tracking-widest">
+                                <div className="flex justify-between text-label-sm font-semibold text-muted-foreground/30 uppercase tracking-widest">
                                     <span>{formatCurrency(budget.spent)} Pakai</span>
                                     <span>Sisa {formatCurrency(Math.max(0, budget.limit - budget.spent))}</span>
                                 </div>
                                 
                                 {!isOver && budget.percent > 30 && (
-                                    <p className="text-[9px] font-medium text-muted-foreground/25 italic leading-none">
+                                    <p className="text-label-sm font-medium text-muted-foreground/25 italic leading-none">
                                         Estimasi habis dalam {Math.max(1, daysLeft)} hari lagi
                                     </p>
                                 )}
@@ -74,4 +74,5 @@ export const BudgetStatusCard = () => {
         </Card>
     );
 };
+
 

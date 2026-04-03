@@ -163,7 +163,19 @@ export default {
         'squircle':     '38%',                         // Samsung OneUI-style squircle icon shape
       },
       fontSize: {
-        // Design-system label token — use `text-label` instead of text-[10px], text-[9px], text-[11px]
+        'display-lg': ['2rem', { lineHeight: '2.5rem', fontWeight: '700' }],
+        'display-md': ['1.5rem', { lineHeight: '2rem', fontWeight: '700' }],
+        'display-sm': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],
+        'title-lg': ['1.125rem', { lineHeight: '1.75rem', fontWeight: '600' }],
+        'title-md': ['1rem', { lineHeight: '1.5rem', fontWeight: '600' }],
+        'title-sm': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
+        'body-lg': ['1rem', { lineHeight: '1.5rem', fontWeight: '400' }],
+        'body-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '400' }],
+        'body-sm': ['0.75rem', { lineHeight: '1rem', fontWeight: '400' }],
+        'label-lg': ['0.875rem', { lineHeight: '1rem', fontWeight: '500' }],
+        'label-md': ['0.75rem', { lineHeight: '1rem', fontWeight: '500' }],
+        'label-sm': ['0.625rem', { lineHeight: '0.875rem', fontWeight: '500' }],
+        // Backward-compatible alias for existing DS-1 classes.
         'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.025em', fontWeight: '600' }],
       },
       keyframes: {
@@ -205,3 +217,4 @@ export default {
   },
   plugins: [animate, typography],
 } satisfies Config;
+

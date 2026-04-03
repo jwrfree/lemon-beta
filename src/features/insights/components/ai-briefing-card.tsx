@@ -60,10 +60,10 @@ export const AiBriefingCard = () => {
                     
                     <div className="space-y-3 flex-1">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-semibold uppercase tracking-widest opacity-50">Lemon Coach</span>
+                            <span className="text-label-sm font-semibold uppercase tracking-widest opacity-50">Lemon Coach</span>
                             <div className="flex items-center gap-1.5">
                                 <span className={cn("h-1 w-1 rounded-full animate-pulse", mood.iconColor.replace('text-', 'bg-'))}></span>
-                                <span className="text-[10px] font-semibold uppercase tracking-widest opacity-40">Analisis Langsung</span>
+                                <span className="text-label-sm font-semibold uppercase tracking-widest opacity-40">Analisis Langsung</span>
                             </div>
                         </div>
                         
@@ -89,4 +89,5 @@ export const AiBriefingCard = () => {
         </motion.div>
     );
 };
+
 

@@ -104,7 +104,7 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
                     <p className="font-bold text-sm truncate tracking-tight text-foreground/90">{transaction.description || transaction.category}</p>
                     {transaction.type === 'expense' && typeof transaction.isNeed === 'boolean' && (
                         <span className={cn(
-                            "text-[8px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-sm border shrink-0",
+                            "text-label-sm font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-sm border shrink-0",
                             transaction.isNeed 
                                 ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" 
                                 : "bg-violet-500/10 text-violet-600 border-violet-500/20"
@@ -123,6 +123,7 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
         </button>
     );
 }
+
 
 
 

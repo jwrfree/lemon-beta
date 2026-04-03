@@ -62,18 +62,18 @@ export const AnomalyAlertCard = ({ data, onAction }: AnomalyAlertCardProps) => {
                         </p>
                     </div>
                 </div>
-                <div className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${severityStyles[severity]}`}>
+                <div className={`inline-flex rounded-full px-2.5 py-1 text-label-md font-semibold ${severityStyles[severity]}`}>
                     {severity.toUpperCase()}
                 </div>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                 <div className="rounded-2xl bg-muted/50 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Saat ini</div>
+                    <div className="text-label-md uppercase tracking-wide text-muted-foreground">Saat ini</div>
                     <div className="mt-1 font-semibold text-foreground">{formatCurrency(data.current_value ?? 0)}</div>
                 </div>
                 <div className="rounded-2xl bg-muted/50 px-3 py-2">
-                    <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Referensi</div>
+                    <div className="text-label-md uppercase tracking-wide text-muted-foreground">Referensi</div>
                     <div className="mt-1 font-semibold text-foreground">{formatCurrency(data.reference_value ?? 0)}</div>
                 </div>
             </div>
@@ -90,4 +90,5 @@ export const AnomalyAlertCard = ({ data, onAction }: AnomalyAlertCardProps) => {
         </div>
     );
 };
+
 

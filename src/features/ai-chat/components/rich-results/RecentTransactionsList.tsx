@@ -60,7 +60,7 @@ export const RecentTransactionsList = () => {
         <Card className="mt-4 bg-background border border-border/40 shadow-soft rounded-card overflow-hidden motion-surface">
             <CardContent className="p-4 space-y-3">
                 <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Recent Transactions</span>
+                    <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/50">Recent Transactions</span>
                     <Receipt size={12} weight="regular" className="text-muted-foreground/30" />
                 </div>
 
@@ -74,7 +74,7 @@ export const RecentTransactionsList = () => {
                             <div key={tx.transaction_id || tx.id} className="flex items-center justify-between group">
                                 <div className="flex flex-col min-w-0">
                                     <span className="text-xs font-semibold truncate text-foreground/80">{tx.description}</span>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+                                    <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/40">
                                         {tx.category} - {new Date(tx.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                     </span>
                                 </div>
@@ -94,4 +94,5 @@ export const RecentTransactionsList = () => {
         </Card>
     );
 };
+
 

@@ -62,7 +62,7 @@ export const DeepSeekUsageCard = () => {
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] dark:opacity-10 pointer-events-none" />
 
             <CardHeader className="flex flex-row items-center justify-between pb-4 relative z-10">
-                <CardTitle className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2">
+                <CardTitle className="text-label-sm font-bold text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2">
                     <Lightning className="h-3.5 w-3.5 text-accent" weight="regular" />
                     DeepSeek AI Balance
                 </CardTitle>
@@ -90,7 +90,7 @@ export const DeepSeekUsageCard = () => {
                                     {currency === 'CNY' ? '¥' : '$'}
                                     {balance ? totalBalance.toFixed(2) : '...'}
                                 </span>
-                                <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Tersisa</span>
+                                <span className="text-label-sm text-muted-foreground/60 font-bold uppercase tracking-wider">Tersisa</span>
                             </div>
                             {balance && (
                                 <span className="text-xs font-bold text-muted-foreground/40 tracking-tight">
@@ -101,7 +101,7 @@ export const DeepSeekUsageCard = () => {
 
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+                                <div className="flex justify-between text-label-sm font-bold uppercase tracking-wider text-muted-foreground/60">
                                     <span>Estimasi Token</span>
                                     <span className="text-foreground tracking-normal">{balance ? estimatedTokens.toLocaleString() : '...'}</span>
                                 </div>
@@ -117,10 +117,10 @@ export const DeepSeekUsageCard = () => {
 
                             <div className="flex items-center justify-between pt-1">
                                 <div className="flex flex-col">
-                                    <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30">Penggunaan Rata-rata</span>
-                                    <span className="text-[10px] font-bold text-muted-foreground/70 tracking-tight">~4,000 Token / Hari</span>
+                                    <span className="text-label-sm font-bold uppercase tracking-widest text-muted-foreground/30">Penggunaan Rata-rata</span>
+                                    <span className="text-label-sm font-bold text-muted-foreground/70 tracking-tight">~4,000 Token / Hari</span>
                                 </div>
-                                <p className="text-[9px] font-bold text-primary uppercase tracking-wider bg-accent/10 px-2.5 py-1 rounded-full border border-accent/20">
+                                <p className="text-label-sm font-bold text-primary uppercase tracking-wider bg-accent/10 px-2.5 py-1 rounded-full border border-accent/20">
                                     Habis dlm ~{Math.floor(estimatedTokens / (5 * 800))} hari
                                 </p>
                             </div>
@@ -134,4 +134,5 @@ export const DeepSeekUsageCard = () => {
         </Card>
     );
 };
+
 
