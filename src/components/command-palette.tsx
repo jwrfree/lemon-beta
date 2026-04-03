@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Command } from 'cmdk';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
  MagnifyingGlass, 
@@ -48,6 +47,7 @@ export const CommandPalette = () => {
  const [query, setQuery] = useState('');
  const [results, setResults] = useState<SearchResult[]>([]);
  const [isLoading, setIsLoading] = useState(false);
+ const hasResults = results.length > 0;
 
  // Initial search or search on query change
  useEffect(() => {
@@ -149,12 +149,12 @@ export const CommandPalette = () => {
  Cari transaksi, target, dompet, atau jalankan aksi cepat di seluruh aplikasi.
  </DialogDescription>
  <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-card/70 shadow-elevation-4 backdrop-blur-xl">
- <Command className="flex h-full w-full flex-col overflow-hidden">
+ <div className="flex h-full w-full flex-col overflow-hidden">
  <div className="flex items-center border-b border-white/10 px-4">
  <MagnifyingGlass className="mr-3 h-5 w-5 text-muted-foreground"/>
- <Command.Input
+ <input
  value={query}
- onValueChange={setQuery}
+ onChange={(event) => setQuery(event.target.value)}
  placeholder="Cari transaksi, target, atau aksi..."
  className="flex h-14 w-full bg-transparent text-title-lg outline-none placeholder:text-muted-foreground/50"
  />
@@ -170,28 +170,30 @@ export const CommandPalette = () => {
  )}
  </div>
 
- <Command.List className="max-h-[60vh] overflow-y-auto px-2 py-4 scrollbar-none sm:max-h-[400px]">
- <Command.Empty className="flex flex-col items-center justify-center py-10 text-center">
+ <div className="max-h-[60vh] overflow-y-auto px-2 py-4 scrollbar-none sm:max-h-[400px]">
+ {!hasResults && !isLoading && (
+ <div className="flex flex-col items-center justify-center py-10 text-center">
  <MagnifyingGlass size={32} className="mb-4 text-muted-foreground/20"/>
  <p className="text-muted-foreground">Tidak ada hasil ditemukan.</p>
- </Command.Empty>
+ </div>
+ )}
 
  {Object.entries(groupedResults).map(([type, items]) => (
- <Command.Group 
+ <div
  key={type} 
- heading={getGroupLabel(type)}
- className="mb-4 px-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:[&_[cmdk-group-heading]]:[&_[cmdk-group-heading]]:[&_[cmdk-group-heading]]:text-foreground/40"
+ className="mb-4 px-2"
  >
+ <p className="px-3 text-[10px] text-foreground/40">{getGroupLabel(type)}</p>
  <div className="mt-2 space-y-1">
  {items.map((item) => (
- <Command.Item
+ <button
+ type="button"
  key={item.id}
- value={item.id + item.title + item.subtitle}
- onSelect={() => handleSelect(item)}
- className="group flex cursor-pointer items-center gap-4 rounded-2xl px-3 py-3 transition-all hover:bg-white/10 data-[selected=true]:bg-white/15"
+ onClick={() => handleSelect(item)}
+ className="group flex w-full cursor-pointer items-center gap-4 rounded-2xl px-3 py-3 text-left transition-all hover:bg-white/10"
  >
  <div className={cn(
- "flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white/5 text-muted-foreground transition-colors group-hover:text-primary group-data-[selected=true]:bg-primary/20 group-data-[selected=true]:text-primary"
+ "flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white/5 text-muted-foreground transition-colors group-hover:bg-primary/20 group-hover:text-primary"
  )}>
  {React.createElement(getIcon(item.type), { size: 20 })}
  </div>
@@ -215,13 +217,13 @@ export const CommandPalette = () => {
  </div>
  )}
 
- <CaretRight size={16} className="flex-none text-muted-foreground/30 opacity-0 transition-opacity group-hover:opacity-100 group-data-[selected=true]:opacity-100"/>
- </Command.Item>
+ <CaretRight size={16} className="flex-none text-muted-foreground/30 opacity-0 transition-opacity group-hover:opacity-100"/>
+ </button>
  ))}
  </div>
- </Command.Group>
+ </div>
  ))}
- </Command.List>
+ </div>
 
  <div className="flex items-center justify-between border-t border-white/5 bg-white/5 px-4 py-3 text-label-md text-foreground/70">
  <div className="flex items-center gap-4">
@@ -236,7 +238,7 @@ export const CommandPalette = () => {
  <kbd className="rounded border border-white/10 bg-white/10 px-1 font-sans">Esc</kbd> Tutup
  </span>
  </div>
- </Command>
+ </div>
  </div>
  </DialogContent>
  </DialogPortal>
