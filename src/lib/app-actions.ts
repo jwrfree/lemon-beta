@@ -183,6 +183,8 @@ export const APP_TARGETS = {
     '/transactions': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
     '/transaction': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
     'page/transaction': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
+    '/income_tracker': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
+    'page/income_tracker': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
 
     '/assets-liabilities': { type: 'navigate', path: '/assets-liabilities' } satisfies NavigateTarget,
     '/assets': { type: 'navigate', path: '/assets-liabilities' } satisfies NavigateTarget,
