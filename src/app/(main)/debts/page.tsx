@@ -35,7 +35,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff < 0) {
         return (
             <span className="text-label uppercase tracking-widest text-destructive font-semibold flex items-center gap-1.5 bg-destructive/10 px-2 py-0.5 rounded-full w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="bold" /> 
+                <CalendarDots className="h-3 w-3" weight="regular" /> 
                 Telat {Math.abs(diff)} hari
             </span>
         );
@@ -43,7 +43,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff === 0) {
         return (
             <span className="text-label uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="bold" /> 
+                <CalendarDots className="h-3 w-3" weight="regular" /> 
                 Hari ini
             </span>
         );
@@ -51,7 +51,7 @@ const getDebtDueStatus = (debt: Debt) => {
     if (diff <= 7) {
         return (
             <span className="text-label uppercase tracking-widest text-warning font-semibold flex items-center gap-1.5 bg-warning/10 px-2 py-0.5 rounded-full w-fit mt-1">
-                <CalendarDots className="h-3 w-3" weight="bold" /> 
+                <CalendarDots className="h-3 w-3" weight="regular" /> 
                 {diff} hari lagi
             </span>
         );
@@ -148,7 +148,7 @@ export default function DebtsPage() {
                     <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white dark:bg-zinc-900 p-5 rounded-card-premium shadow-soft border-none flex flex-col gap-1">
                             <span className="label-xs !text-destructive/70 flex items-center gap-1.5">
-                                <ArrowUpRight size={12} weight="bold" /> Hutang
+                                <ArrowUpRight size={12} weight="regular" /> Hutang
                             </span>
                             <span className="text-lg font-medium tracking-tight text-foreground tabular-nums">
                                 {formatCurrency(totals.totalOwed)}
@@ -156,7 +156,7 @@ export default function DebtsPage() {
                         </div>
                         <div className="bg-white dark:bg-zinc-900 p-5 rounded-card-premium shadow-soft border-none flex flex-col gap-1">
                             <span className="label-xs !text-success/70 flex items-center gap-1.5">
-                                <ArrowDownRight size={12} weight="bold" /> Piutang
+                                <ArrowDownRight size={12} weight="regular" /> Piutang
                             </span>
                             <span className="text-lg font-medium tracking-tight text-foreground tabular-nums">
                                 {formatCurrency(totals.totalOwing)}

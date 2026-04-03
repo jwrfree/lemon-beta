@@ -94,7 +94,7 @@ export function CategorySelector<T extends FieldValues>({
                                         exit={{ opacity: 0 }}
                                         className="flex items-center gap-1 rounded-md bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning shadow-[0_10px_18px_-16px_rgba(245,158,11,0.45)]"
                                     >
-                                        <Sparkle size={10} weight="fill" className="text-warning" />
+                                        <Sparkle size={10} weight="regular" className="text-warning" />
                                         Disarankan AI
                                     </motion.div>
                                 )}

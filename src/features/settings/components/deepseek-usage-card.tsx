@@ -63,7 +63,7 @@ export const DeepSeekUsageCard = () => {
 
             <CardHeader className="flex flex-row items-center justify-between pb-4 relative z-10">
                 <CardTitle className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest flex items-center gap-2">
-                    <Lightning className="h-3.5 w-3.5 text-accent" weight="fill" />
+                    <Lightning className="h-3.5 w-3.5 text-accent" weight="regular" />
                     DeepSeek AI Balance
                 </CardTitle>
                 <Button

@@ -127,7 +127,7 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                                     className="h-28 w-28 border-4 border-background shadow-xl"
                                 />
                                 <div className="absolute bottom-0 right-0 h-9 w-9 rounded-full bg-foreground text-background flex items-center justify-center border-4 border-background shadow-lg">
-                                    <Camera size={18} weight="bold" />
+                                    <Camera size={18} weight="regular" />
                                 </div>
                             </motion.div>
                             <input
@@ -170,7 +170,7 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
                             disabled={isSubmitting}
                             className="h-14 w-full rounded-2xl bg-foreground text-background font-semibold text-base tracking-tight hover:bg-foreground/90 transition-all active:scale-95 shadow-xl"
                         >
-                            {isSubmitting ? <CircleNotch size={24} weight="bold" className="animate-spin" /> : 'Simpan Perubahan'}
+                            {isSubmitting ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : 'Simpan Perubahan'}
                         </Button>
                         <Button
                             type="button"

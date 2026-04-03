@@ -126,7 +126,7 @@ export const SemanticTransactionReview = ({
                                 onClick={() => setActiveEditor(null)}
                                 aria-label="Selesai edit nominal"
                             >
-                                <Check size={20} weight="bold" />
+                                <Check size={20} weight="regular" />
                             </Button>
                         </div>
                     ) : (
@@ -149,7 +149,7 @@ export const SemanticTransactionReview = ({
                                 {amountNumber > 0 ? formatCurrency(amountNumber) : 'Isi nominal'}
                             </span>
                             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
-                                <PencilSimple size={16} weight="bold" />
+                                <PencilSimple size={16} weight="regular" />
                             </span>
                         </button>
                     )}
@@ -194,7 +194,7 @@ export const SemanticTransactionReview = ({
                             )}
                         </div>
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
-                            <PencilSimple size={14} weight="bold" />
+                            <PencilSimple size={14} weight="regular" />
                         </span>
                     </button>
                 </div>
@@ -222,7 +222,7 @@ export const SemanticTransactionReview = ({
                                 onClick={() => setActiveEditor(null)}
                                 aria-label="Selesai edit keterangan"
                             >
-                                <Check size={20} weight="bold" />
+                                <Check size={20} weight="regular" />
                             </Button>
                         </div>
                     ) : (
@@ -241,7 +241,7 @@ export const SemanticTransactionReview = ({
                                 {description || 'Tambah keterangan transaksi'}
                             </span>
                             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground">
-                                <PencilSimple size={14} weight="bold" />
+                                <PencilSimple size={14} weight="regular" />
                             </span>
                         </button>
                     )}
@@ -270,12 +270,12 @@ export const SemanticTransactionReview = ({
                             >
                                 {isNeed ? (
                                     <>
-                                        <ShieldCheck size={16} weight="fill" />
+                                        <ShieldCheck size={16} weight="regular" />
                                         <span>Kebutuhan</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Sparkle size={16} weight="bold" className="text-violet-700" />
+                                        <Sparkle size={16} weight="regular" className="text-violet-700" />
                                         <span>Keinginan</span>
                                     </>
                                 )}
@@ -294,7 +294,7 @@ export const SemanticTransactionReview = ({
                                 walletObj ? "bg-card text-foreground shadow-soft" : missingFieldClass
                             )}
                         >
-                            <WalletIcon size={16} weight="fill" className="text-muted-foreground/60" />
+                            <WalletIcon size={16} weight="regular" className="text-muted-foreground/60" />
                             <span>{walletObj ? walletObj.name : 'Pilih dompet'}</span>
                         </button>
 
@@ -304,7 +304,7 @@ export const SemanticTransactionReview = ({
                                     type="button"
                                     className={cn(fieldButtonBase, "bg-card text-foreground shadow-soft")}
                                 >
-                                    <CalendarIcon size={16} weight="fill" className="text-muted-foreground/60" />
+                                    <CalendarIcon size={16} weight="regular" className="text-muted-foreground/60" />
                                     <span>{format(dateValue, 'dd MMM, HH:mm', { locale: localeId })}</span>
                                 </button>
                             </PopoverTrigger>

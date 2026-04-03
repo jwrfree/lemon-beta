@@ -135,7 +135,7 @@ export const Sidebar = () => {
             className="h-10 w-10 rounded-2xl text-muted-foreground hover:bg-white/70 hover:text-foreground"
             aria-label={isSidebarCollapsed ? 'Perluas sidebar' : 'Ciutkan sidebar'}
           >
-            {isSidebarCollapsed ? <CaretRight size={18} weight="bold" /> : <CaretLeft size={18} weight="bold" />}
+            {isSidebarCollapsed ? <CaretRight size={18} weight="regular" /> : <CaretLeft size={18} weight="regular" />}
           </Button>
         </SidebarAction>
       </div>
@@ -157,7 +157,7 @@ export const Sidebar = () => {
             )}
             aria-label="Smart Add"
           >
-            <Sparkle size={20} weight="fill" className="shrink-0" />
+            <Sparkle size={20} weight="regular" className="shrink-0" />
             {!isSidebarCollapsed && <span className="text-sm font-semibold">Smart Add</span>}
           </Button>
         </SidebarAction>
@@ -173,7 +173,7 @@ export const Sidebar = () => {
             )}
             aria-label="Tanya Lemon AI"
           >
-            <Robot size={20} weight="fill" className="shrink-0" />
+            <Robot size={20} weight="regular" className="shrink-0" />
             {!isSidebarCollapsed && <span className="text-sm font-semibold">Tanya Lemon AI</span>}
           </Button>
         </SidebarAction>

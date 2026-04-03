@@ -292,7 +292,7 @@ export const DesktopDashboard = () => {
                                 onClick={() => setIsAIChatOpen(true)}
                                 title="Tanya Lemon AI"
                             >
-                                <Sparkle size={16} weight="fill" />
+                                <Sparkle size={16} weight="regular" />
                             </Button>
 
                             <UserProfileDropdown />

@@ -23,7 +23,7 @@ export const SuccessAnimation = () => {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
                 <div className="h-24 w-24 rounded-full bg-success text-success-foreground flex items-center justify-center shadow-card">
-                    <Check className="h-12 w-12" weight="bold" />
+                    <Check className="h-12 w-12" weight="regular" />
                 </div>
             </div>
         );
@@ -50,7 +50,7 @@ export const SuccessAnimation = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: motionTokens.durationFast, ease: motionTokens.easingStandard }}
                     >
-                        <Check className="h-12 w-12 text-success-foreground" weight="bold" />
+                        <Check className="h-12 w-12 text-success-foreground" weight="regular" />
                     </motion.div>
                 </motion.div>
             </div>

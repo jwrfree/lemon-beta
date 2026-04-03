@@ -51,10 +51,10 @@ const CategoryRow = ({
             </div>
             {isSelected ? (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <Check size={18} weight="bold" />
+                    <Check size={18} weight="regular" />
                 </div>
             ) : (
-                <CaretRight size={18} weight="bold" className="text-muted-foreground" />
+                <CaretRight size={18} weight="regular" className="text-muted-foreground" />
             )}
         </button>
     );
@@ -125,7 +125,7 @@ export const CategoryPickerSheet = ({
                     </div>
 
                     <div className="relative">
-                        <MagnifyingGlass size={18} weight="bold" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <MagnifyingGlass size={18} weight="regular" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}

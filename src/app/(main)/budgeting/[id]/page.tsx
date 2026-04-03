@@ -110,7 +110,7 @@ export default function BudgetDetailPage() {
                                 onClick={() => { triggerHaptic('light'); setIsHidden(!isHidden); }} 
                                 className="hover:text-foreground transition-colors p-1 -m-1"
                             >
-                                {isHidden ? <EyeSlash size={14} weight="bold" /> : <Eye size={14} weight="bold" />}
+                                {isHidden ? <EyeSlash size={14} weight="regular" /> : <Eye size={14} weight="regular" />}
                             </button>
                         </div>
                         <div className="flex items-baseline gap-1">
@@ -243,7 +243,7 @@ export default function BudgetDetailPage() {
                         <h3 className="text-lg font-semibold tracking-tight text-foreground">Transaksi</h3>
                         <button className="flex items-center gap-0.5 label-xs !text-muted-foreground/35 hover:text-foreground transition-colors p-1 -m-1">
                             Lihat semua
-                            <CaretRight size={10} weight="bold" />
+                            <CaretRight size={10} weight="regular" />
                         </button>
                     </div>
 

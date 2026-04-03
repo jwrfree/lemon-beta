@@ -64,7 +64,7 @@ export const LiquidPreview = () => {
                         >
                             {/* Main Category Chip */}
                             <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-full shadow-lg">
-                                <Tag size={12} weight="bold" className="opacity-20" />
+                                <Tag size={12} weight="regular" className="opacity-20" />
                                 <span className="text-label font-semibold text-white/90">{metadata.category}</span>
                             </div>
 
@@ -76,7 +76,7 @@ export const LiquidPreview = () => {
                                     transition={{ delay: 0.2 }}
                                     className="flex items-center gap-1.5 text-primary bg-primary/5 px-3 py-1 rounded-lg border border-primary/10"
                                 >
-                                    <ArrowBendDownRight size={12} weight="bold" className="opacity-50" />
+                                    <ArrowBendDownRight size={12} weight="regular" className="opacity-50" />
                                     <span className="text-label font-semibold">{metadata.subCategory}</span>
                                 </motion.div>
                             )}
@@ -90,7 +90,7 @@ export const LiquidPreview = () => {
                             transition={{ type: 'spring', delay: 0.4 }}
                             className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border"
                         >
-                            <MapPin size={12} weight="bold" className="text-destructive" />
+                            <MapPin size={12} weight="regular" className="text-destructive" />
                             <span className="text-label font-semibold">{metadata.location}</span>
                         </motion.div>
                     )}

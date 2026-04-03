@@ -134,7 +134,7 @@ export const MobileDashboard = ({
                             className="h-9 w-9 rounded-full bg-card text-muted-foreground shadow-soft hover:bg-muted hover:text-foreground border border-border/40"
                             onClick={() => setIsAIChatOpen(true)}
                         >
-                            <Sparkle size={16} weight="fill" className="text-accent" />
+                            <Sparkle size={16} weight="regular" className="text-accent" />
                         </Button>
                         <Button
                             variant="ghost"

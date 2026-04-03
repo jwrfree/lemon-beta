@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { 
-  ChevronDown, 
-  ChevronUp, 
-  Plus, 
-  Bell, 
-  CreditCard, 
+  CaretDown, 
+  CaretUp,
+  Plus,
+  Bell,
+  CreditCard,
   QrCode,
   ArrowUpRight,
   ArrowDownRight,
   Wallet,
-  AlertCircle
+  WarningCircle
 } from '@/lib/icons';
-
 export default function MobileDashboard() {
   // State untuk mengontrol Progressive Disclosure pada chart
   const [isChartExpanded, setIsChartExpanded] = useState(false);
@@ -50,7 +49,7 @@ export default function MobileDashboard() {
         ].map((action, i) => (
           <button key={i} className="flex flex-col items-center gap-2 group">
             <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-teal-600 group-active:scale-95 transition-transform">
-              <action.icon size={24} strokeWidth={1.5} />
+              <action.icon size={24} weight="regular" />
             </div>
             <span className="text-xs font-medium text-slate-600">{action.label}</span>
           </button>
@@ -61,7 +60,7 @@ export default function MobileDashboard() {
       {hasCriticalDebt && (
         <section className="bg-red-50 border border-red-100 rounded-2xl p-4 mb-8 flex items-start gap-3 animate-in fade-in zoom-in duration-300">
           <div className="mt-0.5 text-red-500">
-            <AlertCircle size={20} strokeWidth={2} />
+            <WarningCircle size={20} weight="regular" />
           </div>
           <div>
             <h3 className="text-sm font-bold text-red-800 mb-1">Tagihan Kritis</h3>
@@ -85,7 +84,7 @@ export default function MobileDashboard() {
           {/* Wallet 1: Primary */}
           <div className="min-w-[140px] bg-slate-800 rounded-2xl p-4 text-white snap-center shadow-sm">
             <div className="flex items-center gap-2 mb-2 opacity-80">
-              <Wallet size={16} />
+              <Wallet size={16} weight="regular" />
               <span className="text-xs font-medium">BCA Utama</span>
             </div>
             <p className="text-lg font-bold">Rp 8.500.000</p>
@@ -94,7 +93,7 @@ export default function MobileDashboard() {
           {/* Wallet 2: E-Wallet */}
           <div className="min-w-[140px] bg-blue-600 rounded-2xl p-4 text-white snap-center shadow-sm">
             <div className="flex items-center gap-2 mb-2 opacity-80">
-              <Wallet size={16} />
+              <Wallet size={16} weight="regular" />
               <span className="text-xs font-medium">GoPay</span>
             </div>
             <p className="text-lg font-bold">Rp 1.200.000</p>
@@ -102,7 +101,7 @@ export default function MobileDashboard() {
           
           {/* Add Wallet Button */}
           <button className="min-w-[60px] border-2 border-slate-200 border-dashed rounded-2xl flex items-center justify-center text-slate-400 hover:bg-slate-100 active:bg-slate-200 transition-colors snap-center">
-            <Plus size={24} />
+            <Plus size={24} weight="regular" />
           </button>
         </div>
       </section>
@@ -121,7 +120,7 @@ export default function MobileDashboard() {
             )}
           </div>
           <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-full transition-colors">
-            {isChartExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            {isChartExpanded ? <CaretUp size={20} weight="regular" /> : <CaretDown size={20} weight="regular" />}
           </button>
         </div>
 
@@ -159,7 +158,7 @@ export default function MobileDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
-                <ArrowUpRight size={20} strokeWidth={2} />
+                <ArrowUpRight size={20} weight="regular" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-800">Makan Siang</p>
@@ -173,7 +172,7 @@ export default function MobileDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center">
-                <ArrowDownRight size={20} strokeWidth={2} />
+                <ArrowDownRight size={20} weight="regular" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-800">Gaji Bulanan</p>

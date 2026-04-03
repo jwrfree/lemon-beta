@@ -53,7 +53,7 @@ export const ScenarioSimulationCard = ({ data }: ScenarioSimulationCardProps) =>
 
                         {!isReachable && (
                             <div className="flex items-start gap-2 p-2.5 rounded-xl bg-destructive/5 border border-destructive/10">
-                                <Warning size={14} weight="fill" className="text-destructive shrink-0 mt-0.5" />
+                                <Warning size={14} weight="regular" className="text-destructive shrink-0 mt-0.5" />
                                 <p className="text-[10px] leading-snug text-destructive/80 font-medium">
                                     Berdasarkan arus kas saat ini, target ini sulit tercapai. Coba kurangi pengeluaran atau tambah pemasukan.
                                 </p>

@@ -69,7 +69,7 @@ export const FinancialHealthCard = ({ data }: FinancialHealthCardProps) => {
                     <p className="text-[9px] font-bold text-muted-foreground/50 uppercase tracking-wider">Saran Utama:</p>
                     {data.recommendations.map((rec, idx) => (
                         <div key={idx} className="flex gap-2 items-start">
-                            <ShieldCheck size={12} weight="fill" className="text-primary shrink-0 mt-0.5" />
+                            <ShieldCheck size={12} weight="regular" className="text-primary shrink-0 mt-0.5" />
                             <p className="text-[10px] leading-relaxed text-foreground/70">{rec}</p>
                         </div>
                     ))}

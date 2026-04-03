@@ -39,7 +39,7 @@ export const BudgetStatusCard = () => {
                                 <div className="flex justify-between text-xs">
                                     <span className="font-semibold flex items-center gap-1.5 text-foreground/80">
                                         {budget.name}
-                                        {isOver && <WarningCircle size={12} weight="fill" className="text-destructive" />}
+                                        {isOver && <WarningCircle size={12} weight="regular" className="text-destructive" />}
                                     </span>
                                     <span className={cn(
                                         "text-label font-semibold tracking-widest uppercase",

@@ -57,7 +57,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                                     <span className={cn('text-sm transition-colors', selectedValue === subCat ? 'font-semibold text-foreground' : 'text-foreground')}>
                                         {subCat}
                                     </span>
-                                    {selectedValue === subCat && <Check size={20} weight="bold" className="text-primary" />}
+                                    {selectedValue === subCat && <Check size={20} weight="regular" className="text-primary" />}
                                 </div>
                             </button>
                         ))}
