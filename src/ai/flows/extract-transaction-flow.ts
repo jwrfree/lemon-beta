@@ -1,6 +1,6 @@
 'use server';
 
-import { createOpenAI } from "@ai-sdk/openai";
+import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateObject } from "ai";
 import { z } from "zod";
 
@@ -17,7 +17,7 @@ import {
   FINANCIAL_FRAMEWORK 
 } from "@/ai/prompts";
 
-const deepseek = createOpenAI({
+const deepseek = createDeepSeek({
   apiKey: config.ai.deepseek.apiKey,
   baseURL: config.ai.deepseek.baseURL,
 });
@@ -259,7 +259,7 @@ export const parseSimpleTransactionInput = async (
   const availableWallets = context?.wallets ?? [];
   const matchedWallet = availableWallets.find((wallet) => normalized.includes(wallet.toLowerCase()));
 
-  const type = /\b(gaji|bonus|thr|income|pemasukan|pendapatan|terima)\b/iu.test(normalized)
+  const type = /\b(gaji|bonus|thr|income|pemasukan|pendapatan|terima|dapat|dikasih|pemberian|masuk|angpao|amplop|refund)\b/iu.test(normalized)
     ? 'income'
     : 'expense';
 
@@ -342,6 +342,7 @@ ${INDONESIAN_FORMAT_RULES}
 2. **VALUABLE INSIGHT**: Gunakan 'socraticInsight' untuk memberikan feedback edukatif sangaaat singkat (max 10-15 kata). 
 3. **HISTORY MATCHING**: Jika input user mirip dengan transaksi di 'Recent Transactions', prioritaskan menggunakan 'category' and 'wallet' yang sama.
 4. **BUDGET AWARENESS**: Gunakan data 'Budget Status' untuk memberikan insight. Jika budget menipis, beri peringatan halus.
+5. **INCOME DETECTION**: Tentukan 'type' sebagai 'income' (bukan 'expense') secara otomatis jika narasi mengindikasikan penerimaan uang (gaji, masuk, dapat, dikasih, pemberian, angpao).
 
 ### OUTPUT JSON FORMAT:
 Wajib mengembalikan objek JSON sesuai skema transaksi.`;
