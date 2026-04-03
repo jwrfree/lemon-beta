@@ -34,7 +34,7 @@ const CategoryRow = ({
  type="button"
  onClick={onClick}
  className={cn(
- 'flex w-full items-center gap-3 rounded-2xl bg-background px-4 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.99]',
+ 'flex w-full items-center gap-3 rounded-2xl bg-background px-4 py-3 text-left border border-border/40 transition-all active:scale-[0.99]',
  isSelected && 'ring-2 ring-primary/20'
  )}
  >

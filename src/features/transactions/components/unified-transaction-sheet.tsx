@@ -158,22 +158,22 @@ export const UnifiedTransactionSheet = ({
  <SheetDescription>Interaksi cerdas dengan Socratic Lemon Coach.</SheetDescription>
  </SheetHeader>
 
- {/* --- STAGE 1: HEADER --- */}
- <div
- className={cn(
- "shrink-0 bg-card/60 backdrop-blur-xl shadow-elevation-2",
- useCompactSheetLayout ? "px-4 pb-2 pt-7 sm:px-5 sm:pb-3 sm:pt-8": "px-4 pb-3 pt-7 sm:px-5 sm:pb-4 sm:pt-8"
- )}
- >
- <div className="pr-14">
- <h2 className="max-w-[28rem] text-display-sm text-foreground sm:text-display-lg">
- {sheetTitle}
- </h2>
- </div>
+        {/* --- STAGE 1: HEADER --- */}
+        <div
+            className={cn(
+                "shrink-0 bg-card/60 backdrop-blur-xl border-b border-border/40",
+                useCompactSheetLayout ? "px-4 pb-2 pt-7 sm:px-5 sm:pb-3 sm:pt-8" : "px-4 pb-3 pt-7 sm:px-5 sm:pb-4 sm:pt-8"
+            )}
+        >
+            <div className="pr-14">
+                <h2 className="max-w-[28rem] text-display-sm text-foreground sm:text-display-lg">
+                    {sheetTitle}
+                </h2>
+            </div>
 
- {/* Batch Navigation */}
- {totalTxs > 1 && (
- <div className="relative mt-5 flex items-center justify-between rounded-3xl bg-card px-3 py-3 shadow-elevation-4 animate-in fade-in slide-in-from-top-2">
+            {/* Batch Navigation */}
+            {totalTxs > 1 && (
+                <div className="relative mt-5 flex items-center justify-between rounded-3xl bg-card px-3 py-3 border border-border/40 animate-in fade-in slide-in-from-top-2">
  <Button
  variant="ghost"
  size="icon"
@@ -303,64 +303,64 @@ export const UnifiedTransactionSheet = ({
  </AnimatePresence>
  </motion.div>
 
- {/* --- FOOTER: AI INPUT & ACTIONS --- */}
- <div
- className={cn(
- "flex shrink-0 flex-col gap-2 bg-card px-4 sm:px-5",
- useCompactSheetLayout
- ? "border-t border-border pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-elevation-3 sm:pb-3"
- : "pb-[calc(0.625rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
- )}
- >
- <AnimatePresence mode="wait">
- {shouldShowComposer && (
- <motion.div
- initial={{ opacity: 0, height: 0, scale: 0.95 }}
- animate={{ opacity: 1, height: 'auto', scale: 1 }}
- exit={{ opacity: 0, height: 0, scale: 0.95 }}
- transition={{ duration: 0.3 }}
- className="overflow-visible"
- >
- <MagicBar
- value={magicValue}
- onChange={setMagicValue}
- onReturn={handleMagicSubmit}
- onClear={() => setMagicValue('')}
- onImageUpload={handleImageUpload}
- focusRequestKey={composerFocusKey}
- imageUploadRequestKey={imageUploadRequestKey}
- isProcessing={isAiProcessing}
- placeholder="Contoh: makan siang 35rb pakai BCA"
- />
- </motion.div>
- )}
- </AnimatePresence>
+        {/* --- FOOTER: AI INPUT & ACTIONS --- */}
+        <div
+            className={cn(
+                "flex shrink-0 flex-col gap-2 bg-card px-4 sm:px-5",
+                useCompactSheetLayout
+                    ? "border-t border-border pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
+                    : "pb-[calc(0.625rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
+            )}
+        >
+            <AnimatePresence mode="wait">
+                {shouldShowComposer && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                        exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-visible"
+                    >
+                        <MagicBar
+                            value={magicValue}
+                            onChange={setMagicValue}
+                            onReturn={handleMagicSubmit}
+                            onClear={() => setMagicValue('')}
+                            onImageUpload={handleImageUpload}
+                            focusRequestKey={composerFocusKey}
+                            imageUploadRequestKey={imageUploadRequestKey}
+                            isProcessing={isAiProcessing}
+                            placeholder="Contoh: makan siang 35rb pakai BCA"
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
- <AnimatePresence mode="popLayout">
- {shouldShowReview && (
- <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto'}} exit={{ opacity: 0, y: 20, height: 0 }} className="space-y-3 overflow-hidden">
- <div className="flex w-full gap-3">
- {totalTxs > 1 ? (
- <Button
- onClick={saveAll}
- disabled={isAiProcessing}
- className="h-14 flex-1 rounded-2xl bg-success text-body-lg text-success-foreground shadow-elevation-3 transition-all hover:opacity-90"
- >
- {isAiProcessing ? <CircleNotch size={24} weight="regular"className="animate-spin"/> : (
- <span>Simpan Semua ({totalTxs})</span>
- )}
- </Button>
- ) : (
- <div className="flex-1 flex flex-col gap-3">
- <Button
- onClick={handleSubmit}
- disabled={isSubmitting}
- className="h-14 w-full rounded-2xl bg-primary text-body-lg text-primary-foreground shadow-elevation-3 transition-all hover:scale-[1.01] active:scale-[0.98]"
- >
- {isSubmitting ? <CircleNotch size={24} weight="regular"className="animate-spin"/> : (
- <span>{isEditMode ? 'Update Transaksi': 'Simpan Transaksi'}</span>
- )}
- </Button>
+            <AnimatePresence mode="popLayout">
+                {shouldShowReview && (
+                    <motion.div layout initial={{ opacity: 0, y: 20, height: 0 }} animate={{ opacity: 1, y: 0, height: 'auto' }} exit={{ opacity: 0, y: 20, height: 0 }} className="space-y-3 overflow-hidden">
+                        <div className="flex w-full gap-3">
+                            {totalTxs > 1 ? (
+                                <Button
+                                    onClick={saveAll}
+                                    disabled={isAiProcessing}
+                                    className="h-14 flex-1 rounded-2xl bg-success text-body-lg text-success-foreground transition-all hover:opacity-90"
+                                >
+                                    {isAiProcessing ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : (
+                                        <span>Simpan Semua ({totalTxs})</span>
+                                    )}
+                                </Button>
+                            ) : (
+                                <div className="flex-1 flex flex-col gap-3">
+                                    <Button
+                                        onClick={handleSubmit}
+                                        disabled={isSubmitting}
+                                        className="h-14 w-full rounded-2xl bg-primary text-body-lg text-primary-foreground transition-all hover:scale-[1.01] active:scale-[0.98]"
+                                    >
+                                        {isSubmitting ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : (
+                                            <span>{isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}</span>
+                                        )}
+                                    </Button>
  {!isEditMode && amountNumber > 0 && (
  <Button
  variant="outline"
@@ -384,7 +384,7 @@ export const UnifiedTransactionSheet = ({
  {/* Discard Confirmation Dialog */}
  <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
  <AlertDialogOverlay className="bg-black/60"/>
- <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+ <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200">
  <AlertDialogHeader className="space-y-4 text-center sm:text-left">
  <AlertDialogTitle className="text-display-md tracking-tight text-foreground">
  Batalkan Transaksi?
@@ -398,7 +398,7 @@ export const UnifiedTransactionSheet = ({
  <Button
  variant="destructive"
  size="lg"
- className="w-full rounded-2xl shadow-lg shadow-destructive/20"
+ className="w-full rounded-2xl border border-destructive/20"
  onClick={() => {
  setShowDiscardConfirm(false);
  onClose();
@@ -422,7 +422,7 @@ export const UnifiedTransactionSheet = ({
 
  <AlertDialog open={showRemoveDraftConfirm} onOpenChange={setShowRemoveDraftConfirm}>
  <AlertDialogOverlay className="bg-black/60"/>
- <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+ <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200">
  <AlertDialogHeader className="space-y-4 text-center sm:text-left">
  <AlertDialogTitle className="text-display-md tracking-tight text-foreground">
  Hapus draft ini?
@@ -436,7 +436,7 @@ export const UnifiedTransactionSheet = ({
  <Button
  variant="destructive"
  size="lg"
- className="w-full rounded-2xl shadow-lg shadow-destructive/20"
+ className="w-full rounded-2xl border border-destructive/20"
  onClick={() => {
  setShowRemoveDraftConfirm(false);
  removeCurrent();

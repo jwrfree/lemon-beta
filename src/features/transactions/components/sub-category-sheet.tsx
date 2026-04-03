@@ -34,7 +34,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
  className="flex h-fit max-h-[60vh] w-full max-w-md flex-col rounded-t-card border-t border-border/50 bg-background shadow-elevation-4"
  onClick={(e) => e.stopPropagation()}
  >
- <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 shadow-elevation-2">
+ <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 border-b border-border/40">
  <h2 className="text-title-lg">Pilih Sub-kategori {category.name}</h2>
  <Button variant="ghost"size="icon"onClick={onClose} className="h-10 w-10 text-muted-foreground rounded-full">
  <X size={32} weight="regular"/>
@@ -51,7 +51,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
  e.stopPropagation();
  onSelect(subCat);
  }}
- className="flex w-full items-center justify-between rounded-lg bg-background p-3 text-left shadow-elevation-2 transition-colors hover:bg-secondary"
+ className="flex w-full items-center justify-between rounded-lg bg-background p-3 text-left border border-border/40 transition-colors hover:bg-secondary"
  >
  <div className="flex w-full items-center justify-between">
  <span className={cn('text-body-md transition-colors', selectedValue === subCat ? 'text-foreground': 'text-foreground')}>
