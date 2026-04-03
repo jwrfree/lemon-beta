@@ -33,6 +33,10 @@ All updates and improvements to the Lemon app will be documented here.
 
 ## [Unreleased] - Phase 3 In Progress
 
+### Fixed
+- **DS-1 mobile input baseline**
+  - Raised the shared `Input` primitive to a 16px mobile text floor and added regression coverage so iOS no longer zooms on focus in shared form fields.
+
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)
   - Introduced a typed `APP_TARGETS` registry with 20+ named targets covering highlight, navigate, state, param, and ui-action types.

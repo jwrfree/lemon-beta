@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { cva, type VariantProps } from "class-variance-authority"
 
 const inputVariants = cva(
-  "flex h-10 w-full rounded-xl border border-transparent px-3 py-2 text-sm transition-all shadow-[0_10px_24px_-20px_rgba(15,23,42,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60",
+  "flex h-10 w-full rounded-xl border border-transparent px-3 py-2 text-base transition-all shadow-[0_10px_24px_-20px_rgba(15,23,42,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60",
   {
     variants: {
       variant: {
@@ -17,7 +17,7 @@ const inputVariants = cva(
       size: {
         default: "h-10",
         sm: "h-9 px-3",
-        lg: "h-12 px-4 text-sm md:text-base",
+        lg: "h-12 px-4",
       },
     },
     defaultVariants: {
