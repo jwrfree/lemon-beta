@@ -23,4 +23,10 @@ describe('chat-contract', () => {
       extractChatDisplayText('<response>{"text":"Halo lagi","components":[{"type":"WealthSummary"}]}</response>')
     ).toBe('Halo lagi');
   });
+
+  it('keeps plain text responses unwrapped so normal assistant replies stay lightweight', () => {
+    expect(ensureChatResponseText('Halo, kondisi keuanganmu cukup stabil minggu ini.')).toBe(
+      'Halo, kondisi keuanganmu cukup stabil minggu ini.'
+    );
+  });
 });

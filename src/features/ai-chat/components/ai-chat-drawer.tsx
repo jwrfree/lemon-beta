@@ -41,6 +41,7 @@ import {
     extractChatDisplayText,
     extractLegacyRichComponents,
     extractLegacySuggestions,
+    hasLegacyControlTags,
     hasPartialChatResponseBlock,
     parseChatResponseText,
     parseRichMessageParts,
@@ -107,6 +108,17 @@ const dedupeSuggestions = (suggestions: string[]) => {
     });
 };
 
+const warnedLegacyMessages = new Set<string>();
+
+const warnLegacyResponsePath = (rawText: string) => {
+    if (!hasLegacyControlTags(rawText) || warnedLegacyMessages.has(rawText)) {
+        return;
+    }
+
+    warnedLegacyMessages.add(rawText);
+    console.warn('[AIChatDrawer] Legacy rich tag parsing path is deprecated. Migrate assistant replies to <response> JSON blocks.');
+};
+
 const deriveFallbackAppActions = (components: RichComponent[]): AppAction[] => {
     const actions: AppAction[] = [];
 
@@ -135,6 +147,8 @@ export const resolveChatResponse = (rawText: string, isStreaming = false) => {
     if (isStreaming && hasPartialChatResponseBlock(rawText)) {
         return { response: null, isPending: true };
     }
+
+    warnLegacyResponsePath(rawText);
 
     return {
         response: {

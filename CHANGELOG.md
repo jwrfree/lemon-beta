@@ -67,6 +67,8 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **Typed response wrapper policy**
+  - Updated Lemon Coach so plain-text replies can stream normally, while rich replies use the typed `<response>{...}</response>` envelope and legacy render tags remain as a deprecated fallback with console warnings.
 - **Wallet data source stabilization**
   - Moved wallet reads onto the `useWallets` React Query cache so wallet data now has one reactive source of truth, while `WalletProvider` only handles optimistic sync and cache refresh.
 - **Asset data source stabilization**

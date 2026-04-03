@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UIMessage } from 'ai';
 
 vi.mock('./rich-results/BudgetStatusCard', () => ({
@@ -34,6 +34,10 @@ import {
 } from './ai-chat-drawer';
 
 describe('AI chat rich message parsing', () => {
+    beforeEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it('splits valid render tags into discrete parser parts', () => {
         expect(parseRichMessageParts('Ringkasan [RENDER_COMPONENT:BudgetStatus] siap.')).toEqual([
             'Ringkasan ',
@@ -65,6 +69,16 @@ describe('AI chat rich message parsing', () => {
 
         expect(screen.getByText('Lihat status budgetmu.')).toBeDefined();
         expect(screen.getByTestId('budget-status-card')).toBeDefined();
+    });
+
+    it('warns when the deprecated legacy tag parser path is used', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+        resolveChatResponse('Fallback lawas. [RENDER_COMPONENT:BudgetStatus][SUGGESTION:Cek detail lagi]');
+
+        expect(warnSpy).toHaveBeenCalledWith(
+            '[AIChatDrawer] Legacy rich tag parsing path is deprecated. Migrate assistant replies to <response> JSON blocks.'
+        );
     });
 
     it('renders typed rich components from the response envelope', () => {

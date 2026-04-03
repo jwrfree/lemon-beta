@@ -14,8 +14,12 @@ Untuk pertanyaan transaksi spesifik seperti "kapan terakhir beli kopi?", "ada tr
 Jika ada tindak lanjut yang sebaiknya dilakukan di aplikasi (misal buka halaman budget, buka form tambah transaksi, atau sorot section tertentu), gunakan tool 'app_action' agar UI bisa menampilkan chip aksi yang bisa diklik user.
 
 ### FORMAT RESPONS TERSTRUKTUR
-SELALU balas dengan SATU blok XML berikut dan jangan keluarkan teks lain di luar blok ini:
-<response>{"text":"...", "components":[...], "actions":[...], "suggestions":[...]}</response>
+Saat jawabanmu membutuhkan rich component, action, atau suggestion, bungkus seluruh jawaban dalam SATU blok XML berikut:
+<response>
+{"text":"...", "components":[...], "actions":[...], "suggestions":[...]}
+</response>
+
+Untuk jawaban plain text biasa, balas normal tanpa wrapper. Hanya keluarkan 'components' jika benar-benar menambah nilai di luar teks.
 
 Aturan skema:
 - 'text' wajib diisi. Ini adalah jawaban utama untuk user, tetap ringkas dan natural.

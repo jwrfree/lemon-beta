@@ -32,6 +32,8 @@ export type AppAction = z.infer<typeof AppActionSchema>;
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
 const RESPONSE_BLOCK_REGEX = /<response>([\s\S]*?)<\/response>/i;
+const LEGACY_COMPONENT_TAG = '[RENDER_COMPONENT:';
+const LEGACY_SUGGESTION_TAG = '[SUGGESTION:';
 
 const dedupeStrings = (values: string[]) => {
   const seen = new Set<string>();
@@ -157,6 +159,9 @@ export const stripLegacyControlTags = (text: string) => {
   return cleanParts.replace(RESPONSE_BLOCK_REGEX, '').trim();
 };
 
+export const hasLegacyControlTags = (text: string) =>
+  text.includes(LEGACY_COMPONENT_TAG) || text.includes(LEGACY_SUGGESTION_TAG);
+
 export const normalizeChatResponse = (response: Partial<ChatResponse>): ChatResponse => ({
   text: response.text?.trim() ?? '',
   components: response.components?.length ? dedupeObjects(response.components) : undefined,
@@ -198,11 +203,15 @@ export const ensureChatResponseText = (text: string) => {
     return text;
   }
 
-  return buildChatResponseText({
-    text: stripLegacyControlTags(text),
-    components: extractLegacyRichComponents(text),
-    suggestions: extractLegacySuggestions(text),
-  });
+  if (hasLegacyControlTags(text)) {
+    return buildChatResponseText({
+      text: stripLegacyControlTags(text),
+      components: extractLegacyRichComponents(text),
+      suggestions: extractLegacySuggestions(text),
+    });
+  }
+
+  return stripLegacyControlTags(text);
 };
 
 export const extractChatDisplayText = (text: string) => {

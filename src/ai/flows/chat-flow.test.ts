@@ -74,11 +74,12 @@ describe('buildChatSystemPrompt', () => {
         expect(prompt).toContain('User sering menanyakan budget makan.');
     });
 
-    it('instructs the chat model to emit the typed response envelope', () => {
+    it('instructs the chat model to use the typed response envelope only when rich UI adds value', () => {
         const prompt = buildChatSystemPrompt();
 
         expect(prompt).toContain('<response>');
         expect(prompt).toContain('"components"');
         expect(prompt).toContain('"suggestions"');
+        expect(prompt).toContain('Untuk jawaban plain text biasa, balas normal tanpa wrapper');
     });
 });
