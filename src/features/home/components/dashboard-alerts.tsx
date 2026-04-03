@@ -27,7 +27,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
     const router = useRouter();
 
     return (
-        <div className="grid gap-4">
+        <div id="widget-alerts" className="grid gap-4">
             <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <div>

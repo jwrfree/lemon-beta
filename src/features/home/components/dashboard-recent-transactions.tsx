@@ -185,7 +185,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     };
 
     return (
-        <div className="overflow-hidden rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+        <div id="widget-recent-transactions" className="overflow-hidden rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 text-muted-foreground font-medium">
                     <tr>
@@ -228,4 +228,3 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
         </div>
     );
 };
-

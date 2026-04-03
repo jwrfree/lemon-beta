@@ -499,3 +499,18 @@
     }
   }
 }
+
+/* ─── App Action Bridge: Widget Highlight ─────────────────────────────────── */
+@keyframes lemon-highlight-pulse {
+    0%   { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.5); }
+    50%  { box-shadow: 0 0 0 8px hsl(var(--primary) / 0.15); }
+    100% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0); }
+}
+
+.lemon-highlight {
+    outline: 2px solid hsl(var(--primary) / 0.7);
+    outline-offset: 3px;
+    border-radius: var(--radius-card, 1rem);
+    animation: lemon-highlight-pulse 0.6s ease-out 2;
+    transition: outline 0.3s ease;
+}

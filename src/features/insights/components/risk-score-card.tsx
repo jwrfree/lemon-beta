@@ -9,7 +9,7 @@ import { HelpTooltip } from '@/components/help-tooltip';
 export const RiskScoreCard = () => {
     const { risk, isLoading, refreshInsights } = useInsights();
 
-        if (isLoading) {
+    if (isLoading) {
         return (
             <Card className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
                 <ArrowClockwise size={24} weight="regular" className="animate-spin text-muted-foreground" />
@@ -17,7 +17,7 @@ export const RiskScoreCard = () => {
         );
     }
 
-        if (!risk) {
+    if (!risk) {
         return (
             <Card className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
@@ -61,7 +61,8 @@ export const RiskScoreCard = () => {
     const config = levels[risk.level];
 
     return (
-        <Card 
+        <Card
+            id="widget-risk-score"
             className={cn(
                 "relative overflow-hidden rounded-card-premium text-white shadow-[0_24px_48px_-32px_rgba(15,23,42,0.35)] transition-all duration-500",
                 config.bg
@@ -107,9 +108,9 @@ export const RiskScoreCard = () => {
                             <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
                                 <div className="flex items-center gap-1.5 mb-1.5">
                                     <p className="text-label text-white/40">Laju Pengeluaran</p>
-                                    <HelpTooltip 
-                                        content="Laju rata-rata pengeluaran harianmu dalam 14 hari terakhir." 
-                                        iconClassName="text-white/20 hover:text-white/40" 
+                                    <HelpTooltip
+                                        content="Laju rata-rata pengeluaran harianmu dalam 14 hari terakhir."
+                                        iconClassName="text-white/20 hover:text-white/40"
                                     />
                                 </div>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
@@ -117,9 +118,9 @@ export const RiskScoreCard = () => {
                             <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
                                 <div className="flex items-center gap-1.5 mb-1.5">
                                     <p className="text-label text-white/40">Momentum</p>
-                                    <HelpTooltip 
-                                        content="Indikator seberapa stabil arus kasmu saat ini (100% = sangat stabil)." 
-                                        iconClassName="text-white/20 hover:text-white/40" 
+                                    <HelpTooltip
+                                        content="Indikator seberapa stabil arus kasmu saat ini (100% = sangat stabil)."
+                                        iconClassName="text-white/20 hover:text-white/40"
                                     />
                                 </div>
                                 <p className="text-sm font-semibold tabular-nums text-white">{(risk.velocity * 100).toFixed(0)}% <span className="text-xs font-medium opacity-40 uppercase">RASIO</span></p>

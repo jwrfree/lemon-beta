@@ -44,7 +44,7 @@ export function FinancialPulse({
     const expenseDiff = expense - prevMonthExpense;
 
     return (
-        <div className="group relative overflow-hidden rounded-card-premium border border-white/5 bg-teal-950 p-8 text-white shadow-none">
+        <div id="widget-financial-pulse" className="group relative overflow-hidden rounded-card-premium border border-white/5 bg-teal-950 p-8 text-white shadow-none">
             {/* Dynamic Background Background */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-success/10 rounded-full blur-[100px] -mr-48 -mt-48 animate-pulse duration-[4000ms]" />
             <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-teal-300/5 rounded-full blur-[80px] -ml-24 -mb-24" />

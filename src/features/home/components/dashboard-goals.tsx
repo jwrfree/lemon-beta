@@ -28,7 +28,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         .slice(0, 3);
 
     return (
-        <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+        <Card id="widget-goals" className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-sm font-medium flex items-center gap-2">

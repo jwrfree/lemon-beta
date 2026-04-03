@@ -54,7 +54,7 @@ interface CashflowPoint {
 }
 
 export const DesktopDashboard = () => {
-    const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date('2026-03-28T10:00:00'));
+    const [lastRefreshed, setLastRefreshed] = useState<Date>(() => new Date());
     const router = useRouter();
 
     const now = lastRefreshed;
@@ -87,6 +87,25 @@ export const DesktopDashboard = () => {
             setLastRefreshed(new Date());
         });
     };
+
+    // ─── Chat bridge event listeners ─────────────────────────────────────
+    useEffect(() => {
+        const handleAnalystViewEvent = (e: Event) => {
+            const val = (e as CustomEvent<boolean>).detail;
+            setIsAnalystView(val);
+        };
+        window.addEventListener('lemon:set-analyst-view', handleAnalystViewEvent);
+        return () => window.removeEventListener('lemon:set-analyst-view', handleAnalystViewEvent);
+    }, []);
+
+    useEffect(() => {
+        const handleWalletFilterEvent = (e: Event) => {
+            const val = (e as CustomEvent<string>).detail;
+            if (val) setSelectedWalletId(val);
+        };
+        window.addEventListener('lemon:set-wallet-filter', handleWalletFilterEvent);
+        return () => window.removeEventListener('lemon:set-wallet-filter', handleWalletFilterEvent);
+    }, []);
 
     const filteredTransactions = useMemo(() => {
         if (selectedWalletId === 'all') return transactions;
@@ -195,7 +214,14 @@ export const DesktopDashboard = () => {
     const activeBudgets = useMemo(() => {
         return budgets.map(b => {
             const spent = filteredTransactions
-                .filter(t => t.type === 'expense' && b.categories.includes(t.category) && isSameMonth(parseISO(t.date), now))
+                .filter(t => {
+                    if (t.type !== 'expense') return false;
+                    if (!b.categories.includes(t.category)) return false;
+                    if (!isSameMonth(parseISO(t.date), now)) return false;
+                    // If budget has a sub-category filter, match it
+                    if (b.subCategory) return t.subCategory === b.subCategory;
+                    return true;
+                })
                 .reduce((acc, t) => acc + t.amount, 0);
             return { ...b, spent };
         }).sort((a, b) => ((b.spent || 0) / b.targetAmount) - ((a.spent || 0) / a.targetAmount)).slice(0, 3);
@@ -204,16 +230,28 @@ export const DesktopDashboard = () => {
     const activeGoals = useMemo(() => goals.filter(g => (g.currentAmount || 0) < g.targetAmount).slice(0, 3), [goals]);
 
     const reminderSummary = useMemo(() => {
-        const upcoming = reminders.filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), now) >= 0).length;
-        return { upcomingCount: upcoming, overdueCount: 0, nextReminder: undefined };
+        const now2 = now;
+        const upcoming = reminders.filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), now2) >= 0 && differenceInCalendarDays(parseISO(r.dueDate), now2) <= 7).length;
+        const overdue = reminders.filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), now2) < 0).length;
+        const nextReminder = reminders
+            .filter(r => r.dueDate && r.status !== 'completed' && differenceInCalendarDays(parseISO(r.dueDate), now2) >= 0)
+            .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime())[0];
+        return { upcomingCount: upcoming, overdueCount: overdue, nextReminder };
     }, [reminders, now]);
 
-    const debtSummary = useMemo(() => ({ nextDueDebt: undefined, largestDebt: undefined }), []);
+    const debtSummary = useMemo(() => {
+        const active = debts.filter(d => d.status !== 'settled' && (d.outstandingBalance ?? d.principal ?? 0) > 0);
+        const nextDueDebt = active
+            .filter(d => d.dueDate)
+            .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime())[0];
+        const largestDebt = active
+            .sort((a, b) => (b.outstandingBalance ?? b.principal ?? 0) - (a.outstandingBalance ?? a.principal ?? 0))[0];
+        return { nextDueDebt, largestDebt };
+    }, [debts]);
 
     const recentTransactions = useMemo(() => filteredTransactions.slice(0, 10), [filteredTransactions]);
 
     if (!mounted || isTxLoading) return <DashboardSkeleton />;
-
     const colorPalette = ['bg-chart-1', 'bg-chart-2', 'bg-chart-3', 'bg-chart-4', 'bg-chart-5'];
 
     return (
