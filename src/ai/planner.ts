@@ -25,6 +25,62 @@ type ExecuteChatPlannerParams = {
   sessionId?: string | null;
 };
 
+const normalizePlannerQuestion = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const hasAnyKeyword = (text: string, keywords: string[]) =>
+  keywords.some((keyword) => text.includes(keyword));
+
+const isGoalQuestion = (question: string) => {
+  const normalized = normalizePlannerQuestion(question);
+  return hasAnyKeyword(normalized, [
+    "goal",
+    "target",
+    "tabungan",
+    "nabung",
+    "tujuan",
+    "mimpi",
+    "progress goal",
+    "progres goal",
+  ]);
+};
+
+const loadBudgetSupportContext = async (userId: string, supabase: ChatPlannerClient) => {
+  const context = await financialContextService.getUnifiedContext(userId, supabase);
+  if (!context) {
+    return null;
+  }
+
+  return {
+    budgets: context.budgets,
+    risk: context.risk,
+    goals: context.goals,
+    monthly: context.monthly,
+    instruction:
+      "Gunakan budgets sebagai konteks utama, lalu kaitkan dengan risk score dan progres goal aktif sebelum menyusun jawaban.",
+  };
+};
+
+const loadGoalSupportContext = async (userId: string, supabase: ChatPlannerClient) => {
+  const context = await financialContextService.getUnifiedContext(userId, supabase);
+  if (!context) {
+    return null;
+  }
+
+  return {
+    goals: context.goals,
+    budgets: context.budgets,
+    risk: context.risk,
+    monthly: context.monthly,
+    instruction:
+      "Jawab progres goal dengan dukungan budget health dan risk score agar saran tetap realistis terhadap arus kas user.",
+  };
+};
+
 export const executeChatPlanner = async ({
   userId,
   supabase,
@@ -70,6 +126,21 @@ export const executeChatPlanner = async ({
       });
     }
     case "deterministic-context": {
+      if (decision.intent.kind === "budget-risk") {
+        const budgetReview = await loadBudgetSupportContext(userId, supabase);
+        return handleLlmChatAction({
+          userId,
+          supabase,
+          messages,
+          memorySummary,
+          userProfile,
+          supplementalContext: budgetReview
+            ? { budget_review: budgetReview }
+            : undefined,
+          sessionId,
+        });
+      }
+
       const response = await handleDeterministicContextAction({
         userId,
         supabase,
@@ -82,6 +153,21 @@ export const executeChatPlanner = async ({
     }
     case "llm":
     default:
+      if (isGoalQuestion(lastUserMessage)) {
+        const goalReview = await loadGoalSupportContext(userId, supabase);
+        return handleLlmChatAction({
+          userId,
+          supabase,
+          messages,
+          memorySummary,
+          userProfile,
+          supplementalContext: goalReview
+            ? { goal_review: goalReview }
+            : undefined,
+          sessionId,
+        });
+      }
+
       return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
   }
 };

@@ -95,4 +95,13 @@ describe('buildChatSystemPrompt', () => {
         expect(prompt).toContain('high = perlu tindakan sekarang');
         expect(prompt).toContain('target_action');
     });
+
+    it('includes explicit coaching directives for pattern recognition and actionable next steps', () => {
+        const prompt = buildChatSystemPrompt();
+
+        expect(prompt).toContain('## Coaching Directives');
+        expect(prompt).toContain('Pattern recognition');
+        expect(prompt).toContain('Actionable next steps');
+        expect(prompt).toContain('Cross-tool chaining');
+    });
 });

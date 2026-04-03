@@ -67,6 +67,8 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **Planner-side coaching context chaining**
+  - Added explicit coaching directives to the Lemon Coach system prompt and moved budget/goal support context chaining into the planner, so budget answers now arrive with risk + goal progress and goal answers arrive with budget health before the model writes its response.
 - **AI anomaly review groundwork**
   - Added the `detect_spending_anomalies` RPC plus `get_spending_anomalies` Lemon Coach tool, and routed broad "cek keuangan saya" style prompts into a server-prepared anomaly review path with severity/action guidance instead of treating them like generic health-check or transaction-search queries.
 - **Typed response wrapper policy**
