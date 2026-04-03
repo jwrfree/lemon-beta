@@ -40,6 +40,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Standardized runtime icon imports behind `src/lib/icons.ts`, kept Phosphor as the single UI icon library, and migrated remaining Lucide call sites to compatibility aliases so product surfaces render from one visual system.
 - **DS-1 modal shell consistency**
   - Migrated add/edit budget and add/edit wallet flows onto the shared bottom `Sheet` pattern with backdrop dismissal and local swipe-to-close behavior, and documented the current modal hierarchy in `src/components/ui/MODAL_STANDARD.md`.
+- **DS-1 home table overflow**
+  - Moved the dashboard recent-transactions widget onto the shared table overflow wrapper so the card stays usable on 375px mobile viewports without forcing page-level horizontal overflow.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

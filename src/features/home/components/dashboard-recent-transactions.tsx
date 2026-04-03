@@ -9,6 +9,7 @@ import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { useUI } from '@/components/ui-provider';
+import { Table } from '@/components/ui/table';
 import { ArrowElbowDownRight, ArrowRight, MapPin } from '@/lib/icons';
 import type { Transaction, Wallet } from '@/types/models';
 import {
@@ -186,7 +187,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
 
     return (
         <div id="widget-recent-transactions" className="overflow-hidden rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
-            <table className="w-full text-sm text-left">
+            <Table className="min-w-[720px] text-left text-sm">
                 <thead className="bg-muted/50 text-muted-foreground font-medium">
                     <tr>
                         <th className="p-4 pl-6 font-medium text-xs text-label">Detail Transaksi</th>
@@ -212,7 +213,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                         />
                     ))}
                 </tbody>
-            </table>
+            </Table>
 
             <div className="bg-muted/20 p-3 text-center">
                 <Button
