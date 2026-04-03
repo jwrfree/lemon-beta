@@ -1,26 +1,21 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/providers/auth-provider';
-import { createClient } from '@/lib/supabase/client';
-import type { Transaction, TransactionRow } from '@/types/models';
+import type { Transaction } from '@/types/models';
 import { transactionEvents } from '@/lib/transaction-events';
+import { transactionService } from '../services/transaction.service';
+import type { PaginatedTransactionFilters } from '../services/transaction.service';
 
 const PAGE_SIZE = 20;
 
-export interface TransactionFilters {
-    searchQuery?: string;
-    type?: string; // 'all', 'expense', 'income'
-    category?: string[];
-    walletId?: string[];
-}
+export type { PaginatedTransactionFilters as TransactionFilters } from '../services/transaction.service';
 
-export const usePaginatedTransactions = (filters: TransactionFilters) => {
+export const usePaginatedTransactions = (filters: PaginatedTransactionFilters) => {
     const { user } = useAuth();
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(0); // 0-indexed for Supabase range
     const [error, setError] = useState<string | null>(null);
-    const supabase = createClient();
 
     // Ref for AbortController
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -48,72 +43,35 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
         setError(null);
 
         try {
-            let query = supabase
-                .from('transactions')
-                .select('*', { count: 'exact' })
-                .eq('user_id', user.id)
-                .order('date', { ascending: false })
-                .range(pageIndex * PAGE_SIZE, (pageIndex + 1) * PAGE_SIZE - 1)
-                .abortSignal(signal);
-
-            // Apply Filters
-            if (debouncedSearchQuery) {
-                // Search in description OR category
-                // Supabase 'or' syntax: description.ilike.%query%,category.ilike.%query%
-                query = query.or(`description.ilike.%${debouncedSearchQuery}%,category.ilike.%${debouncedSearchQuery}%`);
-            }
-
-            if (filters.type && filters.type !== 'all') {
-                query = query.eq('type', filters.type);
-            }
-
-            if (filters.category && filters.category.length > 0) {
-                query = query.in('category', filters.category);
-            }
-
-            if (filters.walletId && filters.walletId.length > 0) {
-                query = query.in('wallet_id', filters.walletId);
-            }
-
-            const { data, error, count } = await query;
+            // migrated from direct supabase call
+            const { transactions: paginatedTransactions, count } = await transactionService.getPaginatedTransactions(
+                user.id,
+                pageIndex,
+                PAGE_SIZE,
+                {
+                    type: filters.type,
+                    category: filters.category,
+                    walletId: filters.walletId,
+                    searchQuery: debouncedSearchQuery,
+                },
+                signal,
+            );
 
             // If aborted, stop here
             if (signal.aborted) return;
 
-            if (error) throw error;
+            if (isReset) {
+                setTransactions(paginatedTransactions);
+            } else {
+                setTransactions(prev => [...prev, ...paginatedTransactions]);
+            }
 
-            if (data) {
-                const mappedTx = data.map((t: TransactionRow) => ({
-                    id: t.id,
-                    amount: t.amount,
-                    category: t.category,
-                    date: t.date,
-                    description: t.description,
-                    type: t.type,
-                    walletId: t.wallet_id,
-                    userId: t.user_id,
-                    createdAt: t.created_at,
-                    subCategory: t.sub_category || undefined,
-                    location: t.location || undefined,
-                    isNeed: t.is_need,
-                    merchant: (t as any).merchant || undefined,
-                }));
-
-                if (isReset) {
-                    setTransactions(mappedTx);
-                } else {
-                    setTransactions(prev => [...prev, ...mappedTx]);
-                }
-
-                // Check if we reached the end
-                // If we got fewer items than requested, or the total count is reached
-                if (data.length < PAGE_SIZE) {
-                    setHasMore(false);
-                } else if (count !== null && (pageIndex + 1) * PAGE_SIZE >= count) {
-                    setHasMore(false);
-                } else {
-                    setHasMore(true);
-                }
+            if (paginatedTransactions.length < PAGE_SIZE) {
+                setHasMore(false);
+            } else if (count !== null && (pageIndex + 1) * PAGE_SIZE >= count) {
+                setHasMore(false);
+            } else {
+                setHasMore(true);
             }
         } catch (err: unknown) {
             // Ignore abort errors
@@ -133,7 +91,7 @@ export const usePaginatedTransactions = (filters: TransactionFilters) => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, debouncedSearchQuery, filters.type, categoriesJson, walletsJson, supabase]);
+    }, [user, debouncedSearchQuery, filters.type, filters.category, filters.walletId, categoriesJson, walletsJson]);
 
     // Reset and fetch when filters change
     useEffect(() => {

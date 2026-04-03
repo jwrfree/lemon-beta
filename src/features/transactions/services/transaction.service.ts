@@ -14,6 +14,12 @@ export type ExpenseIncomeTransactionValues = Extract<
     UnifiedTransactionFormValues,
     { type: 'income' | 'expense' }
 >;
+export interface PaginatedTransactionFilters {
+    searchQuery?: string;
+    type?: string;
+    category?: string[];
+    walletId?: string[];
+}
 
 export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
     id: t.id,
@@ -30,6 +36,10 @@ export const mapTransactionFromDb = (t: TransactionRow): Transaction => ({
     location: t.location || undefined,
     isNeed: t.is_need
 });
+
+const mapTransactionsFromDb = (transactions: TransactionRow[]): Transaction[] => (
+    transactions.map(mapTransactionFromDb)
+);
 
 const formatTransactionError = (err: any): string => {
     const msg = err?.message || JSON.stringify(err);
@@ -288,7 +298,90 @@ class TransactionService {
             .order('date', { ascending: false });
 
         if (error) throw error;
-        return (data || []).map(mapTransactionFromDb);
+        return mapTransactionsFromDb(data || []);
+    }
+
+    async getTransactionsInRange(userId: string, startDate: string, endDate: string): Promise<Transaction[]> {
+        const { data, error } = await this.supabase
+            .from('transactions')
+            .select('*')
+            .eq('user_id', userId)
+            .gte('date', startDate)
+            .lte('date', endDate)
+            .order('date', { ascending: false })
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return mapTransactionsFromDb((data as TransactionRow[]) || []);
+    }
+
+    async getTransactionsForMonth(userId: string, startDate: string, endDate: string): Promise<Transaction[]> {
+        const { data, error } = await this.supabase
+            .from('transactions')
+            .select('*')
+            .eq('user_id', userId)
+            .gte('date', startDate)
+            .lte('date', endDate)
+            .order('date', { ascending: false });
+
+        if (error) throw error;
+        return mapTransactionsFromDb((data as TransactionRow[]) || []);
+    }
+
+    async getRecentTransactions(userId: string, limit: number): Promise<Transaction[]> {
+        const { data, error } = await this.supabase
+            .from('transactions')
+            .select('*')
+            .eq('user_id', userId)
+            .order('date', { ascending: false })
+            .limit(limit);
+
+        if (error) throw error;
+        return mapTransactionsFromDb((data as TransactionRow[]) || []);
+    }
+
+    async getPaginatedTransactions(
+        userId: string,
+        pageIndex: number,
+        pageSize: number,
+        filters: PaginatedTransactionFilters,
+        signal?: AbortSignal,
+    ): Promise<{ transactions: Transaction[]; count: number | null }> {
+        let query = this.supabase
+            .from('transactions')
+            .select('*', { count: 'exact' })
+            .eq('user_id', userId)
+            .order('date', { ascending: false })
+            .range(pageIndex * pageSize, (pageIndex + 1) * pageSize - 1);
+
+        if (signal) {
+            query = query.abortSignal(signal);
+        }
+
+        if (filters.searchQuery) {
+            query = query.or(`description.ilike.%${filters.searchQuery}%,category.ilike.%${filters.searchQuery}%`);
+        }
+
+        if (filters.type && filters.type !== 'all') {
+            query = query.eq('type', filters.type);
+        }
+
+        if (filters.category && filters.category.length > 0) {
+            query = query.in('category', filters.category);
+        }
+
+        if (filters.walletId && filters.walletId.length > 0) {
+            query = query.in('wallet_id', filters.walletId);
+        }
+
+        const { data, error, count } = await query;
+
+        if (error) throw error;
+
+        return {
+            transactions: mapTransactionsFromDb((data as TransactionRow[]) || []),
+            count,
+        };
     }
 
     /**

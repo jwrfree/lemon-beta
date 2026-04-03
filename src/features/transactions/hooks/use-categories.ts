@@ -5,6 +5,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Category } from '@/lib/categories';
 import { resolveCategoryVisuals } from '@/lib/category-utils';
+import { categoryService } from '../services/category.service';
 
 export const useCategories = () => {
     const { user } = useAuth();
@@ -15,19 +16,9 @@ export const useCategories = () => {
     const fetchCategories = useCallback(async () => {
         if (!user) return;
         try {
-            const { data, error } = await supabase
-                .from('categories')
-                .select('*')
-                .order('name', { ascending: true });
-
-            if (error) {
-                console.error("Error fetching categories:", error);
-                return;
-            }
-
-            if (data) {
-                setCategories(data);
-            }
+            // migrated from direct supabase call
+            const data = await categoryService.getCategories();
+            setCategories(data);
         } catch (err) {
             console.error("Unexpected error fetching categories:", err);
         } finally {

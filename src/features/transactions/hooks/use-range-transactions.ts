@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import { getOfflineCacheKey, readOfflineSnapshot, writeOfflineSnapshot } from '@/lib/offline-cache';
-import type { Transaction, TransactionRow } from '@/types/models';
+import type { Transaction } from '@/types/models';
 import { format, endOfDay } from 'date-fns';
 import { transactionEvents } from '@/lib/transaction-events';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { transactionService } from '../services/transaction.service';
 
 export const useRangeTransactions = (startDate: Date, endDate: Date) => {
     const { user, isLoading: authLoading } = useAuth();
@@ -23,37 +24,11 @@ export const useRangeTransactions = (startDate: Date, endDate: Date) => {
     const {
         data: transactions = [],
         isLoading: isTxLoading,
-        refetch
     } = useQuery<Transaction[]>({
         queryKey,
         queryFn: async (): Promise<Transaction[]> => {
-            const { data, error } = await supabase
-                .from('transactions')
-                .select('*')
-                .eq('user_id', user!.id)
-                .gte('date', startStr)
-                .lte('date', endStr)
-                .order('date', { ascending: false })
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-
-            const mappedTransactions = (data as TransactionRow[]).map((t) => ({
-                id: t.id,
-                amount: t.amount,
-                category: t.category,
-                date: t.date,
-                description: t.description,
-                type: t.type,
-                walletId: t.wallet_id,
-                userId: t.user_id,
-                createdAt: t.created_at,
-                subCategory: t.sub_category || undefined,
-                location: t.location || undefined,
-                isNeed: t.is_need,
-                merchant: (t as any).merchant || undefined,
-                linkedDebtId: (t as any).linked_debt_id || undefined,
-            }));
+            // migrated from direct supabase call
+            const mappedTransactions = await transactionService.getTransactionsInRange(user!.id, startStr, endStr);
 
             if (cacheKey) {
                 writeOfflineSnapshot(cacheKey, mappedTransactions);

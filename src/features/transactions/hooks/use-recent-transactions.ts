@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { createClient } from '@/lib/supabase/client';
 import type { Transaction } from '@/types/models';
-import { mapTransactionFromDb } from '../services/transaction.service';
+import { transactionService } from '../services/transaction.service';
 
 export const useRecentTransactions = (limit: number = 5) => {
     const { user, isLoading: authLoading } = useAuth();
@@ -14,18 +14,9 @@ export const useRecentTransactions = (limit: number = 5) => {
         if (!user) return;
         
         try {
-            const { data, error } = await supabase
-                .from('transactions')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('date', { ascending: false })
-                .limit(limit);
-
-            if (error) throw error;
-
-            if (data) {
-                setTransactions(data.map(mapTransactionFromDb));
-            }
+            // migrated from direct supabase call
+            const recentTransactions = await transactionService.getRecentTransactions(user.id, limit);
+            setTransactions(recentTransactions);
         } catch (err) {
             console.error("Error fetching recent transactions:", err);
         } finally {
