@@ -45,6 +45,8 @@ Typed response shape:
 }
 ```
 
+Supported rich component types now include `BudgetStatus`, `WealthSummary`, `RecentTransactions`, `ScenarioSimulation`, `SubscriptionAnalysis`, `FinancialHealth`, `TrendChart`, `GoalProgress`, `AnomalyAlert`, and `InsightSummary`. The new Phase 4 cards all read typed component payloads directly from the assistant response; only the legacy Phase 1 cards still rely on their earlier client fetch patterns.
+
 **Optimistic updates:** balance totals are written to local state immediately on transaction save; Supabase confirms in the background. No Realtime subscription is needed for the happy path.
 Wallet reads now flow through a single React Query cache in `useWallets`, while `WalletProvider` only coordinates optimistic balance sync and cache invalidation for transaction-side updates.
 Asset and liability reads now flow through the `useAssets` React Query cache, and the legacy `AssetProvider` remains only as a compatibility wrapper with no Supabase ownership.

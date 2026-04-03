@@ -7,6 +7,10 @@ export const RichComponentTypeSchema = z.enum([
   'ScenarioSimulation',
   'SubscriptionAnalysis',
   'FinancialHealth',
+  'TrendChart',
+  'GoalProgress',
+  'AnomalyAlert',
+  'InsightSummary',
 ]);
 
 export const RichComponentSchema = z.object({

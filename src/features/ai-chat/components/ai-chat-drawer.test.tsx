@@ -26,6 +26,22 @@ vi.mock('./rich-results/FinancialHealthCard', () => ({
     FinancialHealthCard: () => <div data-testid="financial-health-card">Financial health</div>,
 }));
 
+vi.mock('./rich-results/TrendChart', () => ({
+    TrendChart: () => <div data-testid="trend-chart-card">Trend chart</div>,
+}));
+
+vi.mock('./rich-results/GoalProgressCard', () => ({
+    GoalProgressCard: () => <div data-testid="goal-progress-card">Goal progress</div>,
+}));
+
+vi.mock('./rich-results/AnomalyAlertCard', () => ({
+    AnomalyAlertCard: () => <div data-testid="anomaly-alert-card">Anomaly alert</div>,
+}));
+
+vi.mock('./rich-results/InsightSummaryCard', () => ({
+    InsightSummaryCard: () => <div data-testid="insight-summary-card">Insight summary</div>,
+}));
+
 import {
     RichMessageContent,
     extractAppActionsFromMessage,
@@ -86,6 +102,19 @@ describe('AI chat rich message parsing', () => {
 
         expect(screen.getByText('Mutasi terbaru.')).toBeDefined();
         expect(screen.getByTestId('recent-transactions-card')).toBeDefined();
+    });
+
+    it('renders newly typed insight components from the response envelope', () => {
+        render(
+            <RichMessageContent
+                text={'<response>{"text":"Ada insight penting.","components":[{"type":"TrendChart"},{"type":"GoalProgress"},{"type":"AnomalyAlert"},{"type":"InsightSummary"}]}</response>'}
+            />
+        );
+
+        expect(screen.getByTestId('trend-chart-card')).toBeDefined();
+        expect(screen.getByTestId('goal-progress-card')).toBeDefined();
+        expect(screen.getByTestId('anomaly-alert-card')).toBeDefined();
+        expect(screen.getByTestId('insight-summary-card')).toBeDefined();
     });
 
     it('extracts tool-based app actions from assistant message parts', () => {

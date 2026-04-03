@@ -67,6 +67,8 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **Typed Phase 4 rich insight cards**
+  - Added typed `TrendChart`, `GoalProgress`, `AnomalyAlert`, and `InsightSummary` Lemon Coach components plus the `get_category_trend` tool, so richer coaching replies can render deeper insight cards through the structured response contract instead of legacy tag strings.
 - **Planner-side coaching context chaining**
   - Added explicit coaching directives to the Lemon Coach system prompt and moved budget/goal support context chaining into the planner, so budget answers now arrive with risk + goal progress and goal answers arrive with budget health before the model writes its response.
 - **AI anomaly review groundwork**

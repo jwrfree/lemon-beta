@@ -52,6 +52,10 @@ import { RecentTransactionsList } from './rich-results/RecentTransactionsList';
 import { ScenarioSimulationCard } from './rich-results/ScenarioSimulationCard';
 import { SubscriptionAnalysisCard } from './rich-results/SubscriptionAnalysisCard';
 import { FinancialHealthCard } from './rich-results/FinancialHealthCard';
+import { TrendChart } from './rich-results/TrendChart';
+import { GoalProgressCard } from './rich-results/GoalProgressCard';
+import { AnomalyAlertCard } from './rich-results/AnomalyAlertCard';
+import { InsightSummaryCard } from './rich-results/InsightSummaryCard';
 
 interface AIChatDrawerProps {
     isOpen: boolean;
@@ -259,7 +263,11 @@ export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => 
     }
 };
 
-const renderRichComponent = (component: RichComponent, idx: number) => {
+const renderRichComponent = (
+    component: RichComponent,
+    idx: number,
+    bridge?: AppActionBridge,
+) => {
     switch (component.type) {
         case 'BudgetStatus':
             return <div key={idx} className="my-3 first:mt-0 last:mb-0"><BudgetStatusCard /></div>;
@@ -273,12 +281,40 @@ const renderRichComponent = (component: RichComponent, idx: number) => {
             return <div key={idx} className="my-3 first:mt-0 last:mb-0"><SubscriptionAnalysisCard data={component.data as never} /></div>;
         case 'FinancialHealth':
             return <div key={idx} className="my-3 first:mt-0 last:mb-0"><FinancialHealthCard data={component.data as never} /></div>;
+        case 'TrendChart':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><TrendChart data={component.data as never} /></div>;
+        case 'GoalProgress':
+            return <div key={idx} className="my-3 first:mt-0 last:mb-0"><GoalProgressCard data={component.data as never} /></div>;
+        case 'AnomalyAlert':
+            return (
+                <div key={idx} className="my-3 first:mt-0 last:mb-0">
+                    <AnomalyAlertCard
+                        data={component.data as never}
+                        onAction={bridge ? (action) => executeAppAction(action, bridge) : undefined}
+                    />
+                </div>
+            );
+        case 'InsightSummary':
+            return (
+                <div key={idx} className="my-3 first:mt-0 last:mb-0">
+                    <InsightSummaryCard
+                        data={component.data as never}
+                        onAction={bridge ? (action) => executeAppAction(action, bridge) : undefined}
+                    />
+                </div>
+            );
         default:
             return null;
     }
 };
 
-export const RichMessageContent = ({ text }: { text: string }) => {
+export const RichMessageContent = ({
+    text,
+    bridge,
+}: {
+    text: string;
+    bridge?: AppActionBridge;
+}) => {
     const { response, isPending } = resolveChatResponse(text);
 
     if (isPending) {
@@ -300,7 +336,7 @@ export const RichMessageContent = ({ text }: { text: string }) => {
                     {response.text}
                 </ReactMarkdown>
             )}
-            {response.components?.map(renderRichComponent)}
+            {response.components?.map((component, idx) => renderRichComponent(component, idx, bridge))}
         </>
     );
 };
@@ -501,7 +537,10 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                         ) : isPending ? (
                                                             <ShinyText text="Lemon Coach sedang berpikir..." />
                                                         ) : rawMessageText ? (
-                                                            <RichMessageContent text={rawMessageText} />
+                                                            <RichMessageContent
+                                                                text={rawMessageText}
+                                                                bridge={{ router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast }}
+                                                            />
                                                         ) : (
                                                             isLoading && <ShinyText text="Lemon Coach sedang berpikir..." />
                                                         )}

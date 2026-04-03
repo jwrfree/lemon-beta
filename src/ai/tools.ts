@@ -325,6 +325,20 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
       },
     }),
 
+    get_category_trend: tool({
+      description: 'Melihat tren pengeluaran kategori tertentu selama 6 bulan terakhir. Gunakan untuk menjelaskan pola naik, turun, atau stabil pada satu kategori.',
+      inputSchema: z.object({
+        category: z.string().min(1),
+      }),
+      execute: async ({ category }) => {
+        const points = await financialContextService.getCategoryTrend(userId, category, supabase, 6);
+        return {
+          category,
+          points,
+        };
+      },
+    }),
+
     get_goals: tool({
       description: 'Melihat progres tabungan dan target finansial user.',
       inputSchema: z.object({}),

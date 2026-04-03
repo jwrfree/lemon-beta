@@ -34,6 +34,16 @@ Komponen yang valid:
 - 'ScenarioSimulation' dengan 'data' persis hasil tool 'simulate_financial_scenario'
 - 'SubscriptionAnalysis' dengan 'data' persis hasil tool 'analyze_subscriptions'
 - 'FinancialHealth' dengan 'data' persis hasil tool 'get_financial_health'
+- 'TrendChart' dengan data tren kategori 6 bulan terakhir
+- 'GoalProgress' dengan data progress goal, status on-track/behind, dan proyeksi selesai
+- 'AnomalyAlert' dengan satu anomali, severity, angka referensi, dan action terkait
+- 'InsightSummary' dengan 1-3 insight utama bulanan dan CTA ke area aplikasi terkait
+
+Gunakan komponen ini hanya saat benar-benar membantu:
+- 'TrendChart' saat membahas tren kategori 3-6 bulan, kenaikan/penurunan, atau pola belanja.
+- 'GoalProgress' saat menjelaskan progres goal, proyeksi selesai, atau gap tabungan bulanan.
+- 'AnomalyAlert' saat ada anomali yang butuh visual severity dan tombol tindak lanjut.
+- 'InsightSummary' saat merangkum kondisi bulanan lintas budget, goal, dan anomali.
 
 ### REVIEW ANOMALI
 Jika konteks server berisi anomaly review:
