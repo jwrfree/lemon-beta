@@ -1,6 +1,6 @@
 'use server';
 
-import { createOpenAI } from "@ai-sdk/openai";
+import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateObject } from "ai";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ import {
   INDONESIAN_FORMAT_RULES 
 } from "@/ai/prompts";
 
-const deepseek = createOpenAI({
+const deepseek = createDeepSeek({
   apiKey: config.ai.deepseek.apiKey,
   baseURL: config.ai.deepseek.baseURL,
 });
