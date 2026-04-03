@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
-import { CalendarCheck } from '@phosphor-icons/react';
+import { CalendarCheck } from '@/lib/icons';
 
 interface SubscriptionAnalysisCardProps {
     data: {
@@ -56,3 +56,4 @@ export const SubscriptionAnalysisCard = ({ data }: SubscriptionAnalysisCardProps
         </Card>
     );
 };
+

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { CaretDown, CircleNotch, Sparkle } from '@phosphor-icons/react';
+import { CaretDown, CircleNotch, Sparkle } from '@/lib/icons';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { Category } from '@/lib/categories';
@@ -192,3 +192,4 @@ export function CategorySelector<T extends FieldValues>({
         />
     );
 }
+

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bank, CircleNotch, CurrencyCircleDollar, DeviceMobile, TrendUp, Wallet, X } from '@phosphor-icons/react';
+import { ArrowLeft, Bank, CircleNotch, CurrencyCircleDollar, DeviceMobile, TrendUp, Wallet, X } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -248,4 +248,5 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+
 

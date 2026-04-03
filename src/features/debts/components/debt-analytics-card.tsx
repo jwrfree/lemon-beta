@@ -12,7 +12,7 @@ import {
     Warning,
     Target,
     Wallet,
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import {
     subMonths,
@@ -293,4 +293,5 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
         </div>
     );
 };
+
 

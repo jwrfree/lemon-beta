@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { useUI } from '@/components/ui-provider';
 import { format, formatDistanceToNow, isBefore, parseISO, addDays, isSameDay, startOfDay, differenceInCalendarDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarClock, Clock, Check, Plus, BellRing, EllipsisVertical, Filter, AlertCircle, Sparkles } from 'lucide-react';
+import { CalendarClock, Clock, Check, Plus, BellRing, EllipsisVertical, Filter, AlertCircle, Sparkles } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { EmptyState } from '@/components/empty-state';
 import type { Reminder, Debt } from '@/types/models';
@@ -331,5 +331,6 @@ export const RemindersDashboard = () => {
         </div>
     );
 };
+
 
 

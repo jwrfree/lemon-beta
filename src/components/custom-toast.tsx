@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUI } from './ui-provider';
-import { CheckCircle, Info, XCircle } from '@phosphor-icons/react';
+import { CheckCircle, Info, XCircle } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -74,3 +74,4 @@ export const CustomToast = () => {
     </AnimatePresence>
   );
 };
+

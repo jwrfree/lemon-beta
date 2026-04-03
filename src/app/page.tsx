@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LoaderCircle, ArrowUpRight, ShieldCheck, Sparkles, WalletCards } from 'lucide-react';
+import { LoaderCircle, ArrowUpRight, ShieldCheck, Sparkles, WalletCards } from '@/lib/icons';
 import { LoginPage } from '@/features/auth/components/login-page';
 import { SignUpPage } from '@/features/auth/components/signup-page';
 import { ForgotPasswordPage } from '@/features/auth/components/forgot-password-page';
@@ -244,3 +244,4 @@ export default function WelcomePage() {
         </main>
     );
 }
+

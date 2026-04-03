@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { useCategories } from '@/features/transactions';
 import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
-import { CaretRight, Fire } from '@phosphor-icons/react';
+import { CaretRight, Fire } from '@/lib/icons';
 import type { Budget, Transaction } from '@/types/models';
 
 import { calculateBudgetStats } from '@/features/budgets';
@@ -170,3 +170,4 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
         </motion.div>
     );
 };
+

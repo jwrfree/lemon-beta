@@ -3,7 +3,7 @@ import {
     Gamepad2, Home, GraduationCap, HeartPulse,
     Briefcase, Gift, PiggyBank, Wrench, ReceiptText, 
     ShieldCheck, Sparkles, HandCoins, ArrowRightLeft, Handshake
-} from 'lucide-react';
+} from '@/lib/icons';
 
 export const CATEGORY_ICONS = [
     { name: 'Utensils', icon: Utensils },

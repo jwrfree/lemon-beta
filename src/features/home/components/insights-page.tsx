@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Brain, CircleNotch } from '@phosphor-icons/react';
+import { Brain, CircleNotch } from '@/lib/icons';
 import { useRangeTransactions } from '@/features/transactions';
 import { startOfMonth, subDays, endOfDay, startOfDay } from 'date-fns';
 import { DashboardCashflow } from '@/features/home/components/dashboard-cashflow';
@@ -86,4 +86,5 @@ export const InsightsPage = () => {
         </div>
     );
 };
+
 

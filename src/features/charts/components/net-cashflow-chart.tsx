@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Scale } from 'lucide-react';
+import { Calendar, Scale } from '@/lib/icons';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -287,5 +287,6 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
         </Card>
     );
 };
+
 
 

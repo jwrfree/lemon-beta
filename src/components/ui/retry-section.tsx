@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -67,3 +67,4 @@ const RetrySection = React.forwardRef<HTMLDivElement, RetrySectionProps>(
 RetrySection.displayName = 'RetrySection';
 
 export { RetrySection };
+

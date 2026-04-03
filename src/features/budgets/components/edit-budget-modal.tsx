@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trash, X } from '@phosphor-icons/react';
+import { Trash, X } from '@/lib/icons';
 import { useCategories } from '@/features/transactions';
 import { useBudgets } from '@/features/budgets';
 import { Button } from '@/components/ui/button';
@@ -218,5 +218,6 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
     </motion.div>
   );
 };
+
 
 

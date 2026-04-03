@@ -11,7 +11,7 @@ import {
   Target, 
   X,
   Sparkles
-} from 'lucide-react';
+} from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -210,3 +210,4 @@ export const OnboardingChecklist = () => {
     </AnimatePresence>
   );
 };
+

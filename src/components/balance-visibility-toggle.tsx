@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeSlash } from '@phosphor-icons/react';
+import { Eye, EyeSlash } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 
@@ -42,3 +42,4 @@ export const BalanceVisibilityToggle: React.FC<BalanceVisibilityToggleProps> = (
     </Button>
   );
 };
+

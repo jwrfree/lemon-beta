@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from '@/lib/icons';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
@@ -152,4 +152,5 @@ export function FinancialPulse({
         </div>
     );
 }
+
 

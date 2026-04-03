@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 import { Wallet } from '@/types/models';
-import { Plus } from '@phosphor-icons/react';
+import { Plus } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 
 interface WalletSelectorProps<T extends FieldValues> {
@@ -83,3 +83,4 @@ export function WalletSelector<T extends FieldValues>({
         </div>
     );
 }
+

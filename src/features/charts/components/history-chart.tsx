@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3 } from '@/lib/icons';
 import { formatCurrency } from '@/lib/utils';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
@@ -80,5 +80,6 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
         </Card>
     );
 }
+
 
 

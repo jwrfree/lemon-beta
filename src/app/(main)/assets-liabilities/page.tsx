@@ -4,7 +4,7 @@
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Landmark, TrendingUp, MinusCircle, PlusCircle, WalletCards } from 'lucide-react';
+import { Plus, Landmark, TrendingUp, MinusCircle, PlusCircle, WalletCards } from '@/lib/icons';
 import { useAssets } from '@/features/assets/hooks/use-assets';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { formatCurrency, cn } from '@/lib/utils';
@@ -367,4 +367,5 @@ export default function AssetsLiabilitiesPage() {
         </div>
     );
 };
+
 

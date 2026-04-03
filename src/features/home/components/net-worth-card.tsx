@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
-import { TrendingUp, TrendingDown, Wallet, PiggyBank } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, PiggyBank } from '@/lib/icons';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { HelpTooltip } from '@/components/help-tooltip';
 
@@ -88,4 +88,5 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
         </Card>
     );
 };
+
 

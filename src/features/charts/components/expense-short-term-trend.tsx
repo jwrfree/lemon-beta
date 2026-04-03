@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { BarChart, ChartArea as ChartAreaIcon } from 'lucide-react';
+import { BarChart, ChartArea as ChartAreaIcon } from '@/lib/icons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -140,5 +140,6 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
         </Card>
     );
 };
+
 
 

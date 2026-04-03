@@ -3,7 +3,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowClockwise, Warning } from '@phosphor-icons/react';
+import { ArrowClockwise, Warning } from '@/lib/icons';
 
 interface Props {
     children: ReactNode;
@@ -68,3 +68,4 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.children;
     }
 }
+

@@ -2,7 +2,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { SearchX } from 'lucide-react';
+import { SearchX } from '@/lib/icons';
 import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
@@ -30,4 +30,5 @@ export default function NotFound() {
         </main>
     );
 }
+
 

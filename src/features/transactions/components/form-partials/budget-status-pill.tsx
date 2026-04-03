@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useBudgets } from '@/features/budgets';
 import { useInsights } from '@/features/insights';
-import { CheckCircle, TrendUp, WarningCircle } from '@phosphor-icons/react';
+import { CheckCircle, TrendUp, WarningCircle } from '@/lib/icons';
 
 interface BudgetStatusPillProps {
     category: string;
@@ -61,5 +61,6 @@ export const BudgetStatusPill = ({ category }: BudgetStatusPillProps) => {
         </AnimatePresence>
     );
 };
+
 
 

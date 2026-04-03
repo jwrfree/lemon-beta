@@ -4,7 +4,7 @@ import React from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Landmark, ShieldCheck } from 'lucide-react';
+import { TrendingUp, Landmark, ShieldCheck } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
@@ -120,5 +120,6 @@ export function NetWorthTrend({ data }: { data: NetWorthData[] }) {
         </Card>
     );
 }
+
 
 

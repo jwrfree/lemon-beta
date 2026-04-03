@@ -16,7 +16,7 @@ import {
     CaretRight,
     CheckCircle,
     PencilSimple,
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
@@ -411,3 +411,4 @@ export const DebtsDashboard = () => {
         </div>
     );
 };
+

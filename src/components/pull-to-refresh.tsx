@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { ArrowClockwise, ArrowDown } from '@phosphor-icons/react';
+import { ArrowClockwise, ArrowDown } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 
 interface PullToRefreshProps {
@@ -150,3 +150,4 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
     </div>
   );
 };
+

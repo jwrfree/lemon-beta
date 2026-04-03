@@ -8,7 +8,7 @@ import {
     Sparkle,
     TrendUp,
     WarningCircle,
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 import { formatCurrency } from '@/lib/utils';
 import { analyzeSubscriptions } from '@/lib/subscription-analysis';
 import type { Transaction } from '@/types/models';
@@ -152,3 +152,4 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
         </div>
     );
 };
+

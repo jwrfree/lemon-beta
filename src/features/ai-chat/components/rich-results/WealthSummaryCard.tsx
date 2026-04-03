@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
-import { Wallet, Bank, CreditCard, TrendUp } from '@phosphor-icons/react';
+import { Wallet, Bank, CreditCard, TrendUp } from '@/lib/icons';
 import { useFinancialContext } from '@/hooks/use-financial-context';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -63,3 +63,4 @@ export const WealthSummaryCard = () => {
         </Card>
     );
 };
+

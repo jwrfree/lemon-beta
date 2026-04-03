@@ -36,6 +36,8 @@ All updates and improvements to the Lemon app will be documented here.
 ### Fixed
 - **DS-1 mobile input baseline**
   - Raised the shared `Input` primitive to a 16px mobile text floor and added regression coverage so iOS no longer zooms on focus in shared form fields.
+- **DS-1 icon runtime consistency**
+  - Standardized runtime icon imports behind `src/lib/icons.ts`, kept Phosphor as the single UI icon library, and migrated remaining Lucide call sites to compatibility aliases so product surfaces render from one visual system.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

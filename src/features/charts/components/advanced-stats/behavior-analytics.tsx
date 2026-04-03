@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Coffee, Pizza, CalendarDays, Zap } from 'lucide-react';
+import { Coffee, Pizza, CalendarDays, Zap } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Cell } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -97,5 +97,6 @@ export function BehaviorAnalytics({ data }: { data: BehaviorData }) {
         </Card>
     );
 }
+
 
 

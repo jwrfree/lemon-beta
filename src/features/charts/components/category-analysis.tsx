@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, TrendingDown, TrendingUp, ArrowLeft } from 'lucide-react';
+import { ChevronRight, TrendingDown, TrendingUp, ArrowLeft } from '@/lib/icons';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -186,5 +186,6 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
         </Card>
     );
 };
+
 
 

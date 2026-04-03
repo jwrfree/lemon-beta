@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HandCoins, Target, FileText, Bell } from 'lucide-react';
+import { HandCoins, Target, FileText, Bell } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 
 // Feature Dashboards
@@ -89,4 +89,5 @@ export default function PlanPage() {
         </AppPageShell>
     );
 }
+
 

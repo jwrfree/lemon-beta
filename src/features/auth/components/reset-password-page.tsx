@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Lock, Eye, EyeOff, LoaderCircle, CheckCircle2 } from 'lucide-react';
+import { Lock, Eye, EyeOff, LoaderCircle, CheckCircle2 } from '@/lib/icons';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -166,3 +166,4 @@ export const ResetPasswordPage = () => {
         </div>
     );
 };
+

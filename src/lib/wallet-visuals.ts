@@ -1,5 +1,5 @@
 'use client';
-import { Bank, Building, CurrencyCircleDollar, DeviceMobile, House, TrendUp, Wallet } from '@phosphor-icons/react';
+import { Bank, Building, CurrencyCircleDollar, DeviceMobile, House, TrendUp, Wallet } from '@/lib/icons';
 
 interface Gradient {
     from: string;
@@ -170,3 +170,4 @@ export const getWalletVisuals = (itemName: string, itemCategoryKey?: string): Wa
         textColor: 'text-white'
     };
 };
+

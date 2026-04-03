@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Send, Loader2, Check, X, ArrowRight } from 'lucide-react';
+import { Sparkles, Send, Loader2, Check, X, ArrowRight } from '@/lib/icons';
 import { Input } from '@/components/ui/input';
 import {
     extractTransaction,
@@ -197,5 +197,6 @@ export const QuickAddWidget = () => {
         </Card>
     );
 };
+
 
 

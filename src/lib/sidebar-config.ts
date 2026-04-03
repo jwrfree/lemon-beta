@@ -12,7 +12,7 @@ import {
   User,
   Wallet,
   type Icon as PhosphorIcon,
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 
 export interface NavItem {
   id: string;
@@ -100,3 +100,4 @@ export const isTopLevelMobileRoute = (pathname: string) => {
 
   return pathname.split('/').filter(Boolean).length === 1;
 };
+

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowsLeftRight } from '@phosphor-icons/react';
+import { ArrowsLeftRight } from '@/lib/icons';
 
 interface TransactionTypeSelectorProps {
     type: 'expense' | 'income';
@@ -42,3 +42,4 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         </div>
     );
 };
+

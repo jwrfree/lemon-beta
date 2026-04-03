@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Wallet, ArrowUpCircle, Sparkles, ChevronRight } from 'lucide-react';
+import { Wallet, ArrowUpCircle, Sparkles, ChevronRight } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -82,5 +82,6 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
         </Card>
     );
 }
+
 
 

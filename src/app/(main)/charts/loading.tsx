@@ -1,4 +1,4 @@
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle } from '@/lib/icons';
 import { PageHeader } from "@/components/page-header";
 
 export default function ChartsLoading() {
@@ -11,3 +11,4 @@ export default function ChartsLoading() {
         </div>
     );
 }
+

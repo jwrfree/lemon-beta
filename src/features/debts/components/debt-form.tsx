@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CalendarBlank, CircleNotch, Trash, X } from '@phosphor-icons/react';
+import { CalendarBlank, CircleNotch, Trash, X } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -475,4 +475,5 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
         </motion.div>
     );
 };
+
 

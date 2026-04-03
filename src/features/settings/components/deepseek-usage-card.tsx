@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowClockwise, Lightning } from '@phosphor-icons/react';
+import { ArrowClockwise, Lightning } from '@/lib/icons';
 import { formatCurrency } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -134,3 +134,4 @@ export const DeepSeekUsageCard = () => {
         </Card>
     );
 };
+

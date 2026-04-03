@@ -6,7 +6,7 @@ import { id as localeId } from 'date-fns/locale';
 import { Category } from '@/lib/categories';
 import { Wallet } from '@/types/models';
 import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkle, PencilSimple, Check } from '@phosphor-icons/react';
+import { Wallet as WalletIcon, Calendar as CalendarIcon, ShieldCheck, Sparkle, PencilSimple, Check } from '@/lib/icons';
 import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -410,3 +410,4 @@ export const SemanticTransactionReview = ({
         </div>
     );
 };
+

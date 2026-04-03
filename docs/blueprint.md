@@ -121,7 +121,7 @@ Lemon adalah pendamping keuangan mobile-first yang mengutamakan kualitas "Premiu
   - **Desktop:** Card radius diperkecil menjadi 8 px dengan shadow yang lebih tajam (Enterprise Look).
   - **Mobile:** Card radius 16 px, modal 24–32 px (Touch Friendly).
   - Shadow lembut + solid background untuk depth yang bersih.
-- **Ikon & ilustrasi:** lucide-react 24 px, stroke 1.5 px; ilustrasi hero menggunakan path animasi dengan fallback statis.
+- **Ikon & ilustrasi:** Phosphor via `src/lib/icons.ts`, 24 px untuk ikon utama; ilustrasi hero menggunakan path animasi dengan fallback statis.
 
 ## 7. Data Model Considerations
 - **Reminders**: `title`, `userId`, `type`, `targetType`, `targetId`, `amount`, `dueDate`, `repeatRule`, `status`, `snoozeCount`, `channels`, `createdAt`, `updatedAt`.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { WifiOff, Home } from 'lucide-react';
+import { WifiOff, Home } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -35,3 +35,4 @@ export default function OfflinePage() {
     </div>
   );
 }
+

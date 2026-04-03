@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Calculator, Delete, Keyboard } from 'lucide-react';
+import { Calculator, Delete, Keyboard } from '@/lib/icons';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
 interface AmountInputProps<T extends FieldValues> {
@@ -283,3 +283,4 @@ export function AmountInput<T extends FieldValues>({
     </div>
   );
 }
+

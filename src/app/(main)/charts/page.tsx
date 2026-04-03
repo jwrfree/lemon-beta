@@ -3,7 +3,7 @@
 import React, { useMemo, Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { LoaderCircle, Flame, Calendar, Info, Layers, Zap, ArrowUpRight, Trophy, PieChart } from 'lucide-react';
+import { LoaderCircle, Flame, Calendar, Info, Layers, Zap, ArrowUpRight, Trophy, PieChart } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { parseISO, startOfMonth, endOfMonth, subMonths, format, differenceInDays, eachDayOfInterval, subDays } from 'date-fns';
@@ -712,3 +712,4 @@ export default function ChartsPage() {
         </Suspense>
     );
 }
+

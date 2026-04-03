@@ -3,7 +3,7 @@
 
 import type { ComponentType, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { CaretLeft } from '@phosphor-icons/react';
+import { CaretLeft } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { AppPageHeaderChrome } from '@/components/app-page-shell';
 import type { PageWidth } from '@/lib/layout-tokens';
@@ -96,3 +96,4 @@ export const PageHeader = ({
     </AppPageHeaderChrome>
   );
 };
+

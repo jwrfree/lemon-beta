@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { HandCoins, Plus, Sparkle, Target, TrendUp } from '@phosphor-icons/react';
+import { HandCoins, Plus, Sparkle, Target, TrendUp } from '@/lib/icons';
 import { useBudgets } from '@/features/budgets/hooks/use-budgets';
 import { formatCurrency, triggerHaptic, cn } from '@/lib/utils';
 import { Pie, PieChart, Cell } from "recharts"
@@ -225,5 +225,6 @@ export default function BudgetingPage() {
         </AppPageShell>
     );
 }
+
 
 

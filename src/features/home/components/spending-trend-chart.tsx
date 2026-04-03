@@ -5,7 +5,7 @@ import { AreaChart, Area, XAxis, CartesianGrid } from 'recharts';
 import { format, subDays, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { TrendUp } from '@phosphor-icons/react';
+import { TrendUp } from '@/lib/icons';
 import { Transaction } from '@/types/models';
 import { formatCurrency, triggerHaptic } from '@/lib/utils';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -136,4 +136,5 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
         </Card>
     );
 };
+
 

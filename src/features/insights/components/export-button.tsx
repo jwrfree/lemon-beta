@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download } from "@/lib/icons";
 import { format } from "date-fns";
 import type { Transaction } from "@/types/models";
 
@@ -51,3 +51,4 @@ export const ExportButton = ({ transactions }: ExportButtonProps) => {
 };
 
 export default ExportButton;
+

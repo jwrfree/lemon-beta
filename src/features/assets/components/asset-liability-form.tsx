@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { X } from 'lucide-react';
+import { X } from '@/lib/icons';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select';
 import { useUI } from '@/components/ui-provider';
 import { cn } from '@/lib/utils';
@@ -228,5 +228,6 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         </div >
     );
 };
+
 
 

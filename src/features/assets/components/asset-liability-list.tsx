@@ -4,7 +4,7 @@ import { useAssets } from '../hooks/use-assets';
 import { formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { Button } from '@/components/ui/button';
-import { MoreVertical, TrendingUp, Landmark, HandCoins } from 'lucide-react';
+import { MoreVertical, TrendingUp, Landmark, HandCoins } from '@/lib/icons';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -146,4 +146,5 @@ export const AssetLiabilityList = ({ items, type, onEdit, onAdd }: AssetLiabilit
         </div>
     );
 };
+
 

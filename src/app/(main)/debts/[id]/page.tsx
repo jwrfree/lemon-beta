@@ -11,7 +11,7 @@ import { formatCurrency } from '@/lib/utils';
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { CalendarDots, Trash } from '@phosphor-icons/react';
+import { CalendarDots, Trash } from '@/lib/icons';
 import type { Debt, DebtPayment } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 

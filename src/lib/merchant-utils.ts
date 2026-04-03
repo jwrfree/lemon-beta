@@ -6,7 +6,7 @@ import {
     TrendingUp, Coins, Dumbbell, GraduationCap, Heart, Home, Lamp, Ticket,
     ShieldCheck, Monitor, Cpu, Mouse, Speaker, HardDrive, Fuel, Wrench,
     Shirt, Watch, Flower
-} from 'lucide-react';
+} from '@/lib/icons';
 
 export interface MerchantVisuals {
     icon: React.ComponentType<{ className?: string }>;
@@ -548,3 +548,4 @@ export function getMerchantVisuals(merchantName?: string | null): MerchantVisual
 
     return null;
 }
+

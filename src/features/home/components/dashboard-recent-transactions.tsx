@@ -9,7 +9,7 @@ import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { useUI } from '@/components/ui-provider';
-import { ArrowElbowDownRight, ArrowRight, MapPin } from '@phosphor-icons/react';
+import { ArrowElbowDownRight, ArrowRight, MapPin } from '@/lib/icons';
 import type { Transaction, Wallet } from '@/types/models';
 import {
     getMerchantVisuals,
@@ -228,3 +228,4 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
         </div>
     );
 };
+

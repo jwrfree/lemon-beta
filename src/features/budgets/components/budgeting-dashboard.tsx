@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { CircleNotch, HandCoins, Plus } from '@phosphor-icons/react';
+import { CircleNotch, HandCoins, Plus } from '@/lib/icons';
 import { useBudgets } from '@/features/budgets';
 import { formatCurrency } from '@/lib/utils';
 import { ChartContainer } from "@/components/ui/chart"
@@ -122,4 +122,5 @@ export const BudgetingDashboard = () => {
         </div>
     );
 };
+
 

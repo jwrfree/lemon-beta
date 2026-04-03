@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { MagicBar } from './liquid-composer/MagicBar';
 import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
 import { SemanticTransactionReview } from './form-partials/semantic-review';
-import { CaretLeft, CaretRight, Trash, X, Sparkle, Question, CircleNotch } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight, Trash, X, Sparkle, Question, CircleNotch } from '@/lib/icons';
 import { useTransactionForm } from '../hooks/use-transaction-form';
 import { useWallets } from '@/features/wallets';
 import { useCategories } from '../hooks/use-transactions';
@@ -460,3 +460,4 @@ export const UnifiedTransactionSheet = ({
         </>
     );
 };
+

@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/providers/auth-provider';
 import { UserAvatar } from '@/components/user-avatar';
-import { Camera, CircleNotch, FloppyDisk, X } from '@phosphor-icons/react';
+import { Camera, CircleNotch, FloppyDisk, X } from '@/lib/icons';
 import { triggerHaptic } from '@/lib/utils';
 import { uploadAvatar } from '@/lib/supabase/storage';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -186,3 +186,4 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
         </Sheet>
     );
 };
+

@@ -24,7 +24,7 @@ import {
     X,
     Mic,
     StopCircle,
-} from 'lucide-react';
+} from '@/lib/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, triggerHaptic } from '@/lib/utils';
 import { useAIChat } from '../hooks/use-ai-chat';
@@ -689,3 +689,4 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
         </Sheet>
     );
 };
+

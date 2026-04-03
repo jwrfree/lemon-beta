@@ -6,7 +6,7 @@ import { formatCurrency, cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { useFinancialContext } from '@/hooks/use-financial-context';
 import { Skeleton } from '@/components/ui/skeleton';
-import { WarningCircle } from '@phosphor-icons/react';
+import { WarningCircle } from '@/lib/icons';
 
 export const BudgetStatusCard = () => {
     const { context, isLoading } = useFinancialContext();
@@ -74,3 +74,4 @@ export const BudgetStatusCard = () => {
         </Card>
     );
 };
+

@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -63,3 +63,4 @@ export const FAB = ({
     </div>
   );
 };
+

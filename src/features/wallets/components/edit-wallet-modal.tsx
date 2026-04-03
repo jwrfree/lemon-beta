@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CircleNotch, Trash, X } from '@phosphor-icons/react';
+import { CircleNotch, Trash, X } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -220,4 +220,5 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
     </motion.div>
   );
 };
+
 

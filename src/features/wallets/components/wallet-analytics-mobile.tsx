@@ -3,7 +3,7 @@
 
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChartPieSlice, TrendDown, TrendUp } from '@phosphor-icons/react';
+import { ChartPieSlice, TrendDown, TrendUp } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { CategoryPie } from '@/features/charts/components/category-pie';
 import type { Transaction } from '@/types/models';
@@ -102,3 +102,4 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
         </div>
     );
 };
+

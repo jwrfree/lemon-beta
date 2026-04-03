@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Microphone, MicrophoneSlash, CircleNotch, Camera, Waveform, X, PaperPlaneRight } from '@phosphor-icons/react';
+import { Microphone, MicrophoneSlash, CircleNotch, Camera, Waveform, X, PaperPlaneRight } from '@/lib/icons';
 import { cn, triggerHaptic } from '@/lib/utils';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useAudioRecorder } from '@/hooks/use-audio-recorder';
@@ -282,3 +282,4 @@ export const MagicBar = ({
         </div>
     );
 };
+

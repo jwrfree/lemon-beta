@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus } from '@phosphor-icons/react';
+import { Plus } from '@/lib/icons';
 import { cn, triggerHaptic } from '@/lib/utils';
 import { useUI } from '@/components/ui-provider';
 import { MOBILE_NAV_ITEMS, isNavItemActive } from '@/lib/sidebar-config';
@@ -151,3 +151,4 @@ export const BottomNavigation = () => {
         </AnimatePresence>
     );
 };
+

@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserAvatar } from '@/components/user-avatar';
 import { useAuth } from '@/providers/auth-provider';
-import { SignOut, UserCircle } from '@phosphor-icons/react';
+import { SignOut, UserCircle } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 
 export const UserProfileDropdown = () => {
@@ -74,3 +74,4 @@ export const UserProfileDropdown = () => {
         </DropdownMenu>
     );
 };
+

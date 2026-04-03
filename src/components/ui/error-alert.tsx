@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowClockwise, WarningCircle, WarningOctagon, WifiSlash } from '@phosphor-icons/react';
+import { ArrowClockwise, WarningCircle, WarningOctagon, WifiSlash } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -116,3 +116,4 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
 ErrorAlert.displayName = 'ErrorAlert';
 
 export { ErrorAlert, ErrorAlert as ErrorBanner, type ErrorAlertVariant };
+

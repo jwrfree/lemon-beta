@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { ArrowClockwise, Sparkle } from '@phosphor-icons/react';
+import { ArrowClockwise, Sparkle } from '@/lib/icons';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Button } from '@/components/ui/button';
@@ -147,3 +147,4 @@ export const RiskScoreCard = () => {
         </Card>
     );
 };
+

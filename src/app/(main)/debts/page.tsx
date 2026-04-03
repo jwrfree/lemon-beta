@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUI } from '@/components/ui-provider';
 import { formatCurrency, cn, triggerHaptic } from '@/lib/utils';
 import { parseISO, differenceInCalendarDays } from 'date-fns';
-import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots } from '@phosphor-icons/react';
+import { ArrowsDownUp, ArrowDownRight, ArrowUpRight, CalendarDots } from '@/lib/icons';
 import type { Debt } from '@/types/models';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -271,3 +271,4 @@ export default function DebtsPage() {
         </AppPageShell>
     );
 }
+

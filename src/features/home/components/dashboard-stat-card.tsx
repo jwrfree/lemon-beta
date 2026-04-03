@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { cn } from '@/lib/utils';
-import { TrendDown, TrendUp } from '@phosphor-icons/react';
+import { TrendDown, TrendUp } from '@/lib/icons';
 
 export interface StatCardProps {
     title: string;
@@ -63,5 +63,6 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
 
     return Content;
 };
+
 
 

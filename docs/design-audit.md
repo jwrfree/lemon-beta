@@ -52,7 +52,7 @@
 - Bottom sheet, overlay, dan password strength meter mengikuti pola yang sama sehingga respons terasa kohesif dan tidak mengejutkan.
 
 ### Ikonografi & Ilustrasi
-- Set ikon `lucide-react` dengan ketebalan stroke 1.5 px. Ikon utama berwarna aksen (primary) dengan background 10% alpha.
+- Set ikon melalui `src/lib/icons.ts` dengan Phosphor sebagai sumber runtime tunggal. Ikon utama berwarna aksen (primary) dengan background 10% alpha.
 - Ilustrasi hero menggunakan bentuk organik yang konsisten dengan brand, dilengkapi `aria-hidden`/`role="presentation"` agar tidak mengganggu pembaca layar.
 
 ## Audit Interaksi & Motion

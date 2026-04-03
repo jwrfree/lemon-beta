@@ -3,7 +3,7 @@
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
-import { DotsThreeVertical, ShieldCheck, Sparkle } from '@phosphor-icons/react';
+import { DotsThreeVertical, ShieldCheck, Sparkle } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
@@ -206,4 +206,5 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
     </div>
   );
 };
+
 

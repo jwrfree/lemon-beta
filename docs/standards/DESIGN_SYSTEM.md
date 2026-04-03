@@ -441,7 +441,7 @@ The mobile bottom navigation uses a deterministic layout so icon and label align
 | Vertical padding | `pt-3 pb-2` | 12px top + 8px bottom = 20px remaining space |
 | Surface | `bg-white dark:bg-background` | Solid surface, not translucent glass |
 | Motion | `duration-fast` + standard easing | No spring / bounce entrance |
-| Icon family | `@phosphor-icons/react` | Mobile bottom nav only; the rest of the app may still use Lucide |
+| Icon family | `@phosphor-icons/react` via `src/lib/icons.ts` | Single runtime icon source across product UI |
 
 ### 5.2 Spacing Scale
 
@@ -983,7 +983,7 @@ Renders with `role="status"` and `aria-live="polite"`. The retry button shows a 
 
 ```tsx
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle } from '@/lib/icons';
 
 <Alert variant="error">
   <AlertCircle className="h-4 w-4" />

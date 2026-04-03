@@ -4,7 +4,7 @@
 import { useRouter } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { Bell, CalendarBlank, WarningCircle } from '@phosphor-icons/react';
+import { Bell, CalendarBlank, WarningCircle } from '@/lib/icons';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
@@ -117,5 +117,6 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
         </div>
     );
 };
+
 
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check } from '@phosphor-icons/react';
+import { Check } from '@/lib/icons';
 import { motionTokens } from '@/lib/motion-tokens';
 
 const PREFERS_REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
@@ -57,3 +57,4 @@ export const SuccessAnimation = () => {
         </div>
     );
 };
+

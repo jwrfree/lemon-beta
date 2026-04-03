@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Receipt } from '@phosphor-icons/react';
+import { Receipt } from '@/lib/icons';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -94,3 +94,4 @@ export const RecentTransactionsList = () => {
         </Card>
     );
 };
+

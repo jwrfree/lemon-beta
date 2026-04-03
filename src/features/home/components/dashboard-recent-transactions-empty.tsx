@@ -1,6 +1,6 @@
 'use client';
 
-import { Receipt } from '@phosphor-icons/react';
+import { Receipt } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { EmptyState } from '@/components/empty-state';
 
@@ -18,3 +18,4 @@ export const DashboardRecentTransactionsEmpty = () => {
         />
     );
 };
+

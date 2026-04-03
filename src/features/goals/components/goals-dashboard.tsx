@@ -4,7 +4,7 @@ import { useGoals } from '@/features/goals/hooks/use-goals';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { CircleNotch, Plus, Target } from '@phosphor-icons/react';
+import { CircleNotch, Plus, Target } from '@/lib/icons';
 import { GoalList } from './goal-list';
 import { EmptyState } from '@/components/empty-state';
 
@@ -56,4 +56,5 @@ export const GoalsDashboard = () => {
         </div>
     );
 };
+
 

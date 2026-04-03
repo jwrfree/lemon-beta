@@ -72,6 +72,8 @@ Within the Phase 4 finance features (`transactions`, `budgets`, `wallets`, `insi
 | Testing | Vitest + Testing Library |
 | Deployment | Firebase App Hosting (`apphosting.yaml`) |
 
+UI icon imports now go through `src/lib/icons.ts`, which re-exports Phosphor as the single runtime icon library and keeps a small compatibility shim for legacy Lucide-style names during the migration.
+
 ---
 
 ## Local setup

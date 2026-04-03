@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightning, ShieldCheck, Sparkle, Warning } from '@phosphor-icons/react';
+import { Lightning, ShieldCheck, Sparkle, Warning } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 
@@ -82,3 +82,4 @@ export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilot
         </AnimatePresence>
     );
 };
+

@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { formatCurrency, cn } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
-import { AlertCircle, BrainCircuit } from 'lucide-react';
+import { AlertCircle, BrainCircuit } from '@/lib/icons';
 import { generateForecast, DataPoint } from '@/lib/prediction-engine';
 import { Transaction } from '@/types/models';
 import { Scatter } from 'recharts';
@@ -251,5 +251,6 @@ export function ProphetChart({ transactions, historyStart, historyEnd, forecastD
         </div>
     );
 }
+
 
 

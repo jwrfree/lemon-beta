@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { RefreshCcw, Bell, AlertCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { RefreshCcw, Bell, AlertCircle, TrendingUp, CheckCircle2 } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import { EmptyState } from '@/components/empty-state';
 
@@ -98,5 +98,6 @@ export function SubscriptionAudit({ items, totalMonthly }: SubscriptionAuditProp
         </Card>
     );
 }
+
 
 

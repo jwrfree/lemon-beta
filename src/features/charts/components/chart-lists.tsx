@@ -6,7 +6,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Transaction } from '@/types/models';
 import { format, parseISO } from 'date-fns';
 
-import { AlertTriangle, Trophy } from 'lucide-react';
+import { AlertTriangle, Trophy } from '@/lib/icons';
 
 export function CategoryPilla({ category, amount, total, budgetAmount, color, onClick }: {
     category: string,
@@ -123,5 +123,6 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
         </button>
     );
 }
+
 
 

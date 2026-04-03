@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { format, setHours, setMinutes } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarBlank, Clock } from '@phosphor-icons/react';
+import { CalendarBlank, Clock } from '@/lib/icons';
 import { Control, Controller, ControllerRenderProps, FieldValues, Path } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 
@@ -117,3 +117,4 @@ export function DatePicker<T extends FieldValues>({ control, name, label: _label
         </div>
     );
 }
+

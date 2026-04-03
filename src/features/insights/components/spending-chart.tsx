@@ -7,7 +7,7 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "
 import { categoryDetails } from "@/lib/categories"
 import type { Transaction } from "@/types/models"
 import { EmptyState } from "@/components/empty-state"
-import { BarChart3 } from "lucide-react"
+import { BarChart3 } from "@/lib/icons"
 
 interface SpendingChartProps {
     transactions: Transaction[]
@@ -105,3 +105,4 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
         </Card>
     )
 }
+

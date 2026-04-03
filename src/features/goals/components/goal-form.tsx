@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Airplane, Briefcase, CalendarBlank, Car, Desktop, Gift, GraduationCap, House, Rocket, Trash, X } from '@phosphor-icons/react';
+import { Airplane, Briefcase, CalendarBlank, Car, Desktop, Gift, GraduationCap, House, Rocket, Trash, X } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -215,4 +215,5 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
         </motion.div>
     );
 };
+
 

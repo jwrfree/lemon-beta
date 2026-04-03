@@ -10,7 +10,7 @@ import {
   ArrowDownRight,
   Wallet,
   AlertCircle
-} from 'lucide-react';
+} from '@/lib/icons';
 
 export default function MobileDashboard() {
   // State untuk mengontrol Progressive Disclosure pada chart

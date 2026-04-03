@@ -11,7 +11,7 @@ import {
   ChevronRight,
   CheckCircle,
   Trophy
-} from "lucide-react";
+} from "@/lib/icons";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FAB } from "@/components/ui/fab";
@@ -462,3 +462,4 @@ interface GoalRow {
     </div>
   );
 }
+

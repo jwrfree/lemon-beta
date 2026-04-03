@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { BarChart } from 'lucide-react';
+import { BarChart } from '@/lib/icons';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -99,5 +99,6 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
         </Card>
     );
 };
+
 
 

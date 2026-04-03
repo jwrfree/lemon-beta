@@ -13,7 +13,7 @@ import {
   Robot,
   SignOut,
   Sparkle,
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useUI } from '@/components/ui-provider';
@@ -342,3 +342,4 @@ export const Sidebar = () => {
     </aside>
   );
 };
+

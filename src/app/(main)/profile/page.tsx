@@ -12,7 +12,7 @@ import {
     ShieldCheck, Smartphone, Monitor, ChevronRight,
     Download, Sparkles, Camera, Mail, Phone, MapPin,
     CreditCard, Bell, Lock, Palette, Eye, EyeOff, Trash2
-} from 'lucide-react';
+} from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
 import { cn, triggerHaptic } from '@/lib/utils';
@@ -440,3 +440,4 @@ export default function ProfilePage() {
         </Suspense>
     );
 }
+

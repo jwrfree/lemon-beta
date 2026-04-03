@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Shield, Clock, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
+import { Shield, Clock, TrendingUp, TrendingDown, ExternalLink } from '@/lib/icons';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -107,4 +107,5 @@ export const DashboardHero = ({
         </div>
     );
 };
+
 

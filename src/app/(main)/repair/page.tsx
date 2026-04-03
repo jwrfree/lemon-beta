@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, CheckCircle, AlertTriangle, Wrench, RefreshCw } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle, Wrench, RefreshCw } from '@/lib/icons';
 import { categories } from '@/lib/categories';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -190,4 +190,5 @@ export default function RepairPage() {
         </div>
     );
 }
+
 

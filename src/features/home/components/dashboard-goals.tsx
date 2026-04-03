@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency } from '@/lib/utils';
-import { Plus, Target } from '@phosphor-icons/react';
+import { Plus, Target } from '@/lib/icons';
 import type { Goal } from '@/types/models';
 import { useUI } from '@/components/ui-provider';
 
@@ -79,5 +79,6 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         </Card>
     );
 };
+
 
 

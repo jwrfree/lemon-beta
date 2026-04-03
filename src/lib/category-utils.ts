@@ -6,7 +6,7 @@ import {
     ShieldCheck, Sparkle, Coins, ArrowsLeftRight, Handshake,
     Heart, Baby, ArrowsClockwise, CurrencyDollar, Wallet, TrendUp, Code,
     Lightning, Television
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 
 export const iconMap: Record<string, React.ElementType> = {
     Utensils: ForkKnife, ShoppingCart, Car, Phone: DeviceMobile, Gamepad2: GameController, Home: House, GraduationCap, HeartPulse: Heartbeat,
@@ -44,3 +44,4 @@ export const resolveCategoryVisuals = (categoryName: string, allCategories: { na
         bgColor: 'bg-muted'
     };
 };
+

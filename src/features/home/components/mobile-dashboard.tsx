@@ -9,7 +9,7 @@ import {
     ArrowsLeftRight,
     HandCoins,
     Receipt,
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -369,3 +369,4 @@ export const MobileDashboard = ({
         </AppPageShell>
     );
 };
+

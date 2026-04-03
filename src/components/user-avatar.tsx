@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { UserCircle } from '@phosphor-icons/react';
+import { UserCircle } from '@/lib/icons';
 
 interface UserAvatarProps {
     name?: string | null;
@@ -54,3 +54,4 @@ export const UserAvatar = ({ name, src, className, fallbackClassName }: UserAvat
         </Avatar>
     );
 };
+

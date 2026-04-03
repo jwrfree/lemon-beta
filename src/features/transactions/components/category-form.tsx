@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { X, Check } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -158,5 +158,6 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
         </motion.div>
     );
 };
+
 
 

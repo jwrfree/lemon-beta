@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Funnel, MagnifyingGlass, X } from '@phosphor-icons/react';
+import { Funnel, MagnifyingGlass, X } from '@/lib/icons';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { Input } from '@/components/ui/input';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
@@ -320,4 +320,5 @@ export default function AllTransactionsPage() {
         </Suspense>
     );
 }
+
 

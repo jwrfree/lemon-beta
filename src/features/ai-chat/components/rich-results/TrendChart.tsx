@@ -1,7 +1,7 @@
 'use client';
 
 import { formatCurrency } from '@/lib/utils';
-import { TrendingDown, TrendingUp, Minus } from 'lucide-react';
+import { TrendingDown, TrendingUp, Minus } from '@/lib/icons';
 
 type TrendPoint = {
     month: string;
@@ -121,3 +121,4 @@ export const TrendChart = ({ data }: TrendChartProps) => {
         </div>
     );
 };
+

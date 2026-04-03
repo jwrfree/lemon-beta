@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowClockwise, Lightbulb, Sparkle } from '@phosphor-icons/react';
+import { ArrowClockwise, Lightbulb, Sparkle } from '@/lib/icons';
 import { generateFinancialInsight } from '@/ai/flows/generate-insight-flow';
 import { Transaction, Wallet, Debt } from '@/types/models';
 import { isSameMonth, parseISO, subMonths, isAfter } from 'date-fns';
@@ -161,5 +161,6 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
         </Card>
     );
 }
+
 
 

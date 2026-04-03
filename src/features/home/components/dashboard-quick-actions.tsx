@@ -3,7 +3,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowsLeftRight, HandCoins, Plus, Sparkle, Target } from '@phosphor-icons/react';
+import { ArrowsLeftRight, HandCoins, Plus, Sparkle, Target } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 
 export const DashboardQuickActions = () => {
@@ -76,4 +76,5 @@ export const DashboardQuickActions = () => {
         </Card>
     );
 };
+
 

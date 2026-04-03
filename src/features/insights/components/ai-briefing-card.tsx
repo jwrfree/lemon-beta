@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Lightning, Sparkle, WarningCircle } from '@phosphor-icons/react';
+import { ArrowRight, Lightning, Sparkle, WarningCircle } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { useInsights } from '../hooks/use-insights';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -89,3 +89,4 @@ export const AiBriefingCard = () => {
         </motion.div>
     );
 };
+

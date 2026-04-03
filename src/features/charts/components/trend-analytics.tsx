@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Activity } from 'lucide-react';
+import { Activity } from '@/lib/icons';
 import { cn, formatCurrency } from '@/lib/utils';
 import { format, parseISO } from 'date-fns';
 import { Area, ComposedChart, XAxis, YAxis, CartesianGrid, Bar } from 'recharts';
@@ -101,5 +101,6 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
         </Card>
     );
 }
+
 
 

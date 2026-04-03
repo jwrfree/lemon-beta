@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { formatCurrency, cn } from '@/lib/utils';
-import { CaretRight, Target, WarningCircle } from '@phosphor-icons/react';
+import { CaretRight, Target, WarningCircle } from '@/lib/icons';
 import type { Budget } from '@/types/models';
 import { useRouter } from 'next/navigation';
 import { EmptyState } from '@/components/empty-state';
@@ -84,5 +84,6 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
         </Card>
     );
 };
+
 
 

@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { useUI } from '@/components/ui-provider';
 import { format, formatDistanceToNow, isBefore, parseISO, addDays, isSameDay, startOfDay, differenceInCalendarDays } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
-import { CalendarClock, Clock, Clock3, Check, Plus, BellRing, EllipsisVertical, Filter, Calendar } from 'lucide-react';
+import { CalendarClock, Clock, Clock3, Check, Plus, BellRing, EllipsisVertical, Filter, Calendar } from '@/lib/icons';
 import { formatCurrency, cn } from '@/lib/utils';
 import type { Reminder, Debt } from '@/types/models';
 import { useReminders } from '@/features/reminders/hooks/use-reminders';
@@ -550,4 +550,5 @@ export default function RemindersPage() {
         </AppPageShell>
     );
 }
+
 

@@ -7,7 +7,7 @@ import { useAuth } from '@/providers/auth-provider';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
 import { Button } from '@/components/ui/button';
-import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock } from 'lucide-react';
+import { Bell, ArrowUpRight, ArrowDownLeft, BellPlus, HandCoins, CalendarClock } from '@/lib/icons';
 import { cn, formatCurrency } from '@/lib/utils';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
@@ -196,3 +196,4 @@ export default function HomePage() {
         </>
     );
 }
+

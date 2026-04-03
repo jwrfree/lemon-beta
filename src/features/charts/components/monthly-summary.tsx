@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { EmptyState } from '@/components/empty-state';
-import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from 'lucide-react';
+import { LoaderCircle, ArrowDownLeft, ArrowUpRight, Calendar, Scale, Sparkles, ArrowRight, RefreshCw, ChevronRight, Lightbulb, BrainCircuit, Loader2, AlertCircle } from '@/lib/icons';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { useUI } from '@/components/ui-provider';
@@ -459,5 +459,6 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
         </section>
     );
 };
+
 
 

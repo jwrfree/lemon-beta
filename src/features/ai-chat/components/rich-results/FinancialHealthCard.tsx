@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
-import { Heartbeat, SealCheck, WarningCircle, ShieldCheck } from '@phosphor-icons/react';
+import { Heartbeat, SealCheck, WarningCircle, ShieldCheck } from '@/lib/icons';
 
 interface FinancialHealthCardProps {
     data: {
@@ -78,3 +78,4 @@ export const FinancialHealthCard = ({ data }: FinancialHealthCardProps) => {
         </Card>
     );
 };
+

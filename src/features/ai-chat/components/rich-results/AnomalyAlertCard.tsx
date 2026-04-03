@@ -2,7 +2,7 @@
 
 import type { AppAction } from '@/ai/chat-contract';
 import { formatCurrency } from '@/lib/utils';
-import { AlertTriangle, CalendarX2, TrendingUp } from 'lucide-react';
+import { AlertTriangle, CalendarX2, TrendingUp } from '@/lib/icons';
 
 type AnomalyAlertCardProps = {
     data?: {
@@ -90,3 +90,4 @@ export const AnomalyAlertCard = ({ data, onAction }: AnomalyAlertCardProps) => {
         </div>
     );
 };
+

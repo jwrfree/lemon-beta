@@ -5,7 +5,7 @@ import { HeroAmount } from './HeroAmount';
 import { MagicBar } from './MagicBar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, triggerHaptic } from '@/lib/utils';
-import { Tag, ArrowBendDownRight, MapPin } from '@phosphor-icons/react';
+import { Tag, ArrowBendDownRight, MapPin } from '@/lib/icons';
 
 export const LiquidPreview = () => {
     const [amount, setAmount] = useState(25000);
@@ -142,5 +142,6 @@ export const LiquidPreview = () => {
         </div>
     );
 };
+
 
 

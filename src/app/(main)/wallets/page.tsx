@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FAB } from '@/components/ui/fab';
-import { Plus, Wallet } from '@phosphor-icons/react';
+import { Plus, Wallet } from '@/lib/icons';
 import { useWallets } from '@/features/wallets/hooks/use-wallets';
 import { WalletCardStack } from '@/features/wallets/components/wallet-card-stack';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
@@ -150,4 +150,5 @@ export default function WalletsPage() {
     </AppPageShell>
   );
 };
+
 

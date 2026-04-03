@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, X, LoaderCircle } from 'lucide-react';
+import { Mail, X, LoaderCircle } from '@/lib/icons';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -203,4 +203,5 @@ export const ForgotPasswordPage = ({
         </Wrapper>
     );
 };
+
 

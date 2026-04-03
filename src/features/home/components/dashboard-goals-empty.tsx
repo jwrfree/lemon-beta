@@ -1,6 +1,6 @@
 'use client';
 
-import { Target } from '@phosphor-icons/react';
+import { Target } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { EmptyState } from '@/components/empty-state';
 
@@ -18,3 +18,4 @@ export const DashboardGoalsEmpty = () => {
         />
     );
 };
+

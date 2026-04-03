@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UserAvatar } from '@/components/user-avatar';
-import { Loader2, Save, Camera } from 'lucide-react';
+import { Loader2, Save, Camera } from '@/lib/icons';
 
 export default function ProfilePage() {
     const { userData } = useAuth();

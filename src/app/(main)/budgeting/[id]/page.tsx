@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { TransactionList } from '@/features/transactions/components/transaction-list';
 import { cn, formatCurrency, triggerHaptic, daysInMonth } from '@/lib/utils';
-import { CaretRight, ChartBar, Eye, EyeSlash, Sparkle, Stack, Target, WarningCircle } from '@phosphor-icons/react';
+import { CaretRight, ChartBar, Eye, EyeSlash, Sparkle, Stack, Target, WarningCircle } from '@/lib/icons';
 import { startOfMonth } from 'date-fns';
 import { useUI } from '@/components/ui-provider';
 import { PageHeader } from '@/components/page-header';

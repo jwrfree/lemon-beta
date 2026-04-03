@@ -2,7 +2,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { MailCheck } from 'lucide-react';
+import { MailCheck } from '@/lib/icons';
 import { PageHeader } from '@/components/page-header';
 
 const AllCaughtUpIllustration = () => (
@@ -32,4 +32,5 @@ export default function NotificationsPage() {
         </div>
     );
 };
+
 

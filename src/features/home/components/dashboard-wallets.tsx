@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Wallet } from '@phosphor-icons/react';
+import { ArrowRight, Wallet } from '@/lib/icons';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -86,5 +86,6 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
         </Card>
     );
 };
+
 
 

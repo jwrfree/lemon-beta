@@ -4,7 +4,7 @@ import { TransactionListItem } from './transaction-list-item';
 import { formatRelativeDate } from '@/lib/utils';
 import { parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { CircleNotch, Receipt } from '@phosphor-icons/react';
+import { CircleNotch, Receipt } from '@/lib/icons';
 import type { Transaction } from '@/types/models';
 import { useWallets } from '@/features/wallets';
 import { useUI } from '@/components/ui-provider';
@@ -103,3 +103,4 @@ export const TransactionList = ({ transactions, limit, walletId, hasMore, loadMo
         </div>
     );
 };
+

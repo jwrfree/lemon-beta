@@ -21,7 +21,7 @@ import {
     Pulse,
     Sparkle,
     TrendUp
-} from '@phosphor-icons/react';
+} from '@/lib/icons';
 import { startOfMonth, subMonths, isSameMonth, parseISO, differenceInCalendarDays, endOfMonth, subDays, eachDayOfInterval, format, isSameDay } from 'date-fns';
 
 import { DashboardAlerts } from './dashboard-alerts';
@@ -468,3 +468,4 @@ export const DesktopDashboard = () => {
         </TooltipProvider>
     );
 };
+

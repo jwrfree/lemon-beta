@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DownloadSimple, X } from '@phosphor-icons/react';
+import { DownloadSimple, X } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 
@@ -80,3 +80,4 @@ export function InstallPrompt() {
     </AnimatePresence>
   );
 }
+

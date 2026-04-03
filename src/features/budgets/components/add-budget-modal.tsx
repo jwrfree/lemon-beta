@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Sparkle, TrendUp, X } from '@phosphor-icons/react';
+import { ArrowLeft, Sparkle, TrendUp, X } from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { transactionService, useCategories } from '@/features/transactions';
 
@@ -337,5 +337,6 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
     </motion.div>
   );
 };
+
 
 

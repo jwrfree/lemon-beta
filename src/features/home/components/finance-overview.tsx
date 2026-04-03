@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowUpRight, ArrowDownLeft, TrendingUp, Wallet, DollarSign } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, TrendingUp, Wallet, DollarSign } from '@/lib/icons';
 import { Card, CardContent } from '@/components/ui/card';
 import { AnimatedCounter } from '@/components/animated-counter';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -157,4 +157,5 @@ export const FinanceOverview = ({
         </div>
     );
 };
+
 

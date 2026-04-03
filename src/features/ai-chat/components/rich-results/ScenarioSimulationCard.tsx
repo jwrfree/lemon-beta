@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency, cn } from '@/lib/utils';
-import { ChartBar, Calendar, Target, TrendUp, Warning } from '@phosphor-icons/react';
+import { ChartBar, Calendar, Target, TrendUp, Warning } from '@/lib/icons';
 
 interface ScenarioSimulationCardProps {
     data: {
@@ -105,3 +105,4 @@ export const ScenarioSimulationCard = ({ data }: ScenarioSimulationCardProps) =>
         </Card>
     );
 };
+

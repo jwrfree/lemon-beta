@@ -17,7 +17,7 @@ import {
     Trash2,
     CornerDownRight,
     MapPin
-} from 'lucide-react';
+} from '@/lib/icons';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -388,3 +388,4 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
         </div>
     );
 };
+

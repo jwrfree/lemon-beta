@@ -1,7 +1,7 @@
 'use client';
 import { useRef } from 'react';
 import { motion, PanInfo, useAnimationControls, animate, useMotionValue, useTransform } from 'framer-motion';
-import { PencilSimple, Trash } from '@phosphor-icons/react';
+import { PencilSimple, Trash } from '@/lib/icons';
 import type { Wallet, Transaction } from '@/types/models';
 import type { CategoryVisuals } from '@/types/visuals';
 import { cn, formatCurrency } from '@/lib/utils';
@@ -49,12 +49,12 @@ const TransactionListItemContent = ({
     const isExpense = transaction.type === 'expense';
     const amountColor = isExpense ? 'text-foreground' : 'text-success font-semibold';
     const timeLabel = hideDate
-        ? isToday(transactionDate)
+        ? format(transactionDate, 'HH:mm')
+        : isToday(transactionDate)
             ? format(transactionDate, 'HH:mm')
             : isYesterday(transactionDate)
                 ? 'Kemarin'
-                : format(transactionDate, 'EEE', { locale: dateFnsLocaleId })
-        : format(transactionDate, 'HH:mm');
+                : format(transactionDate, 'dd MMM', { locale: dateFnsLocaleId });
 
     return (
         <div className={cn(
@@ -311,3 +311,4 @@ export const TransactionListItem = (props: TransactionListItemProps) => {
         </div>
     );
 };
+

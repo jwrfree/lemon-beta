@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Gauge, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Gauge, ArrowUpRight, ArrowDownRight } from '@/lib/icons';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -162,5 +162,6 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend }: {
         </Card>
     );
 }
+
 
 

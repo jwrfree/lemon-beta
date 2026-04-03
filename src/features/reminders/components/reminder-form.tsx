@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Trash2, CalendarClock } from 'lucide-react';
+import { X, Trash2, CalendarClock } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -370,4 +370,5 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
         </motion.div>
     );
 };
+
 

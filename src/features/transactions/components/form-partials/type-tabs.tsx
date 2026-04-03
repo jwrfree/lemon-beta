@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowsLeftRight, TrendDown, TrendUp } from '@phosphor-icons/react';
+import { ArrowsLeftRight, TrendDown, TrendUp } from '@/lib/icons';
 
 export type TransactionType = 'expense' | 'income' | 'transfer';
 
@@ -57,4 +57,5 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
         </div>
     );
 };
+
 

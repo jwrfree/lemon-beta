@@ -4,7 +4,7 @@ import type { ComponentType } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn, formatCurrency } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { Airplane, Briefcase, CalendarDots, Car, Desktop, Gift, GraduationCap, House, Rocket } from '@phosphor-icons/react';
+import { Airplane, Briefcase, CalendarDots, Car, Desktop, Gift, GraduationCap, House, Rocket } from '@/lib/icons';
 import { formatDistanceToNowStrict, parseISO, isPast } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
@@ -126,4 +126,5 @@ export const GoalList = ({ goals }: { goals: Goal[] }) => {
         </div>
     );
 }
+
 
