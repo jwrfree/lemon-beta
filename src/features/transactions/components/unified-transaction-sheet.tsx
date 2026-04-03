@@ -147,7 +147,7 @@ export const UnifiedTransactionSheet = ({
                             variant="ghost"
                             size="icon"
                             onClick={() => handleCloseAttempt(false)}
-                            className="h-10 w-10 rounded-full bg-background text-muted-foreground shadow-[0_10px_24px_-18px_rgba(15,23,42,0.22)] transition-all active:scale-95 hover:bg-secondary"
+                            className="h-10 w-10 rounded-full bg-background text-muted-foreground shadow-elevation-2 transition-all active:scale-95 hover:bg-secondary"
                         >
                             <X size={32} weight="regular" />
                             <span className="sr-only">Tutup</span>
@@ -161,7 +161,7 @@ export const UnifiedTransactionSheet = ({
                     {/* --- STAGE 1: HEADER --- */}
                     <div
                         className={cn(
-                            "shrink-0 bg-card/60 backdrop-blur-xl shadow-[0_1px_0_0_hsl(var(--border)),0_10px_30px_-28px_rgba(15,23,42,0.08)]",
+                            "shrink-0 bg-card/60 backdrop-blur-xl shadow-elevation-2",
                             useCompactSheetLayout ? "px-4 pb-2 pt-7 sm:px-5 sm:pb-3 sm:pt-8" : "px-4 pb-3 pt-7 sm:px-5 sm:pb-4 sm:pt-8"
                         )}
                     >
@@ -173,7 +173,7 @@ export const UnifiedTransactionSheet = ({
 
                         {/* Batch Navigation */}
                         {totalTxs > 1 && (
-                            <div className="relative mt-5 flex items-center justify-between rounded-[24px] bg-card px-3 py-3 shadow-[0_24px_60px_-40px_rgba(16,185,129,0.4)] animate-in fade-in slide-in-from-top-2">
+                            <div className="relative mt-5 flex items-center justify-between rounded-[24px] bg-card px-3 py-3 shadow-elevation-4 animate-in fade-in slide-in-from-top-2">
                                 <Button
                                     variant="ghost"
                                     size="icon"
@@ -308,7 +308,7 @@ export const UnifiedTransactionSheet = ({
                         className={cn(
                             "flex shrink-0 flex-col gap-2 bg-card px-4 sm:px-5",
                             useCompactSheetLayout
-                                ? "border-t border-border pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-16px_32px_-28px_rgba(15,23,42,0.12)] sm:pb-3"
+                                ? "border-t border-border pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-elevation-3 sm:pb-3"
                                 : "pb-[calc(0.625rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
                         )}
                     >
@@ -344,7 +344,7 @@ export const UnifiedTransactionSheet = ({
                                             <Button
                                                 onClick={saveAll}
                                                 disabled={isAiProcessing}
-                                                className="h-14 flex-1 rounded-[22px] bg-success text-base font-bold text-success-foreground shadow-[0_18px_34px_-24px_rgba(5,150,105,0.45)] transition-all hover:opacity-90"
+                                                className="h-14 flex-1 rounded-[22px] bg-success text-base font-bold text-success-foreground shadow-elevation-3 transition-all hover:opacity-90"
                                             >
                                                 {isAiProcessing ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : (
                                                     <span>Simpan Semua ({totalTxs})</span>
@@ -355,7 +355,7 @@ export const UnifiedTransactionSheet = ({
                                                 <Button
                                                     onClick={handleSubmit}
                                                     disabled={isSubmitting}
-                                                    className="h-14 w-full rounded-[22px] bg-primary text-base font-bold text-primary-foreground shadow-[0_18px_34px_-24px_rgba(13,148,136,0.45)] transition-all hover:scale-[1.01] active:scale-[0.98]"
+                                                    className="h-14 w-full rounded-[22px] bg-primary text-base font-bold text-primary-foreground shadow-elevation-3 transition-all hover:scale-[1.01] active:scale-[0.98]"
                                                 >
                                                     {isSubmitting ? <CircleNotch size={24} weight="regular" className="animate-spin" /> : (
                                                         <span>{isEditMode ? 'Update Transaksi' : 'Simpan Transaksi'}</span>

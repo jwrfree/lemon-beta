@@ -107,7 +107,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
       <SheetContent
         side="bottom"
         hideCloseButton
-        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-background p-0 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
+        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-background p-0 shadow-elevation-4"
         {...swipeHandlers}
       >
         <div className="pointer-events-none flex justify-center pt-3">
@@ -118,7 +118,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
           <SheetDescription>Pilih jenis dompet lalu isi detailnya.</SheetDescription>
         </SheetHeader>
 
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-4 pt-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-4 pt-4 shadow-elevation-2">
           <div className="w-11">
             {step === 2 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
@@ -153,7 +153,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   <div
                     key={cat.key}
                     onClick={() => handleCategorySelect(cat)}
-                    className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-[0_16px_32px_-26px_rgba(15,23,42,0.18)] transition-all active:scale-95"
+                    className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-elevation-2 transition-all active:scale-95"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -204,7 +204,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
                   {popularWallets[selectedCategory.key] && (
                     <div className="flex flex-wrap gap-2 px-1">
                       {popularWallets[selectedCategory.key].map(name => (
-                        <Button key={name} type="button" variant="outline" size="sm" className="h-8 rounded-full border-0 bg-background/92 px-4 text-xs font-semibold shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)]" onClick={() => setValue('name', name, { shouldValidate: true })}>
+                        <Button key={name} type="button" variant="outline" size="sm" className="h-8 rounded-full border-0 bg-background/92 px-4 text-xs font-semibold shadow-elevation-2" onClick={() => setValue('name', name, { shouldValidate: true })}>
                           {name}
                         </Button>
                       ))}

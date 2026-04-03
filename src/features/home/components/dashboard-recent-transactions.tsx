@@ -80,7 +80,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: TransactionRowProps) => {
             <td className="p-4 pl-6">
                 <div className="flex items-center gap-4">
                     <div className={cn(
-                        "w-11 h-11 rounded-md flex items-center justify-center shrink-0 transition-all group-hover:scale-110 overflow-hidden shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]",
+                        "w-11 h-11 rounded-md flex items-center justify-center shrink-0 transition-all group-hover:scale-110 overflow-hidden shadow-elevation-2",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (
@@ -138,7 +138,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: TransactionRowProps) => {
             <td className="p-4 align-middle">
                 <div className="flex flex-col">
                     <span className={cn(
-                        "mb-1 w-fit rounded-md px-2 py-0.5 text-xs font-medium text-label shadow-[0_10px_20px_-18px_rgba(15,23,42,0.1)]",
+                        "mb-1 w-fit rounded-md px-2 py-0.5 text-xs font-medium text-label shadow-elevation-2",
                         categoryData.bg_color ? `${categoryData.bg_color}` : "bg-secondary",
                         categoryData.color
                     )}>
@@ -186,7 +186,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
     };
 
     return (
-        <div id="widget-recent-transactions" className="overflow-hidden rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+        <div id="widget-recent-transactions" className="overflow-hidden rounded-card bg-card/98 shadow-elevation-3">
             <Table className="min-w-[720px] text-left text-sm">
                 <thead className="bg-muted/50 text-muted-foreground font-medium">
                     <tr>

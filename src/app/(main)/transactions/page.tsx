@@ -135,8 +135,8 @@ function TransactionsPageContent() {
                             <Button
                                 variant="ghost"
                                 className={cn(
-                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 bg-card/90 shadow-[0_16px_28px_-24px_rgba(15,23,42,0.2)] hover:bg-card",
-                                    activeFilterCount > 0 && "bg-primary/10 text-primary shadow-[0_18px_30px_-24px_rgba(13,148,136,0.28)]"
+                                    "shrink-0 h-10 w-10 p-0 rounded-full gap-2 bg-card/90 shadow-elevation-2 hover:bg-card",
+                                    activeFilterCount > 0 && "bg-primary/10 text-primary shadow-elevation-3"
                                 )}
                             >
                                 <div className="relative">
@@ -237,7 +237,7 @@ function TransactionsPageContent() {
                 {(selectedCategories.length > 0 || selectedWallets.length > 0) && (
                     <div className="flex flex-wrap items-center gap-1.5 pt-1">
                         {selectedCategories.map(category => (
-                                <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-[0_12px_24px_-20px_rgba(13,148,136,0.25)]">
+                                <Badge key={category} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-elevation-2">
                                 {category}
                                 <button
                                     type="button"
@@ -252,7 +252,7 @@ function TransactionsPageContent() {
                         {selectedWallets.map(walletId => {
                             const wallet = wallets.find(w => w.id === walletId);
                             return wallet && (
-                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-[0_12px_24px_-20px_rgba(13,148,136,0.25)]">
+                                <Badge key={walletId} variant="secondary" className="gap-1 pl-2 pr-0.5 py-0.5 text-xs font-semibold bg-primary/8 text-primary rounded-full shadow-elevation-2">
                                     {wallet.name}
                                     <button
                                         type="button"

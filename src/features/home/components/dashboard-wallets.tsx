@@ -19,7 +19,7 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
     const router = useRouter();
 
     return (
-        <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+        <Card className="rounded-card bg-card/98 shadow-elevation-3">
             <CardHeader>
                 <CardTitle className="text-sm font-medium">Dompet</CardTitle>
                 <CardDescription className="text-xs">

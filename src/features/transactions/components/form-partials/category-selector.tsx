@@ -92,7 +92,7 @@ export function CategorySelector<T extends FieldValues>({
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
-                                        className="flex items-center gap-1 rounded-md bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning shadow-[0_10px_18px_-16px_rgba(245,158,11,0.45)]"
+                                        className="flex items-center gap-1 rounded-md bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning shadow-elevation-1"
                                     >
                                         <Sparkle size={10} weight="regular" className="text-warning" />
                                         Disarankan AI
@@ -106,8 +106,8 @@ export function CategorySelector<T extends FieldValues>({
                                 type="button"
                                 variant="outline"
                                 className={cn(
-                                    "flex h-auto w-full items-center justify-between rounded-lg bg-secondary/72 p-4 shadow-[0_16px_32px_-26px_rgba(15,23,42,0.18)] transition-all active:scale-[0.99]",
-                                    isExpanded && "bg-background ring-2 ring-primary/20 shadow-[0_18px_36px_-28px_rgba(13,148,136,0.18)]",
+                                    "flex h-auto w-full items-center justify-between rounded-lg bg-secondary/72 p-4 shadow-elevation-2 transition-all active:scale-[0.99]",
+                                    isExpanded && "bg-background ring-2 ring-primary/20 shadow-elevation-3",
                                     error && "border-destructive hover:bg-destructive/5"
                                 )}
                                 onClick={() => setIsExpanded(!isExpanded)}
@@ -117,7 +117,7 @@ export function CategorySelector<T extends FieldValues>({
                                     {selectedCategory ? (
                                         <>
                                             <div className={cn(
-                                                "flex h-10 w-10 items-center justify-center rounded-lg shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]",
+                                                "flex h-10 w-10 items-center justify-center rounded-lg shadow-elevation-2",
                                                 selectedCategory.bg_color,
                                                 selectedCategory.color
                                             )}>
@@ -137,7 +137,7 @@ export function CategorySelector<T extends FieldValues>({
                                         </>
                                     ) : (
                                         <>
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted/70 shadow-inner">
                                                 <Sparkle size={20} weight="regular" className="text-muted-foreground/40" />
                                             </div>
                                             <span className="text-sm font-medium text-muted-foreground">Pilih Kategori</span>
@@ -146,7 +146,7 @@ export function CategorySelector<T extends FieldValues>({
                                 </div>
                                 <motion.div
                                     animate={{ rotate: isExpanded ? 180 : 0 }}
-                                    className="flex h-8 w-8 items-center justify-center rounded-full bg-background/82 text-muted-foreground shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]"
+                                    className="flex h-8 w-8 items-center justify-center rounded-full bg-background/82 text-muted-foreground shadow-elevation-2"
                                 >
                                     <CaretDown size={16} weight="regular" />
                                 </motion.div>

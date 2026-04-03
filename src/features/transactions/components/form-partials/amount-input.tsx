@@ -190,7 +190,7 @@ export function AmountInput<T extends FieldValues>({
                   onBlur={applyExpression}
                   inputMode={useCustomKeyboard ? 'none' : 'text'}
                   className={cn(
-                    'h-14 rounded-card bg-muted/22 pr-20 text-2xl font-medium shadow-[0_14px_28px_-24px_rgba(15,23,42,0.18)] focus-visible:ring-primary/20',
+                    'h-14 rounded-card bg-muted/22 pr-20 text-2xl font-medium shadow-elevation-2 focus-visible:ring-primary/20',
                     showCurrencyPrefix && 'pl-14',
                     error && 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
                   )}
@@ -218,7 +218,7 @@ export function AmountInput<T extends FieldValues>({
                 <button
                   type="button"
                   onClick={applyExpression}
-                  className="rounded-full bg-background/96 px-3 py-1.5 text-xs shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)] transition-colors hover:bg-muted/60"
+                  className="rounded-full bg-background/96 px-3 py-1.5 text-xs shadow-elevation-2 transition-colors hover:bg-muted/60"
                 >
                   Gunakan hasil tokenisasi ekspresi
                 </button>
@@ -244,7 +244,7 @@ export function AmountInput<T extends FieldValues>({
               )}
 
               {useCustomKeyboard && isKeyboardOpen && (
-                <div className="space-y-2 rounded-2xl bg-card/96 p-3 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.24)]">
+                <div className="space-y-2 rounded-2xl bg-card/96 p-3 shadow-elevation-3">
                   {keypadRows.map((row, index) => (
                     <div key={`row-${index}`} className="grid grid-cols-4 gap-2">
                       {row.map((key) => (
@@ -253,7 +253,7 @@ export function AmountInput<T extends FieldValues>({
                           type="button"
                           onClick={() => appendFromKeyboard(key)}
                           className={cn(
-                            'h-10 rounded-lg text-sm font-medium shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)] transition-colors',
+                            'h-10 rounded-lg text-sm font-medium shadow-elevation-2 transition-colors',
                             ['+', '-', '*', '/'].includes(key)
                               ? 'bg-primary/7 text-primary hover:bg-primary/12'
                               : key === 'del'

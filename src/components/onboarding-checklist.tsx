@@ -155,7 +155,7 @@ export const OnboardingChecklist = () => {
                     className={cn(
                       "flex w-full items-center gap-3 rounded-xl border p-2.5 transition-all",
                       isDone 
-                        ? "border-primary/50 bg-primary/5 shadow-[0_0_15px_hsla(var(--volt-500)/0.05)]" 
+                        ? "border-primary/50 bg-primary/5 shadow-elevation-1" 
                         : "border-border/50 bg-background hover:border-border"
                     )}
                   >

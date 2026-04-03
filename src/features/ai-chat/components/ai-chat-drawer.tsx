@@ -577,7 +577,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                                     type="button"
                                                                     onClick={() => void submitQuickAction(suggestion.value)}
                                                                     whileTap={{ scale: 0.99 }}
-                                                                    className="w-full rounded-2xl border border-border/45 bg-card/72 px-3 py-2.5 text-left text-xs font-medium leading-relaxed text-muted-foreground shadow-[0_8px_16px_-16px_rgba(15,23,42,0.18)] backdrop-blur-sm transition-all hover:border-border/70 hover:bg-card hover:text-foreground"
+                                                                    className="w-full rounded-2xl border border-border/45 bg-card/72 px-3 py-2.5 text-left text-xs font-medium leading-relaxed text-muted-foreground shadow-elevation-1 backdrop-blur-sm transition-all hover:border-border/70 hover:bg-card hover:text-foreground"
                                                                 >
                                                                     {suggestion.value}
                                                                 </motion.button>
@@ -669,7 +669,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                         className="h-9 w-9 rounded-2xl shadow-lg shadow-primary/20"
                                     >
                                         {isLoading ? (
-                                            <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+                                            <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-elevation-1" />
                                         ) : (
                                             <Send className="h-4 w-4" />
                                         )}

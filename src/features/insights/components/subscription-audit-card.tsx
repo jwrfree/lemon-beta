@@ -37,7 +37,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
 
         if (activeSubscriptions === 0 && anomalies.length === 0) {
         return (
-            <div className="mb-8 flex items-center gap-5 rounded-card-premium bg-emerald-500/6 p-6 shadow-[0_18px_36px_-28px_rgba(5,150,105,0.18)] transition-all">
+            <div className="mb-8 flex items-center gap-5 rounded-card-premium bg-emerald-500/6 p-6 shadow-elevation-3 transition-all">
                 <div className="bg-emerald-500/10 p-3 rounded-full shrink-0">
                     <CheckCircle size={24} weight="regular" className="text-emerald-600" />
                 </div>
@@ -55,7 +55,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
         <div className="space-y-4 mb-8">
             {/* AI Auditor Insight Pill */}
             {(aiInsight || isAiLoading) && (
-                <div className="flex items-start gap-4 rounded-card-glass bg-primary/6 p-4 shadow-[0_14px_28px_-22px_rgba(13,148,136,0.18)] transition-all">
+                <div className="flex items-start gap-4 rounded-card-glass bg-primary/6 p-4 shadow-elevation-2 transition-all">
                     <div className="bg-primary/10 p-2 rounded-card shrink-0">
                         {isAiLoading ? (
                             <CircleNotch size={16} weight="regular" className="text-primary animate-spin" />
@@ -80,7 +80,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* 1. Monthly Burn Rate Card */}
-                <Card className="rounded-card-premium bg-card/98 overflow-hidden shadow-[0_18px_36px_-28px_rgba(15,23,42,0.2)]">
+                <Card className="rounded-card-premium bg-card/98 overflow-hidden shadow-elevation-3">
                     <CardHeader className="pb-2 px-6 pt-6">
                         <CardTitle className="text-label text-muted-foreground/60 flex items-center gap-2">
                             <CreditCard size={14} weight="regular" className="text-indigo-500" />
@@ -104,7 +104,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                 </Card>
 
                 {/* 2. Silent Inflation Alerts */}
-                <Card className="relative overflow-hidden rounded-card-premium bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.2)]">
+                <Card className="relative overflow-hidden rounded-card-premium bg-card/98 shadow-elevation-3">
                     <CardHeader className="pb-2 px-6 pt-6">
                         <CardTitle className="text-label text-muted-foreground/60 flex items-center gap-2">
                             <WarningCircle size={14} weight="regular" className="text-amber-500" />
@@ -117,7 +117,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                                 {anomalies.map((anomaly, idx) => (
                                     <div
                                         key={`${anomaly.merchantName}-${idx}`}
-                                        className="flex items-start gap-3 rounded-card bg-rose-500/6 p-3 shadow-[0_12px_24px_-20px_rgba(225,29,72,0.14)]"
+                                        className="flex items-start gap-3 rounded-card bg-rose-500/6 p-3 shadow-elevation-2"
                                     >
                                         <div className="bg-rose-500/10 p-1.5 rounded-full shrink-0 mt-0.5">
                                             <TrendUp size={12} weight="regular" className="text-rose-600 dark:text-rose-400" />
@@ -135,7 +135,7 @@ export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardPro
                             </div>
                         ) : (
                             <div className="h-full flex flex-col justify-center py-2">
-                                <div className="flex items-center gap-3 rounded-card bg-emerald-500/6 p-4 text-emerald-600 shadow-[0_12px_24px_-20px_rgba(5,150,105,0.14)]">
+                                <div className="flex items-center gap-3 rounded-card bg-emerald-500/6 p-4 text-emerald-600 shadow-elevation-2">
                                     <CheckCircle size={20} weight="regular" className="shrink-0 opacity-80" />
                                     <div>
                                         <p className="text-label">Normal</p>

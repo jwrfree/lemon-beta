@@ -11,7 +11,7 @@ interface TransactionTypeTabsProps {
 
 export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProps) => {
     return (
-        <div className="grid grid-cols-3 gap-2 rounded-lg bg-muted/55 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]">
+        <div className="grid grid-cols-3 gap-2 rounded-lg bg-muted/55 p-1.5 shadow-inner">
             <Button
                 type="button"
                 variant="ghost"
@@ -19,7 +19,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 className={cn(
                     "rounded-md transition-all duration-200 h-9",
                     value === 'expense'
-                        ? 'bg-card text-destructive font-medium shadow-[0_12px_24px_-20px_rgba(15,23,42,0.22)]'
+                        ? 'bg-card text-destructive font-medium shadow-elevation-2'
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
                 )}
             >
@@ -33,7 +33,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 className={cn(
                     "rounded-md transition-all duration-200 h-9",
                     value === 'income'
-                        ? 'bg-card text-success font-medium shadow-[0_12px_24px_-20px_rgba(15,23,42,0.22)]'
+                        ? 'bg-card text-success font-medium shadow-elevation-2'
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
                 )}
             >
@@ -47,7 +47,7 @@ export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProp
                 className={cn(
                     "rounded-md transition-all duration-200 h-9",
                     value === 'transfer'
-                        ? 'bg-card text-info font-medium shadow-[0_12px_24px_-20px_rgba(15,23,42,0.22)]'
+                        ? 'bg-card text-info font-medium shadow-elevation-2'
                         : 'text-muted-foreground hover:bg-card/50 hover:text-foreground'
                 )}
             >

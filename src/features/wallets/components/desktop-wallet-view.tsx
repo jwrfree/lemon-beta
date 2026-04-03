@@ -146,7 +146,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
         <div className="flex min-h-0 flex-col space-y-6">
             {/* 1. EMPOWERING HERO HEADER - Compact Command Center */}
             <header className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                <div className="lg:col-span-5 relative min-h-[160px] overflow-hidden rounded-card bg-teal-950 p-6 shadow-[0_28px_60px_-40px_rgba(13,148,136,0.5)] flex flex-col justify-center">
+                <div className="lg:col-span-5 relative min-h-[160px] overflow-hidden rounded-card bg-teal-950 p-6 shadow-elevation-4 flex flex-col justify-center">
                     {/* Subtle Pattern Overlay */}
                     <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
 
@@ -188,14 +188,14 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                 </div>
 
                 <div className="lg:col-span-4 grid grid-cols-2 gap-4">
-                    <Card className="rounded-card bg-card/98 p-5 group flex flex-col justify-center shadow-[0_18px_34px_-28px_rgba(15,23,42,0.2)]">
+                    <Card className="rounded-card bg-card/98 p-5 group flex flex-col justify-center shadow-elevation-3">
                         <div className="flex items-start justify-between mb-2">
                             <p className="text-label text-muted-foreground">Inflow</p>
                             <TrendUp size={14} weight="regular" className="text-success" />
                         </div>
                         <p className="text-xl font-medium tracking-tight text-foreground">{formatCurrency(income30)}</p>
                     </Card>
-                    <Card className="rounded-card bg-card/98 p-5 group flex flex-col justify-center shadow-[0_18px_34px_-28px_rgba(15,23,42,0.2)]">
+                    <Card className="rounded-card bg-card/98 p-5 group flex flex-col justify-center shadow-elevation-3">
                         <div className="flex items-start justify-between mb-2">
                             <p className="text-label text-muted-foreground">Outflow</p>
                             <TrendDown size={14} weight="regular" className="text-destructive" />
@@ -204,7 +204,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     </Card>
                 </div>
 
-                <div className="lg:col-span-3 rounded-card bg-secondary/75 p-5 flex items-center gap-4 shadow-[0_18px_34px_-30px_rgba(15,23,42,0.18)]">
+                <div className="lg:col-span-3 rounded-card bg-secondary/75 p-5 flex items-center gap-4 shadow-elevation-3">
                     <div className="h-12 w-12 rounded-full bg-primary/5 flex items-center justify-center text-primary shrink-0 opacity-80">
                         <Target size={24} weight="regular" />
                     </div>
@@ -223,7 +223,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                 {/* LEFT NAVIGATOR: MASTER COLLECTION */}
                 <div className="flex flex-col space-y-4 xl:sticky xl:top-6">
-                    <div className="space-y-4 rounded-card bg-card/98 p-5 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.22)]">
+                    <div className="space-y-4 rounded-card bg-card/98 p-5 shadow-elevation-3">
                         <div className="flex items-center justify-between">
                             <h2 className="text-label text-muted-foreground opacity-60">Portfolio Accounts</h2>
                             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-secondary" onClick={() => setSortDir(prev => prev === 'asc' ? 'desc' : 'asc')}>
@@ -276,7 +276,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         className={cn(
                                             "group cursor-pointer relative p-3 rounded-lg transition-all duration-300 flex items-center gap-4",
                                             isActive
-                                                ? "bg-card shadow-[0_16px_30px_-24px_rgba(13,148,136,0.22)]"
+                                                ? "bg-card shadow-elevation-2"
                                                 : "bg-transparent hover:bg-secondary/40"
                                         )}
                                         whileHover={{ x: 2 }}
@@ -322,7 +322,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                     {activeWallet ? (
                         <div className="space-y-6">
                             {/* Detailed Asset Header Card */}
-                            <Card className="relative rounded-card bg-card/98 overflow-hidden group shadow-[0_22px_44px_-34px_rgba(15,23,42,0.24)]">
+                            <Card className="relative rounded-card bg-card/98 overflow-hidden group shadow-elevation-3">
                                 <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
                                     <div className="flex items-center gap-6">
                                         <div
@@ -372,12 +372,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                 {/* Custom Workspace Navigation */}
                                 <div className="px-6 py-1 flex items-center justify-between bg-secondary/60">
                                     <Tabs value={panelTab} onValueChange={(v) => setPanelTab(v as any)} className="w-auto">
-                                        <TabsList className="h-11 gap-2 rounded-full bg-background/80 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+                                        <TabsList className="h-11 gap-2 rounded-full bg-background/80 p-1 shadow-inner">
                                             {['transactions', 'analytics', 'settings'].map((tab) => (
                                                 <TabsTrigger
                                                     key={tab}
                                                     value={tab}
-                                                    className="h-full rounded-full px-4 text-label capitalize opacity-45 transition-all data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:opacity-100 data-[state=active]:shadow-[0_10px_24px_-18px_rgba(15,23,42,0.24)]"
+                                                    className="h-full rounded-full px-4 text-label capitalize opacity-45 transition-all data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:opacity-100 data-[state=active]:shadow-elevation-2"
                                                 >
                                                     {tab}
                                                 </TabsTrigger>
@@ -388,7 +388,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="h-8 rounded-lg bg-background/85 px-4 text-xs font-medium text-label shadow-[0_10px_20px_-18px_rgba(15,23,42,0.22)] transition-all hover:bg-primary/5"
+                                            className="h-8 rounded-lg bg-background/85 px-4 text-xs font-medium text-label shadow-elevation-2 transition-all hover:bg-primary/5"
                                             onClick={() => openEditWalletModal(activeWallet)}
                                         >
                                             Modify
@@ -413,7 +413,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
 
                                     <TabsContent value="analytics" className="m-0 p-0">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <Card className="rounded-card bg-card/98 p-6 space-y-6 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.22)]">
+                                        <Card className="rounded-card bg-card/98 p-6 space-y-6 shadow-elevation-3">
                                                 <div className="flex items-center justify-between">
                                                     <h4 className="text-label opacity-40">Cashflow Stats</h4>
                                                     <Badge className="bg-primary/5 text-primary rounded-full px-3 py-1 text-xs border-none">30D</Badge>
@@ -426,7 +426,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                 </div>
                                             </Card>
 
-                                            <Card className="rounded-card bg-card/98 p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.22)]">
+                                            <Card className="rounded-card bg-card/98 p-6 flex flex-col items-center justify-center text-center space-y-4 shadow-elevation-3">
                                                 <div className="h-10 w-10 bg-primary/5 rounded-full flex items-center justify-center text-primary border-none">
                                                     <Sparkle size={20} weight="regular" />
                                                 </div>
@@ -441,7 +441,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                     </TabsContent>
 
                                     <TabsContent value="settings" className="m-0 p-0">
-                                        <Card className="max-w-2xl mx-auto rounded-card bg-card/98 overflow-hidden shadow-[0_22px_44px_-34px_rgba(15,23,42,0.24)]">
+                                        <Card className="max-w-2xl mx-auto rounded-card bg-card/98 overflow-hidden shadow-elevation-3">
                                             <div className="p-7 space-y-6">
                                                 <div className="space-y-3">
                                                     <h4 className="text-2xl font-semibold tracking-tighter">Asset Control Center</h4>
@@ -454,7 +454,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                             <p className="text-sm font-semibold tracking-tight">Instrument Identity</p>
                                                             <p className="text-xs text-muted-foreground opacity-70">Manage labels, categories, and visual identification.</p>
                                                         </div>
-                                                        <Button variant="outline" size="sm" className="rounded-lg border-0 bg-background/90 text-label shadow-[0_10px_20px_-18px_rgba(15,23,42,0.22)]" onClick={() => openEditWalletModal(activeWallet)}>
+                                                        <Button variant="outline" size="sm" className="rounded-lg border-0 bg-background/90 text-label shadow-elevation-2" onClick={() => openEditWalletModal(activeWallet)}>
                                                             Modify
                                                         </Button>
                                                     </div>
@@ -500,7 +500,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                                                             </AlertDialog>
                                                         </div>
                                                     ) : (
-                                                        <div className="flex items-center justify-center rounded-lg bg-muted/30 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+                                                        <div className="flex items-center justify-center rounded-lg bg-muted/30 p-6 shadow-inner">
                                                             <p className="text-label text-muted-foreground opacity-30">Protected System Wallet (Cash)</p>
                                                         </div>
                                                     )}
@@ -512,7 +512,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
                             </div>
                         </div>
                     ) : (
-                        <Card className="flex-1 rounded-card bg-card/40 p-20 text-center flex flex-col items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+                        <Card className="flex-1 rounded-card bg-card/40 p-20 text-center flex flex-col items-center justify-center shadow-inner">
                             <div className="h-28 w-28 bg-muted/40 rounded-full flex items-center justify-center mb-8 shadow-inner">
                                 <WalletIcon className="h-12 w-12 text-muted-foreground/20" />
                             </div>

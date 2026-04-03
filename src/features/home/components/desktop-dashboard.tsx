@@ -267,7 +267,7 @@ export const DesktopDashboard = () => {
 
                         <div className="flex flex-wrap items-center gap-2">
                             <Select value={selectedWalletId} onValueChange={setSelectedWalletId}>
-                                <SelectTrigger className="h-10 w-[190px] rounded-full bg-card/96 text-sm font-medium shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)]">
+                                <SelectTrigger className="h-10 w-[190px] rounded-full bg-card/96 text-sm font-medium shadow-elevation-2">
                                     <SelectValue placeholder="Pilih Dompet" />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-2xl">
@@ -279,7 +279,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className={cn("h-10 w-10 rounded-full bg-card/96 shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)]", isPending && "animate-spin")}
+                                className={cn("h-10 w-10 rounded-full bg-card/96 shadow-elevation-2", isPending && "animate-spin")}
                                 onClick={handleRefresh}
                             >
                                 <ArrowClockwise size={16} weight="regular" />
@@ -288,7 +288,7 @@ export const DesktopDashboard = () => {
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-10 w-10 rounded-full bg-primary/10 text-primary shadow-[0_10px_22px_-18px_rgba(13,148,136,0.2)] transition-all hover:bg-primary/20 active:scale-95"
+                                className="h-10 w-10 rounded-full bg-primary/10 text-primary shadow-elevation-2 transition-all hover:bg-primary/20 active:scale-95"
                                 onClick={() => setIsAIChatOpen(true)}
                                 title="Tanya Lemon AI"
                             >
@@ -323,7 +323,7 @@ export const DesktopDashboard = () => {
                                             variant="outline"
                                             size="sm"
                                             className={cn(
-                                            "h-8 rounded-xl bg-white/10 text-label font-medium text-white shadow-[0_10px_22px_-18px_rgba(15,23,42,0.2)] transition-all hover:bg-white/20",
+                                            "h-8 rounded-xl bg-white/10 text-label font-medium text-white shadow-elevation-2 transition-all hover:bg-white/20",
                                             isAnalystView && "bg-white/30"
                                         )}
                                         onClick={() => setIsAnalystView(!isAnalystView)}
@@ -354,7 +354,7 @@ export const DesktopDashboard = () => {
                                     {/* ROW 2: Category Matrix */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {/* Pie Chart */}
-                                        <div className="rounded-2xl bg-card/98 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+                                        <div className="rounded-2xl bg-card/98 p-6 shadow-elevation-3">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center gap-2">
                                                     <ChartPieSlice size={20} weight="regular" className="text-primary" />
@@ -369,7 +369,7 @@ export const DesktopDashboard = () => {
                                         </div>
 
                                         {/* List Breakdown */}
-                                        <div className="rounded-2xl bg-card/98 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+                                        <div className="rounded-2xl bg-card/98 p-6 shadow-elevation-3">
                                             <div className="flex items-center gap-2 mb-6">
                                                 <ArrowUpRight size={20} weight="regular" className="text-destructive" />
                                                 <h3 className="font-medium text-sm">Top Spenders</h3>
@@ -403,7 +403,7 @@ export const DesktopDashboard = () => {
                                 </motion.div>
                             ) : (
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+                                    <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-elevation-3">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <ChartPieSlice size={32} weight="regular" />
                                         </div>
@@ -411,9 +411,9 @@ export const DesktopDashboard = () => {
                                             <h4 className="font-medium">Analysis Ready</h4>
                                             <p className="text-xs text-muted-foreground max-w-[200px]">Aktifkan Analyst View untuk melihat prediksi AI dan rincian alokasi.</p>
                                         </div>
-                                        <Button variant="outline" className="rounded-xl border-0 bg-background/94 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
+                                        <Button variant="outline" className="rounded-xl border-0 bg-background/94 shadow-elevation-2" size="sm" onClick={() => setIsAnalystView(true)}>Buka Analitik</Button>
                                     </div>
-                                    <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+                                    <div className="flex min-h-[200px] flex-col items-center justify-center space-y-4 rounded-2xl bg-card/98 p-6 text-center shadow-elevation-3">
                                         <div className="p-4 rounded-full bg-primary/5 text-primary">
                                             <TrendUp size={32} weight="regular" />
                                         </div>
@@ -421,7 +421,7 @@ export const DesktopDashboard = () => {
                                             <h4 className="font-medium">Predictive Insights</h4>
                                             <p className="text-xs text-muted-foreground max-w-[200px]">Gunakan DeepSeek V3 untuk memproyeksikan pengeluaranmu.</p>
                                         </div>
-                                        <Button variant="outline" className="rounded-xl border-0 bg-background/94 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)]" size="sm" onClick={() => setIsAnalystView(true)}>Lihat Prediksi</Button>
+                                        <Button variant="outline" className="rounded-xl border-0 bg-background/94 shadow-elevation-2" size="sm" onClick={() => setIsAnalystView(true)}>Lihat Prediksi</Button>
                                     </div>
                                 </div>
                             )}
@@ -433,7 +433,7 @@ export const DesktopDashboard = () => {
                             <NetWorthCard totalAssets={totalBalance} totalLiabilities={totalDebt} />
 
                             {/* Recent Activity (Moved to Sidebar) */}
-                            <div className="rounded-2xl bg-card/98 p-5 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+                            <div className="rounded-2xl bg-card/98 p-5 shadow-elevation-3">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-sm font-medium flex items-center gap-2">
                                         <ListChecks size={16} weight="regular" className="text-primary" />

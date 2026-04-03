@@ -126,9 +126,9 @@ export const MagicBar = ({
 
             <div className={cn(
                 "relative overflow-hidden rounded-[24px] bg-secondary/50 px-3 py-2.5 shadow-inner transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
-                (isProcessing || isTranscribing) ? "bg-primary/[0.08] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.05),inset_0_1px_0_rgba(255,255,255,0.4)]" :
-                    isRecording ? "bg-violet-500/10 shadow-[inset_0_0_0_1px_rgba(139,92,246,0.12),inset_0_1px_0_rgba(255,255,255,0.35)]" :
-                        isFocused ? "bg-card shadow-[inset_0_0_0_1px_rgba(15,23,42,0.06),0_14px_30px_-26px_rgba(15,23,42,0.18)]" : ""
+                (isProcessing || isTranscribing) ? "bg-primary/[0.08] shadow-inner" :
+                    isRecording ? "bg-violet-500/10 shadow-inner" :
+                        isFocused ? "bg-card shadow-inner" : ""
             )}>
                 <div className="flex items-end gap-2">
                     <div className="flex min-w-0 flex-1 items-end gap-2">
@@ -229,7 +229,7 @@ export const MagicBar = ({
                                     disabled={isProcessing || !value.trim()}
                                     aria-label="Kirim input Smart Add"
                                     className={cn(
-                                        "rounded-full p-3 shadow-[0_16px_30px_-18px_rgba(15,23,42,0.24)] transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+                                        "rounded-full p-3 shadow-elevation-2 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
                                         value.trim()
                                             ? "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105"
                                             : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
@@ -252,7 +252,7 @@ export const MagicBar = ({
                                     disabled={isProcessing || isTranscribing}
                                     aria-label={isRecording ? "Hentikan rekaman" : "Mulai rekam suara"}
                                     className={cn(
-                                        "rounded-full p-3 shadow-[0_16px_30px_-18px_rgba(15,23,42,0.24)] transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+                                        "rounded-full p-3 shadow-elevation-2 transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
                                         isRecording
                                             ? "bg-violet-500 text-white animate-pulse"
                                             : "bg-primary text-primary-foreground shadow-primary/20 hover:scale-105"

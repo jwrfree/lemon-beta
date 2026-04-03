@@ -142,7 +142,7 @@ export const RemindersDashboard = () => {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
             {/* Status Integration (Modern Fluidity) */}
             <div className="grid grid-cols-2 gap-3 pt-2">
-                <div className="rounded-card-premium bg-destructive/7 p-4 flex flex-col justify-between shadow-[0_18px_34px_-28px_rgba(225,29,72,0.18)] group hover:bg-destructive/10 transition-all">
+                <div className="rounded-card-premium bg-destructive/7 p-4 flex flex-col justify-between shadow-elevation-3 group hover:bg-destructive/10 transition-all">
                     <div className="flex items-center gap-2 mb-2">
                         <AlertCircle className="h-3.5 w-3.5 text-destructive opacity-70" />
                         <p className="text-label-sm uppercase font-bold text-destructive tracking-[0.1em]">Terlambat</p>
@@ -152,7 +152,7 @@ export const RemindersDashboard = () => {
                         <span className="text-xs font-medium text-destructive/60 uppercase tracking-wider">Tagihan</span>
                     </div>
                 </div>
-                <div className="rounded-card-premium bg-primary/7 p-4 flex flex-col justify-between shadow-[0_18px_34px_-28px_rgba(13,148,136,0.18)] group hover:bg-primary/10 transition-all">
+                <div className="rounded-card-premium bg-primary/7 p-4 flex flex-col justify-between shadow-elevation-3 group hover:bg-primary/10 transition-all">
                     <div className="flex items-center gap-2 mb-2">
                         <Sparkles className="h-3.5 w-3.5 text-primary opacity-70" />
                         <p className="text-label-sm uppercase font-bold text-primary tracking-[0.1em]">Segera</p>
@@ -190,7 +190,7 @@ export const RemindersDashboard = () => {
 
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                        <TabsList className="h-10 w-full justify-start gap-1 rounded-full bg-muted/55 p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]">
+                        <TabsList className="h-10 w-full justify-start gap-1 rounded-full bg-muted/55 p-1 shadow-inner">
                             {Object.entries(statusLabels).map(([key, label]) => (
                                 <TabsTrigger
                                     key={key}
@@ -237,7 +237,7 @@ export const RemindersDashboard = () => {
                                         ? debts.find((debt: Debt) => debt.id === reminder.targetId)
                                         : undefined;
                                     return (
-                                        <Card key={reminder.id} className="rounded-card bg-card/98 overflow-hidden transition-all group hover:bg-primary/[0.02] shadow-[0_18px_34px_-28px_rgba(15,23,42,0.2)]">
+                                        <Card key={reminder.id} className="rounded-card bg-card/98 overflow-hidden transition-all group hover:bg-primary/[0.02] shadow-elevation-3">
                                             <div className="flex items-start gap-3">
                                                 <div className={cn(
                                                     "p-2 rounded-full mt-0.5",
@@ -254,7 +254,7 @@ export const RemindersDashboard = () => {
                                                         {renderStatusBadge(status)}
                                                     </div>
 
-                                                    <div className="space-y-1.5 rounded-card-glass bg-muted/32 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+                                                    <div className="space-y-1.5 rounded-card-glass bg-muted/32 p-3 shadow-inner">
                                                         {dueDate && (
                                                             <p className="text-label-md font-medium text-muted-foreground flex items-center gap-2">
                                                                 <CalendarClock className="h-3.5 w-3.5 text-primary opacity-60" />
@@ -262,7 +262,7 @@ export const RemindersDashboard = () => {
                                                             </p>
                                                         )}
                                                         {linkedDebt && (
-                                                            <p className="text-label-md text-muted-foreground/80 flex items-center gap-2 rounded-sm bg-background/60 px-2 py-1 w-fit shadow-[0_8px_20px_-18px_rgba(15,23,42,0.18)]">
+                                                            <p className="text-label-md text-muted-foreground/80 flex items-center gap-2 rounded-sm bg-background/60 px-2 py-1 w-fit shadow-elevation-1">
                                                                 <AlertCircle className="h-3 w-3 text-indigo-500" />
                                                                 Terkait: <span className="font-semibold">{linkedDebt.title}</span> ({formatCurrency(linkedDebt.outstandingBalance ?? linkedDebt.principal ?? 0)})
                                                             </p>

@@ -47,14 +47,14 @@ export const AiBriefingCard = () => {
             animate={{ opacity: 1, y: 0 }}
         >
             <div className={cn(
-                "relative overflow-hidden rounded-card-premium p-5 backdrop-blur-xl shadow-[0_20px_40px_-28px_rgba(15,23,42,0.2)] transition-all duration-500",
+                "relative overflow-hidden rounded-card-premium p-5 backdrop-blur-xl shadow-elevation-3 transition-all duration-500",
                 mood.bg
             )}>
                 {/* Ambient Glow */}
                 <div className={cn("absolute -right-8 -top-8 h-32 w-32 rounded-full blur-3xl opacity-20", mood.iconColor.replace('text-', 'bg-'))}></div>
                 
                 <div className="flex gap-4 relative z-10">
-                    <div className={cn("shrink-0 h-10 w-10 rounded-xl flex items-center justify-center bg-white/8 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)]", mood.iconColor)}>
+                    <div className={cn("shrink-0 h-10 w-10 rounded-xl flex items-center justify-center bg-white/8 shadow-elevation-2", mood.iconColor)}>
                         <Icon size={24} weight="regular" />
                     </div>
                     

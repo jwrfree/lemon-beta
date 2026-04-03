@@ -228,6 +228,9 @@
     --motion-easing-standard: cubic-bezier(0.22, 0.61, 0.36, 1);
     --motion-translate-sm: 4px;
     --motion-translate: 8px;
+    --highlight-shadow-start: 0 0 0 0px hsl(var(--primary) / 0.5);
+    --highlight-shadow-peak: 0 0 0 8px hsl(var(--primary) / 0.15);
+    --highlight-shadow-end: 0 0 0 0px hsl(var(--primary) / 0);
 
     /* Chart Colors */
     --chart-5: hsl(var(--purple-600));
@@ -502,9 +505,9 @@
 
 /* ─── App Action Bridge: Widget Highlight ─────────────────────────────────── */
 @keyframes lemon-highlight-pulse {
-    0%   { box-shadow: 0 0 0 0px hsl(var(--primary) / 0.5); }
-    50%  { box-shadow: 0 0 0 8px hsl(var(--primary) / 0.15); }
-    100% { box-shadow: 0 0 0 0px hsl(var(--primary) / 0); }
+    0%   { box-shadow: var(--highlight-shadow-start); }
+    50%  { box-shadow: var(--highlight-shadow-peak); }
+    100% { box-shadow: var(--highlight-shadow-end); }
 }
 
 .lemon-highlight {

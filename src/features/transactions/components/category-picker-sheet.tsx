@@ -34,7 +34,7 @@ const CategoryRow = ({
             type="button"
             onClick={onClick}
             className={cn(
-                'flex w-full items-center gap-3 rounded-[20px] bg-background px-4 py-3 text-left shadow-[0_14px_28px_-24px_rgba(15,23,42,0.16)] transition-all active:scale-[0.99]',
+                'flex w-full items-center gap-3 rounded-[20px] bg-background px-4 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.99]',
                 isSelected && 'ring-2 ring-primary/20'
             )}
         >
@@ -108,7 +108,7 @@ export const CategoryPickerSheet = ({
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
-                className="flex h-[82vh] max-h-[82vh] w-full max-w-md min-h-0 flex-col overflow-hidden rounded-t-card border-t border-border bg-muted shadow-[0_28px_70px_-36px_rgba(15,23,42,0.32)]"
+                className="flex h-[82vh] max-h-[82vh] w-full max-w-md min-h-0 flex-col overflow-hidden rounded-t-card border-t border-border bg-muted shadow-elevation-4"
                 onClick={(event) => event.stopPropagation()}
             >
                 <div className="flex flex-col gap-3 bg-muted px-4 pb-4 pt-3">

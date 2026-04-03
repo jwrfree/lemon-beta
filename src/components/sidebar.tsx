@@ -43,7 +43,7 @@ const SidebarAction = ({ children, label, collapsed }: SidebarActionProps) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side="right" sideOffset={18} className="bg-card/95 text-label text-foreground shadow-[0_16px_40px_-24px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+      <TooltipContent side="right" sideOffset={18} className="bg-card/95 text-label text-foreground shadow-elevation-3 backdrop-blur-xl">
         {label}
       </TooltipContent>
     </Tooltip>
@@ -95,7 +95,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-[30px] bg-[#f7f3ea]/96 shadow-[0_24px_70px_-42px_rgba(15,23,42,0.3)] backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
+        'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-[30px] bg-[#f7f3ea]/96 shadow-elevation-4 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
         isSidebarCollapsed
           ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-3 py-4')
           : cn(SIDEBAR_CONFIG.expandedWidth, 'px-4 py-4')
@@ -107,11 +107,11 @@ export const Sidebar = () => {
           prefetch={false}
           className={cn(
             'flex min-w-0 items-center gap-3 rounded-[22px]',
-            isSidebarCollapsed ? 'w-full justify-center' : 'flex-1 bg-white/58 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]'
+            isSidebarCollapsed ? 'w-full justify-center' : 'flex-1 bg-white/58 px-3 py-2 shadow-inner'
           )}
           aria-label={SIDEBAR_CONFIG.appName}
         >
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[0_16px_32px_rgba(13,148,136,0.22)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-elevation-2">
             <span className="text-lg font-semibold leading-none">L</span>
           </div>
           {!isSidebarCollapsed && (
@@ -168,7 +168,7 @@ export const Sidebar = () => {
             variant="ghost"
             onClick={() => setIsAIChatOpen(true)}
             className={cn(
-              'w-full bg-white text-slate-900 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.4)] hover:bg-white/92 hover:text-slate-950 dark:bg-white dark:text-slate-900 dark:hover:bg-white/92',
+              'w-full bg-white text-slate-900 shadow-elevation-2 hover:bg-white/92 hover:text-slate-950 dark:bg-white dark:text-slate-900 dark:hover:bg-white/92',
               isSidebarCollapsed ? 'h-12 w-12 rounded-2xl p-0' : 'h-11 justify-start rounded-2xl px-4'
             )}
             aria-label="Tanya Lemon AI"
@@ -213,7 +213,7 @@ export const Sidebar = () => {
                         {isActive && (
                           <motion.div
                             layoutId="sidebar-active-pill"
-                            className="absolute inset-0 rounded-[20px] bg-white shadow-[0_14px_34px_-24px_rgba(15,23,42,0.4)]"
+                            className="absolute inset-0 rounded-[20px] bg-white shadow-elevation-2"
                             transition={{ type: 'spring', stiffness: 320, damping: 30 }}
                           />
                         )}
@@ -254,7 +254,7 @@ export const Sidebar = () => {
         {deferredPrompt && (
           <div
             className={cn(
-              'rounded-[24px] bg-white/96 p-2.5 shadow-[0_18px_42px_-28px_rgba(15,23,42,0.26)] dark:bg-card/92',
+              'rounded-[24px] bg-white/96 p-2.5 shadow-elevation-3 dark:bg-card/92',
               isSidebarCollapsed ? '' : 'mx-1'
             )}
           >
@@ -284,7 +284,7 @@ export const Sidebar = () => {
 
         <div
           className={cn(
-            'space-y-2 rounded-[24px] bg-white/96 p-2.5 shadow-[0_18px_42px_-28px_rgba(15,23,42,0.26)] dark:bg-card/92',
+            'space-y-2 rounded-[24px] bg-white/96 p-2.5 shadow-elevation-3 dark:bg-card/92',
             deferredPrompt ? 'mt-3' : '',
             isSidebarCollapsed ? '' : 'mx-1'
           )}
@@ -331,7 +331,7 @@ export const Sidebar = () => {
                 align={isSidebarCollapsed ? 'center' : 'end'}
                 side="top"
                 sideOffset={12}
-                className="w-56 rounded-2xl border-0 bg-popover/98 p-2 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.45)]"
+                className="w-56 rounded-2xl border-0 bg-popover/98 p-2 shadow-elevation-4"
               >
                 {accountMenuItems}
               </DropdownMenuContent>

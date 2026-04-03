@@ -267,7 +267,7 @@ export const MobileDashboard = ({
                                         <div className="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100" />
 
                                         <div className="relative z-10 flex items-start justify-between">
-                                            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-card bg-white/10 p-2 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)] backdrop-blur-xl">
+                                            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-card bg-white/10 p-2 shadow-elevation-2 backdrop-blur-xl">
                                                 {logo ? (
                                                     <img
                                                         src={logo}
@@ -285,7 +285,7 @@ export const MobileDashboard = ({
 
                                         <div className="relative z-10 space-y-1">
                                             <p className="truncate text-label text-white/60">{wallet.name}</p>
-                                            <div className="w-fit rounded-md bg-white/10 px-2 py-1 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.18)] backdrop-blur-sm">
+                                            <div className="w-fit rounded-md bg-white/10 px-2 py-1 shadow-elevation-2 backdrop-blur-sm">
                                                 <p className="truncate text-sm font-semibold tracking-tighter text-white tabular-nums">
                                                     {formatCurrency(wallet.balance)}
                                                 </p>
@@ -348,9 +348,9 @@ export const MobileDashboard = ({
                             <button
                                 type="button"
                                 onClick={() => openTransactionSheet()}
-                                className="flex w-full items-center gap-3 rounded-[24px] bg-card px-4 py-4 text-left shadow-[0_18px_32px_-26px_rgba(15,23,42,0.2)] transition-transform active:scale-[0.985]"
+                                className="flex w-full items-center gap-3 rounded-[24px] bg-card px-4 py-4 text-left shadow-elevation-3 transition-transform active:scale-[0.985]"
                             >
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-primary/10 text-primary shadow-[0_10px_24px_-20px_rgba(13,148,136,0.22)]">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-primary/10 text-primary shadow-elevation-2">
                                     <Receipt size={20} weight="regular" />
                                 </div>
                                 <div className="min-w-0 flex-1">

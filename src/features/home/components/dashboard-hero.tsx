@@ -33,7 +33,7 @@ export const DashboardHero = ({
 }: DashboardHeroProps) => {
     return (
         <div className="grid gap-4 lg:grid-cols-3 items-stretch">
-            <Card className="relative col-span-2 overflow-hidden rounded-card bg-primary text-primary-foreground shadow-[0_24px_48px_-32px_rgba(13,148,136,0.45)]">
+            <Card className="relative col-span-2 overflow-hidden rounded-card bg-primary text-primary-foreground shadow-elevation-3">
                 <div className="absolute top-0 right-0 p-6 opacity-5">
                     <Shield className="h-32 w-32" />
                 </div>
@@ -49,7 +49,7 @@ export const DashboardHero = ({
                         </div>
                     </div>
                     <div className="flex flex-col items-end gap-1 text-xs">
-                        <span className="rounded-md bg-primary-foreground/15 px-2 py-1 text-primary-foreground/90 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.2)]">
+                        <span className="rounded-md bg-primary-foreground/15 px-2 py-1 text-primary-foreground/90 shadow-elevation-2">
                             {selectedWalletId === 'all' ? 'Semua dompet' : (visibleWallets[0]?.name || 'Dompet')}
                         </span>
                         <span className="text-primary-foreground/70 flex items-center gap-1">
@@ -83,7 +83,7 @@ export const DashboardHero = ({
                     </Button>
                 </CardContent>
             </Card>
-            <Card className="rounded-card bg-card/98 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+            <Card className="rounded-card bg-card/98 shadow-elevation-3">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium">Rentang Data</CardTitle>
                     <CardDescription className="text-xs">Atur cakupan statistik & grafik</CardDescription>

@@ -159,7 +159,7 @@ export default function BudgetDetailPage() {
                                             <motion.div 
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${Math.min(progress, 100)}%` }}
-                                                className={cn("h-full rounded-full transition-colors", isOver ? "bg-destructive shadow-[0_0_12px_-2px_hsla(var(--rose-500)/0.4)]" : "bg-primary")}
+                                                className={cn("h-full rounded-full transition-colors", isOver ? "bg-destructive shadow-elevation-1" : "bg-primary")}
                                             />
                                         </div>
                                     </div>

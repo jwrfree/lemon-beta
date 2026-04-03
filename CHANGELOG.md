@@ -44,6 +44,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Moved the dashboard recent-transactions widget onto the shared table overflow wrapper so the card stays usable on 375px mobile viewports without forcing page-level horizontal overflow.
 - **DS-2 typography scale standardization**
   - Added named `display-*`, `title-*`, `body-*`, and `label-*` font tokens in Tailwind and replaced arbitrary `text-[...]` sizes across app surfaces so typography now maps to a shared semantic scale.
+- **DS-2 elevation token standardization**
+  - Added `shadow-elevation-1` through `shadow-elevation-4` in Tailwind, replaced arbitrary shadow values across app surfaces, and moved the global highlight animation onto named shadow variables.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

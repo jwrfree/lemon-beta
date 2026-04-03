@@ -99,7 +99,7 @@ export default function WelcomePage() {
             <div className="relative mx-auto flex min-h-screen w-full max-w-[1360px] flex-col px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5 sm:gap-3">
-                        <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[0_16px_40px_rgba(15,118,110,0.22)]">
+                        <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-elevation-3">
                             <span className="text-base sm:text-lg font-semibold">L</span>
                         </div>
                         <div>
@@ -188,7 +188,7 @@ export default function WelcomePage() {
                         className="relative w-full"
                     >
                         <div className="absolute inset-4 sm:inset-6 rounded-[2rem] bg-white/40 blur-2xl" />
-                        <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-border/40 bg-card/60 p-2 sm:p-3 shadow-[0_30px_80px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:p-4">
+                        <div className="relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-border/40 bg-card/60 p-2 sm:p-3 shadow-elevation-4 backdrop-blur-xl sm:p-4">
                             <div className="rounded-[1.2rem] sm:rounded-[1.6rem] border border-border/40 bg-card/80 p-3 sm:p-4 md:p-5">
                                 <div className="space-y-4 border-b border-border/40 pb-5">
                                     <div className="inline-flex w-fit rounded-full border border-border bg-muted/50 px-3 py-1 text-label-sm sm:text-label font-semibold uppercase tracking-widest text-muted-foreground">

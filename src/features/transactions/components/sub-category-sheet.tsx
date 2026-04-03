@@ -31,10 +31,10 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                 animate={{ y: 0 }}
                 exit={{ y: "100%" }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="flex h-fit max-h-[60vh] w-full max-w-md flex-col rounded-t-card border-t border-border/50 bg-background shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
+                className="flex h-fit max-h-[60vh] w-full max-w-md flex-col rounded-t-card border-t border-border/50 bg-background shadow-elevation-4"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 shadow-elevation-2">
                     <h2 className="text-xl font-medium tracking-tight">Pilih Sub-kategori {category.name}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="h-10 w-10 text-muted-foreground rounded-full">
                         <X size={32} weight="regular" />
@@ -51,7 +51,7 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                                     e.stopPropagation();
                                     onSelect(subCat);
                                 }}
-                                className="flex w-full items-center justify-between rounded-lg bg-background p-3 text-left shadow-[0_10px_20px_-18px_rgba(15,23,42,0.14)] transition-colors hover:bg-secondary"
+                                className="flex w-full items-center justify-between rounded-lg bg-background p-3 text-left shadow-elevation-2 transition-colors hover:bg-secondary"
                             >
                                 <div className="flex w-full items-center justify-between">
                                     <span className={cn('text-sm transition-colors', selectedValue === subCat ? 'font-semibold text-foreground' : 'text-foreground')}>

@@ -91,7 +91,7 @@ export const BottomNavigation = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={navRevealTransition}
-                    className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-white shadow-[0_-10px_24px_-24px_rgba(15,23,42,0.32)] dark:bg-background dark:shadow-[0_-10px_24px_-24px_rgba(0,0,0,0.72)]"
+                    className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-white shadow-elevation-2 dark:bg-background dark:shadow-elevation-2"
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
                     aria-label="Navigasi utama"
                 >

@@ -11,7 +11,7 @@ export const RiskScoreCard = () => {
 
     if (isLoading) {
         return (
-            <Card className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md shadow-[0_18px_36px_-28px_rgba(15,23,42,0.18)]">
+            <Card className="flex h-[200px] items-center justify-center bg-card/60 p-6 backdrop-blur-md shadow-elevation-3">
                 <ArrowClockwise size={24} weight="regular" className="animate-spin text-muted-foreground" />
             </Card>
         );
@@ -19,7 +19,7 @@ export const RiskScoreCard = () => {
 
     if (!risk) {
         return (
-            <Card className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+            <Card className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center shadow-inner">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
                     <Sparkle size={24} weight="regular" className="opacity-30" />
                 </div>
@@ -64,7 +64,7 @@ export const RiskScoreCard = () => {
         <Card
             id="widget-risk-score"
             className={cn(
-                "relative overflow-hidden rounded-card-premium text-white shadow-[0_24px_48px_-32px_rgba(15,23,42,0.35)] transition-all duration-500",
+                "relative overflow-hidden rounded-card-premium text-white shadow-elevation-3 transition-all duration-500",
                 config.bg
             )}
         >
@@ -105,7 +105,7 @@ export const RiskScoreCard = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
+                            <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-inner">
                                 <div className="flex items-center gap-1.5 mb-1.5">
                                     <p className="text-label text-white/40">Laju Pengeluaran</p>
                                     <HelpTooltip
@@ -115,7 +115,7 @@ export const RiskScoreCard = () => {
                                 </div>
                                 <p className="text-sm font-semibold tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
                             </div>
-                            <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
+                            <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md shadow-inner">
                                 <div className="flex items-center gap-1.5 mb-1.5">
                                     <p className="text-label text-white/40">Momentum</p>
                                     <HelpTooltip

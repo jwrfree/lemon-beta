@@ -116,7 +116,7 @@ const TransactionRow = ({ t, wallets, openTransactionDetail, openTransactionShee
             <TableCell>
                 <div className="flex items-center gap-3">
                     <div className={cn(
-                        "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-[0_10px_20px_-18px_rgba(15,23,42,0.16)] transition-transform group-hover:scale-105",
+                        "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-elevation-2 transition-transform group-hover:scale-105",
                         iconBg
                     )}>
                         {primaryLogo && logoSource === 'primary' && (
@@ -176,7 +176,7 @@ const TransactionRow = ({ t, wallets, openTransactionDetail, openTransactionShee
             <TableCell>
                 <div className="flex flex-col">
                     <span className={cn(
-                        "text-label w-fit rounded-lg px-2 py-0.5 bg-opacity-50 shadow-[0_10px_20px_-18px_rgba(15,23,42,0.12)]",
+                        "text-label w-fit rounded-lg px-2 py-0.5 bg-opacity-50 shadow-elevation-2",
                         categoryData.color,
                         categoryData.bg_color || "bg-secondary"
                     )}>
@@ -328,13 +328,13 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
                     variant="outline"
                     size="sm"
                     onClick={handleExportCSV}
-                    className="h-10 gap-2 rounded-xl border-0 bg-background/94 px-4 text-label shadow-[0_10px_22px_-18px_rgba(15,23,42,0.18)] transition-all hover:bg-muted"
+                    className="h-10 gap-2 rounded-xl border-0 bg-background/94 px-4 text-label shadow-elevation-2 transition-all hover:bg-muted"
                 >
                     <Download className="h-3.5 w-3.5" />
                     Export CSV
                 </Button>
             </div>
-            <div className="overflow-hidden rounded-2xl bg-card/98 shadow-[0_20px_40px_-32px_rgba(15,23,42,0.22)]">
+            <div className="overflow-hidden rounded-2xl bg-card/98 shadow-elevation-3">
                 <Table className="table-fixed">
                     <TableHeader className="bg-muted/52">
                         <TableRow className="hover:bg-muted/52">

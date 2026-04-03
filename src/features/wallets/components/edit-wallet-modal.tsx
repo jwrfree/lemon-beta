@@ -89,7 +89,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
       <SheetContent
         side="bottom"
         hideCloseButton
-        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card bg-background p-0 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
+        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card bg-background p-0 shadow-elevation-4"
         {...swipeHandlers}
       >
         <div className="pointer-events-none flex justify-center pt-3">
@@ -100,7 +100,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
           <SheetDescription>Perbarui nama dompet, status utama, atau lakukan koreksi saldo.</SheetDescription>
         </SheetHeader>
 
-        <div className="sticky top-0 flex items-center justify-between bg-background px-4 pb-4 pt-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+        <div className="sticky top-0 flex items-center justify-between bg-background px-4 pb-4 pt-4 shadow-elevation-2">
           <h2 className="text-xl font-medium">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X size={20} weight="regular" /></Button>
         </div>
@@ -123,7 +123,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
               {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
             </div>
 
-            <div className="flex items-center justify-between rounded-lg bg-secondary/55 p-3 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.16)]">
+            <div className="flex items-center justify-between rounded-lg bg-secondary/55 p-3 shadow-elevation-2">
               <div className="space-y-0.5">
                 <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
                 <p className="text-xs text-muted-foreground">

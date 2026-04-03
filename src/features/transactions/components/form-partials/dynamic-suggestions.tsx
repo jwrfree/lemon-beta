@@ -54,7 +54,7 @@ const RepeatSuggestionCard = ({
     <button
         type="button"
         onClick={() => onClick(suggestion)}
-        className="group flex w-full items-center gap-3 rounded-[22px] bg-card p-3 text-left shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)] transition-all active:scale-[0.98] hover:-translate-y-0.5"
+        className="group flex w-full items-center gap-3 rounded-[22px] bg-card p-3 text-left shadow-elevation-2 transition-all active:scale-[0.98] hover:-translate-y-0.5"
     >
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <ArrowClockwise size={18} weight="regular" />
@@ -82,7 +82,7 @@ const HabitSuggestionChip = ({
     <button
         type="button"
         onClick={() => onClick(suggestion)}
-        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-[20px] bg-card px-3 py-3 text-left shadow-[0_12px_28px_-24px_rgba(15,23,42,0.18)] transition-all active:scale-[0.98] hover:-translate-y-0.5"
+        className="flex min-w-[148px] flex-1 flex-col items-start gap-1 rounded-[20px] bg-card px-3 py-3 text-left shadow-elevation-2 transition-all active:scale-[0.98] hover:-translate-y-0.5"
     >
         <div className="flex w-full items-center justify-between gap-2">
             <span className="truncate text-sm font-semibold tracking-tight text-foreground">{suggestion.label}</span>
@@ -109,8 +109,8 @@ const ActionSuggestionCard = ({
             className={cn(
                 "flex min-h-[84px] flex-1 items-start gap-3 rounded-[22px] px-3 py-3 text-left transition-all active:scale-[0.98] hover:-translate-y-0.5",
                 suggestion.action === 'scan-receipt'
-                    ? "bg-primary/10 text-primary shadow-[0_16px_34px_-28px_rgba(13,148,136,0.35)]"
-                    : "bg-card text-foreground shadow-[0_16px_34px_-28px_rgba(15,23,42,0.24)]"
+                    ? "bg-primary/10 text-primary shadow-elevation-2"
+                    : "bg-card text-foreground shadow-elevation-2"
             )}
         >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-background/80">
@@ -140,7 +140,7 @@ export const DynamicSuggestions = ({ onSuggestionClick, suggestions }: DynamicSu
                         Pilih contoh di bawah atau mulai dari histori terakhirmu.
                     </p>
                 </div>
-                <div className="rounded-full bg-primary/10 p-2 text-primary shadow-[0_12px_24px_-20px_rgba(13,148,136,0.35)]">
+                <div className="rounded-full bg-primary/10 p-2 text-primary shadow-elevation-2">
                     <Sparkle size={16} weight="regular" />
                 </div>
             </div>
