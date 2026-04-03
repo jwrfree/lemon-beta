@@ -219,9 +219,12 @@ export const executeAppAction = (action: AppAction, bridge: AppActionBridge) => 
     console.warn(`[AIChatDrawer] Target not found in APP_TARGETS: "${action.target}". Falling back to legacy dispatch.`);
 
     switch (action.type) {
-        case 'navigate':
-            bridge.router.push(action.target);
+        case 'navigate': {
+            let path = action.target;
+            if (!path.startsWith('/')) path = '/' + path;
+            bridge.router.push(path);
             return;
+        }
         case 'open_form':
             switch (action.target) {
                 case 'transaction':

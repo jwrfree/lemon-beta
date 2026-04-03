@@ -158,6 +158,35 @@ export const APP_TARGETS = {
         path: '/transactions',
     } satisfies NavigateTarget,
 
+    'page/assets-liabilities': {
+        type: 'navigate',
+        path: '/assets-liabilities',
+    } satisfies NavigateTarget,
+
+    // ─── Aliases for AI generated targets ─────────────────────────────
+    '/budgeting': { type: 'navigate', path: '/budgeting' } satisfies NavigateTarget,
+    '/budget': { type: 'navigate', path: '/budgeting' } satisfies NavigateTarget,
+    'page/budget': { type: 'navigate', path: '/budgeting' } satisfies NavigateTarget,
+    
+    '/goals': { type: 'navigate', path: '/goals' } satisfies NavigateTarget,
+    '/goal': { type: 'navigate', path: '/goals' } satisfies NavigateTarget,
+    'page/goal': { type: 'navigate', path: '/goals' } satisfies NavigateTarget,
+    
+    '/reminders': { type: 'navigate', path: '/reminders' } satisfies NavigateTarget,
+    '/reminder': { type: 'navigate', path: '/reminders' } satisfies NavigateTarget,
+    'page/reminder': { type: 'navigate', path: '/reminders' } satisfies NavigateTarget,
+    
+    '/debts': { type: 'navigate', path: '/debts' } satisfies NavigateTarget,
+    '/debt': { type: 'navigate', path: '/debts' } satisfies NavigateTarget,
+    'page/debt': { type: 'navigate', path: '/debts' } satisfies NavigateTarget,
+    
+    '/transactions': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
+    '/transaction': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
+    'page/transaction': { type: 'navigate', path: '/transactions' } satisfies NavigateTarget,
+
+    '/assets-liabilities': { type: 'navigate', path: '/assets-liabilities' } satisfies NavigateTarget,
+    '/assets': { type: 'navigate', path: '/assets-liabilities' } satisfies NavigateTarget,
+
     'page/charts': {
         type: 'navigate',
         path: '/charts',
