@@ -180,7 +180,7 @@ export const getAppActionLabel = (action: AppAction) => {
 };
 type AppActionBridge = {
     router: ReturnType<typeof useRouter>;
-    openTransactionSheet: (transaction?: unknown, mode?: 'smart' | 'manual') => void;
+    openTransactionSheet: (transaction?: null | undefined, mode?: 'smart' | 'manual') => void;
     setIsBudgetModalOpen: (isOpen: boolean) => void;
     setIsWalletModalOpen: (isOpen: boolean) => void;
     setIsGoalModalOpen: (isOpen: boolean) => void;
