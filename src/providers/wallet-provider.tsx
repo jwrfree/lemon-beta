@@ -1,17 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useCallback, useContext, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/providers/auth-provider';
-import { useUI } from '@/components/ui-provider';
 import { createClient } from '@/lib/supabase/client';
 import { transactionEvents } from '@/lib/transaction-events';
-import { getOfflineCacheKey, readOfflineSnapshot, writeOfflineSnapshot } from '@/lib/offline-cache';
 import type { Transaction, Wallet } from '@/types/models';
-import { walletService } from '@/lib/services/wallet-service';
 
 interface WalletContextType {
-    wallets: Wallet[];
-    isLoading: boolean;
     updateWalletOptimistically: (walletId: string, amount: number, type: 'income' | 'expense') => void;
     refreshWallets: () => Promise<void>;
 }
@@ -25,109 +21,73 @@ export const useWalletData = () => {
 };
 
 export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
-    const { user, isLoading: authLoading } = useAuth();
-    const { showToast } = useUI();
-    const [wallets, setWallets] = useState<Wallet[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { user } = useAuth();
+    const queryClient = useQueryClient();
     const supabase = createClient();
-    const cacheKey = user ? getOfflineCacheKey('wallets', user.id) : null;
 
-    const fetchWallets = useCallback(async () => {
+    const refreshWallets = useCallback(async () => {
         if (!user) return;
-        try {
-            const data = await walletService.getWallets(user.id);
-            setWallets(data);
-            writeOfflineSnapshot(getOfflineCacheKey('wallets', user.id), data);
-        } catch (err) {
-            console.error("[WalletProvider] Fetch Error:", err);
-            const cachedWallets = readOfflineSnapshot<Wallet[]>(getOfflineCacheKey('wallets', user.id));
-            if (cachedWallets !== undefined) {
-                setWallets(cachedWallets);
-            } else {
-                showToast('Gagal memuat dompet. Periksa koneksi kamu.', 'error');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    }, [user, showToast]);
+        await queryClient.invalidateQueries({ queryKey: ['wallets', user.id] });
+    }, [user, queryClient]);
 
-    // Optimistic Update Function
     const updateWalletOptimistically = useCallback((walletId: string, amount: number, type: 'income' | 'expense') => {
-        setWallets(prev => prev.map(w => {
-            if (w.id === walletId) {
+        if (!user) return;
+
+        queryClient.setQueryData<Wallet[]>(['wallets', user.id], (previousWallets = []) => (
+            previousWallets.map((wallet) => {
+                if (wallet.id !== walletId) {
+                    return wallet;
+                }
+
                 const change = type === 'income' ? amount : -amount;
-                return { ...w, balance: Number(w.balance) + change };
-            }
-            return w;
-        }));
-    }, []);
+                return {
+                    ...wallet,
+                    balance: Number(wallet.balance) + change,
+                };
+            })
+        ));
+    }, [user, queryClient]);
 
     useEffect(() => {
         if (!user) {
-            setWallets([]);
-            setIsLoading(false);
             return;
         }
 
-        setIsLoading(true);
-        if (cacheKey) {
-            const cachedWallets = readOfflineSnapshot<Wallet[]>(cacheKey);
-            if (cachedWallets !== undefined) {
-                setWallets(cachedWallets);
-                setIsLoading(false);
-            }
-        }
-
-        fetchWallets();
-
-        // Listen for real database changes to keep in sync
-        const channel = supabase
+        const walletChannel = supabase
             .channel('wallets-global-sync')
             .on(
                 'postgres_changes',
                 { event: '*', schema: 'public', table: 'wallets', filter: `user_id=eq.${user.id}` },
-                () => fetchWallets()
+                () => {
+                    void refreshWallets();
+                }
             )
             .subscribe();
 
-        // -----------------------------------------------------
-        // TRANSACTION EVENT LISTENER (Optimistic Sync)
-        // -----------------------------------------------------
-        const handleTxCreated = (tx: Transaction) => {
-            updateWalletOptimistically(tx.walletId, tx.amount, tx.type);
+        const handleTxCreated = (transaction: Transaction) => {
+            updateWalletOptimistically(transaction.walletId, transaction.amount, transaction.type);
         };
 
-        const handleTxUpdated = (tx: Transaction) => {
-            // For simplicity, we just refetch wallets to ensure accuracy on updates
-            // as we don't know the delta easily here.
-            fetchWallets();
-        };
-
-        const handleTxDeleted = (txId: string) => {
-            // Similarly for delete, we need to know the amount to revert.
-            // Refetching is safer.
-            fetchWallets();
+        const handleWalletRefresh = () => {
+            void refreshWallets();
         };
 
         transactionEvents.on('transaction.created', handleTxCreated);
-        transactionEvents.on('transaction.updated', handleTxUpdated);
-        transactionEvents.on('transaction.deleted', handleTxDeleted);
+        transactionEvents.on('transaction.updated', handleWalletRefresh);
+        transactionEvents.on('transaction.deleted', handleWalletRefresh);
+        transactionEvents.on('transaction.sync', handleWalletRefresh);
 
         return () => {
-            supabase.removeChannel(channel);
+            supabase.removeChannel(walletChannel);
             transactionEvents.off('transaction.created', handleTxCreated);
-            transactionEvents.off('transaction.updated', handleTxUpdated);
-            transactionEvents.off('transaction.deleted', handleTxDeleted);
+            transactionEvents.off('transaction.updated', handleWalletRefresh);
+            transactionEvents.off('transaction.deleted', handleWalletRefresh);
+            transactionEvents.off('transaction.sync', handleWalletRefresh);
         };
-    }, [user, supabase, fetchWallets, updateWalletOptimistically, cacheKey]);
+    }, [user, supabase, refreshWallets, updateWalletOptimistically]);
 
     return (
-        <WalletContext.Provider value={{
-            wallets,
-            isLoading: isLoading || authLoading,
-            updateWalletOptimistically,
-            refreshWallets: fetchWallets
-        }}>
+        <WalletContext.Provider value={{ updateWalletOptimistically, refreshWallets }}>
             {children}
         </WalletContext.Provider>
     );
