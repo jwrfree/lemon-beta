@@ -375,7 +375,6 @@ class FinancialContextService {
             if (!safeTerm) return [];
             return [
                 `description.ilike.%${safeTerm}%`,
-                `merchant.ilike.%${safeTerm}%`,
                 `sub_category.ilike.%${safeTerm}%`,
                 `category.ilike.%${safeTerm}%`,
             ];
@@ -383,7 +382,7 @@ class FinancialContextService {
 
         const { data, error } = await supabase
             .from('transactions')
-            .select('id,amount,category,sub_category,merchant,type,description,date,created_at')
+            .select('id,amount,category,sub_category,type,description,date,created_at')
             .eq('user_id', userId)
             .order('date', { ascending: false })
             .order('created_at', { ascending: false })
@@ -399,10 +398,9 @@ class FinancialContextService {
         return rows.map((row) => ({
             transaction_id: row.id?.trim() || '',
             id: row.id?.trim() || '',
-            description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
+            description: row.description?.trim() || row.sub_category?.trim() || 'Transaksi',
             category: row.category?.trim() || 'Lainnya',
             sub_category: row.sub_category?.trim() || null,
-            merchant: row.merchant?.trim() || null,
             amount: toNumber(row.amount),
             type: row.type || 'expense',
             date: row.date || new Date().toISOString(),
@@ -426,7 +424,7 @@ class FinancialContextService {
         const supabase = client ?? createClient();
         const { data, error } = await supabase
             .from('transactions')
-            .select('id,amount,category,sub_category,merchant,type,description,date,created_at')
+            .select('id,amount,category,sub_category,type,description,date,created_at')
             .eq('user_id', userId)
             .order('date', { ascending: false })
             .order('created_at', { ascending: false })
@@ -441,10 +439,9 @@ class FinancialContextService {
         return rows.map((row) => ({
             transaction_id: row.id?.trim() || '',
             id: row.id?.trim() || '',
-            description: row.description?.trim() || row.merchant?.trim() || row.sub_category?.trim() || 'Transaksi',
+            description: row.description?.trim() || row.sub_category?.trim() || 'Transaksi',
             category: row.category?.trim() || 'Lainnya',
             sub_category: row.sub_category?.trim() || null,
-            merchant: row.merchant?.trim() || null,
             amount: toNumber(row.amount),
             type: row.type || 'expense',
             date: row.date || new Date().toISOString(),
