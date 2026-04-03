@@ -4,388 +4,388 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import {
-    format,
-    parseISO
+ format,
+ parseISO
 } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import {
-    ArrowUpDown,
-    Download,
-    ArrowUpRight,
-    ArrowDownLeft,
-    Pencil,
-    Trash2,
-    CornerDownRight,
-    MapPin
+ ArrowUpDown,
+ Download,
+ ArrowUpRight,
+ ArrowDownLeft,
+ Pencil,
+ Trash2,
+ CornerDownRight,
+ MapPin
 } from '@/lib/icons';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+ Table,
+ TableBody,
+ TableCell,
+ TableHead,
+ TableHeader,
+ TableRow,
 } from "@/components/ui/table";
 import { useUI } from '@/components/ui-provider';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import type { Transaction, Wallet } from '@/types/models';
 import {
-    getMerchantVisuals,
-    getMerchantLogoUrl,
-    getBackupLogoUrl,
-    getGoogleFaviconUrl,
-    markLogoAsFailed,
-    isLogoFailed
+ getMerchantVisuals,
+ getMerchantLogoUrl,
+ getBackupLogoUrl,
+ getGoogleFaviconUrl,
+ markLogoAsFailed,
+ isLogoFailed
 } from '@/lib/merchant-utils';
 
 interface DesktopTransactionTableProps {
-    transactions: Transaction[];
-    wallets: Wallet[];
+ transactions: Transaction[];
+ wallets: Wallet[];
 }
 
 type SortConfig = {
-    key: keyof Transaction | 'wallet';
-    direction: 'asc' | 'desc';
+ key: keyof Transaction | 'wallet';
+ direction: 'asc'| 'desc';
 };
 
 const TransactionRow = ({ t, wallets, openTransactionDetail, openTransactionSheet, openDeleteModal }: {
-    t: Transaction,
-    wallets: Wallet[],
-    openTransactionDetail: (t: Transaction) => void,
-    openTransactionSheet: (t: Transaction) => void,
-    openDeleteModal: (t: Transaction) => void
+ t: Transaction,
+ wallets: Wallet[],
+ openTransactionDetail: (t: Transaction) => void,
+ openTransactionSheet: (t: Transaction) => void,
+ openDeleteModal: (t: Transaction) => void
 }) => {
-    const isExpense = t.type === 'expense';
-    const wallet = wallets.find(w => w.id === t.walletId);
+ const isExpense = t.type === 'expense';
+ const wallet = wallets.find(w => w.id === t.walletId);
 
-    // Icon Logic (Match DashboardRecentTransactions)
-    const categoryData = categoryDetails(t.category);
-    const CategoryIcon = getCategoryIcon(categoryData.icon);
+ // Icon Logic (Match DashboardRecentTransactions)
+ const categoryData = categoryDetails(t.category);
+ const CategoryIcon = getCategoryIcon(categoryData.icon);
 
-    // Merchant Logic
-    const merchantVisuals = getMerchantVisuals(t.merchant || t.description);
-    const [logoSource, setLogoSource] = useState<'primary' | 'secondary' | 'tertiary' | 'icon'>(() => {
-        if (!merchantVisuals?.domain) return 'icon';
-        if (isLogoFailed(merchantVisuals.domain)) return 'icon';
-        return 'primary';
-    });
+ // Merchant Logic
+ const merchantVisuals = getMerchantVisuals(t.merchant || t.description);
+ const [logoSource, setLogoSource] = useState<'primary'| 'secondary'| 'tertiary'| 'icon'>(() => {
+ if (!merchantVisuals?.domain) return 'icon';
+ if (isLogoFailed(merchantVisuals.domain)) return 'icon';
+ return 'primary';
+ });
 
-    // Reset state ONLY when the actual merchant identity/domain changes
-    const domainRef = React.useRef(merchantVisuals?.domain);
-    React.useEffect(() => {
-        if (merchantVisuals?.domain !== domainRef.current) {
-            setLogoSource(merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain) ? 'primary' : 'icon');
-            domainRef.current = merchantVisuals?.domain;
-        }
-    }, [merchantVisuals?.domain]);
+ // Reset state ONLY when the actual merchant identity/domain changes
+ const domainRef = React.useRef(merchantVisuals?.domain);
+ React.useEffect(() => {
+ if (merchantVisuals?.domain !== domainRef.current) {
+ setLogoSource(merchantVisuals?.domain && !isLogoFailed(merchantVisuals.domain) ? 'primary': 'icon');
+ domainRef.current = merchantVisuals?.domain;
+ }
+ }, [merchantVisuals?.domain]);
 
-    const handleLogoError = () => {
-        if (logoSource === 'primary') setLogoSource('secondary');
-        else if (logoSource === 'secondary') setLogoSource('tertiary');
-        else {
-            setLogoSource('icon');
-            if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
-        }
-    };
+ const handleLogoError = () => {
+ if (logoSource === 'primary') setLogoSource('secondary');
+ else if (logoSource === 'secondary') setLogoSource('tertiary');
+ else {
+ setLogoSource('icon');
+ if (merchantVisuals?.domain) markLogoAsFailed(merchantVisuals.domain);
+ }
+ };
 
-    const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
-    const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
-    const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
+ const primaryLogo = merchantVisuals?.domain ? getMerchantLogoUrl(merchantVisuals.domain) : null;
+ const backupLogo = merchantVisuals?.domain ? getBackupLogoUrl(merchantVisuals.domain) : null;
+ const googleLogo = merchantVisuals?.domain ? getGoogleFaviconUrl(merchantVisuals.domain) : null;
 
-    const DefaultIcon = merchantVisuals?.icon || CategoryIcon;
-    const iconColor = merchantVisuals?.color || categoryData.color;
-    const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-secondary";
+ const DefaultIcon = merchantVisuals?.icon || CategoryIcon;
+ const iconColor = merchantVisuals?.color || categoryData.color;
+ const iconBg = merchantVisuals?.bgColor || categoryData.bg_color || "bg-secondary";
 
-    return (
-        <TableRow
-            className="group cursor-pointer hover:bg-muted/30 transition-colors"
-            onClick={() => {
-                triggerHaptic('light');
-                openTransactionDetail(t);
-            }}
-        >
-            {/* 1. Tanggal */}
-            <TableCell className="pl-8 text-xs font-medium text-muted-foreground whitespace-nowrap">
-                {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
-            </TableCell>
+ return (
+ <TableRow
+ className="group cursor-pointer hover:bg-muted/30 transition-colors"
+ onClick={() => {
+ triggerHaptic('light');
+ openTransactionDetail(t);
+ }}
+ >
+ {/* 1. Tanggal */}
+ <TableCell className="pl-8 text-label-md font-medium text-muted-foreground whitespace-nowrap">
+ {format(parseISO(t.date), 'd MMM yyyy', { locale: dateFnsLocaleId })}
+ </TableCell>
 
-            {/* 2. Transaksi (Logo + Description) */}
-            <TableCell>
-                <div className="flex items-center gap-3">
-                    <div className={cn(
-                        "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-elevation-2 transition-transform group-hover:scale-105",
-                        iconBg
-                    )}>
-                        {primaryLogo && logoSource === 'primary' && (
-                            <Image
-                                src={primaryLogo}
-                                alt={t.merchant || t.description || 'Merchant logo'}
-                                width={40}
-                                height={40}
-                                className="h-full w-full object-cover animate-in fade-in duration-500"
-                                onError={handleLogoError}
-                                unoptimized
-                            />
-                        )}
-                        {backupLogo && logoSource === 'secondary' && (
-                            <Image
-                                src={backupLogo}
-                                alt={t.merchant || t.description || 'Merchant logo'}
-                                width={40}
-                                height={40}
-                                className="h-full w-full object-cover animate-in fade-in duration-500"
-                                onError={handleLogoError}
-                                unoptimized
-                            />
-                        )}
-                        {googleLogo && logoSource === 'tertiary' && (
-                            <Image
-                                src={googleLogo}
-                                alt={t.merchant || t.description || 'Merchant logo'}
-                                width={40}
-                                height={40}
-                                className="h-full w-full object-cover animate-in fade-in duration-500"
-                                onError={handleLogoError}
-                                unoptimized
-                            />
-                        )}
-                        {(logoSource === 'icon' || !merchantVisuals?.domain) && (
-                            React.createElement(DefaultIcon, {
-                                className: cn("h-5 w-5", iconColor)
-                            })
-                        )}
-                    </div>
-                    <div className="overflow-hidden">
-                        <div className="font-medium text-foreground text-sm leading-tight truncate max-w-[200px] md:max-w-[300px]">
-                            {t.description || t.category}
-                        </div>
-                        {t.location && (
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                                <MapPin className="h-2.5 w-2.5" />
-                                <span className="truncate">{t.location}</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </TableCell>
+ {/* 2. Transaksi (Logo + Description) */}
+ <TableCell>
+ <div className="flex items-center gap-3">
+ <div className={cn(
+ "flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-elevation-2 transition-transform group-hover:scale-105",
+ iconBg
+ )}>
+ {primaryLogo && logoSource === 'primary'&& (
+ <Image
+ src={primaryLogo}
+ alt={t.merchant || t.description || 'Merchant logo'}
+ width={40}
+ height={40}
+ className="h-full w-full object-cover animate-in fade-in duration-500"
+ onError={handleLogoError}
+ unoptimized
+ />
+ )}
+ {backupLogo && logoSource === 'secondary'&& (
+ <Image
+ src={backupLogo}
+ alt={t.merchant || t.description || 'Merchant logo'}
+ width={40}
+ height={40}
+ className="h-full w-full object-cover animate-in fade-in duration-500"
+ onError={handleLogoError}
+ unoptimized
+ />
+ )}
+ {googleLogo && logoSource === 'tertiary'&& (
+ <Image
+ src={googleLogo}
+ alt={t.merchant || t.description || 'Merchant logo'}
+ width={40}
+ height={40}
+ className="h-full w-full object-cover animate-in fade-in duration-500"
+ onError={handleLogoError}
+ unoptimized
+ />
+ )}
+ {(logoSource === 'icon'|| !merchantVisuals?.domain) && (
+ React.createElement(DefaultIcon, {
+ className: cn("h-5 w-5", iconColor)
+ })
+ )}
+ </div>
+ <div className="overflow-hidden">
+ <div className="font-medium text-foreground text-body-md leading-tight truncate max-w-[200px] md:max-w-[300px]">
+ {t.description || t.category}
+ </div>
+ {t.location && (
+ <div className="flex items-center gap-1 text-label-md text-muted-foreground mt-0.5">
+ <MapPin className="h-2.5 w-2.5"/>
+ <span className="truncate">{t.location}</span>
+ </div>
+ )}
+ </div>
+ </div>
+ </TableCell>
 
-            {/* 3. Kategori (Terpisah) */}
-            <TableCell>
-                <div className="flex flex-col">
-                    <span className={cn(
-                        "text-label w-fit rounded-lg px-2 py-0.5 bg-opacity-50 shadow-elevation-2",
-                        categoryData.color,
-                        categoryData.bg_color || "bg-secondary"
-                    )}>
-                        {t.category}
-                    </span>
-                    {t.subCategory && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1 ml-1 px-1 py-0.5 rounded-md bg-muted/30 w-fit">
-                            <CornerDownRight className="w-2.5 h-2.5" />
-                            <span>{t.subCategory}</span>
-                        </div>
-                    )}
-                </div>
-            </TableCell>
+ {/* 3. Kategori (Terpisah) */}
+ <TableCell>
+ <div className="flex flex-col">
+ <span className={cn(
+ "text-label w-fit rounded-lg px-2 py-0.5 bg-opacity-50 shadow-elevation-2",
+ categoryData.color,
+ categoryData.bg_color || "bg-secondary"
+ )}>
+ {t.category}
+ </span>
+ {t.subCategory && (
+ <div className="flex items-center gap-1 text-label-md text-muted-foreground mt-1 ml-1 px-1 py-0.5 rounded-md bg-muted/30 w-fit">
+ <CornerDownRight className="w-2.5 h-2.5"/>
+ <span>{t.subCategory}</span>
+ </div>
+ )}
+ </div>
+ </TableCell>
 
-            {/* 4. Metode (Wallet) */}
-            <TableCell>
-                <div className="flex items-center gap-2">
-                    <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-muted')} />
-                    <span className="text-label text-muted-foreground whitespace-nowrap">
-                        {wallet?.name || '-'}
-                    </span>
-                </div>
-            </TableCell>
+ {/* 4. Metode (Wallet) */}
+ <TableCell>
+ <div className="flex items-center gap-2">
+ <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-muted')} />
+ <span className="text-label text-muted-foreground whitespace-nowrap">
+ {wallet?.name || '-'}
+ </span>
+ </div>
+ </TableCell>
 
-            {/* 5. Nominal */}
-            <TableCell className={cn(
-                "text-right font-medium text-sm tabular-nums tracking-tight",
-                isExpense ? "text-foreground" : "text-success",
-                t.amount >= 1000000 && isExpense && "bg-foreground/5 font-semibold"
-            )}>
-                <div className="flex items-center justify-end gap-1.5">
-                    {isExpense ? <ArrowDownLeft className="h-3.5 w-3.5" /> : <ArrowUpRight className="h-3.5 w-3.5" />}
-                    {formatCurrency(t.amount)}
-                </div>
-                <div className="flex flex-col items-end gap-0.5 mt-0.5">
-                    {t.amount >= 1000000 && isExpense && (
-                        <span className="text-label text-muted-foreground px-1 bg-muted rounded">
-                            Transaksi Besar
-                        </span>
-                    )}
-                    {isExpense && t.isNeed === false && (
-                        <span className="text-label text-accent-foreground/70">
-                            Gaya Hidup
-                        </span>
-                    )}
-                </div>
-            </TableCell>
+ {/* 5. Nominal */}
+ <TableCell className={cn(
+ "text-right font-medium text-body-md tabular-nums tracking-tight",
+ isExpense ? "text-foreground": "text-success",
+ t.amount >= 1000000 && isExpense && "bg-foreground/5 "
+ )}>
+ <div className="flex items-center justify-end gap-1.5">
+ {isExpense ? <ArrowDownLeft className="h-3.5 w-3.5"/> : <ArrowUpRight className="h-3.5 w-3.5"/>}
+ {formatCurrency(t.amount)}
+ </div>
+ <div className="flex flex-col items-end gap-0.5 mt-0.5">
+ {t.amount >= 1000000 && isExpense && (
+ <span className="text-label text-muted-foreground px-1 bg-muted rounded">
+ Transaksi Besar
+ </span>
+ )}
+ {isExpense && t.isNeed === false && (
+ <span className="text-label text-accent-foreground/70">
+ Gaya Hidup
+ </span>
+ )}
+ </div>
+ </TableCell>
 
-            {/* 6. Aksi */}
-            <TableCell className="text-right pr-8">
-                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
-                        onClick={(event) => {
-                            event.stopPropagation();
-                            triggerHaptic('light');
-                            openTransactionSheet(t);
-                        }}
-                    >
-                        <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                        onClick={(event) => {
-                            event.stopPropagation();
-                            triggerHaptic('medium');
-                            openDeleteModal(t);
-                        }}
-                    >
-                        <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                </div>
-            </TableCell>
-        </TableRow>
-    );
+ {/* 6. Aksi */}
+ <TableCell className="text-right pr-8">
+ <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+ <Button
+ variant="ghost"
+ size="icon"
+ className="h-8 w-8 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
+ onClick={(event) => {
+ event.stopPropagation();
+ triggerHaptic('light');
+ openTransactionSheet(t);
+ }}
+ >
+ <Pencil className="h-3.5 w-3.5"/>
+ </Button>
+ <Button
+ variant="ghost"
+ size="icon"
+ className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+ onClick={(event) => {
+ event.stopPropagation();
+ triggerHaptic('medium');
+ openDeleteModal(t);
+ }}
+ >
+ <Trash2 className="h-3.5 w-3.5"/>
+ </Button>
+ </div>
+ </TableCell>
+ </TableRow>
+ );
 };
 
 export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransactionTableProps) => {
-    const { openTransactionDetail, openTransactionSheet, openDeleteModal } = useUI();
-    const [sortConfig, setSortConfig] = useState<SortConfig | null>({ key: 'date', direction: 'desc' });
+ const { openTransactionDetail, openTransactionSheet, openDeleteModal } = useUI();
+ const [sortConfig, setSortConfig] = useState<SortConfig | null>({ key: 'date', direction: 'desc'});
 
-    const sortedTransactions = useMemo(() => {
-        const sortableItems = [...transactions];
-        if (sortConfig !== null) {
-            sortableItems.sort((a, b) => {
-                let aValue: string | number | Date = a[sortConfig.key as keyof Transaction] as string | number | Date;
-                let bValue: string | number | Date = b[sortConfig.key as keyof Transaction] as string | number | Date;
+ const sortedTransactions = useMemo(() => {
+ const sortableItems = [...transactions];
+ if (sortConfig !== null) {
+ sortableItems.sort((a, b) => {
+ let aValue: string | number | Date = a[sortConfig.key as keyof Transaction] as string | number | Date;
+ let bValue: string | number | Date = b[sortConfig.key as keyof Transaction] as string | number | Date;
 
-                if (sortConfig.key === 'wallet') {
-                    aValue = wallets.find(w => w.id === a.walletId)?.name || '';
-                    bValue = wallets.find(w => w.id === b.walletId)?.name || '';
-                }
+ if (sortConfig.key === 'wallet') {
+ aValue = wallets.find(w => w.id === a.walletId)?.name || '';
+ bValue = wallets.find(w => w.id === b.walletId)?.name || '';
+ }
 
-                if (aValue === undefined || bValue === undefined || aValue === null || bValue === null) return 0;
+ if (aValue === undefined || bValue === undefined || aValue === null || bValue === null) return 0;
 
-                if (aValue < bValue) {
-                    return sortConfig.direction === 'asc' ? -1 : 1;
-                }
-                if (aValue > bValue) {
-                    return sortConfig.direction === 'asc' ? 1 : -1;
-                }
-                return 0;
-            });
-        }
-        return sortableItems;
-    }, [transactions, sortConfig, wallets]);
+ if (aValue < bValue) {
+ return sortConfig.direction === 'asc'? -1 : 1;
+ }
+ if (aValue > bValue) {
+ return sortConfig.direction === 'asc'? 1 : -1;
+ }
+ return 0;
+ });
+ }
+ return sortableItems;
+ }, [transactions, sortConfig, wallets]);
 
-    const handleSort = (key: keyof Transaction | 'wallet') => {
-        triggerHaptic('light');
-        let direction: 'asc' | 'desc' = 'asc';
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc';
-        }
-        setSortConfig({ key, direction });
-    };
+ const handleSort = (key: keyof Transaction | 'wallet') => {
+ triggerHaptic('light');
+ let direction: 'asc'| 'desc'= 'asc';
+ if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+ direction = 'desc';
+ }
+ setSortConfig({ key, direction });
+ };
 
-    const handleExportCSV = () => {
-        triggerHaptic('medium');
-        const headers = ['Tanggal', 'Deskripsi', 'Kategori', 'Metode', 'Tipe', 'Jumlah'];
-        const rows = transactions.map(t => [
-            format(parseISO(t.date), 'yyyy-MM-dd'),
-            `"${t.description.replace(/"/g, '""')}"`,
-            t.category,
-            wallets.find(w => w.id === t.walletId)?.name || '',
-            t.type,
-            t.amount
-        ]);
+ const handleExportCSV = () => {
+ triggerHaptic('medium');
+ const headers = ['Tanggal', 'Deskripsi', 'Kategori', 'Metode', 'Tipe', 'Jumlah'];
+ const rows = transactions.map(t => [
+ format(parseISO(t.date), 'yyyy-MM-dd'),
+`"${t.description.replace(/"/g, '""')}"`,
+ t.category,
+ wallets.find(w => w.id === t.walletId)?.name || '',
+ t.type,
+ t.amount
+ ]);
 
-        const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", `transaksi-${format(new Date(), 'yyyy-MM-dd')}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    };
+ const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+ const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;'});
+ const url = URL.createObjectURL(blob);
+ const link = document.createElement("a");
+ link.setAttribute("href", url);
+ link.setAttribute("download",`transaksi-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
+ URL.revokeObjectURL(url);
+ };
 
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-end">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleExportCSV}
-                    className="h-10 gap-2 rounded-xl border-0 bg-background/94 px-4 text-label shadow-elevation-2 transition-all hover:bg-muted"
-                >
-                    <Download className="h-3.5 w-3.5" />
-                    Export CSV
-                </Button>
-            </div>
-            <div className="overflow-hidden rounded-2xl bg-card/98 shadow-elevation-3">
-                <Table className="table-fixed">
-                    <TableHeader className="bg-muted/52">
-                        <TableRow className="hover:bg-muted/52">
-                            <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors text-label w-32" onClick={() => handleSort('date')}>
-                                <div className="flex items-center gap-2">
-                                    Tanggal
-                                    <ArrowUpDown className="h-3 w-3 opacity-50" />
-                                </div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors text-label" onClick={() => handleSort('description')}>
-                                <div className="flex items-center gap-2">
-                                    Transaksi
-                                    <ArrowUpDown className="h-3 w-3 opacity-50" />
-                                </div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-44" onClick={() => handleSort('category')}>
-                                <div className="flex items-center gap-2">
-                                    Kategori
-                                    <ArrowUpDown className="h-3 w-3 opacity-50" />
-                                </div>
-                            </TableHead>
-                            <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-40" onClick={() => handleSort('wallet')}>
-                                <div className="flex items-center gap-2">
-                                    Metode
-                                    <ArrowUpDown className="h-3 w-3 opacity-50" />
-                                </div>
-                            </TableHead>
-                            <TableHead className="text-right cursor-pointer hover:text-primary transition-colors text-label w-40" onClick={() => handleSort('amount')}>
-                                <div className="flex items-center justify-end gap-2">
-                                    Nominal
-                                    <ArrowUpDown className="h-3 w-3 opacity-50" />
-                                </div>
-                            </TableHead>
-                            <TableHead className="text-right pr-8 text-label w-24">Aksi</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {sortedTransactions.map((t) => (
-                            <TransactionRow
-                                key={t.id}
-                                t={t}
-                                wallets={wallets}
-                                openTransactionDetail={openTransactionDetail}
-                                openTransactionSheet={openTransactionSheet}
-                                openDeleteModal={openDeleteModal}
-                            />
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-        </div>
-    );
+ return (
+ <div className="space-y-6">
+ <div className="flex justify-end">
+ <Button
+ variant="outline"
+ size="sm"
+ onClick={handleExportCSV}
+ className="h-10 gap-2 rounded-xl bg-background border border-border/40 px-4 text-label transition-all hover:bg-muted"
+ >
+ <Download className="h-3.5 w-3.5"/>
+ Export CSV
+ </Button>
+ </div>
+ <div className="overflow-hidden rounded-2xl bg-card/98 shadow-elevation-3">
+ <Table className="table-fixed">
+ <TableHeader className="bg-muted/52">
+ <TableRow className="hover:bg-muted/52">
+ <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors text-label w-32"onClick={() => handleSort('date')}>
+ <div className="flex items-center gap-2">
+ Tanggal
+ <ArrowUpDown className="h-3 w-3 opacity-50"/>
+ </div>
+ </TableHead>
+ <TableHead className="cursor-pointer hover:text-primary transition-colors text-label"onClick={() => handleSort('description')}>
+ <div className="flex items-center gap-2">
+ Transaksi
+ <ArrowUpDown className="h-3 w-3 opacity-50"/>
+ </div>
+ </TableHead>
+ <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-44"onClick={() => handleSort('category')}>
+ <div className="flex items-center gap-2">
+ Kategori
+ <ArrowUpDown className="h-3 w-3 opacity-50"/>
+ </div>
+ </TableHead>
+ <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-40"onClick={() => handleSort('wallet')}>
+ <div className="flex items-center gap-2">
+ Metode
+ <ArrowUpDown className="h-3 w-3 opacity-50"/>
+ </div>
+ </TableHead>
+ <TableHead className="text-right cursor-pointer hover:text-primary transition-colors text-label w-40"onClick={() => handleSort('amount')}>
+ <div className="flex items-center justify-end gap-2">
+ Nominal
+ <ArrowUpDown className="h-3 w-3 opacity-50"/>
+ </div>
+ </TableHead>
+ <TableHead className="text-right pr-8 text-label w-24">Aksi</TableHead>
+ </TableRow>
+ </TableHeader>
+ <TableBody>
+ {sortedTransactions.map((t) => (
+ <TransactionRow
+ key={t.id}
+ t={t}
+ wallets={wallets}
+ openTransactionDetail={openTransactionDetail}
+ openTransactionSheet={openTransactionSheet}
+ openDeleteModal={openDeleteModal}
+ />
+ ))}
+ </TableBody>
+ </Table>
+ </div>
+ </div>
+ );
 };
 

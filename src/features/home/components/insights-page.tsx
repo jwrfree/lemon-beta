@@ -48,13 +48,13 @@ export const InsightsPage = () => {
                         {/* AI Summary Section */}
                         <Card className="bg-primary/5 border-primary/20">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-lg flex items-center gap-2 text-primary">
+                                <CardTitle className="text-title-lg flex items-center gap-2 text-primary">
                                     <Brain size={20} weight="regular" />
                                     Analisis Mingguan AI
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-body-md text-muted-foreground">
                                     Pengeluaranmu untuk kategori <strong>Makanan</strong> naik 15% minggu ini dibandingkan rata-rata bulan lalu. 
                                     Saran: Coba kurangi frekuensi makan di luar untuk 3 hari ke depan agar tetap sesuai budget.
                                 </p>
@@ -63,9 +63,9 @@ export const InsightsPage = () => {
 
                         <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as '30' | '90' | 'month')} className="w-full">
                             <TabsList className="bg-muted p-1 rounded-card h-14 w-full grid grid-cols-3">
-                                <TabsTrigger value="month" className="h-full rounded-md font-medium text-xs text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Bulan Ini</TabsTrigger>
-                                <TabsTrigger value="30" className="h-full rounded-md font-medium text-xs text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">30 Hari</TabsTrigger>
-                                <TabsTrigger value="90" className="h-full rounded-md font-medium text-xs text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">90 Hari</TabsTrigger>
+                                <TabsTrigger value="month" className="h-full rounded-md font-medium text-label-md text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Bulan Ini</TabsTrigger>
+                                <TabsTrigger value="30" className="h-full rounded-md font-medium text-label-md text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">30 Hari</TabsTrigger>
+                                <TabsTrigger value="90" className="h-full rounded-md font-medium text-label-md text-label transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">90 Hari</TabsTrigger>
                             </TabsList>
                             
                             <div className="mt-6 space-y-6">

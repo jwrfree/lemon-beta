@@ -114,7 +114,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
-                    <h2 className="text-xl font-medium">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
+                    <h2 className="text-title-lg">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" weight="regular" />
                     </Button>

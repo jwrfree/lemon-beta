@@ -64,7 +64,7 @@ export function WalletSelector<T extends FieldValues>({
                                 <div className="p-1 border-t mt-1">
                                     <Button
                                         variant="ghost"
-                                        className="w-full justify-start h-8 text-xs font-medium text-muted-foreground"
+                                        className="w-full justify-start h-8 text-label-md font-medium text-muted-foreground"
                                         onClick={(e) => {
                                             e.preventDefault();
                                             onCreateNew();
@@ -79,7 +79,7 @@ export function WalletSelector<T extends FieldValues>({
                     </Select>
                 )}
             />
-            {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+            {error && <p className="text-body-md font-medium text-destructive">{error}</p>}
         </div>
     );
 }

@@ -117,7 +117,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: TransactionRowProps) => {
                         <div className="font-medium text-foreground leading-tight truncate max-w-[200px] tracking-tight">
                             {t.description || t.category}
                         </div>
-                        <div className="text-xs font-medium text-muted-foreground mt-1 flex items-center gap-2">
+                        <div className="text-label-md font-medium text-muted-foreground mt-1 flex items-center gap-2">
                             <span>{format(dateObj, 'd MMM yyyy', { locale: dateFnsLocaleId })}</span>
                                     <span className="w-1 h-1 rounded-full bg-border" />
                                     <span>{format(dateObj, 'HH:mm')}</span>
@@ -138,24 +138,24 @@ const TransactionRow = ({ t, wallet, handleRowClick }: TransactionRowProps) => {
             <td className="p-4 align-middle">
                 <div className="flex flex-col">
                     <span className={cn(
-                        "mb-1 w-fit rounded-md px-2 py-0.5 text-xs font-medium text-label shadow-elevation-2",
+                        "mb-1 w-fit rounded-md px-2 py-0.5 text-label-md font-medium text-label shadow-elevation-2",
                         categoryData.bg_color ? `${categoryData.bg_color}` : "bg-secondary",
                         categoryData.color
                     )}>
                         {t.category}
                     </span>
                     {t.subCategory ? (
-                        <span className="text-xs font-medium text-muted-foreground flex items-center gap-1 ml-1">
+                        <span className="text-label-md font-medium text-muted-foreground flex items-center gap-1 ml-1">
                             <ArrowElbowDownRight size={12} weight="regular" className="text-muted-foreground/50" />
                             {t.subCategory}
                         </span>
                     ) : (
-                        <span className="text-xs font-medium text-muted-foreground/40 ml-1 italic">Umum</span>
+                        <span className="text-label-md font-medium text-muted-foreground/40 ml-1 italic">Umum</span>
                     )}
                 </div>
             </td>
 
-            <td className="p-4 text-xs font-medium text-muted-foreground align-middle">
+            <td className="p-4 text-label-md font-medium text-muted-foreground align-middle">
                 <div className="flex items-center gap-2">
                     <div className={cn("w-2 h-2 rounded-full", wallet?.color || 'bg-muted')} />
                     {wallet?.name || 'Dompet'}
@@ -165,7 +165,7 @@ const TransactionRow = ({ t, wallet, handleRowClick }: TransactionRowProps) => {
             <td className="p-4 pr-6 text-right align-middle">
                 <div className="flex flex-col items-end">
                     <span className={cn(
-                        "font-medium tabular-nums text-sm tracking-tight",
+                        "font-medium tabular-nums text-body-md tracking-tight",
                         t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'
                     )}>
                         {t.type === 'income' ? '+' : '-'} {formatCurrency(t.amount)}
@@ -187,19 +187,19 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
 
     return (
         <div id="widget-recent-transactions" className="overflow-hidden rounded-card bg-card/98 shadow-elevation-3">
-            <Table className="min-w-[720px] text-left text-sm">
+            <Table className="min-w-[720px] text-left text-body-md">
                 <thead className="bg-muted/50 text-muted-foreground font-medium">
                     <tr>
-                        <th className="p-4 pl-6 font-medium text-xs text-label">Detail Transaksi</th>
-                        <th className="p-4 font-medium text-xs text-label">Kategori / Sub</th>
-                        <th className="p-4 font-medium text-xs text-label">Sumber Dana</th>
-                        <th className="p-4 text-right pr-6 font-medium text-xs text-label">Nominal</th>
+                        <th className="p-4 pl-6 font-medium text-label-md text-label">Detail Transaksi</th>
+                        <th className="p-4 font-medium text-label-md text-label">Kategori / Sub</th>
+                        <th className="p-4 font-medium text-label-md text-label">Sumber Dana</th>
+                        <th className="p-4 text-right pr-6 font-medium text-label-md text-label">Nominal</th>
                     </tr>
                 </thead>
                 <tbody>
                     {transactions.length === 0 && (
                         <tr>
-                            <td colSpan={4} className="p-6 text-center text-sm text-muted-foreground italic">
+                            <td colSpan={4} className="p-6 text-center text-body-md text-muted-foreground italic">
                                 Belum ada transaksi yang ditemukan.
                             </td>
                         </tr>
@@ -220,7 +220,7 @@ export const DashboardRecentTransactions = ({ transactions, wallets }: Dashboard
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push('/transactions')}
-                    className="text-xs font-medium text-label text-muted-foreground hover:text-primary transition-colors"
+                    className="text-label-md font-medium text-label text-muted-foreground hover:text-primary transition-colors"
                 >
                     Lihat Riwayat Lengkap
                     <ArrowRight size={14} weight="regular" className="ml-2" />

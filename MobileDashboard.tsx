@@ -77,7 +77,7 @@ export default function MobileDashboard() {
       {/* LAYER 2: Wallet Stack Carousel */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3 px-1">
-          <h2 className="text-base font-semibold text-slate-800">Dompet Kamu</h2>
+          <h2 className="text-title-sm text-slate-800">Dompet Kamu</h2>
         </div>
         {/* Snap-scroll horizontal container, hidden scrollbar */}
         <div className="flex overflow-x-auto gap-3 pb-2 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -114,7 +114,7 @@ export default function MobileDashboard() {
           onClick={() => setIsChartExpanded(!isChartExpanded)}
         >
           <div>
-            <h2 className="text-base font-semibold text-slate-800">Tren Pengeluaran</h2>
+            <h2 className="text-title-sm text-slate-800">Tren Pengeluaran</h2>
             { !isChartExpanded && (
               <p className="text-sm text-slate-500 mt-1">Rp 4.200.000 bulan ini</p>
             )}
@@ -150,7 +150,7 @@ export default function MobileDashboard() {
       {/* LAYER 2: Recent Transactions (Strictly Max 2 Items) */}
       <section className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold text-slate-800">Transaksi Terbaru</h2>
+          <h2 className="text-title-sm text-slate-800">Transaksi Terbaru</h2>
         </div>
 
         <div className="space-y-4">

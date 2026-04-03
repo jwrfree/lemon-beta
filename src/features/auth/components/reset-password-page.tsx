@@ -71,7 +71,7 @@ export const ResetPasswordPage = () => {
                     <CheckCircle2 className="h-10 w-10 text-success" />
                 </div>
                 <div className="space-y-2">
-                    <h2 className="text-2xl font-bold">Password Diperbarui!</h2>
+                    <h2 className="text-display-sm">Password Diperbarui!</h2>
                     <p className="text-muted-foreground">Password kamu sudah berhasil diganti. Kamu akan dialihkan ke halaman utama sebentar lagi.</p>
                 </div>
                 <Button onClick={() => router.push('/')} className="w-full h-12 rounded-xl">
@@ -84,7 +84,7 @@ export const ResetPasswordPage = () => {
     return (
         <div className="p-6 md:p-8">
             <div className="mb-8">
-                <h2 className="text-2xl font-bold mb-2">Atur Ulang Password</h2>
+                <h2 className="text-display-sm mb-2">Atur Ulang Password</h2>
                 <p className="text-muted-foreground">Silakan masukkan password baru untuk akun kamu. Pastikan gunakan kombinasi yang kuat.</p>
             </div>
 
@@ -151,7 +151,7 @@ export const ResetPasswordPage = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" size="lg" className="w-full h-12 rounded-xl text-base" disabled={isSubmitting}>
+                    <Button type="submit" size="lg" className="w-full h-12 rounded-xl text-body-lg" disabled={isSubmitting}>
                         {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         {isSubmitting ? 'Memperbarui...' : 'Simpan Password Baru'}
                     </Button>

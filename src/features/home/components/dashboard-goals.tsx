@@ -31,10 +31,10 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
         <Card id="widget-goals" variant="default" className="bg-card/98">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle className="text-sm font-medium flex items-center gap-2">
+                    <CardTitle className="text-body-md font-medium flex items-center gap-2">
                         <Target size={16} weight="regular" className="text-primary" /> Target
                     </CardTitle>
-                    <CardDescription className="text-xs">Tabungan prioritas</CardDescription>
+                    <CardDescription className="text-label-md">Tabungan prioritas</CardDescription>
                 </div>
                 <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
                     <Link href="/goals">
@@ -44,12 +44,12 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
             </CardHeader>
             <CardContent className="space-y-4">
                 {activeGoals.length === 0 ? (
-                    <div className="rounded-lg bg-muted/35 py-4 text-center text-xs text-muted-foreground shadow-inner">
+                    <div className="rounded-lg bg-muted/35 py-4 text-center text-label-md text-muted-foreground border border-border/40">
                         <p>Belum ada target aktif.</p>
                         <Button
                             variant="link"
                             size="sm"
-                            className="px-0 h-auto text-xs mt-1"
+                            className="px-0 h-auto text-label-md mt-1"
                             onClick={() => {
                                 setGoalToEdit(null);
                                 setIsGoalModalOpen(true);
@@ -64,10 +64,10 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
 
                         return (
                             <div key={goal.id} className="space-y-1.5">
-                                <div className="flex justify-between text-xs">
+                                <div className="flex justify-between text-label-md">
                                     <span className="font-medium truncate max-w-[120px]">{goal.name}</span>
                                     <span className="text-muted-foreground tabular-nums">
-                                        {formatCurrency(goal.currentAmount || 0)} <span className="text-xs text-muted-foreground/60">/ {formatCurrency(goal.targetAmount)}</span>
+                                        {formatCurrency(goal.currentAmount || 0)} <span className="text-label-md text-muted-foreground/60">/ {formatCurrency(goal.targetAmount)}</span>
                                     </span>
                                 </div>
                                 <Progress value={percent} className="h-2" />

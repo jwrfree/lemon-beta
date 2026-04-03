@@ -99,16 +99,16 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-sm font-medium">Arus Kas</CardTitle>
-                        <CardDescription className="text-xs">
+                        <CardTitle className="text-body-md font-medium">Arus Kas</CardTitle>
+                        <CardDescription className="text-label-md">
                             Pemasukan vs Pengeluaran
                         </CardDescription>
                     </div>
                     <Tabs value={chartRange} onValueChange={(v) => setChartRange(v as '30' | '90' | 'month')} className="w-auto">
                         <TabsList className="grid w-full grid-cols-3 h-9 p-1 bg-muted rounded-md">
-                            <TabsTrigger value="month" className="h-full rounded-lg text-xs px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Bulan Ini</TabsTrigger>
-                            <TabsTrigger value="30" className="h-full rounded-lg text-xs px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">30 Hari</TabsTrigger>
-                            <TabsTrigger value="90" className="h-full rounded-lg text-xs px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">3 Bulan</TabsTrigger>
+                            <TabsTrigger value="month" className="h-full rounded-lg text-label-md px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Bulan Ini</TabsTrigger>
+                            <TabsTrigger value="30" className="h-full rounded-lg text-label-md px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">30 Hari</TabsTrigger>
+                            <TabsTrigger value="90" className="h-full rounded-lg text-label-md px-2 font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">3 Bulan</TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>

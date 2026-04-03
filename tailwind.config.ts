@@ -165,20 +165,21 @@ const config = {
         squircle: '38%',
       },
       fontSize: {
-        'display-lg': ['2rem', { lineHeight: '2.5rem', fontWeight: '700' }],
-        'display-md': ['1.5rem', { lineHeight: '2rem', fontWeight: '700' }],
-        'display-sm': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],
-        'title-lg': ['1.125rem', { lineHeight: '1.75rem', fontWeight: '600' }],
-        'title-md': ['1rem', { lineHeight: '1.5rem', fontWeight: '600' }],
-        'title-sm': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '600' }],
+        'display-lg': ['clamp(1.5rem, 4vw, 2rem)', { lineHeight: '1.25', fontWeight: '600' }],
+        'display-md': ['clamp(1.25rem, 3vw, 1.5rem)', { lineHeight: '1.25', fontWeight: '600' }],
+        'display-sm': ['clamp(1.125rem, 2.5vw, 1.25rem)', { lineHeight: '1.3', fontWeight: '500' }],
+        'title-lg': ['clamp(1rem, 2vw, 1.125rem)', { lineHeight: '1.4', fontWeight: '500' }],
+        'title-md': ['1rem', { lineHeight: '1.5rem', fontWeight: '500' }],
+        'title-sm': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '500' }],
         'body-lg': ['1rem', { lineHeight: '1.5rem', fontWeight: '400' }],
         'body-md': ['0.875rem', { lineHeight: '1.25rem', fontWeight: '400' }],
         'body-sm': ['0.75rem', { lineHeight: '1rem', fontWeight: '400' }],
         'label-lg': ['0.875rem', { lineHeight: '1rem', fontWeight: '500' }],
         'label-md': ['0.75rem', { lineHeight: '1rem', fontWeight: '500' }],
         'label-sm': ['0.625rem', { lineHeight: '0.875rem', fontWeight: '500' }],
+        'label-xs': ['0.59375rem', { lineHeight: '0.75rem', fontWeight: '500' }],
         // Backward-compatible alias for existing DS-1 classes.
-        'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.025em', fontWeight: '600' }],
+        'label': ['0.75rem', { lineHeight: '1rem', letterSpacing: '0.025em', fontWeight: '500' }],
       },
       keyframes: {
         'accordion-down': {
@@ -215,12 +216,6 @@ const config = {
         // elevation-2: cards, list items
         // elevation-3: sheets, drawers, popovers
         // elevation-4: modals, dialogs
-        card: '0 2px 8px 0 rgb(0 0 0 / 0.08)',
-        lg: '0 4px 16px 0 rgb(0 0 0 / 0.12)',
-        xl: '0 8px 32px 0 rgb(0 0 0 / 0.16)',
-        'soft': '0 2px 8px 0 rgb(0 0 0 / 0.08)',
-        'premium': '0 4px 16px 0 rgb(0 0 0 / 0.12)',
-        'button': '0 2px 8px 0 rgb(0 0 0 / 0.08)',
       },
     },
   },

@@ -88,14 +88,17 @@ interface UIContextType {
     openDebtPaymentModal: (debt: Debt) => void;
 
     isSmartAddOpen: boolean;
-    setIsSmartAddOpen: (isOpen: boolean) => void;
+    setIsSmartAddOpen: (isOpen: boolean | ((prev: boolean) => boolean)) => void;
+    openUniversalAdd: () => void;
 
     isAIChatOpen: boolean;
-    setIsAIChatOpen: (isOpen: boolean) => void;
+    setIsAIChatOpen: (isOpen: boolean | ((prev: boolean) => boolean)) => void;
 
+    isCommandPaletteOpen: boolean;
+    setIsCommandPaletteOpen: (isOpen: boolean | ((prev: boolean) => boolean)) => void;
 
     isSidebarCollapsed: boolean;
-    setIsSidebarCollapsed: (isCollapsed: boolean) => void;
+    setIsSidebarCollapsed: (isCollapsed: boolean | ((prev: boolean) => boolean)) => void;
 
     isAnyModalOpen: boolean;
     toastState: ToastState;
@@ -140,6 +143,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [debtForPayment, setDebtForPayment] = useState<Debt | null>(null);
     const [isSmartAddOpen, setIsSmartAddOpen] = useState(false);
     const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+    const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
     const [toastState, setToastState] = useState<ToastState>({
@@ -198,6 +202,10 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         setIsTransactionDetailOpen(true);
     };
 
+    const openUniversalAdd = () => {
+        setIsSmartAddOpen(true);
+    };
+
     const openEditGoalModal = (goal: Goal) => {
         setGoalToEdit(goal);
         setIsGoalModalOpen(true);
@@ -232,7 +240,8 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         isDebtModalOpen ||
         isDebtPaymentModalOpen ||
         isSmartAddOpen ||
-        isAIChatOpen;
+        isAIChatOpen ||
+        isCommandPaletteOpen;
 
     const contextValue = useMemo(() => ({
         isTxSheetOpen,
@@ -290,8 +299,11 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         openDebtPaymentModal,
         isSmartAddOpen,
         setIsSmartAddOpen,
+        openUniversalAdd,
         isAIChatOpen,
         setIsAIChatOpen,
+        isCommandPaletteOpen,
+        setIsCommandPaletteOpen,
         isSidebarCollapsed,
         setIsSidebarCollapsed,
         isAnyModalOpen,
@@ -300,11 +312,11 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         hideToast,
     }), [
         isTxSheetOpen,
-        isTransactionDetailOpen,
-        deferredPrompt,
         transactionToEdit,
-        transactionToView,
         txSheetMode,
+        isTransactionDetailOpen,
+        transactionToView,
+        deferredPrompt,
         isWalletModalOpen,
         isBudgetModalOpen,
         isEditBudgetModalOpen,
@@ -325,6 +337,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         debtForPayment,
         isSmartAddOpen,
         isAIChatOpen,
+        isCommandPaletteOpen,
         isSidebarCollapsed,
         isAnyModalOpen,
         toastState

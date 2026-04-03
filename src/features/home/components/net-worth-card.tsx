@@ -38,37 +38,37 @@ export const NetWorthCard = ({ totalAssets, totalLiabilities }: NetWorthCardProp
     return (
         <Card id="widget-net-worth" variant="elevated" className="bg-card/98">
             <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <CardTitle className="text-body-md font-medium text-muted-foreground flex items-center gap-2">
                     <PiggyBank className="h-4 w-4" />
                     Kekayaan Bersih (Net Worth)
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-medium mb-4">
+                <div className="text-display-md font-medium mb-4">
                     <AnimatedCounter value={displayNetWorth} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-4">
                     <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <p className="text-label-md text-muted-foreground flex items-center gap-1">
                             <Wallet className="h-3 w-3" /> Aset
                         </p>
-                        <p className="text-sm font-medium text-success">
+                        <p className="text-body-md font-medium text-success">
                             {formatCurrency(totalAssets)}
                         </p>
                     </div>
                     <div className="space-y-1">
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <p className="text-label-md text-muted-foreground flex items-center gap-1">
                             <TrendingDown className="h-3 w-3" /> Kewajiban
                         </p>
-                        <p className="text-sm font-medium text-destructive">
+                        <p className="text-body-md font-medium text-destructive">
                             {formatCurrency(totalLiabilities)}
                         </p>
                     </div>
                 </div>
 
                 <div className="mt-4 space-y-1.5">
-                    <div className="flex justify-between text-xs">
+                    <div className="flex justify-between text-label-md">
                         <div className="flex items-center gap-1.5">
                             <span className="text-muted-foreground">Rasio Hutang</span>
                             <HelpTooltip content="Persentase aset yang dibiayai oleh hutang." />

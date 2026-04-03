@@ -9,52 +9,48 @@ import { GoalList } from './goal-list';
 import { EmptyState } from '@/components/empty-state';
 
 export const GoalsDashboard = () => {
-    const { goals, isLoading } = useGoals();
-    const { setIsGoalModalOpen } = useUI();
+ const { goals, isLoading } = useGoals();
+ const { setIsGoalModalOpen } = useUI();
 
-    if (isLoading) {
-        return (
-            <div className="flex flex-col h-full items-center justify-center py-12">
-                <CircleNotch className="h-8 w-8 animate-spin text-primary" />
-            </div>
-        );
-    }
+ if (isLoading) {
+ return (
+ <div className="flex flex-col h-full items-center justify-center py-12">
+ <CircleNotch className="h-8 w-8 animate-spin text-primary"/>
+ </div>
+ );
+ }
 
-    if (goals.length === 0) {
-        return (
-            <div className="flex flex-col h-full min-h-[400px] animate-in fade-in duration-500">
-                <EmptyState
-                    icon={Target}
-                    title="Wujudkan Impianmu Bersama Lemon"
-                    description="Mulai menabung untuk impianmu hari ini. Tetapkan target dan raih satu per satu dengan bantuan Lemon."
-                    actionLabel="Buat Target Baru"
-                    onAction={() => setIsGoalModalOpen(true)}
-                    variant="default"
-                />
-            </div>
-        );
-    }
+ if (goals.length === 0) {
+ return (
+ <div className="flex flex-col h-full min-h-[400px] animate-in fade-in duration-500">
+ <EmptyState
+ icon={Target}
+ title="Wujudkan Impianmu Bersama Lemon"
+ description="Mulai menabung untuk impianmu hari ini. Tetapkan target dan raih satu per satu dengan bantuan Lemon."
+ actionLabel="Buat Target Baru"
+ onAction={() => setIsGoalModalOpen(true)}
+ variant="default"
+ />
+ </div>
+ );
+ }
 
-    return (
-        <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in app-page-body-padding">
-            {/* Summary Cards could go here */}
+ return (
+ <div className="w-full space-y-6 animate-in slide-in-from-bottom-2 duration-500 fade-in app-page-body-padding">
+ {/* List */}
+ <div>
+ <div className="flex items-center justify-between mb-4 px-2">
+ <h2 className="text-label-md text-muted-foreground/60">Daftar impian</h2>
+ <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost"size="sm"className="h-8 rounded-full text-label-sm text-primary hover:bg-transparent">
+ <Plus className="h-3.5 w-3.5 mr-1"weight="regular"/>
+ Tambah
+ </Button>
+ </div>
+ <GoalList goals={goals} />
+ </div>
 
-            {/* List */}
-            <div>
-                <div className="flex items-center justify-between mb-4 px-2">
-                    <h2 className="label-xs">Daftar Impian</h2>
-                    <Button onClick={() => setIsGoalModalOpen(true)} variant="ghost" size="sm" className="h-8 rounded-full text-label uppercase hover:bg-primary/10 hover:text-primary">
-                        <Plus className="h-3.5 w-3.5 mr-1" weight="regular" />
-                        Tambah
-                    </Button>
-                </div>
-                <GoalList goals={goals} />
-            </div>
-
-            {/* Contextual FAB */}
-            <FAB onClick={() => setIsGoalModalOpen(true)} label="Tambah target" />
-        </div>
-    );
+ {/* Contextual FAB */}
+ <FAB onClick={() => setIsGoalModalOpen(true)} label="Tambah target"/>
+ </div>
+ );
 };
-
-

@@ -6,13 +6,13 @@ import { Loader2 } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all motion-pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-title-sm ring-offset-background transition-all motion-pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary: "bg-foreground text-background hover:opacity-90 active:scale-95",
         default: "bg-foreground text-background hover:opacity-90 active:scale-95",
-        volt: "bg-accent text-accent-foreground hover:opacity-90 active:scale-95 shadow-button",
+        volt: "bg-accent text-accent-foreground hover:opacity-90 active:scale-95 shadow-sm",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:scale-95",
         outline:
@@ -28,7 +28,7 @@ const buttonVariants = cva(
       size: {
         default: "h-11 px-6 py-2",
         sm: "h-9 px-4",
-        lg: "h-13 px-10 text-base",
+        lg: "h-13 px-10 text-body-lg",
         icon: "h-11 w-11",
       },
     },

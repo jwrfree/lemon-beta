@@ -68,12 +68,12 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
         <Card className="shadow-none border border-border/40 border-none rounded-md sm:rounded-card overflow-hidden bg-card">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
                 <div className="space-y-0.5 sm:space-y-1">
-                    <CardTitle className="text-base sm:text-lg font-medium tracking-tight">Tren Tahunan</CardTitle>
-                    <CardDescription className="text-xs sm:text-xs">
+                    <CardTitle className="text-body-lg sm:text-title-lg font-medium tracking-tight">Tren Tahunan</CardTitle>
+                    <CardDescription className="text-label-md sm:text-label-md">
                         {`Visualisasi ${sectionLabel} 12 bulan.`}
                     </CardDescription>
                 </div>
-                <Badge variant="outline" className="border-border text-xs sm:text-xs font-medium px-1.5 py-0.5">
+                <Badge variant="outline" className="border-border text-label-md sm:text-label-md font-medium px-1.5 py-0.5">
                     {rangeLabel}
                 </Badge>
             </CardHeader>
@@ -88,12 +88,12 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <div className="rounded-md bg-muted/30 p-3 sm:p-4 border-none">
-                        <p className="text-xs sm:text-xs font-medium text-label text-muted-foreground/70 mb-1 leading-none">Total Setahun</p>
-                        <p className="text-base sm:text-lg font-medium text-foreground tabular-nums leading-none">{formatCurrency(totalYear)}</p>
+                        <p className="text-label-md sm:text-label-md font-medium text-label text-muted-foreground/70 mb-1 leading-none">Total Setahun</p>
+                        <p className="text-body-lg sm:text-title-lg font-medium text-foreground tabular-nums leading-none">{formatCurrency(totalYear)}</p>
                     </div>
                     <div className="rounded-md bg-muted/30 p-3 sm:p-4 border-none">
-                        <p className="text-xs sm:text-xs font-medium text-label text-muted-foreground/70 mb-1 leading-none">Rata-rata</p>
-                        <p className="text-base sm:text-lg font-medium text-foreground tabular-nums leading-none">{formatCurrency(average)}</p>
+                        <p className="text-label-md sm:text-label-md font-medium text-label text-muted-foreground/70 mb-1 leading-none">Rata-rata</p>
+                        <p className="text-body-lg sm:text-title-lg font-medium text-foreground tabular-nums leading-none">{formatCurrency(average)}</p>
                     </div>
                 </div>
             </CardContent>

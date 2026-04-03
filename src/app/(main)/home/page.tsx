@@ -20,7 +20,6 @@ import { useReminders } from '@/features/reminders/hooks/use-reminders';
 import { useDebts } from '@/features/debts/hooks/use-debts';
 import { useHomeSummary } from '@/features/home/hooks/use-home-summary';
 import dynamic from 'next/dynamic';
-import { AIInsightCard } from '@/features/home/components/ai-insight-card';
 import { HomeSkeleton } from '@/features/home/components/home-skeleton';
 
 const DesktopDashboard = dynamic(() => import('@/features/home/components/desktop-dashboard').then(mod => mod.DesktopDashboard), {

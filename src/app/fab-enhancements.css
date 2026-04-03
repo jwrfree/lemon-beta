@@ -51,14 +51,14 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: 0 0 0 0 hsla(var(--volt-500) / 0.4);
+  border: 2px solid hsla(var(--volt-500) / 0.5);
   animation: volt-pulse 2s infinite;
 }
 
 @keyframes volt-pulse {
-  0% { box-shadow: 0 0 0 0 hsla(var(--volt-500) / 0.4); }
-  70% { box-shadow: 0 0 0 10px hsla(var(--volt-500) / 0); }
-  100% { box-shadow: 0 0 0 0 hsla(var(--volt-500) / 0); }
+  0% { transform: scale(1); opacity: 1; }
+  70% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 
 /* Bottom navigation enhancements */

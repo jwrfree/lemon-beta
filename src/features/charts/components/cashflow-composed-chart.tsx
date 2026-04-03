@@ -54,14 +54,14 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
         <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-none border border-border/40 border border-zinc-100 dark:border-zinc-800">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h3 className="text-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
+                    <h3 className="text-title-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
                         Cashflow & Net Worth Trend
                     </h3>
-                    <p className="text-sm text-zinc-500">Korelasi Pemasukan, Pengeluaran, dan Akumulasi Saldo</p>
+                    <p className="text-body-md text-zinc-500">Korelasi Pemasukan, Pengeluaran, dan Akumulasi Saldo</p>
                 </div>
             </div>
 
-            <div className="h-[350px] w-full text-xs">
+            <div className="h-[350px] w-full text-label-md">
                 <ChartContainer config={chartConfig} className="h-full w-full">
                     <ComposedChart
                         data={data}

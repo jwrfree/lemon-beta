@@ -25,19 +25,19 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
     const Content = (
         <Card className="hover:shadow-none border border-border/40 transition-all duration-300 h-full border-none bg-card group rounded-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-                <CardTitle className="text-xs font-medium tracking-tight text-muted-foreground">{title}</CardTitle>
+                <CardTitle className="text-label-md font-medium tracking-tight text-muted-foreground">{title}</CardTitle>
                 <div className={cn("p-1.5 rounded-md bg-muted group-hover:scale-110 transition-transform", getBgColor(color))}>
                     <Icon className={cn("h-3.5 w-3.5", iconColor || color)} />
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-medium tracking-tight">
+                <div className="text-display-md font-medium tracking-tight">
                     <AnimatedCounter value={value} />
                 </div>
                 {trend && (
                     <div className="flex items-center gap-1.5 mt-2">
                         <div className={cn(
-                            "flex items-center px-1.5 py-0.5 rounded-md text-xs font-medium tracking-tight",
+                            "flex items-center px-1.5 py-0.5 rounded-md text-label-md font-medium tracking-tight",
                             trend === 'up' ? "bg-teal-50 text-teal-600" :
                             trend === 'down' ? "bg-pink-50 text-destructive" :
                             "bg-muted text-foreground/70"
@@ -46,7 +46,7 @@ export const StatCard = ({ title, value, icon: Icon, trend, trendValue, color, i
                             {trend === 'down' && <TrendDown size={12} weight="regular" className="mr-1" />}
                             {trendValue}
                         </div>
-                        <span className="text-xs text-muted-foreground font-medium tracking-tight">vs bulan lalu</span>
+                        <span className="text-label-md text-muted-foreground font-medium tracking-tight">vs bulan lalu</span>
                     </div>
                 )}
             </CardContent>

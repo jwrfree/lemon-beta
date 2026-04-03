@@ -1,0 +1,415 @@
+'use client';
+
+import React, { useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { 
+ Flame, 
+ Calendar, 
+ Info, 
+ Layers, 
+ Zap, 
+ ArrowUpRight, 
+ Trophy, 
+ PieChart 
+} from '@/lib/icons';
+import { formatCurrency, cn } from '@/lib/utils';
+import { useRangeTransactions } from '@/features/transactions/hooks/use-range-transactions';
+import { parseISO, startOfMonth, endOfMonth, subMonths, format, differenceInDays, eachDayOfInterval, subDays, isWeekend } from 'date-fns';
+import { useUI } from '@/components/ui-provider';
+import { useBudgets } from '@/features/budgets/hooks/use-budgets';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { useReminders } from '@/features/reminders/hooks/use-reminders';
+import { useRouter } from 'next/navigation';
+
+import { 
+ FinancialPulseSkeleton, 
+ TrendAnalyticsSkeleton, 
+ CategoryPieSkeleton 
+} from '@/features/charts/components/chart-skeleton';
+
+// Dynamically import heavy chart components
+const FinancialPulse = dynamic(() => import('@/features/charts/components/financial-pulse').then(mod => mod.FinancialPulse), { 
+ ssr: false,
+ loading: () => <FinancialPulseSkeleton />
+});
+const TrendAnalytics = dynamic(() => import('@/features/charts/components/trend-analytics').then(mod => mod.TrendAnalytics), { 
+ ssr: false,
+ loading: () => <TrendAnalyticsSkeleton />
+});
+const HealthGauge = dynamic(() => import('@/features/charts/components/financial-health').then(mod => mod.HealthGauge), { 
+ ssr: false,
+ loading: () => <div className="h-[150px] w-full animate-pulse bg-muted rounded-card"/>
+});
+const HistoryChart = dynamic(() => import('@/features/charts/components/history-chart').then(mod => mod.HistoryChart), { 
+ ssr: false,
+ loading: () => <div className="h-[250px] w-full animate-pulse bg-muted rounded-card"/>
+});
+const CategoryPie = dynamic(() => import('@/features/charts/components/category-pie').then(mod => mod.CategoryPie), { 
+ ssr: false,
+ loading: () => <CategoryPieSkeleton />
+});
+
+import { MetricCard } from '@/features/charts/components/financial-health';
+import { CategoryPilla, TopTransactionItem } from '@/features/charts/components/chart-lists';
+import { NetWorthTrend } from '@/features/charts/components/advanced-stats/net-worth-trend';
+import { BehaviorAnalytics } from '@/features/charts/components/advanced-stats/behavior-analytics';
+import { SavingPotential } from '@/features/charts/components/advanced-stats/saving-potential';
+import { SubscriptionAudit } from '@/features/charts/components/advanced-stats/subscription-audit';
+
+export function AnalyticsDashboard() {
+ const router = useRouter();
+ const { openTransactionSheet } = useUI();
+ const { budgets } = useBudgets();
+ const { wallets } = useWallets();
+ const { reminders } = useReminders();
+ const [categoryView, setCategoryView] = useState<'expense'| 'income'>('expense');
+
+ const now = new Date();
+ const currentMonthStart = startOfMonth(now);
+ const currentMonthEnd = endOfMonth(now);
+ const prevMonth = subMonths(now, 1);
+ const prevMonthStart = startOfMonth(prevMonth);
+ const prevMonthEnd = endOfMonth(prevMonth);
+ const last30DaysStart = subDays(now, 29);
+ const sixMonthsAgoStart = startOfMonth(subMonths(now, 5));
+
+ const { transactions: allTransactions } = useRangeTransactions(sixMonthsAgoStart, now);
+
+ // Net Worth Simulation
+ const netWorthData = useMemo(() => {
+ const totalWalletBalance = wallets.reduce((sum, w) => sum + (w.balance || 0), 0);
+ const history = [];
+ let runningBalance = totalWalletBalance;
+
+ for (let i = 0; i < 6; i++) {
+ const date = subMonths(now, i);
+ const monthLabel = format(date, 'MMM');
+ 
+ const monthTx = allTransactions.filter(t => {
+ const d = parseISO(t.date);
+ return d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear();
+ });
+ 
+ const income = monthTx.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+ const expense = monthTx.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+ 
+ history.push({
+ month: monthLabel,
+ assets: runningBalance,
+ liabilities: 0,
+ netWorth: runningBalance
+ });
+
+ runningBalance -= (income - expense);
+ }
+
+ return history.reverse();
+ }, [wallets, allTransactions, now]);
+
+ const behaviorData = useMemo(() => {
+ const last30 = allTransactions.filter(t => parseISO(t.date) >= last30DaysStart && t.category !== 'Transfer');
+ const expenses = last30.filter(t => t.type === 'expense');
+ const weekdays = expenses.filter(t => !isWeekend(parseISO(t.date)));
+ const weekends = expenses.filter(t => isWeekend(parseISO(t.date)));
+ 
+ const weekdayTotal = weekdays.reduce((sum, t) => sum + t.amount, 0);
+ const weekendTotal = weekends.reduce((sum, t) => sum + t.amount, 0);
+ 
+ const getTopCat = (txs: any[]) => {
+ const cats: any = {};
+ txs.forEach(t => cats[t.category] = (cats[t.category] || 0) + t.amount);
+ return Object.entries(cats).sort(([,a],[,b]) => (b as number)-(a as number))[0]?.[0] || 'N/A';
+ };
+
+ const incomes = last30.filter(t => t.type === 'income').sort((a,b) => b.amount - a.amount);
+ const topIncome = incomes[0];
+ let drainDays = 15;
+
+ if (topIncome) {
+ const payday = parseISO(topIncome.date);
+ let cumulativeAfterPayday = 0;
+ const threshold = topIncome.amount * 0.5;
+ const expensesAfterPayday = expenses.filter(t => parseISO(t.date) >= payday).sort((a,b) => a.date.localeCompare(b.date));
+ 
+ for (let i = 0; i < expensesAfterPayday.length; i++) {
+ cumulativeAfterPayday += expensesAfterPayday[i].amount;
+ if (cumulativeAfterPayday >= threshold) {
+ drainDays = differenceInDays(parseISO(expensesAfterPayday[i].date), payday);
+ break;
+ }
+ }
+ }
+
+ return {
+ weekdayAvg: weekdayTotal / 22,
+ weekendAvg: weekendTotal / 8,
+ paydayDrainDays: drainDays,
+ topWeekdayCategory: getTopCat(weekdays),
+ topWeekendCategory: getTopCat(weekends)
+ };
+ }, [allTransactions, last30DaysStart]);
+
+ const savingData = useMemo(() => {
+ const currentMonthNonTransfer = allTransactions.filter(t => {
+ const d = parseISO(t.date);
+ return d >= currentMonthStart && d <= currentMonthEnd && t.category !== 'Transfer';
+ });
+
+ const currentMonthExp = currentMonthNonTransfer.filter(t => t.type === 'expense');
+ const currentMonthInc = currentMonthNonTransfer.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+
+ const fixedCosts = currentMonthExp
+ .filter(t => t.category.toLowerCase().includes('tagihan') || t.category.toLowerCase().includes('cicilan') || t.category.toLowerCase().includes('kost'))
+ .reduce((sum, t) => sum + t.amount, 0);
+ 
+ const variableSpending = currentMonthExp.reduce((sum, t) => sum + t.amount, 0) - fixedCosts;
+ const actualSavings = Math.max(0, currentMonthInc - (fixedCosts + variableSpending));
+ const plannedVariable = budgets.reduce((sum, b) => sum + b.targetAmount, 0);
+ const potentialSavings = Math.max(actualSavings, currentMonthInc - (fixedCosts + plannedVariable));
+
+ return {
+ income: currentMonthInc,
+ fixedCosts,
+ variableSpending,
+ actualSavings,
+ potentialSavings: potentialSavings || (currentMonthInc * 0.3)
+ };
+ }, [allTransactions, currentMonthStart, currentMonthEnd, budgets]);
+
+ const subscriptionData = useMemo(() => {
+ const subs = reminders
+ .filter(r => r.repeatRule?.frequency !== 'none'&& r.amount)
+ .map(r => ({
+ id: r.id,
+ name: r.title,
+ amount: r.amount || 0,
+ category: r.category || 'Subscription',
+ isDueSoon: r.dueDate ? differenceInDays(parseISO(r.dueDate), now) <= 3 : false
+ }));
+
+ const totalMonthly = subs.reduce((sum, s) => sum + s.amount, 0);
+ return { items: subs.slice(0, 5), totalMonthly };
+ }, [reminders, now]);
+
+ const { currentMonthTx, prevMonthTx, last30DaysTx } = useMemo(() => {
+ const nonTransfers = allTransactions.filter(t => t.category !== 'Transfer');
+ const current = nonTransfers.filter(t => {
+ const date = parseISO(t.date);
+ return date >= currentMonthStart && date <= currentMonthEnd;
+ });
+ const prev = nonTransfers.filter(t => {
+ const date = parseISO(t.date);
+ return date >= prevMonthStart && date <= prevMonthEnd;
+ });
+ const last30 = nonTransfers.filter(t => {
+ const date = parseISO(t.date);
+ return date >= last30DaysStart && date <= now;
+ });
+ return { currentMonthTx: current, prevMonthTx: prev, last30DaysTx: last30 };
+ }, [allTransactions, currentMonthStart, currentMonthEnd, prevMonthStart, prevMonthEnd, last30DaysStart, now]);
+
+ const currentMonthData = useMemo(() => {
+ let inc = 0, exp = 0;
+ const expCats: Record<string, number> = {};
+ const incCats: Record<string, number> = {};
+
+ currentMonthTx.forEach(t => {
+ if (t.type === 'income') {
+ inc += t.amount;
+ incCats[t.category] = (incCats[t.category] || 0) + t.amount;
+ }
+ if (t.type === 'expense') {
+ exp += t.amount;
+ expCats[t.category] = (expCats[t.category] || 0) + t.amount;
+ }
+ });
+
+ const sortedExpCats = Object.entries(expCats).sort(([, a], [, b]) => b - a).map(([cat, amt]) => ({ name: cat, value: amt }));
+ const sortedIncCats = Object.entries(incCats).sort(([, a], [, b]) => b - a).map(([cat, amt]) => ({ name: cat, value: amt }));
+
+ return {
+ income: inc,
+ expense: exp,
+ net: inc - exp,
+ expenseCategories: sortedExpCats,
+ incomeCategories: sortedIncCats
+ };
+ }, [currentMonthTx]);
+
+ const prevMonthData = useMemo(() => {
+ let inc = 0, exp = 0;
+ prevMonthTx.forEach(t => {
+ if (t.type === 'income') inc += t.amount;
+ if (t.type === 'expense') exp += t.amount;
+ });
+ return { income: inc, expense: exp, net: inc - exp };
+ }, [prevMonthTx]);
+
+ const trendData = useMemo(() => {
+ const dailyData: Record<string, { expense: number, count: number }> = {};
+ eachDayOfInterval({ start: last30DaysStart, end: now }).forEach(day => {
+ dailyData[format(day, 'yyyy-MM-dd')] = { expense: 0, count: 0 };
+ });
+
+ last30DaysTx.forEach(t => {
+ if (t.type === 'expense') {
+ const dayKey = format(parseISO(t.date), 'yyyy-MM-dd');
+ if (dailyData[dayKey]) {
+ dailyData[dayKey].expense += t.amount;
+ dailyData[dayKey].count += 1;
+ }
+ }
+ });
+
+ return Object.entries(dailyData)
+ .sort(([a], [b]) => a.localeCompare(b))
+ .map(([date, val]) => ({ date, expense: val.expense, count: val.count }));
+ }, [last30DaysTx, last30DaysStart, now]);
+
+ const historyData = useMemo(() => {
+ const monthsMap: Record<string, any> = {};
+ for (let i = 0; i < 6; i++) {
+ const d = subMonths(now, i);
+ const key = format(d, 'MMM');
+ monthsMap[key] = { month: key, income: 0, expense: 0, net: 0 };
+ }
+
+ allTransactions.filter(t => t.category !== 'Transfer').forEach(t => {
+ const d = parseISO(t.date);
+ const key = format(d, 'MMM');
+ if (monthsMap[key]) {
+ if (t.type === 'income') monthsMap[key].income += t.amount;
+ if (t.type === 'expense') monthsMap[key].expense += t.amount;
+ }
+ });
+
+ return Object.values(monthsMap).reverse();
+ }, [allTransactions, now]);
+
+ const projectedExpense = useMemo(() => {
+ const daysElapsed = differenceInDays(now, currentMonthStart) + 1;
+ const daysInMonth = differenceInDays(currentMonthEnd, currentMonthStart) + 1;
+ if (daysElapsed <= 0) return 0;
+ const rate = currentMonthData.expense / daysElapsed;
+ return rate * daysInMonth;
+ }, [currentMonthData.expense, currentMonthStart, currentMonthEnd, now]);
+
+ const savingsRate = useMemo(() => {
+ if (currentMonthData.income === 0) return 0;
+ return ((currentMonthData.income - currentMonthData.expense) / currentMonthData.income) * 100;
+ }, [currentMonthData]);
+
+ const burnRate = useMemo(() => {
+ const daysInMonth = differenceInDays(currentMonthEnd, currentMonthStart) + 1;
+ return currentMonthData.expense / daysInMonth;
+ }, [currentMonthData.expense, currentMonthStart, currentMonthEnd]);
+
+ const topTransactions = useMemo(() => {
+ return [...currentMonthTx]
+ .filter(t => t.type === 'expense')
+ .sort((a, b) => b.amount - a.amount)
+ .slice(0, 5);
+ }, [currentMonthTx]);
+
+ const colorPalette = ['bg-rose-500', 'bg-orange-500', 'bg-amber-500', 'bg-yellow-500', 'bg-lime-500', 'bg-emerald-500', 'bg-teal-500', 'bg-cyan-500', 'bg-sky-500', 'bg-blue-500'];
+
+ return (
+ <div className="space-y-8">
+ <FinancialPulse
+ net={currentMonthData.net}
+ income={currentMonthData.income}
+ expense={currentMonthData.expense}
+ dataPoints={trendData}
+ prevMonthNet={prevMonthData.net}
+ prevMonthIncome={prevMonthData.income}
+ prevMonthExpense={prevMonthData.expense}
+ projectedExpense={projectedExpense}
+ />
+
+ <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+ <NetWorthTrend data={netWorthData} />
+ <SavingPotential data={savingData} />
+ </div>
+
+ <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+ <BehaviorAnalytics data={behaviorData} />
+ <SubscriptionAudit items={subscriptionData.items} totalMonthly={subscriptionData.totalMonthly} />
+ </div>
+
+ <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-3">
+ <div className="md:col-span-1 h-full">
+ <HealthGauge savingsRate={savingsRate} />
+ </div>
+ <div className="md:col-span-2 grid grid-cols-2 gap-4">
+ <MetricCard
+ title="Burn Rate"
+ value={formatCurrency(burnRate)}
+ subtitle="Rata-rata per hari"
+ icon={Flame}
+ trend={{ value: prevMonthData.expense > 0 ? ((burnRate * 30 - prevMonthData.expense) / prevMonthData.expense) * 100 : 0 }}
+ />
+ <MetricCard title="Freq. Transaksi"value={currentMonthTx.length.toString()} subtitle="Kali bulan ini"icon={Zap} />
+ <MetricCard title="Runway"value={burnRate > 0 && currentMonthData.net > 0 ?`${(currentMonthData.net / burnRate).toFixed(0)} Hari` : '∞'} subtitle="Sisa waktu surplus"icon={Layers} />
+ <MetricCard title="Rekor Tertinggi"value={topTransactions.length > 0 ? formatCurrency(topTransactions[0].amount) : '0'} subtitle="Transaksi max"icon={ArrowUpRight} />
+ </div>
+ </div>
+
+ <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+ <div className="lg:col-span-2">
+ <TrendAnalytics data={trendData} />
+ </div>
+ <div className="lg:col-span-1">
+ <HistoryChart data={historyData} />
+ </div>
+ </div>
+
+ <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
+ <div className="space-y-4">
+ <div className="flex items-center justify-between px-2">
+ <h3 className="text-title-lg tracking-tight">Pengeluaran Terbesar</h3>
+ <Info className="w-4 h-4 text-muted-foreground opacity-50"/>
+ </div>
+ <div className="space-y-3">
+ {topTransactions.length > 0 ? (
+ topTransactions.map((tx, idx) => (
+ <TopTransactionItem key={tx.id} transaction={tx} rank={idx + 1} onClick={() => openTransactionSheet(tx)} />
+ ))
+ ) : (
+ <div className="py-16 flex flex-col items-center justify-center text-center bg-card rounded-card-premium shadow-md relative overflow-hidden text-muted-foreground italic">
+ Belum ada pengeluaran strategis
+ </div>
+ )}
+ </div>
+ </div>
+
+ <div className="space-y-4">
+ <div className="flex items-center justify-between px-2">
+ <h3 className="text-title-lg tracking-tight">Breakdown Kategori</h3>
+ <div className="flex bg-muted/60 p-1.5 rounded-full border border-border/10 backdrop-blur-sm self-start">
+ <button onClick={() => setCategoryView('expense')} className={cn("px-5 py-1.5 text-label rounded-full transition-all duration-300", categoryView === 'expense'? "bg-card text-teal-600 shadow-sm": "text-muted-foreground hover:text-foreground")}>Keluar</button>
+ <button onClick={() => setCategoryView('income')} className={cn("px-5 py-1.5 text-label rounded-full transition-all duration-300", categoryView === 'income'? "bg-card text-teal-600 shadow-sm": "text-muted-foreground hover:text-foreground")}>Masuk</button>
+ </div>
+ </div>
+
+ <div className="grid grid-cols-1 gap-4">
+ <CategoryPie data={categoryView === 'expense'? currentMonthData.expenseCategories : currentMonthData.incomeCategories} total={categoryView === 'expense'? currentMonthData.expense : currentMonthData.income} type={categoryView} />
+ {(categoryView === 'expense'? currentMonthData.expenseCategories : currentMonthData.incomeCategories).map((cat, idx) => {
+ const budget = budgets.find(b => b.categories.includes(cat.name));
+ return (
+ <CategoryPilla
+ key={cat.name}
+ category={cat.name}
+ amount={cat.value}
+ total={categoryView === 'expense'? currentMonthData.expense : currentMonthData.income}
+ budgetAmount={budget?.targetAmount}
+ color={colorPalette[idx % colorPalette.length]}
+ onClick={() => router.push(`/transactions?category=${encodeURIComponent(cat.name)}`)}
+ />
+ );
+ })}
+ </div>
+ </div>
+ </div>
+ </div>
+ );
+}

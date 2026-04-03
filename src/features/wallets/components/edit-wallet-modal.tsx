@@ -101,7 +101,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
         </SheetHeader>
 
         <div className="sticky top-0 flex items-center justify-between bg-background px-4 pb-4 pt-4 shadow-elevation-2">
-          <h2 className="text-xl font-medium">Edit Dompet</h2>
+          <h2 className="text-title-lg">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X size={20} weight="regular" /></Button>
         </div>
         <div className="flex-1 space-y-6 overflow-y-auto p-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
@@ -120,13 +120,13 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
                   />
                 )}
               />
-              {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+              {errors.name && <p className="text-label-md text-destructive">{errors.name.message}</p>}
             </div>
 
             <div className="flex items-center justify-between rounded-lg bg-secondary/55 p-3 shadow-elevation-2">
               <div className="space-y-0.5">
                 <Label htmlFor="is-default">Jadikan Dompet Utama</Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-label-md text-muted-foreground">
                   Dompet ini akan otomatis terpilih saat kamu membuat transaksi.
                 </p>
               </div>
@@ -143,7 +143,7 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
               />
             </div>
 
-            <p className="text-xs text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
+            <p className="text-label-md text-muted-foreground">Kategori dompet dan saldo awal tidak dapat diubah.</p>
 
             <Button type="submit" className="w-full" disabled={isSubmitting || !hasChanges}>
               {isSubmitting ? (
@@ -160,8 +160,8 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
           {/* BALANCE CORRECTION SECTION */}
           <div className="space-y-3 pt-6">
             <div className="space-y-1">
-              <Label className="text-sm font-medium text-primary">Koreksi Saldo</Label>
-              <p className="text-xs text-muted-foreground leading-normal">
+              <Label className="text-body-md font-medium text-primary">Koreksi Saldo</Label>
+              <p className="text-label-md text-muted-foreground leading-normal">
                 Gunakan ini jika saldo di aplikasi berbeda dengan saldo asli. Lemon akan membuat transaksi penyesuaian otomatis.
               </p>
             </div>

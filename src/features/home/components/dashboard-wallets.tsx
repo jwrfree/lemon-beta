@@ -21,8 +21,8 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
     return (
         <Card className="rounded-card bg-card/98 shadow-elevation-3">
             <CardHeader>
-                <CardTitle className="text-sm font-medium">Dompet</CardTitle>
-                <CardDescription className="text-xs">
+                <CardTitle className="text-body-md font-medium">Dompet</CardTitle>
+                <CardDescription className="text-label-md">
                     {wallets.length} dompet aktif digunakan
                 </CardDescription>
             </CardHeader>
@@ -67,17 +67,17 @@ export const DashboardWallets = ({ wallets }: DashboardWalletsProps) => {
                                             )}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-sm text-foreground">{wallet.name}</p>
-                                            <p className="text-xs text-muted-foreground capitalize">{wallet.icon?.replace('-', ' ') || 'Personal'}</p>
+                                            <p className="font-medium text-body-md text-foreground">{wallet.name}</p>
+                                            <p className="text-label-md text-muted-foreground capitalize">{wallet.icon?.replace('-', ' ') || 'Personal'}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-medium text-sm tabular-nums">{formatCurrency(wallet.balance)}</p>
+                                        <p className="font-medium text-body-md tabular-nums">{formatCurrency(wallet.balance)}</p>
                                     </div>
                                 </Link>
                             )
                         })}
-                        <Button variant="ghost" className="w-full text-xs font-medium text-primary hover:bg-primary/5 mt-2 rounded-lg" onClick={() => router.push('/wallets')}>
+                        <Button variant="ghost" className="w-full text-label-md font-medium text-primary hover:bg-primary/5 mt-2 rounded-lg" onClick={() => router.push('/wallets')}>
                             Lihat Semua Dompet <ArrowRight size={12} weight="regular" className="ml-2" />
                         </Button>
                     </div>

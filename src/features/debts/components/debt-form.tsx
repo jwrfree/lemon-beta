@@ -155,8 +155,8 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <div>
-                        <h2 className="text-xl font-medium">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
-                        <p className="text-sm text-muted-foreground">
+                        <h2 className="text-title-lg">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
+                        <p className="text-body-md text-muted-foreground">
                             Simpan detail pinjaman, cicilan, atau piutang yang harus kamu pantau.
                         </p>
                     </div>
@@ -179,7 +179,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                 />
                             )}
                         />
-                        {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+                        {errors.title && <p className="text-label-md text-destructive">{errors.title.message}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -218,7 +218,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                 />
                             )}
                         />
-                        {errors.counterparty && <p className="text-xs text-destructive">{errors.counterparty.message}</p>}
+                        {errors.counterparty && <p className="text-label-md text-destructive">{errors.counterparty.message}</p>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -244,7 +244,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                     />
                                 )}
                             />
-                            {errors.principal && <p className="text-xs text-destructive">{errors.principal.message}</p>}
+                            {errors.principal && <p className="text-label-md text-destructive">{errors.principal.message}</p>}
                         </div>
                         <div className="space-y-2">
                             <Label>Sisa Saat Ini</Label>
@@ -432,7 +432,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                 </form>
                 <div className="p-4 border-t sticky bottom-0 bg-background flex flex-col gap-2">
                     {submitError && (
-                        <p className="text-xs text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                        <p className="text-label-md text-destructive bg-destructive/10 px-3 py-2 rounded-md">
                             {submitError}
                         </p>
                     )}

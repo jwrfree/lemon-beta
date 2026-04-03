@@ -27,7 +27,7 @@ export const DashboardQuickActions = () => {
                         title="Smart Add (AI)"
                     >
                         <Sparkle size={20} weight="regular" />
-                        <span className="text-xs font-medium">Smart</span>
+                        <span className="text-label-md font-medium">Smart</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -36,7 +36,7 @@ export const DashboardQuickActions = () => {
                         title="Transaksi Baru"
                     >
                         <Plus size={20} weight="regular" />
-                        <span className="text-xs font-medium">Baru</span>
+                        <span className="text-label-md font-medium">Baru</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -45,7 +45,7 @@ export const DashboardQuickActions = () => {
                         title="Transfer Antar Dompet"
                     >
                         <ArrowsLeftRight size={20} weight="regular" className="text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">Transfer</span>
+                        <span className="text-label-md font-medium text-muted-foreground">Transfer</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -57,7 +57,7 @@ export const DashboardQuickActions = () => {
                         title="Catat Hutang/Piutang"
                     >
                         <HandCoins size={20} weight="regular" className="text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">Hutang</span>
+                        <span className="text-label-md font-medium text-muted-foreground">Hutang</span>
                     </Button>
                     <Button 
                         variant="outline" 
@@ -69,7 +69,7 @@ export const DashboardQuickActions = () => {
                         title="Target Baru"
                     >
                         <Target size={20} weight="regular" className="text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">Target</span>
+                        <span className="text-label-md font-medium text-muted-foreground">Target</span>
                     </Button>
                 </div>
             </CardContent>

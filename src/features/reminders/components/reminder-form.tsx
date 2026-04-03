@@ -178,13 +178,13 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="flex h-fit max-h-[85vh] w-full max-w-md flex-col rounded-t-card bg-background/98 shadow-elevation-4"
+                className="flex h-fit max-h-[85vh] w-full max-w-md flex-col rounded-t-card bg-background shadow-elevation-4"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background/96 p-4 shadow-elevation-2">
+                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 border-b border-border/40">
                     <div>
-                        <h2 className="text-xl font-medium">{isEditMode ? 'Edit Pengingat' : 'Pengingat Baru'}</h2>
-                        <p className="text-sm text-muted-foreground">Atur tagihan, langganan, atau pengingat hutang.</p>
+                        <h2 className="text-title-lg">{isEditMode ? 'Edit Pengingat' : 'Pengingat Baru'}</h2>
+                        <p className="text-body-md text-muted-foreground">Atur tagihan, langganan, atau pengingat hutang.</p>
                     </div>
                     <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
                         <X className="h-5 w-5" />
@@ -260,7 +260,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className={cn('w-full justify-start border-0 bg-background/94 text-left font-normal shadow-elevation-2', !dueDate && 'text-muted-foreground')}
+                                        className={cn('w-full justify-start bg-background border border-border/40 text-left font-normal', !dueDate && 'text-muted-foreground')}
                                     >
                                         <CalendarClock className="mr-2 h-4 w-4" />
                                         {dueDateLabel}
@@ -297,7 +297,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                             </SelectContent>
                         </Select>
                         {repeatFrequency === 'custom' && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 text-body-md text-muted-foreground">
                             <Input
                                 value={customInterval}
                                 onChange={e => setCustomInterval(e.target.value.replace(/[^0-9]/g, ''))}
@@ -321,14 +321,14 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                     <div className="space-y-2">
                         <Label>Kanal Pengingat</Label>
                         <div className="flex flex-col gap-2">
-                            <label className="inline-flex items-center gap-2 text-sm">
+                            <label className="inline-flex items-center gap-2 text-body-md">
                                 <Checkbox
                                     checked={channels.includes('push')}
                                     onCheckedChange={() => handleChannelToggle('push')}
                                 />
                                 Notifikasi aplikasi
                             </label>
-                            <label className="inline-flex items-center gap-2 text-sm">
+                            <label className="inline-flex items-center gap-2 text-body-md">
                                 <Checkbox
                                     checked={channels.includes('email')}
                                     onCheckedChange={() => handleChannelToggle('email')}
@@ -338,7 +338,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                         </div>
                     </div>
                 </form>
-                <div className="sticky bottom-0 flex gap-2 bg-background/96 p-4 shadow-elevation-3">
+                <div className="sticky bottom-0 flex gap-2 bg-background p-4 border-t border-border/40">
                     <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Pengingat'}`}
                     </Button>

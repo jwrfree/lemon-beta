@@ -107,7 +107,7 @@ export const ForgotPasswordPage = ({
         <Wrapper {...pageProps}>
             <MotionWrapper {...contentProps}>
                 <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-card" : "")}>
-                    <h2 id="forgot-password-heading" className="text-xl font-medium">
+                    <h2 id="forgot-password-heading" className="text-title-lg">
                         Lupa Password
                     </h2>
                     {!isPage && (
@@ -119,13 +119,13 @@ export const ForgotPasswordPage = ({
                 </div>
 
                 <div className="p-5 pb-6 overflow-y-auto">
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <p className="text-body-md text-muted-foreground mb-4">
                         Masukkan email yang kamu gunakan di Lemon. Kami akan mengirim tautan untuk mengatur ulang password.
                     </p>
 
                     {isSuccess && (
                         <div
-                            className="mb-4 rounded-card border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
+                            className="mb-4 rounded-card border border-emerald-200 bg-emerald-50 p-4 text-body-md text-emerald-900"
                             role="status"
                         >
                             Instruksi reset password sudah dikirim. Cek folder inbox atau spam bila belum terlihat.
@@ -170,7 +170,7 @@ export const ForgotPasswordPage = ({
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" size="lg" className="w-full text-base h-12" disabled={isSubmitting}>
+                            <Button type="submit" size="lg" className="w-full text-body-lg h-12" disabled={isSubmitting}>
                                 {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? 'Mengirim tautan...' : 'Kirim tautan reset'}
                             </Button>
@@ -183,7 +183,7 @@ export const ForgotPasswordPage = ({
                         </Alert>
                     )}
 
-                    <p className="text-sm text-muted-foreground mt-6 text-center">
+                    <p className="text-body-md text-muted-foreground mt-6 text-center">
                         Ingat password?{' '}
                         <Button
                             variant="link"

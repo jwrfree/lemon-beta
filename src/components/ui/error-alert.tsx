@@ -81,7 +81,7 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
         role="alert"
         aria-live="assertive"
         className={cn(
-          'flex items-start gap-3 rounded-card border border-error-border bg-error-surface p-4 text-sm',
+          'flex items-start gap-3 rounded-card border border-error-border bg-error-surface p-4 text-body-md',
           className
         )}
         {...props}
@@ -93,7 +93,7 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
         <div className="flex-1 min-w-0 space-y-1">
           <p className="font-medium text-error leading-snug">{message}</p>
           {description && (
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-label-md text-muted-foreground leading-relaxed">
               {description}
             </p>
           )}
@@ -102,7 +102,7 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
               variant="ghost"
               size="sm"
               onClick={onRetry}
-              className="mt-2 h-7 px-2 text-xs text-error hover:bg-error-muted hover:text-error border-none"
+              className="mt-2 h-7 px-2 text-label-md text-error hover:bg-error-muted hover:text-error border-none"
             >
               <ArrowClockwise className="mr-1.5 h-3 w-3" aria-hidden="true" />
               {retryLabel}

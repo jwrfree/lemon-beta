@@ -81,7 +81,7 @@ export function CategorySelector<T extends FieldValues>({
                                         initial={{ opacity: 0, x: 5 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0 }}
-                                        className="flex items-center gap-1 rounded-md bg-primary/5 px-2 py-0.5 text-xs font-medium text-primary"
+                                        className="flex items-center gap-1 rounded-md bg-primary/5 px-2 py-0.5 text-label-md font-medium text-primary"
                                     >
                                         <CircleNotch size={10} weight="regular" className="animate-spin" />
                                         AI berpikir...
@@ -92,7 +92,7 @@ export function CategorySelector<T extends FieldValues>({
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
-                                        className="flex items-center gap-1 rounded-md bg-warning/10 px-2 py-0.5 text-xs font-medium text-warning shadow-elevation-1"
+                                        className="flex items-center gap-1 rounded-md bg-warning/10 px-2 py-0.5 text-label-md font-medium text-warning shadow-elevation-1"
                                     >
                                         <Sparkle size={10} weight="regular" className="text-warning" />
                                         Disarankan AI
@@ -127,20 +127,20 @@ export function CategorySelector<T extends FieldValues>({
                                                 })()}
                                             </div>
                                             <div className="flex flex-col text-left">
-                                                <span className="text-sm font-medium tracking-tight">{selectedCategory.name}</span>
+                                                <span className="text-body-md font-medium tracking-tight">{selectedCategory.name}</span>
                                                 {localSubCategory ? (
-                                                    <span className="text-xs font-medium text-primary">- {localSubCategory}</span>
+                                                    <span className="text-label-md font-medium text-primary">- {localSubCategory}</span>
                                                 ) : (
-                                                    <span className="text-xs font-medium text-muted-foreground">Klik untuk ganti kategori</span>
+                                                    <span className="text-label-md font-medium text-muted-foreground">Klik untuk ganti kategori</span>
                                                 )}
                                             </div>
                                         </>
                                     ) : (
                                         <>
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted/70 shadow-inner">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted/70">
                                                 <Sparkle size={20} weight="regular" className="text-muted-foreground/40" />
                                             </div>
-                                            <span className="text-sm font-medium text-muted-foreground">Pilih Kategori</span>
+                                            <span className="text-body-md font-medium text-muted-foreground">Pilih Kategori</span>
                                         </>
                                     )}
                                 </div>
@@ -174,7 +174,7 @@ export function CategorySelector<T extends FieldValues>({
                                 )}
                             </AnimatePresence>
                         </div>
-                        {error && <p className="mt-1 text-sm font-medium text-destructive">{error}</p>}
+                        {error && <p className="mt-1 text-body-md font-medium text-destructive">{error}</p>}
 
                         <AnimatePresence>
                             {isSubCategorySheetOpen && selectedCategoryForSub && onSubCategoryChange && (

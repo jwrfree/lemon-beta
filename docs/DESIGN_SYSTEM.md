@@ -50,7 +50,10 @@ Kartu utama wajib menggunakan latar belakang dinamis yang mengikuti warna identi
 
 ### Karakteristik Komponen (Borderless Strategy)
 1.  **NO INTERNAL BORDERS:** Dilarang menggunakan garis batas kaku (`border-border`). Pemisahan elemen internal wajib menggunakan **Background Shifts** (perbedaan opasitas latar) atau **Spacing**.
-2.  **Visual Depth:** Gunakan elevasi bayangan untuk memisahkan kartu dari latar belakang aplikasi.
+2.  **Visual Depth & Shadows (Strict Guidelines):** 
+    *   **No Nested Shadows:** Dilarang menumpuk bayangan (shadow di dalam container bershadow). Gunakan *subtle backgrounds* (`bg-muted/50`, `bg-secondary/50`) atau *subtle borders* (`border border-border/40`) untuk elemen anak di dalam *card* utama.
+    *   **Flat & Subtle by Default:** Utamakan *flat design* dengan pembatas ruang halus. Shadow HANYA digunakan untuk hierarki *z-axis* yang jelas (seperti *floating action buttons*, *modals*, *popovers*, atau *sticky headers/footers*).
+    *   **Performance First:** Dilarang menganimasi properti `box-shadow` secara langsung (karena memicu *repaint* mahal di *mobile GPU*). Jika butuh efek *glow* atau animasi, gunakan elemen pseudo/absolut di belakang (sebagai *backdrop*) dan animasikan `opacity` atau `transform` (*hardware accelerated*).
 3.  **Adaptive UI:** Komponen harus terlihat bagus baik dengan latar belakang putih (`light`) maupun latar berwarna dinamis.
 
 ---

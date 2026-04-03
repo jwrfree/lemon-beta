@@ -11,7 +11,7 @@ interface TransactionTypeTabsProps {
 
 export const TransactionTypeTabs = ({ value, onChange }: TransactionTypeTabsProps) => {
     return (
-        <div className="grid grid-cols-3 gap-2 rounded-lg bg-muted/55 p-1.5 shadow-inner">
+        <div className="grid grid-cols-3 gap-2 rounded-lg bg-muted/55 p-1.5">
             <Button
                 type="button"
                 variant="ghost"

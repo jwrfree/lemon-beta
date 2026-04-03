@@ -6,96 +6,96 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/empty-state';
 
 interface PocketCoPilotProps {
-    className?: string;
-    showBurnRate?: boolean;
+ className?: string;
+ showBurnRate?: boolean;
 }
 
 export const PocketCoPilot = ({ className, showBurnRate = false }: PocketCoPilotProps) => {
-    const { risk, isLoading } = useInsights();
+ const { risk, isLoading } = useInsights();
 
-    if (isLoading) {
-        return <Skeleton className={cn("h-28 w-full rounded-card", className)} />;
-    }
+ if (isLoading) {
+ return <Skeleton className={cn("h-28 w-full rounded-card", className)} />;
+ }
 
-    if (!risk) {
-        return (
-            <EmptyState
-                title="Copilot belum aktif"
-                description="Tambahkan lebih banyak transaksi agar ringkasan risiko mini bisa muncul di sini."
-                icon={Sparkle}
-                variant="filter"
-                className={cn("px-0 pt-0 md:min-h-0", className)}
-            />
-        );
-    }
+ if (!risk) {
+ return (
+ <EmptyState
+ title="Copilot belum aktif"
+ description="Tambahkan lebih banyak transaksi agar ringkasan risiko mini bisa muncul di sini."
+ icon={Sparkle}
+ variant="filter"
+ className={cn("px-0 pt-0 md:min-h-0", className)}
+ />
+ );
+ }
 
-    const riskConfigs = {
-        Low: {
-            icon: ShieldCheck,
-            color: 'text-emerald-500',
-            bg: 'bg-emerald-500/10',
-            border: 'border-emerald-500/20',
-            label: 'Safe Pattern'
-        },
-        Moderate: {
-            icon: Lightning,
-            color: 'text-amber-500',
-            bg: 'bg-amber-500/10',
-            border: 'border-amber-500/20',
-            label: 'Velocity Rising'
-        },
-        Critical: {
-            icon: Warning,
-            color: 'text-rose-500',
-            bg: 'bg-rose-500/10',
-            border: 'border-rose-500/20',
-            label: 'High Risk'
-        }
-    };
+ const riskConfigs = {
+ Low: {
+ icon: ShieldCheck,
+ color: 'text-emerald-500',
+ bg: 'bg-emerald-500/10',
+ border: 'border-emerald-500/20',
+ label: 'Safe Pattern'
+ },
+ Moderate: {
+ icon: Lightning,
+ color: 'text-amber-500',
+ bg: 'bg-amber-500/10',
+ border: 'border-amber-500/20',
+ label: 'Velocity Rising'
+ },
+ Critical: {
+ icon: Warning,
+ color: 'text-rose-500',
+ bg: 'bg-rose-500/10',
+ border: 'border-rose-500/20',
+ label: 'High Risk'
+ }
+ };
 
-    const config = riskConfigs[risk.level];
-    const Icon = config.icon;
+ const config = riskConfigs[risk.level];
+ const Icon = config.icon;
 
-    return (
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={cn(
-                    "p-4 rounded-card border flex flex-col gap-3 shadow-none",
-                    config.bg,
-                    config.border,
-                    className
-                )}
-            >
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className={cn("p-1.5 rounded-md bg-card/50", config.color)}>
-                            <Sparkle size={16} weight="regular" />
-                        </div>
-                        <div>
-                            <p className="text-label opacity-60">Pocket Co-Pilot</p>
-                            <p className={cn("text-xs font-semibold", config.color)}>{config.label}</p>
-                        </div>
-                    </div>
-                    {showBurnRate && (
-                        <div className="text-right">
-                            <p className="text-label opacity-40">Burn Rate</p>
-                            <p className="text-xs font-semibold tabular-nums">
-                                Rp {new Intl.NumberFormat('id-ID').format(risk.burnRate)}/hari
-                            </p>
-                        </div>
-                    )}
-                </div>
+ return (
+ <AnimatePresence>
+ <motion.div
+ initial={{ opacity: 0, scale: 0.95 }}
+ animate={{ opacity: 1, scale: 1 }}
+ className={cn(
+ "p-4 rounded-card border flex flex-col gap-3 shadow-none",
+ config.bg,
+ config.border,
+ className
+ )}
+ >
+ <div className="flex items-start justify-between">
+ <div className="flex items-center gap-2">
+ <div className={cn("p-1.5 rounded-md bg-card/50", config.color)}>
+ <Sparkle size={16} weight="regular"/>
+ </div>
+ <div>
+ <p className="text-label opacity-60">Pocket Co-Pilot</p>
+ <p className={cn("text-label-md ", config.color)}>{config.label}</p>
+ </div>
+ </div>
+ {showBurnRate && (
+ <div className="text-right">
+ <p className="text-label opacity-40">Burn Rate</p>
+ <p className="text-label-md tabular-nums">
+ Rp {new Intl.NumberFormat('id-ID').format(risk.burnRate)}/hari
+ </p>
+ </div>
+ )}
+ </div>
 
-                <div className="flex gap-2 items-start">
-                    <Icon size={16} weight="regular" className={cn("shrink-0 mt-0.5", config.color)} />
-                    <p className="text-xs leading-relaxed font-medium opacity-80">
-                        {risk.insight}
-                    </p>
-                </div>
-            </motion.div>
-        </AnimatePresence>
-    );
+ <div className="flex gap-2 items-start">
+ <Icon size={16} weight="regular"className={cn("shrink-0 mt-0.5", config.color)} />
+ <p className="text-label-md leading-relaxed font-medium opacity-80">
+ {risk.insight}
+ </p>
+ </div>
+ </motion.div>
+ </AnimatePresence>
+ );
 };
 

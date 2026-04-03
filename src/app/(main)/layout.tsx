@@ -18,6 +18,8 @@ import { DebtPaymentForm } from '@/features/debts/components/debt-payment-form';
 import { UnifiedTransactionSheet } from '@/features/transactions/components/unified-transaction-sheet';
 import { TransactionDetailSheet } from '@/features/transactions/components/transaction-detail-sheet';
 import { AIChatDrawer } from '@/features/ai-chat/components/ai-chat-drawer';
+import { UniversalAddSheet } from '@/components/universal-add-sheet';
+import { CommandPalette } from '@/components/command-palette';
 import { PageTransition } from '@/components/layout/page-transition';
 import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
@@ -75,13 +77,25 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         setIsSmartAddOpen,
         isAIChatOpen,
         setIsAIChatOpen,
+        isCommandPaletteOpen,
+        setIsCommandPaletteOpen,
     } = useUI();
 
     const { deleteTransaction } = useActions();
 
     useEffect(() => {
         containerRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-    }, [pathname]);
+
+        const down = (e: KeyboardEvent) => {
+            if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setIsCommandPaletteOpen((open) => !open);
+            }
+        };
+
+        document.addEventListener('keydown', down);
+        return () => document.removeEventListener('keydown', down);
+    }, [pathname, setIsCommandPaletteOpen]);
 
     const handleCloseTxModal = () => {
         setIsTxSheetOpen(false);
@@ -147,10 +161,7 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                             key="unified-tx-sheet"
                             isOpen={isTxSheetOpen}
                             initialMode={txSheetMode}
-                            onClose={() => {
-                                setIsTxSheetOpen(false);
-                                setTransactionToEdit(null);
-                            }}
+                            onClose={handleCloseTxModal}
                             transaction={transactionToEdit}
                         />
                     )}
@@ -188,14 +199,16 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                             onConfirm={handleConfirmDelete}
                         />
                     )}
+                    
+                    <UniversalAddSheet key="universal-add-sheet" />
+                    <CommandPalette key="command-palette" />
+
                     <AIChatDrawer 
                         key="ai-chat-drawer"
                         isOpen={isAIChatOpen} 
                         onClose={() => setIsAIChatOpen(false)} 
                     />
                 </AnimatePresence>
-
-                    {/* UnifiedTransactionSheet covers SmartAdd functionality now */}
 
                 <div className="md:hidden">
                     <AnimatePresence>

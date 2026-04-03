@@ -24,7 +24,7 @@ describe('Card - surface variants', () => {
   it('ai variant preserves the rich-card shell style', () => {
     const cls = cardVariants({ variant: 'ai' });
     expect(cls).toContain('rounded-card');
-    expect(cls).toContain('shadow-soft');
+    expect(cls).toContain('shadow-sm');
     expect(cls).toContain('overflow-hidden');
   });
 });

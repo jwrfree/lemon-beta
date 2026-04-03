@@ -185,7 +185,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 <Skeleton className="h-3 w-1/2 rounded bg-primary/20" />
                             </div>
                         ) : (
-                            <p className="text-xs text-foreground leading-relaxed font-medium">
+                            <p className="text-label-md text-foreground leading-relaxed font-medium">
                                 {aiInsight}
                             </p>
                         )}
@@ -197,18 +197,18 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                 {/* Trend Card */}
                 <Card className="border border-border/40 shadow-none bg-card">
                     <CardHeader className="pb-2 px-4 pt-4">
-                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                        <CardTitle className="text-body-md font-medium text-muted-foreground flex items-center gap-2">
                             <Wallet className="h-4 w-4" />
                             Analisis Tren Hutang
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="px-4 pb-4">
                         <div className="flex items-baseline gap-2 mb-4">
-                            <span className="text-2xl font-medium text-foreground">
+                            <span className="text-display-md font-medium text-foreground">
                                 {formatCurrency(analytics.currentTotal)}
                             </span>
                             <span className={cn(
-                                "text-xs font-medium px-2 py-0.5 rounded-full flex items-center gap-1",
+                                "text-label-md font-medium px-2 py-0.5 rounded-full flex items-center gap-1",
                                 analytics.isGrowing
                                     ? "bg-destructive/10 text-destructive"
                                     : "bg-success/10 text-success"
@@ -219,7 +219,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                         </div>
 
                         <div className="space-y-3">
-                            <div className="flex justify-between text-xs">
+                            <div className="flex justify-between text-label-md">
                                 <span className="text-muted-foreground">Posisi Tahun Lalu</span>
                                 <span className="font-medium">{formatCurrency(analytics.lastYearTotal)}</span>
                             </div>
@@ -228,7 +228,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 className="h-1.5"
                                 indicatorClassName={analytics.isGrowing ? "bg-destructive" : "bg-success"}
                             />
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-label-md text-muted-foreground">
                                 {analytics.currentTotal < analytics.lastYearTotal
                                     ? "Bagus! Hutangmu berkurang dibanding tahun lalu."
                                     : "Waspada, total hutang meningkat dibanding tahun lalu."}
@@ -240,7 +240,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                 {/* Projection & Alerts Card */}
                 <Card className="border border-border/40 shadow-none bg-card">
                     <CardHeader className="pb-2 px-4 pt-4">
-                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                        <CardTitle className="text-body-md font-medium text-muted-foreground flex items-center gap-2">
                             <Target className="h-4 w-4" />
                             Proyeksi & Insight
                         </CardTitle>
@@ -253,8 +253,8 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                     <CalendarDots className="h-4 w-4 text-info" weight="regular" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-muted-foreground">Estimasi Lunas</p>
-                                    <p className="text-sm font-medium">
+                                    <p className="text-label-md text-muted-foreground">Estimasi Lunas</p>
+                                    <p className="text-body-md font-medium">
                                         {analytics.payoffDate
                                             ? format(analytics.payoffDate, 'MMMM yyyy', { locale: dateFnsLocaleId })
                                             : "Belum ada pembayaran rutin"}
@@ -262,7 +262,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 </div>
                             </div>
                             {analytics.avgMonthlyPayment > 0 && (
-                                <p className="text-xs text-muted-foreground pl-11">
+                                <p className="text-label-md text-muted-foreground pl-11">
                                     Dengan rata-rata pembayaran {formatCurrency(analytics.avgMonthlyPayment)}/bulan
                                 </p>
                             )}
@@ -274,8 +274,8 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 <div className="flex items-start gap-2">
                                     <Warning className="h-4 w-4 text-warning mt-0.5 shrink-0" weight="regular" />
                                     <div>
-                                        <p className="text-xs font-medium text-warning">Peringatan Bunga</p>
-                                        <p className="text-xs text-warning/90 mt-1">
+                                        <p className="text-label-md font-medium text-warning">Peringatan Bunga</p>
+                                        <p className="text-label-md text-warning/90 mt-1">
                                             Ada {analytics.highInterestDebts.length} hutang yang mungkin bertambah "diam-diam" karena bunga atau denda.
                                             Cek: {analytics.highInterestDebts.map(d => d.title).join(', ')}.
                                         </p>
@@ -283,7 +283,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+                            <div className="flex items-center gap-2 text-label-md text-muted-foreground px-1">
                                 <div className="h-2 w-2 rounded-full bg-success"></div>
                                 Tidak ada indikasi hutang berbunga tinggi.
                             </div>

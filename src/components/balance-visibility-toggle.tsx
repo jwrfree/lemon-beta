@@ -35,7 +35,7 @@ export const BalanceVisibilityToggle: React.FC<BalanceVisibilityToggleProps> = (
         <EyeSlash className="h-6 w-6" weight="regular" />
       )}
       {showLabel && (
-        <span className="text-sm">
+        <span className="text-body-md">
           {isBalanceVisible ? 'Sembunyikan' : 'Tampilkan'}
         </span>
       )}

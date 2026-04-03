@@ -125,10 +125,10 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative overflow-hidden rounded-3xl bg-secondary/50 px-3 py-2.5 shadow-inner transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
-                (isProcessing || isTranscribing) ? "bg-primary/[0.08] shadow-inner" :
-                    isRecording ? "bg-violet-500/10 shadow-inner" :
-                        isFocused ? "bg-card shadow-inner" : ""
+                "relative overflow-hidden rounded-3xl bg-secondary/50 px-3 py-2.5 border border-border/40 transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
+                (isProcessing || isTranscribing) ? "bg-primary/[0.08] border border-border/40" :
+                    isRecording ? "bg-violet-500/10 border border-border/40" :
+                        isFocused ? "bg-card border border-border/40" : ""
             )}>
                 <div className="flex items-end gap-2">
                     <div className="flex min-w-0 flex-1 items-end gap-2">
@@ -157,7 +157,7 @@ export const MagicBar = ({
                             onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Small delay to allow button clicks
                             disabled={isRecording || isTranscribing}
                             placeholder={isTranscribing ? "Mentranskripsi..." : isRecording ? "Mendengarkan..." : placeholder}
-                            className="min-w-0 w-full flex-1 resize-none border-none bg-transparent py-2 text-sm font-medium text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-70 md:text-base"
+                            className="min-w-0 w-full flex-1 resize-none border-none bg-transparent py-2 text-body-md font-medium text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-70 md:text-body-lg"
                         />
                     </div>
 

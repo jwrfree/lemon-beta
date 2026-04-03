@@ -106,7 +106,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
     return (
         <Card className="border-none shadow-none border border-border/40 bg-card">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-violet-700 dark:text-violet-400">
+                <CardTitle className="text-body-md font-medium flex items-center gap-2 text-violet-700 dark:text-violet-400">
                     <Lightbulb size={16} weight="regular" />
                     Lemon Insight
                 </CardTitle>
@@ -125,13 +125,13 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                             exit={{ opacity: 0 }}
                             className="flex flex-col items-center text-center py-2"
                         >
-                            <p className="text-xs text-muted-foreground mb-3">
+                            <p className="text-label-md text-muted-foreground mb-3">
                                 Analisis pengeluaranmu bulan ini dengan AI.
                             </p>
                             <Button 
                                 size="sm" 
                                 onClick={handleGenerateInsight} 
-                                className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground text-label-md h-8"
                             >
                                 <Sparkle size={12} weight="regular" className="mr-1.5" />
                                 Cek Insight
@@ -142,7 +142,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1 }} 
                             exit={{ opacity: 0 }}
-                            className="flex items-center justify-center py-4 gap-2 text-sm text-muted-foreground"
+                            className="flex items-center justify-center py-4 gap-2 text-body-md text-muted-foreground"
                         >
                             <Sparkle size={16} weight="regular" className="animate-spin text-violet-600" />
                             Sedang menganalisis...
@@ -151,7 +151,7 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
                         <motion.div 
                             initial={{ opacity: 0, y: 5 }} 
                             animate={{ opacity: 1, y: 0 }} 
-                            className="text-sm leading-relaxed font-medium text-foreground/90"
+                            className="text-body-md leading-relaxed font-medium text-foreground/90"
                         >
                             &quot;{insight}&quot;
                         </motion.div>

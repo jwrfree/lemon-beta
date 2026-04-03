@@ -18,242 +18,242 @@ import { walletSchema, WalletFormValues } from '../schemas/wallet-schema';
 import { cn } from '@/lib/utils';
 
 const popularWallets: Record<string, string[]> = {
-  'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay', 'PayPal'],
-  'bank': ['BCA', 'Mandiri', 'BNI', 'BRI', 'CIMB Niaga', 'Jenius', 'Bank Jago', 'Blu', 'Seabank'],
+ 'e-wallet': ['GoPay', 'OVO', 'DANA', 'LinkAja', 'ShopeePay', 'PayPal'],
+ 'bank': ['BCA', 'Mandiri', 'BNI', 'BRI', 'CIMB Niaga', 'Jenius', 'Bank Jago', 'Blu', 'Seabank'],
 };
 
 const walletCategories = [
-  { key: 'e-wallet', name: 'E-Wallet', Icon: DeviceMobile },
-  { key: 'bank', name: 'Bank', Icon: Bank },
-  { key: 'paylater', name: 'Paylater', Icon: DeviceMobile },
-  { key: 'investasi', name: 'Investasi', Icon: TrendUp },
-  { key: 'cash', name: 'Tunai', Icon: Wallet },
-  { key: 'other', name: 'Lainnya', Icon: CurrencyCircleDollar },
+ { key: 'e-wallet', name: 'E-Wallet', Icon: DeviceMobile },
+ { key: 'bank', name: 'Bank', Icon: Bank },
+ { key: 'paylater', name: 'Paylater', Icon: DeviceMobile },
+ { key: 'investasi', name: 'Investasi', Icon: TrendUp },
+ { key: 'cash', name: 'Tunai', Icon: Wallet },
+ { key: 'other', name: 'Lainnya', Icon: CurrencyCircleDollar },
 ];
 
 export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
-  const { addWallet } = useActions();
-  const { showToast } = useUI();
-  const [step, setStep] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<{ key: string, name: string, Icon: React.ElementType } | null>(null);
+ const { addWallet } = useActions();
+ const { showToast } = useUI();
+ const [step, setStep] = useState(1);
+ const [selectedCategory, setSelectedCategory] = useState<{ key: string, name: string, Icon: React.ElementType } | null>(null);
 
-  const form = useForm<z.input<typeof walletSchema>>({
-    resolver: zodResolver(walletSchema) as any,
-    defaultValues: {
-      name: '',
-      balance: '0',
-      icon: '',
-      isDefault: false,
-    }
-  });
+ const form = useForm<z.input<typeof walletSchema>>({
+ resolver: zodResolver(walletSchema) as any,
+ defaultValues: {
+ name: '',
+ balance: '0',
+ icon: '',
+ isDefault: false,
+ }
+ });
 
-  const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = form;
+ const { control, handleSubmit, setValue, formState: { errors, isSubmitting } } = form;
 
-  const handleCategorySelect = (category: { key: string, name: string, Icon: React.ElementType }) => {
-    setSelectedCategory(category);
-    setValue('icon', category.key);
-    if (category.key === 'cash') {
-      setValue('name', 'Tunai');
-    }
-    setStep(2);
-  };
+ const handleCategorySelect = (category: { key: string, name: string, Icon: React.ElementType }) => {
+ setSelectedCategory(category);
+ setValue('icon', category.key);
+ if (category.key === 'cash') {
+ setValue('name', 'Tunai');
+ }
+ setStep(2);
+ };
 
-  const handleBack = () => {
-    setStep(1);
-    setValue('name', '');
-    setValue('balance', '');
-    setValue('icon', '');
-    setSelectedCategory(null);
-  };
+ const handleBack = () => {
+ setStep(1);
+ setValue('name', '');
+ setValue('balance', '');
+ setValue('icon', '');
+ setSelectedCategory(null);
+ };
 
-  const onSubmit = async (data: z.input<typeof walletSchema>) => {
-    const values = data as unknown as WalletFormValues;
-    try {
-      await addWallet({
-        name: values.name,
-        icon: values.icon,
-        balance: Number(values.balance)
-      });
-    } catch (error) {
-      showToast("Gagal membuat dompet.", 'error');
-      console.error(error);
-    }
-  };
+ const onSubmit = async (data: z.input<typeof walletSchema>) => {
+ const values = data as unknown as WalletFormValues;
+ try {
+ await addWallet({
+ name: values.name,
+ icon: values.icon,
+ balance: Number(values.balance)
+ });
+ } catch (error) {
+ showToast("Gagal membuat dompet.", 'error');
+ console.error(error);
+ }
+ };
 
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? '100%' : '-100%',
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? '100%' : '-100%',
-      opacity: 0,
-    }),
-  };
+ const slideVariants = {
+ enter: (direction: number) => ({
+ x: direction > 0 ? '100%': '-100%',
+ opacity: 0,
+ }),
+ center: {
+ x: 0,
+ opacity: 1,
+ },
+ exit: (direction: number) => ({
+ x: direction < 0 ? '100%': '-100%',
+ opacity: 0,
+ }),
+ };
 
-  const direction = 1;
-  const swipeHandlers = useSwipeable({
-    onSwipedDown: onClose,
-    preventScrollOnSwipe: true,
-    trackMouse: true,
-  });
+ const direction = 1;
+ const swipeHandlers = useSwipeable({
+ onSwipedDown: onClose,
+ preventScrollOnSwipe: true,
+ trackMouse: true,
+ });
 
-  return (
-    <Sheet open onOpenChange={(open) => !open && onClose()}>
-      <SheetContent
-        side="bottom"
-        hideCloseButton
-        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-background p-0 shadow-elevation-4"
-        {...swipeHandlers}
-      >
-        <div className="pointer-events-none flex justify-center pt-3">
-          <div className="h-1.5 w-12 rounded-full bg-border/80" />
-        </div>
-        <SheetHeader className="sr-only">
-          <SheetTitle>Tambah dompet</SheetTitle>
-          <SheetDescription>Pilih jenis dompet lalu isi detailnya.</SheetDescription>
-        </SheetHeader>
+ return (
+ <Sheet open onOpenChange={(open) => !open && onClose()}>
+ <SheetContent
+ side="bottom"
+ hideCloseButton
+ className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-background p-0 shadow-elevation-4"
+ {...swipeHandlers}
+ >
+ <div className="pointer-events-none flex justify-center pt-3">
+ <div className="h-1.5 w-12 rounded-full bg-border/80"/>
+ </div>
+ <SheetHeader className="sr-only">
+ <SheetTitle>Tambah dompet</SheetTitle>
+ <SheetDescription>Pilih jenis dompet lalu isi detailnya.</SheetDescription>
+ </SheetHeader>
 
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-4 pt-4 shadow-elevation-2">
-          <div className="w-11">
-            {step === 2 && (
-              <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
-                <ArrowLeft size={20} weight="regular" />
-                <span className="sr-only">Kembali</span>
-              </Button>
-            )}
-          </div>
-          <h2 className="text-xl font-semibold tracking-tighter text-center">
-            {step === 1 ? 'Pilih Jenis' : `Detail ${selectedCategory?.name}`}
-          </h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
-            <X size={20} weight="regular" />
-            <span className="sr-only">Tutup</span>
-          </Button>
-        </div>
+ <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-4 pt-4 shadow-elevation-2">
+ <div className="w-11">
+ {step === 2 && (
+ <Button variant="ghost"size="icon"onClick={handleBack} className="rounded-full">
+ <ArrowLeft size={20} weight="regular"/>
+ <span className="sr-only">Kembali</span>
+ </Button>
+ )}
+ </div>
+ <h2 className="text-title-lg text-center">
+ {step === 1 ? 'Pilih Jenis':`Detail ${selectedCategory?.name}`}
+ </h2>
+ <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-10 w-10">
+ <X size={20} weight="regular"/>
+ <span className="sr-only">Tutup</span>
+ </Button>
+ </div>
 
-        <div className="relative flex-1 overflow-y-auto px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">
-          <AnimatePresence initial={false} custom={direction}>
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="grid grid-cols-2 gap-4"
-              >
-                {walletCategories.map((cat) => (
-                  <div
-                    key={cat.key}
-                    onClick={() => handleCategorySelect(cat)}
-                    className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-elevation-2 transition-all active:scale-95"
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleCategorySelect(cat);
-                      }
-                    }}
-                  >
-                    <div className="p-3 rounded-card bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                      <cat.Icon className="h-8 w-8 text-primary" />
-                    </div>
-                    <span className="text-label text-muted-foreground/60">{cat.name}</span>
-                  </div>
-                ))}
-              </motion.div>
-            )}
+ <div className="relative flex-1 overflow-y-auto px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">
+ <AnimatePresence initial={false} custom={direction}>
+ {step === 1 && (
+ <motion.div
+ key="step1"
+ custom={direction}
+ variants={slideVariants}
+ initial="enter"
+ animate="center"
+ exit="exit"
+ transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+ className="grid grid-cols-2 gap-4"
+ >
+ {walletCategories.map((cat) => (
+ <div
+ key={cat.key}
+ onClick={() => handleCategorySelect(cat)}
+ className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-elevation-2 transition-all active:scale-95"
+ role="button"
+ tabIndex={0}
+ onKeyDown={(e) => {
+ if (e.key === 'Enter'|| e.key === '') {
+ e.preventDefault();
+ handleCategorySelect(cat);
+ }
+ }}
+ >
+ <div className="p-3 rounded-card bg-primary/5 group-hover:bg-primary/10 transition-colors">
+ <cat.Icon className="h-8 w-8 text-primary"/>
+ </div>
+ <span className="text-label text-muted-foreground/60">{cat.name}</span>
+ </div>
+ ))}
+ </motion.div>
+ )}
 
-            {step === 2 && selectedCategory && (
-              <motion.div
-                key="step2"
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="wallet-name" className={cn("text-label text-muted-foreground/60 ml-1", errors.name && "text-destructive")}>Nama Dompet</Label>
-                    <Controller
-                      control={control}
-                      name="name"
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          id="wallet-name"
-                          placeholder={`Contoh: ${selectedCategory.key === 'e-wallet' ? 'GoPay' : 'Rekening Gaji'}`}
-                          disabled={selectedCategory.key === 'cash'}
-                          className={cn("h-12 rounded-card bg-secondary/50 border-none focus-visible:ring-primary/30", errors.name && "bg-destructive/5")}
-                        />
-                      )}
-                    />
-                    {errors.name && <p className="text-xs font-medium text-destructive ml-1">{errors.name.message}</p>}
-                  </div>
+ {step === 2 && selectedCategory && (
+ <motion.div
+ key="step2"
+ custom={direction}
+ variants={slideVariants}
+ initial="enter"
+ animate="center"
+ exit="exit"
+ transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+ >
+ <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+ <div className="space-y-3">
+ <Label htmlFor="wallet-name"className={cn("text-label text-muted-foreground/60 ml-1", errors.name && "text-destructive")}>Nama Dompet</Label>
+ <Controller
+ control={control}
+ name="name"
+ render={({ field }) => (
+ <Input
+ {...field}
+ id="wallet-name"
+ placeholder={`Contoh: ${selectedCategory.key === 'e-wallet'? 'GoPay': 'Rekening Gaji'}`}
+ disabled={selectedCategory.key === 'cash'}
+ className={cn("h-12 rounded-card bg-secondary/50 border-none focus-visible:ring-primary/30", errors.name && "bg-destructive/5")}
+ />
+ )}
+ />
+ {errors.name && <p className="text-label-md font-medium text-destructive ml-1">{errors.name.message}</p>}
+ </div>
 
-                  {popularWallets[selectedCategory.key] && (
-                    <div className="flex flex-wrap gap-2 px-1">
-                      {popularWallets[selectedCategory.key].map(name => (
-                        <Button key={name} type="button" variant="outline" size="sm" className="h-8 rounded-full border-0 bg-background/92 px-4 text-xs font-semibold shadow-elevation-2" onClick={() => setValue('name', name, { shouldValidate: true })}>
-                          {name}
-                        </Button>
-                      ))}
-                    </div>
-                  )}
+ {popularWallets[selectedCategory.key] && (
+ <div className="flex flex-wrap gap-2 px-1">
+ {popularWallets[selectedCategory.key].map(name => (
+ <Button key={name} type="button"variant="outline"size="sm"className="h-8 rounded-full bg-background border border-border/40 px-4 text-label-md "onClick={() => setValue('name', name, { shouldValidate: true })}>
+ {name}
+ </Button>
+ ))}
+ </div>
+ )}
 
-                  <div className="space-y-3">
-                    <Label htmlFor="initial-balance" className={cn("text-label text-muted-foreground/60 ml-1", errors.balance && "text-destructive")}>Saldo Awal</Label>
-                    <Controller
-                      control={control}
-                      name="balance"
-                      render={({ field }) => (
-                        <Input
-                          {...field}
-                          id="initial-balance"
-                          placeholder="Rp 0"
-                          onChange={(e) => {
-                            const rawValue = e.target.value.replace(/[^0-9]/g, '');
-                            if (rawValue === '') {
-                              field.onChange('');
-                              return;
-                            }
-                            field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
-                          }}
-                          inputMode="numeric"
-                          className={cn("h-12 rounded-card bg-secondary/50 border-none text-lg font-semibold tabular-nums focus-visible:ring-primary/30", errors.balance && "bg-destructive/5")}
-                        />
-                      )}
-                    />
-                    {errors.balance && <p className="text-xs font-medium text-destructive ml-1">{errors.balance.message}</p>}
-                  </div>
-                  <Button type="submit" className="w-full h-14 rounded-full font-semibold transition-all active:scale-[0.98]" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <CircleNotch size={20} weight="regular" className="mr-2 animate-spin" />
-                        Memproses...
-                      </>
-                    ) : (
-                      'Simpan Dompet'
-                    )}
-                  </Button>
-                </form>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
+ <div className="space-y-3">
+ <Label htmlFor="initial-balance"className={cn("text-label text-muted-foreground/60 ml-1", errors.balance && "text-destructive")}>Saldo Awal</Label>
+ <Controller
+ control={control}
+ name="balance"
+ render={({ field }) => (
+ <Input
+ {...field}
+ id="initial-balance"
+ placeholder="Rp 0"
+ onChange={(e) => {
+ const rawValue = e.target.value.replace(/[^0-9]/g, '');
+ if (rawValue === '') {
+ field.onChange('');
+ return;
+ }
+ field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
+ }}
+ inputMode="numeric"
+ className={cn("h-12 rounded-card bg-secondary/50 border-none text-title-lg tabular-nums focus-visible:ring-primary/30", errors.balance && "bg-destructive/5")}
+ />
+ )}
+ />
+ {errors.balance && <p className="text-label-md font-medium text-destructive ml-1">{errors.balance.message}</p>}
+ </div>
+ <Button type="submit"className="w-full h-14 rounded-full transition-all active:scale-[0.98]"disabled={isSubmitting}>
+ {isSubmitting ? (
+ <>
+ <CircleNotch size={20} weight="regular"className="mr-2 animate-spin"/>
+ Memproses...
+ </>
+ ) : (
+ 'Simpan Dompet'
+ )}
+ </Button>
+ </form>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ </div>
+ </SheetContent>
+ </Sheet>
+ );
 };
 
 

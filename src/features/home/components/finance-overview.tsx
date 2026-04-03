@@ -47,11 +47,11 @@ export const FinanceOverview = ({
                     <Wallet className="w-32 h-32" />
                 </div>
                 <CardContent className="p-6 relative z-10">
-                    <p className="text-sm font-medium text-primary-foreground/80 mb-2">Total Saldo</p>
-                    <div className="text-3xl font-medium tracking-tight mb-4">
+                    <p className="text-body-md font-medium text-primary-foreground/80 mb-2">Total Saldo</p>
+                    <div className="text-display-lg font-medium tracking-tight mb-4">
                         <AnimatedCounter value={totalBalance} />
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-primary-foreground/70">
+                    <div className="flex items-center gap-2 text-label-md text-primary-foreground/70">
                         <span className="inline-block w-2 h-2 rounded-full bg-success animate-pulse"></span>
                         Status Keuangan Sehat
                     </div>
@@ -66,7 +66,7 @@ export const FinanceOverview = ({
                             <ArrowUpRight className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded text-xs font-medium",
+                            "flex items-center px-2 py-1 rounded text-label-md font-medium",
                             incomeTrend.direction === 'up'
                                 ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : incomeTrend.direction === 'down'
@@ -76,10 +76,10 @@ export const FinanceOverview = ({
                             {incomeTrend.direction === 'up' ? '+' : ''}{incomeTrend.value}
                         </div>
                     </div>
-                    <div className="text-2xl font-medium text-foreground">
+                    <div className="text-display-md font-medium text-foreground">
                         <AnimatedCounter value={income} />
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-label-md text-muted-foreground mt-1">
                         {incomeDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(incomeDiff))} vs bulan lalu
                     </p>
                 </CardContent>
@@ -93,7 +93,7 @@ export const FinanceOverview = ({
                             <ArrowDownLeft className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded text-xs font-medium",
+                            "flex items-center px-2 py-1 rounded text-label-md font-medium",
                             expenseTrend.direction === 'down'
                                 ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : expenseTrend.direction === 'up'
@@ -103,11 +103,11 @@ export const FinanceOverview = ({
                             {expenseTrend.direction === 'up' ? '+' : ''}{expenseTrend.value}
                         </div>
                     </div>
-                    <p className="text-sm font-medium text-muted-foreground mb-1">Pengeluaran Bulan Ini</p>
-                    <div className="text-2xl font-medium text-foreground">
+                    <p className="text-body-md font-medium text-muted-foreground mb-1">Pengeluaran Bulan Ini</p>
+                    <div className="text-display-md font-medium text-foreground">
                         <AnimatedCounter value={expense} />
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-label-md text-muted-foreground mt-1">
                         {expenseDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(expenseDiff))} vs bulan lalu
                     </p>
                 </CardContent>
@@ -121,7 +121,7 @@ export const FinanceOverview = ({
                             <DollarSign className="w-5 h-5 text-info" />
                         </div>
                         <div className={cn(
-                            "flex items-center px-2 py-1 rounded text-xs font-medium",
+                            "flex items-center px-2 py-1 rounded text-label-md font-medium",
                             netTrend.direction === 'up'
                                 ? "bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400"
                                 : netTrend.direction === 'down'
@@ -132,20 +132,20 @@ export const FinanceOverview = ({
                         </div>
                     </div>
                     <div className="space-y-1">
-                        <p className="text-sm font-medium text-muted-foreground">Arus Kas Bersih</p>
+                        <p className="text-body-md font-medium text-muted-foreground">Arus Kas Bersih</p>
                         <div className={cn(
-                            "text-2xl font-medium",
+                            "text-display-md font-medium",
                             net >= 0 ? "text-teal-600 dark:text-teal-400" : "text-rose-600 dark:text-rose-400"
                         )}>
                             <AnimatedCounter value={net} />
                         </div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-label-md text-muted-foreground">
                             {netDiff >= 0 ? '+' : ''}{formatCurrency(Math.abs(netDiff))} vs bulan lalu
                         </p>
                     </div>
                     {income > 0 && (
                         <div className="mt-3">
-                            <div className="flex justify-between text-xs mb-1 text-muted-foreground">
+                            <div className="flex justify-between text-label-md mb-1 text-muted-foreground">
                                 <span>Savings Rate</span>
                                 <span>{savingsRate.toFixed(1)}%</span>
                             </div>

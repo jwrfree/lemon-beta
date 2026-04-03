@@ -104,7 +104,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     return (
         <div className="w-full h-full md:h-auto flex flex-col bg-background md:rounded-md overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10">
-                <h2 className="text-xl font-medium">{title}</h2>
+                <h2 className="text-title-lg">{title}</h2>
                 <Button
                     variant="ghost"
                     size="icon"
@@ -121,14 +121,14 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     {!isEditMode && (
                         <Tabs value={type} onValueChange={(v) => handleTypeChange(v as 'asset' | 'liability')} className="w-full">
                             <TabsList className="bg-muted p-1 rounded-card h-11 w-full grid grid-cols-2">
-                                <TabsTrigger value="asset" className="h-full rounded-md font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Aset</TabsTrigger>
-                                <TabsTrigger value="liability" className="h-full rounded-md font-medium text-xs transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Liabilitas</TabsTrigger>
+                                <TabsTrigger value="asset" className="h-full rounded-md font-medium text-label-md transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Aset</TabsTrigger>
+                                <TabsTrigger value="liability" className="h-full rounded-md font-medium text-label-md transition-all data-[state=active]:bg-white data-[state=active]:text-slate-950">Liabilitas</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="categoryKey" className="text-xs font-medium text-label text-muted-foreground">Kategori</Label>
+                        <Label htmlFor="categoryKey" className="text-label-md font-medium text-label text-muted-foreground">Kategori</Label>
                         <Select onValueChange={setCategoryKey} value={categoryKey}>
                             <SelectTrigger id="categoryKey" className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
                                 <SelectValue placeholder="Pilih kategori" />
@@ -137,7 +137,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                 {type === 'asset' ? (
                                     Object.entries(assetGroups).map(([groupName, cats]) => (
                                         <SelectGroup key={groupName}>
-                                            <SelectLabel className="px-2 py-1.5 text-xs font-medium text-label text-muted-foreground/60">{groupName}</SelectLabel>
+                                            <SelectLabel className="px-2 py-1.5 text-label-md font-medium text-label text-muted-foreground/60">{groupName}</SelectLabel>
                                             {cats.map((cat) => (
                                                 <SelectItem key={cat.key} value={cat.key} className="rounded-lg">
                                                     {cat.label}
@@ -157,7 +157,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="name" className="text-xs font-medium text-label text-muted-foreground">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
+                        <Label htmlFor="name" className="text-label-md font-medium text-label text-muted-foreground">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
                         <Input
                             id="name"
                             placeholder={type === 'asset' ? 'e.g., Rumah, Saham BBCA' : 'e.g., KPR, Cicilan Mobil'}
@@ -171,7 +171,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     <div className={cn("grid gap-4", hasUnit ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1")}>
                         {hasUnit && (
                             <div className="space-y-2">
-                                <Label htmlFor="quantity" className="text-xs font-medium text-label text-muted-foreground">
+                                <Label htmlFor="quantity" className="text-label-md font-medium text-label text-muted-foreground">
                                     Jumlah ({selectedCategory?.unit})
                                 </Label>
                                 <Input
@@ -182,18 +182,18 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
                                     required
                                 />
-                                <p className="text-xs text-muted-foreground px-1 italic">
+                                <p className="text-label-md text-muted-foreground px-1 italic">
                                     *Masukkan jumlah {selectedCategory?.unit} untuk tracking harga otomatis.
                                 </p>
                             </div>
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="value" className="text-xs font-medium text-label text-muted-foreground">
+                            <Label htmlFor="value" className="text-label-md font-medium text-label text-muted-foreground">
                                 {hasUnit ? 'Estimasi Nilai Saat Ini' : 'Nilai / Saldo'}
                             </Label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-sm">Rp</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-body-md">Rp</span>
                                 <Input
                                     id="value"
                                     placeholder="0"
@@ -201,14 +201,14 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     onChange={handleAmountChange}
                                     required
                                     inputMode="numeric"
-                                    className="h-12 pl-11 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 font-medium text-lg"
+                                    className="h-12 pl-11 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 font-medium text-title-lg"
                                 />
                             </div>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="notes" className="text-xs font-medium text-label text-muted-foreground">Catatan (Opsional)</Label>
+                        <Label htmlFor="notes" className="text-label-md font-medium text-label text-muted-foreground">Catatan (Opsional)</Label>
                         <Textarea
                             id="notes"
                             placeholder="Tambahkan catatan di sini..."

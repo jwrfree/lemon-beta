@@ -39,7 +39,7 @@ export const CategoryGrid = ({ categories, selectedCategory, onCategorySelect }:
                         <div className={cn("rounded-lg p-2.5 shadow-elevation-2", isSelected ? 'bg-primary text-white' : bgColor)}>
                             <CategoryIcon className={cn("h-5 w-5", isSelected ? 'text-white' : color)} />
                         </div>
-                        <span className="text-xs font-medium text-center leading-tight truncate w-full">{cat.name}</span>
+                        <span className="text-label-md font-medium text-center leading-tight truncate w-full">{cat.name}</span>
                     </button>
                 );
             })}

@@ -89,8 +89,8 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <div>
-                        <h2 className="text-xl font-medium">Catat Pembayaran</h2>
-                        <p className="text-sm text-muted-foreground">
+                        <h2 className="text-title-lg">Catat Pembayaran</h2>
+                        <p className="text-body-md text-muted-foreground">
                             {debt?.direction === 'owed'
                                 ? `Sisa hutang: ${formatCurrency(debt?.outstandingBalance ?? debt?.principal ?? 0)}`
                                 : `Sisa piutang: ${formatCurrency(debt?.outstandingBalance ?? debt?.principal ?? 0)}`}
@@ -123,7 +123,7 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
                                 />
                             )}
                         />
-                        {errors.amount && <p className="text-xs text-destructive">{errors.amount.message}</p>}
+                        {errors.amount && <p className="text-label-md text-destructive">{errors.amount.message}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -155,7 +155,7 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
                                 </Popover>
                             )}
                         />
-                        {errors.paymentDate && <p className="text-xs text-destructive">{errors.paymentDate.message}</p>}
+                        {errors.paymentDate && <p className="text-label-md text-destructive">{errors.paymentDate.message}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -184,7 +184,7 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
                                 </Select>
                             )}
                         />
-                        {errors.walletId && <p className="text-xs text-destructive">{errors.walletId.message}</p>}
+                        {errors.walletId && <p className="text-label-md text-destructive">{errors.walletId.message}</p>}
                     </div>
 
                     <div className="space-y-2">

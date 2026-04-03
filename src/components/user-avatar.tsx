@@ -48,7 +48,7 @@ export const UserAvatar = ({ name, src, className, fallbackClassName }: UserAvat
     return (
         <Avatar className={cn("h-10 w-10 shadow-elevation-2", className)}>
             <AvatarImage src={src || ''} alt={name || 'User'} className="object-cover" />
-            <AvatarFallback className={cn("font-medium text-sm", colorClass, fallbackClassName)}>
+            <AvatarFallback className={cn("font-medium text-body-md", colorClass, fallbackClassName)}>
                 {initials || <UserCircle className="h-4 w-4" weight="regular" />}
             </AvatarFallback>
         </Avatar>

@@ -31,7 +31,7 @@ export const HelpTooltip = ({
                         <Info className={cn("h-3.5 w-3.5 text-muted-foreground/70 hover:text-foreground transition-colors", iconClassName)} weight="regular" />
                     </div>
                 </TooltipTrigger>
-                <TooltipContent side={side} className="max-w-[260px] text-xs font-normal">
+                <TooltipContent side={side} className="max-w-[260px] text-label-md font-normal">
                     {content}
                 </TooltipContent>
             </Tooltip>

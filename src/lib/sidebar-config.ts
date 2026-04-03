@@ -11,6 +11,8 @@ import {
   Target,
   User,
   Wallet,
+  Compass,
+  Layout,
   type Icon as PhosphorIcon,
 } from '@/lib/icons';
 
@@ -31,27 +33,27 @@ export interface NavSection {
 
 const overviewItems: NavItem[] = [
   { id: 'home', href: '/home', icon: House, name: 'Beranda', shortName: 'Home', exact: true },
-  { id: 'transactions', href: '/transactions', icon: Receipt, name: 'Transaksi', shortName: 'Transaksi' },
-  { id: 'charts', href: '/charts', icon: ChartPieSlice, name: 'Analitik', shortName: 'Analitik' },
+  { id: 'transactions', href: '/transactions', icon: Receipt, name: 'Aktivitas', shortName: 'Aktivitas' },
 ];
 
 const planningItems: NavItem[] = [
-  { id: 'budgeting', href: '/budgeting', icon: PiggyBank, name: 'Budget', shortName: 'Budget' },
-  { id: 'plan', href: '/plan', icon: Notebook, name: 'Rencana', shortName: 'Rencana' },
-  { id: 'goals', href: '/goals', icon: Target, name: 'Target', shortName: 'Target' },
+  { id: 'plan', href: '/plan', icon: Layout, name: 'Perencanaan', shortName: 'Rencana' },
+  { id: 'budgeting', href: '/plan?tab=budget', icon: PiggyBank, name: 'Budgeting', shortName: 'Budget' },
+  { id: 'goals', href: '/plan?tab=goals', icon: Target, name: 'Target', shortName: 'Target' },
+  { id: 'reminders', href: '/plan?tab=bills', icon: Bell, name: 'Pengingat', shortName: 'Tagihan' },
 ];
 
-const financeItems: NavItem[] = [
-  { id: 'wallets', href: '/wallets', icon: Wallet, name: 'Dompet', shortName: 'Dompet' },
-  { id: 'debts', href: '/debts', icon: HandCoins, name: 'Hutang', shortName: 'Hutang' },
-  { id: 'assets-liabilities', href: '/assets-liabilities', icon: Bank, name: 'Aset & Liabilitas', shortName: 'Aset' },
-  { id: 'reminders', href: '/reminders', icon: Bell, name: 'Pengingat', shortName: 'Pengingat' },
+const strategyItems: NavItem[] = [
+  { id: 'wealth', href: '/wealth', icon: Compass, name: 'Strategi & Kekayaan', shortName: 'Wawasan' },
+  { id: 'assets-liabilities', href: '/wealth?tab=assets', icon: Bank, name: 'Aset & Liabilitas', shortName: 'Aset' },
+  { id: 'debts', href: '/wealth?tab=debts', icon: HandCoins, name: 'Hutang', shortName: 'Hutang' },
+  { id: 'charts', href: '/wealth?tab=charts', icon: ChartPieSlice, name: 'Analitik', shortName: 'Analitik' },
 ];
 
 export const SIDEBAR_NAV_SECTIONS: NavSection[] = [
-  { id: 'overview', label: 'Overview', items: overviewItems },
-  { id: 'planning', label: 'Planning', items: planningItems },
-  { id: 'finance', label: 'Finance', items: financeItems },
+  { id: 'overview', label: 'Ringkasan', items: overviewItems },
+  { id: 'planning', label: 'Perencanaan', items: planningItems },
+  { id: 'strategy', label: 'Strategi', items: strategyItems },
 ];
 
 export const SIDEBAR_PRIMARY_NAV_ITEMS = SIDEBAR_NAV_SECTIONS.flatMap((section) => section.items);
@@ -59,8 +61,8 @@ export const SIDEBAR_PRIMARY_NAV_ITEMS = SIDEBAR_NAV_SECTIONS.flatMap((section) 
 export const MOBILE_NAV_ITEMS: NavItem[] = [
   overviewItems[0],
   overviewItems[1],
-  planningItems[1],
-  { id: 'profile', href: '/profile', icon: User, name: 'Profil & Akun', shortName: 'Profil' },
+  planningItems[0],
+  strategyItems[0],
 ];
 
 export const MOBILE_TOP_LEVEL_PATHS = new Set([
@@ -69,6 +71,7 @@ export const MOBILE_TOP_LEVEL_PATHS = new Set([
   '/charts',
   '/budgeting',
   '/plan',
+  '/wealth',
   '/goals',
   '/wallets',
   '/debts',

@@ -58,12 +58,12 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
     return (
         <Card className="border-none shadow-none border border-border/40 bg-card rounded-card flex flex-col h-full">
             <CardHeader className="pb-0">
-                <CardTitle className="text-sm font-medium">Distribusi Pengeluaran</CardTitle>
-                <CardDescription className="text-xs">Top 5 kategori pengeluaran</CardDescription>
+                <CardTitle className="text-body-md font-medium">Distribusi Pengeluaran</CardTitle>
+                <CardDescription className="text-label-md">Top 5 kategori pengeluaran</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 min-h-[250px] relative pb-0">
                 {data.length === 0 ? (
-                     <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                     <div className="absolute inset-0 flex items-center justify-center text-label-md text-muted-foreground">
                         Belum ada pengeluaran yang bisa divisualisasikan.
                     </div>
                 ) : (
@@ -93,14 +93,14 @@ export const DashboardExpensePie = ({ transactions }: DashboardExpensePieProps) 
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={viewBox.cy}
-                                                        className="fill-foreground text-3xl font-medium"
+                                                        className="fill-foreground text-display-lg font-medium"
                                                     >
                                                         {topCategoryPercentage}%
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
                                                         y={(viewBox.cy || 0) + 24}
-                                                        className="fill-muted-foreground text-xs"
+                                                        className="fill-muted-foreground text-label-md"
                                                     >
                                                         Terbesar
                                                     </tspan>

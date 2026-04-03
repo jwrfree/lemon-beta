@@ -28,8 +28,8 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
         <Card id="widget-budget-status" variant="default" className="bg-card/98">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                    <CardTitle className="text-sm font-medium">Status Anggaran</CardTitle>
-                    <CardDescription className="text-xs">Monitoring penggunaan budget bulanan</CardDescription>
+                    <CardTitle className="text-body-md font-medium">Status Anggaran</CardTitle>
+                    <CardDescription className="text-label-md">Monitoring penggunaan budget bulanan</CardDescription>
                 </div>
                 <Button variant="ghost" size="sm" asChild className="h-8 w-8 p-0">
                     <Link href="/budgeting">
@@ -56,16 +56,16 @@ export const DashboardBudgetStatus = ({ budgets }: DashboardBudgetStatusProps) =
 
                         return (
                             <div key={budget.id} className="space-y-1.5">
-                                <div className="flex justify-between text-xs">
+                                <div className="flex justify-between text-label-md">
                                     <span className="font-medium flex items-center gap-1.5">
                                         {budget.name}
                                         {isOver && <WarningCircle size={12} weight="regular" className="text-destructive" />}
                                     </span>
                                     <span className={cn(
-                                        "text-xs",
+                                        "text-label-md",
                                         isOver ? "text-destructive font-medium" : "text-muted-foreground"
                                     )}>
-                                        {formatCurrency(spent)} <span className="text-xs text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
+                                        {formatCurrency(spent)} <span className="text-label-md text-muted-foreground/60">/ {formatCurrency(budget.targetAmount)}</span>
                                     </span>
                                 </div>
                                 <Progress

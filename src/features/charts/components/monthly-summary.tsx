@@ -257,13 +257,13 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 </div>
                 <CardHeader className="space-y-4 sm:space-y-6 relative z-10 p-4 sm:p-6">
                     <div className="flex items-center justify-between gap-3">
-                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-2 sm:px-3 py-0.5 sm:py-1 font-medium text-xs sm:text-xs">
+                        <Badge className="flex items-center gap-1.5 border-white/20 bg-white/20 text-white px-2 sm:px-3 py-0.5 sm:py-1 font-medium text-label-md sm:text-label-md">
                             <Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             {summary.monthLabel}
                         </Badge>
                         <Badge
                             className={cn(
-                                'border-none bg-white/30 text-white font-medium text-xs sm:text-xs px-2 sm:px-3',
+                                'border-none bg-white/30 text-white font-medium text-label-md sm:text-label-md px-2 sm:px-3',
                                 summary.type === 'net' && summary.isPositive && 'bg-teal-600/60',
                                 summary.type === 'net' && !summary.isPositive && 'bg-destructive/60'
                             )}
@@ -272,16 +272,16 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         </Badge>
                     </div>
                     <div className="space-y-1">
-                        <CardTitle className="text-xs sm:text-xs font-medium text-white/70">{summary.title}</CardTitle>
-                        <div className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-white tabular-nums">
+                        <CardTitle className="text-label-md sm:text-label-md font-medium text-white/70">{summary.title}</CardTitle>
+                        <div className="text-display-lg sm:text-display-lg md:text-display-lg font-medium tracking-tight text-white tabular-nums">
                             <AnimatedCounter value={summary.value} />
                         </div>
                     </div>
-                    <p className="text-xs sm:text-sm font-medium leading-relaxed text-white/90 max-w-[280px]">{summary.heroDescription}</p>
+                    <p className="text-label-md sm:text-body-md font-medium leading-relaxed text-white/90 max-w-[280px]">{summary.heroDescription}</p>
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6 pb-6 sm:pb-8 pt-0 relative z-10 px-4 sm:px-6">
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs sm:text-xs font-medium text-white/60">
+                        <div className="flex items-center justify-between text-label-md sm:text-label-md font-medium text-white/60">
                             <span>Laju Hari</span>
                             <span className="tabular-nums">
                                 {summary.daysElapsed} / {summary.daysInMonth} Hari
@@ -298,14 +298,14 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         {summary.type === 'net' ? (
                             <>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Pemasukan</p>
-                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
+                                    <p className="text-label-md sm:text-label-md font-medium text-white/50 mb-1">Pemasukan</p>
+                                    <p className="text-body-md sm:text-body-lg font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.income)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Pengeluaran</p>
-                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
+                                    <p className="text-label-md sm:text-label-md font-medium text-white/50 mb-1">Pengeluaran</p>
+                                    <p className="text-body-md sm:text-body-lg font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.netDetails.expense)}
                                     </p>
                                 </div>
@@ -313,14 +313,14 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         ) : (
                             <>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Per Hari</p>
-                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
+                                    <p className="text-label-md sm:text-label-md font-medium text-white/50 mb-1">Per Hari</p>
+                                    <p className="text-body-md sm:text-body-lg font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerDay)}
                                     </p>
                                 </div>
                                 <div className="rounded-lg bg-white/20 p-3 sm:p-4 border border-white/20">
-                                    <p className="text-xs sm:text-xs font-medium text-white/50 mb-1">Per Transaksi</p>
-                                    <p className="text-sm sm:text-base font-medium text-white tabular-nums leading-none">
+                                    <p className="text-label-md sm:text-label-md font-medium text-white/50 mb-1">Per Transaksi</p>
+                                    <p className="text-body-md sm:text-body-lg font-medium text-white tabular-nums leading-none">
                                         {formatCurrency(summary.averagePerTransaction)}
                                     </p>
                                 </div>
@@ -337,17 +337,17 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Kategori Terbesar</CardTitle>
-                            <p className="text-lg sm:text-xl font-medium text-foreground truncate">{summary.topCategory.name}</p>
+                            <CardTitle className="text-label-md sm:text-body-md font-medium text-muted-foreground truncate">Kategori Terbesar</CardTitle>
+                            <p className="text-title-lg sm:text-display-sm font-medium text-foreground truncate">{summary.topCategory.name}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-lg sm:text-xl font-medium text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
-                            <p className="text-xs sm:text-xs font-medium text-muted-foreground text-label mt-1">Kontribusi</p>
+                            <p className="text-title-lg sm:text-display-sm font-medium text-foreground tabular-nums leading-none">{summary.topCategory.percentage.toFixed(0)}%</p>
+                            <p className="text-label-md sm:text-label-md font-medium text-muted-foreground text-label mt-1">Kontribusi</p>
                         </div>
                     </CardHeader>
                     <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 sm:space-y-6">
                         <div className="space-y-1.5 sm:space-y-2">
-                            <div className="flex justify-between text-xs sm:text-xs font-medium text-label text-muted-foreground">
+                            <div className="flex justify-between text-label-md sm:text-label-md font-medium text-label text-muted-foreground">
                                 <span>Total di kategori ini</span>
                                 <span className="text-foreground tabular-nums">{formatCurrency(summary.topCategory.value)}</span>
                             </div>
@@ -363,12 +363,12 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                     <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground text-label mb-0.5">Transaksi Terbesar</p>
-                                    <p className="text-xs sm:text-sm font-medium text-foreground truncate">{summary.topTransaction.description}</p>
+                                    <p className="text-label-md sm:text-label-md font-medium text-muted-foreground text-label mb-0.5">Transaksi Terbesar</p>
+                                    <p className="text-label-md sm:text-body-md font-medium text-foreground truncate">{summary.topTransaction.description}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-xs sm:text-sm font-medium text-foreground tabular-nums">{formatCurrency(summary.topTransaction.amount)}</p>
-                                    <p className="text-xs sm:text-xs font-medium text-muted-foreground">{format(parseISO(summary.topTransaction.date), 'd MMM')}</p>
+                                    <p className="text-label-md sm:text-body-md font-medium text-foreground tabular-nums">{formatCurrency(summary.topTransaction.amount)}</p>
+                                    <p className="text-label-md sm:text-label-md font-medium text-muted-foreground">{format(parseISO(summary.topTransaction.date), 'd MMM')}</p>
                                 </div>
                                 <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
                             </div>
@@ -378,7 +378,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                             <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg text-primary shrink-0 mt-0.5">
                                 <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
-                            <p className="text-xs sm:text-xs text-primary/80 font-medium leading-relaxed">
+                            <p className="text-label-md sm:text-label-md text-primary/80 font-medium leading-relaxed">
                                 {summary.tipCopy}
                             </p>
                         </div>
@@ -399,8 +399,8 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                                 <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </div>
                             <div>
-                                <CardTitle className="text-xs sm:text-sm font-medium text-primary text-label">AI Financial Insight</CardTitle>
-                                <p className="text-xs sm:text-xs font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
+                                <CardTitle className="text-label-md sm:text-body-md font-medium text-primary text-label">AI Financial Insight</CardTitle>
+                                <p className="text-label-md sm:text-label-md font-medium text-muted-foreground">Analisis cerdas pola keuanganmu</p>
                             </div>
                         </div>
                         {aiInsight && (
@@ -418,17 +418,17 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                 <CardContent className="p-4 sm:p-6 pt-0 relative z-10">
                     {!aiInsight ? (
                         <div className="flex flex-col items-center justify-center py-6 sm:py-8 text-center space-y-3 sm:space-y-4">
-                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-primary/10 shadow-inner">
+                            <div className="p-3 sm:p-4 bg-white/50 dark:bg-zinc-900/50 rounded-full border border-primary/10">
                                 <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-primary opacity-50" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-xs sm:text-sm font-medium text-foreground">Butuh pandangan baru?</p>
-                                <p className="text-xs sm:text-xs text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
+                                <p className="text-label-md sm:text-body-md font-medium text-foreground">Butuh pandangan baru?</p>
+                                <p className="text-label-md sm:text-label-md text-muted-foreground px-4">AI akan menganalisis transaksimu untuk memberikan rekomendasi yang dipersonalisasi.</p>
                             </div>
                             <Button
                                 onClick={generateInsight}
                                 disabled={isAiLoading}
-                                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-card rounded-card px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-xs sm:text-sm font-medium shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-card rounded-card px-4 sm:px-6 py-1.5 sm:py-2 h-auto text-label-md sm:text-body-md font-medium shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95"
                             >
                                 {isAiLoading ? (
                                     <>
@@ -444,12 +444,12 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
                         <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
                             <div className="p-3 sm:p-5 bg-white/60 dark:bg-zinc-900/60 rounded-md sm:rounded-card border border-white dark:border-zinc-800 backdrop-blur-sm">
                                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                                    <p className="text-xs sm:text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap font-medium">
+                                    <p className="text-label-md sm:text-body-md leading-relaxed text-foreground/90 whitespace-pre-wrap font-medium">
                                         {aiInsight}
                                     </p>
                                 </div>
                             </div>
-                            <p className="text-xs sm:text-xs text-center text-muted-foreground font-medium flex items-center justify-center gap-1.5">
+                            <p className="text-label-md sm:text-label-md text-center text-muted-foreground font-medium flex items-center justify-center gap-1.5">
                                 <AlertCircle className="h-3 w-3" />
                                 Analisis AI mungkin tidak sepenuhnya akurat. Gunakan sebagai pertimbangan tambahan.
                             </p>

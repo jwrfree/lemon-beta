@@ -69,7 +69,7 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
     return (
         <Card className="border-none shadow-none border border-border/40">
             <CardHeader>
-                <CardTitle className="text-lg font-medium">Top Pengeluaran</CardTitle>
+                <CardTitle className="text-title-lg font-medium">Top Pengeluaran</CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -92,7 +92,7 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
                             tickMargin={10}
                             axisLine={false}
                             width={100}
-                            className="text-xs font-medium text-muted-foreground"
+                            className="text-label-md font-medium text-muted-foreground"
                         />
                         <ChartTooltip 
                             cursor={false} 

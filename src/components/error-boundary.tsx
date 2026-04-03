@@ -46,8 +46,8 @@ export class ErrorBoundary extends Component<Props, State> {
                             <Warning className="h-5 w-5 text-destructive" weight="regular" />
                         </div>
                         <div className="space-y-1">
-                            <h3 className="text-sm font-medium text-destructive">Gagal memuat widget</h3>
-                            <p className="text-xs text-muted-foreground max-w-[200px]">
+                            <h3 className="text-body-md font-medium text-destructive">Gagal memuat widget</h3>
+                            <p className="text-label-md text-muted-foreground max-w-[200px]">
                                 Terjadi kesalahan saat menampilkan data ini.
                             </p>
                         </div>
@@ -55,7 +55,7 @@ export class ErrorBoundary extends Component<Props, State> {
                             variant="outline" 
                             size="sm" 
                             onClick={this.handleRetry}
-                            className="h-7 text-xs border-destructive/20 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
+                            className="h-7 text-label-md border-destructive/20 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30"
                         >
                             <ArrowClockwise className="mr-2 h-3 w-3" weight="regular" />
                             Coba Lagi

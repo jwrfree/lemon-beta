@@ -48,11 +48,11 @@ export function HistoryChart({ data }: { data: MonthlyMetric[] }) {
         <Card className="p-6 bg-card border-none rounded-card shadow-none border border-border/40">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h3 className="text-lg font-medium tracking-tight flex items-center gap-2">
+                    <h3 className="text-title-lg font-medium tracking-tight flex items-center gap-2">
                         <BarChart3 className="w-5 h-5 text-indigo-500" />
                         Riwayat 6 Bulan
                     </h3>
-                    <p className="text-xs text-muted-foreground">Pemasukan vs Pengeluaran</p>
+                    <p className="text-label-md text-muted-foreground">Pemasukan vs Pengeluaran</p>
                 </div>
             </div>
             <ChartContainer config={chartConfig} className="h-[240px] w-full">

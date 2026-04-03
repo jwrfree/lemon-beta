@@ -22,199 +22,199 @@ const DEEPSEEK_V3_OUTPUT_PRICE_PER_1M = 0.28; // USD
 const USD_TO_IDR_RATE = 16250; // Perkiraan rate saat ini
 
 export default function TokenCalculatorPage() {
-    const router = useRouter();
-    const { showToast } = useUI();
-    const [inputText, setInputText] = useState('Beli 2 kopi di Starbucks pake GoPay 50rb');
-    const [isCalculating, setIsCalculating] = useState(false);
-    const [result, setResult] = useState<{ input: number; output: number } | null>(null);
-    
-    // Estimation State
-    const [budgetUSD, setBudgetUSD] = useState<string>('2');
-    const [dailyTx, setDailyTx] = useState<string>('5');
+ const router = useRouter();
+ const { showToast } = useUI();
+ const [inputText, setInputText] = useState('Beli 2 kopi di Starbucks pake GoPay 50rb');
+ const [isCalculating, setIsCalculating] = useState(false);
+ const [result, setResult] = useState<{ input: number; output: number } | null>(null);
+ 
+ // Estimation State
+ const [budgetUSD, setBudgetUSD] = useState<string>('2');
+ const [dailyTx, setDailyTx] = useState<string>('5');
 
-    const calculateCost = (inputTokens: number, outputTokens: number) => {
-        const inputCostUSD = (inputTokens / 1_000_000) * DEEPSEEK_V3_INPUT_PRICE_PER_1M;
-        const outputCostUSD = (outputTokens / 1_000_000) * DEEPSEEK_V3_OUTPUT_PRICE_PER_1M;
-        const totalCostUSD = inputCostUSD + outputCostUSD;
-        const totalCostIDR = totalCostUSD * USD_TO_IDR_RATE;
-        return { totalCostIDR, totalCostUSD };
-    };
+ const calculateCost = (inputTokens: number, outputTokens: number) => {
+ const inputCostUSD = (inputTokens / 1_000_000) * DEEPSEEK_V3_INPUT_PRICE_PER_1M;
+ const outputCostUSD = (outputTokens / 1_000_000) * DEEPSEEK_V3_OUTPUT_PRICE_PER_1M;
+ const totalCostUSD = inputCostUSD + outputCostUSD;
+ const totalCostIDR = totalCostUSD * USD_TO_IDR_RATE;
+ return { totalCostIDR, totalCostUSD };
+ };
 
-    const calculateRunway = () => {
-        if (!result) return null;
-        const { totalCostUSD } = calculateCost(result.input, result.output);
-        if (totalCostUSD === 0) return null;
+ const calculateRunway = () => {
+ if (!result) return null;
+ const { totalCostUSD } = calculateCost(result.input, result.output);
+ if (totalCostUSD === 0) return null;
 
-        const budget = parseFloat(budgetUSD) || 0;
-        const daily = parseFloat(dailyTx) || 1;
+ const budget = parseFloat(budgetUSD) || 0;
+ const daily = parseFloat(dailyTx) || 1;
 
-        const totalTransactions = Math.floor(budget / totalCostUSD);
-        const totalDays = Math.floor(totalTransactions / daily);
-        
-        return { totalTransactions, totalDays };
-    };
+ const totalTransactions = Math.floor(budget / totalCostUSD);
+ const totalDays = Math.floor(totalTransactions / daily);
+ 
+ return { totalTransactions, totalDays };
+ };
 
-    const runway = calculateRunway();
+ const runway = calculateRunway();
 
-    const handleCalculate = async () => {
-        if (!inputText.trim()) {
-            showToast('Harap masukkan teks untuk dihitung.', 'error');
-            return;
-        }
-        setIsCalculating(true);
-        setResult(null);
-        try {
-            const tokenCounts = await countTransactionTokens(inputText);
-            setResult(tokenCounts);
-        } catch (error) {
-            console.error('Token calculation failed:', error);
-            showToast('Gagal menghitung token. Coba lagi.', 'error');
-        } finally {
-            setIsCalculating(false);
-        }
-    };
+ const handleCalculate = async () => {
+ if (!inputText.trim()) {
+ showToast('Harap masukkan teks untuk dihitung.', 'error');
+ return;
+ }
+ setIsCalculating(true);
+ setResult(null);
+ try {
+ const tokenCounts = await countTransactionTokens(inputText);
+ setResult(tokenCounts);
+ } catch (error) {
+ console.error('Token calculation failed:', error);
+ showToast('Gagal menghitung token. Coba lagi.', 'error');
+ } finally {
+ setIsCalculating(false);
+ }
+ };
 
-    return (
-        <AppPageShell>
-            <PageHeader title="Kalkulator Token AI" width="compact" />
-            <AppPageBody width="compact" className="space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-lg">Hitung Token & Biaya (DeepSeek V3)</CardTitle>
-                    </CardHeader>
-                    <CardContent className={spacing.stack}>
-                        <p className="text-sm text-muted-foreground">
-                            Masukkan teks transaksi untuk melihat perkiraan jumlah token dan biaya menggunakan model DeepSeek V3 (deepseek-chat).
-                        </p>
-                        <div className="space-y-2">
-                            <Label htmlFor="input-text">Teks Transaksi</Label>
-                            <Textarea
-                                id="input-text"
-                                value={inputText}
-                                onChange={(e) => setInputText(e.target.value)}
-                                placeholder="Contoh: Beli bensin 150rb di Shell"
-                                rows={3}
-                            />
-                        </div>
-                        <Button onClick={handleCalculate} disabled={isCalculating} className="w-full">
-                            {isCalculating ? (
-                                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                <Sparkles className="mr-2 h-4 w-4" />
-                            )}
-                            {isCalculating ? 'Menghitung...' : 'Hitung Estimasi'}
-                        </Button>
-                    </CardContent>
-                </Card>
+ return (
+ <AppPageShell>
+ <PageHeader title="Kalkulator Token AI"width="compact"/>
+ <AppPageBody width="compact"className="space-y-6">
+ <Card>
+ <CardHeader>
+ <CardTitle className="text-title-lg">Hitung Token & Biaya (DeepSeek V3)</CardTitle>
+ </CardHeader>
+ <CardContent className={spacing.stack}>
+ <p className="text-body-md text-muted-foreground">
+ Masukkan teks transaksi untuk melihat perkiraan jumlah token dan biaya menggunakan model DeepSeek V3 (deepseek-chat).
+ </p>
+ <div className="space-y-2">
+ <Label htmlFor="input-text">Teks Transaksi</Label>
+ <Textarea
+ id="input-text"
+ value={inputText}
+ onChange={(e) => setInputText(e.target.value)}
+ placeholder="Contoh: Beli bensin 150rb di Shell"
+ rows={3}
+ />
+ </div>
+ <Button onClick={handleCalculate} disabled={isCalculating} className="w-full">
+ {isCalculating ? (
+ <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/>
+ ) : (
+ <Sparkles className="mr-2 h-4 w-4"/>
+ )}
+ {isCalculating ? 'Menghitung...': 'Hitung Estimasi'}
+ </Button>
+ </CardContent>
+ </Card>
 
-                <AnimatePresence>
-                    {result && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className={spacing.section}
-                        >
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Hasil Estimasi Per Transaksi</CardTitle>
-                                </CardHeader>
-                                <CardContent className={spacing.section}>
-                                    <div className="grid grid-cols-2 gap-4 text-center">
-                                        <div className="p-4 bg-muted rounded-lg">
-                                            <p className="text-xs font-medium text-muted-foreground mb-1">Input Token</p>
-                                            <p className="text-2xl font-medium">{result.input}</p>
-                                        </div>
-                                        <div className="p-4 bg-muted rounded-lg">
-                                            <p className="text-xs font-medium text-muted-foreground mb-1">Output Token</p>
-                                            <p className="text-2xl font-medium">{result.output}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="p-4 bg-primary/10 rounded-lg space-y-3">
-                                        <div className="flex justify-between items-center border-b border-primary/20 pb-2">
-                                            <span className="text-sm font-medium">Total Token</span>
-                                            <span className="text-xl font-medium">{result.input + result.output}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-medium">Estimasi Biaya</span>
-                                                <span className="text-xs text-muted-foreground">($0.14/1M in, $0.28/1M out)</span>
-                                            </div>
-                                            <div className="text-right">
-                                                <span className="text-xl font-medium text-primary">
-                                                    {calculateCost(result.input, result.output).totalCostIDR < 1 
-                                                        ? `Rp ${calculateCost(result.input, result.output).totalCostIDR.toFixed(4)}`
-                                                        : formatCurrency(calculateCost(result.input, result.output).totalCostIDR)
-                                                    }
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <p className="text-xs text-center text-muted-foreground">
-                                        *Sudah termasuk estimasi overhead system prompt (~400 token).
-                                    </p>
-                                </CardContent>
-                            </Card>
+ <AnimatePresence>
+ {result && (
+ <motion.div
+ initial={{ opacity: 0, y: 20 }}
+ animate={{ opacity: 1, y: 0 }}
+ className={spacing.section}
+ >
+ <Card>
+ <CardHeader>
+ <CardTitle className="text-title-lg">Hasil Estimasi Per Transaksi</CardTitle>
+ </CardHeader>
+ <CardContent className={spacing.section}>
+ <div className="grid grid-cols-2 gap-4 text-center">
+ <div className="p-4 bg-muted rounded-lg">
+ <p className="text-label-md font-medium text-muted-foreground mb-1">Input Token</p>
+ <p className="text-display-md font-medium">{result.input}</p>
+ </div>
+ <div className="p-4 bg-muted rounded-lg">
+ <p className="text-label-md font-medium text-muted-foreground mb-1">Output Token</p>
+ <p className="text-display-md font-medium">{result.output}</p>
+ </div>
+ </div>
+ 
+ <div className="p-4 bg-primary/10 rounded-lg space-y-3">
+ <div className="flex justify-between items-center border-b border-primary/20 pb-2">
+ <span className="text-body-md font-medium">Total Token</span>
+ <span className="text-display-sm font-medium">{result.input + result.output}</span>
+ </div>
+ <div className="flex justify-between items-center">
+ <div className="flex flex-col">
+ <span className="text-body-md font-medium">Estimasi Biaya</span>
+ <span className="text-label-md text-muted-foreground">($0.14/1M in, $0.28/1M out)</span>
+ </div>
+ <div className="text-right">
+ <span className="text-display-sm font-medium text-primary">
+ {calculateCost(result.input, result.output).totalCostIDR < 1 
+ ?`Rp ${calculateCost(result.input, result.output).totalCostIDR.toFixed(4)}`
+ : formatCurrency(calculateCost(result.input, result.output).totalCostIDR)
+ }
+ </span>
+ </div>
+ </div>
+ </div>
+ 
+ <p className="text-label-md text-center text-muted-foreground">
+ *Sudah termasuk estimasi overhead system prompt (~400 token).
+ </p>
+ </CardContent>
+ </Card>
 
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Estimasi Runway (Daya Tahan Saldo)</CardTitle>
-                                </CardHeader>
-                                <CardContent className={spacing.section}>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="budget">Top Up (USD)</Label>
-                                            <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
-                                                <Input 
-                                                    id="budget" 
-                                                    type="number" 
-                                                    value={budgetUSD} 
-                                                    onChange={(e) => setBudgetUSD(e.target.value)}
-                                                    className="pl-7"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="daily">Transaksi / Hari</Label>
-                                            <Input 
-                                                id="daily" 
-                                                type="number" 
-                                                value={dailyTx} 
-                                                onChange={(e) => setDailyTx(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
+ <Card>
+ <CardHeader>
+ <CardTitle className="text-title-lg">Estimasi Runway (Daya Tahan Saldo)</CardTitle>
+ </CardHeader>
+ <CardContent className={spacing.section}>
+ <div className="grid grid-cols-2 gap-4">
+ <div className="space-y-2">
+ <Label htmlFor="budget">Top Up (USD)</Label>
+ <div className="relative">
+ <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
+ <Input 
+ id="budget"
+ type="number"
+ value={budgetUSD} 
+ onChange={(e) => setBudgetUSD(e.target.value)}
+ className="pl-7"
+ />
+ </div>
+ </div>
+ <div className="space-y-2">
+ <Label htmlFor="daily">Transaksi / Hari</Label>
+ <Input 
+ id="daily"
+ type="number"
+ value={dailyTx} 
+ onChange={(e) => setDailyTx(e.target.value)}
+ />
+ </div>
+ </div>
 
-                                    {runway && (
-                                        <div className="grid grid-cols-2 gap-4 text-center">
-                                             <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg flex flex-col justify-center items-center">
-                                                <Coins className="h-6 w-6 text-teal-600 mb-2" />
-                                                <p className="text-xs text-teal-700 uppercase tracking-widest mb-1">Total Transaksi</p>
-                                                <p className="text-2xl font-medium text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
-                                            </div>
-                                            <div className="p-4 bg-info/10 border border-info/20 rounded-lg flex flex-col justify-center items-center">
-                                                <Calendar className="h-6 w-6 text-info mb-2" />
-                                                <p className="text-xs text-info uppercase tracking-widest mb-1">Estimasi Waktu</p>
-                                                <div className="flex items-baseline gap-1">
-                                                     <p className="text-2xl font-medium text-info">{runway.totalDays.toLocaleString()}</p>
-                                                     <span className="text-sm text-info">hari</span>
-                                                </div>
-                                                <p className="text-xs text-info/80 mt-1">({(runway.totalDays / 365).toFixed(1)} tahun)</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <p className="text-xs text-center text-muted-foreground">
-                                        Estimasi ini berdasarkan panjang teks transaksi di atas.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </AppPageBody>
-        </AppPageShell>
-    );
+ {runway && (
+ <div className="grid grid-cols-2 gap-4 text-center">
+ <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg flex flex-col justify-center items-center">
+ <Coins className="h-6 w-6 text-teal-600 mb-2"/>
+ <p className="text-label-md text-teal-700 mb-1">Total Transaksi</p>
+ <p className="text-display-md font-medium text-teal-700">{runway.totalTransactions.toLocaleString()}</p>
+ </div>
+ <div className="p-4 bg-info/10 border border-info/20 rounded-lg flex flex-col justify-center items-center">
+ <Calendar className="h-6 w-6 text-info mb-2"/>
+ <p className="text-label-md text-info mb-1">Estimasi Waktu</p>
+ <div className="flex items-baseline gap-1">
+ <p className="text-display-md font-medium text-info">{runway.totalDays.toLocaleString()}</p>
+ <span className="text-body-md text-info">hari</span>
+ </div>
+ <p className="text-label-md text-info/80 mt-1">({(runway.totalDays / 365).toFixed(1)} tahun)</p>
+ </div>
+ </div>
+ )}
+ <p className="text-label-md text-center text-muted-foreground">
+ Estimasi ini berdasarkan panjang teks transaksi di atas.
+ </p>
+ </CardContent>
+ </Card>
+ </motion.div>
+ )}
+ </AnimatePresence>
+ </AppPageBody>
+ </AppPageShell>
+ );
 }
 

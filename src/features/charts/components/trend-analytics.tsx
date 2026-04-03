@@ -37,14 +37,14 @@ export function TrendAnalytics({ data }: { data: DailyMetric[] }) {
         <Card className="p-6 bg-card border-none rounded-card shadow-none border border-border/40">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h3 className="text-lg font-medium tracking-tight flex items-center gap-2">
+                    <h3 className="text-title-lg font-medium tracking-tight flex items-center gap-2">
                         <Activity className="w-5 h-5 text-blue-500" />
                         Analisis Harian
                     </h3>
-                    <p className="text-xs text-muted-foreground">Pola pengeluaran 30 hari terakhir</p>
+                    <p className="text-label-md text-muted-foreground">Pola pengeluaran 30 hari terakhir</p>
                 </div>
                 <div className="flex gap-2">
-                    <Badge variant="secondary" className="text-xs font-medium">30 Hari</Badge>
+                    <Badge variant="secondary" className="text-label-md font-medium">30 Hari</Badge>
                 </div>
             </div>
 
