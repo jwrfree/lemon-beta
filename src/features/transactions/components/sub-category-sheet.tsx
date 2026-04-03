@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, CheckCircle } from '@phosphor-icons/react';
+import { X, Check } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
@@ -53,10 +53,12 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
                                 }}
                                 className="flex w-full items-center justify-between rounded-lg bg-background p-3 text-left shadow-[0_10px_20px_-18px_rgba(15,23,42,0.14)] transition-colors hover:bg-secondary"
                             >
-                                <span className={cn(selectedValue === subCat && "font-medium text-primary")}>
-                                    {subCat}
-                                </span>
-                                {selectedValue === subCat && <CheckCircle size={20} weight="bold" className="text-primary" />}
+                                <div className="flex w-full items-center justify-between">
+                                    <span className={cn('text-sm transition-colors', selectedValue === subCat ? 'font-semibold text-foreground' : 'text-foreground')}>
+                                        {subCat}
+                                    </span>
+                                    {selectedValue === subCat && <Check size={20} weight="bold" className="text-primary" />}
+                                </div>
                             </button>
                         ))}
                     </div>

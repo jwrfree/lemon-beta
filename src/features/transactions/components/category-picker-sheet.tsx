@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, CaretRight, MagnifyingGlass, X } from '@phosphor-icons/react';
+import { Check, CaretRight, MagnifyingGlass, X } from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,7 +51,7 @@ const CategoryRow = ({
             </div>
             {isSelected ? (
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <CheckCircle size={18} weight="bold" />
+                    <Check size={18} weight="bold" />
                 </div>
             ) : (
                 <CaretRight size={18} weight="bold" className="text-muted-foreground" />
