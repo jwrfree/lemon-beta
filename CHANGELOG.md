@@ -38,6 +38,8 @@ All updates and improvements to the Lemon app will be documented here.
   - Raised the shared `Input` primitive to a 16px mobile text floor and added regression coverage so iOS no longer zooms on focus in shared form fields.
 - **DS-1 icon runtime consistency**
   - Standardized runtime icon imports behind `src/lib/icons.ts`, kept Phosphor as the single UI icon library, and migrated remaining Lucide call sites to compatibility aliases so product surfaces render from one visual system.
+- **DS-1 modal shell consistency**
+  - Migrated add/edit budget and add/edit wallet flows onto the shared bottom `Sheet` pattern with backdrop dismissal and local swipe-to-close behavior, and documented the current modal hierarchy in `src/components/ui/MODAL_STANDARD.md`.
 
 ### Added
 - **App Navigation Bridge** (`src/lib/app-actions.ts`)

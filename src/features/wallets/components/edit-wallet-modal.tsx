@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { CircleNotch, Trash, X } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useActions } from '@/providers/action-provider';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Switch } from '@/components/ui/switch';
@@ -77,28 +78,33 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
   const currentName = watch('name');
   const currentIsDefault = watch('isDefault');
   const hasChanges = currentName !== wallet.name || currentIsDefault !== !!wallet.isDefault;
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: onClose,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/80 flex items-end justify-center"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="flex w-full max-w-md flex-col rounded-t-card bg-background shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
-        onClick={(e) => e.stopPropagation()}
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="bottom"
+        hideCloseButton
+        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card bg-background p-0 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
+        {...swipeHandlers}
       >
-        <div className="sticky top-0 flex items-center justify-between rounded-t-card bg-background p-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+        <div className="pointer-events-none flex justify-center pt-3">
+          <div className="h-1.5 w-12 rounded-full bg-border/80" />
+        </div>
+        <SheetHeader className="sr-only">
+          <SheetTitle>Edit dompet</SheetTitle>
+          <SheetDescription>Perbarui nama dompet, status utama, atau lakukan koreksi saldo.</SheetDescription>
+        </SheetHeader>
+
+        <div className="sticky top-0 flex items-center justify-between bg-background px-4 pb-4 pt-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
           <h2 className="text-xl font-medium">Edit Dompet</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full"><X size={20} weight="regular" /></Button>
         </div>
-        <div className="p-4 space-y-6 overflow-y-auto max-h-[80vh]">
+        <div className="flex-1 space-y-6 overflow-y-auto p-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="wallet-name" className={cn(errors.name && "text-destructive")}>Nama Dompet</Label>
@@ -216,8 +222,8 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
             )}
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

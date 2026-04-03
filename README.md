@@ -73,6 +73,7 @@ Within the Phase 4 finance features (`transactions`, `budgets`, `wallets`, `insi
 | Deployment | Firebase App Hosting (`apphosting.yaml`) |
 
 UI icon imports now go through `src/lib/icons.ts`, which re-exports Phosphor as the single runtime icon library and keeps a small compatibility shim for legacy Lucide-style names during the migration.
+DS-1 also defines `src/components/ui/MODAL_STANDARD.md` as the current modal hierarchy: `Sheet` for mobile create/edit flows, `AlertDialog` for destructive confirmation, and `Dialog` for desktop-centered informational flows.
 
 ---
 

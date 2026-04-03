@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { Trash, X } from '@/lib/icons';
 import { useCategories } from '@/features/transactions';
 import { useBudgets } from '@/features/budgets';
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn, formatCurrency } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useUI } from '@/components/ui-provider';
@@ -83,18 +84,29 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
     targetAmount !== budget.targetAmount ||
     selectedSubCategory !== (budget.subCategory || null) ||
     JSON.stringify(selectedCategories) !== JSON.stringify(budget.categories);
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: onClose,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm" onClick={onClose}>
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-background/95 backdrop-blur-xl rounded-t-card-premium shadow-lg flex flex-col h-fit max-h-[90vh] border-none overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="bottom"
+        hideCloseButton
+        className="flex max-h-[90dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-background/95 p-0 shadow-lg backdrop-blur-xl"
+        {...swipeHandlers}
       >
-        <div className="p-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/10">
+        <div className="pointer-events-none flex justify-center pt-3">
+          <div className="h-1.5 w-12 rounded-full bg-border/80" />
+        </div>
+        <SheetHeader className="sr-only">
+          <SheetTitle>Edit anggaran</SheetTitle>
+          <SheetDescription>Sesuaikan nama, target, dan kategori anggaran.</SheetDescription>
+        </SheetHeader>
+
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/10 bg-background/80 p-6 backdrop-blur-md">
           <h2 className="text-xl font-semibold tracking-tighter">Adjust Budget</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full h-10 w-10">
             <X className="h-5 w-5" weight="regular" />
@@ -214,8 +226,8 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
           </AlertDialog>
         </div>
 
-      </motion.div>
-    </motion.div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

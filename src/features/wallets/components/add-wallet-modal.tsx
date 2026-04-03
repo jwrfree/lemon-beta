@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { ArrowLeft, Bank, CircleNotch, CurrencyCircleDollar, DeviceMobile, TrendUp, Wallet, X } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useActions } from '@/providers/action-provider';
 import { useUI } from '@/components/ui-provider';
 import { useForm, Controller } from 'react-hook-form';
@@ -94,24 +96,29 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   const direction = 1;
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: onClose,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/80 flex items-end justify-center"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="flex h-fit w-full max-w-md flex-col rounded-t-card-premium bg-background shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)] md:h-auto"
-        onClick={(e) => e.stopPropagation()}
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="bottom"
+        hideCloseButton
+        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-background p-0 shadow-[0_28px_70px_-36px_rgba(15,23,42,0.35)]"
+        {...swipeHandlers}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between bg-background p-6 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
+        <div className="pointer-events-none flex justify-center pt-3">
+          <div className="h-1.5 w-12 rounded-full bg-border/80" />
+        </div>
+        <SheetHeader className="sr-only">
+          <SheetTitle>Tambah dompet</SheetTitle>
+          <SheetDescription>Pilih jenis dompet lalu isi detailnya.</SheetDescription>
+        </SheetHeader>
+
+        <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-4 pt-4 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.2)]">
           <div className="w-11">
             {step === 2 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
@@ -129,7 +136,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
           </Button>
         </div>
 
-        <div className="relative overflow-hidden p-6 pt-0">
+        <div className="relative flex-1 overflow-y-auto px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">
           <AnimatePresence initial={false} custom={direction}>
             {step === 1 && (
               <motion.div
@@ -244,8 +251,8 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
-    </motion.div>
+      </SheetContent>
+    </Sheet>
   );
 };
 

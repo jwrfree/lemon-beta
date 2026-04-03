@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { ArrowLeft, Sparkle, TrendUp, X } from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { transactionService, useCategories } from '@/features/transactions';
@@ -9,6 +10,7 @@ import { transactionService, useCategories } from '@/features/transactions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useBudgets } from '@/features/budgets';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -165,18 +167,29 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   const [direction] = useState(1);
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: onClose,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center backdrop-blur-sm" onClick={onClose}>
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="w-full max-w-md bg-popover rounded-t-card-premium flex flex-col h-fit max-h-[85vh] shadow-lg border-none"
-        onClick={(e) => e.stopPropagation()}
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="bottom"
+        hideCloseButton
+        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-popover p-0 shadow-lg"
+        {...swipeHandlers}
       >
-        <div className="p-6 flex items-center justify-between sticky top-0 z-10">
+        <div className="pointer-events-none flex justify-center pt-3">
+          <div className="h-1.5 w-12 rounded-full bg-border/80" />
+        </div>
+        <SheetHeader className="sr-only">
+          <SheetTitle>Tambah anggaran</SheetTitle>
+          <SheetDescription>Buat anggaran baru dengan kategori dan target bulanan.</SheetDescription>
+        </SheetHeader>
+
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 pb-4 pt-4">
           <div className="w-11">
             {step > 1 && (
               <Button variant="ghost" size="icon" onClick={handleBack} className="rounded-full">
@@ -192,7 +205,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           </Button>
         </div>
 
-        <div className="flex-1 px-6 pb-6 relative overflow-y-auto">
+        <div className="relative flex-1 overflow-y-auto px-6 pb-6">
           <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
               key={step}
@@ -333,8 +346,8 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
           )}
         </div>
 
-      </motion.div>
-    </motion.div>
+      </SheetContent>
+    </Sheet>
   );
 };
 
