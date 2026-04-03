@@ -539,12 +539,9 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                             transition={{ duration: 0.2 }}
                                             className={cn('flex w-full mb-4', message.role === 'user' ? 'justify-end' : 'justify-start')}
                                         >
-                                            <div className={cn('flex gap-3 max-w-[85%]', message.role === 'user' ? 'flex-row-reverse' : 'flex-row')}>
-                                                <div className={cn('h-8 w-8 rounded-full shrink-0 flex items-center justify-center', message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card text-primary')}>
-                                                    {message.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-                                                </div>
+                                            <div className={cn('flex max-w-[90%]', message.role === 'user' ? 'flex-row-reverse' : 'flex-row')}>
                                                 <div className={cn('flex flex-col', message.role === 'user' ? 'items-end' : 'items-start')}>
-                                                    <div className={cn('p-3 rounded-2xl text-sm leading-relaxed', message.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-none' : 'bg-card text-foreground rounded-tl-none prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:font-bold prose-strong:text-foreground prose-a:text-primary dark:prose-invert')}>
+                                                    <div className={cn('px-4 py-3 rounded-2xl text-sm leading-relaxed', message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground prose prose-sm max-w-none prose-p:leading-relaxed prose-strong:font-bold prose-strong:text-foreground prose-a:text-primary dark:prose-invert')}>
                                                         {message.role === 'user' ? (
                                                             displayText
                                                         ) : isPending ? (
@@ -565,7 +562,7 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                                                                     key={`${action.type}:${action.target}:${JSON.stringify(action.params ?? {})}`}
                                                                     type="button"
                                                                     onClick={() => executeAppAction(action, { router, openTransactionSheet, setIsBudgetModalOpen, setIsWalletModalOpen, setIsGoalModalOpen, setIsReminderModalOpen, setIsDebtModalOpen, setIsTransferModalOpen, showToast })}
-                                                                    className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-primary transition-colors hover:border-primary/35 hover:bg-primary/5"
+                                                                    className="rounded-full border border-border/60 bg-card px-3 py-1.5 text-label-md font-semibold uppercase tracking-wide text-primary transition-colors hover:border-primary/35 hover:bg-primary/5"
                                                                 >
                                                                     {getAppActionLabel(action)}
                                                                 </button>
@@ -595,11 +592,8 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
                             </AnimatePresence>
                             {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
                                 <div className="flex justify-start">
-                                    <div className="flex gap-3 max-w-[85%]">
-                                        <div className="h-8 w-8 rounded-full shrink-0 flex items-center justify-center bg-card text-primary">
-                                            <Bot className="h-4 w-4" />
-                                        </div>
-                                        <div className="p-3 rounded-2xl bg-card rounded-tl-none text-foreground flex items-center gap-2 text-sm">
+                                    <div className="flex max-w-[90%]">
+                                        <div className="px-4 py-3 rounded-2xl bg-card text-foreground flex items-center gap-2 text-sm">
                                             <ShinyText text="Lemon Coach sedang berpikir..." />
                                         </div>
                                     </div>
@@ -689,4 +683,5 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
         </Sheet>
     );
 };
+
 
