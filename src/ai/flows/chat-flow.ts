@@ -101,8 +101,16 @@ export type ChatIntent =
     | { kind: 'memory' }
     | { kind: 'llm' };
 
-export function buildChatSystemPrompt(): string {
-    return CHAT_SYSTEM_PROMPT;
+export function buildChatSystemPrompt(memorySummary?: string | null): string {
+    if (!memorySummary?.trim()) {
+        return CHAT_SYSTEM_PROMPT;
+    }
+
+    return `${CHAT_SYSTEM_PROMPT}
+
+### MEMORI PERCAKAPAN
+Gunakan ringkasan berikut sebagai konteks percakapan lama. Jangan mengulang semuanya ke user kecuali relevan.
+${memorySummary.trim()}`;
 }
 
 export function extractTransactionSearchQuery(question: string): string | null {

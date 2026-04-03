@@ -2,9 +2,41 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
-## [Unreleased]
+## [Version 2.6.0] - 3 April 2026
+	
+### Added
+- **Batch Budget Creation**
+  - Added support for selecting multiple sub-categories when creating a budget.
+  - Automatically creates separate budget cards for each selected sub-category with the same target amount (Batch Creation).
+  - Added visual counters and naming hints (`{Name} – {Sub}`) to inform users of the batch process.
 
 ### Changed
+- **Premium Iconography Migration**
+  - Migrated the entire category icon system from `lucide-react` to `@phosphor-icons/react` for a more consistent and premium "Volt Fintech" aesthetic.
+  - Updated `category-utils.ts` and associated components to support Phosphor icon weights (`regular` and `duotone`).
+- **Refined Category Selection UI**
+  - Implemented semantic color mapping (`cat.color` and `cat.bg_color`) into the category selection grid.
+  - Added "Liquid" visual states: icons now transition from `regular` to `duotone` weight when selected for better tactile feel.
+  - Removed aggressive `uppercase` and `tracking-widest` styling from category labels and sub-category chips to improve readability.
+  - Optimized grid layout by removing hard borders in favor of background elevation and soft shadows.
+- **Smart Budget Insights**
+  - Updated recommendation logic to provide sub-category specific spend averages only when a single sub-category is selected.
+- **Standardized UI Geometry**
+  - Migrated `AlertDialog`, `Dialog`, and `Sheet` components to use `rounded-card-premium` semantic tokens.
+  - Added `backdrop-blur-sm` to modal overlays for a native glassmorphism effect.
+
+### Fixed
+- **Sub-category Pill Visibility**
+  - Fixed a CSS conflict where `text-label` utility was overriding `Button` variant colors, resolving the dark-on-dark text visibility bug in selected states.
+
+---
+
+## [Unreleased]
+
+
+### Changed
+- **Durable Lemon Coach memory**
+  - Added Supabase-backed `chat_sessions` persistence, server-side memory summaries, and synced clear-chat deletion so Lemon Coach can reload the latest conversation context across app restarts without sending the full raw history back to the model.
 - **Dead chat intent cleanup**
   - Removed the unused `data-entry` Lemon Coach intent after the orchestration refactor confirmed it had no reachable routing path, leaving the remaining intent branches as live planner states only.
 - **Server-enforced chat delete confirmation**

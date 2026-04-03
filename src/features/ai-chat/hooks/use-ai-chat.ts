@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { useUI } from '@/components/ui-provider';
 import { useAuth as useUser } from '@/providers/auth-provider';
@@ -49,13 +49,20 @@ export const useAIChat = () => {
     }, [user]);
 
     const [input, setInput] = useState('');
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [isHydratingSession, setIsHydratingSession] = useState(true);
+
+    const getStorageKey = useCallback((userId: string) => `lemon-coach-session-id:${userId}`, []);
+
+    const createSessionId = useCallback(() => crypto.randomUUID(), []);
 
     const transport = useMemo(
         () =>
             new DefaultChatTransport({
                 api: '/api/chat',
+                body: sessionId ? { sessionId } : {},
             }),
-        []
+        [sessionId]
     );
 
     const {
@@ -79,13 +86,64 @@ export const useAIChat = () => {
     const isLoading = status === 'streaming' || status === 'submitted';
     const errorMessage = error ? formatChatErrorMessage(error) : undefined;
 
+    useEffect(() => {
+        let isCancelled = false;
+
+        const hydrateSession = async () => {
+            if (!user) {
+                setSessionId(null);
+                setMessages([welcomeMessage]);
+                setIsHydratingSession(false);
+                return;
+            }
+
+            setIsHydratingSession(true);
+
+            const storageKey = getStorageKey(user.id);
+            const storedSessionId = window.localStorage.getItem(storageKey) || createSessionId();
+            window.localStorage.setItem(storageKey, storedSessionId);
+            setSessionId(storedSessionId);
+
+            try {
+                const response = await fetch(`/api/chat/session?sessionId=${storedSessionId}`);
+                if (!response.ok) {
+                    throw new Error('Gagal memuat sesi Lemon Coach.');
+                }
+
+                const payload = await response.json() as { messages?: UIMessage[] };
+                if (isCancelled) return;
+
+                if (Array.isArray(payload.messages) && payload.messages.length > 0) {
+                    setMessages(payload.messages);
+                } else {
+                    setMessages([welcomeMessage]);
+                }
+            } catch (sessionError) {
+                console.error('Failed to hydrate chat session:', sessionError);
+                if (!isCancelled) {
+                    setMessages([welcomeMessage]);
+                }
+            } finally {
+                if (!isCancelled) {
+                    setIsHydratingSession(false);
+                }
+            }
+        };
+
+        void hydrateSession();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [createSessionId, getStorageKey, setMessages, user, welcomeMessage]);
+
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
     }, []);
 
     const handleSubmit = useCallback(async (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!input.trim() || isLoading) return;
+        if (!input.trim() || isLoading || isHydratingSession) return;
 
         const content = input;
         setInput('');
@@ -96,28 +154,47 @@ export const useAIChat = () => {
         } catch (err) {
             console.error('Failed to send message:', err);
         }
-    }, [clearError, input, isLoading, sendMessage]);
+    }, [clearError, input, isHydratingSession, isLoading, sendMessage]);
 
     const openChat = useCallback(() => setIsOpen(true), [setIsOpen]);
     const closeChat = useCallback(() => setIsOpen(false), [setIsOpen]);
     const toggleChat = useCallback(() => setIsOpen(!isOpen), [isOpen, setIsOpen]);
 
     const clearChat = useCallback(() => {
-        stop();
-        clearError();
-        setInput('');
-        setMessages([welcomeMessage]);
-    }, [clearError, setMessages, stop, welcomeMessage]);
+        const resetChat = async () => {
+            stop();
+            clearError();
+            setInput('');
+
+            if (user && sessionId) {
+                try {
+                    await fetch(`/api/chat/session?sessionId=${sessionId}`, {
+                        method: 'DELETE',
+                    });
+                } catch (sessionError) {
+                    console.error('Failed to clear chat session:', sessionError);
+                }
+
+                const nextSessionId = createSessionId();
+                window.localStorage.setItem(getStorageKey(user.id), nextSessionId);
+                setSessionId(nextSessionId);
+            }
+
+            setMessages([welcomeMessage]);
+        };
+
+        void resetChat();
+    }, [clearError, createSessionId, getStorageKey, sessionId, setMessages, stop, user, welcomeMessage]);
 
     const submitQuickAction = useCallback(async (value: string) => {
-        if (isLoading) return;
+        if (isLoading || isHydratingSession) return;
         try {
             clearError();
             await sendMessage({ text: value });
         } catch (err) {
             console.error('Failed to send quick action:', err);
         }
-    }, [clearError, isLoading, sendMessage]);
+    }, [clearError, isHydratingSession, isLoading, sendMessage]);
 
     return {
         messages,
@@ -137,5 +214,6 @@ export const useAIChat = () => {
         clearChat,
         setIsOpen,
         setInput,
+        isHydratingSession,
     };
 };

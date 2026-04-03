@@ -18,31 +18,35 @@ type ExecuteChatPlannerParams = {
   userId: string;
   supabase: ChatPlannerClient;
   messages: UIMessage[];
+  memorySummary?: string | null;
+  sessionId?: string | null;
 };
 
 export const executeChatPlanner = async ({
   userId,
   supabase,
   messages,
+  memorySummary,
+  sessionId,
 }: ExecuteChatPlannerParams) => {
   const lastUserMessage = getLastUserMessageText(messages);
 
   if (typeof lastUserMessage !== "string") {
-    return handleLlmChatAction({ userId, supabase, messages });
+    return handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
   }
 
   const decision = routeChatIntent(lastUserMessage);
 
   switch (decision.kind) {
     case "static-reply":
-      return handleStaticReplyAction({ messages, reply: decision.reply });
+      return handleStaticReplyAction({ userId, supabase, messages, reply: decision.reply, sessionId });
     case "transaction-search":
-      return handleTransactionSearchAction({ userId, supabase, messages, intent: decision.intent });
+      return handleTransactionSearchAction({ userId, supabase, messages, intent: decision.intent, sessionId });
     case "transaction-add":
-      return handleAddTransactionAction({ userId, supabase, messages, rawText: lastUserMessage });
+      return handleAddTransactionAction({ userId, supabase, messages, rawText: lastUserMessage, sessionId });
     case "recent-transactions": {
-      const response = await handleRecentTransactionsAction({ userId, supabase, messages });
-      return response ?? handleLlmChatAction({ userId, supabase, messages });
+      const response = await handleRecentTransactionsAction({ userId, supabase, messages, sessionId });
+      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
     }
     case "deterministic-context": {
       const response = await handleDeterministicContextAction({
@@ -51,11 +55,12 @@ export const executeChatPlanner = async ({
         messages,
         question: lastUserMessage,
         intent: decision.intent,
+        sessionId,
       });
-      return response ?? handleLlmChatAction({ userId, supabase, messages });
+      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
     }
     case "llm":
     default:
-      return handleLlmChatAction({ userId, supabase, messages });
+      return handleLlmChatAction({ userId, supabase, messages, memorySummary, sessionId });
   }
 };

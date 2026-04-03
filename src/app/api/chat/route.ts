@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { type UIMessage } from "ai";
 import { config } from "@/lib/config";
 import { executeChatPlanner } from "@/ai/planner";
+import { getChatSession } from "@/lib/services/chat-session-service";
 
 export const maxDuration = 30;
 
@@ -36,7 +37,13 @@ const consumeRateLimit = async (
 
 export async function POST(req: Request) {
   try {
-    const { messages }: { messages: UIMessage[] } = await req.json();
+    const {
+      messages,
+      sessionId,
+    }: {
+      messages: UIMessage[];
+      sessionId?: string;
+    } = await req.json();
     if (!messages || !Array.isArray(messages)) {
       return Response.json({ error: "Payload chat tidak valid." }, { status: 400 });
     }
@@ -63,10 +70,16 @@ export async function POST(req: Request) {
       );
     }
 
+    const chatSession = sessionId
+      ? await getChatSession(supabase, user.id, sessionId)
+      : null;
+
     return executeChatPlanner({
       userId: user.id,
       supabase,
       messages,
+      memorySummary: chatSession?.memory_summary ?? null,
+      sessionId: sessionId ?? null,
     });
   } catch (error: unknown) {
     console.error("[AI Chat] Request failed:", error);

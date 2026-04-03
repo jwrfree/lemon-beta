@@ -1,8 +1,12 @@
 import type { UIMessage } from "ai";
 
-import { createTextMessageResponse } from "@/ai/actions/message-response";
+import {
+  createAssistantTextMessage,
+  createTextMessageResponse,
+} from "@/ai/actions/message-response";
 import type { ChatIntent } from "@/ai/flows/chat-flow";
 import { createTransactionMutationActions } from "@/ai/tools";
+import { persistChatSession } from "@/lib/services/chat-session-service";
 import { financialContextService } from "@/lib/services/financial-context-service";
 import { formatCurrency } from "@/lib/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -14,6 +18,7 @@ type HandleTransactionSearchActionParams = {
   supabase: TransactionActionClient;
   messages: UIMessage[];
   intent: Extract<ChatIntent, { kind: "transaction-search" }>;
+  sessionId?: string | null;
 };
 
 export const handleTransactionSearchAction = async ({
@@ -21,6 +26,7 @@ export const handleTransactionSearchAction = async ({
   supabase,
   messages,
   intent,
+  sessionId,
 }: HandleTransactionSearchActionParams) => {
   const matchedTransaction = await financialContextService.findLatestTransactionByQuery(
     userId,
@@ -32,7 +38,13 @@ export const handleTransactionSearchAction = async ({
     ? `Terakhir ada transaksi yang cocok dengan **${intent.query}** pada **${new Date(matchedTransaction.date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}**, yaitu **${matchedTransaction.description}** sebesar **${formatCurrency(matchedTransaction.amount)}**.${matchedTransaction.merchant ? ` Merchant-nya **${matchedTransaction.merchant}**.` : ""}`
     : `Saya belum menemukan transaksi yang cocok dengan **${intent.query}** di data kamu. Kalau nama merchant atau deskripsinya sedikit beda, coba sebut kata kunci lain ya.`;
 
-  return createTextMessageResponse(messages, specificReply);
+  const assistantMessage = createAssistantTextMessage(specificReply);
+
+  if (sessionId) {
+    await persistChatSession(supabase, userId, sessionId, [...messages, assistantMessage]);
+  }
+
+  return createTextMessageResponse(messages, specificReply, assistantMessage.id);
 };
 
 type HandleAddTransactionActionParams = {
@@ -40,6 +52,7 @@ type HandleAddTransactionActionParams = {
   supabase: TransactionActionClient;
   messages: UIMessage[];
   rawText: string;
+  sessionId?: string | null;
 };
 
 export const handleAddTransactionAction = async ({
@@ -47,23 +60,32 @@ export const handleAddTransactionAction = async ({
   supabase,
   messages,
   rawText,
+  sessionId,
 }: HandleAddTransactionActionParams) => {
   const transactionMutations = createTransactionMutationActions(userId, supabase);
   const result = await transactionMutations.addTransaction(rawText);
 
-  return createTextMessageResponse(messages, result.reply);
+  const assistantMessage = createAssistantTextMessage(result.reply);
+
+  if (sessionId) {
+    await persistChatSession(supabase, userId, sessionId, [...messages, assistantMessage]);
+  }
+
+  return createTextMessageResponse(messages, result.reply, assistantMessage.id);
 };
 
 type HandleRecentTransactionsActionParams = {
   userId: string;
   supabase: TransactionActionClient;
   messages: UIMessage[];
+  sessionId?: string | null;
 };
 
 export const handleRecentTransactionsAction = async ({
   userId,
   supabase,
   messages,
+  sessionId,
 }: HandleRecentTransactionsActionParams): Promise<Response | null> => {
   const recentTransactions = await financialContextService.getRecentTransactions(userId, supabase, 3);
 
@@ -83,5 +105,11 @@ export const handleRecentTransactionsAction = async ({
     }),
   ].join("\n");
 
-  return createTextMessageResponse(messages, recentReply);
+  const assistantMessage = createAssistantTextMessage(recentReply);
+
+  if (sessionId) {
+    await persistChatSession(supabase, userId, sessionId, [...messages, assistantMessage]);
+  }
+
+  return createTextMessageResponse(messages, recentReply, assistantMessage.id);
 };

@@ -4,8 +4,25 @@ import {
   type UIMessage,
 } from "ai";
 
-export const createTextMessageResponse = (messages: UIMessage[], text: string) => {
-  const textId = crypto.randomUUID();
+export const createAssistantTextMessage = (
+  text: string,
+  textId = crypto.randomUUID(),
+): UIMessage => ({
+  id: textId,
+  role: "assistant",
+  parts: [
+    {
+      type: "text",
+      text,
+    },
+  ],
+});
+
+export const createTextMessageResponse = (
+  messages: UIMessage[],
+  text: string,
+  textId = crypto.randomUUID(),
+) => {
 
   return createUIMessageStreamResponse({
     stream: createUIMessageStream({

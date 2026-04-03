@@ -29,6 +29,7 @@ AI pipeline
 Lemon Coach chat orchestration now runs through a thin `/api/chat` route into `src/ai/router.ts`, `src/ai/planner.ts`, and action handlers in `src/ai/actions/`, so auth/rate limiting stay at the edge while routing and execution logic live in dedicated modules.
 Chat-side transaction mutations also share the same internal tool/action layer in `src/ai/tools.ts` and the RPC-backed transaction service, so add, update, and delete no longer use separate mutation paths.
 Delete requests now require a staged server-side confirmation before the RPC-backed delete path can run, so destructive chat actions are guarded in code instead of relying on prompt instructions alone.
+Lemon Coach sessions now persist in `public.chat_sessions` with `session_id`, `user_id`, `messages`, `memory_summary`, `created_at`, and `updated_at`. The client reloads the latest stored turns when chat opens, older turns are compacted into `memory_summary`, and the clear-chat button deletes the persisted session before starting a fresh one.
 
 **Optimistic updates:** balance totals are written to local state immediately on transaction save; Supabase confirms in the background. No Realtime subscription is needed for the happy path.
 

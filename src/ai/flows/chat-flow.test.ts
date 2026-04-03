@@ -66,4 +66,11 @@ describe('buildChatSystemPrompt', () => {
 
         expect(occurrences).toHaveLength(1);
     });
+
+    it('injects persisted memory summary into the chat prompt when provided', () => {
+        const prompt = buildChatSystemPrompt('User sering menanyakan budget makan.');
+
+        expect(prompt).toContain('MEMORI PERCAKAPAN');
+        expect(prompt).toContain('User sering menanyakan budget makan.');
+    });
 });
