@@ -31,7 +31,39 @@ All updates and improvements to the Lemon app will be documented here.
 
 ---
 
-## [Unreleased]
+## [Unreleased] - Phase 3 In Progress
+
+### Added
+- **App Navigation Bridge** (`src/lib/app-actions.ts`)
+  - Introduced a typed `APP_TARGETS` registry with 20+ named targets covering highlight, navigate, state, param, and ui-action types.
+  - `executeAppAction` in `ai-chat-drawer.tsx` now resolves `APP_TARGETS` keys first, then falls back to the legacy type-based dispatch for backward compatibility.
+  - AI chat action chips now render with Indonesian-friendly labels mapped from `FRIENDLY_LABELS`.
+
+- **Widget ID Anchors for Bridge Navigation**
+  - Added stable `id` attributes to all 7 dashboard widgets: `widget-financial-pulse`, `widget-recent-transactions`, `widget-budget-status`, `widget-risk-score`, `widget-net-worth`, `widget-goals`, `widget-alerts`.
+  - Widgets can now be targeted by Lemon Coach for smooth scroll + highlight.
+
+- **Dashboard Chat Bridge Event Listeners** (`desktop-dashboard.tsx`)
+  - Listening to `lemon:set-analyst-view` CustomEvent to toggle analyst view from chat.
+  - Listening to `lemon:set-wallet-filter` CustomEvent to filter dashboard by wallet from chat.
+
+- **Widget Highlight CSS** (`globals.css`)
+  - Added `.lemon-highlight` class with a pulsing outline animation triggered when the AI highlights a dashboard widget.
+
+- **Supabase: `chat_sessions` table**
+  - Applied migration for durable conversation memory.
+  - Table includes RLS policy (`Users own their sessions`) and `updated_at` index for efficient lookup.
+
+- **Typed Chat Response Contract** (`src/ai/chat-contract.ts`)
+  - Defined `ChatResponse`, `RichComponent`, `AppActionPayload` types for structured LLM responses.
+  - Kept `AppActionSchema` backward-compatible with legacy `type` field (optional) while supporting new `APP_TARGETS` keys.
+
+### Fixed
+- **`debtSummary` hardcoded `undefined`** — now computed from live `useDebts` data.
+- **`reminderSummary.overdueCount` incorrect** — now correctly counts reminders past their due date using `isAfter()`.
+- **`lastRefreshed` fixture date** — replaced static `2026-03-28` with `new Date()` for runtime accuracy.
+- **Budget `spent` not filtering by `subCategory`** — fixed filter logic to account for budget sub-category specificity.
+- **`risk-score-card.tsx` structural corruption** — fully rewritten to restore component integrity after a fragmented partial edit.
 
 
 ### Changed
