@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -200,7 +200,9 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                         />
                     )}
                     
-                    <UniversalAddSheet key="universal-add-sheet" />
+                    <Suspense fallback={null}>
+                        <UniversalAddSheet key="universal-add-sheet" />
+                    </Suspense>
                     <CommandPalette key="command-palette" />
 
                     <AIChatDrawer 
