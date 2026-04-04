@@ -304,12 +304,14 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
           const status = b.percent > 100 ? 'overbudget' : b.percent > 80 ? 'critical' : 'safe';
 
           return {
-            ...b,
+            name: b.name,
+            spent: b.spent,
+            limit: b.limit,
+            percent: b.percent,
             status,
-            projected_days_until_limit: projectedDaysLeft,
             is_trending_over: (dayOfMonth + projectedDaysLeft) < daysInMonth
           };
-        });
+        }).sort((a, b) => b.percent - a.percent).slice(0, 5);
       },
     }),
 
@@ -369,7 +371,14 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         limit: z.number().int().min(1).max(5).optional(),
       }),
       execute: async ({ query, limit }) => {
-        return financialContextService.findTransactionsByQuery(userId, query, supabase, limit ?? 3);
+        const results = await financialContextService.findTransactionsByQuery(userId, query, supabase, limit ?? 3);
+        return results.map(r => ({
+          id: r.id,
+          description: r.description,
+          category: r.category,
+          amount: r.amount,
+          date: r.date
+        }));
       },
     }),
 
@@ -379,7 +388,14 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         limit: z.number().int().min(1).max(5).optional(),
       }),
       execute: async ({ limit }) => {
-        return financialContextService.getRecentTransactions(userId, supabase, limit ?? 3);
+        const results = await financialContextService.getRecentTransactions(userId, supabase, limit ?? 3);
+        return results.map(r => ({
+          id: r.id,
+          description: r.description,
+          category: r.category,
+          amount: r.amount,
+          date: r.date
+        }));
       },
     }),
 

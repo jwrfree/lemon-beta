@@ -160,20 +160,27 @@ export function buildChatSystemPrompt(options?: string | BuildChatSystemPromptOp
 
     if (normalizedOptions.memorySummary?.trim()) {
         sections.push(`### MEMORI PERCAKAPAN
-Gunakan ringkasan berikut sebagai konteks percakapan lama. Jangan mengulang semuanya ke user kecuali relevan.
 ${normalizedOptions.memorySummary.trim()}`);
     }
 
-    if (normalizedOptions.userProfile && (normalizedOptions.userProfile.coaching_notes || normalizedOptions.userProfile.spending_patterns)) {
-        sections.push(`## User Financial Profile
-Spending patterns: ${JSON.stringify(normalizedOptions.userProfile.spending_patterns ?? {}, null, 0)}
-Coaching notes: ${normalizedOptions.userProfile.coaching_notes ?? ''}`);
+    // Only include user profile if it has actual data
+    const userProfile = normalizedOptions.userProfile;
+    if (userProfile && (userProfile.coaching_notes || userProfile.spending_patterns)) {
+        const profileLines = [];
+        if (userProfile.coaching_notes) profileLines.push(`Coaching: ${userProfile.coaching_notes}`);
+        
+        // Only stringify spending patterns if they exist and aren't too large
+        if (userProfile.spending_patterns && Object.keys(userProfile.spending_patterns).length > 0) {
+            profileLines.push(`Patterns: ${JSON.stringify(userProfile.spending_patterns)}`);
+        }
+        
+        if (profileLines.length > 0) {
+            sections.push(`## PROFILE\n${profileLines.join('\n')}`);
+        }
     }
 
     if (normalizedOptions.supplementalContext && Object.keys(normalizedOptions.supplementalContext).length > 0) {
-        sections.push(`## SERVER-PREPARED CONTEXT
-Gunakan konteks siap pakai berikut sebagai data pendukung yang sudah dirangkai server. Jangan sebut nama tool internal ke user.
-${JSON.stringify(normalizedOptions.supplementalContext, null, 2)}`);
+        sections.push(`## CONTEXT\n${JSON.stringify(normalizedOptions.supplementalContext)}`);
     }
 
     return sections.join('\n\n');

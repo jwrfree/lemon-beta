@@ -198,6 +198,8 @@ const monthRange = () => {
     };
 };
 
+export type ContextModule = 'wealth' | 'budgets' | 'goals' | 'monthly' | 'previous_month' | 'patterns' | 'recent' | 'risk';
+
 const previousMonthRange = () => {
     const start = getPreviousMonthStartDate();
     const end = new Date(start);
@@ -321,7 +323,7 @@ class FinancialContextService {
     }
 
     private logContextResolution(
-        path: 'rpc' | 'fallback',
+        path: 'rpc' | 'fallback' | 'partial',
         startedAt: number,
         error?: RpcErrorLike | Error | null,
     ) {
@@ -572,9 +574,15 @@ class FinancialContextService {
         };
     }
 
-    private async getFallbackContext(userId: string, supabase: ContextClient): Promise<UnifiedFinancialContext | null> {
+    private async getFallbackContext(
+        userId: string, 
+        supabase: ContextClient,
+        modules: ContextModule[] = ['wealth', 'budgets', 'goals', 'monthly', 'previous_month', 'patterns', 'recent', 'risk']
+    ): Promise<UnifiedFinancialContext | null> {
         const { start: currentStart, end: currentEnd, monthDate: currentMonthDate } = monthRange();
         const { start: prevStart, end: prevEnd, monthDate: prevMonthDate } = previousMonthRange();
+
+        const needs = (m: ContextModule) => modules.includes(m);
 
         const [
             walletsResult,
@@ -587,39 +595,39 @@ class FinancialContextService {
             monthlyTransactionsResult,
             prevSummaryResult,
             prevTransactionsResult,
-            riskFromRpc,
+            riskContext,
         ] = await Promise.all([
-            supabase.from('wallets').select('balance').eq('user_id', userId),
-            supabase.from('assets').select('value').eq('user_id', userId),
-            supabase.from('liabilities').select('value').eq('user_id', userId),
-            supabase.from('debts').select('outstanding_balance,direction').eq('user_id', userId).eq('direction', 'owed'),
-            supabase.from('budgets').select('name,amount,spent,category').eq('user_id', userId),
-            supabase.from('goals').select('name,target_amount,current_amount').eq('user_id', userId),
-            supabase
+            needs('wealth') ? supabase.from('wallets').select('balance').eq('user_id', userId) : Promise.resolve({ data: null, error: null }),
+            needs('wealth') ? supabase.from('assets').select('value').eq('user_id', userId) : Promise.resolve({ data: null, error: null }),
+            needs('wealth') ? supabase.from('liabilities').select('value').eq('user_id', userId) : Promise.resolve({ data: null, error: null }),
+            needs('wealth') ? supabase.from('debts').select('outstanding_balance,direction').eq('user_id', userId).eq('direction', 'owed') : Promise.resolve({ data: null, error: null }),
+            needs('budgets') ? supabase.from('budgets').select('name,amount,spent,category').eq('user_id', userId) : Promise.resolve({ data: null, error: null }),
+            needs('goals') ? supabase.from('goals').select('name,target_amount,current_amount').eq('user_id', userId) : Promise.resolve({ data: null, error: null }),
+            needs('monthly') || needs('patterns') || needs('risk') ? supabase
                 .from('monthly_summaries')
                 .select('total_income,total_expense,net_cashflow,velocity_score')
                 .eq('user_id', userId)
                 .eq('month_date', currentMonthDate)
-                .maybeSingle(),
-            supabase
+                .maybeSingle() : Promise.resolve({ data: null, error: null }),
+            needs('monthly') || needs('patterns') || needs('recent') ? supabase
                 .from('transactions')
                 .select('amount,category,type,description,date')
                 .eq('user_id', userId)
                 .gte('date', currentStart)
-                .lt('date', currentEnd),
-            supabase
+                .lt('date', currentEnd) : Promise.resolve({ data: null, error: null }),
+            needs('previous_month') ? supabase
                 .from('monthly_summaries')
                 .select('total_income,total_expense,net_cashflow')
                 .eq('user_id', userId)
                 .eq('month_date', prevMonthDate)
-                .maybeSingle(),
-            supabase
+                .maybeSingle() : Promise.resolve({ data: null, error: null }),
+            needs('previous_month') ? supabase
                 .from('transactions')
                 .select('amount,type,date,category')
                 .eq('user_id', userId)
                 .gte('date', prevStart)
-                .lt('date', prevEnd),
-            this.getRiskContext(userId, supabase),
+                .lt('date', prevEnd) : Promise.resolve({ data: null, error: null }),
+            needs('risk') ? this.getRiskContext(userId, supabase) : Promise.resolve(null),
         ]);
 
         const queryErrors = [
@@ -761,7 +769,7 @@ class FinancialContextService {
                 current: toNumber(goal.current_amount),
                 percent: toNumber(goal.target_amount) > 0 ? (toNumber(goal.current_amount) / toNumber(goal.target_amount)) * 100 : 0,
             })),
-            risk: riskFromRpc ?? this.buildFallbackRisk(monthly, cash),
+            risk: riskContext ?? this.buildFallbackRisk(monthly, cash),
             monthly,
             top_categories: topCategories,
             largest_expense: largestExpense
@@ -798,26 +806,30 @@ class FinancialContextService {
 
     async getUnifiedContext(
         userId: string,
-        client?: ContextClient
+        client?: ContextClient,
+        modules?: ContextModule[]
     ): Promise<UnifiedFinancialContext | null> {
         const supabase = client ?? createClient();
         const startedAt = Date.now();
 
-        const { data, error } = await supabase.rpc('get_unified_context', {
-            p_user_id: userId,
-        });
+        // If specific modules are requested, skip RPC (as it always returns everything)
+        if (!modules || modules.length === 0) {
+            const { data, error } = await supabase.rpc('get_unified_context', {
+                p_user_id: userId,
+            });
 
-        if (!error && data) {
-            this.logContextResolution('rpc', startedAt);
-            return normalizeContext(data as Partial<UnifiedFinancialContext>);
+            if (!error && data) {
+                this.logContextResolution('rpc', startedAt);
+                return normalizeContext(data as Partial<UnifiedFinancialContext>);
+            }
+
+            if (error) {
+                this.logRpcError(error);
+            }
         }
 
-        if (error) {
-            this.logRpcError(error);
-        }
-
-        const fallbackContext = await this.getFallbackContext(userId, supabase);
-        this.logContextResolution('fallback', startedAt, error ?? null);
+        const fallbackContext = await this.getFallbackContext(userId, supabase, modules);
+        this.logContextResolution(modules ? 'partial' : 'fallback', startedAt, null);
         return fallbackContext;
     }
 }

@@ -42,41 +42,31 @@ export interface BriefingInput {
     };
 }
 
-const generateSystemPrompt = (input: BriefingInput) => {
-    const { totalBalance, monthlyIncome, monthlyExpense, wallets, budgets, reminders, debts } = input;
-
-    let prompt = `Kamu adalah Lemon Coach, asisten keuangan yang cerdas dan suportif.
+const generateSystemPrompt = () => {
+    return `Kamu adalah Lemon Coach, asisten keuangan yang cerdas dan suportif.
 Tugasmu: Berikan ringkasan kondisi keuangan harian yang sangat singkat, padat, dan actionable (maksimal 180 token).
 
-KONTEKS USER:
-- Saldo Total: ${totalBalance}
-- Income Bulan Ini: ${monthlyIncome}
-- Expense Bulan Ini: ${monthlyExpense}
-- Dompet: ${wallets.map(w => `${w.name}: ${w.balance}`).join(', ')}
-- Budget Kritis: ${budgets.filter(b => b.remaining < 0).map(b => `${b.name} (Over budget ${Math.abs(b.remaining)})`).join(', ') || 'Semua aman'}
-- Pengingat: ${reminders.map(r => `${r.title} (${r.dueDate})`).join(', ') || 'Tidak ada tagihan mendesak'}`;
-
-    if (debts) {
-        prompt += `\n- Hutang Total: ${debts.totalOwed}
-- Piutang Total: ${debts.totalOwing}`;
-        if (debts.nextDue) {
-            const type = debts.nextDue.direction === 'owed' ? 'Bayar Hutang' : 'Tagih Piutang';
-            prompt += `\n- Item Jatuh Tempo Terdekat: ${type} ${debts.nextDue.title} (${debts.nextDue.dueDate})`;
-        }
-    }
-
-    prompt += `\n\nINSTRUKSI:
+INSTRUKSI:
 1. Sapa user secara personal.
 2. Highlight hal paling krusial (misal: saldo tipis, budget jebol, atau hutang jatuh tempo).
 3. Berikan 1 saran tindakan nyata untuk hari ini.
 4. Gunakan bahasa Indonesia yang santai tapi profesional (Gue/Elo tidak diizinkan, gunakan Saya/Anda atau Kamu).
 5. JANGAN menulis teks panjang lebar.`;
-
-    return prompt;
 };
 
 export async function generateDailyBriefing(input: BriefingInput): Promise<BriefingOutput> {
-  const systemPrompt = generateSystemPrompt(input);
+  const systemPrompt = generateSystemPrompt();
+
+  let debtContext = '';
+  if (input.debts) {
+    debtContext = `
+- Hutang Total: ${input.debts.totalOwed}
+- Piutang Total: ${input.debts.totalOwing}`;
+    if (input.debts.nextDue) {
+      const type = input.debts.nextDue.direction === 'owed' ? 'Bayar Hutang' : 'Tagih Piutang';
+      debtContext += `\n- Item Jatuh Tempo Terdekat: ${type} ${input.debts.nextDue.title} (${input.debts.nextDue.dueDate})`;
+    }
+  }
 
   const userPrompt = `### KONTEKS DATA USER:
 - Nama: ${input.userName}
@@ -84,8 +74,8 @@ export async function generateDailyBriefing(input: BriefingInput): Promise<Brief
 - Inflow Bulan Ini: ${input.monthlyIncome}
 - Outflow Bulan Ini: ${input.monthlyExpense}
 - Dompet: ${input.wallets.map(w => `${w.name} (${w.balance})`).join(', ')}
-- Budget Kritis: ${input.budgets.filter(b => b.remaining < b.limit * 0.2).map(b => `${b.name} (Sisa ${b.remaining})`).join(', ')}
-- Tagihan Mendatang: ${input.reminders.map(r => `${r.title} pada ${r.dueDate}`).join(', ')}
+- Budget Kritis: ${input.budgets.filter(b => b.remaining < b.limit * 0.2).map(b => `${b.name} (Sisa ${b.remaining})`).join(', ') || 'Semua aman'}${debtContext}
+- Tagihan Mendatang: ${input.reminders.map(r => `${r.title} pada ${r.dueDate}`).join(', ') || 'Tidak ada'}
 
 ### INSTRUKSI KHUSUS:
 Berikan briefing yang paling relevan dengan kondisi data di atas.`;

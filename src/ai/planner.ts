@@ -50,7 +50,7 @@ const isGoalQuestion = (question: string) => {
 };
 
 const loadBudgetSupportContext = async (userId: string, supabase: ChatPlannerClient) => {
-  const context = await financialContextService.getUnifiedContext(userId, supabase);
+  const context = await financialContextService.getUnifiedContext(userId, supabase, ['budgets', 'risk', 'goals', 'monthly']);
   if (!context) {
     return null;
   }
@@ -66,7 +66,7 @@ const loadBudgetSupportContext = async (userId: string, supabase: ChatPlannerCli
 };
 
 const loadGoalSupportContext = async (userId: string, supabase: ChatPlannerClient) => {
-  const context = await financialContextService.getUnifiedContext(userId, supabase);
+  const context = await financialContextService.getUnifiedContext(userId, supabase, ['goals', 'budgets', 'risk', 'monthly']);
   if (!context) {
     return null;
   }
@@ -109,7 +109,6 @@ export const executeChatPlanner = async ({
       return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
     }
     case "llm-anomaly": {
-      const anomalies = await financialContextService.getSpendingAnomalies(userId, supabase);
       return handleLlmChatAction({
         userId,
         supabase,
@@ -118,8 +117,8 @@ export const executeChatPlanner = async ({
         userProfile,
         supplementalContext: {
           anomaly_review: {
-            anomalies,
-            instruction: "Fokuskan jawaban pada anomali, level severity, angka referensi, dan tindak lanjut yang bisa dilakukan hari ini.",
+            anomalies: await financialContextService.getSpendingAnomalies(userId, supabase),
+            instruction: "Fokuskan pada anomali, severity, dan tindak lanjut konkret hari ini.",
           },
         },
         sessionId,
@@ -127,16 +126,15 @@ export const executeChatPlanner = async ({
     }
     case "deterministic-context": {
       if (decision.intent.kind === "budget-risk") {
-        const budgetReview = await loadBudgetSupportContext(userId, supabase);
         return handleLlmChatAction({
           userId,
           supabase,
           messages,
           memorySummary,
           userProfile,
-          supplementalContext: budgetReview
-            ? { budget_review: budgetReview }
-            : undefined,
+          supplementalContext: { 
+            budget_review: await loadBudgetSupportContext(userId, supabase) 
+          },
           sessionId,
         });
       }
@@ -154,16 +152,15 @@ export const executeChatPlanner = async ({
     case "llm":
     default:
       if (isGoalQuestion(lastUserMessage)) {
-        const goalReview = await loadGoalSupportContext(userId, supabase);
         return handleLlmChatAction({
           userId,
           supabase,
           messages,
           memorySummary,
           userProfile,
-          supplementalContext: goalReview
-            ? { goal_review: goalReview }
-            : undefined,
+          supplementalContext: { 
+            goal_review: await loadGoalSupportContext(userId, supabase) 
+          },
           sessionId,
         });
       }

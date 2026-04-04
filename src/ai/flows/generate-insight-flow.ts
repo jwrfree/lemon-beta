@@ -57,18 +57,16 @@ ${FINANCIAL_FRAMEWORK}
     }
 
     const userPrompt = `### DATA KEUANGAN TERPADU (UFC):
-- Saldo Sekarang: ${data.wealth.cash}
-- Kekayaan Bersih: ${data.wealth.net_worth} (Aset: ${data.wealth.assets}, Hutang: ${data.wealth.liabilities})
-- Pemasukan (Bulan ini): ${data.monthly.income}
-- Pengeluaran (Bulan ini): ${data.monthly.expense}
-- Status Risiko: ${data.risk.level} (Score: ${data.risk.score})
-- Top Pengeluaran: ${data.top_categories.map(c => `${c.category} (${c.amount})`).join(', ')}
-- Budget Kritis: ${data.budgets.filter(b => b.percent > 80).map(b => `${b.name} (${b.percent}%)`).join(', ') || 'Semua aman'}
-- Progres Impian: ${data.goals.map(g => `${g.name} (${g.percent.toFixed(1)}%)`).join(', ')}
+- Saldo: ${data.wealth.cash} | Net Worth: ${data.wealth.net_worth}
+- Inflow: ${data.monthly.income} | Outflow: ${data.monthly.expense}
+- Risk: ${data.risk.level} (${data.risk.score})
+- Top Categories: ${data.top_categories.slice(0, 3).map(c => `${c.category} (${c.amount})`).join(', ')}
+- Budget Critical: ${data.budgets.filter(b => b.percent > 85).slice(0, 2).map(b => `${b.name} (${b.percent}%)`).join(', ') || 'None'}
+- Goal Progress: ${data.goals.slice(0, 2).map(g => `${g.name} (${g.percent.toFixed(0)}%)`).join(', ')}
 
 ### INSTRUKSI REFINEMENT:
-- Konteks: ${focusInstruction}
-- Berikan 1-2 kalimat insight yang cerdas, Socratic (ada unsur pertanyaan), dan memotivasi.`;
+- Fokus: ${focusInstruction}
+- Berikan 1-2 kalimat insight yang cerdas, Socratic, dan memotivasi.`;
 
     try {
         const { text } = await generateText({

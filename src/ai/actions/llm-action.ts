@@ -11,6 +11,7 @@ import { buildChatSystemPrompt, type ChatUserFinancialProfile } from "@/ai/flows
 import { config } from "@/lib/config";
 import { persistChatSession } from "@/lib/services/chat-session-service";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { TokenBudgeter } from "@/lib/ai/token-budgeter";
 
 const deepseek = createDeepSeek({
   apiKey: config.ai.deepseek.apiKey,
@@ -43,14 +44,22 @@ export const handleLlmChatAction = async ({
     ? messages.slice(-MAX_HISTORY_MESSAGES)
     : messages;
 
+  const systemPrompt = buildChatSystemPrompt({ memorySummary, userProfile, supplementalContext });
+  const modelMessages = await convertToModelMessages(windowedMessages);
+  
+  // Basic budgeting & Telemetry
+  const systemTokens = TokenBudgeter.countTokens(systemPrompt);
+  const messageTokens = TokenBudgeter.countTokens(JSON.stringify(modelMessages));
+  console.info(`[AI Chat] Request Budget: ${systemTokens + messageTokens} tokens (System: ${systemTokens}, History: ${messageTokens})`);
+
   const result = streamText({
     model: deepseek("deepseek-chat"),
-    system: buildChatSystemPrompt({ memorySummary, userProfile, supplementalContext }),
-    messages: await convertToModelMessages(windowedMessages),
+    system: systemPrompt,
+    messages: modelMessages,
     tools: createFinancialTools(userId, supabase),
     stopWhen: stepCountIs(5),
     temperature: 0.4,
-    maxOutputTokens: 800, // Balanced for text + JSON components
+    maxOutputTokens: 800,
   });
 
   return result.toUIMessageStreamResponse({

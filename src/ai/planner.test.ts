@@ -93,7 +93,7 @@ describe('executeChatPlanner', () => {
     });
 
     expect(handleDeterministicContextAction).not.toHaveBeenCalled();
-    expect(getUnifiedContext).toHaveBeenCalledWith('user-1', expect.any(Object));
+    expect(getUnifiedContext).toHaveBeenCalledWith('user-1', expect.any(Object), ['budgets', 'risk', 'goals', 'monthly']);
     expect(handleLlmChatAction).toHaveBeenCalledWith(expect.objectContaining({
       supplementalContext: {
         budget_review: expect.objectContaining({
@@ -130,7 +130,7 @@ describe('executeChatPlanner', () => {
       sessionId: 'session-2',
     });
 
-    expect(getUnifiedContext).toHaveBeenCalledWith('user-1', expect.any(Object));
+    expect(getUnifiedContext).toHaveBeenCalledWith('user-1', expect.any(Object), ['goals', 'budgets', 'risk', 'monthly']);
     expect(handleLlmChatAction).toHaveBeenCalledWith(expect.objectContaining({
       supplementalContext: {
         goal_review: expect.objectContaining({
