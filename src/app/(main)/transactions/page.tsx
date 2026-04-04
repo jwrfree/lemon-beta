@@ -266,7 +266,6 @@ function TransactionsPageContent() {
  })}
  </div>
  )}
- </div>
  </AppPageHeaderChrome>
 
  <AppPageBody className="space-y-2">

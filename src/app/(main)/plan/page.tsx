@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HandCoins, Target, FileText, Bell, MagnifyingGlass } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
+import { Button } from '@/components/ui/button';
 
 import { cn } from '@/lib/utils';
 

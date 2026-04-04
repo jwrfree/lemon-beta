@@ -342,7 +342,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
  ) : (
  <WalletIcon className="h-8 w-8 text-white"/>
  )}
- </div>
+ </motion.div>
 
  <div className="space-y-1">
  <div className="flex items-center gap-3">

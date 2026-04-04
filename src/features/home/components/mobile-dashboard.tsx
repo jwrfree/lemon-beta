@@ -307,7 +307,7 @@ export const MobileDashboard = ({
  </p>
  </div>
  </div>
- </div>
+ </motion.div>
  </motion.div>
  );
  })}

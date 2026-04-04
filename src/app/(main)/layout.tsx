@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -155,60 +155,62 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
 
                 <CustomToast />
 
-                <AnimatePresence mode="wait">
-                    {isTxSheetOpen && (
-                        <UnifiedTransactionSheet 
-                            key="unified-tx-sheet"
-                            isOpen={isTxSheetOpen}
-                            initialMode={txSheetMode}
-                            onClose={handleCloseTxModal}
-                            transaction={transactionToEdit}
-                        />
-                    )}
-                    {isTransactionDetailOpen && transactionToView && (
-                        <TransactionDetailSheet
-                            key={`tx-detail-${transactionToView.id}`}
-                            isOpen={isTransactionDetailOpen}
-                            onClose={handleCloseTransactionDetail}
-                            transaction={transactionToView}
-                        />
-                    )}
-                    {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}
-                    {isBudgetModalOpen && <AddBudgetModal key="add-budget-modal" onClose={() => setIsBudgetModalOpen(false)} />}
-                    {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal key="edit-budget-modal" budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
-                    {isTransferModalOpen && (
-                        <UnifiedTransactionSheet 
-                            key="transfer-sheet" 
-                            isOpen={isTransferModalOpen} 
-                            initialType="transfer"
-                            onClose={() => setIsTransferModalOpen(false)} 
-                        />
-                    )}
-                    {isEditWalletModalOpen && walletToEdit && <EditWalletModal key="edit-wallet-modal" wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
-                    {isGoalModalOpen && <GoalForm key="goal-form" initialData={goalToEdit} onClose={handleCloseGoalModal} />}
-                    {isReminderModalOpen && <ReminderForm key="reminder-form" initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
-                    {isDebtModalOpen && <DebtForm key="debt-form" initialData={debtToEdit} onClose={handleCloseDebtModal} />}
-                    {isDebtPaymentModalOpen && debtForPayment && (
-                        <DebtPaymentForm key="debt-payment-form" debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
-                    )}
-                    {isDeleteModalOpen && transactionToDelete && (
-                        <ConfirmDeleteModal
-                            key="confirm-delete-modal"
-                            transaction={transactionToDelete}
-                            onClose={closeDeleteModal}
-                            onConfirm={handleConfirmDelete}
-                        />
-                    )}
-                    
-                    <UniversalAddSheet key="universal-add-sheet" />
-                    <CommandPalette key="command-palette" />
+                <Suspense fallback={null}>
+                    <AnimatePresence mode="wait">
+                        {isTxSheetOpen && (
+                            <UnifiedTransactionSheet 
+                                key="unified-tx-sheet"
+                                isOpen={isTxSheetOpen}
+                                initialMode={txSheetMode}
+                                onClose={handleCloseTxModal}
+                                transaction={transactionToEdit}
+                            />
+                        )}
+                        {isTransactionDetailOpen && transactionToView && (
+                            <TransactionDetailSheet
+                                key={`tx-detail-${transactionToView.id}`}
+                                isOpen={isTransactionDetailOpen}
+                                onClose={handleCloseTransactionDetail}
+                                transaction={transactionToView}
+                            />
+                        )}
+                        {isWalletModalOpen && <AddWalletModal key="add-wallet-modal" onClose={() => setIsWalletModalOpen(false)} />}
+                        {isBudgetModalOpen && <AddBudgetModal key="add-budget-modal" onClose={() => setIsBudgetModalOpen(false)} />}
+                        {isEditBudgetModalOpen && budgetToEdit && <EditBudgetModal key="edit-budget-modal" budget={budgetToEdit} onClose={() => setIsEditBudgetModalOpen(false)} />}
+                        {isTransferModalOpen && (
+                            <UnifiedTransactionSheet 
+                                key="transfer-sheet" 
+                                isOpen={isTransferModalOpen} 
+                                initialType="transfer"
+                                onClose={() => setIsTransferModalOpen(false)} 
+                            />
+                        )}
+                        {isEditWalletModalOpen && walletToEdit && <EditWalletModal key="edit-wallet-modal" wallet={walletToEdit} onClose={() => setIsEditWalletModalOpen(false)} />}
+                        {isGoalModalOpen && <GoalForm key="goal-form" initialData={goalToEdit} onClose={handleCloseGoalModal} />}
+                        {isReminderModalOpen && <ReminderForm key="reminder-form" initialData={reminderToEdit} onClose={handleCloseReminderModal} />}
+                        {isDebtModalOpen && <DebtForm key="debt-form" initialData={debtToEdit} onClose={handleCloseDebtModal} />}
+                        {isDebtPaymentModalOpen && debtForPayment && (
+                            <DebtPaymentForm key="debt-payment-form" debt={debtForPayment} onClose={handleCloseDebtPaymentModal} />
+                        )}
+                        {isDeleteModalOpen && transactionToDelete && (
+                            <ConfirmDeleteModal
+                                key="confirm-delete-modal"
+                                transaction={transactionToDelete}
+                                onClose={closeDeleteModal}
+                                onConfirm={handleConfirmDelete}
+                            />
+                        )}
+                        
+                        <UniversalAddSheet key="universal-add-sheet" />
+                        <CommandPalette key="command-palette" />
 
-                    <AIChatDrawer 
-                        key="ai-chat-drawer"
-                        isOpen={isAIChatOpen} 
-                        onClose={() => setIsAIChatOpen(false)} 
-                    />
-                </AnimatePresence>
+                        <AIChatDrawer 
+                            key="ai-chat-drawer"
+                            isOpen={isAIChatOpen} 
+                            onClose={() => setIsAIChatOpen(false)} 
+                        />
+                    </AnimatePresence>
+                </Suspense>
 
                 <div className="md:hidden">
                     <AnimatePresence>
