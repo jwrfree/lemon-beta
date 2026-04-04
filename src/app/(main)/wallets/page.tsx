@@ -41,15 +41,23 @@ export default function WalletsPage() {
 
  return (
  <AppPageShell>
- {/* Mobile View */}
- <div className="md:hidden flex min-h-0 flex-1 flex-col bg-background">
  <PageHeader
  title="Dompet"
  showBackButton={false}
- width="full"
- extraActions={<BalanceVisibilityToggle variant="ghost"size="icon"/>}
+ width="wide"
+ extraActions={
+ <div className="flex items-center gap-2">
+ <BalanceVisibilityToggle variant="ghost"size="icon"/>
+ <Button onClick={() => setIsWalletModalOpen(true)} className="hidden md:flex">
+ <Plus size={16} weight="regular"className="mr-2"/>
+ Tambah Dompet
+ </Button>
+ </div>
+ }
  />
 
+ {/* Mobile View */}
+ <div className="md:hidden flex min-h-0 flex-1 flex-col bg-background">
  {wallets.length === 0 ? (
  <main className="flex flex-1 flex-col bg-background">
  <EmptyState
@@ -112,20 +120,6 @@ export default function WalletsPage() {
 
  {/* Desktop View */}
  <div className="hidden min-h-0 flex-1 flex-col md:flex">
- <PageHeader
- title="Dompet"
- showBackButton={false}
- width="wide"
- extraActions={
- <div className="flex items-center gap-2">
- <BalanceVisibilityToggle variant="ghost"size="icon"/>
- <Button onClick={() => setIsWalletModalOpen(true)}>
- <Plus size={16} weight="regular"className="mr-2"/>
- Tambah Dompet
- </Button>
- </div>
- }
- />
  <AppPageBody width="wide"className="flex-1 py-6">
  {wallets.length === 0 ? (
  <div className="flex h-full items-center justify-center">

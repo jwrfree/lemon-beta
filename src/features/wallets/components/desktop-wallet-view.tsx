@@ -148,7 +148,7 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
  <header className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
  <div className="lg:col-span-5 relative min-h-[160px] overflow-hidden rounded-card bg-teal-950 p-6 shadow-elevation-4 flex flex-col justify-center">
  {/* Subtle Pattern Overlay */}
- <div className="absolute inset-0 opacity-[0.03] pointer-events-none"style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px'}} />
+ <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-dot-pattern" />
 
  <div className="relative z-10 flex flex-col h-full justify-between">
  <div className="space-y-0.5">
@@ -327,11 +327,12 @@ export const DesktopWalletView = ({ wallets, activeIndex, setActiveIndex }: Desk
  <Card className="relative rounded-card bg-card/98 overflow-hidden group shadow-elevation-3">
  <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
  <div className="flex items-center gap-6">
- <div
- className="h-16 w-16 rounded-lg flex items-center justify-center relative transition-all duration-500 group-hover:rotate-1"
- style={{
- background: activeWalletVisuals ?`linear-gradient(135deg, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})` : 'hsl(var(--primary))'
- }}
+ <motion.div
+ className="h-16 w-16 rounded-lg flex items-center justify-center relative transition-all duration-500 group-hover:rotate-1 bg-dynamic-gradient"
+ animate={{
+ '--dynamic-gradient': activeWalletVisuals ?`linear-gradient(135deg, ${activeWalletVisuals.gradient.from}, ${activeWalletVisuals.gradient.to})` : 'hsl(var(--primary))'
+ } as any}
+ transition={{ duration: 0 }}
  >
  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"/>
  {activeWalletVisuals?.logo ? (

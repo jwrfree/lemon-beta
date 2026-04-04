@@ -1,6 +1,8 @@
+/* stylelint-disable */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* stylelint-enable */
 
 /* Selection & Scrollbar Styling */
 ::selection {
@@ -310,24 +312,28 @@
   html,
   body,
   #__next {
-    @apply h-full;
+    height: 100%;
   }
 
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
   }
 
   body {
-    @apply bg-background font-sans text-foreground antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     min-height: 100dvh;
     line-height: 1.5;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-semibold tracking-tight;
+    font-weight: 600;
+    letter-spacing: -0.025em;
     line-height: 1.2;
   }
 
@@ -404,11 +410,15 @@
    * number-display : financial amount display (replaces font-medium tracking-tighter tabular-nums)
    */
   .label-xs {
-    @apply text-xs font-medium text-muted-foreground;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
   }
 
   .number-display {
-    @apply font-medium tracking-tighter tabular-nums;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
   }
 
   /* Motion utility classes */
@@ -489,7 +499,13 @@
    * Standardizes bottom spacing for mobile navigation and safe areas.
    */
   .main-content-scroll {
-    @apply flex-1 flex flex-col overflow-y-auto overflow-x-hidden h-full scroll-smooth;
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    scroll-behavior: smooth;
   }
 
   .app-page-body-padding {
@@ -509,6 +525,16 @@
     .main-content-scroll[data-nav="true"] .sticky.bottom-0 {
       bottom: calc(var(--bottom-nav-height, 64px) + 0.5rem + env(safe-area-inset-bottom, 0px));
     }
+  }
+
+  /* Reusable patterns & dynamic background helpers */
+  .bg-dot-pattern {
+    background-image: radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .bg-dynamic-gradient {
+    background: var(--dynamic-gradient, transparent);
   }
 }
 

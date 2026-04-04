@@ -115,12 +115,11 @@ function TransactionsPageContent() {
  return (
  <AppPageShell>
  <AppPageHeaderChrome>
- <div className="flex flex-col gap-3 px-4 py-3 md:px-6">
- <div className="flex items-center gap-3">
- <h1 className="min-w-0 flex-1 truncate text-body-lg tracking-tight text-foreground md:text-title-lg">
+ <div className="flex h-16 items-center gap-3 px-4 md:px-6">
+ <h1 className="min-w-0 flex-1 truncate text-title-lg font-semibold tracking-tight text-foreground">
  Transaksi
  </h1>
- <div className="relative flex-1 group">
+ <div className="relative flex-[2] group max-w-md">
  <MagnifyingGlass size={16} weight="regular"className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors"/>
  <Input
  placeholder="Cari transaksi..."

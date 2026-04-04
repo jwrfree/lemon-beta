@@ -136,7 +136,7 @@ export const MobileDashboard = ({
  </Link>
  <div className="min-w-0">
  <p className="text-label-xs text-muted-foreground/50 leading-none mb-1.5 uppercase tracking-wide">Beranda</p>
- <h1 className="truncate text-title-lg font-bold tracking-tight text-foreground">
+ <h1 className="truncate text-title-lg font-semibold tracking-tight text-foreground">
  Halo, {firstName}
  </h1>
  </div>
@@ -251,7 +251,7 @@ export const MobileDashboard = ({
 
  <section className="space-y-4">
  <div className="flex items-center justify-between px-5">
- <h2 className="text-label-lg font-bold text-muted-foreground/70 tracking-tight">
+ <h2 className="text-label-lg font-semibold text-muted-foreground/70 tracking-tight">
  Daftar dompet
  </h2>
  <Button variant="ghost"size="sm"className="h-8 px-0 text-label-sm text-primary hover:bg-transparent"onClick={() => router.push('/wallets')}>
@@ -274,9 +274,10 @@ export const MobileDashboard = ({
  whileTap={{ scale: 0.96 }}
  onClick={() => openEditWalletModal(wallet)}
  >
- <div
- className="group relative flex h-36 w-48 flex-col justify-between overflow-hidden rounded-card-premium p-5 shadow-elevation-3 transition-all duration-500"
- style={{ background: dna.gradient }}
+ <motion.div
+ className="group relative flex h-36 w-48 flex-col justify-between overflow-hidden rounded-card-premium p-5 shadow-elevation-3 transition-all duration-500 bg-dynamic-gradient"
+ animate={{ '--dynamic-gradient': dna.gradient } as any}
+ transition={{ duration: 0 }}
  >
  <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/20 opacity-40 blur-2xl"/>
  <div className="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100"/>
@@ -333,7 +334,7 @@ export const MobileDashboard = ({
  </section>
  <section className="space-y-4 pb-12">
  <div className="flex items-center justify-between px-5">
- <h2 className="text-label-lg font-bold text-muted-foreground/70 tracking-tight">
+ <h2 className="text-label-lg font-semibold text-muted-foreground/70 tracking-tight">
  Mutasi terakhir
  </h2>
  <Button variant="ghost" size="sm" className="h-8 px-0 text-label-md font-medium text-primary hover:bg-transparent transition-all" onClick={() => router.push('/transactions')}>

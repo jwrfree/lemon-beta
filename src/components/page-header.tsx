@@ -50,7 +50,7 @@ export const PageHeader = ({
 
  return (
  <AppPageHeaderChrome width={width} className={className}>
- <div className="grid min-h-14 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-4 md:min-h-16 md:px-6">
+ <div className="grid h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-4 md:px-6">
  <div className={cn("flex items-center justify-start", showBackButton ? "w-10 md:w-0": "w-0")}>
  {showBackButton && (
  <Button
@@ -67,7 +67,7 @@ export const PageHeader = ({
 
  <div className="min-w-0 flex-1">
  <div className="min-w-0 space-y-0.5">
- <h1 className="truncate text-left text-title-lg font-bold tracking-tight text-foreground md:text-display-sm">
+ <h1 className="truncate text-left text-title-lg font-semibold tracking-tight text-foreground md:text-display-sm">
  {title}
  </h1>
  {description && (

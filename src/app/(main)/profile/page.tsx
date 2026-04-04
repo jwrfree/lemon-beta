@@ -44,7 +44,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="px-1 text-label-lg font-bold text-muted-foreground/70 tracking-tight">
+    <h2 className="px-1 text-label-lg font-semibold text-muted-foreground/70 tracking-tight">
       {children}
     </h2>
   );

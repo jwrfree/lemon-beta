@@ -51,7 +51,7 @@ function WealthContent() {
  <header className="flex items-center justify-between px-4 pt-4 md:px-6">
  <div>
  <p className="text-label-xs text-muted-foreground/40 leading-none mb-1.5 uppercase tracking-wide">Strategi & Kekayaan</p>
- <h1 className="text-title-lg font-bold tracking-tight text-foreground">Wawasan</h1>
+ <h1 className="text-title-lg font-semibold tracking-tight text-foreground">Wawasan</h1>
  </div>
  <div className="flex items-center gap-2">
  <button 
@@ -106,11 +106,11 @@ function WealthContent() {
  {activeTab === 'overview'&& (
  <div className="space-y-6">
  <section>
- <h2 className="text-label-lg font-bold text-muted-foreground/70 mb-4 px-1">Kesehatan Finansial</h2>
+ <h2 className="text-label-lg font-semibold text-muted-foreground/70 mb-4 px-1">Kesehatan Finansial</h2>
  <RiskScoreCard />
  </section>
  <section>
- <h2 className="text-label-lg font-bold text-muted-foreground/70 mb-4 px-1">Briefing Terkini</h2>
+ <h2 className="text-label-lg font-semibold text-muted-foreground/70 mb-4 px-1">Briefing Terkini</h2>
  <AiBriefingCard />
  </section>
  </div>

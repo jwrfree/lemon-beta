@@ -51,20 +51,21 @@ function PlanContent() {
  return (
  <AppPageShell>
  <AppPageHeaderChrome>
-      <header className="flex items-center justify-between px-4 pt-4 md:px-6">
+      <header className="flex h-16 items-center justify-between px-4 md:px-6">
         <div>
-          <p className="text-label-sm text-muted-foreground/50 leading-none mb-1">Rencana Keuangan</p>
-          <h1 className="text-body-md tracking-tight text-foreground">Kelola anggaran & tagihan</h1>
+          <p className="text-label-xs text-muted-foreground/50 leading-none mb-1.5 uppercase tracking-widest">Rencana Keuangan</p>
+          <h1 className="text-title-lg font-semibold tracking-tight text-foreground">Kelola Anggaran & Tagihan</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button 
+          <Button 
+            variant="ghost"
+            size="icon"
             onClick={() => setIsCommandPaletteOpen(true)}
             aria-label="Cari rencana"
-            title="Cari (Cmd+K)"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-muted-foreground shadow-elevation-2 active:scale-95 transition-all text-label-xs"
+            className="h-9 w-9 rounded-full bg-card text-muted-foreground shadow-elevation-2 active:scale-95 transition-all"
           >
-            <MagnifyingGlass size={16} />
-          </button>
+            <MagnifyingGlass size={16} weight="regular"/>
+          </Button>
         </div>
       </header>
 
