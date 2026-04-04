@@ -218,7 +218,7 @@ export function AmountInput<T extends FieldValues>({
  <button
  type="button"
  onClick={applyExpression}
- className="rounded-full bg-background border border-border/40 px-3 py-1.5 text-label-md transition-colors hover:bg-muted/60"
+ className="rounded-full bg-background border border-border/15 px-3 py-1.5 text-label-md transition-colors hover:bg-muted/60"
  >
  Gunakan hasil tokenisasi ekspresi
  </button>

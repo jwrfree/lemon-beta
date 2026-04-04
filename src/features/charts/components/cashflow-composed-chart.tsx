@@ -51,7 +51,7 @@ export function CashflowComposedChart({ data }: CashflowComposedChartProps) {
     }
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-none border border-border/40 border border-zinc-100 dark:border-zinc-800">
+        <div className="w-full bg-white dark:bg-zinc-900 rounded-card-premium p-6 shadow-none border border-border/15 border border-zinc-100 dark:border-zinc-800">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h3 className="text-title-lg font-medium tracking-tight text-zinc-900 dark:text-zinc-100">

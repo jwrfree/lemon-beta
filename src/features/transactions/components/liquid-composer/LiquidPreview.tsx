@@ -43,7 +43,7 @@ export const LiquidPreview = () => {
  }, [text]);
 
  return (
- <div className="w-full max-w-lg mx-auto bg-background rounded-card overflow-hidden border border-border shadow-none border border-border/40 p-6 space-y-6">
+ <div className="w-full max-w-lg mx-auto bg-background rounded-card overflow-hidden border border-border/20 shadow-none border border-border/15 p-6 space-y-6">
  
  {/* 1. The Hero Header */}
  <HeroAmount 
@@ -88,7 +88,7 @@ export const LiquidPreview = () => {
  initial={{ opacity: 0, scale: 0.5 }}
  animate={{ opacity: 1, scale: 1 }}
  transition={{ type: 'spring', delay: 0.4 }}
- className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border"
+ className="flex items-center gap-1 text-muted-foreground bg-card px-3 py-1 rounded-full border border-border/20"
  >
  <MapPin size={12} weight="regular"className="text-destructive"/>
  <span className="text-label ">{metadata.location}</span>

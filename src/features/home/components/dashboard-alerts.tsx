@@ -53,7 +53,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
  </div>
  </div>
  {reminderSummary.nextReminder ? (
- <div className="rounded-md bg-muted/32 p-3 border border-border/40">
+ <div className="rounded-md bg-muted/32 p-3 border border-border/15">
  <p className="text-body-md font-medium">{reminderSummary.nextReminder.title}</p>
  <p className="text-label-md text-muted-foreground flex items-center gap-1">
  <CalendarBlank size={14} weight="regular"/>
@@ -97,7 +97,7 @@ export const DashboardAlerts = ({ reminderSummary, debtSummary }: DashboardAlert
  </div>
  
  {debtSummary.nextDueDebt ? (
- <div className="rounded-md bg-muted/32 p-3 border border-border/40">
+ <div className="rounded-md bg-muted/32 p-3 border border-border/15">
  <p className="text-label-md font-medium tracking-tight text-muted-foreground mb-1">
  {debtSummary.nextDueDebt.direction === 'owed'? 'Jatuh Tempo Pembayaran': 'Perlu Ditagih'}
  </p>

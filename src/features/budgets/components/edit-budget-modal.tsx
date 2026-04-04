@@ -107,21 +107,21 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
  </SheetHeader>
 
  <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/10 bg-background/80 p-6 backdrop-blur-md">
- <h2 className="text-title-lg">Adjust Budget</h2>
- <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-10 w-10">
+  <h2 className="text-title-lg">Ubah Anggaran</h2>
+        <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-11 w-11" aria-label="Tutup">
  <X className="h-5 w-5"weight="regular"/>
  </Button>
  </div>
 
  <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-6 overflow-y-auto">
  <div className="space-y-3">
- <Label htmlFor="budget-name"className="text-label-md text-label text-muted-foreground ml-1">Budget Name</Label>
- <Input id="budget-name"placeholder="e.g. Daily Meals"value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-muted border border-border/40"required />
+  <Label htmlFor="budget-name"className="text-label-md text-label text-muted-foreground ml-1">Nama Anggaran</Label>
+  <Input id="budget-name"placeholder="contoh: Makan Harian"value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-muted border border-border/15"required />
  </div>
 
  <div className="space-y-6">
  <div className="space-y-2 text-center">
- <Label htmlFor="target-amount"className="text-label-md text-label text-muted-foreground/40">Monthly Target</Label>
+  <Label htmlFor="target-amount"className="text-label-md text-label text-muted-foreground/40">Target Bulanan</Label>
  <Input
  id="target-amount"
  value={formatCurrency(targetAmount)}
@@ -142,7 +142,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
  </div>
  <div className="grid grid-cols-4 gap-3">
  {budgetSteps.map(val => (
- <Button key={val} type="button"variant="outline"size="sm"onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 text-label-md", targetAmount === val ? "border-primary bg-primary/5 text-primary": "border-border/50 text-muted-foreground")}>
+ <Button key={val} type="button"variant="outline"size="sm"onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 text-label-md", targetAmount === val ? "border-primary bg-primary/5 text-primary": "border-border/20 text-muted-foreground")}>
  {new Intl.NumberFormat('id-ID', { notation: "compact"}).format(val)}
  </Button>
  ))}
@@ -150,7 +150,7 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
  </div>
 
  <div className="space-y-4">
- <Label className="text-label-md text-label text-muted-foreground ml-1">Main Category</Label>
+  <Label className="text-label-md text-label text-muted-foreground ml-1">Kategori Utama</Label>
  <ScrollArea className="h-48">
  <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
  {expenseCategories.map(cat => {
@@ -173,24 +173,24 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
  {hasSubCategories && (
  <div className="space-y-4 pt-2">
- <Label className="text-label-md text-label text-muted-foreground ml-1">Sub-Category (Optional)</Label>
+  <Label className="text-label-md text-label text-muted-foreground ml-1">Sub-kategori (Opsional)</Label>
  <div className="flex flex-wrap gap-2">
- <Button 
- type="button"
- variant={selectedSubCategory === null ? 'default': 'outline'}
- onClick={() => setSelectedSubCategory(null)}
- className="rounded-full h-10 px-5 text-label-md text-label"
- >
- All {selectedCategories[0]}
+            <Button 
+              type="button"
+              variant={selectedSubCategory === null ? 'primary': 'outline'}
+              onClick={() => setSelectedSubCategory(null)}
+              className="rounded-full h-10 px-5 text-label-md text-label"
+            >
+  Semua {selectedCategories[0]}
  </Button>
  {selectedCategoryData.sub_categories?.map(sub => (
- <Button 
- key={sub}
- type="button"
- variant={selectedSubCategory === sub ? 'default': 'outline'}
- onClick={() => setSelectedSubCategory(sub)}
- className="rounded-full h-10 px-5 text-label-md text-label"
- >
+              <Button 
+                key={sub}
+                type="button"
+                variant={selectedSubCategory === sub ? 'primary': 'outline'}
+                onClick={() => setSelectedSubCategory(sub)}
+                className="rounded-full h-10 px-5 text-label-md text-label"
+              >
  {sub}
  </Button>
  ))}
@@ -201,26 +201,26 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
 
  <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md flex gap-3 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
  <Button type="submit"onClick={handleSubmit} className="flex-1 h-14 rounded-full text-label-md text-label shadow-xl shadow-primary/20 bg-primary active:scale-95"disabled={isSubmitting || !hasChanges}>
- {isSubmitting ? 'Updating...': 'Save Changes'}
+  {isSubmitting ? 'Menyimpan...': 'Simpan Perubahan'}
  </Button>
  <AlertDialog>
  <AlertDialogTrigger asChild>
- <Button type="button"variant="ghost"className="h-14 w-14 rounded-full bg-rose-500/10 text-rose-600 hover:bg-rose-500/20"disabled={isDeleting}>
+            <Button type="button"variant="ghost"className="h-14 w-14 rounded-full bg-destructive/10 text-destructive hover:bg-destructive/20"disabled={isDeleting} aria-label="Hapus anggaran">
  <Trash className="h-6 w-6"weight="regular"/>
  </Button>
  </AlertDialogTrigger>
  <AlertDialogContent className="rounded-card-premium border-none shadow-xl bg-popover/95 backdrop-blur-xl">
  <AlertDialogHeader>
- <AlertDialogTitle className="text-display-md tracking-tighter">Delete Budget?</AlertDialogTitle>
- <AlertDialogDescription className="text-body-md font-medium text-muted-foreground">
- This will permanently remove the budget for &apos;{budget.name}&apos;.
- </AlertDialogDescription>
+  <AlertDialogTitle className="text-display-md tracking-tighter">Hapus Anggaran?</AlertDialogTitle>
+  <AlertDialogDescription className="text-body-md font-medium text-muted-foreground">
+  Anggaran &apos;{budget.name}&apos; akan dihapus permanen.
+  </AlertDialogDescription>
  </AlertDialogHeader>
  <AlertDialogFooter className="mt-6 flex-row gap-3">
- <AlertDialogCancel className="flex-1 rounded-full h-12 border-border text-label-md text-label mt-0">Cancel</AlertDialogCancel>
- <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 text-label-md text-label">
- {isDeleting ? 'Deleting...': 'Delete'}
- </AlertDialogAction>
+  <AlertDialogCancel className="flex-1 rounded-full h-12 border-border/20 text-label-md text-label mt-0">Batal</AlertDialogCancel>
+  <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="flex-1 bg-destructive hover:bg-destructive/90 text-white rounded-full h-12 text-label-md text-label">
+  {isDeleting ? 'Menghapus...': 'Hapus'}
+  </AlertDialogAction>
  </AlertDialogFooter>
  </AlertDialogContent>
  </AlertDialog>

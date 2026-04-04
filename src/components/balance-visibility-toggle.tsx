@@ -8,7 +8,7 @@ import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
 
 interface BalanceVisibilityToggleProps {
   className?: string;
-  variant?: 'ghost' | 'outline' | 'default' | 'destructive' | 'secondary' | 'link';
+  variant?: 'ghost' | 'outline' | 'primary' | 'destructive' | 'secondary' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   showLabel?: boolean;
 }

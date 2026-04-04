@@ -63,15 +63,15 @@ export const SpendingTrendChart = ({ transactions, days = 14 }: SpendingTrendCha
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between px-1">
-        <h2 className="text-label text-muted-foreground/50">
+        <h2 className="text-sm font-semibold text-muted-foreground/70 tracking-tight">
           Tren Pengeluaran
         </h2>
-        <span className="text-label bg-destructive/10 text-destructive px-2 py-1 rounded-full">
+        <span className="text-[10px] font-medium uppercase tracking-wider bg-destructive/10 text-destructive px-2 py-1 rounded-full">
           {days} Hari Terakhir
         </span>
       </div>
       
-      <Card className="overflow-hidden rounded-3xl border border-border/40 bg-card">
+      <Card className="overflow-hidden rounded-3xl border border-border/15 bg-card">
         <CardContent className="p-4 pb-2">
           {transactions.length === 0 ? (
             <div className="h-[200px] flex items-center justify-center border border-dashed border-border/20 rounded-xl bg-muted/5">

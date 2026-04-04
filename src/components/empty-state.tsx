@@ -81,7 +81,7 @@ export const EmptyState = ({
  default: {
  iconBg: 'bg-primary/10',
  iconColor: 'text-primary',
- buttonVariant: 'default'as const,
+ buttonVariant: 'primary'as const,
  },
  filter: {
  iconBg: 'bg-muted',
@@ -114,7 +114,7 @@ export const EmptyState = ({
  // Max width for readability
  "max-w-[320px] md:max-w-md w-full",
  // Card hierarchy - align with card token (24px)
- "border border-border/40 rounded-card",
+ "border border-border/15 rounded-card",
  "bg-card/80 backdrop-blur-md shadow-none",
  // Overflow for background decoration
  "relative overflow-hidden"

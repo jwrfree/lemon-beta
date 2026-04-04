@@ -79,7 +79,7 @@ export const InsightSummaryCard = ({ data, onAction }: InsightSummaryCardProps) 
  <button
  type="button"
  onClick={() => onAction(data.cta_action!)}
- className="mt-4 inline-flex rounded-full border border-border px-3 py-1.5 text-label-md text-primary transition-colors hover:bg-primary/5"
+ className="mt-4 inline-flex rounded-full border border-border/20 px-3 py-1.5 text-label-md text-primary transition-colors hover:bg-primary/5"
  >
  {data.cta_label?.trim() || 'Lihat selengkapnya ->'}
  </button>

@@ -331,7 +331,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             </Card>
 
             {summary.type !== 'net' && summary.topCategory ? (
-                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-none border border-border/40 hover:shadow-none border border-border/40 transition-all group overflow-hidden">
+                <Card className="rounded-card sm:rounded-card-glass border-none bg-card shadow-none border border-border/15 hover:shadow-none border border-border/15 transition-all group overflow-hidden">
                     <CardHeader className="flex flex-row items-center gap-3 sm:gap-4 pb-3 sm:pb-4 p-4 sm:p-6">
                         <div className={cn("p-2 sm:p-3 rounded-md sm:rounded-card shrink-0 transition-transform group-hover:scale-110", summary.topCategory.bgColor)}>
                             {TopCategoryIcon && <TopCategoryIcon className={cn("h-5 w-5 sm:h-6 sm:w-6", summary.topCategory.color)} />}
@@ -387,7 +387,7 @@ export const MonthlySummary = ({ type, transactions, isLoading }: { type: TabVal
             ) : null}
 
             {/* AI INSIGHT SECTION */}
-            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-none border border-border/40 border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
+            <Card className="rounded-card-glass sm:rounded-card-glass border-none bg-primary/5 dark:bg-primary/10 shadow-none border border-border/15 border border-primary/20 dark:border-primary/30 overflow-hidden relative group">
                 {/* Decorative background elements */}
                 <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>
                 <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-all duration-500"></div>

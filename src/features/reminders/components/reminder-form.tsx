@@ -181,12 +181,12 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                 className="flex h-fit max-h-[85vh] w-full max-w-md flex-col rounded-t-card bg-background shadow-elevation-4"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 border-b border-border/40">
+                <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 border-b border-border/15">
                     <div>
                         <h2 className="text-title-lg">{isEditMode ? 'Edit Pengingat' : 'Pengingat Baru'}</h2>
                         <p className="text-body-md text-muted-foreground">Atur tagihan, langganan, atau pengingat hutang.</p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full" aria-label="Tutup">
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
@@ -260,7 +260,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className={cn('w-full justify-start bg-background border border-border/40 text-left font-normal', !dueDate && 'text-muted-foreground')}
+                                        className={cn('w-full justify-start bg-background border border-border/15 text-left font-normal', !dueDate && 'text-muted-foreground')}
                                     >
                                         <CalendarClock className="mr-2 h-4 w-4" />
                                         {dueDateLabel}
@@ -338,14 +338,14 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                         </div>
                     </div>
                 </form>
-                <div className="sticky bottom-0 flex gap-2 bg-background p-4 border-t border-border/40">
+                <div className="sticky bottom-0 flex gap-2 bg-background p-4 border-t border-border/15">
                     <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Pengingat'}`}
                     </Button>
                     {isEditMode && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
+                                <Button type="button" variant="destructive" size="icon" disabled={isDeleting} aria-label="Hapus pengingat">
                                     <Trash2 className="h-5 w-5" />
                                 </Button>
                             </AlertDialogTrigger>

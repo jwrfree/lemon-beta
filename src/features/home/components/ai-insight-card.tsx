@@ -104,14 +104,14 @@ export function AIInsightCard({ transactions, wallets, debts }: AIInsightCardPro
     };
 
     return (
-        <Card className="border-none shadow-none border border-border/40 bg-card">
+        <Card className="border-none shadow-none border border-border/15 bg-card">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <CardTitle className="text-body-md font-medium flex items-center gap-2 text-violet-700 dark:text-violet-400">
                     <Lightbulb size={16} weight="regular" />
                     Lemon Insight
                 </CardTitle>
                 {insight && !isLoading && (
-                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleGenerateInsight}>
+                    <Button variant="ghost" size="icon" className="h-11 w-11" onClick={handleGenerateInsight} aria-label="Perbarui insight">
                         <ArrowClockwise size={12} weight="regular" />
                     </Button>
                 )}

@@ -63,7 +63,7 @@ function PlanContent() {
             size="icon"
             onClick={() => setIsCommandPaletteOpen(true)}
             aria-label="Cari rencana"
-            className="h-9 w-9 rounded-full bg-card text-muted-foreground shadow-elevation-2 active:scale-95 transition-all"
+            className="h-11 w-11 rounded-full bg-card text-muted-foreground shadow-elevation-2 active:scale-95 transition-all"
           >
             <MagnifyingGlass size={16} weight="regular"/>
           </Button>
@@ -76,9 +76,10 @@ function PlanContent() {
  {tabs.map((tab) => {
  const isActive = activeTab === tab.id;
  return (
- <button
- key={tab.id}
- onClick={() => handleTabChange(tab.id as any)}
+            <button
+              type="button"
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id as any)}
  className={cn(
  "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-full text-label-sm transition-all relative min-w-[90px]",
  isActive ? "text-primary": "text-muted-foreground hover:text-foreground"

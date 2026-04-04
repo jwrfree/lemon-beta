@@ -111,7 +111,8 @@ export const ResetPasswordPage = () => {
                                         variant="ghost" 
                                         size="icon" 
                                         onClick={() => setShowPassword(!showPassword)} 
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 text-muted-foreground"
+                                        aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
                                     >
                                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                     </Button>
@@ -142,7 +143,8 @@ export const ResetPasswordPage = () => {
                                         variant="ghost" 
                                         size="icon" 
                                         onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 text-muted-foreground"
+                                        aria-label={showConfirmPassword ? 'Sembunyikan konfirmasi password' : 'Tampilkan konfirmasi password'}
                                     >
                                         {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                     </Button>

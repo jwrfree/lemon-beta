@@ -117,8 +117,8 @@ export default function RepairPage() {
 
  return (
  <div className="container max-w-2xl mx-auto py-10 px-4 min-h-screen flex items-center justify-center">
- <Card className="border-border shadow-xl w-full">
- <CardHeader className="text-center pb-6 border-b border-border">
+ <Card className="border-border/20 shadow-xl w-full">
+ <CardHeader className="text-center pb-6 border-b border-border/20">
  <div className="mx-auto w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
  <Wrench className="w-7 h-7 text-primary"/>
  </div>
@@ -172,7 +172,7 @@ export default function RepairPage() {
  )}
 
  {/* Console Log Area */}
- <div className="bg-slate-950 rounded-lg p-4 font-mono text-label-md text-emerald-400 h-48 overflow-y-auto w-full border border-border/40">
+ <div className="bg-slate-950 rounded-lg p-4 font-mono text-label-md text-emerald-400 h-48 overflow-y-auto w-full border border-border/15">
  <div className="flex items-center justify-between mb-2">
  <span className="text-slate-500 font-medium ">System Log</span>
  {logs.length > 0 && <span className="text-slate-500 cursor-pointer hover:text-white"onClick={() => setLogs([])}>Clear</span>}

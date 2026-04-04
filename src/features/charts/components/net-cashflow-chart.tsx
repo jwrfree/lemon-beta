@@ -172,14 +172,14 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
  };
 
  return (
- <Card className="overflow-hidden border-none shadow-none border border-border/40 bg-card rounded-card-glass">
+ <Card className="overflow-hidden border-none shadow-none border border-border/15 bg-card rounded-card-glass">
  <CardHeader className="space-y-1">
  <CardTitle className="text-label-md font-medium tracking-tight text-muted-foreground">Arus Kas 12 Bulan</CardTitle>
  <div className="flex items-center justify-between gap-3">
  <CardDescription className="text-body-md font-medium text-foreground">
  Filter triwulan atau pilih bulan.
  </CardDescription>
- <Badge variant="outline"className="border-border text-label-md font-medium">
+ <Badge variant="outline"className="border-border/20 text-label-md font-medium">
  {rangeLabel}
  </Badge>
  </div>
@@ -233,11 +233,11 @@ export const NetCashflowChart = ({ transactions, isLoading }: { transactions: Tr
  <p className="text-label-md font-medium text-muted-foreground/60 mt-1 tracking-tight">{summaryFootnote}</p>
  </div>
  </div>
- <div className="rounded-card-glass bg-muted/30 p-5 border border-border/50">
+ <div className="rounded-card-glass bg-muted/30 p-5 border border-border/20">
  <p className="text-label-md font-medium text-label text-muted-foreground mb-1">Pemasukan</p>
  <p className="text-display-sm font-medium text-foreground tracking-tight">{formatCurrency(filteredTotals.income)}</p>
  </div>
- <div className="rounded-card-glass bg-muted/30 p-5 border border-border/50">
+ <div className="rounded-card-glass bg-muted/30 p-5 border border-border/20">
  <p className="text-label-md font-medium text-label text-muted-foreground mb-1">Pengeluaran</p>
  <p className="text-display-sm font-medium text-foreground tracking-tight">{formatCurrency(filteredTotals.expense)}</p>
  </div>

@@ -132,12 +132,13 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
  )}
  </div>
  </div>
- <Button
- variant="ghost"
- size="icon"
- className="text-white hover:bg-white/20 h-10 w-10 rounded-full relative z-10 backdrop-blur-sm border border-white/10"
- onClick={(e) => { e.stopPropagation(); triggerHaptic('medium'); openEditWalletModal(wallet); }}
- >
+  <Button
+  variant="ghost"
+  size="icon"
+  className="text-white hover:bg-white/20 h-11 w-11 rounded-full relative z-10 backdrop-blur-sm border border-white/10"
+  onClick={(e) => { e.stopPropagation(); triggerHaptic('medium'); openEditWalletModal(wallet); }}
+  aria-label="Ubah dompet"
+  >
  <DotsThreeVertical size={20} weight="regular"/>
  </Button>
  </div>
@@ -166,8 +167,9 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
  const { Icon, logo, textColor } = getWalletVisuals(wallet.name, wallet.icon || undefined);
 
  return (
- <button
- key={wallet.id}
+  <button
+  type="button"
+  key={wallet.id}
  onClick={() => {
  triggerHaptic('light');
  setActiveIndex(i);
@@ -179,7 +181,7 @@ export const WalletCardStack = ({ wallets, activeIndex, setActiveIndex }: Wallet
  style={{ opacity: isActive ? 1 : 0.4, transform: isActive ? 'scale(1.1)': 'scale(0.9)'}}
  >
  <div className={cn(
- "h-12 w-12 rounded-card flex items-center justify-center border border-border/40 transition-all",
+ "h-12 w-12 rounded-card flex items-center justify-center border border-border/15 transition-all",
  isActive ? "border-primary bg-card": "border-transparent bg-muted"
  )}>
  {logo ? (

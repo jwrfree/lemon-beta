@@ -115,7 +115,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <h2 className="text-title-lg">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full" aria-label="Tutup">
                         <X className="h-5 w-5" weight="regular" />
                     </Button>
                 </div>
@@ -134,8 +134,9 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    className={cn("aspect-square h-auto w-auto", icon === iconName && "ring-2 ring-primary")}
+                                    className={cn("h-11 w-11", icon === iconName && "ring-2 ring-primary")}
                                     onClick={() => setIcon(iconName)}
+                                    aria-label={`Pilih ikon ${iconName}`}
                                 >
                                     <Icon className="h-6 w-6" />
                                 </Button>
@@ -190,7 +191,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                     {isEditMode && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button type="button" variant="destructive" size="icon" disabled={isDeleting}>
+                                <Button type="button" variant="destructive" size="icon" disabled={isDeleting} aria-label="Hapus tujuan">
                                     <Trash className="h-5 w-5" weight="regular" />
                                 </Button>
                             </AlertDialogTrigger>

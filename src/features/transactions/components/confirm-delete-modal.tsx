@@ -89,7 +89,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: ConfirmD
  initial={{ opacity: 0, y: 12 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ ...transition, delay: 0.12 }}
- className="rounded-3xl bg-muted/35 p-4 border border-border/40 dark:bg-card/80"
+ className="rounded-3xl bg-muted/35 p-4 border border-border/15 dark:bg-card/80"
  >
  <div className="flex items-center gap-4 overflow-hidden">
  <div className={cn('flex h-12 w-12 shrink-0 items-center justify-center rounded-xl', details.bg_color || 'bg-muted')}>
@@ -114,7 +114,7 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: ConfirmD
  </div>
  </motion.div>
 
- <div className="shrink-0 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 border-t border-border/40 backdrop-blur-sm sm:px-8">
+ <div className="shrink-0 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 border-t border-border/15 backdrop-blur-sm sm:px-8">
  <div className="mx-auto flex w-full max-w-sm flex-col gap-3">
  <Button
  onClick={handleConfirm}

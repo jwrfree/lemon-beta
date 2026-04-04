@@ -65,7 +65,7 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
     const sectionLabel = type === 'expense' ? 'pengeluaran' : 'pemasukan';
 
     return (
-        <Card className="shadow-none border border-border/40 border-none rounded-md sm:rounded-card overflow-hidden bg-card">
+        <Card className="shadow-none border border-border/15 border-none rounded-md sm:rounded-card overflow-hidden bg-card">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
                 <div className="space-y-0.5 sm:space-y-1">
                     <CardTitle className="text-body-lg sm:text-title-lg font-medium tracking-tight">Tren Tahunan</CardTitle>
@@ -73,7 +73,7 @@ export const MonthlyTrendChart = ({ type, transactions, isLoading }: { type: 'ex
                         {`Visualisasi ${sectionLabel} 12 bulan.`}
                     </CardDescription>
                 </div>
-                <Badge variant="outline" className="border-border text-label-md sm:text-label-md font-medium px-1.5 py-0.5">
+                <Badge variant="outline" className="border-border/20 text-label-md sm:text-label-md font-medium px-1.5 py-0.5">
                     {rangeLabel}
                 </Badge>
             </CardHeader>

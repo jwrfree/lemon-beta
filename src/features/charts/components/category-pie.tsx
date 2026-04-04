@@ -113,7 +113,7 @@ export function CategoryPie({ data, total, type }: CategoryPieProps) {
 
  if (total === 0) {
  return (
- <div className="h-[250px] flex items-center justify-center text-muted-foreground text-body-md border-2 border-dashed border-border rounded-lg bg-muted/20">
+ <div className="h-[250px] flex items-center justify-center text-muted-foreground text-body-md border-2 border-dashed border-border/20 rounded-lg bg-muted/20">
  Visual kategori akan muncul setelah ada transaksi
  </div>
  );

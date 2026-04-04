@@ -86,7 +86,7 @@ export const AnomalyAlertCard = ({ data, onAction }: AnomalyAlertCardProps) => {
  <button
  type="button"
  onClick={() => onAction(data.action!)}
- className="mt-4 inline-flex rounded-full border border-border px-3 py-1.5 text-label-md text-primary transition-colors hover:bg-primary/5"
+ className="mt-4 inline-flex rounded-full border border-border/20 px-3 py-1.5 text-label-md text-primary transition-colors hover:bg-primary/5"
  >
  {data.action_label?.trim() || 'Lihat tindak lanjut ->'}
  </button>

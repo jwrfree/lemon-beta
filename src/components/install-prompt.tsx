@@ -46,7 +46,7 @@ export function InstallPrompt() {
  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
  className="fixed bottom-20 left-4 right-4 z-50 md:bottom-8 md:left-auto md:right-8 md:w-96"
  >
- <div className="bg-popover/90 backdrop-blur-md border border-border rounded-md shadow-xl p-4 flex items-center justify-between gap-4">
+ <div className="bg-popover/90 backdrop-blur-md border border-border/20 rounded-md shadow-xl p-4 flex items-center justify-between gap-4">
  <div className="flex items-center gap-3">
  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
  <DownloadSimple className="h-5 w-5 text-primary"weight="regular"/>
@@ -64,12 +64,13 @@ export function InstallPrompt() {
  >
  Install
  </Button>
- <Button
- onClick={handleDismiss}
- variant="ghost"
- size="icon"
- className="h-8 w-8 rounded-full hover:bg-muted"
- >
+        <Button
+          onClick={handleDismiss}
+          variant="ghost"
+          size="icon"
+          className="h-11 w-11 rounded-full hover:bg-muted"
+          aria-label="Tutup prompt instalasi"
+        >
  <X className="h-4 w-4"weight="regular"/>
  <span className="sr-only">Tutup</span>
  </Button>

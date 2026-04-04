@@ -241,12 +241,13 @@ export const RemindersDashboard = ({ transactions }: RemindersDashboardProps) =>
  {Object.entries(statusLabels).map(([key, label]) => {
  const isActive = activeTab === key;
  return (
- <button
- key={key}
- onClick={() => {
- triggerHaptic('light');
- setActiveTab(key);
- }}
+          <button
+            type="button"
+            key={key}
+            onClick={() => {
+              triggerHaptic('light');
+              setActiveTab(key);
+            }}
  className={cn(
  "py-2 px-6 rounded-full text-label-md transition-all relative shrink-0",
  isActive ? "text-primary bg-card shadow-none": "text-muted-foreground hover:text-foreground"
@@ -332,19 +333,19 @@ export const RemindersDashboard = ({ transactions }: RemindersDashboardProps) =>
 
  <div className="flex items-center gap-2 pt-1">
  {status !== 'completed'&& (
- <Button 
- size="sm"
- variant="ghost"
- className="h-8 text-label-md gap-2 hover:bg-emerald-500/10 hover:text-emerald-700 -ml-2 rounded-full px-4"
- onClick={() => handleComplete(reminder)}
- >
+  <Button 
+  size="sm"
+  variant="ghost"
+  className="h-8 text-label-md gap-2 hover:bg-success/10 hover:text-success -ml-2 rounded-full px-4"
+  onClick={() => handleComplete(reminder)}
+  >
  <Check className="h-3.5 w-3.5"/> Selesai
  </Button>
  )}
  <div className="flex-1"/>
 														<DropdownMenu>
 															<DropdownMenuTrigger asChild>
-																<Button size="sm"variant="ghost"className="h-8 w-8 p-0 rounded-full hover:bg-muted">
+																<Button size="sm"variant="ghost"className="h-11 w-11 p-0 rounded-full hover:bg-muted" aria-label="Opsi pengingat">
 																	<EllipsisVertical className="h-4 w-4 text-muted-foreground opacity-40"/>
 																</Button>
 															</DropdownMenuTrigger>

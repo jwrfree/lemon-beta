@@ -132,7 +132,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                                         setSelectedBg(opt.bg);
                                     }}
                                     className={cn(
-                                        "flex h-10 w-full items-center justify-center rounded-lg transition-all border border-border/40",
+                                        "flex h-10 w-full items-center justify-center rounded-lg transition-all border border-border/15",
                                         opt.bg,
                                         isSelected ? "ring-2 ring-primary/25" : ""
                                     )}
@@ -159,7 +159,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
                 <SheetContent
                     side="bottom"
                     hideCloseButton
-                    className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-card border-t border-border/50 bg-background p-0 shadow-elevation-4"
+                    className="flex max-h-[90vh] w-full max-w-md flex-col overflow-hidden rounded-t-card border-t border-border/20 bg-background p-0 shadow-elevation-4"
                 >
                     <div className="pointer-events-none flex justify-center pt-3">
                         <div className="h-1.5 w-12 rounded-full bg-border/80" />

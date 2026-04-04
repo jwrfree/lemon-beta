@@ -64,7 +64,7 @@ export const ExpenseShortTermTrend = ({ transactions, isLoading }: { transaction
  const gradientId =`expense-trend-${chartType}-${range}`;
 
  return (
- <Card className="overflow-hidden border-none shadow-none border border-border/40 bg-card rounded-md">
+ <Card className="overflow-hidden border-none shadow-none border border-border/15 bg-card rounded-md">
  <CardHeader className="space-y-4">
  <div className="flex flex-col gap-1">
  <CardTitle className="text-label-md font-medium tracking-tight text-muted-foreground">Tren Pengeluaran</CardTitle>

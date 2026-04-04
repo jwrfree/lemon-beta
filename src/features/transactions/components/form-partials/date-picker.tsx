@@ -59,7 +59,7 @@ const DatePickerField = ({ field, inputId, error }: DatePickerFieldProps) => {
                         id={inputId}
                         variant="outline"
                         className={cn(
-                            "h-12 flex-1 justify-start rounded-lg bg-background border border-border/40 text-left font-normal",
+                            "h-12 flex-1 justify-start rounded-lg bg-background border border-border/15 text-left font-normal",
                             !field.value && "text-muted-foreground",
                             error && "border-destructive hover:bg-destructive/10"
                         )}
@@ -92,7 +92,7 @@ const DatePickerField = ({ field, inputId, error }: DatePickerFieldProps) => {
                     value={timeStr}
                     onChange={handleTimeChange}
                     className={cn(
-                        "h-12 rounded-lg bg-background border border-border/40 pl-9",
+                        "h-12 rounded-lg bg-background border border-border/15 pl-9",
                         error && "border-destructive"
                     )}
                 />

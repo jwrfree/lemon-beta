@@ -19,7 +19,7 @@ export const RiskScoreCard = () => {
 
  if (!risk) {
  return (
- <Card variant="elevated"className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center border border-border/40">
+ <Card variant="elevated"className="flex h-[180px] flex-col items-center justify-center space-y-3 bg-card/35 p-6 text-center border border-border/15">
  <div className="p-3 rounded-full bg-primary/5 text-primary">
  <Sparkle size={24} weight="regular"className="opacity-30"/>
  </div>
@@ -78,12 +78,13 @@ export const RiskScoreCard = () => {
  <p className="text-label text-white/40">Analisis Risiko</p>
  </div>
  </div>
- <Button
- variant="ghost"
- size="icon"
- onClick={refreshInsights}
- className="h-10 w-10 rounded-full backdrop-blur-sm hover:bg-white/10"
- >
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={refreshInsights}
+          className="h-11 w-11 rounded-full backdrop-blur-sm hover:bg-white/10"
+          aria-label="Refresh insight"
+        >
  <ArrowClockwise size={16} weight="regular"className="text-white/40"/>
  </Button>
  </div>
@@ -103,7 +104,7 @@ export const RiskScoreCard = () => {
  </div>
 
  <div className="grid grid-cols-2 gap-4">
- <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md border border-border/40">
+ <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md border border-border/15">
  <div className="flex items-center gap-1.5 mb-1.5">
  <p className="text-label text-white/40">Laju Pengeluaran</p>
  <HelpTooltip
@@ -113,7 +114,7 @@ export const RiskScoreCard = () => {
  </div>
  <p className="text-body-md tabular-nums text-white">{formatCurrency(risk.burnRate)}/h</p>
  </div>
- <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md border border-border/40">
+ <div className="rounded-card-glass bg-white/6 p-4 backdrop-blur-md border border-border/15">
  <div className="flex items-center gap-1.5 mb-1.5">
  <p className="text-label text-white/40">Momentum</p>
  <HelpTooltip

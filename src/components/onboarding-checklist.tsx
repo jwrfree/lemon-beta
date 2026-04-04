@@ -99,7 +99,7 @@ export const OnboardingChecklist = () => {
  animate={{ opacity: 1, y: 0 }}
  exit={{ opacity: 0, scale: 0.95 }}
  className={cn(
- "mb-4 rounded-2xl border border-border/40 bg-card/90 shadow-none",
+ "mb-4 rounded-2xl border border-border/15 bg-card/90 shadow-none",
  isMinimized ? "p-3 px-4": "p-4"
  )}
  >
@@ -123,12 +123,13 @@ export const OnboardingChecklist = () => {
  </div>
  
  <div className="flex items-center gap-1">
- <Button
- variant="ghost"
- size="icon"
- className="h-7 w-7 rounded-full hover:bg-muted"
- onClick={() => setIsMinimized(!isMinimized)}
- >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-11 w-11 rounded-full hover:bg-muted"
+          onClick={() => setIsMinimized(!isMinimized)}
+          aria-label={isMinimized ? 'Perluas checklist' : 'Perkecil checklist'}
+        >
  {isMinimized ? <ChevronRight className="w-4 h-4"/> : <X className="w-4 h-4"/>}
  </Button>
  </div>
@@ -148,17 +149,18 @@ export const OnboardingChecklist = () => {
  {ONBOARDING_TASKS.map((task) => {
  const isDone = status.steps[task.id];
  return (
- <motion.button
- key={task.id}
- whileTap={{ scale: 0.98 }}
- onClick={() => handleStepToggle(task.id)}
- className={cn(
- "flex w-full items-center gap-3 rounded-xl border p-2.5 transition-all",
- isDone 
- ? "border-primary/50 bg-primary/5 shadow-elevation-1"
- : "border-border/50 bg-background hover:border-border"
- )}
- >
+  <motion.button
+  key={task.id}
+  type="button"
+  whileTap={{ scale: 0.98 }}
+  onClick={() => handleStepToggle(task.id)}
+  className={cn(
+  "flex w-full items-center gap-3 rounded-xl border p-2.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+  isDone 
+  ? "border-primary/50 bg-primary/5 shadow-elevation-1"
+  : "border-border/20 bg-background hover:border-border/20"
+  )}
+  >
  <div className={cn(
  "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
  task.bgColor,

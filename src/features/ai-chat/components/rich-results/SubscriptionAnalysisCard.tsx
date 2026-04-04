@@ -18,14 +18,14 @@ interface SubscriptionAnalysisCardProps {
 export const SubscriptionAnalysisCard = ({ data }: SubscriptionAnalysisCardProps) => {
  if (!data.subscriptions || data.subscriptions.length === 0) {
  return (
- <div className="mt-4 p-4 rounded-card bg-muted/20 border border-dashed border-border/50 text-center">
+ <div className="mt-4 p-4 rounded-card bg-muted/20 border border-dashed border-border/20 text-center">
  <p className="text-label-md text-muted-foreground">Tidak ditemukan transaksi berulang yang mencurigakan.</p>
  </div>
  );
  }
 
  return (
- <Card className="mt-4 bg-background border border-border/40 shadow-sm rounded-card overflow-hidden motion-surface">
+ <Card className="mt-4 bg-background border border-border/15 shadow-sm rounded-card overflow-hidden motion-surface">
  <CardContent className="p-4 space-y-4">
  <div className="flex items-center justify-between">
  <span className="text-label text-muted-foreground/60">Deteksi Langganan</span>

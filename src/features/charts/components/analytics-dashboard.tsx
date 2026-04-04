@@ -386,8 +386,26 @@ export function AnalyticsDashboard() {
  <div className="flex items-center justify-between px-2">
  <h3 className="text-title-lg tracking-tight">Breakdown Kategori</h3>
  <div className="flex bg-muted/60 p-1.5 rounded-full border border-border/10 backdrop-blur-sm self-start">
- <button onClick={() => setCategoryView('expense')} className={cn("px-5 py-1.5 text-label rounded-full transition-all duration-300", categoryView === 'expense'? "bg-card text-teal-600 shadow-sm": "text-muted-foreground hover:text-foreground")}>Keluar</button>
- <button onClick={() => setCategoryView('income')} className={cn("px-5 py-1.5 text-label rounded-full transition-all duration-300", categoryView === 'income'? "bg-card text-teal-600 shadow-sm": "text-muted-foreground hover:text-foreground")}>Masuk</button>
+                          <button
+                            type="button"
+                            onClick={() => setCategoryView('expense')}
+                            className={cn(
+                              "px-5 py-1.5 text-label rounded-full transition-all duration-300",
+                              categoryView === 'expense' ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                            )}
+                          >
+                            Keluar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCategoryView('income')}
+                            className={cn(
+                              "px-5 py-1.5 text-label rounded-full transition-all duration-300",
+                              categoryView === 'income' ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+                            )}
+                          >
+                            Masuk
+                          </button>
  </div>
  </div>
 

@@ -110,7 +110,7 @@ export default function WelcomePage() {
 
  <Button
  variant="ghost"
- className="hidden rounded-full border border-border/50 bg-white/60 px-4 text-body-md text-muted-foreground shadow-sm backdrop-blur md:inline-flex"
+ className="hidden rounded-full border border-border/20 bg-white/60 px-4 text-body-md text-muted-foreground shadow-sm backdrop-blur md:inline-flex"
  onClick={() => setAuthView(authView === 'signup'? 'login': 'signup')}
  >
  {authView === 'signup'? 'Sudah punya akun?': 'Belum punya akun?'}
@@ -139,7 +139,7 @@ export default function WelcomePage() {
  </p>
  </div>
 
- <div className="grid grid-cols-2 gap-3 border-y border-border/50 py-5 sm:grid-cols-3 sm:gap-4">
+ <div className="grid grid-cols-2 gap-3 border-y border-border/20 py-5 sm:grid-cols-3 sm:gap-4">
  <div className="space-y-0.5">
  <p className="text-label-sm sm:text-label text-muted-foreground/60">Fokus utama</p>
  <p className="text-label-md sm:text-body-md font-medium text-foreground">Saldo, budget, cashflow</p>
@@ -188,10 +188,10 @@ export default function WelcomePage() {
  className="relative w-full"
  >
  <div className="absolute inset-4 sm:inset-6 rounded-card-premium bg-white/40 blur-2xl"/>
- <div className="relative overflow-hidden rounded-3xl sm:rounded-card-premium border border-border/40 bg-card/60 p-2 sm:p-3 shadow-elevation-4 backdrop-blur-xl sm:p-4">
- <div className="rounded-2xl sm:rounded-3xl border border-border/40 bg-card/80 p-3 sm:p-4 md:p-5">
- <div className="space-y-4 border-b border-border/40 pb-5">
- <div className="inline-flex w-fit rounded-full border border-border bg-muted/50 px-3 py-1 text-label-sm sm:text-label text-muted-foreground">
+ <div className="relative overflow-hidden rounded-3xl sm:rounded-card-premium border border-border/15 bg-card/60 p-2 sm:p-3 shadow-elevation-4 backdrop-blur-xl sm:p-4">
+ <div className="rounded-2xl sm:rounded-3xl border border-border/15 bg-card/80 p-3 sm:p-4 md:p-5">
+ <div className="space-y-4 border-b border-border/15 pb-5">
+ <div className="inline-flex w-fit rounded-full border border-border/20 bg-muted/50 px-3 py-1 text-label-sm sm:text-label text-muted-foreground">
  {authMeta.eyebrow}
  </div>
  <div className="space-y-2">

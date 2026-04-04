@@ -43,7 +43,7 @@ const SidebarAction = ({ children, label, collapsed }: SidebarActionProps) => {
  return (
  <Tooltip>
  <TooltipTrigger asChild>{children}</TooltipTrigger>
- <TooltipContent side="right"sideOffset={18} className="bg-card border border-border/40 text-label text-foreground backdrop-blur-xl">
+ <TooltipContent side="right"sideOffset={18} className="bg-card border border-border/15 text-label text-foreground backdrop-blur-xl">
  {label}
  </TooltipContent>
  </Tooltip>
@@ -95,7 +95,7 @@ export const Sidebar = () => {
  return (
  <aside
  className={cn(
- 'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-card-premium bg-card border-r border-border/40 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
+ 'fixed bottom-4 left-4 top-4 z-50 hidden flex-col overflow-hidden rounded-card-premium bg-card border-r border-border/15 backdrop-blur-xl transition-[width,padding] duration-300 ease-in-out dark:bg-background/95 md:flex',
  isSidebarCollapsed
  ? cn(SIDEBAR_CONFIG.collapsedWidth, 'px-3 py-4')
  : cn(SIDEBAR_CONFIG.expandedWidth, 'px-4 py-4')
@@ -107,7 +107,7 @@ export const Sidebar = () => {
  prefetch={false}
  className={cn(
  'flex min-w-0 items-center gap-3 rounded-2xl',
- isSidebarCollapsed ? 'w-full justify-center': 'flex-1 bg-white/58 px-3 py-2 border border-border/40'
+ isSidebarCollapsed ? 'w-full justify-center': 'flex-1 bg-white/58 px-3 py-2 border border-border/15'
  )}
  aria-label={SIDEBAR_CONFIG.appName}
  >
@@ -132,7 +132,7 @@ export const Sidebar = () => {
  variant="ghost"
  size="icon"
  onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
- className="h-10 w-10 rounded-2xl text-muted-foreground hover:bg-white/70 hover:text-foreground"
+        className="h-11 w-11 rounded-2xl text-muted-foreground hover:bg-white/70 hover:text-foreground"
  aria-label={isSidebarCollapsed ? 'Perluas sidebar': 'Ciutkan sidebar'}
  >
  {isSidebarCollapsed ? <CaretRight size={18} weight="regular"/> : <CaretLeft size={18} weight="regular"/>}

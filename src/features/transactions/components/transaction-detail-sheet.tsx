@@ -89,7 +89,7 @@ export const TransactionDetailSheet = ({
  initial={{ opacity: 0, y: 12 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ ...contentTransition, delay: 0.08 }}
- className="rounded-3xl bg-card px-5 py-5 border border-border/40"
+ className="rounded-3xl bg-card px-5 py-5 border border-border/15"
  >
  <div className="flex flex-col items-start text-left">
  <div className="mb-4 flex items-center gap-3">
@@ -119,7 +119,7 @@ export const TransactionDetailSheet = ({
  initial={{ opacity: 0, y: 12 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ ...contentTransition, delay: 0.12 }}
- className="rounded-3xl bg-card px-4 py-2 border border-border/40"
+ className="rounded-3xl bg-card px-4 py-2 border border-border/15"
  >
  <div className="mb-1 px-1 pt-2">
  <span className="text-label text-muted-foreground/40">Rincian Pembayaran</span>
@@ -138,7 +138,7 @@ export const TransactionDetailSheet = ({
  initial={{ opacity: 0, y: 12 }}
  animate={{ opacity: 1, y: 0 }}
  transition={{ ...contentTransition, delay: 0.16 }}
- className="overflow-hidden rounded-3xl bg-card px-1 border border-border/40"
+ className="overflow-hidden rounded-3xl bg-card px-1 border border-border/15"
  >
  <Accordion type="single"collapsible className="w-full">
  <AccordionItem value="details"className="border-none">
@@ -170,7 +170,7 @@ export const TransactionDetailSheet = ({
  </motion.div>
  </div>
  </motion.div>
- <div className="shrink-0 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 border-t border-border/40 backdrop-blur-sm sm:px-8">
+ <div className="shrink-0 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 border-t border-border/15 backdrop-blur-sm sm:px-8">
  <div className="mx-auto w-full max-w-sm">
  <Button
  onClick={onClose}

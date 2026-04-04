@@ -22,14 +22,13 @@ export const HelpTooltip = ({
         <TooltipProvider>
             <Tooltip delayDuration={300}>
                 <TooltipTrigger asChild>
-                    <div 
+                    <button
+                        type="button"
                         className={cn("inline-flex items-center justify-center cursor-help", className)}
-                        role="button"
-                        tabIndex={0}
                         aria-label="Info"
                     >
                         <Info className={cn("h-3.5 w-3.5 text-muted-foreground/70 hover:text-foreground transition-colors", iconClassName)} weight="regular" />
-                    </div>
+                    </button>
                 </TooltipTrigger>
                 <TooltipContent side={side} className="max-w-[260px] text-label-md font-normal">
                     {content}

@@ -20,7 +20,7 @@ import { Plus } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface FABProps {
+export interface FABProps {
   /** Click handler that opens the relevant modal or sheet */
   onClick: () => void;
   /** Accessible label for screen readers and tooltip */

@@ -31,7 +31,7 @@ export const FinancialHealthCard = ({ data }: FinancialHealthCardProps) => {
  };
 
  return (
- <Card className="mt-4 bg-background border border-border/40 shadow-sm rounded-card overflow-hidden motion-surface">
+ <Card className="mt-4 bg-background border border-border/15 shadow-sm rounded-card overflow-hidden motion-surface">
  <CardContent className="p-4 space-y-5">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">

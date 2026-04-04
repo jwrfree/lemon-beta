@@ -95,7 +95,7 @@ export const DashboardCashflow = ({ transactions, chartRange, setChartRange }: D
     }, [transactions, chartRange, chartRangeDays, now]);
 
     return (
-        <Card className="border-none shadow-none border border-border/40 bg-card rounded-card">
+        <Card className="border-none shadow-none border border-border/15 bg-card rounded-card">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div>

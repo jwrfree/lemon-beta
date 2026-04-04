@@ -6,22 +6,26 @@ import { Loader2 } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-title-sm ring-offset-background transition-all motion-pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-title-sm ring-offset-background transition-all motion-pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-foreground text-background hover:opacity-90 active:scale-95",
-        default: "bg-foreground text-background hover:opacity-90 active:scale-95",
-        volt: "bg-accent text-accent-foreground hover:opacity-90 active:scale-95 shadow-sm",
+        primary: "bg-primary text-primary-foreground hover:opacity-90 active:scale-95 shadow-sm",
+        default: "bg-primary text-primary-foreground hover:opacity-90 active:scale-95 shadow-sm",
+        volt: "bg-accent text-accent-foreground hover:opacity-90 active:scale-95 shadow-md",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:scale-95",
+        "destructive-soft":
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 active:scale-95",
+        "primary-soft":
+          "bg-primary/10 text-primary hover:bg-primary/20 active:scale-95",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground active:scale-95",
+          "border border-input bg-background hover:bg-accent/10 hover:text-accent-foreground active:scale-95",
         secondary:
           "bg-secondary text-secondary-foreground hover:opacity-80 active:scale-95",
         ghost: "hover:bg-accent hover:text-accent-foreground active:scale-95",
         link: "text-primary underline-offset-4 hover:underline",
-        tertiary: "text-muted-foreground hover:bg-accent hover:text-accent-foreground active:scale-95",
+        tertiary: "text-muted-foreground hover:text-foreground active:scale-95",
         success: "bg-success text-success-foreground hover:opacity-90 active:scale-95",
         error: "bg-destructive text-destructive-foreground hover:opacity-90 active:scale-95",
       },
@@ -29,7 +33,7 @@ const buttonVariants = cva(
         default: "h-11 px-6 py-2",
         sm: "h-9 px-4",
         lg: "h-13 px-10 text-body-lg",
-        icon: "h-11 w-11",
+        icon: "h-11 w-11 rounded-full",
       },
     },
     defaultVariants: {
@@ -49,12 +53,16 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, isLoading = false, children, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const computedAriaLabel =
+      props["aria-label"] ??
+      (size === "icon" && !props["aria-labelledby"] ? props.title : undefined)
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         disabled={disabled || isLoading}
         aria-busy={isLoading || undefined}
+        aria-label={computedAriaLabel}
         {...props}
       >
         {isLoading ? (

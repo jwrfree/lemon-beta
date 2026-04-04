@@ -164,7 +164,13 @@ export const LoginPage = ({
  <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-card": "")}>
  <h2 id="login-heading"className="text-title-lg">Selamat Datang Kembali!</h2>
  {!isPage && (
- <Button variant="ghost"size="icon"onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
+          aria-label="Tutup"
+        >
  <X className="h-5 w-5"/>
  <span className="sr-only">Tutup</span>
  </Button>
@@ -196,14 +202,14 @@ export const LoginPage = ({
  />
  </FormControl>
  {field.value && (
- <Button
- type="button"
- variant="ghost"
- size="icon"
- className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9"
- onClick={() => form.setValue('email', '')}
- aria-label="Hapus email"
- >
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11"
+              onClick={() => form.setValue('email', '')}
+              aria-label="Hapus email"
+            >
  <X className="h-4 w-4"/>
  </Button>
  )}
@@ -231,14 +237,14 @@ export const LoginPage = ({
  {...field}
  />
  </FormControl>
- <Button
- type="button"
- variant="ghost"
- size="icon"
- onClick={() => setShowPassword(!showPassword)}
- className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
- aria-label={showPassword ? 'Sembunyikan password': 'Tampilkan password'}
- >
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11 text-muted-foreground hover:text-foreground"
+            aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+          >
  {showPassword ? <EyeOff className="h-5 w-5"/> : <Eye className="h-5 w-5"/>}
  </Button>
  </div>

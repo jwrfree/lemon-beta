@@ -56,7 +56,7 @@ export const SemanticTransactionReview = ({
  "inline-flex min-h-[48px] items-center gap-2 rounded-2xl border border-transparent px-4 py-3 text-left text-body-lg font-medium transition-all active:scale-[0.98]";
 
  const sectionCardClass = "rounded-2xl bg-muted px-4 py-4";
- const missingFieldClass = "bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100";
+  const missingFieldClass = "bg-warning/10 text-warning";
 
  const recentCategories = activeCategories.filter((category) =>
  transactions.some((transaction) => transaction.category === category.name && transaction.type === type)
@@ -142,7 +142,7 @@ export const SemanticTransactionReview = ({
  ? type === 'income'
  ? "bg-secondary text-primary"
  : "bg-card text-foreground"
- : "animate-pulse bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100"
+  : "animate-pulse bg-warning/10 text-warning"
  )}
  >
  <span className="min-w-0 flex-1 text-display-md tracking-tight">
@@ -264,8 +264,8 @@ export const SemanticTransactionReview = ({
  className={cn(
  fieldButtonBase,
  isNeed
- ? "bg-emerald-100 text-emerald-900 dark:bg-emerald-900 dark:text-emerald-100"
- : "bg-violet-100 text-violet-900 dark:bg-violet-900 dark:text-violet-100"
+  ? "bg-success/10 text-success"
+  : "bg-warning/10 text-warning"
  )}
  >
  {isNeed ? (
@@ -275,7 +275,7 @@ export const SemanticTransactionReview = ({
  </>
  ) : (
  <>
- <Sparkle size={16} weight="regular"className="text-violet-700"/>
+  <Sparkle size={16} weight="regular"className="text-warning"/>
  <span>Keinginan</span>
  </>
  )}
@@ -354,12 +354,13 @@ export const SemanticTransactionReview = ({
  <p className="ml-2 text-label text-muted-foreground/40">Pilih dompet</p>
  <div className="hide-scrollbar flex snap-x gap-2 overflow-x-auto pb-2">
  {wallets.map((wallet) => (
- <button
- key={wallet.id}
- onClick={() => {
- form.setValue('walletId', wallet.id);
- setActiveEditor(null);
- }}
+  <button
+  type="button"
+  key={wallet.id}
+  onClick={() => {
+  form.setValue('walletId', wallet.id);
+  setActiveEditor(null);
+  }}
  className={cn(
  "snap-center flex w-[140px] shrink-0 flex-col items-start gap-1 rounded-xl p-3 transition-all active:scale-[0.98]",
  walletId === wallet.id

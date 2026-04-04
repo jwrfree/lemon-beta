@@ -25,7 +25,7 @@ export const ScenarioSimulationCard = ({ data }: ScenarioSimulationCardProps) =>
  const isReachable = data.is_possible && data.months_to_reach !== null;
  
  return (
- <Card className="mt-4 bg-background border border-border/40 shadow-sm rounded-card overflow-hidden motion-surface">
+ <Card className="mt-4 bg-background border border-border/15 shadow-sm rounded-card overflow-hidden motion-surface">
  <CardContent className="p-4 space-y-4">
  <div className="flex items-center justify-between">
  <span className="text-label-sm text-muted-foreground/50">Simulasi Target</span>
@@ -66,7 +66,7 @@ export const ScenarioSimulationCard = ({ data }: ScenarioSimulationCardProps) =>
  }
 
  return (
- <Card className="mt-4 bg-background border border-border/40 shadow-sm rounded-card overflow-hidden motion-surface">
+ <Card className="mt-4 bg-background border border-border/15 shadow-sm rounded-card overflow-hidden motion-surface">
  <CardContent className="p-4 space-y-4">
  <div className="flex items-center justify-between">
  <span className="text-label-sm text-muted-foreground/50">Proyeksi Saldo</span>

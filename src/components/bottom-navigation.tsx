@@ -17,7 +17,8 @@ const slotBaseClassName =
     'group flex h-full w-full min-w-0 flex-col items-center px-1 pb-2 pt-3 motion-pressable active:scale-95';
 
 const navIconRowClassName = 'flex h-7 w-full flex-none items-center justify-center';
-const navLabelClassName = 'inline-flex h-4 w-full flex-none items-start justify-center truncate text-label-sm font-medium tracking-tight transition-colors';
+// Small label for bottom navigation slots
+const navLabelClassName = 'inline-flex h-4 w-full flex-none items-start justify-center truncate text-[9.5px] font-medium tracking-tight transition-colors';
 
 interface NavSlotProps {
     label: string;

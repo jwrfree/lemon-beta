@@ -111,7 +111,7 @@ export function AssetsLiabilitiesDashboard() {
  </div>
  </Card>
 
- <Card className="border-none shadow-md rounded-card bg-card border border-border p-6 flex flex-col items-center justify-center min-h-[200px]">
+ <Card className="border-none shadow-md rounded-card bg-card border border-border/20 p-6 flex flex-col items-center justify-center min-h-[200px]">
  <p className="text-label-md font-medium text-muted-foreground mb-4 self-start">Distribusi Aset</p>
  <div className="w-full h-[180px]">
  {totals.chartData.length > 0 ? (
@@ -131,7 +131,7 @@ export function AssetsLiabilitiesDashboard() {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- <Card className="border-none shadow-md rounded-card overflow-hidden bg-card border border-border">
+ <Card className="border-none shadow-md rounded-card overflow-hidden bg-card border border-border/20">
  <Tabs defaultValue="all"className="h-full flex flex-col">
  <CardHeader className="flex flex-col gap-4 pb-2">
  <div className="flex flex-row items-center justify-between">
@@ -142,7 +142,15 @@ export function AssetsLiabilitiesDashboard() {
  </CardTitle>
  <p className="text-display-lg font-medium tracking-tighter text-teal-600 dark:text-teal-400">{formatCurrency(totals.totalAssets)}</p>
  </div>
- <Button variant="ghost"size="icon"className="h-10 w-10 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 text-teal-600"onClick={() => handleOpenForm({ type: 'asset'})}><Plus className="h-5 w-5"/></Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-11 w-11 rounded-lg text-success hover:bg-success/10"
+                  onClick={() => handleOpenForm({ type: 'asset' })}
+                  aria-label="Tambah aset"
+                >
+                  <Plus className="h-5 w-5" />
+                </Button>
  </div>
  <TabsList className="bg-muted p-1 rounded-lg h-11 w-full grid grid-cols-3">
  <TabsTrigger value="all"className="h-full rounded-md text-label-md font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground">Semua</TabsTrigger>
@@ -158,7 +166,7 @@ export function AssetsLiabilitiesDashboard() {
  </Tabs>
  </Card>
 
- <Card className="border-none shadow-md rounded-card overflow-hidden bg-card border border-border">
+ <Card className="border-none shadow-md rounded-card overflow-hidden bg-card border border-border/20">
  <CardHeader className="flex flex-row items-center justify-between pb-2">
  <div className="space-y-1">
  <CardTitle className="text-body-md font-medium flex items-center gap-2 text-muted-foreground">
@@ -167,7 +175,15 @@ export function AssetsLiabilitiesDashboard() {
  </CardTitle>
  <p className="text-display-lg font-medium tracking-tighter text-rose-600 dark:text-rose-400">{formatCurrency(totals.totalLiabilities)}</p>
  </div>
- <Button variant="ghost"size="icon"className="h-10 w-10 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600"onClick={() => handleOpenForm({ type: 'liability'})}><Plus className="h-5 w-5"/></Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-11 w-11 rounded-lg text-destructive hover:bg-destructive/10"
+                  onClick={() => handleOpenForm({ type: 'liability' })}
+                  aria-label="Tambah liabilitas"
+                >
+                  <Plus className="h-5 w-5" />
+                </Button>
  </CardHeader>
  <CardContent className="px-0"><AssetLiabilityList items={liabilities} type="liability"onEdit={(item) => handleEdit(item, 'liability')} onAdd={() => handleOpenForm({ type: 'liability'})} /></CardContent>
  </Card>

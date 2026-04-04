@@ -34,7 +34,7 @@ const CategoryRow = ({
  type="button"
  onClick={onClick}
  className={cn(
- 'flex w-full items-center gap-3 rounded-2xl bg-background px-4 py-3 text-left border border-border/40 transition-all active:scale-[0.99]',
+ 'flex w-full items-center gap-3 rounded-2xl bg-background px-4 py-3 text-left border border-border/15 transition-all active:scale-[0.99]',
  isSelected && 'ring-2 ring-primary/20'
  )}
  >
@@ -108,7 +108,7 @@ export const CategoryPickerSheet = ({
  animate={{ y: 0 }}
  exit={{ y: '100%'}}
  transition={{ duration: 0.22, ease: 'easeOut'}}
- className="flex h-[82vh] max-h-[82vh] w-full max-w-md min-h-0 flex-col overflow-hidden rounded-t-card border-t border-border bg-muted shadow-elevation-4"
+ className="flex h-[82vh] max-h-[82vh] w-full max-w-md min-h-0 flex-col overflow-hidden rounded-t-card border-t border-border/20 bg-muted shadow-elevation-4"
  onClick={(event) => event.stopPropagation()}
  >
  <div className="flex flex-col gap-3 bg-muted px-4 pb-4 pt-3">
@@ -118,7 +118,7 @@ export const CategoryPickerSheet = ({
  <h2 className="text-title-lg text-foreground">Pilih kategori</h2>
  <p className="mt-1 text-body-md text-muted-foreground">Pilih kategori utama, lalu lanjut ke subkategori bila ada.</p>
  </div>
- <Button variant="ghost"size="icon"onClick={onClose} className="rounded-full bg-background">
+                <Button variant="ghost"size="icon"onClick={onClose} className="rounded-full bg-background" aria-label="Tutup">
  <X size={32} weight="regular"/>
  <span className="sr-only">Tutup</span>
  </Button>

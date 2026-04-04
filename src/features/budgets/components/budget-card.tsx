@@ -78,10 +78,11 @@ export const BudgetCard = ({ budget, transactions }: { budget: Budget, transacti
  whileTap={{ scale: 0.98 }}
  className="w-full h-full"
  >
- <button
- onClick={handleCardClick}
- className="w-full h-full text-left focus:outline-none group"
- >
+  <button
+  type="button"
+  onClick={handleCardClick}
+  className="w-full h-full text-left focus:outline-none group"
+  >
  <Card
  className="h-full overflow-hidden border-none shadow-none rounded-card-premium transition-all duration-500 relative"
  style={{

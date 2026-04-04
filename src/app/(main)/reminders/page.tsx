@@ -296,7 +296,12 @@ export default function RemindersPage() {
  )}
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button size="icon"variant="ghost"className="h-9 w-9 rounded-full bg-muted/50 hover:bg-muted">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-11 w-11 rounded-full bg-muted/50 hover:bg-muted"
+                      aria-label="Opsi pengingat"
+                    >
  <EllipsisVertical className="h-4 w-4"/>
  </Button>
  </DropdownMenuTrigger>
@@ -534,7 +539,7 @@ export default function RemindersPage() {
  <div className="flex items-center justify-between gap-4">
  <Button 
  variant="outline"
- className="flex-1 h-14 rounded-full text-label-md border-border"
+ className="flex-1 h-14 rounded-full text-label-md border-border/20"
  onClick={() => setActiveTab('overdue')}
  >
  Terlambat

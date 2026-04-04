@@ -152,11 +152,12 @@ export default function DebtDetailPage() {
  <div className="flex-1">
  <PaymentItem payment={payment} direction={debt.direction} />
  </div>
- <Button
- size="icon"
- variant="ghost"
- className="text-destructive"
- onClick={async () => {
+        <Button
+          size="icon"
+          variant="ghost"
+          className="text-destructive"
+          aria-label="Hapus pembayaran"
+          onClick={async () => {
  try {
  await deleteDebtPayment(debt.id, payment.id);
  } catch (error) {

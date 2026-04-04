@@ -108,11 +108,11 @@ export const CategoryAnalysis = ({ type, transactions, isLoading }: { type: 'exp
     const parentVisuals = selectedCategory ? categoryDetails(selectedCategory) : null;
 
     return (
-        <Card className="shadow-none border border-border/40 border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
+        <Card className="shadow-none border border-border/15 border-none rounded-md sm:rounded-card overflow-hidden bg-card transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6 space-y-0">
                 <div className="flex items-center gap-2">
                     {selectedCategory && (
-                        <Button variant="ghost" size="icon" className="h-8 w-8 -ml-2 rounded-full" onClick={handleBack}>
+                        <Button variant="ghost" size="icon" className="h-11 w-11 -ml-2 rounded-full" onClick={handleBack} aria-label="Kembali">
                             <ArrowLeft className="h-4 w-4" />
                         </Button>
                     )}

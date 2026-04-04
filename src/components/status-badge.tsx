@@ -20,7 +20,7 @@ const variantStyles: Record<StatusBadgeVariant, string> = {
     warning: "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-transparent",
     error: "bg-destructive/10 text-destructive hover:bg-destructive/20 border-transparent",
     neutral: "bg-muted text-muted-foreground hover:bg-muted/80 border-transparent",
-    outline: "text-foreground border-border",
+    outline: "text-foreground border-border/20",
 };
 
 export const StatusBadge = ({ 

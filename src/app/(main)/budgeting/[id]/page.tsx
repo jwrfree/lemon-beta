@@ -106,10 +106,11 @@ export default function BudgetDetailPage() {
  <div className="space-y-1.5">
  <div className="flex items-center gap-2 label-xs !text-muted-foreground/45">
  <span>Sisa anggaran</span>
- <button 
- onClick={() => { triggerHaptic('light'); setIsHidden(!isHidden); }} 
- className="hover:text-foreground transition-colors p-1 -m-1"
- >
+            <button
+              type="button"
+              onClick={() => { triggerHaptic('light'); setIsHidden(!isHidden); }} 
+              className="hover:text-foreground transition-colors p-1 -m-1"
+            >
  {isHidden ? <EyeSlash size={14} weight="regular"/> : <Eye size={14} weight="regular"/>}
  </button>
  </div>
@@ -186,10 +187,11 @@ export default function BudgetDetailPage() {
  <div className="space-y-4">
  <div className="flex items-center justify-between px-1">
  <h3 className="text-title-lg tracking-tight text-foreground">Konfigurasi</h3>
- <button 
- onClick={() => { triggerHaptic('light'); openEditBudgetModal(budget); }}
- className="label-xs !text-muted-foreground/45 hover:text-foreground transition-colors p-1 -m-1"
- >
+            <button
+              type="button"
+              onClick={() => { triggerHaptic('light'); openEditBudgetModal(budget); }}
+              className="label-xs !text-muted-foreground/45 hover:text-foreground transition-colors p-1 -m-1"
+            >
  Ubah anggaran
  </button>
  </div>
@@ -241,7 +243,10 @@ export default function BudgetDetailPage() {
  <div className="space-y-4">
  <div className="flex items-center justify-between px-1">
  <h3 className="text-title-lg tracking-tight text-foreground">Transaksi</h3>
- <button className="flex items-center gap-0.5 label-xs !text-muted-foreground/35 hover:text-foreground transition-colors p-1 -m-1">
+            <button
+              type="button"
+              className="flex items-center gap-0.5 label-xs !text-muted-foreground/35 hover:text-foreground transition-colors p-1 -m-1"
+            >
  Lihat semua
  <CaretRight size={10} weight="regular"/>
  </button>

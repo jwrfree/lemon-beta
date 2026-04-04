@@ -143,12 +143,13 @@ export const UnifiedTransactionSheet = ({
  </div>
  {/* Custom Standard Close Button */}
  <div className="absolute right-4 top-3 z-50 sm:right-6 sm:top-6">
- <Button
- variant="ghost"
- size="icon"
- onClick={() => handleCloseAttempt(false)}
- className="h-10 w-10 rounded-full bg-background text-muted-foreground border border-border/40 transition-all active:scale-95 hover:bg-secondary"
- >
+  <Button
+  variant="ghost"
+  size="icon"
+  onClick={() => handleCloseAttempt(false)}
+  className="h-11 w-11 rounded-full bg-background text-muted-foreground border border-border/15 transition-all active:scale-95 hover:bg-secondary"
+  aria-label="Tutup"
+  >
  <X size={32} weight="regular"/>
  <span className="sr-only">Tutup</span>
  </Button>
@@ -161,7 +162,7 @@ export const UnifiedTransactionSheet = ({
         {/* --- STAGE 1: HEADER --- */}
         <div
             className={cn(
-                "shrink-0 bg-card/60 backdrop-blur-xl border-b border-border/40",
+                "shrink-0 bg-card/60 backdrop-blur-xl border-b border-border/15",
                 useCompactSheetLayout ? "px-4 pb-2 pt-7 sm:px-5 sm:pb-3 sm:pt-8" : "px-4 pb-3 pt-7 sm:px-5 sm:pb-4 sm:pt-8"
             )}
         >
@@ -173,15 +174,15 @@ export const UnifiedTransactionSheet = ({
 
             {/* Batch Navigation */}
             {totalTxs > 1 && (
-                <div className="relative mt-5 flex items-center justify-between rounded-3xl bg-card px-3 py-3 border border-border/40 animate-in fade-in slide-in-from-top-2">
- <Button
- variant="ghost"
- size="icon"
- onClick={goToPrev}
- disabled={currentTxIndex === 0}
- aria-label="Transaksi sebelumnya"
- className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary transition-all"
- >
+                <div className="relative mt-5 flex items-center justify-between rounded-3xl bg-card px-3 py-3 border border-border/15 animate-in fade-in slide-in-from-top-2">
+  <Button
+  variant="ghost"
+  size="icon"
+  onClick={goToPrev}
+  disabled={currentTxIndex === 0}
+  aria-label="Transaksi sebelumnya"
+  className="h-11 w-11 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary transition-all"
+  >
  <CaretLeft size={18} weight="regular"/>
  </Button>
  <div className="flex flex-col items-center text-center">
@@ -193,23 +194,23 @@ export const UnifiedTransactionSheet = ({
  </div>
  </div>
  <div className="flex items-center gap-1">
- <Button
- variant="ghost"
- size="icon"
- onClick={() => setShowRemoveDraftConfirm(true)}
- aria-label="Hapus draft transaksi ini"
- className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-destructive transition-all"
- >
+  <Button
+  variant="ghost"
+  size="icon"
+  onClick={() => setShowRemoveDraftConfirm(true)}
+  aria-label="Hapus draft transaksi ini"
+  className="h-11 w-11 rounded-full text-muted-foreground hover:bg-secondary hover:text-destructive transition-all"
+  >
  <Trash size={18} weight="regular"/>
  </Button>
- <Button
- variant="ghost"
- size="icon"
- onClick={goToNext}
- disabled={currentTxIndex === totalTxs - 1}
- aria-label="Transaksi berikutnya"
- className="h-9 w-9 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary transition-all"
- >
+  <Button
+  variant="ghost"
+  size="icon"
+  onClick={goToNext}
+  disabled={currentTxIndex === totalTxs - 1}
+  aria-label="Transaksi berikutnya"
+  className="h-11 w-11 rounded-full text-muted-foreground hover:bg-secondary hover:text-primary transition-all"
+  >
  <CaretRight size={18} weight="regular"/>
  </Button>
  </div>
@@ -308,7 +309,7 @@ export const UnifiedTransactionSheet = ({
             className={cn(
                 "flex shrink-0 flex-col gap-2 bg-card px-4 sm:px-5",
                 useCompactSheetLayout
-                    ? "border-t border-border pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
+                    ? "border-t border-border/20 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
                     : "pb-[calc(0.625rem+env(safe-area-inset-bottom))] pt-2 sm:pb-3"
             )}
         >
@@ -384,7 +385,7 @@ export const UnifiedTransactionSheet = ({
  {/* Discard Confirmation Dialog */}
  <AlertDialog open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
  <AlertDialogOverlay className="bg-black/60"/>
- <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200">
+ <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border/20 bg-background p-7 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200">
  <AlertDialogHeader className="space-y-4 text-center sm:text-left">
  <AlertDialogTitle className="text-display-md tracking-tight text-foreground">
  Batalkan Transaksi?
@@ -422,7 +423,7 @@ export const UnifiedTransactionSheet = ({
 
  <AlertDialog open={showRemoveDraftConfirm} onOpenChange={setShowRemoveDraftConfirm}>
  <AlertDialogOverlay className="bg-black/60"/>
- <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border bg-background p-7 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200">
+ <AlertDialogContent className="max-w-[92%] sm:max-w-md rounded-card-premium border-2 border-border/20 bg-background p-7 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200">
  <AlertDialogHeader className="space-y-4 text-center sm:text-left">
  <AlertDialogTitle className="text-display-md tracking-tight text-foreground">
  Hapus draft ini?

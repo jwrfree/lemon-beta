@@ -125,10 +125,10 @@ export const MagicBar = ({
             )} />
 
             <div className={cn(
-                "relative overflow-hidden rounded-3xl bg-secondary/50 px-3 py-2.5 border border-border/40 transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
-                (isProcessing || isTranscribing) ? "bg-primary/[0.08] border border-border/40" :
-                    isRecording ? "bg-violet-500/10 border border-border/40" :
-                        isFocused ? "bg-card border border-border/40" : ""
+                "relative overflow-hidden rounded-3xl bg-secondary/50 px-3 py-2.5 border border-border/15 transition-all duration-300 dark:bg-secondary/25 sm:px-4 sm:py-3",
+                (isProcessing || isTranscribing) ? "bg-primary/[0.08] border border-border/15" :
+                    isRecording ? "bg-violet-500/10 border border-border/15" :
+                        isFocused ? "bg-card border border-border/15" : ""
             )}>
                 <div className="flex items-end gap-2">
                     <div className="flex min-w-0 flex-1 items-end gap-2">
@@ -186,6 +186,7 @@ export const MagicBar = ({
                             {!value && !isFocused && !isRecording && !isTranscribing && (
                                 <motion.button
                                     key="camera"
+                                    type="button"
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
@@ -202,6 +203,7 @@ export const MagicBar = ({
                             {value && (
                                 <motion.button
                                     key="clear"
+                                    type="button"
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
@@ -218,6 +220,7 @@ export const MagicBar = ({
                             {(value || isFocused) && !isRecording && !isTranscribing ? (
                                 <motion.button
                                     key="send"
+                                    type="button"
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
@@ -244,6 +247,7 @@ export const MagicBar = ({
                             ) : (
                                 <motion.button
                                     key="mic"
+                                    type="button"
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}

@@ -101,7 +101,7 @@ export const UniversalAddSheet = () => {
  icon: Receipt,
  color: 'text-foreground',
  bg: 'bg-secondary/50',
- borderColor: 'border-border'
+ borderColor: 'border-border/20'
  },
  { 
  id: 'transfer', 
@@ -110,7 +110,7 @@ export const UniversalAddSheet = () => {
  icon: ArrowsLeftRight, 
  color: 'text-muted-foreground',
  bg: 'bg-muted/30',
- borderColor: 'border-border/50'
+ borderColor: 'border-border/20'
  },
  { 
  id: 'budget', 
@@ -159,15 +159,16 @@ export const UniversalAddSheet = () => {
  <SheetContent 
  side="bottom"
  hideCloseButton 
- className="overflow-hidden rounded-t-[2.5rem] border-t border-border/50 bg-background pb-12 pt-10 sm:max-w-xl mx-auto shadow-elevation-4"
+ className="overflow-hidden rounded-t-[2.5rem] border-t border-border/20 bg-background pb-12 pt-10 sm:max-w-xl mx-auto shadow-elevation-4"
  >
  <div className="absolute right-4 top-4">
- <Button 
- variant="ghost"
- size="icon"
- onClick={() => setIsSmartAddOpen(false)}
- className="h-10 w-10 rounded-full bg-secondary text-muted-foreground transition-all active:scale-95"
- >
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsSmartAddOpen(false)}
+          className="h-11 w-11 rounded-full bg-secondary text-muted-foreground transition-all active:scale-95"
+          aria-label="Tutup smart add"
+        >
  <X size={20} />
  </Button>
  </div>
@@ -178,11 +179,12 @@ export const UniversalAddSheet = () => {
  </SheetHeader>
 
  <div className="grid grid-cols-2 gap-4 px-6 sm:grid-cols-3">
- {options.map((option) => (
- <motion.button
- key={option.id}
- whileTap={{ scale: 0.96 }}
- onClick={() => handleAction(option.id)}
+  {options.map((option) => (
+  <motion.button
+  key={option.id}
+  type="button"
+  whileTap={{ scale: 0.96 }}
+  onClick={() => handleAction(option.id)}
  aria-label={`${option.label}: ${option.sublabel}`}
  className={cn(
  "group relative flex flex-col items-center gap-3 rounded-3xl p-5 text-center transition-all border overflow-hidden",
@@ -197,7 +199,7 @@ export const UniversalAddSheet = () => {
  <div className="h-2 w-2 rounded-full bg-primary animate-pulse"/>
  </div>
  )}
- <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl bg-card border border-border/40 transition-transform group-active:scale-90", option.color)}>
+ <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl bg-card border border-border/15 transition-transform group-active:scale-90", option.color)}>
  <option.icon size={24} weight={option.isHighlighted ? "fill": "regular"} />
  </div>
  <div className="flex flex-col gap-0.5">

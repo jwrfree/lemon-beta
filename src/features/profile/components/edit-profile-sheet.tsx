@@ -158,7 +158,7 @@ export const EditProfileSheet = ({ isOpen, onClose }: EditProfileSheetProps) => 
 
  <div className="space-y-2 opacity-50 select-none">
  <Label className="text-label text-muted-foreground/60 ml-1">E-mail (Teridentifikasi)</Label>
- <div className="h-14 rounded-2xl bg-muted/20 border border-dashed border-border/40 px-5 flex items-center text-body-md text-muted-foreground">
+ <div className="h-14 rounded-2xl bg-muted/20 border border-dashed border-border/15 px-5 flex items-center text-body-md text-muted-foreground">
  {user?.email}
  </div>
  </div>

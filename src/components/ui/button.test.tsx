@@ -4,7 +4,7 @@ import { Button, buttonVariants } from './button';
 
 describe('Button — Design System Audit', () => {
   describe('Variants', () => {
-    const variants = ['primary', 'default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'tertiary', 'success', 'error'] as const;
+    const variants = ['primary', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'tertiary', 'success', 'error'] as const;
 
     it.each(variants)('renders variant "%s" without errors', (variant) => {
       render(<Button variant={variant}>Label</Button>);
@@ -76,7 +76,7 @@ describe('Button — Design System Audit', () => {
   });
 
   describe('Colors — no hardcoded hex values', () => {
-    const variants = ['primary', 'default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'tertiary', 'success', 'error'] as const;
+    const variants = ['primary', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'tertiary', 'success', 'error'] as const;
 
     it.each(variants)('variant "%s" contains no hardcoded hex color', (variant) => {
       const cls = buttonVariants({ variant });
@@ -97,8 +97,8 @@ describe('Button — Design System Audit', () => {
       expect(cls).toContain('motion-pressable');
     });
 
-    it('default variant includes the current active press styling', () => {
-      const cls = buttonVariants({ variant: 'default' });
+    it('primary variant includes the current active press styling', () => {
+      const cls = buttonVariants({ variant: 'primary' });
       expect(cls).toContain('active:scale-95');
     });
 

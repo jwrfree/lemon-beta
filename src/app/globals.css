@@ -199,9 +199,9 @@
     --info: hsl(var(--blue-600));
     --info-foreground: hsl(0 0% 100%);
     
-    --border: hsl(var(--gray-200));
-    --input: hsl(var(--gray-200));
-    --ring: hsl(var(--gray-900));
+    --border: var(--gray-100);
+    --input: var(--gray-100);
+    --ring: var(--gray-900);
     
     --radius: 0.875rem; /* 14px — legacy base, kept for any residual uses */
 
@@ -291,9 +291,9 @@
     --info: hsl(var(--blue-500));
     --info-foreground: hsl(0 0% 100%);
     
-    --border: hsl(var(--gray-800));
-    --input: hsl(var(--gray-800));
-    --ring: hsl(var(--volt-500));
+    --border: var(--gray-900);
+    --input: var(--gray-900);
+    --ring: var(--volt-500);
 
     /* Chart Colors (Brighter for Dark Mode) */
     --chart-1: hsl(var(--volt-500));
@@ -316,7 +316,7 @@
   }
 
   * {
-    border-color: hsl(var(--border));
+    border-color: hsl(var(--border) / 0.15);
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
   }

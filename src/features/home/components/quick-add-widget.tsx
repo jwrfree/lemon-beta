@@ -100,7 +100,7 @@ export const QuickAddWidget = () => {
  };
 
  return (
- <Card className="border-none shadow-none border border-border/40 bg-card rounded-card-premium overflow-hidden relative">
+ <Card className="border-none shadow-none border border-border/15 bg-card rounded-card-premium overflow-hidden relative">
  {/* Ambient Accent */}
  <div className="absolute top-0 right-0 p-6 opacity-[0.03] -rotate-12 pointer-events-none">
  <Sparkles className="h-20 w-20"/>
@@ -108,7 +108,7 @@ export const QuickAddWidget = () => {
 
  <CardHeader className="pb-3 flex flex-row items-center justify-between px-6 pt-6 relative z-10">
  <CardTitle className="text-label-md flex items-center gap-2 text-muted-foreground/60 text-label">
- <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
+            <div className="p-1.5 rounded-lg bg-warning/10 text-warning">
  <Sparkles className="h-3.5 w-3.5"/>
  </div>
  Intelligence Input
@@ -140,16 +140,17 @@ export const QuickAddWidget = () => {
  onKeyDown={(e) => e.key === 'Enter'&& handleQuickAdd()}
  disabled={isAnalyzing}
  />
- <Button 
- size="icon"
- variant="ghost"
- className={cn(
- "absolute right-1.5 top-1.5 h-9 w-9 rounded-md transition-all",
- inputValue.trim() ? "bg-primary text-primary-foreground": "text-muted-foreground/40"
- )}
- onClick={handleQuickAdd}
- disabled={isAnalyzing || !inputValue.trim()}
- >
+          <Button 
+            size="icon"
+            variant="ghost"
+            className={cn(
+              "absolute right-1.5 top-1.5 h-11 w-11 rounded-md transition-all",
+              inputValue.trim() ? "bg-primary text-primary-foreground": "text-muted-foreground/40"
+            )}
+            onClick={handleQuickAdd}
+            disabled={isAnalyzing || !inputValue.trim()}
+            aria-label="Kirim input cepat"
+          >
  {isAnalyzing ? <Loader2 className="h-4 w-4 animate-spin"/> : <Send className="h-4 w-4"/>}
  </Button>
  </motion.div>
@@ -165,10 +166,10 @@ export const QuickAddWidget = () => {
  <div className="flex flex-col">
  <span className="text-label-md text-muted-foreground/50 text-label mb-1">Verify Entry</span>
  <div className="flex items-center gap-3">
- <span className={cn(
- "text-display-sm tracking-tighter tabular-nums",
- parsedData.type === 'income'? "text-emerald-600": "text-foreground"
- )}>
+              <span className={cn(
+                "text-display-sm tracking-tighter tabular-nums",
+                parsedData.type === 'income' ? "text-success" : "text-foreground"
+              )}>
  {formatCurrency(parsedData.amount)}
  </span>
  <span className="text-label-md text-muted-foreground italic truncate max-w-[140px]">
@@ -177,10 +178,10 @@ export const QuickAddWidget = () => {
  </div>
  </div>
  <div className="flex gap-2">
- <Button size="icon"variant="ghost"className="h-10 w-10 rounded-full bg-background/50 hover:bg-rose-500/10 hover:text-rose-500"onClick={() => setParsedData(null)}>
+              <Button size="icon"variant="ghost"className="h-11 w-11 rounded-full bg-background/50 hover:bg-destructive/10 hover:text-destructive"onClick={() => setParsedData(null)} aria-label="Batalkan">
  <X className="h-4 w-4"/>
  </Button>
- <Button size="icon"variant="default"className="h-10 w-10 rounded-full shadow-lg shadow-primary/20"onClick={confirmTransaction}>
+              <Button size="icon"variant="primary"className="h-11 w-11 rounded-full shadow-lg shadow-primary/20"onClick={confirmTransaction} aria-label="Konfirmasi transaksi">
  <Check className="h-4 w-4"strokeWidth={3} />
  </Button>
  </div>

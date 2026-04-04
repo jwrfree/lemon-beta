@@ -111,7 +111,13 @@ export const ForgotPasswordPage = ({
                         Lupa Password
                     </h2>
                     {!isPage && (
-                        <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted hover:bg-muted/80">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={onClose}
+                          className="h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
+                          aria-label="Tutup"
+                        >
                             <X className="h-5 w-5" />
                             <span className="sr-only">Tutup</span>
                         </Button>
@@ -158,7 +164,7 @@ export const ForgotPasswordPage = ({
                                                     type="button"
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9"
+                                                    className="absolute right-2 top-1/2 -translate-y-1/2 h-11 w-11"
                                                     onClick={() => form.setValue('email', '')}
                                                     aria-label="Hapus email"
                                                 >

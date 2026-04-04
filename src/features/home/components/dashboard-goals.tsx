@@ -44,7 +44,7 @@ export const DashboardGoals = ({ goals }: DashboardGoalsProps) => {
             </CardHeader>
             <CardContent className="space-y-4">
                 {activeGoals.length === 0 ? (
-                    <div className="rounded-lg bg-muted/35 py-4 text-center text-label-md text-muted-foreground border border-border/40">
+                    <div className="rounded-lg bg-muted/35 py-4 text-center text-label-md text-muted-foreground border border-border/15">
                         <p>Belum ada target aktif.</p>
                         <Button
                             variant="link"

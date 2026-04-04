@@ -77,7 +77,7 @@ export const WalletAnalyticsMobile = ({ transactions }: WalletAnalyticsMobilePro
  <h2 className="text-label">Alokasi Pengeluaran</h2>
  </div>
 
- <div className="bg-card border border-border/50 rounded-card p-4 overflow-hidden">
+ <div className="bg-card border border-border/20 rounded-card p-4 overflow-hidden">
  <CategoryPie data={topCategories} total={expense} type="expense"/>
  
  {/* Legend-ish List */}

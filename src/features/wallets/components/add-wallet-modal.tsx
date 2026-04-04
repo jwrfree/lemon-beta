@@ -121,7 +121,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
  <div className="sticky top-0 z-10 flex items-center justify-between bg-background px-6 pb-4 pt-4 shadow-elevation-2">
  <div className="w-11">
  {step === 2 && (
- <Button variant="ghost"size="icon"onClick={handleBack} className="rounded-full">
+        <Button variant="ghost"size="icon"onClick={handleBack} className="h-11 w-11 rounded-full" aria-label="Kembali">
  <ArrowLeft size={20} weight="regular"/>
  <span className="sr-only">Kembali</span>
  </Button>
@@ -130,7 +130,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
  <h2 className="text-title-lg text-center">
  {step === 1 ? 'Pilih Jenis':`Detail ${selectedCategory?.name}`}
  </h2>
- <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-10 w-10">
+        <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-11 w-11" aria-label="Tutup">
  <X size={20} weight="regular"/>
  <span className="sr-only">Tutup</span>
  </Button>
@@ -150,24 +150,18 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
  className="grid grid-cols-2 gap-4"
  >
  {walletCategories.map((cat) => (
- <div
- key={cat.key}
- onClick={() => handleCategorySelect(cat)}
- className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-elevation-2 transition-all active:scale-95"
- role="button"
- tabIndex={0}
- onKeyDown={(e) => {
- if (e.key === 'Enter'|| e.key === '') {
- e.preventDefault();
- handleCategorySelect(cat);
- }
- }}
- >
+            <button
+              type="button"
+              key={cat.key}
+              onClick={() => handleCategorySelect(cat)}
+              className="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-glass bg-card/98 p-6 shadow-elevation-2 transition-all active:scale-95"
+              aria-label={`Pilih kategori ${cat.name}`}
+            >
  <div className="p-3 rounded-card bg-primary/5 group-hover:bg-primary/10 transition-colors">
  <cat.Icon className="h-8 w-8 text-primary"/>
  </div>
  <span className="text-label text-muted-foreground/60">{cat.name}</span>
- </div>
+ </button>
  ))}
  </motion.div>
  )}
@@ -204,7 +198,7 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
  {popularWallets[selectedCategory.key] && (
  <div className="flex flex-wrap gap-2 px-1">
  {popularWallets[selectedCategory.key].map(name => (
- <Button key={name} type="button"variant="outline"size="sm"className="h-8 rounded-full bg-background border border-border/40 px-4 text-label-md "onClick={() => setValue('name', name, { shouldValidate: true })}>
+ <Button key={name} type="button"variant="outline"size="sm"className="h-8 rounded-full bg-background border border-border/15 px-4 text-label-md "onClick={() => setValue('name', name, { shouldValidate: true })}>
  {name}
  </Button>
  ))}

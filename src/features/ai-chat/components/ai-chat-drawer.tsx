@@ -470,9 +470,9 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
  <SheetContent
  side="right"
  hideCloseButton
- className="flex h-full w-full flex-col gap-0 border-l border-border/50 bg-background p-0 text-foreground shadow-2xl sm:max-w-[440px]"
+ className="flex h-full w-full flex-col gap-0 border-l border-border/20 bg-background p-0 text-foreground shadow-2xl sm:max-w-[440px]"
  >
- <SheetHeader className="px-6 py-3.5 bg-background border-b border-border/50">
+ <SheetHeader className="px-6 py-3.5 bg-background border-b border-border/20">
  <div className="flex items-center justify-between">
  <div className="flex flex-col gap-0.5">
  <h2 className="text-label text-muted-foreground/50">
@@ -482,32 +482,35 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
  </div>
  <div className="flex items-center gap-1.5">
  {isLoading && (
- <Button
- variant="ghost"
- size="icon"
- onClick={stop}
- className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground transition-colors"
- title="Hentikan Respons"
- >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={stop}
+              className="h-11 w-11 rounded-full text-muted-foreground hover:text-foreground transition-colors"
+              title="Hentikan Respons"
+              aria-label="Hentikan respons"
+            >
  <Square className="h-3.5 w-3.5 fill-current"/>
  </Button>
  )}
- <Button
- variant="ghost"
- size="icon"
- onClick={clearChat}
- className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive transition-colors"
- title="Hapus Chat"
- >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={clearChat}
+              className="h-11 w-11 rounded-full text-muted-foreground hover:text-destructive transition-colors"
+              title="Hapus Chat"
+              aria-label="Hapus chat"
+            >
  <Trash2 className="h-4 w-4"/>
  </Button>
- <Button
- variant="ghost"
- size="icon"
- onClick={onClose}
- className="h-9 w-9 rounded-full bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
- title="Tutup"
- >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="h-11 w-11 rounded-full bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+              title="Tutup"
+              aria-label="Tutup"
+            >
  <X className="h-4.5 w-4.5"/>
  </Button>
  </div>
@@ -615,13 +618,14 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
  Saran Pertanyaan
  </p>
  <div className="flex flex-col gap-2">
- {quickActions.map((action) => (
- <button
- key={action.label}
- onClick={() => void submitQuickAction(action.value)}
- disabled={isLoading}
- className="group flex items-center justify-between rounded-xl bg-card p-3 text-label-md font-medium text-foreground transition-all hover:translate-x-1 hover:bg-muted"
- >
+          {quickActions.map((action) => (
+            <button
+              key={action.label}
+              type="button"
+              onClick={() => void submitQuickAction(action.value)}
+              disabled={isLoading}
+              className="group flex items-center justify-between rounded-xl bg-card p-3 text-label-md font-medium text-foreground transition-all hover:translate-x-1 hover:bg-muted"
+            >
  <span className="opacity-90 group-hover:opacity-100">{action.label}</span>
  <ChevronRight className="h-3 w-3 text-muted-foreground/70 group-hover:text-foreground"/>
  </button>
@@ -657,13 +661,14 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
  className="h-12 w-full rounded-3xl bg-card pr-20 text-foreground focus-visible:ring-primary/20"
  />
  <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
- <Button
- type="button"
- size="icon"
- onClick={handleVoiceRecord}
- disabled={isLoading || isTranscribing}
- className={cn('h-9 w-9 rounded-2xl transition-all duration-300', isRecording ? 'bg-destructive text-destructive-foreground animate-pulse': 'bg-secondary text-muted-foreground hover:bg-muted')}
- >
+        <Button
+          type="button"
+          size="icon"
+          onClick={handleVoiceRecord}
+          disabled={isLoading || isTranscribing}
+          className={cn('h-11 w-11 rounded-2xl transition-all duration-300', isRecording ? 'bg-destructive text-destructive-foreground animate-pulse': 'bg-secondary text-muted-foreground hover:bg-muted')}
+          aria-label={isRecording ? 'Hentikan rekam suara' : 'Rekam suara'}
+        >
  {isTranscribing ? (
  <Loader2 className="h-4 w-4 animate-spin"/>
  ) : isRecording ? (
@@ -672,12 +677,13 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
  <Mic className="h-4 w-4"/>
  )}
  </Button>
- <Button
- type="submit"
- size="icon"
- disabled={isLoading || isRecording || isTranscribing || !input.trim()}
- className="h-9 w-9 rounded-2xl shadow-lg shadow-primary/20"
- >
+        <Button
+          type="submit"
+          size="icon"
+          disabled={isLoading || isRecording || isTranscribing || !input.trim()}
+          className="h-11 w-11 rounded-2xl shadow-lg shadow-primary/20"
+          aria-label="Kirim pesan"
+        >
  {isLoading ? (
  <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="h-1.5 w-1.5 rounded-full bg-primary-foreground shadow-elevation-1"/>
  ) : (

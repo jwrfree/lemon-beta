@@ -129,7 +129,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
         style={{ y, opacity, scale, rotate: isRefreshing ? 0 : rotate }}
         className="absolute top-0 left-0 right-0 z-40 flex justify-center pointer-events-none"
       >
-        <div className="relative -top-10 bg-popover text-primary shadow-md rounded-full p-2.5 flex items-center justify-center border border-border">
+        <div className="relative -top-10 bg-popover text-primary shadow-md rounded-full p-2.5 flex items-center justify-center border border-border/20">
           <motion.div
             animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
             transition={isRefreshing ? { repeat: Infinity, duration: 1, ease: "linear" } : {}}

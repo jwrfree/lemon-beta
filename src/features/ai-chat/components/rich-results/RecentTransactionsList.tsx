@@ -57,7 +57,7 @@ export const RecentTransactionsList = () => {
  }
 
  return (
- <Card className="mt-4 bg-background border border-border/40 shadow-sm rounded-card overflow-hidden motion-surface">
+ <Card className="mt-4 bg-background border border-border/15 shadow-sm rounded-card overflow-hidden motion-surface">
  <CardContent className="p-4 space-y-3">
  <div className="flex items-center justify-between mb-1">
  <span className="text-label-sm text-muted-foreground/50">Recent Transactions</span>
@@ -65,7 +65,7 @@ export const RecentTransactionsList = () => {
  </div>
 
  {transactions.length === 0 ? (
- <div className="rounded-2xl border border-dashed border-border/50 bg-muted/20 px-3 py-4 text-center">
+ <div className="rounded-2xl border border-dashed border-border/20 bg-muted/20 px-3 py-4 text-center">
  <p className="text-label-md text-muted-foreground">Belum ada transaksi terbaru yang bisa ditampilkan.</p>
  </div>
  ) : (

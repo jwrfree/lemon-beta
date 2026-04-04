@@ -195,7 +195,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Trend Card */}
-                <Card className="border border-border/40 shadow-none bg-card">
+                <Card className="border border-border/15 shadow-none bg-card">
                     <CardHeader className="pb-2 px-4 pt-4">
                         <CardTitle className="text-body-md font-medium text-muted-foreground flex items-center gap-2">
                             <Wallet className="h-4 w-4" />
@@ -238,7 +238,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                 </Card>
 
                 {/* Projection & Alerts Card */}
-                <Card className="border border-border/40 shadow-none bg-card">
+                <Card className="border border-border/15 shadow-none bg-card">
                     <CardHeader className="pb-2 px-4 pt-4">
                         <CardTitle className="text-body-md font-medium text-muted-foreground flex items-center gap-2">
                             <Target className="h-4 w-4" />
@@ -247,7 +247,7 @@ export const DebtAnalyticsCard = ({ debts }: DebtAnalyticsCardProps) => {
                     </CardHeader>
                     <CardContent className="space-y-4 px-4 pb-4">
                         {/* Projection */}
-                        <div className="bg-secondary/50 rounded-lg p-3 border border-border/50">
+                        <div className="bg-secondary/50 rounded-lg p-3 border border-border/20">
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="p-2 bg-info/10 rounded-lg">
                                     <CalendarDots className="h-4 w-4 text-info" weight="regular" />

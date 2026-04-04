@@ -228,28 +228,30 @@ const TransactionRow = ({ t, wallets, openTransactionDetail, openTransactionShee
  {/* 6. Aksi */}
  <TableCell className="text-right pr-8">
  <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
- <Button
- variant="ghost"
- size="icon"
- className="h-8 w-8 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
- onClick={(event) => {
- event.stopPropagation();
- triggerHaptic('light');
- openTransactionSheet(t);
- }}
- >
+  <Button
+  variant="ghost"
+  size="icon"
+  className="h-11 w-11 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
+  onClick={(event) => {
+  event.stopPropagation();
+  triggerHaptic('light');
+  openTransactionSheet(t);
+  }}
+  aria-label="Edit transaksi"
+  >
  <Pencil className="h-3.5 w-3.5"/>
  </Button>
- <Button
- variant="ghost"
- size="icon"
- className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
- onClick={(event) => {
- event.stopPropagation();
- triggerHaptic('medium');
- openDeleteModal(t);
- }}
- >
+  <Button
+  variant="ghost"
+  size="icon"
+  className="h-11 w-11 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+  onClick={(event) => {
+  event.stopPropagation();
+  triggerHaptic('medium');
+  openDeleteModal(t);
+  }}
+  aria-label="Hapus transaksi"
+  >
  <Trash2 className="h-3.5 w-3.5"/>
  </Button>
  </div>
@@ -328,7 +330,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
  variant="outline"
  size="sm"
  onClick={handleExportCSV}
- className="h-10 gap-2 rounded-xl bg-background border border-border/40 px-4 text-label transition-all hover:bg-muted"
+ className="h-10 gap-2 rounded-xl bg-background border border-border/15 px-4 text-label transition-all hover:bg-muted"
  >
  <Download className="h-3.5 w-3.5"/>
  Export CSV

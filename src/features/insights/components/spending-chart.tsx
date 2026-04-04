@@ -61,13 +61,13 @@ export function SpendingChart({ transactions }: SpendingChartProps) {
                 title="Belum Ada Data"
                 description="Catat lebih banyak transaksi untuk melihat riwayat pengeluaran kamu di sini."
                 icon={BarChart3}
-                className="pt-0 md:min-h-[300px] border border-border/40 bg-card rounded-card mb-8"
+                className="pt-0 md:min-h-[300px] border border-border/15 bg-card rounded-card mb-8"
             />
         );
     }
 
     return (
-        <Card className="border-none shadow-none border border-border/40">
+        <Card className="border-none shadow-none border border-border/15">
             <CardHeader>
                 <CardTitle className="text-title-lg font-medium">Top Pengeluaran</CardTitle>
             </CardHeader>

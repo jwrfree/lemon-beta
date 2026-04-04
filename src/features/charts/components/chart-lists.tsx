@@ -28,15 +28,16 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
  };
 
  return (
- <button
- onClick={onClick}
- className={cn(
- "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-none border border-border/40 transition-all text-left w-full",
- isOverBudget
- ? "ring-1 ring-rose-500/10"
- : "hover:bg-muted/50"
- )}
- >
+  <button
+  type="button"
+  onClick={onClick}
+  className={cn(
+  "group relative overflow-hidden bg-card rounded-md p-5 border-none shadow-none border border-border/15 transition-all text-left w-full",
+  isOverBudget
+  ? "ring-1 ring-error/20"
+  : "hover:bg-muted/50"
+  )}
+  >
  <div className="relative z-10">
  <div className="flex justify-between items-start mb-4">
  <div className="space-y-1">
@@ -92,10 +93,11 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
 
 export function TopTransactionItem({ transaction, rank, onClick }: { transaction: Transaction, rank: number, onClick?: () => void }) {
  return (
- <button
- onClick={onClick}
- className="group flex items-center gap-4 p-4 bg-card rounded-card-glass border border-transparent hover:border-border/50 hover:bg-muted/30 transition-all w-full text-left active:scale-[0.98] shadow-sm hover:shadow-md"
- >
+  <button
+  type="button"
+  onClick={onClick}
+  className="group flex items-center gap-4 p-4 bg-card rounded-card-glass border border-transparent hover:border-border/20 hover:bg-muted/30 transition-all w-full text-left active:scale-[0.98] shadow-sm hover:shadow-md"
+  >
  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-secondary text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground text-label-md transition-colors">
  #{rank}
  </div>
@@ -103,12 +105,12 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
  <div className="flex items-center gap-2">
  <p className="text-body-md truncate tracking-tight text-foreground/90">{transaction.description || transaction.category}</p>
  {transaction.type === 'expense'&& typeof transaction.isNeed === 'boolean'&& (
- <span className={cn(
- "text-label-sm font-black tracking-tighter px-1.5 py-0.5 rounded-sm border shrink-0",
- transaction.isNeed 
- ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
- : "bg-violet-500/10 text-violet-600 border-violet-500/20"
- )}>
+  <span className={cn(
+  "text-label-sm font-black tracking-tighter px-1.5 py-0.5 rounded-sm border shrink-0",
+  transaction.isNeed 
+  ? "bg-success/10 text-success border-success/20"
+  : "bg-warning/10 text-warning border-warning/20"
+  )}>
  {transaction.isNeed ? 'Need': 'Want'}
  </span>
  )}

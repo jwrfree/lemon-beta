@@ -96,7 +96,7 @@ export const DebtPaymentForm = ({ onClose, debt }: DebtPaymentFormProps) => {
                                 : `Sisa piutang: ${formatCurrency(debt?.outstandingBalance ?? debt?.principal ?? 0)}`}
                         </p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full">
+                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full" aria-label="Tutup">
                         <X className="h-5 w-5" weight="regular" />
                     </Button>
                 </div>

@@ -193,14 +193,14 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  <div className="sticky top-0 z-10 flex items-center justify-between px-6 pb-4 pt-4">
  <div className="w-11">
  {step > 1 && (
- <Button variant="ghost"size="icon"onClick={handleBack} className="rounded-full">
+                  <Button variant="ghost"size="icon"onClick={handleBack} className="h-11 w-11 rounded-full" aria-label="Kembali">
  <ArrowLeft className="h-5 w-5"weight="regular"/>
  <span className="sr-only">Kembali</span>
  </Button>
  )}
  </div>
  <h2 className="text-title-lg text-center">{stepTitles[step - 1]}</h2>
- <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-10 w-10">
+                  <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-11 w-11" aria-label="Tutup">
  <X className="h-5 w-5"weight="regular"/>
  <span className="sr-only">Tutup</span>
  </Button>
@@ -220,7 +220,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  {step === 1 && (
  <div className="space-y-4 pt-2">
  <Label htmlFor="budget-name"className="text-label-md text-label text-muted-foreground ml-1">Nama Anggaran</Label>
- <Input id="budget-name"placeholder="Contoh: Makan Siang Kantor"value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-muted border border-border/40"required autoFocus />
+ <Input id="budget-name"placeholder="Contoh: Makan Siang Kantor"value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-muted border border-border/15"required autoFocus />
  </div>
  )}
  {step === 2 && (
@@ -253,7 +253,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  <div className="flex flex-wrap gap-2 pt-2">
  <Button 
  type="button"
- variant={selectedSubCategories.length === 0 ? 'default': 'outline'}
+ variant={selectedSubCategories.length === 0 ? 'primary': 'outline'}
  onClick={() => toggleSubCategory(null)}
  className={cn("rounded-full h-10 px-5 text-label-md", selectedSubCategories.length === 0 ? "text-primary-foreground": "font-medium text-foreground/70")}
  >
@@ -263,7 +263,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  <Button 
  key={sub}
  type="button"
- variant={selectedSubCategories.includes(sub) ? 'default': 'outline'}
+ variant={selectedSubCategories.includes(sub) ? 'primary': 'outline'}
  onClick={() => toggleSubCategory(sub)}
  className={cn("rounded-full h-10 px-5 text-label-md", selectedSubCategories.includes(sub) ? "text-primary-foreground": "font-medium text-foreground/70")}
  >
@@ -283,7 +283,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  {loadingRec ? (
  <Skeleton className="h-24 w-full rounded-card-glass bg-muted/50"/>
  ) : recommendation && recommendation.avg > 0 ? (
- <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-none border border-border/40">
+ <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-none border border-border/15">
  <div className="bg-emerald-500/10 p-2.5 rounded-card">
  <Sparkle className="h-5 w-5 text-emerald-600 dark:text-emerald-400"weight="regular"/>
  </div>
@@ -303,7 +303,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  </div>
  </div>
  ) : (
- <div className="bg-muted/30 p-5 rounded-card-premium flex items-center gap-4 text-muted-foreground/60 border border-border/40">
+ <div className="bg-muted/30 p-5 rounded-card-premium flex items-center gap-4 text-muted-foreground/60 border border-border/15">
  <TrendUp className="h-5 w-5 opacity-40"weight="regular"/>
  <p className="text-label-md text-label">No historical data for insights yet.</p>
  </div>
@@ -326,7 +326,7 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
 
  <div className="grid grid-cols-4 gap-3 pt-4">
  {budgetSteps.map(val => (
- <Button key={val} type="button"variant="outline"size="sm"onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 tabular-nums text-label-md", targetAmount === val ? "border-primary bg-primary/5 text-primary": "border-border/50 text-muted-foreground")}>
+ <Button key={val} type="button"variant="outline"size="sm"onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 tabular-nums text-label-md", targetAmount === val ? "border-primary bg-primary/5 text-primary": "border-border/20 text-muted-foreground")}>
  {new Intl.NumberFormat('id-ID', { notation: "compact"}).format(val)}
  </Button>
  ))}

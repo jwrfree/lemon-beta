@@ -82,12 +82,13 @@ export const AiBriefingCard = () => {
  {briefing.briefing}
  </p>
  
- {briefing.suggestion && (
- <motion.button
- whileTap={{ scale: 0.98 }}
- onClick={() => setIsAIChatOpen(true)}
- className="flex items-center gap-2 group pt-1.5"
- >
+  {briefing.suggestion && (
+  <motion.button
+  type="button"
+  whileTap={{ scale: 0.98 }}
+  onClick={() => setIsAIChatOpen(true)}
+  className="flex items-center gap-2 group pt-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+  >
  <span className="text-label-md text-primary/80 group-hover:text-primary transition-colors">
  {briefing.suggestion}
  </span>

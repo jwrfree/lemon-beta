@@ -19,7 +19,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
  const efficiency = (data.actualSavings / data.potentialSavings) * 100;
 
  return (
- <Card className="p-7 border-none rounded-card-glass bg-card text-foreground shadow-none border border-border/40 overflow-hidden relative group">
+ <Card className="p-7 border-none rounded-card-glass bg-card text-foreground shadow-none border border-border/15 overflow-hidden relative group">
  {/* Background Glow */}
  <div className="absolute top-0 right-0 w-64 h-64 bg-success/5 group-hover:bg-success/10 transition-colors duration-700 blur-[80px] rounded-full -mr-20 -mt-20 -z-0"/>
 
@@ -65,7 +65,7 @@ export function SavingPotential({ data }: { data: SavingPotentialData }) {
  </div>
  </div>
 
- <button className="w-full mt-auto p-5 rounded-card-glass bg-secondary/50 border border-border/40 flex items-center justify-between group/btn hover:bg-muted hover:border-border transition-all duration-300">
+        <button type="button" className="w-full mt-auto p-5 rounded-card-glass bg-secondary/50 border border-border/15 flex items-center justify-between group/btn hover:bg-muted hover:border-border/20 transition-all duration-300">
  <div className="flex items-center gap-4">
  <div className="p-2.5 rounded-xl bg-success/10 text-success group-hover/btn:bg-success/20 group-hover/btn:scale-110 transition-all">
  <Wallet className="h-5 w-5"/>
