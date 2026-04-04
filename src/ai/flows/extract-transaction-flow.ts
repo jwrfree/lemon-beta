@@ -202,10 +202,10 @@ const inferSubCategory = (
     ],
     'Belanja & Lifestyle': [
       { pattern: /\b(shopee|tokopedia|tokped|bukalapak|blibli|lazada)\b/iu, subCategory: 'Marketplace (Tokped/Shopee)' },
-      { pattern: /\b(zara|uniqlo|hm|h&m|matahari|cotton on)\b/iu, subCategory: 'Fashion & Pakaian' },
-      { pattern: /\b(erafone|ibox|digimap|samsung store|mi store)\b/iu, subCategory: 'Elektronik & Gadget' },
-      { pattern: /\b(watsons|guardian|sociolla)\b/iu, subCategory: 'Skin Care & Perawatan' },
-      { pattern: /\b(ace hardware|ikea|mr diy)\b/iu, subCategory: 'Keperluan Rumah Tangga' },
+      { pattern: /\b(zara|uniqlo|hm|h&m|matahari|cotton on|baju|celana|sepatu|kaos|kemeja|jaket|tas)\b/iu, subCategory: 'Fashion & Pakaian' },
+      { pattern: /\b(erafone|ibox|digimap|samsung store|mi store|hp|gadget|laptop|charger|headset)\b/iu, subCategory: 'Elektronik & Gadget' },
+      { pattern: /\b(watsons|guardian|sociolla|skincare|skin care|face wash|sabun muka|kahf|wardah|somethinc|make up|makeup|parfum|shampoo|sabun mandi|odol|pasta gigi)\b/iu, subCategory: 'Skin Care & Perawatan' },
+      { pattern: /\b(ace hardware|ikea|mr diy|perabot|panci|piring|sapu|pel)\b/iu, subCategory: 'Keperluan Rumah Tangga' },
     ],
     'Hiburan & Wisata': [
       { pattern: /\b(top up ml|mobile legends|free fire|ff\b|pubg|valorant|steam|roblox|genshin|psn|playstation|xbox|nintendo)\b/iu, subCategory: 'Game & Top Up' },
@@ -265,7 +265,7 @@ export const parseSimpleTransactionInput = async (
 
   const categoryMap = [
     { pattern: /\b(kopi|coffee|kapal api|kapalapi|starbucks|fore|kenangan|tuku|janji jiwa|point coffee|makan|sarapan|lunch|dinner|snack|jajan|bakso|warteg|nasi goreng|mie ayam|sate|ayam geprek|nasi padang|gofood|grabfood|hokben|kfc|mcd|mcdonald'?s|burger king|pizza hut|domino'?s|solaria|sushi tei|marugame|resto|restoran|cafe|kafe|alfamart|indomaret|superindo|hypermart|transmart|hero|lotte mart|grocery|sembako|sayur|beras|telur|daging|buah|catering)\b/iu, category: 'Konsumsi & F&B' },
-    { pattern: /\b(shopee|tokopedia|tokped|bukalapak|blibli|lazada|zara|uniqlo|hm|h&m|matahari|cotton on|erafone|ibox|digimap|samsung store|mi store|watsons|guardian|sociolla|ace hardware|ikea|mr diy)\b/iu, category: 'Belanja & Lifestyle' },
+    { pattern: /\b(shopee|tokopedia|tokped|bukalapak|blibli|lazada|zara|uniqlo|hm|h&m|matahari|cotton on|erafone|ibox|digimap|samsung store|mi store|watsons|guardian|sociolla|ace hardware|ikea|mr diy|skincare|skin care|face wash|sabun muka|kahf|wardah|somethinc|make up|makeup|parfum|shampoo|sabun mandi|odol|pasta gigi|baju|celana|sepatu|kaos|kemeja|jaket|tas|hp|gadget|laptop|charger|headset|perabot|panci|piring|sapu|pel)\b/iu, category: 'Belanja & Lifestyle' },
     { pattern: /\b(gojek|grab|pertamina|shell|bp|vivo|bensin|parkir|tol|kereta|bus|mrt|krl|travel|tiket|servis|bengkel)\b/iu, category: 'Transportasi' },
     { pattern: /\b(listrik|token|pulsa|internet|wifi|air|pdam|bpjs|pln|pln mobile|tv kabel|telkomsel|indosat|xl|axis|tri|3\b|smartfren|indihome|biznet|first media|myrepublic|cbn)\b/iu, category: 'Tagihan & Utilitas' },
     { pattern: /\b(netflix|spotify|chatgpt|youtube premium|google one|icloud|notion|figma|canva)\b/iu, category: 'Langganan Digital' },

@@ -118,6 +118,19 @@ describe('parseSimpleTransactionInput', () => {
         });
     });
 
+    it('maps skin care and personal care items to the correct subcategory', async () => {
+        const result = await parseSimpleTransactionInput('beli face wash kahf 40k', {
+            wallets: ['Tunai'],
+        }, {
+            allowBareInput: true,
+        });
+        expect(result?.transactions?.[0]).toMatchObject({
+            description: 'Face wash kahf',
+            category: 'Belanja & Lifestyle',
+            subCategory: 'Skin Care & Perawatan',
+        });
+    });
+
     it('maps marketplace merchants to the marketplace lifestyle subcategory', async () => {
         const result = await parseSimpleTransactionInput('Shopee 120rb', {
             wallets: ['Tunai'],
