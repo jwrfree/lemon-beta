@@ -92,7 +92,7 @@ export const executeChatPlanner = async ({
   const lastUserMessage = getLastUserMessageText(messages);
 
   if (typeof lastUserMessage !== "string") {
-    return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
+    return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId, mode: 'lightweight' });
   }
 
   const decision = routeChatIntent(lastUserMessage);
@@ -106,7 +106,7 @@ export const executeChatPlanner = async ({
       return handleAddTransactionAction({ userId, supabase, messages, rawText: lastUserMessage, sessionId });
     case "recent-transactions": {
       const response = await handleRecentTransactionsAction({ userId, supabase, messages, sessionId });
-      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
+      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId, mode: 'lightweight' });
     }
     case "llm-anomaly": {
       return handleLlmChatAction({
@@ -122,6 +122,7 @@ export const executeChatPlanner = async ({
           },
         },
         sessionId,
+        mode: 'coach'
       });
     }
     case "deterministic-context": {
@@ -136,6 +137,7 @@ export const executeChatPlanner = async ({
             budget_review: await loadBudgetSupportContext(userId, supabase) 
           },
           sessionId,
+          mode: 'coach'
         });
       }
 
@@ -147,7 +149,8 @@ export const executeChatPlanner = async ({
         intent: decision.intent,
         sessionId,
       });
-      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
+      // If deterministic action failed or didn't match, fallback to lightweight LLM mode
+      return response ?? handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId, mode: 'lightweight' });
     }
     case "llm":
     default:
@@ -162,9 +165,11 @@ export const executeChatPlanner = async ({
             goal_review: await loadGoalSupportContext(userId, supabase) 
           },
           sessionId,
+          mode: 'coach'
         });
       }
 
-      return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId });
+      // Default LLM chats might be conversational or simpler intent. Use lightweight to save tokens.
+      return handleLlmChatAction({ userId, supabase, messages, memorySummary, userProfile, sessionId, mode: 'lightweight' });
   }
 };

@@ -49,22 +49,22 @@ export const debtService = {
 
     async addDebt(userId: string, debtData: DebtInput) {
         const supabase = createClient();
-        const { error } = await supabase.from('debts').insert({
-            title: debtData.title,
-            counterparty: debtData.counterparty,
-            principal: debtData.principal ?? 0,
-            outstanding_balance: debtData.outstandingBalance ?? debtData.principal ?? 0,
-            direction: debtData.direction || 'owed',
-            category: debtData.category || 'personal',
-            interest_rate: debtData.interestRate ?? null,
-            payment_frequency: debtData.paymentFrequency || 'monthly',
-            custom_interval: debtData.customInterval || null,
-            start_date: normalizeDateInput(debtData.startDate),
-            due_date: normalizeDateInput(debtData.dueDate),
-            next_payment_date: normalizeDateInput(debtData.nextPaymentDate),
-            notes: debtData.notes || '',
-            status: debtData.status || 'active',
-            user_id: userId
+        const { error } = await supabase.rpc('create_debt_v1', {
+            p_title: debtData.title,
+            p_counterparty: debtData.counterparty,
+            p_principal: debtData.principal ?? 0,
+            p_outstanding_balance: debtData.outstandingBalance ?? debtData.principal ?? 0,
+            p_direction: debtData.direction || 'owed',
+            p_category: debtData.category || 'personal',
+            p_interest_rate: debtData.interestRate ?? null,
+            p_payment_frequency: debtData.paymentFrequency || 'monthly',
+            p_custom_interval: debtData.customInterval || null,
+            p_start_date: normalizeDateInput(debtData.startDate),
+            p_due_date: normalizeDateInput(debtData.dueDate),
+            p_next_payment_date: normalizeDateInput(debtData.nextPaymentDate),
+            p_notes: debtData.notes || '',
+            p_user_id: userId,
+            p_wallet_id: debtData.walletId || null
         });
         if (error) throw error;
     },

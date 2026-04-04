@@ -6,7 +6,10 @@ export const debtSchema = z.object({
   direction: z.enum(['owed', 'owing'] as const).default('owed'),
   counterparty: z.string().min(1, 'Pihak terkait wajib diisi'),
   category: z.string().optional().default('personal'),
-  principal: z.string().min(1, 'Nominal utama wajib diisi'),
+  principal: z.string().min(1, 'Nominal utama wajib diisi').refine((val) => {
+    const num = parseInt(val.replace(/[^0-9]/g, ''));
+    return num > 0;
+  }, 'Nominal harus lebih besar dari 0'),
   outstandingBalance: z.string().optional(),
   interestRate: z.string().optional().nullable(),
   paymentFrequency: z.enum(['one_time', 'weekly', 'biweekly', 'monthly', 'custom'] as const).default('monthly'),
@@ -15,6 +18,30 @@ export const debtSchema = z.object({
   dueDate: z.date().optional().nullable(),
   nextPaymentDate: z.date().optional().nullable(),
   notes: z.string().optional(),
+  // New fields for initial recording
+  recordToWallet: z.boolean().default(false),
+  walletId: z.string().optional(),
+}).superRefine((data, ctx) => {
+  const principal = parseInt(data.principal.replace(/[^0-9]/g, '')) || 0;
+  const outstanding = data.outstandingBalance 
+    ? parseInt(data.outstandingBalance.replace(/[^0-9]/g, '')) || 0 
+    : principal;
+
+  if (outstanding > principal) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Sisa saldo tidak boleh melebihi nominal awal',
+      path: ['outstandingBalance'],
+    });
+  }
+
+  if (data.recordToWallet && !data.walletId) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Dompet wajib dipilih jika ingin mencatat ke saldo',
+      path: ['walletId'],
+    });
+  }
 });
 
 export type DebtFormValues = z.infer<typeof debtSchema>;

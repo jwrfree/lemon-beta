@@ -310,6 +310,7 @@ export type DebtInput = Omit<Debt, 'id' | 'createdAt' | 'updatedAt' | 'payments'
   startDate?: string | Date | null;
   dueDate?: string | Date | null;
   nextPaymentDate?: string | Date | null;
+  walletId?: string | null;
 };
 
 export interface DebtPaymentInput extends Omit<DebtPayment, 'id' | 'createdAt'> {

@@ -9,8 +9,8 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-background border-border/20",
-        surface: "bg-muted/50 border-transparent shadow-none focus-visible:bg-background focus-visible:border-border/30",
+        default: "bg-card border-border/40 shadow-sm hover:border-border/60",
+        surface: "bg-card/70 border-border/20 shadow-none focus-visible:bg-card focus-visible:border-border/40",
         secondary: "bg-secondary/40 border-transparent shadow-none",
         ghost: "bg-transparent border-transparent shadow-none px-0 py-0",
       },

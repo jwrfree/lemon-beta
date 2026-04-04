@@ -126,7 +126,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     <div className="space-y-2">
                         <Label htmlFor="categoryKey" className="text-label-md font-medium text-label text-muted-foreground">Kategori</Label>
                         <Select onValueChange={setCategoryKey} value={categoryKey}>
-                            <SelectTrigger id="categoryKey" className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
+                            <SelectTrigger id="categoryKey" className="h-12 focus:ring-2 focus:ring-primary/20">
                                 <SelectValue placeholder="Pilih kategori" />
                             </SelectTrigger>
                             <SelectContent className="rounded-md">
@@ -160,7 +160,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
+                            className="h-12 focus:ring-2 focus:ring-primary/20"
                         />
                     </div>
 
@@ -175,7 +175,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     value={quantity}
                                     onChange={(e) => setQuantity(e.target.value)}
                                     placeholder={`0 ${selectedCategory?.unit}`}
-                                    className="h-12 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20"
+                                    className="h-12 focus:ring-2 focus:ring-primary/20"
                                     required
                                 />
                                 <p className="text-label-md text-muted-foreground px-1 italic">
@@ -197,7 +197,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     onChange={handleAmountChange}
                                     required
                                     inputMode="numeric"
-                                    className="h-12 pl-11 rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 font-medium text-title-lg"
+                                    className="h-12 pl-11 focus:ring-2 focus:ring-primary/20 font-medium text-title-lg"
                                 />
                             </div>
                         </div>
@@ -210,7 +210,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                             placeholder="Tambahkan catatan di sini..."
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            className="rounded-md bg-muted/50 border-none focus:ring-2 focus:ring-primary/20 min-h-[100px] resize-none"
+                            className="focus:ring-2 focus:ring-primary/20 min-h-[100px] resize-none"
                         />
                     </div>
                 </div>
@@ -224,6 +224,3 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         </div >
     );
 };
-
-
-

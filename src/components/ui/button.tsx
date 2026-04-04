@@ -6,7 +6,7 @@ import { Loader2 } from "@/lib/icons"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-title-sm ring-offset-background transition-all motion-pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-title-sm ring-offset-background transition-all motion-pressable focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -20,7 +20,7 @@ const buttonVariants = cva(
         "primary-soft":
           "bg-primary/10 text-primary hover:bg-primary/20 active:scale-95",
         outline:
-          "border border-input bg-background hover:bg-accent/10 hover:text-accent-foreground active:scale-95",
+          "border border-border/40 bg-card hover:bg-accent/10 hover:text-accent-foreground active:scale-95 shadow-sm",
         secondary:
           "bg-secondary text-secondary-foreground hover:opacity-80 active:scale-95",
         ghost: "hover:bg-accent hover:text-accent-foreground active:scale-95",
@@ -32,7 +32,7 @@ const buttonVariants = cva(
       size: {
         default: "h-11 px-6 py-2",
         sm: "h-9 px-4",
-        lg: "h-13 px-10 text-body-lg",
+        lg: "h-14 px-10 text-body-lg",
         icon: "h-11 w-11 rounded-full",
       },
     },
@@ -45,7 +45,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isLoading?: boolean
 }

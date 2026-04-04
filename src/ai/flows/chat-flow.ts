@@ -5,7 +5,7 @@ import { composeSystemPrompt, FINANCIAL_FRAMEWORK } from "@/ai/prompts";
 /**
  * Chat-specific instructions for the Lemon Coach agent.
  */
-const CHAT_SPECIFIC_INSTRUCTIONS = `${FINANCIAL_FRAMEWORK}
+const CHAT_COACH_INSTRUCTIONS = `${FINANCIAL_FRAMEWORK}
 
 ### AKSES DATA (TOOLS)
 Anda memiliki akses ke tools finansial untuk mendapatkan data saldo, budget, pengeluaran, progres tabungan, dan mencari transaksi spesifik user.
@@ -73,7 +73,21 @@ Jika konteks server berisi anomaly review:
 JIKA data dari tool kosong atau tidak cukup, katakan dengan jujur bahwa Anda belum memiliki data tersebut.
 Jangan sebut nama tool internal atau istilah teknis ke user.`;
 
-export const CHAT_SYSTEM_PROMPT = composeSystemPrompt(CHAT_SPECIFIC_INSTRUCTIONS);
+export const CHAT_SYSTEM_PROMPT = composeSystemPrompt(CHAT_COACH_INSTRUCTIONS);
+
+const CHAT_LIGHTWEIGHT_INSTRUCTIONS = `### AKSES DATA (TOOLS)
+Anda memiliki akses ke tools finansial.
+SELALU gunakan tool yang relevan sebelum menjawab pertanyaan yang membutuhkan data finansial (misal: "berapa saldo saya?", "mutasi terbaru").
+
+### ATURAN RESPONS (MODE RINGAN)
+1. Jawab dengan sangat ringkas, padat, dan langsung ke intinya (maksimal 1-2 kalimat).
+2. HANYA gunakan format plain text biasa. JANGAN PERNAH membungkus jawaban dengan block XML <response>.
+3. Jangan berikan saran kompleks, coaching, atau edukasi keuangan kecuali diminta secara eksplisit.
+4. Gunakan bahasa Indonesia santai tapi profesional.
+5. Jika data dari tool kosong, katakan jujur bahwa data tidak ditemukan.
+6. JANGAN sebut nama tool internal ke user.`;
+
+export const CHAT_LIGHTWEIGHT_SYSTEM_PROMPT = composeSystemPrompt(CHAT_LIGHTWEIGHT_INSTRUCTIONS);
 
 export type ChatUserFinancialProfile = {
     spending_patterns?: Record<string, unknown> | null;
@@ -84,6 +98,7 @@ export type BuildChatSystemPromptOptions = {
     memorySummary?: string | null;
     userProfile?: ChatUserFinancialProfile | null;
     supplementalContext?: Record<string, unknown> | null;
+    mode?: 'coach' | 'lightweight';
 };
 
 const stripControlChars = (value: string) =>
@@ -156,7 +171,11 @@ export function buildChatSystemPrompt(options?: string | BuildChatSystemPromptOp
         ? { memorySummary: options }
         : (options ?? {});
 
-    const sections = [CHAT_SYSTEM_PROMPT];
+    const basePrompt = normalizedOptions.mode === 'lightweight' 
+        ? CHAT_LIGHTWEIGHT_SYSTEM_PROMPT 
+        : CHAT_SYSTEM_PROMPT;
+
+    const sections = [basePrompt];
 
     if (normalizedOptions.memorySummary?.trim()) {
         sections.push(`### MEMORI PERCAKAPAN

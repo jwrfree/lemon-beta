@@ -235,3 +235,75 @@ BEGIN
   WHERE id = p_debt_id AND user_id = v_auth_user_id;
 END;
 $$;
+
+-- 7. Create Debt with Optional Initial Transaction (Atomic)
+CREATE OR REPLACE FUNCTION create_debt_v1(
+  p_title TEXT,
+  p_counterparty TEXT,
+  p_principal NUMERIC,
+  p_outstanding_balance NUMERIC,
+  p_direction TEXT,
+  p_category TEXT,
+  p_interest_rate NUMERIC,
+  p_payment_frequency TEXT,
+  p_custom_interval INTEGER,
+  p_start_date TIMESTAMP,
+  p_due_date TIMESTAMP,
+  p_next_payment_date TIMESTAMP,
+  p_notes TEXT,
+  p_user_id UUID,
+  p_wallet_id UUID DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_new_debt_id UUID;
+  v_auth_user_id UUID := auth.uid();
+  v_tx_type TEXT;
+  v_tx_category TEXT;
+BEGIN
+  -- 1. Insert Debt
+  INSERT INTO debts (
+    title, counterparty, principal, outstanding_balance, direction, category,
+    interest_rate, payment_frequency, custom_interval, start_date, due_date,
+    next_payment_date, notes, user_id, status
+  )
+  VALUES (
+    p_title, p_counterparty, p_principal, p_outstanding_balance, p_direction, p_category,
+    p_interest_rate, p_payment_frequency, p_custom_interval, p_start_date, p_due_date,
+    p_next_payment_date, p_notes, v_auth_user_id, 'active'
+  )
+  RETURNING id INTO v_new_debt_id;
+
+  -- 2. Optional: Create Initial Transaction
+  IF p_wallet_id IS NOT NULL THEN
+    -- Security check for wallet
+    IF NOT EXISTS (SELECT 1 FROM wallets WHERE id = p_wallet_id AND user_id = v_auth_user_id) THEN
+      RAISE EXCEPTION 'Wallet not found or access denied';
+    END IF;
+
+    -- Determine transaction type based on debt direction
+    -- owed (Saya Berhutang) -> Money enters my wallet (income)
+    -- owing (Orang Lain Berhutang) -> Money leaves my wallet (expense)
+    IF p_direction = 'owed' THEN
+      v_tx_type := 'income';
+      v_tx_category := 'Pinjaman Baru';
+    ELSE
+      v_tx_type := 'expense';
+      v_tx_category := 'Pemberian Pinjaman';
+    END IF;
+
+    INSERT INTO transactions (
+      amount, category, date, description, type, wallet_id, user_id, linked_debt_id
+    )
+    VALUES (
+      p_principal, v_tx_category, p_start_date, 'Saldo awal dari: ' || p_title, v_tx_type, p_wallet_id, v_auth_user_id, v_new_debt_id
+    );
+  END IF;
+
+  RETURN jsonb_build_object('id', v_new_debt_id, 'status', 'success');
+END;
+$$;

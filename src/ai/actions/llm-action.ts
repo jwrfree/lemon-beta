@@ -28,6 +28,7 @@ type HandleLlmActionParams = {
   userProfile?: ChatUserFinancialProfile | null;
   supplementalContext?: Record<string, unknown> | null;
   sessionId?: string | null;
+  mode?: 'coach' | 'lightweight';
 };
 
 export const handleLlmChatAction = async ({
@@ -38,61 +39,80 @@ export const handleLlmChatAction = async ({
   userProfile,
   supplementalContext,
   sessionId,
+  mode = 'coach',
 }: HandleLlmActionParams) => {
-  const MAX_HISTORY_MESSAGES = 10;
+  const MAX_HISTORY_MESSAGES = mode === 'lightweight' ? 2 : 10;
   const BUDGET_LIMIT = 4500; // DeepSeek/Gemini limits are higher, but 4.5k is a lean target
 
   let contextToUse = supplementalContext;
+  let memoryToUse = memorySummary;
   let messagesToUse = messages.length > MAX_HISTORY_MESSAGES
     ? messages.slice(-MAX_HISTORY_MESSAGES)
     : messages;
 
-  const getSystem = () => buildChatSystemPrompt({ memorySummary, userProfile, supplementalContext: contextToUse });
+  const getSystem = () => buildChatSystemPrompt({ memorySummary: memoryToUse, userProfile, supplementalContext: contextToUse, mode });
 
   // Intelligent Context Management & Telemetry
   let log = '';
   const initialBreakdown = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse });
   const startTokens = initialBreakdown.total;
 
-  // Level 1 Truncation: Smart Message Filtering
-  if (initialBreakdown.total > BUDGET_LIMIT) {
+  if (startTokens > 0) {
+    log += `[AI Chat] INITIAL: ${startTokens > 1000 ? (startTokens/1000).toFixed(1) + 'k' : startTokens} tokens\n`;
+  }
+
+  // Level 5 Truncation: Smart Message Filtering (Prune small talk)
+  let currentTotal = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse }).total;
+  if (currentTotal > BUDGET_LIMIT) {
     const beforeHistory = TokenBudgeter.countTokens(JSON.stringify(messagesToUse));
-    // Keep high value messages or latest 3
     const filtered = TokenBudgeter.filterHighValueMessages(messagesToUse);
-    messagesToUse = messagesToUse.length > 5 
+    // Keep high value or at least the last 2 messages
+    messagesToUse = messagesToUse.length > 3 
       ? [...filtered, ...messagesToUse.slice(-2)].slice(-5) 
       : messagesToUse;
     
     const afterHistory = TokenBudgeter.countTokens(JSON.stringify(messagesToUse));
-    log += TokenBudgeter.logTransformation('Smart History', beforeHistory, afterHistory);
+    log += TokenBudgeter.trackTransformation('History', beforeHistory, afterHistory);
   }
 
-  // Level 2 Truncation: Strip Supplemental
-  let currentTotal = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse }).total;
-  if (currentTotal > BUDGET_LIMIT && contextToUse) {
-    const beforeContext = TokenBudgeter.countTokens(JSON.stringify(contextToUse));
+  // Level 4 Truncation: Drop History Entirely (Except current message)
+  currentTotal = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse }).total;
+  if (currentTotal > BUDGET_LIMIT && messagesToUse.length > 1) {
+    const beforeHistory = TokenBudgeter.countTokens(JSON.stringify(messagesToUse));
+    messagesToUse = messagesToUse.slice(-1);
+    const afterHistory = TokenBudgeter.countTokens(JSON.stringify(messagesToUse));
+    log += TokenBudgeter.trackTransformation('History Drop', beforeHistory, afterHistory);
+  }
+
+  // Level 3 & 2 Truncation: Strip Supplemental & Memory
+  currentTotal = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse }).total;
+  if (currentTotal > BUDGET_LIMIT && (contextToUse || memoryToUse)) {
+    const beforeContext = TokenBudgeter.countTokens(JSON.stringify({ contextToUse, memoryToUse }));
     contextToUse = null; 
+    memoryToUse = null;
     const afterContext = 0;
-    log += TokenBudgeter.logTransformation('Context Strip', beforeContext, afterContext);
+    log += TokenBudgeter.trackTransformation('Context', beforeContext, afterContext);
   }
 
-  // Level 3: Natural Fallback Persona (Production Mode)
+  // Level 1: Natural Fallback Persona (Fail-safe)
   let systemFinal = getSystem();
   currentTotal = TokenBudgeter.analyzePromptStructure({ system: systemFinal, history: messagesToUse }).total;
   if (currentTotal > BUDGET_LIMIT) {
     log += `[AI Chat] CRITICAL: Fallback to Natural Minimal Mode (${currentTotal} tokens)\n`;
-    systemFinal = `Kamu adalah Lemon Coach. Context sedang sangat penuh.
+    systemFinal = `Kamu adalah Lemon Coach, asisten finansial cerdas.
 STRATEGI RESPON:
-- Gunakan hanya pesan terbaru user sbg acuan.
-- Berikan jawaban singkat & padat berdasarkan data yang terlihat saja.
-- Jika data kurang, jawab jujur dan minta user menyebutkan kategori/periode spesifik.
-- JANGAN mengarang data.
-- Gaya: "Dari data terbaru, [jawaban]. Kalau mau cek [kategori] lebih detail, boleh sebutkan ya!"`;
+- Saat ini data konteks sedang sangat besar (melebihi limit token).
+- Berikan jawaban natural, singkat, & padat.
+- Gunakan HANYA pesan terbaru user sbg acuan.
+- Jika kamu tidak bisa melihat riwayat transaksi atau detail spesifik, sampaikan dengan bahasa yang bersahabat: "Untuk sekarang saya hanya bisa melihat data sekilas. Boleh sebutkan kategori atau periode yang ingin dicek lebih detail?"
+- JANGAN mengarang data. Hindari pesan error teknis.
+- Tawarkan bantuan untuk mengecek bagian lain secara spesifik.`;
   }
 
   const finalTotal = TokenBudgeter.analyzePromptStructure({ system: systemFinal, history: messagesToUse }).total;
-  if (log) console.info(`${log}[AI Chat] FINAL: ${finalTotal} tokens (Saved ${startTokens - finalTotal})`);
-  else console.info(`[AI Chat] Request within budget: ${finalTotal} tokens`);
+  log += `[AI Chat] FINAL: ${finalTotal > 1000 ? (finalTotal/1000).toFixed(1) + 'k' : finalTotal} tokens (System: ${TokenBudgeter.countTokens(systemFinal)}, History: ${TokenBudgeter.countTokens(JSON.stringify(messagesToUse))})`;
+  
+  console.info(`\n${log}\n`);
 
   const modelMessages = await convertToModelMessages(messagesToUse);
 
@@ -101,7 +121,7 @@ STRATEGI RESPON:
     system: systemFinal,
     messages: modelMessages,
     tools: createFinancialTools(userId, supabase),
-    stopWhen: stepCountIs(5),
+    stopWhen: stepCountIs(2),
     temperature: 0.4,
     maxOutputTokens: 800,
   });

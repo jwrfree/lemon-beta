@@ -74,6 +74,20 @@ const toLLMView = {
       by_status: byStatus,
       top_3_critical: budgets.sort((a, b) => b.percent - a.percent).slice(0, 3).map(toLLMView.budget)
     };
+  },
+  summarizeAnomalies: (anomalies: any[]) => {
+    const severityScore: Record<string, number> = { high: 3, medium: 2, low: 1 };
+    const sorted = [...anomalies].sort((a, b) => (severityScore[b.severity] || 0) - (severityScore[a.severity] || 0));
+    const top3 = sorted.slice(0, 3).map(a => ({
+      type: a.anomaly_type,
+      category: a.category,
+      severity: a.severity,
+      description: a.description
+    }));
+    return {
+      note: `Showing top 3 highest severity anomalies out of ${anomalies.length}.`,
+      top_anomalies: top3
+    };
   }
 };
 type WalletOption = {
@@ -639,7 +653,8 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
       description: 'Detect unusual spending patterns, missing recurring transactions, and budget breach trajectories for the current user.',
       inputSchema: z.object({}),
       execute: async () => {
-        return financialContextService.getSpendingAnomalies(userId, supabase);
+        const anomalies = await financialContextService.getSpendingAnomalies(userId, supabase);
+        return toLLMView.summarizeAnomalies(anomalies);
       },
     }),
   };

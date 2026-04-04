@@ -31,6 +31,8 @@ import {
 import { cn, normalizeDateInput } from '@/lib/utils';
 import type { Debt, DebtInput } from '@/types/models';
 import { useDebts } from '../hooks/use-debts';
+import { useWallets } from '@/features/wallets/hooks/use-wallets';
+import { Switch } from '@/components/ui/switch';
 
 interface DebtFormProps {
     onClose: () => void;
@@ -59,6 +61,7 @@ const frequencyOptions = [
 export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
     const { addDebt, updateDebt, deleteDebt } = useDebts();
     const { showToast } = useUI();
+    const { wallets } = useWallets();
     const isEditMode = !!initialData;
     const [isDeleting, setIsDeleting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
@@ -79,11 +82,18 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
             dueDate: initialData?.dueDate ? parseISO(initialData.dueDate) : null,
             nextPaymentDate: initialData?.nextPaymentDate ? parseISO(initialData.nextPaymentDate) : null,
             notes: initialData?.notes || '',
+            recordToWallet: false,
+            walletId: wallets.find(w => w.isDefault)?.id || wallets[0]?.id || '',
         },
     });
 
     const { control, handleSubmit, watch, formState: { isSubmitting, errors } } = form;
     const paymentFrequency = watch('paymentFrequency');
+    const direction = watch('direction');
+    const recordToWallet = watch('recordToWallet');
+
+    const counterpartyLabel = direction === 'owed' ? 'Pemberi Pinjaman' : 'Peminjam / Penerima';
+    const principalLabel = 'Total Pinjaman / Piutang';
 
     const onSubmit = async (values: DebtFormValues) => {
         setSubmitError(null);
@@ -108,6 +118,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
             notes: values.notes || '',
             status: initialData?.status || 'active',
             payments: initialData?.payments || [],
+            walletId: values.recordToWallet ? values.walletId : null,
         };
 
         try {
@@ -155,12 +166,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                 onClick={e => e.stopPropagation()}
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
-                    <div>
-                        <h2 className="text-title-lg">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
-                        <p className="text-body-md text-muted-foreground">
-                            Simpan detail pinjaman, cicilan, atau piutang yang harus kamu pantau.
-                        </p>
-                    </div>
+                    <h2 className="text-title-lg">{isEditMode ? 'Edit Hutang/Piutang' : 'Catatan Hutang/Piutang'}</h2>
                     <CloseButton
                         ariaLabel="Tutup"
                         tone="muted"
@@ -209,7 +215,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="counterparty" className={cn(errors.counterparty && "text-destructive")}>Pihak Terkait</Label>
+                        <Label htmlFor="counterparty" className={cn(errors.counterparty && "text-destructive")}>{counterpartyLabel}</Label>
                         <Controller
                             control={control}
                             name="counterparty"
@@ -227,7 +233,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className={cn(errors.principal && "text-destructive")}>Nominal Awal</Label>
+                            <Label className={cn(errors.principal && "text-destructive")}>{principalLabel}</Label>
                             <Controller
                                 control={control}
                                 name="principal"
@@ -251,7 +257,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                             {errors.principal && <p className="text-label-md text-destructive">{errors.principal.message}</p>}
                         </div>
                         <div className="space-y-2">
-                            <Label>Sisa Saat Ini</Label>
+                            <Label className={cn(errors.outstandingBalance && "text-destructive")}>Sisa Saat Ini</Label>
                             <Controller
                                 control={control}
                                 name="outstandingBalance"
@@ -269,9 +275,11 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                             field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
                                         }}
                                         inputMode="numeric"
+                                        className={cn(errors.outstandingBalance && "border-destructive")}
                                     />
                                 )}
                             />
+                            {errors.outstandingBalance && <p className="text-label-md text-destructive">{errors.outstandingBalance.message}</p>}
                         </div>
                     </div>
 
@@ -433,8 +441,88 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                             )}
                         />
                     </div>
+
+                    {!isEditMode && (
+                        <div className="pt-2 pb-1 bg-secondary/20 rounded-lg p-3 space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-0.5">
+                                    <Label className="text-body-md font-medium">Catat ke Saldo Dompet?</Label>
+                                    <p className="text-label-md text-muted-foreground">Otomatis buat transaksi awal di dompet</p>
+                                </div>
+                                <Controller
+                                    control={control}
+                                    name="recordToWallet"
+                                    render={({ field }) => (
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    )}
+                                />
+                            </div>
+
+                            {recordToWallet && (
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <Label className={cn(errors.walletId && "text-destructive")}>Pilih Dompet</Label>
+                                    <Controller
+                                        control={control}
+                                        name="walletId"
+                                        render={({ field }) => (
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <SelectTrigger className={cn(errors.walletId && "border-destructive")}>
+                                                    <SelectValue placeholder="Pilih dompet" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {wallets.map(wallet => (
+                                                        <SelectItem key={wallet.id} value={wallet.id}>
+                                                            {wallet.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                    {errors.walletId && <p className="text-label-md text-destructive">{errors.walletId.message}</p>}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                        <Label>Jatuh Tempo Cicilan Berikutnya</Label>
+                        <Controller
+                            control={control}
+                            name="nextPaymentDate"
+                            render={({ field }) => (
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className={cn('w-full justify-start text-left font-normal', !field.value && 'text-muted-foreground')}
+                                        >
+                                            <CalendarBlank className="mr-2 h-4 w-4" weight="regular" />
+                                            {field.value ? format(field.value, 'd MMM yyyy', { locale: dateFnsLocaleId }) : 'Opsional'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value || undefined}
+                                            onSelect={field.onChange}
+                                            locale={dateFnsLocaleId}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        />
+                        <p className="text-label-md text-muted-foreground px-1 italic">
+                            *Gunakan ini untuk pengingat cicilan pertama.
+                        </p>
+                    </div>
                 </form>
-                <div className="p-4 border-t sticky bottom-0 bg-background flex flex-col gap-2">
+                <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t sticky bottom-0 bg-background flex flex-col gap-2">
                     {submitError && (
                         <p className="text-label-md text-destructive bg-destructive/10 px-3 py-2 rounded-md">
                             {submitError}
@@ -479,5 +567,3 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
         </motion.div>
     );
 };
-
-

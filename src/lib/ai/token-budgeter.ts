@@ -64,11 +64,14 @@ export const TokenBudgeter = {
     });
   },
 
-  /**
-   * Formats a transformation log for telemetry.
-   */
-  logTransformation(step: string, before: number, after: number) {
+  scoreContext(parts: any[]) {
+    // Scoring logic could go here to rank contextual pieces
+    return parts;
+  },
+
+  trackTransformation(step: string, before: number, after: number) {
     if (before === after) return '';
-    return `[AI Chat] PRUNING (${step}): ${before} -> ${after} tokens (-${before - after})\n`;
+    const diff = before - after;
+    return `[AI Chat] PRUNING (${step}): -${diff > 1000 ? (diff/1000).toFixed(1) + 'k' : diff} tokens\n`;
   }
 };
