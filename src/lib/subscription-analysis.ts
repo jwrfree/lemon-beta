@@ -1,4 +1,4 @@
-import { parseISO, subMonths, isSameMonth, compareDesc } from 'date-fns';
+import { parseISO, subMonths, isSameMonth, compareDesc, isValid } from 'date-fns';
 import type { Transaction } from '@/types/models';
 
 export interface SubscriptionAnomaly {
@@ -20,23 +20,23 @@ export interface SubscriptionSummary {
  * Menganalisis transaksi untuk menemukan pola langganan dan anomali harga.
  * Fokus pada kategori 'Subscriptions', 'Langganan', atau transaksi berulang.
  */
-export const analyzeSubscriptions = (transactions: Transaction[]): SubscriptionSummary => {
-    // 1. Filter transaksi kategori langganan (bisa disesuaikan dengan ID kategori riil)
-    const subTx = transactions.filter(t => 
-        ['Subscriptions', 'Langganan', 'Tagihan', 'Bills'].includes(t.category) ||
-        t.tags?.includes('subscription')
-    );
+export const analyzeSubscriptions = (transactions: Transaction[], now: Date = new Date()): SubscriptionSummary => {
+    // 1. Filter transaksi kategori langganan dan pastikan tanggal valid
+    const subTx = transactions.filter(t => {
+        const hasSubCategory = ['Subscriptions', 'Langganan', 'Tagihan', 'Bills'].includes(t.category) ||
+            t.tags?.includes('subscription');
+        if (!hasSubCategory) return false;
+        
+        const date = parseISO(t.date);
+        return isValid(date);
+    });
 
     // 2. Group by Merchant (Simple normalization)
     const merchantGroups: Record<string, Transaction[]> = {};
     
     subTx.forEach(tx => {
-        // Normalisasi nama: "Netflix Premium" -> "netflix"
-        // Mengambil kata pertama atau kedua sebagai identifier sederhana
-        // Juga membersihkan prefix umum pembayaran digital
+        // Normalisasi nama
         const name = tx.description.toLowerCase().replace(/^(paypal|google|apple|gopay|ovo)\s*\*?\s*/, '').trim();
-        // Logic fuzzy match sederhana bisa ditambahkan di sini
-        // Untuk sekarang kita group by exact normalized description
         if (!merchantGroups[name]) {
             merchantGroups[name] = [];
         }
@@ -46,7 +46,6 @@ export const analyzeSubscriptions = (transactions: Transaction[]): SubscriptionS
     const anomalies: SubscriptionAnomaly[] = [];
     let totalMonthlyBurn = 0;
     let activeSubscriptions = 0;
-    const now = new Date();
 
     // 3. Analisis per Merchant
     Object.entries(merchantGroups).forEach(([name, txs]) => {
@@ -57,7 +56,7 @@ export const analyzeSubscriptions = (transactions: Transaction[]): SubscriptionS
         const latestDate = parseISO(latest.date);
 
         // Hitung burn rate (jika transaksi terjadi dalam 30-40 hari terakhir)
-        const isActive = latestDate >= subMonths(now, 1.5); // Buffer 1.5 bulan
+        const isActive = isValid(latestDate) && latestDate >= subMonths(now, 1.5); // Buffer 1.5 bulan
         if (isActive) {
             totalMonthlyBurn += latest.amount;
             activeSubscriptions++;

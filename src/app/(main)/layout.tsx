@@ -11,7 +11,6 @@ import { ConfirmDeleteModal } from '@/features/transactions/components/confirm-d
 
 import { EditWalletModal } from '@/features/wallets/components/edit-wallet-modal';
 import { EditBudgetModal } from '@/features/budgets/components/edit-budget-modal';
-import { CustomToast } from '@/components/custom-toast';
 import { GoalForm } from '@/features/goals/components/goal-form';
 import { ReminderForm } from '@/features/reminders/components/reminder-form';
 import { DebtForm } from '@/features/debts/components/debt-form';
@@ -149,7 +148,6 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
                     </PageTransition>
                 </div>
 
-                <CustomToast />
 
                 <Suspense fallback={null}>
                     <AnimatePresence mode="wait">

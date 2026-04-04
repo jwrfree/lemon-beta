@@ -20,27 +20,48 @@ interface SubscriptionAuditCardProps {
 }
 
 export const SubscriptionAuditCard = ({ transactions }: SubscriptionAuditCardProps) => {
- const summary = useMemo(() => analyzeSubscriptions(transactions), [transactions]);
- const { totalMonthlyBurn, activeSubscriptions, anomalies } = summary;
+  // Hydration Stability
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
- const [aiInsight, setAiInsight] = useState<string | null>(null);
- const [isAiLoading, setIsAiLoading] = useState(false);
+  // Stable "now" for hydration consistency
+  const now = useMemo(() => {
+    if (!isMounted) return new Date(2026, 3, 5); // Fixed date for SSR/Hydration
+    return new Date();
+  }, [isMounted]);
 
- useEffect(() => {
- if (activeSubscriptions > 0 && !aiInsight && !isAiLoading) {
- setIsAiLoading(true);
- auditSubscriptionsFlow(summary).then(text => {
- setAiInsight(text);
- setIsAiLoading(false);
- });
- }
- }, [activeSubscriptions, summary, aiInsight, isAiLoading]);
+  const summary = useMemo(() => analyzeSubscriptions(transactions, now), [transactions, now]);
+  const { totalMonthlyBurn, activeSubscriptions, anomalies } = summary;
+
+  const [aiInsight, setAiInsight] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchAiInsight = async () => {
+      if (isMounted && activeSubscriptions > 0 && !aiInsight && !isAiLoading) {
+        setIsAiLoading(true);
+        try {
+          const text = await auditSubscriptionsFlow(summary);
+          setAiInsight(text);
+        } catch (error) {
+          console.error('Failed to fetch AI subscription audit:', error);
+          // Gracefully hide the AI section on failure
+        } finally {
+          setIsAiLoading(false);
+        }
+      }
+    };
+
+    fetchAiInsight();
+  }, [isMounted, activeSubscriptions, summary, aiInsight, isAiLoading]);
 
  if (activeSubscriptions === 0 && anomalies.length === 0) {
  return (
  <div className="mb-8 flex items-center gap-5 rounded-card-premium bg-emerald-500/6 p-6 shadow-none border-none transition-all">
  <div className="bg-emerald-500/10 p-3 rounded-full shrink-0">
- <CheckCircle size={24} weight="regular"className="text-emerald-600"/>
+ <CheckCircle size={24} weight="regular" className="text-emerald-600"/>
  </div>
  <div className="flex-1">
  <h3 className="text-body-lg text-emerald-800 dark:text-emerald-200">Status Langganan Aman</h3>

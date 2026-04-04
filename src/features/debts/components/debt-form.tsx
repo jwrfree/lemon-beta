@@ -555,7 +555,7 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                    <AlertDialogAction onClick={handleDelete} variant="destructive" className="w-full sm:w-auto">
                                         Ya, Hapus
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

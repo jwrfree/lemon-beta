@@ -153,7 +153,7 @@ export const ResetPasswordPage = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" size="lg" className="w-full h-12 rounded-xl" disabled={isSubmitting}>
+                    <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                         {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         {isSubmitting ? 'Memperbarui...' : 'Simpan Password Baru'}
                     </Button>

@@ -8,7 +8,7 @@ import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { cn } from '@/lib/utils';
+import { cn, triggerHaptic } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format, parseISO } from 'date-fns';
@@ -46,20 +46,31 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
     const [targetDate, setTargetDate] = useState<Date | undefined>(initialData?.targetDate ? parseISO(initialData.targetDate) : undefined);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const handleAmountChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAmountChange = (setter: React.Dispatch<React.SetStateAction<string>>, fieldId: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = e.target.value.replace(/[^0-9]/g, '');
         const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
         setter(formattedValue);
+        if (errors[fieldId]) setErrors(prev => ({ ...prev, [fieldId]: '' }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        
+        const newErrors: Record<string, string> = {};
         const parsedTarget = parseInt(targetAmount.replace(/[^0-9]/g, ''));
-        if (!name || !targetAmount || parsedTarget <= 0 || !targetDate) {
-            showToast('Nama, jumlah, dan tanggal target wajib diisi.', 'error');
+        
+        if (!name) newErrors.name = 'Nama target wajib diisi.';
+        if (!targetAmount || parsedTarget <= 0) newErrors.targetAmount = 'Jumlah target harus lebih dari nol.';
+        if (!targetDate) newErrors.targetDate = 'Tanggal target wajib dipilih.';
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            triggerHaptic('notification-error');
             return;
         }
+
         setIsSubmitting(true);
         const goalData = {
             name,
@@ -76,6 +87,7 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                 await addGoal(goalData);
             }
             onClose();
+            showToast(`Berhasil ${isEditMode ? 'memperbarui' : 'menambahkan'} target.`, 'success');
         } catch (error) {
             console.error(error);
             showToast(isEditMode ? 'Gagal memperbarui tujuan. Coba lagi.' : 'Gagal menambahkan tujuan. Coba lagi.', 'error');
@@ -125,8 +137,19 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                 </div>
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="name">Nama Target</Label>
-                        <Input id="name" placeholder="e.g., MacBook Pro Baru" value={name} onChange={(e) => setName(e.target.value)} required />
+                        <Label htmlFor="name" className={cn(errors.name && "text-destructive")}>Nama Target</Label>
+                        <Input 
+                            id="name" 
+                            placeholder="e.g., MacBook Pro Baru" 
+                            value={name} 
+                            onChange={(e) => {
+                                setName(e.target.value);
+                                if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                            }} 
+                            required 
+                            className={cn(errors.name && "border-destructive animate-shake")}
+                        />
+                        {errors.name && <p className="text-label-md text-destructive px-1">{errors.name}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -149,16 +172,32 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="targetAmount">Jumlah Target</Label>
-                        <Input id="targetAmount" placeholder="Rp 0" value={targetAmount} onChange={handleAmountChange(setTargetAmount)} required inputMode="numeric" />
+                        <Label htmlFor="targetAmount" className={cn(errors.targetAmount && "text-destructive")}>Jumlah Target</Label>
+                        <Input 
+                            id="targetAmount" 
+                            placeholder="Rp 0" 
+                            value={targetAmount} 
+                            onChange={handleAmountChange(setTargetAmount, 'targetAmount')} 
+                            required 
+                            inputMode="numeric" 
+                            className={cn(errors.targetAmount && "border-destructive animate-shake")}
+                        />
+                        {errors.targetAmount && <p className="text-label-md text-destructive px-1">{errors.targetAmount}</p>}
                     </div>
+                    
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="currentAmount">Sudah Terkumpul</Label>
-                            <Input id="currentAmount" placeholder="Rp 0" value={currentAmount} onChange={handleAmountChange(setCurrentAmount)} inputMode="numeric" />
+                            <Input 
+                                id="currentAmount" 
+                                placeholder="Rp 0" 
+                                value={currentAmount} 
+                                onChange={handleAmountChange(setCurrentAmount, 'currentAmount')} 
+                                inputMode="numeric" 
+                            />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="targetDate">Tanggal Target</Label>
+                            <Label htmlFor="targetDate" className={cn(errors.targetDate && "text-destructive")}>Tanggal Target</Label>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -166,7 +205,8 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                                         variant={"outline"}
                                         className={cn(
                                             "w-full justify-start text-left font-normal",
-                                            !targetDate && "text-muted-foreground"
+                                            !targetDate && "text-muted-foreground",
+                                            errors.targetDate && "border-destructive animate-shake"
                                         )}
                                     >
                                         <CalendarBlank className="mr-2 h-4 w-4" weight="regular" />
@@ -177,19 +217,23 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
                                     <Calendar
                                         mode="single"
                                         selected={targetDate}
-                                        onSelect={setTargetDate}
+                                        onSelect={(date) => {
+                                            setTargetDate(date);
+                                            if (errors.targetDate) setErrors(prev => ({ ...prev, targetDate: '' }));
+                                        }}
                                         initialFocus
                                         locale={dateFnsLocaleId}
                                         disabled={(date) => date < new Date()}
                                     />
                                 </PopoverContent>
                             </Popover>
+                            {errors.targetDate && <p className="text-label-md text-destructive px-1">{errors.targetDate}</p>}
                         </div>
                     </div>
 
                 </form>
                 <div className="p-4 border-t sticky bottom-0 bg-background flex gap-2">
-                    <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
+                    <Button type="submit" onClick={() => handleSubmit()} className="flex-1" size="lg" disabled={isSubmitting}>
                         {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Target'}`}
                     </Button>
                     {isEditMode && (
@@ -220,5 +264,3 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
         </motion.div>
     );
 };
-
-

@@ -12,9 +12,9 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-primary !text-primary-foreground hover:opacity-90 active:scale-95 shadow-sm",
         default: "bg-primary !text-primary-foreground hover:opacity-90 active:scale-95 shadow-sm",
-        volt: "bg-accent text-accent-foreground hover:opacity-90 active:scale-95 shadow-md",
+        volt: "bg-accent !text-accent-foreground hover:opacity-90 active:scale-95 shadow-md",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 active:scale-95",
+          "bg-destructive !text-destructive-foreground hover:bg-destructive/90 active:scale-95",
         "destructive-soft":
           "bg-destructive/10 text-destructive hover:bg-destructive/20 active:scale-95",
         "primary-soft":
@@ -22,12 +22,12 @@ const buttonVariants = cva(
         outline:
           "border border-border/40 bg-card hover:bg-accent/10 hover:text-accent-foreground active:scale-95 shadow-sm",
         secondary:
-          "bg-secondary text-secondary-foreground hover:opacity-80 active:scale-95",
+          "bg-secondary !text-secondary-foreground hover:opacity-80 active:scale-95",
         ghost: "hover:bg-accent hover:text-accent-foreground active:scale-95",
         link: "text-primary underline-offset-4 hover:underline",
         tertiary: "text-muted-foreground hover:text-foreground active:scale-95",
-        success: "bg-success text-success-foreground hover:opacity-90 active:scale-95",
-        error: "bg-destructive text-destructive-foreground hover:opacity-90 active:scale-95",
+        success: "bg-success !text-success-foreground hover:opacity-90 active:scale-95",
+        error: "bg-destructive !text-destructive-foreground hover:opacity-90 active:scale-95",
       },
       size: {
         default: "h-11 px-6 py-2",

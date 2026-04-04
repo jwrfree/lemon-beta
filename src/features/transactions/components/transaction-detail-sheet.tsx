@@ -173,8 +173,9 @@ export const TransactionDetailSheet = ({
  <div className="shrink-0 bg-background px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 border-t border-border/15 backdrop-blur-sm sm:px-8">
  <div className="mx-auto w-full max-w-sm">
  <Button
+ size="lg"
+ className="w-full text-body-md"
  onClick={onClose}
- className="h-12 w-full rounded-full bg-primary text-body-md text-primary-foreground transition-all active:scale-[0.98] hover:opacity-90"
  >
  OK
  </Button>

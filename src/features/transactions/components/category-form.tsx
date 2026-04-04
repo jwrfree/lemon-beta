@@ -150,7 +150,7 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
             </form>
 
             <div className="bg-background p-6 shadow-elevation-3">
-                <Button form="category-form" type="submit" className="w-full h-12 rounded-lg text-body-lg font-medium" disabled={isSubmitting}>
+                <Button form="category-form" type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? 'Menyimpan...' : 'Simpan Kategori'}
                 </Button>
             </div>
@@ -188,6 +188,3 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
         </Dialog>
     );
 };
-
-
-

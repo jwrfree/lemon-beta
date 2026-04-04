@@ -2,6 +2,26 @@
 
 All updates and improvements to the Lemon app will be documented here.
 
+## [Version 2.7.0] - 5 April 2026
+
+### Added
+- **Standardized Inline Error Handling**
+  - Replaced generic toast-based validation with field-level inline error messages across all major forms.
+  - Implemented `zod` and `react-hook-form` validation for `ReminderForm`.
+  - Added state-based inline validation for `AddBudgetModal`, `AssetLiabilityForm`, and `GoalForm`.
+  - Enhanced `SemanticTransactionReview` with explicit validation feedback for amount, category, and wallet selection.
+- **Premium Form Interaction**
+  - Added `animate-shake` and `border-destructive` visual cues for invalid inputs.
+  - Integrated haptic feedback (`notification-error`) on failed form submissions.
+
+### Changed
+- **Standardized Button Geometry**
+  - Aligned all primary form buttons to the 56px height standard (`h-14`) for better ergonomics and design consistency.
+
+### Fixed
+- **Component Structural Recovery**
+  - Fixed structural corruption in `AddBudgetModal.tsx`, `SemanticTransactionReview.tsx`, and `GoalForm.tsx` caused by fragmented edits.
+
 ## [Version 2.6.0] - 3 April 2026
 	
 ### Added

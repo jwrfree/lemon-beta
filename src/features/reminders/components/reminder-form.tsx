@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Trash2, CalendarClock } from '@/lib/icons';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trash2, CalendarClock, CircleNotch } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
 import { CloseButton } from '@/components/ui/close-button';
@@ -15,6 +15,9 @@ import { format, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { reminderSchema, ReminderFormValues } from '../schemas/reminder-schema';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -55,100 +58,84 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
     const { addReminder, updateReminder, deleteReminder } = useReminders();
     const { showToast } = useUI();
     const isEditMode = !!initialData;
-
-    const [title, setTitle] = useState(initialData?.title || '');
-    const [type, setType] = useState<Reminder['type']>(initialData?.type || 'one_time');
-    const [amount, setAmount] = useState(() => {
-        if (!initialData?.amount) return '';
-        return new Intl.NumberFormat('id-ID').format(initialData.amount);
-    });
-    const [dueDate, setDueDate] = useState<Date | undefined>(
-        initialData?.dueDate ? parseISO(initialData.dueDate) : new Date()
-    );
-    const [repeatFrequency, setRepeatFrequency] = useState<ReminderRepeatRule['frequency']>(
-        initialData?.repeatRule?.frequency || 'none'
-    );
-    const [customInterval, setCustomInterval] = useState(
-        initialData?.repeatRule?.customInterval ? String(initialData.repeatRule.customInterval) : ''
-    );
-    const [notes, setNotes] = useState(initialData?.notes || '');
-    const initialChannels: ReminderChannel[] = Array.isArray(initialData?.channels) && initialData.channels?.length
-        ? (initialData.channels as ReminderChannel[])
-        : ['push'];
-    const [channels, setChannels] = useState<ReminderChannel[]>(initialChannels);
-    const [linkedDebtId, setLinkedDebtId] = useState(
-        initialData?.targetType === 'debt' ? initialData.targetId || '' : ''
-    );
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const form = useForm<ReminderFormValues>({
+        resolver: zodResolver(reminderSchema),
+        defaultValues: {
+            title: initialData?.title || '',
+            type: initialData?.type || 'one_time',
+            amount: initialData?.amount ? new Intl.NumberFormat('id-ID').format(initialData.amount) : '',
+            dueDate: initialData?.dueDate ? parseISO(initialData.dueDate) : new Date(),
+            repeatFrequency: initialData?.repeatRule?.frequency || 'none',
+            customInterval: initialData?.repeatRule?.customInterval ? String(initialData.repeatRule.customInterval) : '',
+            notes: initialData?.notes || '',
+            channels: (initialData?.channels as string[]) || ['push'],
+            linkedDebtId: initialData?.targetType === 'debt' ? initialData.targetId || '' : '',
+        },
+    });
+
+    const { control, handleSubmit, watch, setValue, formState: { errors, isSubmitting } } = form;
+    const type = watch('type');
+    const dueDate = watch('dueDate');
+    const repeatFrequency = watch('repeatFrequency');
+    const channels = watch('channels') || [];
 
     const dueDateLabel = useMemo(() => {
         if (!dueDate) return 'Pilih tanggal';
         return format(dueDate, 'd MMM yyyy', { locale: dateFnsLocaleId });
     }, [dueDate]);
 
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rawValue = e.target.value.replace(/[^0-9]/g, '');
-        const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
-        setAmount(formattedValue);
+    const handleChannelToggle = (channel: string) => {
+        const current = [...(channels as string[])];
+        const next = current.includes(channel) 
+            ? current.filter(c => c !== channel) 
+            : [...current, channel];
+        setValue('channels', next, { shouldValidate: true });
     };
 
-    const handleChannelToggle = (channel: ReminderChannel) => {
-        setChannels(prev =>
-            prev.includes(channel) ? prev.filter(c => c !== channel) : [...prev, channel]
-        );
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!title || !dueDate) {
-            showToast('Judul dan tanggal jatuh tempo wajib diisi.', 'error');
-            return;
-        }
-
-        const parsedAmount = parseInt(amount.replace(/[^0-9]/g, '')) || 0;
+    const onSubmit = async (values: ReminderFormValues) => {
+        const parsedAmount = parseInt(values.amount?.replace(/[^0-9]/g, '') || '0') || 0;
         const payload: ReminderInput = {
-            title,
-            type,
+            title: values.title,
+            type: values.type,
             amount: parsedAmount,
-            dueDate: dueDate.toISOString(),
+            dueDate: values.dueDate.toISOString(),
             repeatRule:
-                repeatFrequency === 'none'
+                values.repeatFrequency === 'none'
                     ? null
                     : {
-                          frequency: repeatFrequency,
+                          frequency: values.repeatFrequency,
                           customInterval:
-                              repeatFrequency === 'custom'
-                                  ? parseInt(customInterval || '0') || null
+                              values.repeatFrequency === 'custom'
+                                  ? parseInt(values.customInterval || '0') || null
                                   : null,
                       },
-            notes,
-            channels,
+            notes: values.notes || '',
+            channels: values.channels,
             status: initialData?.status || 'upcoming',
             snoozeCount: initialData?.snoozeCount ?? 0,
         };
 
-        if (type === 'debt' && linkedDebtId) {
+        if (values.type === 'debt' && values.linkedDebtId) {
             payload.targetType = 'debt';
-            payload.targetId = linkedDebtId;
+            payload.targetId = values.linkedDebtId;
         } else {
             payload.targetType = 'standalone';
             payload.targetId = null;
         }
 
         try {
-            setIsSubmitting(true);
             if (isEditMode) {
                 await updateReminder(initialData.id, payload);
             } else {
                 await addReminder(payload);
             }
             onClose();
+            showToast(`Pengingat berhasil ${isEditMode ? 'diperbarui' : 'disimpan'}.`, 'success');
         } catch (error) {
             console.error(error);
             showToast('Terjadi kesalahan saat menyimpan pengingat.', 'error');
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -158,6 +145,7 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
             setIsDeleting(true);
             await deleteReminder(initialData.id);
             onClose();
+            showToast('Pengingat telah dihapus.', 'success');
         } catch (error) {
             console.error(error);
             showToast('Gagal menghapus pengingat.', 'error');
@@ -194,145 +182,201 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                         onClick={onClose}
                     />
                 </div>
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="title">Judul Pengingat</Label>
-                        <Input
-                            id="title"
-                            placeholder="Contoh: Bayar listrik"
-                            value={title}
-                            onChange={e => setTitle(e.target.value)}
-                            required
+                        <Label htmlFor="title" className={cn(errors.title && "text-destructive")}>Judul Pengingat</Label>
+                        <Controller
+                            control={control}
+                            name="title"
+                            render={({ field }) => (
+                                <Input
+                                    {...field}
+                                    id="title"
+                                    placeholder="Contoh: Bayar listrik"
+                                    className={cn(errors.title && "border-destructive")}
+                                    autoFocus
+                                />
+                            )}
                         />
+                        {errors.title && <p className="text-label-md text-destructive">{errors.title.message}</p>}
                     </div>
 
                     <div className="space-y-2">
                         <Label>Tipe Pengingat</Label>
-                        <Select value={type} onValueChange={value => setType(value as Reminder['type'])}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih tipe" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {reminderTypes.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Controller
+                            control={control}
+                            name="type"
+                            render={({ field }) => (
+                                <Select value={field.value} onValueChange={field.onChange}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Pilih tipe" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {reminderTypes.map(option => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                     </div>
 
                     {type === 'debt' && (
                         <div className="space-y-2">
                             <Label>Terhubung ke Hutang/Piutang</Label>
-                            <Select value={linkedDebtId} onValueChange={setLinkedDebtId}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Pilih catatan hutang/piutang" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {debts.length === 0 ? (
-                                        <SelectItem value="" disabled>
-                                            Belum ada catatan hutang/piutang
-                                        </SelectItem>
-                                    ) : (
-                                        debts.map((debt: Debt) => (
-                                            <SelectItem key={debt.id} value={debt.id}>
-                                                {debt.title}
-                                            </SelectItem>
-                                        ))
-                                    )}
-                                </SelectContent>
-                            </Select>
+                            <Controller
+                                control={control}
+                                name="linkedDebtId"
+                                render={({ field }) => (
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih catatan hutang/piutang" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {debts.length === 0 ? (
+                                                <SelectItem value="" disabled>
+                                                    Belum ada catatan hutang/piutang
+                                                </SelectItem>
+                                            ) : (
+                                                debts.map((debt: Debt) => (
+                                                    <SelectItem key={debt.id} value={debt.id}>
+                                                        {debt.title}
+                                                    </SelectItem>
+                                                ))
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
                     )}
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="amount">Nominal (opsional)</Label>
-                            <Input
-                                id="amount"
-                                placeholder="Rp 0"
-                                value={amount}
-                                onChange={handleAmountChange}
-                                inputMode="numeric"
+                            <Controller
+                                control={control}
+                                name="amount"
+                                render={({ field }) => (
+                                    <Input
+                                        {...field}
+                                        id="amount"
+                                        placeholder="Rp 0"
+                                        onChange={(e) => {
+                                            const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                                            if (rawValue === '') {
+                                                field.onChange('');
+                                                return;
+                                            }
+                                            field.onChange(new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0));
+                                        }}
+                                        inputMode="numeric"
+                                    />
+                                )}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>Tanggal Jatuh Tempo</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className={cn('w-full justify-start bg-background border border-border/15 text-left font-normal', !dueDate && 'text-muted-foreground')}
-                                    >
-                                        <CalendarClock className="mr-2 h-4 w-4" />
-                                        {dueDateLabel}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={dueDate}
-                                        onSelect={setDueDate}
-                                        locale={dateFnsLocaleId}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
+                            <Label className={cn(errors.dueDate && "text-destructive")}>Jatuh Tempo</Label>
+                            <Controller
+                                control={control}
+                                name="dueDate"
+                                render={({ field }) => (
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className={cn('w-full justify-start bg-background border border-border/15 text-left font-normal', !field.value && 'text-muted-foreground', errors.dueDate && "border-destructive")}
+                                            >
+                                                <CalendarClock className="mr-2 h-4 w-4" />
+                                                {dueDateLabel}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                locale={dateFnsLocaleId}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            />
+                            {errors.dueDate && <p className="text-label-md text-destructive">{errors.dueDate.message}</p>}
                         </div>
                     </div>
 
                     <div className="space-y-2">
                         <Label>Frekuensi Pengingat</Label>
-                        <Select
-                            value={repeatFrequency}
-                            onValueChange={value => setRepeatFrequency(value as ReminderRepeatRule['frequency'])}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih frekuensi" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {repeatOptions.map(option => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Controller
+                            control={control}
+                            name="repeatFrequency"
+                            render={({ field }) => (
+                                <Select value={field.value} onValueChange={field.onChange}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Pilih frekuensi" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {repeatOptions.map(option => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
                         {repeatFrequency === 'custom' && (
-                        <div className="flex items-center gap-2 text-body-md text-muted-foreground">
-                            <Input
-                                value={customInterval}
-                                onChange={e => setCustomInterval(e.target.value.replace(/[^0-9]/g, ''))}
-                                className="w-20"
-                                inputMode="numeric"
-                                />
-                                <span>hari sekali</span>
+                            <div className="flex flex-col gap-1 pt-1">
+                                <div className="flex items-center gap-2 text-body-md text-muted-foreground">
+                                    <Controller
+                                        control={control}
+                                        name="customInterval"
+                                        render={({ field }) => (
+                                            <Input
+                                                {...field}
+                                                onChange={e => field.onChange(e.target.value.replace(/[^0-9]/g, ''))}
+                                                className={cn("w-20", errors.customInterval && "border-destructive")}
+                                                inputMode="numeric"
+                                            />
+                                        )}
+                                    />
+                                    <span>hari sekali</span>
+                                </div>
+                                {errors.customInterval && <p className="text-label-md text-destructive">{errors.customInterval.message}</p>}
                             </div>
                         )}
                     </div>
 
                     <div className="space-y-2">
                         <Label>Catatan</Label>
-                        <Textarea
-                            placeholder="Detail tambahan seperti nomor akun atau catatan pembayaran"
-                            value={notes}
-                            onChange={e => setNotes(e.target.value)}
+                        <Controller
+                            control={control}
+                            name="notes"
+                            render={({ field }) => (
+                                <Textarea
+                                    {...field}
+                                    placeholder="Detail tambahan seperti nomor akun atau catatan pembayaran"
+                                />
+                            )}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Kanal Pengingat</Label>
+                        <Label className={cn(errors.channels && "text-destructive")}>Kanal Pengingat</Label>
                         <div className="flex flex-col gap-2">
-                            <label className="inline-flex items-center gap-2 text-body-md">
+                            <label className="inline-flex items-center gap-2 text-body-md cursor-pointer select-none">
                                 <Checkbox
                                     checked={channels.includes('push')}
                                     onCheckedChange={() => handleChannelToggle('push')}
                                 />
                                 Notifikasi aplikasi
                             </label>
-                            <label className="inline-flex items-center gap-2 text-body-md">
+                            <label className="inline-flex items-center gap-2 text-body-md cursor-pointer select-none">
                                 <Checkbox
                                     checked={channels.includes('email')}
                                     onCheckedChange={() => handleChannelToggle('email')}
@@ -340,11 +384,19 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
                                 Email pengingat
                             </label>
                         </div>
+                        {errors.channels && <p className="text-label-md text-destructive">{errors.channels.message}</p>}
                     </div>
                 </form>
                 <div className="sticky bottom-0 flex gap-2 bg-background p-4 border-t border-border/15">
-                    <Button type="submit" onClick={handleSubmit} className="flex-1" size="lg" disabled={isSubmitting}>
-                        {isSubmitting ? 'Menyimpan...' : `Simpan ${isEditMode ? 'Perubahan' : 'Pengingat'}`}
+                    <Button type="submit" onClick={handleSubmit(onSubmit)} className="flex-1" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
+                                Menyimpan...
+                            </>
+                        ) : (
+                            `Simpan ${isEditMode ? 'Perubahan' : 'Pengingat'}`
+                        )}
                     </Button>
                     {isEditMode && (
                         <AlertDialog>
@@ -374,5 +426,3 @@ export const ReminderForm = ({ onClose, initialData = null }: ReminderFormProps)
         </motion.div>
     );
 };
-
-

@@ -1,7 +1,7 @@
-
 'use client';
 
 import React, { useState, createContext, useContext, useMemo } from 'react';
+import { toast } from 'sonner';
 import type { Transaction, Wallet, Budget, Reminder, Debt, Goal } from '@/types/models';
 
 interface PreFilledTransfer {
@@ -11,13 +11,9 @@ interface PreFilledTransfer {
     description: string;
 }
 
-interface ToastState {
-    show: boolean;
-    message: string;
-    type: 'success' | 'error' | 'info';
-    durationMs?: number;
-    actionLabel?: string;
-    onAction?: () => void;
+interface ToastAction {
+    label: string;
+    onClick: () => void;
 }
 
 interface ToastOptions {
@@ -101,7 +97,6 @@ interface UIContextType {
     setIsSidebarCollapsed: (isCollapsed: boolean | ((prev: boolean) => boolean)) => void;
 
     isAnyModalOpen: boolean;
-    toastState: ToastState;
     showToast: (message: string, type: 'success' | 'error' | 'info', options?: ToastOptions) => void;
     hideToast: () => void;
 }
@@ -146,25 +141,31 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-    const [toastState, setToastState] = useState<ToastState>({
-        show: false,
-        message: '',
-        type: 'info'
-    });
-
     const showToast = (message: string, type: 'success' | 'error' | 'info', options?: ToastOptions) => {
-        setToastState({
-            show: true,
-            message,
-            type,
-            durationMs: options?.durationMs,
-            actionLabel: options?.actionLabel,
-            onAction: options?.onAction,
-        });
+        const toastConfig = {
+            duration: options?.durationMs,
+            action: options?.actionLabel && options?.onAction ? {
+                label: options.actionLabel,
+                onClick: options.onAction
+            } : undefined
+        };
+
+        switch (type) {
+            case 'success':
+                toast.success(message, toastConfig);
+                break;
+            case 'error':
+                toast.error(message, toastConfig);
+                break;
+            case 'info':
+            default:
+                toast.info(message, toastConfig);
+                break;
+        }
     };
 
     const hideToast = () => {
-        setToastState(prev => ({ ...prev, show: false, onAction: undefined, actionLabel: undefined }));
+        toast.dismiss();
     };
 
     const openDeleteModal = (transaction: Transaction) => {
@@ -307,7 +308,6 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         isSidebarCollapsed,
         setIsSidebarCollapsed,
         isAnyModalOpen,
-        toastState,
         showToast,
         hideToast,
     }), [
@@ -340,7 +340,6 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         isCommandPaletteOpen,
         isSidebarCollapsed,
         isAnyModalOpen,
-        toastState
     ]);
 
     return <UIContext.Provider value={contextValue}>{children}</UIContext.Provider>

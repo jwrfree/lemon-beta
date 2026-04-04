@@ -120,15 +120,17 @@ export const ConfirmDeleteModal = ({ transaction, onClose, onConfirm }: ConfirmD
  onClick={handleConfirm}
  disabled={isDeleting}
  variant="destructive"
- className="h-12 w-full rounded-full text-body-md transition-all active:scale-[0.98]"
+ size="lg"
+ className="w-full active:scale-[0.98]"
  >
  {isDeleting ? 'Menghapus...': 'Hapus'}
  </Button>
  <Button
  onClick={onClose}
  disabled={isDeleting}
- variant="ghost"
- className="h-12 w-full rounded-full bg-background text-body-md text-muted-foreground transition-colors hover:text-foreground"
+ variant="outline"
+ size="lg"
+ className="w-full transition-colors hover:bg-secondary/10"
  >
  Batal
  </Button>

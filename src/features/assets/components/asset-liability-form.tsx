@@ -35,6 +35,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
     const [notes, setNotes] = useState(initialData?.notes || '');
     const [categoryKey, setCategoryKey] = useState(initialData?.categoryKey || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const selectedCategory = ASSET_CATEGORIES.find(c => c.key === categoryKey);
     const hasUnit = type === 'asset' && selectedCategory?.unit;
@@ -50,19 +51,29 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         const rawValue = e.target.value.replace(/[^0-9]/g, '');
         const formattedValue = new Intl.NumberFormat('id-ID').format(parseInt(rawValue) || 0);
         setValue(formattedValue);
+        if (errors.value) setErrors(prev => ({ ...prev, value: '' }));
     };
 
     const handleTypeChange = (newType: 'asset' | 'liability') => {
         setType(newType);
         setCategoryKey(''); // Reset category when type changes
+        setErrors({});
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name || !value || !categoryKey) {
-            showToast('Harap isi semua kolom yang wajib diisi.', 'error');
+        const newErrors: Record<string, string> = {};
+        
+        if (!name) newErrors.name = 'Nama wajib diisi.';
+        if (!value || parseInt(value.replace(/[^0-9]/g, '')) <= 0) newErrors.value = 'Nilai harus lebih dari nol.';
+        if (!categoryKey) newErrors.category = 'Kategori wajib dipilih.';
+        if (hasUnit && (!quantity || parseFloat(quantity.replace(',', '.')) <= 0)) newErrors.quantity = 'Jumlah wajib diisi.';
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
             return;
         }
+
         setIsSubmitting(true);
         const parsedQuantity = hasUnit ? parseFloat(quantity.replace(',', '.')) : undefined;
         const itemData = {
@@ -80,6 +91,7 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                 await addAssetLiability({ ...itemData, type });
             }
             onClose();
+            showToast(`Berhasil ${isEditMode ? 'memperbarui' : 'menambahkan'} entri.`, 'success');
         } catch (error) {
             showToast(`Gagal ${isEditMode ? 'memperbarui' : 'menambahkan'} entri.`, 'error');
             console.error(error);
@@ -124,9 +136,12 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="categoryKey" className="text-label-md font-medium text-label text-muted-foreground">Kategori</Label>
-                        <Select onValueChange={setCategoryKey} value={categoryKey}>
-                            <SelectTrigger id="categoryKey" className="h-12 focus:ring-2 focus:ring-primary/20">
+                        <Label htmlFor="categoryKey" className={cn("text-label-md font-medium text-label text-muted-foreground", errors.category && "text-destructive")}>Kategori</Label>
+                        <Select onValueChange={(val) => {
+                            setCategoryKey(val);
+                            if (errors.category) setErrors(prev => ({ ...prev, category: '' }));
+                        }} value={categoryKey}>
+                            <SelectTrigger id="categoryKey" className={cn("h-12 focus:ring-2 focus:ring-primary/20", errors.category && "border-destructive animate-shake")}>
                                 <SelectValue placeholder="Pilih kategori" />
                             </SelectTrigger>
                             <SelectContent className="rounded-md">
@@ -150,46 +165,58 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                 )}
                             </SelectContent>
                         </Select>
+                        {errors.category && <p className="text-label-md text-destructive px-1">{errors.category}</p>}
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="name" className="text-label-md font-medium text-label text-muted-foreground">Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
+                        <Label htmlFor="name" className={cn("text-label-md font-medium text-label text-muted-foreground", errors.name && "text-destructive")}>Nama {type === 'asset' ? 'Aset' : 'Liabilitas'}</Label>
                         <Input
                             id="name"
                             placeholder={type === 'asset' ? 'e.g., Rumah, Saham BBCA' : 'e.g., KPR, Cicilan Mobil'}
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => {
+                                setName(e.target.value);
+                                if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                            }}
                             required
-                            className="h-12 focus:ring-2 focus:ring-primary/20"
+                            className={cn("h-12 focus:ring-2 focus:ring-primary/20", errors.name && "border-destructive animate-shake")}
                         />
+                        {errors.name && <p className="text-label-md text-destructive px-1">{errors.name}</p>}
                     </div>
 
                     <div className={cn("grid gap-4", hasUnit ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1")}>
                         {hasUnit && (
                             <div className="space-y-2">
-                                <Label htmlFor="quantity" className="text-label-md font-medium text-label text-muted-foreground">
+                                <Label htmlFor="quantity" className={cn("text-label-md font-medium text-label text-muted-foreground", errors.quantity && "text-destructive")}>
                                     Jumlah ({selectedCategory?.unit})
                                 </Label>
                                 <Input
                                     id="quantity"
                                     value={quantity}
-                                    onChange={(e) => setQuantity(e.target.value)}
+                                    onChange={(e) => {
+                                        setQuantity(e.target.value);
+                                        if (errors.quantity) setErrors(prev => ({ ...prev, quantity: '' }));
+                                    }}
                                     placeholder={`0 ${selectedCategory?.unit}`}
-                                    className="h-12 focus:ring-2 focus:ring-primary/20"
+                                    className={cn("h-12 focus:ring-2 focus:ring-primary/20", errors.quantity && "border-destructive animate-shake")}
                                     required
                                 />
-                                <p className="text-label-md text-muted-foreground px-1 italic">
-                                    *Masukkan jumlah {selectedCategory?.unit} untuk tracking harga otomatis.
-                                </p>
+                                {errors.quantity ? (
+                                    <p className="text-label-md text-destructive px-1">{errors.quantity}</p>
+                                ) : (
+                                    <p className="text-label-md text-muted-foreground px-1 italic">
+                                        *Masukkan jumlah {selectedCategory?.unit} untuk tracking harga otomatis.
+                                    </p>
+                                )}
                             </div>
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="value" className="text-label-md font-medium text-label text-muted-foreground">
+                            <Label htmlFor="value" className={cn("text-label-md font-medium text-label text-muted-foreground", errors.value && "text-destructive")}>
                                 {hasUnit ? 'Estimasi Nilai Saat Ini' : 'Nilai / Saldo'}
                             </Label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-body-md">Rp</span>
+                                <span className={cn("absolute left-4 top-1/2 -translate-y-1/2 font-medium text-body-md", errors.value ? "text-destructive" : "text-muted-foreground")}>Rp</span>
                                 <Input
                                     id="value"
                                     placeholder="0"
@@ -197,9 +224,10 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
                                     onChange={handleAmountChange}
                                     required
                                     inputMode="numeric"
-                                    className="h-12 pl-11 focus:ring-2 focus:ring-primary/20 font-medium text-title-lg"
+                                    className={cn("h-12 pl-11 focus:ring-2 focus:ring-primary/20 font-medium text-title-lg", errors.value && "border-destructive animate-shake")}
                                 />
                             </div>
+                            {errors.value && <p className="text-label-md text-destructive px-1">{errors.value}</p>}
                         </div>
                     </div>
 

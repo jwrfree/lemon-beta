@@ -22,338 +22,348 @@ import { getCategoryIcon } from '@/lib/category-utils';
 const budgetSteps = [500000, 1000000, 2000000, 5000000, 10000000];
 
 export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
- const { user } = useAuth();
- const { addBudget } = useBudgets();
- const { expenseCategories } = useCategories();
- const { showToast } = useUI();
- const [step, setStep] = useState(1);
- const [budgetName, setBudgetName] = useState('');
- const [targetAmount, setTargetAmount] = useState(0);
- const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
- const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
- const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
+  const { addBudget } = useBudgets();
+  const { expenseCategories } = useCategories();
+  const { showToast } = useUI();
+  const [step, setStep] = useState(1);
+  const [budgetName, setBudgetName] = useState('');
+  const [targetAmount, setTargetAmount] = useState(0);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
- const [recommendation, setRecommendation] = useState<{ avg: number; max: number } | null>(null);
- const [loadingRec, setLoadingRec] = useState(false);
+  const [recommendation, setRecommendation] = useState<{ avg: number; max: number } | null>(null);
+  const [loadingRec, setLoadingRec] = useState(false);
 
- const selectedCategoryData = expenseCategories.find(c => c.name === selectedCategories[0]);
- const hasSubCategories = selectedCategoryData && selectedCategoryData.sub_categories && selectedCategoryData.sub_categories.length > 0;
+  const selectedCategoryData = expenseCategories.find(c => c.name === selectedCategories[0]);
+  const hasSubCategories = selectedCategoryData && selectedCategoryData.sub_categories && selectedCategoryData.sub_categories.length > 0;
 
- // Fetch recommendation when entering amount step
- useEffect(() => {
- // Determine the amount step index (it's either 3 or 4)
- const amountStep = hasSubCategories ? 4 : 3;
- 
- if (step === amountStep && selectedCategories.length > 0 && user) {
- setLoadingRec(true);
- setRecommendation(null);
- 
- // Get stats for category (and sub-category if exactly one selected)
- transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0], selectedSubCategories.length === 1 ? selectedSubCategories[0] : undefined)
- .then((res) => {
- if (res.data) {
- setRecommendation(res.data);
- }
- })
- .finally(() => setLoadingRec(false));
- }
- }, [step, selectedCategories, selectedSubCategories, user, hasSubCategories]);
+  // Fetch recommendation when entering amount step
+  useEffect(() => {
+    // Determine the amount step index (it's either 3 or 4)
+    const amountStep = hasSubCategories ? 4 : 3;
 
- const toggleSubCategory = (sub: string | null) => {
- if (sub === null) {
- // null means "Semua"— deselect all subs
- setSelectedSubCategories([]);
- } else {
- setSelectedSubCategories(prev =>
- prev.includes(sub) ? prev.filter(s => s !== sub) : [...prev, sub]
- );
- }
- };
+    if (step === amountStep && selectedCategories.length > 0 && user) {
+      setLoadingRec(true);
+      setRecommendation(null);
 
- const handleCategorySelect = (categoryName: string) => {
- setSelectedCategories([categoryName]);
- setSelectedSubCategories([]); // Reset sub when main changes
- };
+      // Get stats for category (and sub-category if exactly one selected)
+      transactionService.getCategoryMonthlyStats(user.id, selectedCategories[0], selectedSubCategories.length === 1 ? selectedSubCategories[0] : undefined)
+        .then((res) => {
+          if (res.data) {
+            setRecommendation(res.data);
+          }
+        })
+        .finally(() => setLoadingRec(false));
+    }
+  }, [step, selectedCategories, selectedSubCategories, user, hasSubCategories]);
 
- const handleNext = () => {
- if (step === 1 && !budgetName) {
- showToast("Nama anggaran tidak boleh kosong.", 'error');
- return;
- }
- if (step === 2 && selectedCategories.length === 0) {
- showToast("Pilih minimal satu kategori.", 'error');
- return;
- }
- 
- // Logic to skip sub-category step if not applicable
- if (step === 2 && !hasSubCategories) {
- setStep(3); // Go directly to target amount
- return;
- }
+  const toggleSubCategory = (sub: string | null) => {
+    if (sub === null) {
+      // null means "Semua"— deselect all subs
+      setSelectedSubCategories([]);
+    } else {
+      setSelectedSubCategories(prev =>
+        prev.includes(sub) ? prev.filter(s => s !== sub) : [...prev, sub]
+      );
+    }
+  };
 
- if (step === 3 && targetAmount <= 0 && !hasSubCategories) {
- // This was the amount step, but we skipped sub step
- // This case should be handled by the next condition
- }
+  const handleCategorySelect = (categoryName: string) => {
+    setSelectedCategories([categoryName]);
+    setSelectedSubCategories([]); // Reset sub when main changes
+  };
 
- setStep(s => s + 1);
- };
+  const handleNext = () => {
+    setErrors({});
+    if (step === 1 && !budgetName) {
+      setErrors({ name: "Nama anggaran tidak boleh kosong." });
+      return;
+    }
+    if (step === 2 && selectedCategories.length === 0) {
+      showToast("Pilih minimal satu kategori.", 'error');
+      return;
+    }
 
- const handleBack = () => {
- if (step === 3 && !hasSubCategories) {
- setStep(2);
- return;
- }
- setStep(s => s - 1);
- };
+    // Logic to skip sub-category step if not applicable
+    if (step === 2 && !hasSubCategories) {
+      setStep(3); // Go directly to target amount
+      return;
+    }
 
- const handleSubmit = async () => {
- if (targetAmount <= 0) {
- showToast("Target anggaran harus lebih besar dari nol.", 'error');
- return;
- }
- setIsSubmitting(true);
- try {
- if (selectedSubCategories.length > 1) {
- // Batch Creation: one budget card per sub-category
- await Promise.all(
- selectedSubCategories.map(sub =>
- addBudget({
- name:`${budgetName} – ${sub}`,
- targetAmount: targetAmount,
- period: 'monthly',
- categories: [selectedCategories[0]],
- subCategory: sub,
- })
- )
- );
- } else {
- await addBudget({
- name: budgetName,
- targetAmount: targetAmount,
- period: 'monthly',
- categories: [selectedCategories[0]],
- subCategory: selectedSubCategories[0] || undefined,
- });
- }
- onClose();
- } catch {
- // error handled by provider
- } finally {
- setIsSubmitting(false);
- }
- };
+    setStep(s => s + 1);
+  };
 
- const stepTitles = [
- "Beri Nama Anggaran", 
- "Pilih Kategori", 
- hasSubCategories ? "Pilih Sub-Kategori": "Tentukan Target",
- "Tentukan Target"
- ];
+  const handleBack = () => {
+    if (step === 3 && !hasSubCategories) {
+      setStep(2);
+      return;
+    }
+    setStep(s => s - 1);
+  };
 
- const totalSteps = hasSubCategories ? 4 : 3;
+  const handleSubmit = async () => {
+    setErrors({});
+    if (targetAmount <= 0) {
+      setErrors({ amount: "Target anggaran harus lebih besar dari nol." });
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      if (selectedSubCategories.length > 1) {
+        // Batch Creation: one budget card per sub-category
+        await Promise.all(
+          selectedSubCategories.map(sub =>
+            addBudget({
+              name: `${budgetName} – ${sub}`,
+              targetAmount: targetAmount,
+              period: 'monthly',
+              categories: [selectedCategories[0]],
+              subCategory: sub,
+            })
+          )
+        );
+      } else {
+        await addBudget({
+          name: budgetName,
+          targetAmount: targetAmount,
+          period: 'monthly',
+          categories: [selectedCategories[0]],
+          subCategory: selectedSubCategories[0] || undefined,
+        });
+      }
+      onClose();
+    } catch {
+      // error handled by provider
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
- const slideVariants = {
- enter: (direction: number) => ({
- x: direction > 0 ? '100%': '-100%',
- opacity: 0,
- }),
- center: {
- x: 0,
- opacity: 1,
- },
- exit: (direction: number) => ({
- x: direction < 0 ? '100%': '-100%',
- opacity: 0,
- }),
- };
+  const stepTitles = [
+    "Beri Nama Anggaran",
+    "Pilih Kategori",
+    hasSubCategories ? "Pilih Sub-Kategori" : "Tentukan Target",
+    "Tentukan Target"
+  ];
 
- const [direction] = useState(1);
- const swipeHandlers = useSwipeable({
- onSwipedDown: onClose,
- preventScrollOnSwipe: true,
- trackMouse: true,
- });
+  const totalSteps = hasSubCategories ? 4 : 3;
 
- return (
- <Sheet open onOpenChange={(open) => !open && onClose()}>
- <SheetContent
- side="bottom"
- hideCloseButton
- className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-popover p-0 shadow-lg"
- {...swipeHandlers}
- >
- <div className="pointer-events-none flex justify-center pt-3">
- <div className="h-1.5 w-12 rounded-full bg-border/80"/>
- </div>
- <SheetHeader className="sr-only">
- <SheetTitle>Tambah anggaran</SheetTitle>
- <SheetDescription>Buat anggaran baru dengan kategori dan target bulanan.</SheetDescription>
- </SheetHeader>
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? '100%' : '-100%',
+      opacity: 0,
+    }),
+  };
 
- <div className="sticky top-0 z-10 flex items-center justify-between px-6 pb-4 pt-4">
- <div className="w-11">
- {step > 1 && (
-                  <Button variant="ghost"size="icon"onClick={handleBack} className="h-11 w-11 rounded-full" aria-label="Kembali">
- <ArrowLeft className="h-5 w-5"weight="regular"/>
- <span className="sr-only">Kembali</span>
- </Button>
- )}
- </div>
- <h2 className="text-title-lg text-center">{stepTitles[step - 1]}</h2>
-                  <CloseButton
-                    ariaLabel="Tutup"
-                    tone="muted"
-                    className="h-11 w-11 bg-muted rounded-full"
-                    onClick={onClose}
+  const [direction] = useState(1);
+  const swipeHandlers = useSwipeable({
+    onSwipedDown: onClose,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
+
+  return (
+    <Sheet open onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="bottom"
+        hideCloseButton
+        className="flex max-h-[88dvh] w-full max-w-md flex-col overflow-hidden rounded-t-card-premium bg-popover p-0 shadow-lg"
+        {...swipeHandlers}
+      >
+        <div className="pointer-events-none flex justify-center pt-3">
+          <div className="h-1.5 w-12 rounded-full bg-border/80" />
+        </div>
+        <SheetHeader className="sr-only">
+          <SheetTitle>Tambah anggaran</SheetTitle>
+          <SheetDescription>Buat anggaran baru dengan kategori dan target bulanan.</SheetDescription>
+        </SheetHeader>
+
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 pb-4 pt-4">
+          <div className="w-11">
+            {step > 1 && (
+              <Button variant="ghost" size="icon" onClick={handleBack} className="h-11 w-11 rounded-full" aria-label="Kembali">
+                <ArrowLeft className="h-5 w-5" weight="regular" />
+                <span className="sr-only">Kembali</span>
+              </Button>
+            )}
+          </div>
+          <h2 className="text-title-lg text-center">{stepTitles[step - 1]}</h2>
+          <CloseButton
+            ariaLabel="Tutup"
+            tone="muted"
+            className="h-11 w-11 bg-muted rounded-full"
+            onClick={onClose}
+          />
+        </div>
+
+        <div className="relative flex-1 overflow-y-auto px-6 pb-6">
+          <AnimatePresence initial={false} custom={direction} mode="wait">
+            <motion.div
+              key={step}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            >
+              {step === 1 && (
+                <div className="space-y-4 pt-2">
+                  <Label htmlFor="budget-name" className={cn("text-label-md text-label text-muted-foreground ml-1", errors.name && "text-destructive")}>Nama Anggaran</Label>
+                  <Input
+                    id="budget-name"
+                    placeholder="Contoh: Makan Siang Kantor"
+                    value={budgetName}
+                    onChange={(e) => {
+                      setBudgetName(e.target.value);
+                      if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
+                    }}
+                    className={cn("h-12 rounded-card bg-muted border border-border/15", errors.name && "border-destructive")}
+                    required autoFocus
                   />
- </div>
+                  {errors.name && <p className="text-label-md text-destructive ml-1">{errors.name}</p>}
+                </div>
+              )}
+              {step === 2 && (
+                <div className="space-y-4 pt-2">
+                  <p className="text-label-md font-medium text-muted-foreground ml-1">Pilih kategori utama untuk anggaran &apos;{budgetName}&apos;.</p>
+                  <ScrollArea className="h-72">
+                    <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
+                      {expenseCategories.map(cat => {
+                        const Icon = getCategoryIcon(cat.icon);
+                        const isSelected = selectedCategories.includes(cat.name);
+                        return (
+                          <button type="button" key={cat.id} onClick={() => handleCategorySelect(cat.name)}
+                            className={cn(
+                              "p-3 text-center border-2 rounded-card-icon flex flex-col items-center justify-center gap-2 aspect-square transition-all",
+                              isSelected ? 'border-primary bg-primary/5' : 'border-transparent bg-muted/30 hover:bg-muted/50'
+                            )}>
+                            <Icon className={cn("h-6 w-6", isSelected ? 'text-primary' : 'text-muted-foreground/60')} strokeWidth={2.5} />
+                            <span className={cn("text-label-md text-center leading-tight tracking-tight", isSelected ? 'text-primary' : 'text-muted-foreground/60')}>{cat.name}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
 
- <div className="relative flex-1 overflow-y-auto px-6 pb-6">
- <AnimatePresence initial={false} custom={direction} mode="wait">
- <motion.div
- key={step}
- custom={direction}
- variants={slideVariants}
- initial="enter"
- animate="center"
- exit="exit"
- transition={{ type: 'spring', stiffness: 300, damping: 30 }}
- >
- {step === 1 && (
- <div className="space-y-4 pt-2">
- <Label htmlFor="budget-name"className="text-label-md text-label text-muted-foreground ml-1">Nama Anggaran</Label>
- <Input id="budget-name"placeholder="Contoh: Makan Siang Kantor"value={budgetName} onChange={(e) => setBudgetName(e.target.value)} className="h-12 rounded-card bg-muted border border-border/15"required autoFocus />
- </div>
- )}
- {step === 2 && (
- <div className="space-y-4 pt-2">
- <p className="text-label-md font-medium text-muted-foreground ml-1">Pilih kategori utama untuk anggaran &apos;{budgetName}&apos;.</p>
- <ScrollArea className="h-72">
- <div className="grid grid-cols-4 gap-3 pr-4 pb-4">
- {expenseCategories.map(cat => {
- const Icon = getCategoryIcon(cat.icon);
- const isSelected = selectedCategories.includes(cat.name);
- return (
- <button type="button"key={cat.id} onClick={() => handleCategorySelect(cat.name)}
- className={cn(
- "p-3 text-center border-2 rounded-card-icon flex flex-col items-center justify-center gap-2 aspect-square transition-all",
- isSelected ? 'border-primary bg-primary/5': 'border-transparent bg-muted/30 hover:bg-muted/50'
- )}>
- <Icon className={cn("h-6 w-6", isSelected ? 'text-primary': 'text-muted-foreground/60')} strokeWidth={2.5} />
- <span className={cn("text-label-md text-center leading-tight tracking-tight", isSelected ? 'text-primary': 'text-muted-foreground/60')}>{cat.name}</span>
- </button>
- );
- })}
- </div>
- </ScrollArea>
- </div>
- )}
+              {step === 3 && hasSubCategories && (
+                <div className="space-y-4 pt-2">
+                  <p className="text-label-md font-medium text-muted-foreground ml-1">Pilih sub-kategori (bisa lebih dari satu, atau pilih "Semua"untuk tidak memfilter).</p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Button
+                      type="button"
+                      variant={selectedSubCategories.length === 0 ? 'primary' : 'outline'}
+                      onClick={() => toggleSubCategory(null)}
+                      className={cn("rounded-full h-10 px-5 text-label-md", selectedSubCategories.length === 0 ? "text-primary-foreground" : "font-medium text-foreground/70")}
+                    >
+                      Semua {selectedCategories[0]}
+                    </Button>
+                    {selectedCategoryData.sub_categories?.map(sub => (
+                      <Button
+                        key={sub}
+                        type="button"
+                        variant={selectedSubCategories.includes(sub) ? 'primary' : 'outline'}
+                        onClick={() => toggleSubCategory(sub)}
+                        className={cn("rounded-full h-10 px-5 text-label-md", selectedSubCategories.includes(sub) ? "text-primary-foreground" : "font-medium text-foreground/70")}
+                      >
+                        {sub}
+                      </Button>
+                    ))}
+                  </div>
+                  {selectedSubCategories.length > 1 && (
+                    <p className="text-label-md text-primary font-medium ml-1">✓ {selectedSubCategories.length} sub-kategori dipilih — akan dibuat {selectedSubCategories.length} anggaran terpisah.</p>
+                  )}
+                </div>
+              )}
 
- {step === 3 && hasSubCategories && (
- <div className="space-y-4 pt-2">
- <p className="text-label-md font-medium text-muted-foreground ml-1">Pilih sub-kategori (bisa lebih dari satu, atau pilih "Semua"untuk tidak memfilter).</p>
- <div className="flex flex-wrap gap-2 pt-2">
- <Button 
- type="button"
- variant={selectedSubCategories.length === 0 ? 'primary': 'outline'}
- onClick={() => toggleSubCategory(null)}
- className={cn("rounded-full h-10 px-5 text-label-md", selectedSubCategories.length === 0 ? "text-primary-foreground": "font-medium text-foreground/70")}
- >
- Semua {selectedCategories[0]}
- </Button>
- {selectedCategoryData.sub_categories?.map(sub => (
- <Button 
- key={sub}
- type="button"
- variant={selectedSubCategories.includes(sub) ? 'primary': 'outline'}
- onClick={() => toggleSubCategory(sub)}
- className={cn("rounded-full h-10 px-5 text-label-md", selectedSubCategories.includes(sub) ? "text-primary-foreground": "font-medium text-foreground/70")}
- >
- {sub}
- </Button>
- ))}
- </div>
- {selectedSubCategories.length > 1 && (
- <p className="text-label-md text-primary font-medium ml-1">✓ {selectedSubCategories.length} sub-kategori dipilih — akan dibuat {selectedSubCategories.length} anggaran terpisah.</p>
- )}
- </div>
- )}
+              {((step === 3 && !hasSubCategories) || step === 4) && (
+                <div className="space-y-6 pt-2">
+                  {/* Recommendation Card */}
+                  {loadingRec ? (
+                    <Skeleton className="h-24 w-full rounded-card-glass bg-muted/50" />
+                  ) : recommendation && recommendation.avg > 0 ? (
+                    <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-none border border-border/15">
+                      <div className="bg-emerald-500/10 p-2.5 rounded-card">
+                        <Sparkle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" weight="regular" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-label-md text-label text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
+                        <p className="text-label-md text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed font-medium">
+                          Rata-rata pengeluaranmu di <span className="text-emerald-700">{selectedSubCategories.length === 1 ? selectedSubCategories[0] : selectedCategories[0]}</span> adalah <span className="text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
+                        </p>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-auto p-0 text-emerald-600 dark:text-emerald-400 text-label-md text-label mt-3 hover:bg-transparent hover:underline"
+                          onClick={() => setTargetAmount(Math.ceil(recommendation.avg))}
+                        >
+                          Apply {formatCurrency(Math.ceil(recommendation.avg))}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-muted/30 p-5 rounded-card-premium flex items-center gap-4 text-muted-foreground/60 border border-border/15">
+                      <TrendUp className="h-5 w-5 opacity-40" weight="regular" />
+                      <p className="text-label-md text-label">No historical data for insights yet.</p>
+                    </div>
+                  )}
 
- {((step === 3 && !hasSubCategories) || step === 4) && (
- <div className="space-y-6 pt-2">
- {/* Recommendation Card */}
- {loadingRec ? (
- <Skeleton className="h-24 w-full rounded-card-glass bg-muted/50"/>
- ) : recommendation && recommendation.avg > 0 ? (
- <div className="bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-card-premium flex items-start gap-4 shadow-none border border-border/15">
- <div className="bg-emerald-500/10 p-2.5 rounded-card">
- <Sparkle className="h-5 w-5 text-emerald-600 dark:text-emerald-400"weight="regular"/>
- </div>
- <div className="flex-1">
- <h4 className="text-label-md text-label text-emerald-700 dark:text-emerald-400 mb-1.5">Smart Insight</h4>
- <p className="text-label-md text-emerald-900/70 dark:text-emerald-100/70 leading-relaxed font-medium">
- Rata-rata pengeluaranmu di <span className="text-emerald-700">{selectedSubCategories.length === 1 ? selectedSubCategories[0] : selectedCategories[0]}</span> adalah <span className="text-emerald-700">{formatCurrency(recommendation.avg)}</span> per bulan.
- </p>
- <Button
- size="sm"
- variant="ghost"
- className="h-auto p-0 text-emerald-600 dark:text-emerald-400 text-label-md text-label mt-3 hover:bg-transparent hover:underline"
- onClick={() => setTargetAmount(Math.ceil(recommendation.avg))}
- >
- Apply {formatCurrency(Math.ceil(recommendation.avg))}
- </Button>
- </div>
- </div>
- ) : (
- <div className="bg-muted/30 p-5 rounded-card-premium flex items-center gap-4 text-muted-foreground/60 border border-border/15">
- <TrendUp className="h-5 w-5 opacity-40"weight="regular"/>
- <p className="text-label-md text-label">No historical data for insights yet.</p>
- </div>
- )}
+                  <div className="space-y-3 text-center">
+                    <Label htmlFor="target-amount" className={cn("text-label-md text-label text-muted-foreground/40", errors.amount && "text-destructive")}>Target Allowance</Label>
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <Input
+                        id="target-amount"
+                        value={formatCurrency(targetAmount)}
+                        onChange={(e) => {
+                          setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0);
+                          if (errors.amount) setErrors(prev => ({ ...prev, amount: '' }));
+                        }}
+                        className={cn("text-display-lg font-medium border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/10 h-auto p-0 tracking-tighter", errors.amount && "text-destructive animate-shake")}
+                        placeholder="Rp 0"
+                        inputMode="numeric"
+                        autoFocus
+                      />
+                      {errors.amount && <p className="text-label-md text-destructive">{errors.amount}</p>}
+                    </div>
+                  </div>
 
- <div className="space-y-3 text-center">
- <Label htmlFor="target-amount"className="text-label-md text-label text-muted-foreground/40">Target Allowance</Label>
- <div className="flex items-center justify-center gap-2">
- <Input
- id="target-amount"
- value={formatCurrency(targetAmount)}
- onChange={(e) => setTargetAmount(parseInt(e.target.value.replace(/[^0-9]/g, '')) || 0)}
- className="text-display-lg font-medium border-none focus-visible:ring-0 text-center bg-transparent placeholder:text-muted-foreground/10 h-auto p-0 tracking-tighter"
- placeholder="Rp 0"
- inputMode="numeric"
- autoFocus
- />
- </div>
- </div>
+                  <div className="grid grid-cols-4 gap-3 pt-4">
+                    {budgetSteps.map(val => (
+                      <Button key={val} type="button" variant="outline" size="sm" onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 tabular-nums text-label-md", targetAmount === val ? "border-primary bg-primary/5 text-primary" : "border-border/20 text-muted-foreground")}>
+                        {new Intl.NumberFormat('id-ID', { notation: "compact" }).format(val)}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
- <div className="grid grid-cols-4 gap-3 pt-4">
- {budgetSteps.map(val => (
- <Button key={val} type="button"variant="outline"size="sm"onClick={() => setTargetAmount(val)} className={cn("rounded-md h-10 tabular-nums text-label-md", targetAmount === val ? "border-primary bg-primary/5 text-primary": "border-border/20 text-muted-foreground")}>
- {new Intl.NumberFormat('id-ID', { notation: "compact"}).format(val)}
- </Button>
- ))}
- </div>
- </div>
- )}
- </motion.div>
- </AnimatePresence>
- </div>
+        <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md z-10 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          {step < totalSteps ? (
+            <Button onClick={handleNext} className="w-full h-14 rounded-full text-label-md text-label shadow-lg shadow-primary/20 transition-all active:scale-95" type="button">Next Step</Button>
+          ) : (
+            <Button onClick={handleSubmit} className="w-full h-14 rounded-full text-label-md text-label shadow-xl shadow-primary/20 bg-primary transition-all active:scale-95" disabled={isSubmitting}>
+              {isSubmitting ? 'Syncing...' : 'Confirm & Save'}
+            </Button>
+          )}
+        </div>
 
- <div className="p-6 border-t border-border/10 sticky bottom-0 bg-background/80 backdrop-blur-md z-10 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
- {step < totalSteps ? (
- <Button onClick={handleNext} className="w-full h-14 rounded-full text-label-md text-label shadow-lg shadow-primary/20 transition-all active:scale-95"type="button">Next Step</Button>
- ) : (
- <Button onClick={handleSubmit} className="w-full h-14 rounded-full text-label-md text-label shadow-xl shadow-primary/20 bg-primary transition-all active:scale-95"disabled={isSubmitting}>
- {isSubmitting ? 'Syncing...': 'Confirm & Save'}
- </Button>
- )}
- </div>
-
- </SheetContent>
- </Sheet>
- );
+      </SheetContent>
+    </Sheet>
+  );
 };
-
-
-
