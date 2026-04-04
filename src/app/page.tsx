@@ -212,7 +212,7 @@ export default function WelcomePage() {
  className={cn(
  'h-8 sm:h-9 rounded-full px-3 sm:px-4 text-label-md sm:text-body-md',
  authView === view
- ? 'bg-primary text-black hover:bg-primary/95 shadow-sm'
+ ? 'bg-primary text-primary-foreground hover:bg-primary/95 shadow-sm'
  : 'bg-muted text-muted-foreground hover:bg-muted/80'
  )}
  onClick={() => setAuthView(view)}

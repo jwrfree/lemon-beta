@@ -176,7 +176,7 @@ export const ForgotPasswordPage = ({
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" size="lg" className="w-full text-body-lg h-12" disabled={isSubmitting}>
+                            <Button type="submit" size="lg" className="w-full h-12 rounded-xl" disabled={isSubmitting}>
                                 {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? 'Mengirim tautan...' : 'Kirim tautan reset'}
                             </Button>
@@ -209,5 +209,3 @@ export const ForgotPasswordPage = ({
         </Wrapper>
     );
 };
-
-

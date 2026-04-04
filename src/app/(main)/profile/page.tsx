@@ -4,20 +4,25 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import {
- Camera,
- ChevronRight,
- CreditCard,
- Download,
- Eye,
- EyeOff,
- Landmark,
- LogOut,
- Mail,
- Moon,
- Sparkles,
- Sun,
- Trash2,
- User as UserIcon,
+  Camera,
+  ChevronRight,
+  CreditCard,
+  Download,
+  Eye,
+  EyeOff,
+  Fingerprint,
+  Info,
+  Key,
+  Landmark,
+  LogOut,
+  Mail,
+  Moon,
+  Question,
+  ShieldCheck,
+  Sparkles,
+  Sun,
+  Trash2,
+  User as UserIcon,
 } from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { useUI } from '@/components/ui-provider';
@@ -25,16 +30,17 @@ import { cn, triggerHaptic } from '@/lib/utils';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { useBalanceVisibility } from '@/providers/balance-visibility-provider';
+import { useBiometric } from '@/hooks/use-biometric';
 import {
- AlertDialog,
- AlertDialogAction,
- AlertDialogCancel,
- AlertDialogContent,
- AlertDialogDescription,
- AlertDialogFooter,
- AlertDialogHeader,
- AlertDialogTitle,
- AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { DeepSeekUsageCard } from '@/features/settings/components/deepseek-usage-card';
 import { AppPageBody, AppPageShell } from '@/components/app-page-shell';
@@ -141,7 +147,7 @@ function Row({
 
 function StatusPill({ children }: { children: React.ReactNode }) {
  return (
- <span className="rounded-full border border-border/70 bg-muted/40 px-3 py-1 text-label-sm text-muted-foreground">
+ <span className="rounded-full border border-border/15 bg-muted/40 px-3 py-1 text-label-sm text-muted-foreground">
  {children}
  </span>
  );
@@ -152,11 +158,14 @@ function ProfileContent() {
  const { user, userData, handleSignOut, updateOnboardingStatus, deleteUserData } = useAuth();
  const { theme, setTheme } = useTheme();
  const { isBalanceVisible, toggleBalanceVisibility } = useBalanceVisibility();
+ const { isBiometricSupported, registerBiometric, unregisterBiometric } = useBiometric();
  const { deferredPrompt, setDeferredPrompt, showToast } = useUI();
+ 
  const [mounted, setMounted] = useState(false);
  const [isStandalone, setIsStandalone] = useState(false);
  const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
  const [isDeleting, setIsDeleting] = useState(false);
+ const [isBiometricEnrolled, setIsBiometricEnrolled] = useState(false);
 
  useEffect(() => {
  setMounted(true);
@@ -164,6 +173,10 @@ function ProfileContent() {
  window.matchMedia('(display-mode: standalone)').matches ||
  (window.navigator as Navigator & { standalone?: boolean }).standalone === true
  );
+
+ // Check biometric status from localStorage (sync with useBiometric logic)
+ const stored = localStorage.getItem('lemon_biometric_user');
+ setIsBiometricEnrolled(!!stored);
  }, []);
 
  const toggleTheme = () => {
@@ -182,6 +195,25 @@ function ProfileContent() {
  const openEditSheet = () => {
  triggerHaptic('light');
  setIsEditSheetOpen(true);
+ };
+
+ const handleToggleBiometric = async () => {
+   if (!user) return;
+   
+   triggerHaptic('medium');
+   try {
+     if (isBiometricEnrolled) {
+       await unregisterBiometric(user.id);
+       setIsBiometricEnrolled(false);
+       showToast('Biometrik dinonaktifkan.', 'success');
+     } else {
+       await registerBiometric(user.email!, user.id);
+       setIsBiometricEnrolled(true);
+       showToast('Biometrik aktif!', 'success');
+     }
+   } catch (err) {
+     showToast('Gagal memproses biometrik.', 'error');
+   }
  };
 
  const handleDeleteAccount = async () => {
@@ -258,6 +290,41 @@ function ProfileContent() {
  icon={Mail}
  title="E-mail Aktif"
  description={user?.email || '-'}
+ hideDivider={true}
+ />
+ </div>
+ </SurfaceSection>
+ </section>
+
+ <section className="space-y-3">
+ <SectionHeading>Keamanan & Data</SectionHeading>
+ <SurfaceSection>
+ <div className="flex flex-col">
+ {isBiometricSupported && (
+ <Row
+ icon={Fingerprint}
+ title="Biometrik"
+ description="Masuk cepat dengan FaceID/TouchID"
+ onClick={handleToggleBiometric}
+ trailing={
+ <StatusPill>
+ {isBiometricEnrolled ? 'Aktif': 'Mati'}
+ </StatusPill>
+ }
+ />
+ )}
+ <Row
+ icon={Key}
+ title="Kata Sandi"
+ description="Perbarui keamanan akun Anda"
+ onClick={() => router.push('/auth/reset-password')}
+ />
+ <Row
+ icon={Download}
+ title="Ekspor Data"
+ description="Unduh semua transaksi (CSV/PDF)"
+ onClick={() => showToast('Fitur ekspor akan segera hadir.', 'info')}
+ hideDivider={true}
  />
  </div>
  </SurfaceSection>
@@ -364,6 +431,33 @@ function ProfileContent() {
  </div>
  </SurfaceSection>
  ) : null}
+
+ <section className="space-y-3">
+ <SectionHeading>Bantuan & Legal</SectionHeading>
+ <SurfaceSection>
+ <div className="flex flex-col">
+ <Row
+ icon={Sparkles}
+ title="Kirim Masukan"
+ description="Laporkan bug atau saran fitur"
+ onClick={() => router.push('/feedback')}
+ />
+ <Row
+ icon={Question}
+ title="Pusat Bantuan"
+ description="Panduan penggunaan & FAQ"
+ onClick={() => router.push('/help')}
+ />
+ <Row
+ icon={ShieldCheck}
+ title="Kebijakan Privasi"
+ description="Cara kami menjaga data Anda"
+ onClick={() => router.push('/privacy')}
+ hideDivider={true}
+ />
+ </div>
+ </SurfaceSection>
+ </section>
 
  <section className="space-y-3">
  <SectionHeading>Akun</SectionHeading>

@@ -139,8 +139,9 @@ export const CommandPalette = () => {
         return acc;
     }, {} as Record<string, SearchResult[]>);
 
- <Dialog open={isCommandPaletteOpen} onOpenChange={setIsCommandPaletteOpen}>
- <DialogPortal>
+    return (
+        <Dialog open={isCommandPaletteOpen} onOpenChange={setIsCommandPaletteOpen}>
+            <DialogPortal>
  <DialogOverlay className="bg-black/60 backdrop-blur-md" />
  <DialogContent className="fixed left-[50%] top-[5%] sm:top-[50%] translate-x-[-50%] sm:translate-y-[-50%] w-[94vw] sm:max-w-2xl border-none bg-transparent p-0 shadow-none transition-all duration-300">
  <DialogTitle className="sr-only">Navigasi dan Pencarian Universal</DialogTitle>

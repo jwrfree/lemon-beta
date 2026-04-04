@@ -24,8 +24,8 @@ function TransactionsPageContent() {
   const { wallets } = useWallets();
   const { 
     expenseCategories, 
-    incomeCategories, 
-    categoriesForFilter 
+    incomeCategories,
+    isLoading: isCatLoading 
   } = useCategories();
   const { debts } = useDebts();
 
@@ -58,16 +58,22 @@ function TransactionsPageContent() {
   }, [searchParams, expenseCategories, incomeCategories]);
 
   const {
-    filteredTransactions,
-    isLoading,
+    transactions,
+    isLoading: isTxLoading,
     hasMore,
     loadMore,
   } = usePaginatedTransactions({
     type: activeTab === 'all' ? undefined : (activeTab as any),
-    categories: selectedCategories,
-    wallets: selectedWallets,
-    search: searchQuery
+    category: selectedCategories,
+    walletId: selectedWallets,
+    searchQuery: searchQuery
   });
+
+  const categoriesForFilter = useMemo(() => {
+    if (activeTab === 'expense') return expenseCategories;
+    if (activeTab === 'income') return incomeCategories;
+    return [...expenseCategories, ...incomeCategories].sort((a,b) => a.name.localeCompare(b.name));
+  }, [activeTab, expenseCategories, incomeCategories]);
 
   const handleCategoryToggle = (name: string) => {
     setSelectedCategories(prev =>
@@ -93,6 +99,8 @@ function TransactionsPageContent() {
   const activeFilterCount = selectedCategories.length + selectedWallets.length;
   const displayedCategories = showAllCategories ? categoriesForFilter : categoriesForFilter.slice(0, 8);
   const displayedWallets = showAllWallets ? wallets : wallets.slice(0, 8);
+
+  const isLoading = isTxLoading || isCatLoading;
 
   return (
     <AppPageShell>
@@ -166,7 +174,7 @@ function TransactionsPageContent() {
                       )}
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {displayedCategories.map(c => (
+                      {displayedCategories.map((c: any) => (
                         <Button
                           key={c.id}
                           variant={selectedCategories.includes(c.name) ? 'primary' : 'outline'}
@@ -294,7 +302,7 @@ function TransactionsPageContent() {
                     </div>
                     {dueDate && (
                       <p className="text-label-md text-muted-foreground">
-                        Tempo: {formatDistanceToNow(dueDate, { addSuffix: true, locale: id })}
+                        Tempo: {formatDistanceToNow(dueDate, { addSuffix: true, locale: dateFnsLocaleId })}
                       </p>
                     )}
                   </Card>
@@ -304,7 +312,7 @@ function TransactionsPageContent() {
           </div>
         ) : (
           <TransactionList
-            transactions={filteredTransactions}
+            transactions={transactions}
             loadMore={loadMore}
             hasMore={hasMore}
             isLoading={isLoading}
