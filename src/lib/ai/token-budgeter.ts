@@ -32,10 +32,43 @@ export const TokenBudgeter = {
   },
 
   /**
-   * Validates if a set of inputs is within a total budget.
+   * Analyzes a structured set of prompt parts and returns a breakdown of token usage.
    */
-  isWithinBudget(inputs: string[], totalBudget: number): boolean {
-    const total = inputs.reduce((sum, input) => sum + this.countTokens(input), 0);
-    return total <= totalBudget;
+  analyzePromptStructure(parts: Record<string, any>): Record<string, number> {
+    const breakdown: Record<string, number> = {};
+    let total = 0;
+
+    for (const [key, value] of Object.entries(parts)) {
+      const content = typeof value === 'string' ? value : JSON.stringify(value);
+      const count = this.countTokens(content);
+      breakdown[key] = count;
+      total += count;
+    }
+
+    breakdown.total = total;
+    return breakdown;
+  },
+
+  /**
+   * Identifies high-value messages based on presence of financial keywords or intent patterns.
+   */
+  filterHighValueMessages(messages: any[]): any[] {
+    const highValueKeywords = [
+      'budget', 'saldo', 'transaksi', 'bayar', 'tagih', 'hutang', 'piutang', 
+      'goal', 'tabungan', 'kategori', 'investasi', 'aset'
+    ];
+    
+    return messages.filter(m => {
+      const content = m.parts?.[0]?.text?.toLowerCase() || '';
+      return highValueKeywords.some(keyword => content.includes(keyword));
+    });
+  },
+
+  /**
+   * Formats a transformation log for telemetry.
+   */
+  logTransformation(step: string, before: number, after: number) {
+    if (before === after) return '';
+    return `[AI Chat] PRUNING (${step}): ${before} -> ${after} tokens (-${before - after})\n`;
   }
 };

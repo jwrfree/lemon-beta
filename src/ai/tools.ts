@@ -23,6 +23,59 @@ import { formatCurrency } from '@/lib/utils';
 import { normalizeTransactionTimestamp } from '@/lib/utils/transaction-timestamp';
 
 type FinancialToolClient = Pick<SupabaseClient, 'from' | 'rpc'>;
+
+/**
+ * Maps database rows to a minimal, token-efficient format for the LLM.
+ * Keeps only the core fields needed for reasoning.
+ */
+const toLLMView = {
+  transaction: (t: any) => ({
+    id: t.id,
+    amount: t.amount,
+    category: t.category,
+    description: t.description,
+    date: t.date,
+    type: t.type
+  }),
+  budget: (b: any) => ({
+    name: b.name,
+    limit: b.limit,
+    spent: b.spent,
+    percent: b.percent,
+    status: b.status
+  }),
+  summarizeTransactions: (trxs: any[]) => {
+    if (trxs.length <= 5) return trxs.map(toLLMView.transaction);
+    
+    const summary: Record<string, { count: number, total: number }> = {};
+    trxs.forEach(t => {
+      if (!summary[t.category]) summary[t.category] = { count: 0, total: 0 };
+      summary[t.category].count++;
+      summary[t.category].total += t.amount;
+    });
+    
+    return {
+      note: `Showing category summary for ${trxs.length} transactions to stay lean.`,
+      categories: summary,
+      latest_3: trxs.slice(0, 3).map(toLLMView.transaction)
+    };
+  },
+  summarizeBudgets: (budgets: any[]) => {
+    if (budgets.length <= 5) return budgets.map(toLLMView.budget);
+    
+    const byStatus: Record<string, string[]> = { overbudget: [], critical: [], safe: [] };
+    budgets.forEach(b => {
+      const status = b.percent > 100 ? 'overbudget' : b.percent > 80 ? 'critical' : 'safe';
+      byStatus[status].push(b.name);
+    });
+    
+    return {
+      note: `Showing budget status summary for ${budgets.length} budgets.`,
+      by_status: byStatus,
+      top_3_critical: budgets.sort((a, b) => b.percent - a.percent).slice(0, 3).map(toLLMView.budget)
+    };
+  }
+};
 type WalletOption = {
   id: string;
   name: string;
@@ -297,21 +350,20 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         const dayOfMonth = now.getDate();
         const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
-        return context.budgets.map(b => {
+        const mapped = context.budgets.map(b => {
           const dailySpend = b.spent / Math.max(dayOfMonth, 1);
           const remaining = b.limit - b.spent;
           const projectedDaysLeft = dailySpend > 0 ? Math.floor(remaining / dailySpend) : 999;
           const status = b.percent > 100 ? 'overbudget' : b.percent > 80 ? 'critical' : 'safe';
 
-          return {
-            name: b.name,
-            spent: b.spent,
-            limit: b.limit,
-            percent: b.percent,
+          return toLLMView.budget({
+            ...b,
             status,
             is_trending_over: (dayOfMonth + projectedDaysLeft) < daysInMonth
-          };
-        }).sort((a, b) => b.percent - a.percent).slice(0, 5);
+          });
+        });
+        
+        return toLLMView.summarizeBudgets(mapped);
       },
     }),
 
@@ -371,14 +423,8 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         limit: z.number().int().min(1).max(5).optional(),
       }),
       execute: async ({ query, limit }) => {
-        const results = await financialContextService.findTransactionsByQuery(userId, query, supabase, limit ?? 3);
-        return results.map(r => ({
-          id: r.id,
-          description: r.description,
-          category: r.category,
-          amount: r.amount,
-          date: r.date
-        }));
+        const results = await financialContextService.findTransactionsByQuery(userId, query, supabase, limit ?? 10);
+        return toLLMView.summarizeTransactions(results);
       },
     }),
 
@@ -388,14 +434,8 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
         limit: z.number().int().min(1).max(5).optional(),
       }),
       execute: async ({ limit }) => {
-        const results = await financialContextService.getRecentTransactions(userId, supabase, limit ?? 3);
-        return results.map(r => ({
-          id: r.id,
-          description: r.description,
-          category: r.category,
-          amount: r.amount,
-          date: r.date
-        }));
+        const results = await financialContextService.getRecentTransactions(userId, supabase, limit ?? 10);
+        return toLLMView.summarizeTransactions(results);
       },
     }),
 

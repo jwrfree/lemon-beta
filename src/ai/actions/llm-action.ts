@@ -40,21 +40,65 @@ export const handleLlmChatAction = async ({
   sessionId,
 }: HandleLlmActionParams) => {
   const MAX_HISTORY_MESSAGES = 10;
-  const windowedMessages = messages.length > MAX_HISTORY_MESSAGES
+  const BUDGET_LIMIT = 4500; // DeepSeek/Gemini limits are higher, but 4.5k is a lean target
+
+  let contextToUse = supplementalContext;
+  let messagesToUse = messages.length > MAX_HISTORY_MESSAGES
     ? messages.slice(-MAX_HISTORY_MESSAGES)
     : messages;
 
-  const systemPrompt = buildChatSystemPrompt({ memorySummary, userProfile, supplementalContext });
-  const modelMessages = await convertToModelMessages(windowedMessages);
-  
-  // Basic budgeting & Telemetry
-  const systemTokens = TokenBudgeter.countTokens(systemPrompt);
-  const messageTokens = TokenBudgeter.countTokens(JSON.stringify(modelMessages));
-  console.info(`[AI Chat] Request Budget: ${systemTokens + messageTokens} tokens (System: ${systemTokens}, History: ${messageTokens})`);
+  const getSystem = () => buildChatSystemPrompt({ memorySummary, userProfile, supplementalContext: contextToUse });
+
+  // Intelligent Context Management & Telemetry
+  let log = '';
+  const initialBreakdown = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse });
+  const startTokens = initialBreakdown.total;
+
+  // Level 1 Truncation: Smart Message Filtering
+  if (initialBreakdown.total > BUDGET_LIMIT) {
+    const beforeHistory = TokenBudgeter.countTokens(JSON.stringify(messagesToUse));
+    // Keep high value messages or latest 3
+    const filtered = TokenBudgeter.filterHighValueMessages(messagesToUse);
+    messagesToUse = messagesToUse.length > 5 
+      ? [...filtered, ...messagesToUse.slice(-2)].slice(-5) 
+      : messagesToUse;
+    
+    const afterHistory = TokenBudgeter.countTokens(JSON.stringify(messagesToUse));
+    log += TokenBudgeter.logTransformation('Smart History', beforeHistory, afterHistory);
+  }
+
+  // Level 2 Truncation: Strip Supplemental
+  let currentTotal = TokenBudgeter.analyzePromptStructure({ system: getSystem(), history: messagesToUse }).total;
+  if (currentTotal > BUDGET_LIMIT && contextToUse) {
+    const beforeContext = TokenBudgeter.countTokens(JSON.stringify(contextToUse));
+    contextToUse = null; 
+    const afterContext = 0;
+    log += TokenBudgeter.logTransformation('Context Strip', beforeContext, afterContext);
+  }
+
+  // Level 3: Natural Fallback Persona (Production Mode)
+  let systemFinal = getSystem();
+  currentTotal = TokenBudgeter.analyzePromptStructure({ system: systemFinal, history: messagesToUse }).total;
+  if (currentTotal > BUDGET_LIMIT) {
+    log += `[AI Chat] CRITICAL: Fallback to Natural Minimal Mode (${currentTotal} tokens)\n`;
+    systemFinal = `Kamu adalah Lemon Coach. Context sedang sangat penuh.
+STRATEGI RESPON:
+- Gunakan hanya pesan terbaru user sbg acuan.
+- Berikan jawaban singkat & padat berdasarkan data yang terlihat saja.
+- Jika data kurang, jawab jujur dan minta user menyebutkan kategori/periode spesifik.
+- JANGAN mengarang data.
+- Gaya: "Dari data terbaru, [jawaban]. Kalau mau cek [kategori] lebih detail, boleh sebutkan ya!"`;
+  }
+
+  const finalTotal = TokenBudgeter.analyzePromptStructure({ system: systemFinal, history: messagesToUse }).total;
+  if (log) console.info(`${log}[AI Chat] FINAL: ${finalTotal} tokens (Saved ${startTokens - finalTotal})`);
+  else console.info(`[AI Chat] Request within budget: ${finalTotal} tokens`);
+
+  const modelMessages = await convertToModelMessages(messagesToUse);
 
   const result = streamText({
     model: deepseek("deepseek-chat"),
-    system: systemPrompt,
+    system: systemFinal,
     messages: modelMessages,
     tools: createFinancialTools(userId, supabase),
     stopWhen: stepCountIs(5),
