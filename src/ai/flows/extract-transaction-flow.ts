@@ -264,14 +264,58 @@ export const parseSimpleTransactionInput = async (
     : 'expense';
 
   const categoryMap = [
-    { pattern: /\b(kopi|coffee|kapal api|kapalapi|starbucks|fore|kenangan|tuku|janji jiwa|point coffee|makan|sarapan|lunch|dinner|snack|jajan|bakso|warteg|nasi goreng|mie ayam|sate|ayam geprek|nasi padang|gofood|grabfood|hokben|kfc|mcd|mcdonald'?s|burger king|pizza hut|domino'?s|solaria|sushi tei|marugame|resto|restoran|cafe|kafe|alfamart|indomaret|superindo|hypermart|transmart|hero|lotte mart|grocery|sembako|sayur|beras|telur|daging|buah|catering)\b/iu, category: 'Konsumsi & F&B' },
-    { pattern: /\b(shopee|tokopedia|tokped|bukalapak|blibli|lazada|zara|uniqlo|hm|h&m|matahari|cotton on|erafone|ibox|digimap|samsung store|mi store|watsons|guardian|sociolla|ace hardware|ikea|mr diy|skincare|skin care|face wash|sabun muka|kahf|wardah|somethinc|make up|makeup|parfum|shampoo|sabun mandi|odol|pasta gigi|baju|celana|sepatu|kaos|kemeja|jaket|tas|hp|gadget|laptop|charger|headset|perabot|panci|piring|sapu|pel)\b/iu, category: 'Belanja & Lifestyle' },
-    { pattern: /\b(gojek|grab|pertamina|shell|bp|vivo|bensin|parkir|tol|kereta|bus|mrt|krl|travel|tiket|servis|bengkel)\b/iu, category: 'Transportasi' },
-    { pattern: /\b(listrik|token|pulsa|internet|wifi|air|pdam|bpjs|pln|pln mobile|tv kabel|telkomsel|indosat|xl|axis|tri|3\b|smartfren|indihome|biznet|first media|myrepublic|cbn)\b/iu, category: 'Tagihan & Utilitas' },
-    { pattern: /\b(netflix|spotify|chatgpt|youtube premium|google one|icloud|notion|figma|canva)\b/iu, category: 'Langganan Digital' },
-    { pattern: /\b(top up ml|mobile legends|free fire|ff\b|pubg|valorant|steam|roblox|genshin|psn|playstation|xbox|nintendo|cgv|xxi|cinepolis|bioskop|hotel|airbnb|staycation|konser|festival|event)\b/iu, category: 'Hiburan & Wisata' },
-    { pattern: /\b(gaji|bonus|thr|salary|tunjangan|lembur)\b/iu, category: 'Gaji & Tetap' },
-    { pattern: /\b(top up gopay|topup gopay|isi gopay|top up ovo|topup ovo|isi ovo|top up dana|topup dana|isi dana|top up linkaja|topup linkaja|isi linkaja|top up shopeepay|topup shopeepay|isi shopeepay)\b/iu, category: 'Biaya Lain-lain' },
+    { 
+      pattern: /\b(kopi|coffee|kapal api|kapalapi|starbucks|fore|kenangan|tuku|janji jiwa|point coffee|makan|sarapan|lunch|dinner|snack|jajan|bakso|warteg|nasi goreng|mie ayam|sate|ayam geprek|nasi padang|gofood|grabfood|hokben|kfc|mcd|mcdonald'?s|burger king|pizza hut|domino'?s|solaria|sushi tei|marugame|resto|restoran|cafe|kafe|alfamart|indomaret|superindo|hypermart|transmart|hero|lotte mart|grocery|sembako|sayur|beras|telur|daging|buah|catering|bubur|pecel|ketoprak|seblak|martabak|soto|rawon|gule|gulai|rendang|gorengan|cimol|cilok|batagor|siomay|mie gacuan|mixue|esteh|jus|juice|chatime|richeese|bebek|pecel lele|kantin|kantin kantor|kantin sekolah)\b/iu, 
+      category: 'Konsumsi & F&B' 
+    },
+    { 
+      pattern: /\b(shopee|tokopedia|tokped|bukalapak|blibli|lazada|zara|uniqlo|hm|h&m|matahari|cotton on|erafone|ibox|digimap|samsung store|mi store|watsons|guardian|sociolla|ace hardware|ikea|mr diy|skincare|skin care|face wash|sabun muka|kahf|wardah|somethinc|make up|makeup|parfum|shampoo|sabun mandi|odol|pasta gigi|baju|celana|sepatu|kaos|kemeja|jaket|tas|hp|gadget|laptop|charger|headset|perabot|panci|piring|sapu|pel|kaos kaki|topi|kacamata|jam tangan|perhiasan|emall|miniso|daiso|dechatlon|sport station|planet sport|eiger|consina|tas sekolah|buku tulis|pensil|pulpen|atk)\b/iu, 
+      category: 'Belanja & Lifestyle' 
+    },
+    { 
+      pattern: /\b(gojek|grab|pertamina|shell|bp|vivo|bensin|parkir|tol|kereta|bus|mrt|krl|travel|tiket|servis|bengkel|gocar|goride|go ride|go car|grabcar|grabride|ojek|ojol|angkot|transjakarta|lrt|tj|jaklingko|bluebird|blue bird|maxim|indriver|pesawat|tiketux|redbus|traveloka|tiket com|cuci mobil|cuci motor|oli|tambal ban|variasi motor|aksesoris mobil)\b/iu, 
+      category: 'Transportasi' 
+    },
+    { 
+      pattern: /\b(listrik|token|pulsa|internet|wifi|air|pdam|bpjs|pln|pln mobile|tv kabel|telkomsel|indosat|xl|axis|tri|3\b|smartfren|indihome|biznet|first media|myrepublic|cbn|iuran|iuran warga|keamanan|lingkungan|ipl|pajak stnk|pajak motor|pajak mobil|pajak bumi bangunan|pbb|gas|gas lpg|gas elpiji|galon|aqua galon|vit galon)\b/iu, 
+      category: 'Tagihan & Utilitas' 
+    },
+    { 
+      pattern: /\b(netflix|spotify|chatgpt|youtube premium|google one|icloud|notion|figma|canva|midjourney|cursor|zoom|vimeo|disney|disney hotstar|hbo|hbo go|viu|vidio|wetv|iqiyi|amazon prime|itunes|app store|play store|adobe|office 365|microsoft 365)\b/iu, 
+      category: 'Langganan Digital' 
+    },
+    { 
+      pattern: /\b(top up ml|mobile legends|free fire|ff\b|pubg|valorant|steam|roblox|genshin|psn|playstation|xbox|nintendo|cgv|xxi|cinepolis|bioskop|hotel|airbnb|staycation|konser|festival|event|tiket konser|museum|kebun binatang|dufan|ancol|karaoke|billiar|futsal|badminton|gym|fitness|membership gym)\b/iu, 
+      category: 'Hiburan & Wisata' 
+    },
+    { 
+      pattern: /\b(dokter|obat|apotek|apotik|kimia farma|k24|rumah sakit|rs|rsud|klinik|puskesmas|halodoc|alodokter|masker|vitamin|suplemen|madu|biaya periksa|cek lab|cek darah|dokter gigi|scaling|softlens|optik|melahirkan|persalinan)\b/iu, 
+      category: 'Kesehatan & Medis' 
+    },
+    { 
+      pattern: /\b(uang saku|uang jajan anak|susu bayi|diapers|pampers|popok|baju bayi|mainan anak|tk|sd|smp|sma|kuliah|spp|uang sekolah|buku pelajaran|bimbel|les|kursus|udemy|coursera|seragam)\b/iu, 
+      category: 'Keluarga & Anak' 
+    },
+    { 
+      pattern: /\b(sedekah|infaq|zakat|donasi|kotak amal|sumbangan|kondangan|amplop nikah|kado|hadiah|titip beli|kitabisa|baznas|act)\b/iu, 
+      category: 'Sosial & Donasi' 
+    },
+    { 
+      pattern: /\b(investasi|saham|reksadana|reksa dana|crypto|kripto|bibit|ajaib|pluang|pintu|indodax|logam mulia|emas|antam|tabungan|deposito)\b/iu, 
+      category: 'Investasi & Aset' 
+    },
+    { 
+      pattern: /\b(cicilan|pinjaman|kredit|kpr|kpa|kredit motor|kredit mobil|pinjol|akulaku|kredivo|spaylater|shopee paylater|lazpaylater|paylater|home credit|indodana|kartu kredit|credit card)\b/iu, 
+      category: 'Cicilan & Pinjaman' 
+    },
+    { 
+      pattern: /\b(gaji|bonus|thr|salary|tunjangan|lembur|gajian|payout|penghasilan|honor|komisi)\b/iu, 
+      category: 'Gaji & Tetap' 
+    },
+    { 
+      pattern: /\b(top up gopay|topup gopay|isi gopay|top up ovo|topup ovo|isi ovo|top up dana|topup dana|isi dana|top up linkaja|topup linkaja|isi linkaja|top up shopeepay|topup shopeepay|isi shopeepay|admin|biaya admin|biaya transfer|admin bank|materai|parkir|denda|tilang)\b/iu, 
+      category: 'Biaya Lain-lain' 
+    },
   ].find((entry) => entry.pattern.test(normalized));
 
   const category = categoryMap?.category ?? (type === 'income' ? 'Pendapatan Lain' : 'Biaya Lain-lain');
