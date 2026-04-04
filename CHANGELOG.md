@@ -74,6 +74,10 @@ All updates and improvements to the Lemon app will be documented here.
 - **Widget Highlight CSS** (`globals.css`)
   - Added `.lemon-highlight` class with a pulsing outline animation triggered when the AI highlights a dashboard widget.
 
+- **Close Button standard** (`src/components/ui/close-button.tsx`)
+  - Introduced a shared `CloseButton` primitive that reuses the design-system `Button`, enforces the 44×44 hit target, and defaults to the localized “Tutup” label so every overlay close control is consistent.
+  - Replaced bespoke close/X buttons across sheets, dialogs, toasts, prompts, and rich modals with the new component, and added `close-button.test.tsx` plus documentation notes so future surfaces reuse the same spacing, tone, and accessibility guarantees.
+
 - **Supabase: `chat_sessions` table**
   - Applied migration for durable conversation memory.
   - Table includes RLS policy (`Users own their sessions`) and `updated_at` index for efficient lookup.

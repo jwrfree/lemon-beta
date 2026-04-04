@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { useAssets } from '../hooks/use-assets';
 import { ASSET_CATEGORIES, LIABILITY_CATEGORIES, type AssetCategory } from '../constants';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { X } from '@/lib/icons';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/select';
 import { useUI } from '@/components/ui-provider';
 import { cn } from '@/lib/utils';
@@ -105,16 +105,12 @@ export const AssetLiabilityForm = ({ onClose, initialData = null }: AssetLiabili
         <div className="w-full h-full md:h-auto flex flex-col bg-background md:rounded-md overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10">
                 <h2 className="text-title-lg">{title}</h2>
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <CloseButton
+                    ariaLabel="Tutup formulir"
+                    tone="muted"
+                    className="bg-muted hover:bg-muted/80"
                     onClick={onClose}
-                    className="bg-muted rounded-full hover:bg-muted/80"
-                    aria-label="Tutup formulir"
-                >
-                    <X className="h-5 w-5" />
-                    <span className="sr-only">Tutup formulir</span>
-                </Button>
+                />
             </div>
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col">
                 <div className="flex-1 space-y-4">

@@ -3,9 +3,9 @@
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "@/lib/icons"
 
 import { cn } from "@/lib/utils"
+import { CloseButton } from "@/components/ui/close-button"
 
 const Sheet = SheetPrimitive.Root
 
@@ -68,9 +68,12 @@ const SheetContent = React.forwardRef<
     >
       {children}
       {!hideCloseButton && (
-        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-full p-1 text-muted-foreground ring-offset-background transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
+        <SheetPrimitive.Close asChild>
+          <CloseButton
+            ariaLabel="Tutup"
+            tone="default"
+            className="absolute right-4 top-4 text-muted-foreground transition-colors hover:text-foreground data-[state=open]:bg-secondary"
+          />
         </SheetPrimitive.Close>
       )}
     </SheetPrimitive.Content>

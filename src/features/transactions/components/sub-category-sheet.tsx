@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Check } from '@/lib/icons';
+import { Check } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Category } from '@/lib/categories';
@@ -36,10 +37,12 @@ export const SubCategorySheet = ({ category, selectedValue, onSelect, onClose }:
  >
  <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-card bg-background p-4 border-b border-border/15">
  <h2 className="text-title-lg">Pilih Sub-kategori {category.name}</h2>
-        <Button variant="ghost"size="icon"onClick={onClose} className="h-11 w-11 text-muted-foreground rounded-full" aria-label="Tutup">
- <X size={32} weight="regular"/>
- <span className="sr-only">Tutup</span>
- </Button>
+        <CloseButton
+          ariaLabel="Tutup"
+          tone="muted"
+          className="text-muted-foreground"
+          onClick={onClose}
+        />
  </div>
  <ScrollArea className="flex-1 bg-muted/25">
  <div className="p-4 space-y-2">

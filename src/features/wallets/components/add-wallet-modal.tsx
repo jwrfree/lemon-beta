@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { ArrowLeft, Bank, CircleNotch, CurrencyCircleDollar, DeviceMobile, TrendUp, Wallet, X } from '@/lib/icons';
+import { ArrowLeft, Bank, CircleNotch, CurrencyCircleDollar, DeviceMobile, TrendUp, Wallet } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -130,10 +131,12 @@ export const AddWalletModal = ({ onClose }: { onClose: () => void }) => {
  <h2 className="text-title-lg text-center">
  {step === 1 ? 'Pilih Jenis':`Detail ${selectedCategory?.name}`}
  </h2>
-        <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-11 w-11" aria-label="Tutup">
- <X size={20} weight="regular"/>
- <span className="sr-only">Tutup</span>
- </Button>
+        <CloseButton
+          ariaLabel="Tutup"
+          tone="muted"
+          className="h-11 w-11 bg-muted rounded-full"
+          onClick={onClose}
+        />
  </div>
 
  <div className="relative flex-1 overflow-y-auto px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-2">

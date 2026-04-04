@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import { ArrowLeft, Sparkle, TrendUp, X } from '@/lib/icons';
+import { ArrowLeft, Sparkle, TrendUp } from '@/lib/icons';
 import { useAuth } from '@/providers/auth-provider';
 import { transactionService, useCategories } from '@/features/transactions';
 
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -200,10 +201,12 @@ export const AddBudgetModal = ({ onClose }: { onClose: () => void }) => {
  )}
  </div>
  <h2 className="text-title-lg text-center">{stepTitles[step - 1]}</h2>
-                  <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-11 w-11" aria-label="Tutup">
- <X className="h-5 w-5"weight="regular"/>
- <span className="sr-only">Tutup</span>
- </Button>
+                  <CloseButton
+                    ariaLabel="Tutup"
+                    tone="muted"
+                    className="h-11 w-11 bg-muted rounded-full"
+                    onClick={onClose}
+                  />
  </div>
 
  <div className="relative flex-1 overflow-y-auto px-6 pb-6">

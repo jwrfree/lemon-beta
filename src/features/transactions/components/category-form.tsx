@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Check } from '@/lib/icons';
+import { Check } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -63,9 +64,12 @@ export const CategoryForm = ({ initialData, onClose, onSave }: CategoryFormProps
             <div className="flex items-center justify-between bg-background p-6 shadow-elevation-2">
                 <h2 className="text-title-lg">{title}</h2>
                 {isMobile && (
-                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full bg-muted" aria-label="Tutup">
-                        <X className="h-5 w-5" />
-                    </Button>
+                    <CloseButton
+                        ariaLabel="Tutup"
+                        tone="muted"
+                        className="bg-muted rounded-full"
+                        onClick={onClose}
+                    />
                 )}
             </div>
 

@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
-import { CircleNotch, Trash, X } from '@/lib/icons';
+import { CircleNotch, Trash } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -102,9 +103,12 @@ export const EditWalletModal = ({ wallet, onClose }: { wallet: WalletType, onClo
 
         <div className="sticky top-0 flex items-center justify-between bg-background px-4 pb-4 pt-4 shadow-elevation-2">
           <h2 className="text-title-lg">Edit Dompet</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full" aria-label="Tutup">
-            <X size={20} weight="regular" />
-          </Button>
+          <CloseButton
+            ariaLabel="Tutup"
+            tone="muted"
+            className="bg-muted rounded-full"
+            onClick={onClose}
+          />
         </div>
         <div className="flex-1 space-y-6 overflow-y-auto p-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

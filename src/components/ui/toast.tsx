@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "@/lib/icons"
+import { CloseButton } from "@/components/ui/close-button"
 
 import { cn } from "@/lib/utils"
 
@@ -74,16 +74,15 @@ const ToastClose = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Close>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Close>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitives.Close
-    ref={ref}
-    className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-pink-300 group-[.destructive]:hover:text-pink-50 group-[.destructive]:focus:ring-pink-400 group-[.destructive]:focus:ring-offset-pink-600",
-      className
-    )}
-    toast-close=""
-    {...props}
-  >
-    <X className="h-4 w-4" />
+  <ToastPrimitives.Close asChild ref={ref} {...props}>
+    <CloseButton
+      ariaLabel="Tutup notifikasi"
+      tone="surface"
+      className={cn(
+        "absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100 group-[.destructive]:text-pink-300 group-[.destructive]:hover:text-pink-50",
+        className
+      )}
+    />
   </ToastPrimitives.Close>
 ))
 ToastClose.displayName = ToastPrimitives.Close.displayName

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
-import { Trash, X } from '@/lib/icons';
+import { Trash } from '@/lib/icons';
 import { useCategories } from '@/features/transactions';
 import { useBudgets } from '@/features/budgets';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
@@ -106,12 +107,14 @@ export const EditBudgetModal = ({ budget, onClose }: { budget: Budget, onClose: 
  <SheetDescription>Sesuaikan nama, target, dan kategori anggaran.</SheetDescription>
  </SheetHeader>
 
- <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/10 bg-background/80 p-6 backdrop-blur-md">
-  <h2 className="text-title-lg">Ubah Anggaran</h2>
-        <Button variant="ghost"size="icon"onClick={onClose} className="bg-muted rounded-full h-11 w-11" aria-label="Tutup">
- <X className="h-5 w-5"weight="regular"/>
- </Button>
- </div>
+ <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/10 bg-background p-6">  <h2 className="text-title-lg">Ubah Anggaran</h2>
+        <CloseButton
+          ariaLabel="Tutup"
+          tone="muted"
+          className="h-11 w-11 bg-muted rounded-full"
+          onClick={onClose}
+        />
+</div>
 
  <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-6 overflow-y-auto">
  <div className="space-y-3">

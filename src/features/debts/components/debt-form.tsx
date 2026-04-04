@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CalendarBlank, CircleNotch, Trash, X } from '@/lib/icons';
+import { CalendarBlank, CircleNotch, Trash } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -160,9 +161,12 @@ export const DebtForm = ({ onClose, initialData = null }: DebtFormProps) => {
                             Simpan detail pinjaman, cicilan, atau piutang yang harus kamu pantau.
                         </p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full" aria-label="Tutup">
-                        <X className="h-5 w-5" weight="regular" />
-                    </Button>
+                    <CloseButton
+                        ariaLabel="Tutup"
+                        tone="muted"
+                        className="bg-muted rounded-full"
+                        onClick={onClose}
+                    />
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-4 space-y-4">
                     <div className="space-y-2">

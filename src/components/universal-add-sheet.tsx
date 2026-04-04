@@ -12,6 +12,7 @@ import {
  SheetDescription 
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { 
  Plus, 
  Sparkle, 
@@ -20,7 +21,6 @@ import {
  HandCoins, 
  PiggyBank, 
  Bell,
- X,
  Receipt
 } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
@@ -161,17 +161,14 @@ export const UniversalAddSheet = () => {
  hideCloseButton 
  className="overflow-hidden rounded-t-[2.5rem] border-t border-border/20 bg-background pb-12 pt-10 sm:max-w-xl mx-auto shadow-elevation-4"
  >
- <div className="absolute right-4 top-4">
-        <Button
-          variant="ghost"
-          size="icon"
+      <div className="absolute right-4 top-4">
+        <CloseButton
+          ariaLabel="Tutup smart add"
+          tone="default"
+          className="bg-secondary text-muted-foreground transition-all active:scale-95"
           onClick={() => setIsSmartAddOpen(false)}
-          className="h-11 w-11 rounded-full bg-secondary text-muted-foreground transition-all active:scale-95"
-          aria-label="Tutup smart add"
-        >
- <X size={20} />
- </Button>
- </div>
+        />
+      </div>
 
  <SheetHeader className="mb-8 px-6 text-left">
  <SheetTitle className="text-display-md tracking-tight">Apa yang ingin ditambah?</SheetTitle>

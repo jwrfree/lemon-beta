@@ -11,6 +11,7 @@ import {
  SheetTitle,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -21,7 +22,6 @@ import {
  Trash2,
  Loader2,
  Square,
- X,
  Mic,
  StopCircle,
 } from '@/lib/icons';
@@ -503,16 +503,13 @@ export const AIChatDrawer = ({ isOpen, onClose }: AIChatDrawerProps) => {
             >
  <Trash2 className="h-4 w-4"/>
  </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-11 w-11 rounded-full bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+            <CloseButton
+              ariaLabel="Tutup"
+              tone="muted"
               title="Tutup"
-              aria-label="Tutup"
-            >
- <X className="h-4.5 w-4.5"/>
- </Button>
+              className="bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+              onClick={onClose}
+            />
  </div>
  </div>
  </SheetHeader>

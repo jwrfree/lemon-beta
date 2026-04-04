@@ -2,9 +2,10 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, CaretRight, MagnifyingGlass, X } from '@/lib/icons';
+import { Check, CaretRight, MagnifyingGlass } from '@/lib/icons';
 
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { cn } from '@/lib/utils';
@@ -118,10 +119,12 @@ export const CategoryPickerSheet = ({
  <h2 className="text-title-lg text-foreground">Pilih kategori</h2>
  <p className="mt-1 text-body-md text-muted-foreground">Pilih kategori utama, lalu lanjut ke subkategori bila ada.</p>
  </div>
-                <Button variant="ghost"size="icon"onClick={onClose} className="rounded-full bg-background" aria-label="Tutup">
- <X size={32} weight="regular"/>
- <span className="sr-only">Tutup</span>
- </Button>
+                <CloseButton
+                  ariaLabel="Tutup"
+                  tone="surface"
+                  className="rounded-full bg-background"
+                  onClick={onClose}
+                />
  </div>
 
  <div className="relative">

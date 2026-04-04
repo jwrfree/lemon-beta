@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Mail, Lock, Eye, EyeOff, X, LoaderCircle } from '@/lib/icons';
 import { useForm } from 'react-hook-form';
@@ -184,16 +185,12 @@ export const SignUpPage = ({
  <div className={cn("p-4 border-b flex items-center justify-between sticky top-0 bg-background z-10", isPage ? "rounded-t-card": "")}>
  <h2 id="signup-heading" className="text-title-lg">Buat Akun Baru</h2>
  {!isPage && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onClose}
-                  className="h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
-                  aria-label="Tutup"
-                >
- <X className="h-5 w-5"/>
- <span className="sr-only">Tutup</span>
- </Button>
+              <CloseButton
+                ariaLabel="Tutup"
+                tone="muted"
+                className="bg-muted hover:bg-muted/80"
+                onClick={onClose}
+              />
  )}
  </div>
 

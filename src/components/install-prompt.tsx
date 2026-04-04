@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DownloadSimple, X } from '@/lib/icons';
+import { DownloadSimple } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 
 export function InstallPrompt() {
  const { deferredPrompt, setDeferredPrompt } = useUI();
@@ -64,16 +65,12 @@ export function InstallPrompt() {
  >
  Install
  </Button>
-        <Button
+        <CloseButton
           onClick={handleDismiss}
-          variant="ghost"
-          size="icon"
-          className="h-11 w-11 rounded-full hover:bg-muted"
-          aria-label="Tutup prompt instalasi"
-        >
- <X className="h-4 w-4"weight="regular"/>
- <span className="sr-only">Tutup</span>
- </Button>
+          tone="muted"
+          className="hover:bg-muted"
+          ariaLabel="Tutup prompt instalasi"
+        />
  </div>
  </div>
  </motion.div>

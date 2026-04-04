@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Airplane, Briefcase, CalendarBlank, Car, Desktop, Gift, GraduationCap, House, Rocket, Trash, X } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -115,9 +116,12 @@ export const GoalForm = ({ onClose, initialData = null }: GoalFormProps) => {
             >
                 <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-background rounded-t-card z-10">
                     <h2 className="text-title-lg">{isEditMode ? 'Edit Target' : 'Target Baru'}</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="bg-muted rounded-full" aria-label="Tutup">
-                        <X className="h-5 w-5" weight="regular" />
-                    </Button>
+                    <CloseButton
+                        ariaLabel="Tutup"
+                        tone="muted"
+                        className="bg-muted rounded-full"
+                        onClick={onClose}
+                    />
                 </div>
                 <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
                     <div className="space-y-2">

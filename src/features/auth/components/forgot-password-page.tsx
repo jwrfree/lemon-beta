@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { Input } from '@/components/ui/input';
 import { Mail, X, LoaderCircle } from '@/lib/icons';
 import { useForm } from 'react-hook-form';
@@ -111,16 +112,12 @@ export const ForgotPasswordPage = ({
                         Lupa Password
                     </h2>
                     {!isPage && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
+                        <CloseButton
+                          ariaLabel="Tutup"
+                          tone="muted"
+                          className="bg-muted hover:bg-muted/80"
                           onClick={onClose}
-                          className="h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
-                          aria-label="Tutup"
-                        >
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Tutup</span>
-                        </Button>
+                        />
                     )}
                 </div>
 

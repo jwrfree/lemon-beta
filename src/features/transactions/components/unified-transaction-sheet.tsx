@@ -3,11 +3,12 @@
 import React, { useState, useMemo } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { CloseButton } from '@/components/ui/close-button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MagicBar } from './liquid-composer/MagicBar';
 import { DynamicSuggestions } from './form-partials/dynamic-suggestions';
 import { SemanticTransactionReview } from './form-partials/semantic-review';
-import { CaretLeft, CaretRight, Trash, X, Sparkle, Question, CircleNotch } from '@/lib/icons';
+import { CaretLeft, CaretRight, Trash, Sparkle, Question, CircleNotch } from '@/lib/icons';
 import { useTransactionForm } from '../hooks/use-transaction-form';
 import { useWallets } from '@/features/wallets';
 import { useCategories } from '../hooks/use-transactions';
@@ -143,16 +144,12 @@ export const UnifiedTransactionSheet = ({
  </div>
  {/* Custom Standard Close Button */}
  <div className="absolute right-4 top-3 z-50 sm:right-6 sm:top-6">
-  <Button
-  variant="ghost"
-  size="icon"
-  onClick={() => handleCloseAttempt(false)}
-  className="h-11 w-11 rounded-full bg-background text-muted-foreground border border-border/15 transition-all active:scale-95 hover:bg-secondary"
-  aria-label="Tutup"
-  >
- <X size={32} weight="regular"/>
- <span className="sr-only">Tutup</span>
- </Button>
+        <CloseButton
+          ariaLabel="Tutup"
+          tone="surface"
+          className="bg-background text-muted-foreground border border-border/15 transition-all active:scale-95 hover:bg-secondary"
+          onClick={() => handleCloseAttempt(false)}
+        />
  </div>
  <SheetHeader className="sr-only">
  <SheetTitle>{isEditMode ? 'Edit Transaksi': 'Transaksi Baru'}</SheetTitle>

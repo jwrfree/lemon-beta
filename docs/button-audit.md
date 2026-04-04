@@ -1,4 +1,4 @@
-# Button Audit Report (Repo-wide)
+Ôªø# Button Audit Report (Repo-wide)
 
 Date: 2026-04-04
 Scope: All button surfaces in `src/` (Button component, `buttonVariants`, raw `<button>`, `motion.button`, and `role="button"`).
@@ -48,21 +48,21 @@ Counts include test usage under `src/`.
 Severity scale: Critical, Major, Minor.
 
 ### A11y & Semantics
-1) Major ó Icon-only Buttons missing `aria-label`.
+1) Major ‚Äî Icon-only Buttons missing `aria-label`.
 - Count: 63 instances where `size="icon"` is used without `aria-label`.
 - Examples:
   - `src/components/ui/global-fab.tsx:14-20`
   - `src/features/home/components/mobile-dashboard.tsx:146-162`
   - `src/features/transactions/components/unified-transaction-sheet.tsx:146-196`
-- Impact: Screen readers announce ìbuttonî without context.
+- Impact: Screen readers announce ‚Äúbutton‚Äù without context.
 - Recommendation: add `aria-label` or an `sr-only` label for all icon-only Buttons, or enforce via lint/test.
 
-2) Major ó Non-button element with `role="button"` lacks keyboard behavior.
+2) Major ‚Äî Non-button element with `role="button"` lacks keyboard behavior.
 - `src/components/help-tooltip.tsx:26-30` uses a `<div role="button">` with no `onKeyDown`/`onKeyUp` handling.
 - Impact: keyboard users cannot trigger it reliably.
 - Recommendation: use `<button>`/`<Button asChild>` or add full keyboard handling (Enter/Space) and focus styles.
 
-3) Minor ó Raw `<button>` without explicit `type` (21 occurrences).
+3) Minor ‚Äî Raw `<button>` without explicit `type` (21 occurrences).
 - Examples:
   - `src/app/(main)/budgeting/[id]/page.tsx:109-113`
   - `src/features/charts/components/chart-lists.tsx:31-38`
@@ -70,7 +70,7 @@ Severity scale: Critical, Major, Minor.
 - Impact: default `type="submit"` can cause unintended submits in form contexts.
 - Recommendation: add `type="button"` for non-submit actions.
 
-4) Minor ó Touch target below 44px on icon actions.
+4) Minor ‚Äî Touch target below 44px on icon actions.
 - Examples:
   - `src/components/onboarding-checklist.tsx:126-132` (`h-7 w-7`)
   - `src/features/assets/components/assets-liabilities-dashboard.tsx:145-170` (`h-10 w-10`)
@@ -79,7 +79,7 @@ Severity scale: Critical, Major, Minor.
 - Recommendation: keep `h-11 w-11` minimum or add `size="icon-sm"` with padding to keep hit area >= 44px.
 
 ### Consistency & Design Tokens
-5) Major ó Literal color tokens in button styling (not semantic tokens).
+5) Major ‚Äî Literal color tokens in button styling (not semantic tokens).
 - Examples:
   - `src/features/charts/components/analytics-dashboard.tsx:389-390` uses `text-teal-600`.
   - `src/features/budgets/components/edit-budget-modal.tsx:208-210` uses `bg-rose-500/10 text-rose-600`.
@@ -88,31 +88,36 @@ Severity scale: Critical, Major, Minor.
 - Impact: inconsistent theming and harder token maintenance.
 - Recommendation: define semantic tokens or Button variants for these states (e.g., `warning`, `success`, `danger-ghost`).
 
-6) Minor ó `primary` and `default` variants are identical, but `default` is only used once.
+6) Minor ‚Äî `primary` and `default` variants are identical, but `default` is only used once.
 - Evidence: `src/components/ui/button.tsx:13-14,35-37` and `src/features/home/components/quick-add-widget.tsx:183-184`.
 - Impact: redundant API surface; encourages inconsistent naming.
 - Recommendation: remove `default` or alias it explicitly in docs and standardize usage.
 
-7) Minor ó Variants defined but unused (`tertiary`, `success`, `error`).
+7) Minor ‚Äî Variants defined but unused (`tertiary`, `success`, `error`).
 - Evidence: defined in `src/components/ui/button.tsx:24-26`, no explicit usage in repo.
 - Impact: dead design surface and extra maintenance.
 - Recommendation: either remove unused variants or add real usage examples.
 
 ### Maintainability & Component Architecture
-8) Major ó Multiple FAB implementations with different behaviors.
+8) Major ‚Äî Multiple FAB implementations with different behaviors.
 - `src/components/ui/fab.tsx` (design system guidance, aria-label, semantic token warning).
 - `src/components/ui/global-fab.tsx` (no `aria-label`, different hover/scale/shadow, different positioning).
 - Impact: divergence in placement and behavior over time.
 - Recommendation: consolidate to one FAB component or make `GlobalFAB` a thin wrapper around `FAB`.
 
-9) Minor ó `motion.button` used without base Button styling (focus ring, disabled styles, motion-pressable).
+9) Minor ‚Äî `motion.button` used without base Button styling (focus ring, disabled styles, motion-pressable).
 - Example: `src/components/onboarding-checklist.tsx:151-189`.
 - Impact: interaction patterns diverge from design system.
-- Recommendation: apply `buttonVariants` or convert to `<Button asChild>` with motion wrapper.
+  - Recommendation: apply `buttonVariants` or convert to `<Button asChild>` with motion wrapper.
+  
+### Close Button Standardization
+10) Major ‚Äî Close/X actions were implemented with bespoke `<Button variant="ghost" size="icon">` markup across sheets, dialogs, and prompts.
+- Impact: duplicated spacing, missing `aria-label` defaults, and drifted hover/focus styles made overlays harder to audit.
+- Recommendation: use the shared `CloseButton` (`src/components/ui/close-button.tsx`) so each overlay reuses the same 44√ó44 touch target, tokenized hover states, and localized `aria-label` instead of re-creating the class chain.
 
 ### Labels & Language
-10) Minor ó Mixed language and labeling across primary CTAs.
-- Example: `src/features/budgets/components/edit-budget-modal.tsx:203-222` uses English (ìSave Changesî, ìDeleteî, ìCancelî) while surrounding UI is Indonesian.
+  10) Minor ‚Äî Mixed language and labeling across primary CTAs.
+- Example: `src/features/budgets/components/edit-budget-modal.tsx:203-222` uses English (‚ÄúSave Changes‚Äù, ‚ÄúDelete‚Äù, ‚ÄúCancel‚Äù) while surrounding UI is Indonesian.
 - Impact: inconsistent UX voice.
 - Recommendation: standardize language (ID/EN) per product spec.
 
@@ -120,14 +125,14 @@ Severity scale: Critical, Major, Minor.
 - Enforce `aria-label` for icon-only Buttons (lint rule or test).
 - Add `type="button"` to raw buttons and consider migrating to `Button`/`buttonVariants`.
 - Consolidate FAB components and ensure accessibility parity.
-- Add semantic variants or token utilities for ìsuccess/warning/dangerî instead of raw palette values.
+- Add semantic variants or token utilities for ‚Äúsuccess/warning/danger‚Äù instead of raw palette values.
 - Rationalize variant set (`default` vs `primary`, unused variants).
 - Add a smaller icon size variant that preserves 44px hit area, or disallow `h-7/8/9/10` on icon buttons.
 
-## Appendix A ó Files using `<Button>`
+## Appendix A ‚Äî Files using `<Button>`
 (81 files) See inventory list from audit run.
 
-## Appendix B ó Files using raw `<button>`
+## Appendix B ‚Äî Files using raw `<button>`
 (30 files)
 - `src/app/(main)/budgeting/[id]/page.tsx`
 - `src/app/(main)/plan/page.tsx`
@@ -158,7 +163,7 @@ Severity scale: Critical, Major, Minor.
 - `src/features/wallets/components/desktop-wallet-view.tsx`
 - `src/features/wallets/components/wallet-card-stack.tsx`
 
-## Appendix C ó Files using `motion.button`
+## Appendix C ‚Äî Files using `motion.button`
 (6 files)
 - `src/components/onboarding-checklist.tsx`
 - `src/components/universal-add-sheet.tsx`
@@ -167,6 +172,6 @@ Severity scale: Critical, Major, Minor.
 - `src/features/insights/components/ai-briefing-card.tsx`
 - `src/features/transactions/components/liquid-composer/MagicBar.tsx`
 
-## Appendix D ó Files using `role="button"`
+## Appendix D ‚Äî Files using `role="button"`
 - `src/components/help-tooltip.tsx`
 - `src/features/wallets/components/add-wallet-modal.tsx`
