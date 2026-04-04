@@ -127,7 +127,7 @@ describe('createTransactionMutationActions', () => {
     const supabase = createWalletQueryClient();
     const tools = createFinancialTools('user-1', supabase as never);
 
-    const result = await tools.add_transaction.execute({ raw_text: 'catat makan siang 25rb pakai BCA' });
+    const result = await tools.add_transaction.execute({ raw_text: 'catat makan siang 25rb pakai BCA' }, { toolCallId: 'test', messages: [] });
 
     expect(result).toEqual(expect.objectContaining({
       success: true,

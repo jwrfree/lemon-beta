@@ -335,7 +335,10 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
   let contextPromise: Promise<UnifiedFinancialContext | null> | null = null;
   const transactionMutations = createTransactionMutationActions(userId, supabase);
 
-  const getContext = () => {
+  const getContext = (modules?: ('wealth' | 'budgets' | 'goals' | 'monthly' | 'previous_month' | 'patterns' | 'recent' | 'risk')[]) => {
+    if (modules && modules.length > 0) {
+      return financialContextService.getUnifiedContext(userId, supabase, modules as any);
+    }
     if (!contextPromise) {
       contextPromise = financialContextService.getUnifiedContext(userId, supabase);
     }
@@ -610,7 +613,7 @@ export const createFinancialTools = (userId: string, supabase: FinancialToolClie
       description: 'Melakukan "Health Check" atau audit kesehatan finansial user secara menyeluruh.',
       inputSchema: z.object({}),
       execute: async () => {
-        const context = await getContext();
+        const context = await getContext(['wealth', 'monthly', 'risk']);
         if (!context) return { error: 'Gagal mendapatkan konteks finansial.' };
 
         const { wealth, monthly, risk } = context;
