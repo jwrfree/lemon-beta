@@ -116,7 +116,7 @@ export function AnalyticsPageSkeleton() {
     return (
         <div className="min-h-screen bg-background pb-40">
             {/* Header Skeleton */}
-            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background/80 backdrop-blur-xl z-30 border-b border-border/20">
+            <div className="pt-safe-top px-6 pb-2 sticky top-0 bg-background z-30 border-b border-border/20">
                 <div className="flex justify-between items-center py-3">
                     <Skeleton className="h-7 w-48" />
                     <Skeleton className="h-7 w-24 rounded-full" />

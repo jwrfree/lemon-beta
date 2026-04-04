@@ -78,6 +78,9 @@ All updates and improvements to the Lemon app will be documented here.
   - Introduced a shared `CloseButton` primitive that reuses the design-system `Button`, enforces the 44×44 hit target, and defaults to the localized “Tutup” label so every overlay close control is consistent.
   - Replaced bespoke close/X buttons across sheets, dialogs, toasts, prompts, and rich modals with the new component, and added `close-button.test.tsx` plus documentation notes so future surfaces reuse the same spacing, tone, and accessibility guarantees.
 
+- **Category icons weight** (`src/lib/category-utils.ts`)
+  - Wrapped every category visual icon with a `weight="fill"` default so transaction/budget/category selectors always render filled phosphor glyphs and avoid mixed stroke styles in the finance surfaces.
+
 - **Supabase: `chat_sessions` table**
   - Applied migration for durable conversation memory.
   - Table includes RLS policy (`Users own their sessions`) and `updated_at` index for efficient lookup.

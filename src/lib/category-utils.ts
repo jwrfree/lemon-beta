@@ -8,11 +8,44 @@ import {
     Lightning, Television
 } from '@/lib/icons';
 
-export const iconMap: Record<string, React.ElementType> = {
-    Utensils: ForkKnife, ShoppingCart, Car, Phone: DeviceMobile, Gamepad2: GameController, Home: House, GraduationCap, HeartPulse: Heartbeat,
-    Briefcase, Gift, PiggyBank, ReceiptText: Receipt, ShieldCheck, Sparkles: Sparkle, HandCoins: Coins,
-    ArrowRightLeft: ArrowsLeftRight, Handshake, Wrench, Heart, Baby, RefreshCw: ArrowsClockwise, BadgeDollarSign: CurrencyDollar, Wallet, TrendingUp: TrendUp, Code,
-    Zap: Lightning, Tv: Television
+const withFillWeight = (Icon: React.ComponentType<any>): React.ComponentType<any> => {
+    const WrappedIcon: React.FC<any> = (props) =>
+        React.createElement(Icon, {
+            ...props,
+            weight: 'fill',
+        });
+    WrappedIcon.displayName = Icon.displayName ?? Icon.name ?? 'CategoryIcon';
+    return WrappedIcon;
+};
+
+export const iconMap: Record<string, React.ComponentType<any>> = {
+    Utensils: withFillWeight(ForkKnife),
+    ShoppingCart: withFillWeight(ShoppingCart),
+    Car: withFillWeight(Car),
+    Phone: withFillWeight(DeviceMobile),
+    Gamepad2: withFillWeight(GameController),
+    Home: withFillWeight(House),
+    GraduationCap: withFillWeight(GraduationCap),
+    HeartPulse: withFillWeight(Heartbeat),
+    Briefcase: withFillWeight(Briefcase),
+    Gift: withFillWeight(Gift),
+    PiggyBank: withFillWeight(PiggyBank),
+    ReceiptText: withFillWeight(Receipt),
+    ShieldCheck: withFillWeight(ShieldCheck),
+    Sparkles: withFillWeight(Sparkle),
+    HandCoins: withFillWeight(Coins),
+    ArrowRightLeft: withFillWeight(ArrowsLeftRight),
+    Handshake: withFillWeight(Handshake),
+    Wrench: withFillWeight(Wrench),
+    Heart: withFillWeight(Heart),
+    Baby: withFillWeight(Baby),
+    RefreshCw: withFillWeight(ArrowsClockwise),
+    BadgeDollarSign: withFillWeight(CurrencyDollar),
+    Wallet: withFillWeight(Wallet),
+    TrendingUp: withFillWeight(TrendUp),
+    Code: withFillWeight(Code),
+    Zap: withFillWeight(Lightning),
+    Tv: withFillWeight(Television),
 };
 
 export const getCategoryIcon = (iconName: string | null | undefined) => {

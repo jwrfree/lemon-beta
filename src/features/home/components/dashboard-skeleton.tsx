@@ -5,7 +5,7 @@ export const DashboardSkeleton = () => {
     return (
         <div className="w-full h-full flex flex-col bg-zinc-50/50 dark:bg-black/50">
             {/* Header Skeleton */}
-            <div className="flex items-center justify-between px-6 py-6 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-background/80 backdrop-blur-xl sticky top-0 z-10">
+            <div className="flex items-center justify-between px-6 py-6 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-background sticky top-0 z-10">
                 <div className="space-y-3">
                     <Skeleton className="h-8 w-40 bg-zinc-200 dark:bg-zinc-800" />
                     <Skeleton className="h-4 w-64 bg-zinc-100 dark:bg-zinc-900" />
