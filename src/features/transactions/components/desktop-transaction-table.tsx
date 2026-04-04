@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -29,6 +28,7 @@ import {
  TableRow,
 } from "@/components/ui/table";
 import { useUI } from '@/components/ui-provider';
+import { Badge } from '@/components/ui/badge';
 import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import type { Transaction, Wallet } from '@/types/models';
@@ -204,23 +204,26 @@ const TransactionRow = ({ t, wallets, openTransactionDetail, openTransactionShee
  {/* 5. Nominal */}
  <TableCell className={cn(
  "text-right font-medium text-body-md tabular-nums tracking-tight",
- isExpense ? "text-foreground": "text-success",
- t.amount >= 1000000 && isExpense && "bg-foreground/5 "
+ isExpense ? "text-foreground" : "text-success",
+ t.amount >= 1000000 && isExpense && "bg-foreground/5"
  )}>
  <div className="flex items-center justify-end gap-1.5">
  {isExpense ? <ArrowDownLeft className="h-3.5 w-3.5"/> : <ArrowUpRight className="h-3.5 w-3.5"/>}
  {formatCurrency(t.amount)}
  </div>
- <div className="flex flex-col items-end gap-0.5 mt-0.5">
+ <div className="flex flex-col items-end gap-1 mt-1">
  {t.amount >= 1000000 && isExpense && (
  <span className="text-label text-muted-foreground px-1 bg-muted rounded">
  Transaksi Besar
  </span>
  )}
- {isExpense && t.isNeed === false && (
- <span className="text-label text-accent-foreground/70">
- Gaya Hidup
- </span>
+ {isExpense && typeof t.isNeed === 'boolean' && (
+  <Badge 
+    variant={t.isNeed ? "success" : "warning"}
+    className="py-0.5"
+  >
+    {t.isNeed ? 'Kebutuhan' : 'Keinginan'}
+  </Badge>
  )}
  </div>
  </TableCell>
@@ -304,7 +307,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
  const headers = ['Tanggal', 'Deskripsi', 'Kategori', 'Metode', 'Tipe', 'Jumlah'];
  const rows = transactions.map(t => [
  format(parseISO(t.date), 'yyyy-MM-dd'),
-`"${t.description.replace(/"/g, '""')}"`,
+ `"${t.description.replace(/"/g, '""')}"`,
  t.category,
  wallets.find(w => w.id === t.walletId)?.name || '',
  t.type,
@@ -316,7 +319,7 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
  const url = URL.createObjectURL(blob);
  const link = document.createElement("a");
  link.setAttribute("href", url);
- link.setAttribute("download",`transaksi-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+ link.setAttribute("download", `transaksi-${format(new Date(), 'yyyy-MM-dd')}.csv`);
  document.body.appendChild(link);
  link.click();
  document.body.removeChild(link);
@@ -340,31 +343,31 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
  <Table className="table-fixed">
  <TableHeader className="bg-muted/52">
  <TableRow className="hover:bg-muted/52">
- <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors text-label w-32"onClick={() => handleSort('date')}>
+ <TableHead className="pl-8 cursor-pointer hover:text-primary transition-colors text-label w-32" onClick={() => handleSort('date')}>
  <div className="flex items-center gap-2">
  Tanggal
  <ArrowUpDown className="h-3 w-3 opacity-50"/>
  </div>
  </TableHead>
- <TableHead className="cursor-pointer hover:text-primary transition-colors text-label"onClick={() => handleSort('description')}>
+ <TableHead className="cursor-pointer hover:text-primary transition-colors text-label" onClick={() => handleSort('description')}>
  <div className="flex items-center gap-2">
  Transaksi
  <ArrowUpDown className="h-3 w-3 opacity-50"/>
  </div>
  </TableHead>
- <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-44"onClick={() => handleSort('category')}>
+ <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-44" onClick={() => handleSort('category')}>
  <div className="flex items-center gap-2">
  Kategori
  <ArrowUpDown className="h-3 w-3 opacity-50"/>
  </div>
  </TableHead>
- <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-40"onClick={() => handleSort('wallet')}>
+ <TableHead className="cursor-pointer hover:text-primary transition-colors text-label w-40" onClick={() => handleSort('wallet')}>
  <div className="flex items-center gap-2">
  Metode
  <ArrowUpDown className="h-3 w-3 opacity-50"/>
  </div>
  </TableHead>
- <TableHead className="text-right cursor-pointer hover:text-primary transition-colors text-label w-40"onClick={() => handleSort('amount')}>
+ <TableHead className="text-right cursor-pointer hover:text-primary transition-colors text-label w-40" onClick={() => handleSort('amount')}>
  <div className="flex items-center justify-end gap-2">
  Nominal
  <ArrowUpDown className="h-3 w-3 opacity-50"/>
@@ -390,4 +393,3 @@ export const DesktopTransactionTable = ({ transactions, wallets }: DesktopTransa
  </div>
  );
 };
-

@@ -10,6 +10,7 @@ import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import { id as dateFnsLocaleId } from 'date-fns/locale';
 import { useUI } from '@/components/ui-provider';
 import { useMerchantIdentity } from '@/hooks/use-merchant-identity';
+import { Badge } from '@/components/ui/badge';
 
 interface TransactionListItemProps {
  transaction: Transaction & { showDivider?: boolean };
@@ -100,16 +101,13 @@ const TransactionListItemContent = ({
  {transaction.description || transaction.category}
  </div>
  <div className="flex items-center gap-1.5 mt-1 flex-wrap">
- {/* Need / Want Tag */}
- {transaction.type === 'expense'&& transaction.isNeed === true && (
- <span className="flex items-center gap-1 rounded-full bg-foreground text-label text-background px-1.5 py-0.5 shadow-sm">
- Need
- </span>
- )}
- {transaction.type === 'expense'&& transaction.isNeed === false && (
- <span className="flex items-center gap-1 rounded-full bg-muted text-label text-muted-foreground px-1.5 py-0.5 shadow-sm border border-border/10">
- Want
- </span>
+ {transaction.type === 'expense' && typeof transaction.isNeed === 'boolean' && (
+  <Badge 
+    variant={transaction.isNeed ? "success" : "warning"}
+    className="py-0.5"
+  >
+    {transaction.isNeed ? 'Kebutuhan' : 'Keinginan'}
+  </Badge>
  )}
  <span className="text-label-sm font-medium text-muted-foreground/50 truncate max-w-[110px]">
  {transaction.category}

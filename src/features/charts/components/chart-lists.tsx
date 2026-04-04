@@ -7,6 +7,7 @@ import { Transaction } from '@/types/models';
 import { format, parseISO } from 'date-fns';
 
 import { AlertTriangle, Trophy } from '@/lib/icons';
+import { Badge } from '@/components/ui/badge';
 
 export function CategoryPilla({ category, amount, total, budgetAmount, color, onClick }: {
  category: string,
@@ -24,7 +25,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
  const getGradientColor = () => {
  if (isOverBudget) return 'from-error to-destructive';
  const colorName = color.replace('bg-', '').replace('-500', '');
- return`from-${colorName}-500 to-${colorName}-600`;
+ return `from-${colorName}-500 to-${colorName}-600`;
  };
 
  return (
@@ -42,12 +43,12 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
  <div className="flex justify-between items-start mb-4">
  <div className="space-y-1">
  <div className="flex items-center gap-2">
- <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-error": color)} />
+ <span className={cn("h-2 w-2 rounded-full", isOverBudget ? "bg-error" : color)} />
  <p className={cn("text-label text-muted-foreground", isOverBudget && "text-error")}>
  {category}
  </p>
  </div>
- <p className={cn("text-display-sm md:text-display-md font-medium tracking-tighter tabular-nums", isOverBudget ? "text-destructive": "text-foreground")}>
+ <p className={cn("text-display-sm md:text-display-md font-medium tracking-tighter tabular-nums", isOverBudget ? "text-destructive" : "text-foreground")}>
  {formatCurrency(amount)}
  </p>
  </div>
@@ -61,7 +62,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
  <div className="space-y-2">
  <div className="flex justify-between items-center text-label">
  <div className="flex items-center gap-2">
- <span className={isOverBudget ? "text-error": "text-muted-foreground/60"}>
+ <span className={isOverBudget ? "text-error" : "text-muted-foreground/60"}>
  {percentage.toFixed(0)}% Terpakai
  </span>
  </div>
@@ -72,7 +73,7 @@ export function CategoryPilla({ category, amount, total, budgetAmount, color, on
  <div className="relative h-2.5 w-full bg-secondary rounded-full overflow-hidden">
  <motion.div
  initial={{ width: 0 }}
- whileInView={{ width:`${Math.min(percentage, 100)}%` }}
+ whileInView={{ width: `${Math.min(percentage, 100)}%` }}
  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
  className={cn(
  "absolute inset-y-0 left-0 rounded-full bg-gradient-to-r",
@@ -104,15 +105,13 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
  <div className="flex-1 min-w-0">
  <div className="flex items-center gap-2">
  <p className="text-body-md truncate tracking-tight text-foreground/90">{transaction.description || transaction.category}</p>
- {transaction.type === 'expense'&& typeof transaction.isNeed === 'boolean'&& (
-  <span className={cn(
-  "text-label-sm font-black tracking-tighter px-1.5 py-0.5 rounded-sm border shrink-0",
-  transaction.isNeed 
-  ? "bg-success/10 text-success border-success/20"
-  : "bg-warning/10 text-warning border-warning/20"
-  )}>
- {transaction.isNeed ? 'Need': 'Want'}
- </span>
+ {transaction.type === 'expense' && typeof transaction.isNeed === 'boolean' && (
+  <Badge 
+    variant={transaction.isNeed ? "success" : "warning"}
+    className="px-2 py-0.5"
+  >
+    {transaction.isNeed ? 'Kebutuhan' : 'Keinginan'}
+  </Badge>
  )}
  </div>
  <div className="flex items-center gap-2 mt-0.5">
@@ -125,7 +124,3 @@ export function TopTransactionItem({ transaction, rank, onClick }: { transaction
  </button>
  );
 }
-
-
-
-

@@ -4,7 +4,11 @@ All updates and improvements to the Lemon app will be documented here.
 
 ## [Version 2.7.0] - 5 April 2026
 
-### Added
+- **Standardized "Kebutuhan" & "Keinginan" Labels**
+  - Unified all "Need" and "Want" labels to the Indonesian terms "Kebutuhan" and "Keinginan" across the entire application.
+  - Replaced legacy text-based labels with the standardized `Badge` component for visual consistency.
+  - Applied semantic variants: `variant="success"` for Kebutuhan and `variant="warning"` for Keinginan.
+  - Updated all major surfaces: `AnalyticsDashboard`, `TransactionListItem`, `DesktopTransactionTable`, and `TransactionDetailSheet`.
 - **Standardized Inline Error Handling**
   - Replaced generic toast-based validation with field-level inline error messages across all major forms.
   - Implemented `zod` and `react-hook-form` validation for `ReminderForm`.

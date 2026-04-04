@@ -18,6 +18,7 @@ import { categoryDetails } from '@/lib/categories';
 import { getCategoryIcon } from '@/lib/category-utils';
 import { cn, formatCurrency } from '@/lib/utils';
 import { useWallets } from '@/features/wallets';
+import { Badge } from '@/components/ui/badge';
 import type { Transaction } from '@/types/models';
 
 interface TransactionDetailSheetProps {
@@ -155,10 +156,20 @@ export const TransactionDetailSheet = ({
  </>
  )}
  {isExpense && typeof transaction.isNeed === 'boolean'&& (
- <>
- <DetailRow label="Klasifikasi"value={transaction.isNeed ? 'Kebutuhan': 'Keinginan'} />
- <div className="h-px w-full bg-border/35"/>
- </>
+  <>
+  <DetailRow 
+    label="Klasifikasi" 
+    value={
+      <Badge 
+        variant={transaction.isNeed ? "success" : "warning"}
+        className="px-2 py-0.5"
+      >
+        {transaction.isNeed ? 'Kebutuhan' : 'Keinginan'}
+      </Badge>
+    } 
+  />
+  <div className="h-px w-full bg-border/35"/>
+  </>
  )}
  {transaction.location && (
  <DetailRow label="Lokasi"value={transaction.location} />
