@@ -98,6 +98,15 @@ All updates and improvements to the Lemon app will be documented here.
 
 
 ### Changed
+- **AI Token Optimization Pipeline (Phase 3.5)**
+  - Implemented token usage telemetry, a 5-level intelligent cascading truncation logic based on priority, and a "Natural Minimal Mode" fallback to gracefully handle context window overflows and prevent 400 errors.
+  - Reduced prompt overhead by segregating the full coach identity into a `CHAT_SYSTEM_PROMPT` and a `CHAT_LIGHTWEIGHT_SYSTEM_PROMPT`.
+  - Restricted the AI SDK's tool execution steps from 5 consecutive loops (`stopWhen: stepCountIs(5)`) to 2, drastically cutting LLM API costs and request roundtrips per user interaction.
+- **Decoupled AI Context Queries**
+  - Parameterized `financialContextService.getUnifiedContext` to accept specific context modules (`['wealth']`, `['budgets']`, etc.).
+  - Updated AI tools to execute targeted DB queries instead of full profile aggregations, significantly reducing query latency.
+- **Solid Mobile Header Chrome**
+  - Removed transparency and backdrop-blur effects from the mobile sticky header (`pageShell.headerChrome`) across all pages and skeletons, opting for a clean, solid background.
 - **DS-3 dashboard surface variants**
   - Added named `Card` shell variants (`default`, `elevated`, `flat`, `ai`) with `cva` in the shared UI primitive and migrated the main dashboard widgets plus Lemon Coach rich cards onto those variants so radius, shadow, and overflow styling now come from one consistent surface system.
 - **DS-3 app page transitions**
