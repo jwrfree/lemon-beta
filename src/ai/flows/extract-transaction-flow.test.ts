@@ -15,7 +15,7 @@ describe('parseSimpleTransactionInput', () => {
         const result = await parseSimpleTransactionInput('catat kopi 18rb');
         expect(result?.transactions?.[0]).toMatchObject({
             amount: 18000,
-            description: 'kopi',
+            description: 'Kopi',
             category: 'Konsumsi & F&B',
             subCategory: 'Jajanan & Kopi',
             type: 'expense',
@@ -183,6 +183,19 @@ describe('parseSimpleTransactionInput', () => {
     it('asks for clarification when no amount is present', async () => {
         const result = await parseSimpleTransactionInput('catat makan');
         expect(result?.clarificationQuestion).toContain('Nominalnya belum kebaca');
+    });
+
+    it('auto-capitalizes known acronyms and brands even in lowercase input', async () => {
+        const result = await parseSimpleTransactionInput('bayar listrik pln pakai bca 500rb', {
+            wallets: ['BCA'],
+        }, {
+            allowBareInput: true,
+        });
+        expect(result?.transactions?.[0]).toMatchObject({
+            amount: 500000,
+            description: 'Listrik PLN',
+            wallet: 'BCA',
+        });
     });
 
     it('throws a descriptive error when DeepSeek is unavailable for extraction', async () => {

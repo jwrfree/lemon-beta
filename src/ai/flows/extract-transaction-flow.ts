@@ -276,13 +276,36 @@ export const parseSimpleTransactionInput = async (
 
   const category = categoryMap?.category ?? (type === 'income' ? 'Pendapatan Lain' : 'Biaya Lain-lain');
 
-  const description = text
+  let description = text
     .replace(/\b(catat|tambah|input|masukkan)\b/giu, ' ')
     .replace(/(\d+(?:[.,]\d+)?)\s*(jt|juta|rb|ribu|k)?/giu, ' ')
     .replace(/\b(pakai|pakai dompet|dari|ke)\b.+$/iu, ' ')
     .replace(/\b(pengeluaran|pemasukan|transaksi|expense|income)\b/giu, ' ')
+    .replace(/\b(beli|bayar|jajan|bayarin|buat|untuk)\b/giu, ' ') // Remove action verbs
     .replace(/\s+/g, ' ')
     .trim();
+
+  // Sentence case: Capitalize ONLY the first letter, leave the rest of the string exactly as the user typed it
+  // This prevents "PLN" from becoming "Pln", and avoids unnatural "Mie Ayam Pak Min" (Title Case)
+  if (description.length > 0) {
+    description = description.charAt(0).toUpperCase() + description.slice(1);
+  }
+
+  // Auto-capitalize known acronyms and brands that people often type in lowercase
+  const acronyms = /\b(pln|bpjs|pdam|krl|mrt|lrt|bca|bni|bri|bsi|btn|ovo|gopay|dana|shopeepay|shopee|tokopedia|gojek|grab)\b/giu;
+  description = description.replace(acronyms, (match) => {
+    // For specific mixed-case brands
+    const lowerMatch = match.toLowerCase();
+    if (lowerMatch === 'gopay') return 'GoPay';
+    if (lowerMatch === 'shopeepay') return 'ShopeePay';
+    if (lowerMatch === 'tokopedia') return 'Tokopedia';
+    if (lowerMatch === 'shopee') return 'Shopee';
+    if (lowerMatch === 'gojek') return 'Gojek';
+    if (lowerMatch === 'grab') return 'Grab';
+    
+    // Default: FULL UPPERCASE for acronyms like PLN, BPJS, BCA
+    return match.toUpperCase();
+  });
 
   const subCategory = inferSubCategory(category, description || text, null);
 
