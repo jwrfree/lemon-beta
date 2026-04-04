@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef, Suspense } from 'react';
+
+import { Suspense, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '@/components/bottom-navigation';
@@ -25,8 +26,6 @@ import { useUI } from '@/components/ui-provider';
 import { useActions } from '@/providers/action-provider';
 import { cn } from '@/lib/utils';
 import { isTopLevelMobileRoute } from '@/lib/sidebar-config';
-
-
 
 export default function MainAppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -73,8 +72,6 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         debtForPayment,
         setDebtForPayment,
         isSidebarCollapsed,
-        isSmartAddOpen,
-        setIsSmartAddOpen,
         isAIChatOpen,
         setIsAIChatOpen,
         isCommandPaletteOpen,
@@ -132,7 +129,6 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
         await deleteTransaction(transactionToDelete);
         closeDeleteModal();
     };
-
 
     const showBottomNav = isTopLevelMobileRoute(pathname);
 
@@ -220,4 +216,4 @@ export default function MainAppLayout({ children }: { children: React.ReactNode 
             </div>
         </div>
     );
-};
+}

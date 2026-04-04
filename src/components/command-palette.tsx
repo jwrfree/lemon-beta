@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Command } from 'cmdk';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MagnifyingGlass,
@@ -17,10 +16,9 @@ import {
     Sparkle,
     CaretRight,
     Command as CommandIcon,
-    ArrowArcLeft
 } from '@/lib/icons';
 import { useUI } from '@/components/ui-provider';
-import { cn, triggerHaptic } from '@/lib/utils';
+import { cn, triggerHaptic, formatCurrency } from '@/lib/utils';
 import { searchService, SearchResult } from '@/lib/services/search-service';
 import { useAuth } from '@/providers/auth-provider';
 import {
@@ -48,6 +46,7 @@ export const CommandPalette = () => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<SearchResult[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const hasResults = results.length > 0;
 
     // Initial search or search on query change
     useEffect(() => {
@@ -142,21 +141,22 @@ export const CommandPalette = () => {
     return (
         <Dialog open={isCommandPaletteOpen} onOpenChange={setIsCommandPaletteOpen}>
             <DialogPortal>
- <DialogOverlay className="bg-black/60 backdrop-blur-md" />
- <DialogContent className="fixed left-[50%] top-[5%] sm:top-[50%] translate-x-[-50%] sm:translate-y-[-50%] w-[94vw] sm:max-w-2xl border-none bg-transparent p-0 shadow-none transition-all duration-300">
- <DialogTitle className="sr-only">Navigasi dan Pencarian Universal</DialogTitle>
- <DialogDescription className="sr-only">
- Cari transaksi, target, dompet, atau jalankan aksi cepat di seluruh aplikasi.
- </DialogDescription>
- <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-card/70 shadow-elevation-4 backdrop-blur-xl">
-                        <Command className="flex h-full w-full flex-col overflow-hidden">
+                <DialogOverlay className="bg-black/60 backdrop-blur-md" />
+                <DialogContent className="fixed left-[50%] top-[5%] sm:top-[50%] translate-x-[-50%] sm:translate-y-[-50%] w-[94vw] sm:max-w-2xl border-none bg-transparent p-0 shadow-none transition-all duration-300">
+                    <DialogTitle className="sr-only">Navigasi dan Pencarian Universal</DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Cari transaksi, target, dompet, atau jalankan aksi cepat di seluruh aplikasi.
+                    </DialogDescription>
+                    <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-card/70 shadow-elevation-4 backdrop-blur-xl">
+                        <div className="flex h-full w-full flex-col overflow-hidden">
                             <div className="flex items-center border-b border-white/10 px-4">
                                 <MagnifyingGlass className="mr-3 h-5 w-5 text-muted-foreground" />
-                                <Command.Input
+                                <input
                                     value={query}
-                                    onValueChange={setQuery}
+                                    onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Cari transaksi, target, atau aksi..."
-                                    className="flex h-14 w-full bg-transparent text-title-lg outline-none placeholder:text-muted-foreground/50"
+                                    className="flex h-14 w-full bg-transparent text-title-lg outline-none placeholder:text-muted-foreground/50 text-foreground"
+                                    autoFocus
                                 />
                                 {isLoading && (
                                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -170,58 +170,57 @@ export const CommandPalette = () => {
                                 )}
                             </div>
 
-                            <Command.List className="max-h-[60vh] overflow-y-auto px-2 py-4 scrollbar-none sm:max-h-[400px]">
-                                <Command.Empty className="flex flex-col items-center justify-center py-10 text-center">
-                                    <MagnifyingGlass size={32} className="mb-4 text-muted-foreground/20" />
-                                    <p className="text-muted-foreground">Tidak ada hasil ditemukan.</p>
-                                </Command.Empty>
+                            <div className="max-h-[60vh] overflow-y-auto px-2 py-4 scrollbar-none sm:max-h-[400px]">
+                                {!hasResults && !isLoading && (
+                                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                                        <MagnifyingGlass size={32} className="mb-4 text-muted-foreground/20" />
+                                        <p className="text-muted-foreground">Tidak ada hasil ditemukan.</p>
+                                    </div>
+                                )}
 
                                 {Object.entries(groupedResults).map(([type, items]) => (
-                                    <Command.Group
-                                        key={type}
-                                        heading={getGroupLabel(type)}
-                                        className="mb-4 px-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:[&_[cmdk-group-heading]]:[&_[cmdk-group-heading]]:[&_[cmdk-group-heading]]:text-foreground/40"
-                                    >
+                                    <div key={type} className="mb-4 px-2">
+                                        <p className="px-3 text-[10px] uppercase tracking-wider text-foreground/40">{getGroupLabel(type)}</p>
                                         <div className="mt-2 space-y-1">
                                             {items.map((item) => (
-                                                <Command.Item
+                                                <button
                                                     key={item.id}
-                                                    value={item.id + item.title + item.subtitle}
-                                                    onSelect={() => handleSelect(item)}
-                                                    className="group flex cursor-pointer items-center gap-4 rounded-2xl px-3 py-3 transition-all hover:bg-white/10 data-[selected=true]:bg-white/15"
+                                                    type="button"
+                                                    onClick={() => handleSelect(item)}
+                                                    className="group flex w-full cursor-pointer items-center gap-4 rounded-2xl px-3 py-3 text-left transition-all hover:bg-white/10 active:scale-[0.99]"
                                                 >
                                                     <div className={cn(
-                                                        "flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white/5 text-muted-foreground transition-colors group-hover:text-primary group-data-[selected=true]:bg-primary/20 group-data-[selected=true]:text-primary"
+                                                        "flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-white/5 text-muted-foreground transition-colors group-hover:bg-primary/20 group-hover:text-primary"
                                                     )}>
                                                         {React.createElement(getIcon(item.type), { size: 20 })}
                                                     </div>
-
+                                                    
                                                     <div className="flex min-w-0 flex-1 flex-col">
-                                                        <span className="truncate text-body-md ">{item.title}</span>
+                                                        <span className="truncate text-body-md text-foreground">{item.title}</span>
                                                         {item.subtitle && (
-                                                            <span className="truncate text-label-md text-foreground/60">{item.subtitle}</span>
+                                                            <span className="truncate text-label-md text-foreground/50">{item.subtitle}</span>
                                                         )}
                                                     </div>
 
                                                     {item.amount !== undefined && (
                                                         <div className="flex flex-none flex-col items-end gap-1">
                                                             <span className={cn(
-                                                                "text-body-md ",
+                                                                "text-body-md font-medium tabular-nums",
                                                                 item.type === 'transaction' && item.metadata?.type === 'expense' ? 'text-rose-500' : 'text-emerald-500'
                                                             )}>
                                                                 {item.type === 'transaction' && item.metadata?.type === 'expense' ? '-' : ''}
-                                                                Rp {item.amount.toLocaleString('id-ID')}
+                                                                {formatCurrency(item.amount)}
                                                             </span>
                                                         </div>
                                                     )}
 
-                                                    <CaretRight size={16} className="flex-none text-muted-foreground/30 opacity-0 transition-opacity group-hover:opacity-100 group-data-[selected=true]:opacity-100" />
-                                                </Command.Item>
+                                                    <CaretRight size={16} className="flex-none text-muted-foreground/30 opacity-0 transition-opacity group-hover:opacity-100" />
+                                                </button>
                                             ))}
                                         </div>
-                                    </Command.Group>
+                                    </div>
                                 ))}
-                            </Command.List>
+                            </div>
 
                             <div className="flex items-center justify-between border-t border-white/5 bg-white/5 px-4 py-3 text-label-md text-foreground/70">
                                 <div className="flex items-center gap-4">
@@ -236,7 +235,7 @@ export const CommandPalette = () => {
                                     <kbd className="rounded border border-white/10 bg-white/10 px-1 font-sans">Esc</kbd> Tutup
                                 </span>
                             </div>
-                        </Command>
+                        </div>
                     </div>
                 </DialogContent>
             </DialogPortal>
