@@ -264,7 +264,7 @@ export const parseSimpleTransactionInput = async (
     : 'expense';
 
   const categoryMap = [
-    { pattern: /\b(kopi|coffee|kapal api|kapalapi|starbucks|fore|kenangan|tuku|janji jiwa|point coffee|makan|sarapan|lunch|dinner|snack|jajan|gofood|grabfood|hokben|kfc|mcd|mcdonald'?s|burger king|pizza hut|domino'?s|solaria|sushi tei|marugame|resto|restoran|cafe|kafe|alfamart|indomaret|superindo|hypermart|transmart|hero|lotte mart|grocery|sembako)\b/iu, category: 'Konsumsi & F&B' },
+    { pattern: /\b(kopi|coffee|kapal api|kapalapi|starbucks|fore|kenangan|tuku|janji jiwa|point coffee|makan|sarapan|lunch|dinner|snack|jajan|bakso|warteg|nasi goreng|mie ayam|sate|ayam geprek|nasi padang|gofood|grabfood|hokben|kfc|mcd|mcdonald'?s|burger king|pizza hut|domino'?s|solaria|sushi tei|marugame|resto|restoran|cafe|kafe|alfamart|indomaret|superindo|hypermart|transmart|hero|lotte mart|grocery|sembako|sayur|beras|telur|daging|buah|catering)\b/iu, category: 'Konsumsi & F&B' },
     { pattern: /\b(shopee|tokopedia|tokped|bukalapak|blibli|lazada|zara|uniqlo|hm|h&m|matahari|cotton on|erafone|ibox|digimap|samsung store|mi store|watsons|guardian|sociolla|ace hardware|ikea|mr diy)\b/iu, category: 'Belanja & Lifestyle' },
     { pattern: /\b(gojek|grab|pertamina|shell|bp|vivo|bensin|parkir|tol|kereta|bus|mrt|krl|travel|tiket|servis|bengkel)\b/iu, category: 'Transportasi' },
     { pattern: /\b(listrik|token|pulsa|internet|wifi|air|pdam|bpjs|pln|pln mobile|tv kabel|telkomsel|indosat|xl|axis|tri|3\b|smartfren|indihome|biznet|first media|myrepublic|cbn)\b/iu, category: 'Tagihan & Utilitas' },
