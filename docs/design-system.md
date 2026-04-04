@@ -14,8 +14,10 @@ Use only the following design tokens for border radius. Raw Tailwind radius util
 | `rounded-md` | 8px | Inputs, buttons, secondary cards |
 | `rounded-lg` | 12px | Standard cards, panels |
 | `rounded-card` | 24px | Hero cards, modals, bottom sheets |
+| `rounded-xl` | 16px | Primary CTA buttons, Metric cards |
+| `rounded-2xl` | 20px | Search panels, Overlay containers |
 
-**Forbidden utilities:** `rounded-xl`, `rounded-2xl`, `rounded-3xl`, and any other raw Tailwind radius class not listed above. Always use a design token.
+**Note:** Always use design tokens. Raw Tailwind utilities like `rounded-3xl` are currently out-of-scale; any new radius tokens must be approved and added to this document.
 
 ---
 

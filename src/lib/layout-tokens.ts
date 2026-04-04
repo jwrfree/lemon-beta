@@ -42,6 +42,15 @@ export const spacing = {
 
   /** Form / stack field gap */
   stack: 'space-y-4',
+
+  /** Dashboard section header typography */
+  sectionHeader: 'text-sm font-semibold text-muted-foreground/70 tracking-tight',
+
+  /** Action button / "Lihat semua" typography */
+  actionButtonLabel: 'text-sm font-semibold text-primary',
+
+  /** Standard Primary CTA button height and radius */
+  primaryCTA: 'h-12 rounded-xl',
 } as const;
 
 /** Alias exported as `layout` for ergonomic JSX usage: `className={layout.container}` */

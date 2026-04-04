@@ -34,23 +34,37 @@ Kartu utama wajib menggunakan latar belakang dinamis yang mengikuti warna identi
 *   **Colored Shadows:** Bayangan kartu wajib memiliki rona warna yang sama dengan latar belakang kartu (`shadow-color/20`).
 *   **Glass Insets:** Gunakan kontainer internal semi-transparan di dalam kartu untuk mengelompokkan data detail.
 
-### Radius (The Golden Curve)
+### Radius & Sizing (The Golden Curve)
 *   `rounded-[32px]` (3xl): Kontainer utama, Kartu Hero, dan Modal Bottom Sheet.
-*   `rounded-2xl`: Komponen internal dalam kartu, input fields, dan tombol besar.
+*   `rounded-xl` (16px) / `rounded-2xl` (20px): Komponen utama seperti tombol (CTA), input fields, dan primary cards.
+*   `h-12` (48px): Tinggi standar untuk tombol utama (Primary CTA) di mobile agar nyaman ditekan (tap target).
 *   `rounded-full`: Badge status, chip kategori, dan avatar.
 
 ---
 
-## 3. Komponen & Pola Reusable
+## 3. Typography & Navigation Scale
+
+### Dashboard & Section Headers
+*   **Standard Header:** `text-sm font-semibold` (14px) dengan warna `muted-foreground/70`. Memberikan kesan clean dan tidak mendominasi visual.
+*   **Action Label:** `text-sm font-semibold` (14px). Gunakan pola **"Lihat semua"** + **`CaretRight`** (size 14) untuk navigasi ke halaman list lengkap.
+
+### Functional Typography
+*   **Bottom Navigation Label:** `text-label-xs` (9.5px). Ukuran optimal untuk menjaga kehalusan antarmuka navigasi mobile tanpa kehilangan keterbacaan.
+*   **Metric Values:** `text-display-lg` atau `text-title-lg` dengan `tabular-nums` untuk angka keuangan agar posisi desimal sejajar.
+
+---
+
+## 4. Komponen & Pola Reusable
 
 ### Komponen Atomik (Atoms)
 *   **Atomic:** `Button`, `Badge`, `Input`, `Icons`.
 *   **Molecules:** `MetricCard`, `WalletPill`, `CategorySelector`.
 *   **Organisms:** `DynamicCardList`, `TransactionComposer`, `BudgetHero`.
 
-### Karakteristik Komponen (Borderless Strategy)
+### Tombol & Kontras (Visibility Protection)
 1.  **NO INTERNAL BORDERS:** Dilarang menggunakan garis batas kaku (`border-border`). Pemisahan elemen internal wajib menggunakan **Background Shifts** (perbedaan opasitas latar) atau **Spacing**.
-2.  **Visual Depth & Shadows (Strict Guidelines):** 
+2.  **Primary Button Protection:** Tombol utama (`bg-primary`) wajib menggunakan `!text-primary-foreground` untuk mencegah konflik warna yang menyebabkan teks tidak terbaca (black-on-black).
+3.  **Visual Depth & Shadows (Strict Guidelines):** 
     *   **No Nested Shadows:** Dilarang menumpuk bayangan (shadow di dalam container bershadow). Gunakan *subtle backgrounds* (`bg-muted/50`, `bg-secondary/50`) atau *subtle borders* (`border border-border/40`) untuk elemen anak di dalam *card* utama.
     *   **Flat & Subtle by Default:** Utamakan *flat design* dengan pembatas ruang halus. Shadow HANYA digunakan untuk hierarki *z-axis* yang jelas (seperti *floating action buttons*, *modals*, *popovers*, atau *sticky headers/footers*).
     *   **Performance First:** Dilarang menganimasi properti `box-shadow` secara langsung (karena memicu *repaint* mahal di *mobile GPU*). Jika butuh efek *glow* atau animasi, gunakan elemen pseudo/absolut di belakang (sebagai *backdrop*) dan animasikan `opacity` atau `transform` (*hardware accelerated*).
@@ -84,6 +98,21 @@ Kartu utama wajib menggunakan latar belakang dinamis yang mengikuti warna identi
 
 ### Strategi Versioning API
 *   Wajib menggunakan suffix versi pada RPC Supabase: `nama_fungsi_v{n}` (Contoh: `create_transaction_v1`).
+
+---
+
+## 6. Semantic Tokens (layout-tokens.ts)
+
+Untuk mempercepat pengembangan dan menjaga konsistensi kontainer/tipografi, gunakan token semantik dari `@/lib/layout-tokens`:
+
+| Token | CSS Utility | Kegunaan |
+| :--- | :--- | :--- |
+| `layout.sectionHeader` | `text-sm font-semibold ...` | Header utama di dashboard / section. |
+| `layout.actionButtonLabel` | `text-sm font-semibold ...` | Label untuk tombol navigasi "Lihat semua". |
+| `layout.primaryCTA` | `h-12 rounded-xl` | Standar tinggi dan radius untuk tombol utama. |
+| `layout.container` | `mx-auto w-full ...` | Standar wrapper untuk isi halaman (standard width). |
+
+**Gunakan `cn()` untuk menggabungkan token dengan kelas spesifik lainnya.**
 
 ---
 

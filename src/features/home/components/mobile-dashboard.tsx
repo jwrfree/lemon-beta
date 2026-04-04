@@ -20,6 +20,7 @@ import { BalanceVisibilityToggle } from '@/components/balance-visibility-toggle'
 import { AppPageBody, AppPageHeaderChrome, AppPageShell } from '@/components/app-page-shell';
 import { useUI } from '@/components/ui-provider';
 import { cn, formatCurrency, triggerHaptic } from '@/lib/utils';
+import { layout } from '@/lib/layout-tokens';
 import { getWalletVisuals } from '@/lib/wallet-visuals';
 import type { Wallet, Transaction, Reminder, Debt } from '@/types/models';
 import { SpendingTrendChart } from './spending-trend-chart';
@@ -256,10 +257,10 @@ export const MobileDashboard = ({
 
         <section className="space-y-4">
           <div className="flex items-center justify-between px-5">
-            <h2 className="text-sm font-semibold text-muted-foreground/70 tracking-tight">
+            <h2 className={layout.sectionHeader}>
               Daftar dompet
             </h2>
-            <Button variant="ghost" size="sm" className="h-8 px-0 text-sm font-semibold text-primary hover:bg-transparent transition-all flex items-center gap-0.5" onClick={() => router.push('/wallets')}>
+            <Button variant="ghost" size="sm" className={cn("h-8 px-0 hover:bg-transparent transition-all flex items-center gap-0.5", layout.actionButtonLabel)} onClick={() => router.push('/wallets')}>
               Lihat semua
               <CaretRight size={14} weight="bold" />
             </Button>
@@ -342,13 +343,13 @@ export const MobileDashboard = ({
 
         <section className="space-y-4 pb-12">
           <div className="flex items-center justify-between px-5">
-            <h2 className="text-sm font-semibold text-muted-foreground/70 tracking-tight">
+            <h2 className={layout.sectionHeader}>
               Mutasi terakhir
             </h2>
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 px-0 text-sm font-semibold text-primary hover:bg-transparent transition-all flex items-center gap-0.5"
+              className={cn("h-8 px-0 hover:bg-transparent transition-all flex items-center gap-0.5", layout.actionButtonLabel)}
               onClick={() => router.push('/transactions')}
             >
               Lihat semua
